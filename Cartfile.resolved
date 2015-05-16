@@ -1,0 +1,6 @@
+github "LlamaKit/LlamaKit" "v0.6.0"
+github "drmohundro/SWXMLHash" "1.0.0"
+github "jpsim/SwiftXPC" "1.0.0"
+github "jspahrsummers/xcconfigs" "0.8"
+github "Carthage/Commandant" "0.5"
+github "jpsim/SourceKitten" "0.4.2"

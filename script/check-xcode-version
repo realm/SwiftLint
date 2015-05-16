@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Check the minimum required Xcode version. Meant to be run
+# as part of an Xcode Run Script build phase.
+
+required_xcode_version=6.1.1
+
+if [ ${XCODE_VERSION_ACTUAL} -lt ${required_xcode_version//.} ]
+then
+    echo "error: Xcode ${required_xcode_version} or later is required to build ${PRODUCT_NAME}"
+    exit 1
+fi

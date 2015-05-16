@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>BundleIsVersionChecked</key>
+		<false/>
+		<key>BundleOverwriteAction</key>
+		<string>upgrade</string>
+		<key>ChildBundles</key>
+		<array>
+			<dict>
+				<key>BundleOverwriteAction</key>
+				<string></string>
+				<key>RootRelativeBundlePath</key>
+				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/SourceKittenFramework.framework</string>
+			</dict>
+			<dict>
+				<key>BundleOverwriteAction</key>
+				<string></string>
+				<key>RootRelativeBundlePath</key>
+				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/LlamaKit.framework</string>
+			</dict>
+			<dict>
+				<key>BundleOverwriteAction</key>
+				<string></string>
+				<key>RootRelativeBundlePath</key>
+				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/Commandant.framework</string>
+			</dict>
+		</array>
+		<key>RootRelativeBundlePath</key>
+		<string>Library/Frameworks/SwiftLintFramework.framework</string>
+	</dict>
+</array>
+</plist>

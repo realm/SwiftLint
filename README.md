@@ -16,7 +16,7 @@ Installation requires [Homebrew](http://brew.sh).
 
 ## Command Line Usage
 
-```shell
+```
 $ swiftlint help
 Available commands:
 

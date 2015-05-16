@@ -21,7 +21,7 @@ $ swiftlint help
 Available commands:
 
    help      Display general or command-specific help
-   lint      Print lint warnings and errors for the Swift files in the current directory
+   lint      Print lint warnings and errors for the Swift files in the current directory (default command)
    version   Display the current version of SwiftLint
 ```
 

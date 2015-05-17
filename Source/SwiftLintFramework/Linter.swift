@@ -17,6 +17,7 @@ public enum StyleViolationType: String, Printable {
     case LeadingWhitespace  = "Leading Whitespace"
     case TrailingWhitespace = "Trailing Whitespace"
     case ForceCast          = "Force Cast"
+    case TODO               = "TODO or FIXME"
 
     public var description: String { return rawValue }
 }
@@ -171,6 +172,14 @@ extension File {
             return StyleViolation(type: .ForceCast,
                 location: Location(file: self, offset: range.location),
                 reason: "Force casts should be avoided")
+        }
+    }
+
+    func todoAndFixmeViolations() -> [StyleViolation] {
+        return matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
+            return StyleViolation(type: .TODO,
+                location: Location(file: self, offset: range.location),
+                reason: "TODOs and FIXMEs should be avoided")
         }
     }
 
@@ -452,6 +461,7 @@ public struct Linter {
         violations.extend(file.trailingNewlineViolations(file.contents))
         violations.extend(file.forceCastViolations())
         violations.extend(file.fileLengthViolations(lines))
+        violations.extend(file.todoAndFixmeViolations())
         return violations
     }
 

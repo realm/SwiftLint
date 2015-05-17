@@ -170,10 +170,6 @@ class LinterTests: XCTestCase {
         // TODO: Trailing closure syntax should be used whenever possible.
     }
 
-    func testTODOAndFIXME() {
-        // TODO: Files should not contain any TODOs or FIXMEs.
-    }
-
     func testNoForceUnwrapping() {
         // TODO: Force unwrapping should not be used.
     }
@@ -258,5 +254,14 @@ class LinterTests: XCTestCase {
             [StyleViolation(type: .ForceCast,
                 location: Location(file: nil, line: 1),
                 reason: "Force casts should be avoided")])
+    }
+
+    func testTodoOrFIXME() {
+        for type in ["TODO", "FIXME"] {
+            XCTAssertEqual(violations("let string = \"// \(type):\"\n"), [])
+            XCTAssertEqual(violations("// \(type):\n"), [StyleViolation(type: .TODO,
+                location: Location(file: nil, line: 1),
+                reason: "TODOs and FIXMEs should be avoided")])
+        }
     }
 }

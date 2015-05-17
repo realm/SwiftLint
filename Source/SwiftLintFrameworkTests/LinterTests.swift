@@ -113,8 +113,17 @@ class LinterTests: XCTestCase {
         // TODO: Closures should be 20 lines or less.
     }
 
-    func testFunctionLengths() {
-        // TODO: Functions should be 40 lines or less.
+    func testFunctionBodyLengths() {
+        let longFunctionBody = "func abc() {" +
+            join("", Array(count: 40, repeatedValue: "\n")) +
+            "}\n"
+        XCTAssertEqual(violations(longFunctionBody), [])
+        let longerFunctionBody = "func abc() {" +
+            join("", Array(count: 41, repeatedValue: "\n")) +
+            "}\n"
+        XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(type: .Length,
+            location: Location(file: nil, line: 1),
+            reason: "Function body should be span 40 lines or less: currently spans 41 lines")])
     }
 
     func testTypeBodyLengths() {

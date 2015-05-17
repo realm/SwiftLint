@@ -238,6 +238,7 @@ extension File {
                 violations.extend(self.validateTypeName(kind, dict: subDict))
                 violations.extend(self.validateVariableName(kind, dict: subDict))
                 violations.extend(self.validateTypeBodyLength(kind, dict: subDict))
+                violations.extend(self.validateFunctionBodyLength(kind, dict: subDict))
             }
             return violations
         }, [], +)
@@ -245,19 +246,18 @@ extension File {
 
     func validateTypeBodyLength(kind: SwiftDeclarationKind, dict: XPCDictionary) ->
         [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Enum
-        ]
-        if !contains(typeKinds, kind) {
-            return []
-        }
-        var violations = [StyleViolation]()
-        if let name = dict["key.name"] as? String,
-            let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }),
-            let bodyOffset = flatMap(dict["key.bodyoffset"] as? Int64, { Int($0) }),
-            let bodyLength = flatMap(dict["key.bodylength"] as? Int64, { Int($0) }) {
+            let typeKinds: [SwiftDeclarationKind] = [
+                .Class,
+                .Struct,
+                .Enum
+            ]
+            if !contains(typeKinds, kind) {
+                return []
+            }
+            var violations = [StyleViolation]()
+            if let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }),
+                let bodyOffset = flatMap(dict["key.bodyoffset"] as? Int64, { Int($0) }),
+                let bodyLength = flatMap(dict["key.bodylength"] as? Int64, { Int($0) }) {
                 let location = Location(file: self, offset: offset)
                 let startLine = self.contents.lineAndCharacterForByteOffset(bodyOffset)
                 let endLine = self.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
@@ -268,6 +268,45 @@ extension File {
                         reason: "Type body should be span 200 lines or less: currently spans " +
                         "\(endLine - startLine) lines"))
                 }
+            }
+            return violations
+    }
+
+    func validateFunctionBodyLength(kind: SwiftDeclarationKind, dict: XPCDictionary) ->
+        [StyleViolation] {
+        let functionKinds: [SwiftDeclarationKind] = [
+            .FunctionAccessorAddress,
+            .FunctionAccessorDidset,
+            .FunctionAccessorGetter,
+            .FunctionAccessorMutableaddress,
+            .FunctionAccessorSetter,
+            .FunctionAccessorWillset,
+            .FunctionConstructor,
+            .FunctionDestructor,
+            .FunctionFree,
+            .FunctionMethodClass,
+            .FunctionMethodInstance,
+            .FunctionMethodStatic,
+            .FunctionOperator,
+            .FunctionSubscript
+        ]
+        if !contains(functionKinds, kind) {
+            return []
+        }
+        var violations = [StyleViolation]()
+        if let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }),
+            let bodyOffset = flatMap(dict["key.bodyoffset"] as? Int64, { Int($0) }),
+            let bodyLength = flatMap(dict["key.bodylength"] as? Int64, { Int($0) }) {
+            let location = Location(file: self, offset: offset)
+            let startLine = self.contents.lineAndCharacterForByteOffset(bodyOffset)
+            let endLine = self.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
+            if let startLine = startLine?.line, let endLine = endLine?.line
+                where endLine - startLine > 40 {
+                violations.append(StyleViolation(type: .Length,
+                    location: location,
+                    reason: "Function body should be span 40 lines or less: currently spans " +
+                    "\(endLine - startLine) lines"))
+            }
         }
         return violations
     }

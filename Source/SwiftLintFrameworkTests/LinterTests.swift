@@ -17,12 +17,6 @@ func violations(string: String) -> [StyleViolation] {
 
 class LinterTests: XCTestCase {
 
-    // MARK: Integration Tests
-
-    func testThisFile() {
-        XCTAssertEqual(violations(File(path: __FILE__)!.contents), [])
-    }
-
     // MARK: AST Violations
 
     func testTypeNames() {
@@ -123,8 +117,19 @@ class LinterTests: XCTestCase {
         // TODO: Functions should be 40 lines or less.
     }
 
-    func testTypeLengths() {
-        // TODO: Types should be 200 lines or less.
+    func testTypeBodyLengths() {
+        for kind in ["class", "struct", "enum"] {
+            let longTypeBody = "\(kind) Abc {" +
+                join("", Array(count: 200, repeatedValue: "\n")) +
+                "}\n"
+            XCTAssertEqual(violations(longTypeBody), [])
+            let longerTypeBody = "\(kind) Abc {" +
+                join("", Array(count: 201, repeatedValue: "\n")) +
+                "}\n"
+            XCTAssertEqual(violations(longerTypeBody), [StyleViolation(type: .Length,
+                location: Location(file: nil, line: 1),
+                reason: "Type body should be span 200 lines or less: currently spans 201 lines")])
+        }
     }
 
     func testNesting() {

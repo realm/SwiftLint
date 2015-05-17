@@ -40,7 +40,6 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1),
                 reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
-            XCTAssertEqual(violations("\(kind) Abc {}\n"), [])
 
             let longName = join("", Array(count: 40, repeatedValue: "A"))
             XCTAssertEqual(violations("\(kind) \(longName) {}\n"), [])
@@ -80,7 +79,40 @@ class LinterTests: XCTestCase {
     }
 
     func testVariableNames() {
-        // TODO: Variable names should contain between 3 and 20 characters.
+        for kind in ["class", "struct"] {
+            for varType in ["var", "let"] {
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) def: Void }\n"), [])
+
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) de_: Void }\n"), [
+                    StyleViolation(type: .NameFormat,
+                        location: Location(file: nil, line: 1),
+                        reason: "Variable name should only contain alphanumeric characters: 'de_'")
+                    ])
+
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) Def: Void }\n"), [
+                    StyleViolation(type: .NameFormat,
+                        location: Location(file: nil, line: 1),
+                        reason: "Variable name should start with a lowercase character: 'Def'")
+                    ])
+
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
+                    StyleViolation(type: .NameFormat,
+                        location: Location(file: nil, line: 1),
+                        reason: "Variable name should be between 3 and 40 characters in length: " +
+                        "'de'")
+                    ])
+
+                let longName = join("", Array(count: 40, repeatedValue: "d"))
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longName): Void }\n"), [])
+                let longerName = longName + "d"
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
+                    StyleViolation(type: .NameFormat,
+                        location: Location(file: nil, line: 1),
+                        reason: "Variable name should be between 3 and 40 characters in length: " +
+                        "'\(longerName)'")
+                    ])
+            }
+        }
     }
 
     func testClosureLengths() {
@@ -207,6 +239,7 @@ class LinterTests: XCTestCase {
 
     func testForceCasting() {
         XCTAssertEqual(violations("NSNumber() as? Int\n"), [])
+        XCTAssertEqual(violations("// NSNumber() as! Int\n"), [])
         XCTAssertEqual(violations("NSNumber() as! Int\n"),
             [StyleViolation(type: .ForceCast,
                 location: Location(file: nil, line: 1),

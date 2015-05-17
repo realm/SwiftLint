@@ -234,29 +234,81 @@ extension File {
             // swiftlint:enable_rule:force_cast
             var violations = self.astViolationsInDictionary(subDict)
             if let kindString = subDict["key.kind"] as? String,
-                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) })
-                where contains([.Class, .Struct, .Typealias, .Enum, .Enumelement], kind),
-                let name = subDict["key.name"] as? String,
-                let offset = flatMap(subDict["key.offset"] as? Int64, { Int($0) }) {
-                let location = Location(file: self, offset: offset)
-                let nameCharacterSet = NSCharacterSet(charactersInString: name)
-                if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                    violations.append(StyleViolation(type: .NameFormat,
-                        location: location,
-                        reason: "Type name should only contain alphanumeric characters: '\(name)'"))
-                } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                    violations.append(StyleViolation(type: .NameFormat,
-                        location: location,
-                        reason: "Type name should start with an uppercase character: '\(name)'"))
-                } else if count(name) < 3 || count(name) > 40 {
-                    violations.append(StyleViolation(type: .NameFormat,
-                        location: location,
-                        reason: "Type name should be between 3 and 40 characters in length: " +
-                        "'\(name)'"))
-                }
+                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
+                violations.extend(self.validateTypeName(kind, dict: subDict))
+                violations.extend(self.validateVariableName(kind, dict: subDict))
             }
             return violations
         }, [], +)
+    }
+
+    func validateTypeName(kind: SwiftDeclarationKind, dict: XPCDictionary) -> [StyleViolation] {
+        let typeKinds: [SwiftDeclarationKind] = [
+            .Class,
+            .Struct,
+            .Typealias,
+            .Enum,
+            .Enumelement
+        ]
+        if !contains(typeKinds, kind) {
+            return []
+        }
+        var violations = [StyleViolation]()
+        if let name = dict["key.name"] as? String,
+            let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }) {
+            let location = Location(file: self, offset: offset)
+            let nameCharacterSet = NSCharacterSet(charactersInString: name)
+            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Type name should only contain alphanumeric characters: '\(name)'"))
+            } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Type name should start with an uppercase character: '\(name)'"))
+            } else if count(name) < 3 || count(name) > 40 {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Type name should be between 3 and 40 characters in length: " +
+                    "'\(name)'"))
+            }
+        }
+        return violations
+    }
+
+    func validateVariableName(kind: SwiftDeclarationKind, dict: XPCDictionary) -> [StyleViolation] {
+        let variableKinds: [SwiftDeclarationKind] = [
+            .VarClass,
+            .VarGlobal,
+            .VarInstance,
+            .VarLocal,
+            .VarParameter,
+            .VarStatic
+        ]
+        if !contains(variableKinds, kind) {
+            return []
+        }
+        var violations = [StyleViolation]()
+        if let name = dict["key.name"] as? String,
+            let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }) {
+            let location = Location(file: self, offset: offset)
+            let nameCharacterSet = NSCharacterSet(charactersInString: name)
+            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
+            } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Variable name should start with a lowercase character: '\(name)'"))
+            } else if count(name) < 3 || count(name) > 40 {
+                violations.append(StyleViolation(type: .NameFormat,
+                    location: location,
+                    reason: "Variable name should be between 3 and 40 characters in length: " +
+                    "'\(name)'"))
+            }
+        }
+        return violations
     }
 }
 

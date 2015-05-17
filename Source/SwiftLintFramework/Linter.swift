@@ -166,22 +166,36 @@ extension File {
         return []
     }
 
-    func forceCastViolations(file: File) -> [StyleViolation] {
-        return flatMap(NSRegularExpression(pattern: "as!", options: nil, error: nil)) { regex in
-            let range = NSRange(location: 0, length: count(file.contents.utf16))
-            let syntax = SyntaxMap(file: file)
-            let matches = regex.matchesInString(file.contents, options: nil, range: range)
+    func forceCastViolations() -> [StyleViolation] {
+        return matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
+            return StyleViolation(type: .ForceCast,
+                location: Location(file: self, offset: range.location),
+                reason: "Force casts should be avoided")
+        }
+    }
+
+    func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind] = []) -> [NSRange] {
+        return flatMap(NSRegularExpression(pattern: pattern, options: nil, error: nil)) { regex in
+            let range = NSRange(location: 0, length: count(self.contents.utf16))
+            let syntax = SyntaxMap(file: self)
+            let matches = regex.matchesInString(self.contents, options: nil, range: range)
             return map(matches as? [NSTextCheckingResult]) { matches in
                 return compact(matches.map { match in
-                    let offset = match.range.location
-                    let tokenAtOffset = syntax.tokens.filter({ $0.offset == offset }).first
-                    let syntaxKind = flatMap(tokenAtOffset?.type) { SyntaxKind(rawValue: $0) }
-                    if syntaxKind != .Keyword {
+                    let tokensInRange = syntax.tokens.filter {
+                        NSLocationInRange($0.offset, match.range)
+                    }
+                    let kindsInRange = compact(map(tokensInRange) {
+                        SyntaxKind(rawValue: $0.type)
+                    })
+                    if kindsInRange.count != syntaxKinds.count {
                         return nil
                     }
-                    return StyleViolation(type: .ForceCast,
-                        location: Location(file: self, offset: offset),
-                        reason: "Force casts should be avoided")
+                    for (index, kind) in enumerate(syntaxKinds) {
+                        if kind != kindsInRange[index] {
+                            return nil
+                        }
+                    }
+                    return match.range
                 })
             }
         } ?? []
@@ -436,7 +450,7 @@ public struct Linter {
         violations.extend(file.leadingWhitespaceViolations(file.contents))
         violations.extend(file.trailingLineWhitespaceViolations(lines))
         violations.extend(file.trailingNewlineViolations(file.contents))
-        violations.extend(file.forceCastViolations(file))
+        violations.extend(file.forceCastViolations())
         violations.extend(file.fileLengthViolations(lines))
         return violations
     }

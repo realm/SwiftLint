@@ -18,6 +18,7 @@ public enum StyleViolationType: String, Printable {
     case TrailingWhitespace = "Trailing Whitespace"
     case ForceCast          = "Force Cast"
     case TODO               = "TODO or FIXME"
+    case Colon              = "Colon"
 
     public var description: String { return rawValue }
 }
@@ -180,6 +181,18 @@ extension File {
             return StyleViolation(type: .TODO,
                 location: Location(file: self, offset: range.location),
                 reason: "TODOs and FIXMEs should be avoided")
+        }
+    }
+
+    func colonViolations() -> [StyleViolation] {
+        let pattern1 = matchPattern("\\w+\\s+:\\s*\\S+",
+            withSyntaxKinds: [.Identifier, .Typeidentifier])
+        let pattern2 = matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
+            withSyntaxKinds: [.Identifier, .Typeidentifier])
+        return (pattern1 + pattern2).map { range in
+            return StyleViolation(type: .Colon,
+                location: Location(file: self, offset: range.location),
+                reason: "When specifying a type, always associate the colon with the identifier")
         }
     }
 
@@ -462,6 +475,7 @@ public struct Linter {
         violations.extend(file.forceCastViolations())
         violations.extend(file.fileLengthViolations(lines))
         violations.extend(file.todoAndFixmeViolations())
+        violations.extend(file.colonViolations())
         return violations
     }
 

@@ -146,18 +146,6 @@ class LinterTests: XCTestCase {
         // TODO: Everything should be nested 5 levels deep or less.
     }
 
-    func testColon() {
-        // TODO: Colon should be adjacent to the declaration name, with a single space between
-        //       itself and the type.
-        //
-        //       Good:
-        //         - `let a: T`
-        //       Bad:
-        //         - `let a : T`
-        //         - `let a :T`
-        //         - `let a:  T`
-    }
-
     func testControlStatements() {
         // TODO: if,for,while,do statements shouldn't wrap their conditionals in parentheses.
     }
@@ -262,6 +250,32 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations("// \(type):\n"), [StyleViolation(type: .TODO,
                 location: Location(file: nil, line: 1),
                 reason: "TODOs and FIXMEs should be avoided")])
+        }
+    }
+
+    func testColon() {
+        let good = [
+            "let abc: Void\n",
+            "let abc: [Void: Void]\n",
+            "let abc: (Void, Void)\n",
+            "func abc(def: Void) {}\n"
+        ]
+        for string in good {
+            XCTAssertEqual(violations(string), [])
+        }
+        let bad = [
+            "let abc:Void\n",
+            "let abc:  Void\n",
+            "let abc :Void\n",
+            "let abc : Void\n",
+            "let abc : [Void: Void]\n",
+            "func abc(def:Void) {}\n",
+            "func abc(def:  Void) {}\n",
+            "func abc(def :Void) {}\n",
+            "func abc(def : Void) {}\n"
+        ]
+        for string in bad {
+            XCTAssertEqual(violations(string).map({$0.type}), [.Colon])
         }
     }
 }

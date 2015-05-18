@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		34F3C5811B0A6EA100970518 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34F3C5801B0A6EA100970518 /* Configuration.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -98,6 +99,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		34F3C5801B0A6EA100970518 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -317,6 +319,7 @@
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
+				34F3C5801B0A6EA100970518 /* Configuration.swift */,
 				D0D1216F19E87B05005E4BAA /* Supporting Files */,
 			);
 			name = SwiftLintFramework;
@@ -578,6 +581,7 @@
 			files = (
 				E83A0B351A5D382B0041A60A /* Version.swift in Sources */,
 				E861519B1B0573B900C54AC0 /* Lint.swift in Sources */,
+				34F3C5811B0A6EA100970518 /* Configuration.swift in Sources */,
 				D0E7B65619E9C76900EDBA4D /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

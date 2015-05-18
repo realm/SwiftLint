@@ -12,18 +12,6 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func colonViolations() -> [StyleViolation] {
-        let pattern1 = matchPattern("\\w+\\s+:\\s*\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        let pattern2 = matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        return (pattern1 + pattern2).map { range in
-            return StyleViolation(type: .Colon,
-                location: Location(file: self, offset: range.location),
-                reason: "When specifying a type, always associate the colon with the identifier")
-        }
-    }
-
     func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind] = []) -> [NSRange] {
         return flatMap(NSRegularExpression(pattern: pattern, options: nil, error: nil)) { regex in
             let range = NSRange(location: 0, length: count(self.contents.utf16))
@@ -292,7 +280,7 @@ extension File {
         violations.extend(ForceCastRule.validateFile(self))
         violations.extend(fileLengthViolations(lines))
         violations.extend(TodoRule.validateFile(self))
-        violations.extend(colonViolations())
+        violations.extend(ColonRule.validateFile(self))
         return violations
     }
 }

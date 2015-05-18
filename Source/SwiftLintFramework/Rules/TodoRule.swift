@@ -16,6 +16,7 @@ struct TodoRule: Rule {
         return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
+                severity: .Low,
                 reason: "TODOs and FIXMEs should be avoided")
         }
     }

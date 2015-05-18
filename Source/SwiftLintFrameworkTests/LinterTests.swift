@@ -273,6 +273,7 @@ class LinterTests: XCTestCase {
         XCTAssertEqual(violations("NSNumber() as! Int\n"),
             [StyleViolation(type: .ForceCast,
                 location: Location(file: nil, line: 1),
+                severity: .High,
                 reason: "Force casts should be avoided")])
     }
 

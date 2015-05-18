@@ -59,7 +59,7 @@ struct TypeBodyLengthRule: Rule {
                     return [StyleViolation(type: .Length,
                         location: location,
                         severity: parameter.severity,
-                        reason: "Type body should be span 200 lines or less: currently spans " +
+                        reason: "Type body should be span \(parameter.value) lines or less: currently spans " +
                         "\(endLine - startLine) lines")]
                 }
             }

@@ -37,6 +37,18 @@ Available commands:
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
 
+## Rules
+
+There are only a small number of rules currently implemented, but we hope the
+Swift community (that's you!) will contribute more over time. Pull requests are
+encouraged.
+
+The rules that *are* currently implemented are mostly there as a starting point
+and are subject to change.
+
+See the <Source/SwiftLintFramework/Rules> directory to see the currently
+implemented rules.
+
 ## License
 
 MIT licensed.

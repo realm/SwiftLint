@@ -231,9 +231,11 @@ class LinterTests: XCTestCase {
         XCTAssertEqual(violations("//\n"), [])
         XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil),
+            severity: .Medium,
             reason: "File should have a single trailing newline: currently has 0")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil),
+            severity: .Medium,
             reason: "File should have a single trailing newline: currently has 2")])
     }
 

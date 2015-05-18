@@ -40,19 +40,6 @@ extension File {
         } ?? []
     }
 
-    func trailingNewlineViolations(contents: String) -> [StyleViolation] {
-        let countOfTrailingNewlines = contents.countOfTailingCharactersInSet(
-            NSCharacterSet.newlineCharacterSet()
-        )
-        if countOfTrailingNewlines != 1 {
-            return [StyleViolation(type: .TrailingNewline,
-                location: Location(file: self.path),
-                reason: "File should have a single trailing newline: " +
-                "currently has \(countOfTrailingNewlines)")]
-        }
-        return []
-    }
-
     func fileLengthViolations(lines: [Line]) -> [StyleViolation] {
         if lines.count > 400 {
             return [StyleViolation(type: .Length,
@@ -259,7 +246,7 @@ extension File {
         var violations = LineLengthRule.validateFile(self)
         violations.extend(LeadingWhitespaceRule.validateFile(self))
         violations.extend(TrailingWhitespaceRule.validateFile(self))
-        violations.extend(trailingNewlineViolations(contents))
+        violations.extend(TrailingNewlineRule.validateFile(self))
         violations.extend(ForceCastRule.validateFile(self))
         violations.extend(fileLengthViolations(lines))
         violations.extend(TodoRule.validateFile(self))

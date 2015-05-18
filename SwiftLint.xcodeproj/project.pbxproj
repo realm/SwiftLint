@@ -307,12 +307,12 @@
 			isa = PBXGroup;
 			children = (
 				E88DEA7A1B098D7300A66CB0 /* Rules */,
-				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
-				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
-				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
+				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
+				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
+				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
@@ -360,19 +360,19 @@
 		E88DEA7A1B098D7300A66CB0 /* Rules */ = {
 			isa = PBXGroup;
 			children = (
-				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
-				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
-				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
-				E88DEA811B0990A700A66CB0 /* TodoRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
-				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
-				E88DEA871B09924C00A66CB0 /* TrailingNewlineRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
-				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
+				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
+				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
+				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
+				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
+				E88DEA811B0990A700A66CB0 /* TodoRule.swift */,
+				E88DEA871B09924C00A66CB0 /* TrailingNewlineRule.swift */,
+				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
+				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
 				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
-				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";

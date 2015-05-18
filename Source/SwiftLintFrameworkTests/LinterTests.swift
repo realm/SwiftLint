@@ -283,6 +283,7 @@ class LinterTests: XCTestCase {
         for string in good {
             XCTAssertEqual(violations(string), [])
         }
+
         let bad = [
             "let abc:Void\n",
             "let abc:  Void\n",
@@ -296,6 +297,10 @@ class LinterTests: XCTestCase {
         ]
         for string in bad {
             XCTAssertEqual(violations(string).map({$0.type}), [.Colon])
+        }
+
+        for string in bad.map({ "// \($0)" }) {
+            XCTAssertEqual(violations(string), [])
         }
     }
 }

@@ -25,14 +25,17 @@ class LinterTests: XCTestCase {
 
             XCTAssertEqual(violations("\(kind) Ab_ {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1),
+                severity: .Medium,
                 reason: "Type name should only contain alphanumeric characters: 'Ab_'")])
 
             XCTAssertEqual(violations("\(kind) abc {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1),
+                severity: .High,
                 reason: "Type name should start with an uppercase character: 'abc'")])
 
             XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1),
+                severity: .Medium,
                 reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
 
             let longName = join("", Array(count: 40, repeatedValue: "A"))
@@ -41,6 +44,7 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations("\(kind) \(longerName) {}\n"), [
                 StyleViolation(type: .NameFormat,
                     location: Location(file: nil, line: 1),
+                    severity: .Medium,
                     reason: "Type name should be between 3 and 40 characters in length: " +
                     "'\(longerName)'")
                 ])
@@ -66,6 +70,7 @@ class LinterTests: XCTestCase {
             [
                 StyleViolation(type: .NameFormat,
                     location: Location(file: nil, line: 2),
+                    severity: .High,
                     reason: "Type name should start with an uppercase character: 'def'")
             ])
 

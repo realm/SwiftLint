@@ -39,6 +39,7 @@
 		E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */; };
 		E88DEA8E1B0999CD00A66CB0 /* TypeBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */; };
 		E88DEA901B099A3100A66CB0 /* FunctionBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */; };
+		E88DEA921B099B1F00A66CB0 /* TypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */; };
 		E8AB1A2E1A649F2100452012 /* libclang.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8AB1A2D1A649F2100452012 /* libclang.dylib */; };
 		E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
 		E8BA7E131B07A3F3003E02D0 /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* LlamaKit.framework */; };
@@ -148,6 +149,7 @@
 		E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTRule.swift; sourceTree = "<group>"; };
 		E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeBodyLengthRule.swift; sourceTree = "<group>"; };
 		E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionBodyLengthRule.swift; sourceTree = "<group>"; };
+		E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRule.swift; sourceTree = "<group>"; };
 		E8AB1A2D1A649F2100452012 /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib; sourceTree = DEVELOPER_DIR; };
 		E8BA7E101B07A3EC003E02D0 /* Commandant.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BA7E121B07A3F3003E02D0 /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LlamaKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -364,6 +366,7 @@
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
+				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -528,6 +531,7 @@
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
 				E88DEA7C1B098D7D00A66CB0 /* LineLengthRule.swift in Sources */,
 				E88DEA801B09903300A66CB0 /* ForceCastRule.swift in Sources */,
+				E88DEA921B099B1F00A66CB0 /* TypeNameRule.swift in Sources */,
 				E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */,
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,
 				E88DEA821B0990A700A66CB0 /* TodoRule.swift in Sources */,

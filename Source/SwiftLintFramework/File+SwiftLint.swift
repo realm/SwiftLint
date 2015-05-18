@@ -47,7 +47,7 @@ extension File {
                 let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
                     violations.extend(self.astViolationsInDictionary(subDict))
-                    violations.extend(self.validateTypeName(kind, dict: subDict))
+                    violations.extend(TypeNameRule.validateFile(self, kind: kind, dictionary: subDict))
                     violations.extend(self.validateVariableName(kind, dict: subDict))
                     violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
                     violations.extend(FunctionBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
@@ -55,40 +55,6 @@ extension File {
             }
             return violations
         }
-    }
-
-    func validateTypeName(kind: SwiftDeclarationKind, dict: XPCDictionary) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum,
-            .Enumelement
-        ]
-        if !contains(typeKinds, kind) {
-            return []
-        }
-        var violations = [StyleViolation]()
-        if let name = dict["key.name"] as? String,
-            let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }) {
-            let location = Location(file: self, offset: offset)
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Type name should only contain alphanumeric characters: '\(name)'"))
-            } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Type name should start with an uppercase character: '\(name)'"))
-            } else if count(name) < 3 || count(name) > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Type name should be between 3 and 40 characters in length: " +
-                    "'\(name)'"))
-            }
-        }
-        return violations
     }
 
     func validateVariableName(kind: SwiftDeclarationKind, dict: XPCDictionary) -> [StyleViolation] {

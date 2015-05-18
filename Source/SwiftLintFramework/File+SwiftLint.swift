@@ -25,7 +25,7 @@ extension File {
                     }
                     let kindsInRange = compact(map(tokensInRange) {
                         SyntaxKind(rawValue: $0.type)
-                        })
+                    })
                     if kindsInRange.count != syntaxKinds.count {
                         return nil
                     }
@@ -41,13 +41,12 @@ extension File {
     }
 
     func astViolationsInDictionary(dictionary: XPCDictionary) -> [StyleViolation] {
-        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap {
-            // swiftlint:disable_rule:force_cast (safe to force cast)
-            let subDict = $0 as! XPCDictionary
-            // swiftlint:enable_rule:force_cast
-            var violations = self.astViolationsInDictionary(subDict)
-            if let kindString = subDict["key.kind"] as? String,
+        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
+            var violations = [StyleViolation]()
+            if let subDict = subItem as? XPCDictionary,
+                let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
+                    violations.extend(self.astViolationsInDictionary(subDict))
                     violations.extend(self.validateTypeName(kind, dict: subDict))
                     violations.extend(self.validateVariableName(kind, dict: subDict))
                     violations.extend(self.validateTypeBodyLength(kind, dict: subDict))

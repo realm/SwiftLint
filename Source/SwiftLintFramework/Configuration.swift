@@ -11,7 +11,7 @@ import Foundation
 struct Configuration {
   static let defaultConfigurationName: String = ".swiftlint.yml"
 
-  lazy var configurationString: String {
+  lazy var configurationString: String? {
     return String(contentsOfFile: self.fileName, encoding: NSUTF8StringEncoding, error: nil)
   }
   
@@ -22,7 +22,7 @@ struct Configuration {
   }
   
  private var settings: [String] {
-    return self.configurationString.componentsSeparatedByString("\n")
+    return self.configurationString?.componentsSeparatedByString("\n") ?? []
   }
   
   // Returns an array of values for a given key

@@ -25,7 +25,7 @@ struct FileLengthRule: Rule {
                 return [StyleViolation(type: .Length,
                     location: Location(file: file.path),
                     severity: parameter.severity,
-                    reason: "File should contain 400 lines or less: currently contains " +
+                    reason: "File should contain \(parameter.value) lines or less: currently contains " +
                     "\(lines.count)")]
             }
         }

@@ -70,7 +70,7 @@ struct FunctionBodyLengthRule: Rule {
                     return [StyleViolation(type: .Length,
                         location: location,
                         severity: parameter.severity,
-                        reason: "Function body should be span 40 lines or less: currently spans " +
+                        reason: "Function body should be span \(parameter.value) lines or less: currently spans " +
                         "\(endLine - startLine) lines")]
                 }
             }

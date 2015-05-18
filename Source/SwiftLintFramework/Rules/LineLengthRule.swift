@@ -25,7 +25,7 @@ struct LineLengthRule: Rule {
                     return StyleViolation(type: .Length,
                         location: Location(file: file.path, line: line.index),
                         severity: parameter.severity,
-                        reason: "Line should be 100 characters or less: currently " +
+                        reason: "Line should be \(parameter.value) characters or less: currently " +
                         "\(count(line.content)) characters")
                 }
             }

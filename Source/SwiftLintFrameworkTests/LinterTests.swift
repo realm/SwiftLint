@@ -142,8 +142,28 @@ class LinterTests: XCTestCase {
     }
 
     func testNesting() {
-        // TODO: Types should be nested 3 levels deep or less.
-        // TODO: Everything should be nested 5 levels deep or less.
+        for kind in ["class", "struct", "enum"] {
+            XCTAssertEqual(violations("\(kind) Class0 { \(kind) Class1 {} }\n"), [])
+            XCTAssertEqual(violations("\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"),
+                [
+                    StyleViolation(type: .Nesting,
+                        location: Location(file: nil, line: 1),
+                        reason: "Types should be nested at most 1 level deep")
+                ])
+        }
+        XCTAssertEqual(violations(
+            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
+            "func func5() {\n}\n}\n}\n}\n}\n}\n"
+            ), [])
+        XCTAssertEqual(violations(
+            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
+            "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
+            ),
+            [
+                StyleViolation(type: .Nesting,
+                    location: Location(file: nil, line: 6),
+                    reason: "Statements should be nested at most 5 levels deep")
+            ])
     }
 
     func testControlStatements() {

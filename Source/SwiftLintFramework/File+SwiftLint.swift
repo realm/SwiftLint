@@ -12,15 +12,6 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func lineLengthViolations(lines: [Line]) -> [StyleViolation] {
-        return lines.filter({ count($0.content) > 100 }).map {
-            return StyleViolation(type: .Length,
-                location: Location(file: self.path, line: $0.index),
-                reason: "Line #\($0.index) should be 100 characters or less: " +
-                "currently \(count($0.content)) characters")
-        }
-    }
-
     func leadingWhitespaceViolations(contents: String) -> [StyleViolation] {
         let countOfLeadingWhitespace = contents.countOfLeadingCharactersInSet(
             NSCharacterSet.whitespaceAndNewlineCharacterSet()
@@ -323,7 +314,7 @@ extension File {
         let lines = contents.lines()
         // FIXME: Using '+' to concatenate these arrays would be nicer,
         //        but slows the compiler to a crawl.
-        var violations = lineLengthViolations(lines)
+        var violations = LineLengthRule.validateFile(self)
         violations.extend(leadingWhitespaceViolations(contents))
         violations.extend(trailingLineWhitespaceViolations(lines))
         violations.extend(trailingNewlineViolations(contents))

@@ -20,7 +20,11 @@ public struct StyleViolation: Printable, Equatable {
     }
 
     public init(type: StyleViolationType, location: Location, reason: String? = nil) {
-        severity = .Low
+        self.init(type: type, location: location, severity: .Low, reason: reason)
+    }
+
+    public init(type: StyleViolationType, location: Location, severity: ViolationSeverity, reason: String? = nil) {
+        self.severity = severity
         self.type = type
         self.location = location
         self.reason = reason
@@ -40,5 +44,6 @@ Returns true if `lhs` StyleViolation is equal to `rhs` StyleViolation.
 public func ==(lhs: StyleViolation, rhs: StyleViolation) -> Bool {
     return lhs.type == rhs.type &&
         lhs.location == rhs.location &&
+        lhs.severity == rhs.severity &&
         lhs.reason == rhs.reason
 }

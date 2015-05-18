@@ -210,11 +210,21 @@ class LinterTests: XCTestCase {
     // MARK: String Violations
 
     func testLineLengths() {
-        let longLine = join("", Array(count: 100, repeatedValue: "/"))
-        XCTAssertEqual(violations(longLine + "\n"), [])
-        XCTAssertEqual(violations(longLine + "/\n"), [StyleViolation(type: .Length,
-            location: Location(file: nil, line: 1),
-            reason: "Line #1 should be 100 characters or less: currently 101 characters")])
+        let longLine = join("", Array(count: 100, repeatedValue: "/")) + "\n"
+        XCTAssertEqual(violations(longLine), [])
+        let testCases: [(String, Int, ViolationSeverity)] = [
+            ("/", 101, .VeryLow),
+            (join("", Array(count: 21, repeatedValue: "/")), 121, .Low),
+            (join("", Array(count: 51, repeatedValue: "/")), 151, .Medium),
+            (join("", Array(count: 101, repeatedValue: "/")), 201, .High),
+            (join("", Array(count: 151, repeatedValue: "/")), 251, .VeryHigh)
+        ]
+        for testCase in testCases {
+            XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
+                location: Location(file: nil, line: 1),
+                severity: testCase.2,
+                reason: "Line should be 100 characters or less: currently \(testCase.1) characters")])
+        }
     }
 
     func testTrailingNewlineAtEndOfFile() {

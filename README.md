@@ -46,7 +46,7 @@ encouraged.
 The rules that *are* currently implemented are mostly there as a starting point
 and are subject to change.
 
-See the [Source/SwiftLintFramework/Rules](tree/master/Source/SwiftLintFramework/Rules) directory to see the currently
+See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules) directory to see the currently
 implemented rules.
 
 ## License

@@ -20,7 +20,8 @@ Installation requires [Homebrew](http://brew.sh) (pending
 ### Xcode
 
 Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
-in the IDE. Just add a new "Run Script Phase" with `swiftlint` as its contents.
+in the IDE. Just add a new "Run Script Phase" with `/usr/bin/local/swiftlint`
+as its contents.
 
 ![](screenshot.png)
 

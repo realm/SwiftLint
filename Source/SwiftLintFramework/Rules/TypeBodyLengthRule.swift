@@ -47,7 +47,6 @@ struct TypeBodyLengthRule: Rule {
         if !contains(typeKinds, kind) {
             return []
         }
-        var violations = [StyleViolation]()
         if let offset = flatMap(dictionary["key.offset"] as? Int64, { Int($0) }),
             let bodyOffset = flatMap(dictionary["key.bodyoffset"] as? Int64, { Int($0) }),
             let bodyLength = flatMap(dictionary["key.bodylength"] as? Int64, { Int($0) }) {
@@ -57,14 +56,14 @@ struct TypeBodyLengthRule: Rule {
             for parameter in reverse(parameters) {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
-                    violations.append(StyleViolation(type: .Length,
+                    return [StyleViolation(type: .Length,
                         location: location,
                         severity: parameter.severity,
                         reason: "Type body should be span 200 lines or less: currently spans " +
-                        "\(endLine - startLine) lines"))
+                        "\(endLine - startLine) lines")]
                 }
             }
         }
-        return violations
+        return []
     }
 }

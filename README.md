@@ -18,8 +18,10 @@ Installation requires [Homebrew](http://brew.sh).
 
 ### Xcode
 
-To run SwiftLint as part of an Xcode build scheme, add a new "Run Script Phase"
-with `swiftlint` as its contents.
+Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
+in the IDE. Just add a new "Run Script Phase" with `swiftlint` as its contents.
+
+![](screenshot.png)
 
 ### Command Line
 

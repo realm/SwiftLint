@@ -40,15 +40,6 @@ extension File {
         } ?? []
     }
 
-    func fileLengthViolations(lines: [Line]) -> [StyleViolation] {
-        if lines.count > 400 {
-            return [StyleViolation(type: .Length,
-                location: Location(file: self.path),
-                reason: "File should contain 400 lines or less: currently contains \(lines.count)")]
-        }
-        return []
-    }
-
     func astViolationsInDictionary(dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap {
             // swiftlint:disable_rule:force_cast (safe to force cast)
@@ -248,7 +239,7 @@ extension File {
         violations.extend(TrailingWhitespaceRule.validateFile(self))
         violations.extend(TrailingNewlineRule.validateFile(self))
         violations.extend(ForceCastRule.validateFile(self))
-        violations.extend(fileLengthViolations(lines))
+        violations.extend(FileLengthRule.validateFile(self))
         violations.extend(TodoRule.validateFile(self))
         violations.extend(ColonRule.validateFile(self))
         return violations

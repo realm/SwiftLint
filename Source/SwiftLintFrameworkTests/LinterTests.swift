@@ -240,11 +240,20 @@ class LinterTests: XCTestCase {
     }
 
     func testFileLengths() {
-        let manyLines = join("", Array(count: 400, repeatedValue: "//\n"))
-        XCTAssertEqual(violations(manyLines), [])
-        XCTAssertEqual(violations(manyLines + "//\n"), [StyleViolation(type: .Length,
-            location: Location(file: nil),
-            reason: "File should contain 400 lines or less: currently contains 401")])
+        XCTAssertEqual(violations(join("", Array(count: 400, repeatedValue: "//\n"))), [])
+        let testCases: [(String, Int, ViolationSeverity)] = [
+            (join("", Array(count: 401, repeatedValue: "//\n")), 401, .VeryLow),
+            (join("", Array(count: 501, repeatedValue: "//\n")), 501, .Low),
+            (join("", Array(count: 751, repeatedValue: "//\n")), 751, .Medium),
+            (join("", Array(count: 1001, repeatedValue: "//\n")), 1001, .High),
+            (join("", Array(count: 2001, repeatedValue: "//\n")), 2001, .VeryHigh)
+        ]
+        for testCase in testCases {
+            XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,
+                location: Location(file: nil),
+                severity: testCase.2,
+                reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
+        }
     }
 
     func testFileShouldntStartWithWhitespace() {

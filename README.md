@@ -14,7 +14,14 @@ Installation requires [Homebrew](http://brew.sh).
 
 `$ brew install swiftlint`
 
-## Command Line Usage
+## Usage
+
+### Xcode
+
+To run SwiftLint as part of an Xcode build scheme, add a new "Run Script Phase"
+with `swiftlint` as its contents.
+
+### Command Line
 
 ```
 $ swiftlint help
@@ -25,8 +32,8 @@ Available commands:
    version   Display the current version of SwiftLint
 ```
 
-Run `swiftlint` in the directory containing the Swift files to lint. SwiftLint
-will search files recursively in the current directory.
+Run `swiftlint` in the directory containing the Swift files to lint. Directories
+will be searched recursively.
 
 ## License
 

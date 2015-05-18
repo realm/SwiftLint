@@ -434,6 +434,7 @@
 				D0E7B62F19E9C64500EDBA4D /* Frameworks */,
 				D0E7B65719E9C7C700EDBA4D /* Extract CLI Tool */,
 				D0AAAB5319FB0960007B24B3 /* Embed Frameworks */,
+				E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -515,6 +516,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = ". script/extract-tool";
+		};
+		E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  cd Source/SwiftLintFramework && swiftlint\nelse\n  echo \"SwiftLint not installed. Skipping lint.\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

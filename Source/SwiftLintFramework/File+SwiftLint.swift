@@ -12,14 +12,6 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func todoAndFixmeViolations() -> [StyleViolation] {
-        return matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
-            return StyleViolation(type: .TODO,
-                location: Location(file: self, offset: range.location),
-                reason: "TODOs and FIXMEs should be avoided")
-        }
-    }
-
     func colonViolations() -> [StyleViolation] {
         let pattern1 = matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])
@@ -299,7 +291,7 @@ extension File {
         violations.extend(trailingNewlineViolations(contents))
         violations.extend(ForceCastRule.validateFile(self))
         violations.extend(fileLengthViolations(lines))
-        violations.extend(todoAndFixmeViolations())
+        violations.extend(TodoRule.validateFile(self))
         violations.extend(colonViolations())
         return violations
     }

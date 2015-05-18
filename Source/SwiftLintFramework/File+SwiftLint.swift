@@ -12,14 +12,6 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func forceCastViolations() -> [StyleViolation] {
-        return matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
-            return StyleViolation(type: .ForceCast,
-                location: Location(file: self, offset: range.location),
-                reason: "Force casts should be avoided")
-        }
-    }
-
     func todoAndFixmeViolations() -> [StyleViolation] {
         return matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
             return StyleViolation(type: .TODO,
@@ -305,7 +297,7 @@ extension File {
         violations.extend(LeadingWhitespaceRule.validateFile(self))
         violations.extend(trailingLineWhitespaceViolations(lines))
         violations.extend(trailingNewlineViolations(contents))
-        violations.extend(forceCastViolations())
+        violations.extend(ForceCastRule.validateFile(self))
         violations.extend(fileLengthViolations(lines))
         violations.extend(todoAndFixmeViolations())
         violations.extend(colonViolations())

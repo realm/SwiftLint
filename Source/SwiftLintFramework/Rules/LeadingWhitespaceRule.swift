@@ -1,5 +1,5 @@
 //
-//  LineLengthRule.swift
+//  LeadingWhitespaceRule.swift
 //  SwiftLint
 //
 //  Created by JP Simard on 2015-05-16.

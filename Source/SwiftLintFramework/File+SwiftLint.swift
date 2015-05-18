@@ -51,46 +51,10 @@ extension File {
                 violations.extend(VariableNameRule.validateFile(self, kind: kind, dictionary: subDict))
                 violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
                 violations.extend(FunctionBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
-                violations.extend(self.validateNesting(kind, dict: subDict))
+                violations.extend(NestingRule.validateFile(self, kind: kind, dictionary: subDict))
             }
             return violations
         }
-    }
-
-    func validateNesting(kind: SwiftDeclarationKind, dict: XPCDictionary, level: Int = 0) -> [StyleViolation] {
-        var violations = [StyleViolation]()
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum,
-            .Enumelement
-        ]
-        if let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }) {
-            if level > 1 && contains(typeKinds, kind) {
-                violations.append(StyleViolation(type: .Nesting,
-                    location: Location(file: self, offset: offset),
-                    reason: "Types should be nested at most 1 level deep"))
-            } else if level > 5 {
-                violations.append(StyleViolation(type: .Nesting,
-                    location: Location(file: self, offset: offset),
-                    reason: "Statements should be nested at most 5 levels deep"))
-            }
-        }
-        violations.extend(compact((dict["key.substructure"] as? XPCArray ?? []).map { subItem in
-            let subDict = subItem as? XPCDictionary
-            let kindString = subDict?["key.kind"] as? String
-            let kind = flatMap(kindString) { kindString in
-                return SwiftDeclarationKind(rawValue: kindString)
-            }
-            if let kind = kind, subDict = subDict {
-                return (kind, subDict)
-            }
-            return nil
-        } as [(SwiftDeclarationKind, XPCDictionary)?]).flatMap { (kind, dict) in
-            self.validateNesting(kind, dict: dict, level: level + 1)
-        })
-        return violations
     }
 
     internal var stringViolations: [StyleViolation] {

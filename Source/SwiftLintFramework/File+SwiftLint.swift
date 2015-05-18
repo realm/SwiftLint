@@ -39,36 +39,4 @@ extension File {
             }
         } ?? []
     }
-
-    func astViolationsInDictionary(dictionary: XPCDictionary) -> [StyleViolation] {
-        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
-            var violations = [StyleViolation]()
-            if let subDict = subItem as? XPCDictionary,
-                let kindString = subDict["key.kind"] as? String,
-                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                violations.extend(self.astViolationsInDictionary(subDict))
-                violations.extend(TypeNameRule.validateFile(self, kind: kind, dictionary: subDict))
-                violations.extend(VariableNameRule.validateFile(self, kind: kind, dictionary: subDict))
-                violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
-                violations.extend(FunctionBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
-                violations.extend(NestingRule.validateFile(self, kind: kind, dictionary: subDict))
-            }
-            return violations
-        }
-    }
-
-    internal var stringViolations: [StyleViolation] {
-        let lines = contents.lines()
-        // FIXME: Using '+' to concatenate these arrays would be nicer,
-        //        but slows the compiler to a crawl.
-        var violations = LineLengthRule.validateFile(self)
-        violations.extend(LeadingWhitespaceRule.validateFile(self))
-        violations.extend(TrailingWhitespaceRule.validateFile(self))
-        violations.extend(TrailingNewlineRule.validateFile(self))
-        violations.extend(ForceCastRule.validateFile(self))
-        violations.extend(FileLengthRule.validateFile(self))
-        violations.extend(TodoRule.validateFile(self))
-        violations.extend(ColonRule.validateFile(self))
-        return violations
-    }
 }

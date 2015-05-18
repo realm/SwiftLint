@@ -12,10 +12,24 @@ import SourceKittenFramework
 
 public struct Linter {
     private let file: File
-    private let structure: Structure
 
     public var styleViolations: [StyleViolation] {
-        return file.astViolationsInDictionary(structure.dictionary) + file.stringViolations
+        return reduce(
+            [
+                LineLengthRule.validateFile(file),
+                LeadingWhitespaceRule.validateFile(file),
+                TrailingWhitespaceRule.validateFile(file),
+                TrailingNewlineRule.validateFile(file),
+                ForceCastRule.validateFile(file),
+                FileLengthRule.validateFile(file),
+                TodoRule.validateFile(file),
+                ColonRule.validateFile(file),
+                TypeNameRule.validateFile(file),
+                VariableNameRule.validateFile(file),
+                TypeBodyLengthRule.validateFile(file),
+                FunctionBodyLengthRule.validateFile(file),
+                NestingRule.validateFile(file)
+            ], [], +)
     }
 
     /**
@@ -25,6 +39,5 @@ public struct Linter {
     */
     public init(file: File) {
         self.file = file
-        structure = Structure(file: file)
     }
 }

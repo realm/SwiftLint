@@ -249,10 +249,12 @@ class LinterTests: XCTestCase {
         XCTAssertEqual(violations("//\n"), [])
         XCTAssertEqual(violations("\n"), [StyleViolation(type: .LeadingWhitespace,
             location: Location(file: nil, line: 1),
+            severity: .Medium,
             reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
             "characters")])
         XCTAssertEqual(violations(" //\n"), [StyleViolation(type: .LeadingWhitespace,
             location: Location(file: nil, line: 1),
+            severity: .Medium,
             reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
             "characters")])
     }

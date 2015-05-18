@@ -12,19 +12,6 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func leadingWhitespaceViolations(contents: String) -> [StyleViolation] {
-        let countOfLeadingWhitespace = contents.countOfLeadingCharactersInSet(
-            NSCharacterSet.whitespaceAndNewlineCharacterSet()
-        )
-        if countOfLeadingWhitespace != 0 {
-            return [StyleViolation(type: .LeadingWhitespace,
-                location: Location(file: self.path, line: 1),
-                reason: "File shouldn't start with whitespace: " +
-                "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
-        }
-        return []
-    }
-
     func forceCastViolations() -> [StyleViolation] {
         return matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
             return StyleViolation(type: .ForceCast,
@@ -315,7 +302,7 @@ extension File {
         // FIXME: Using '+' to concatenate these arrays would be nicer,
         //        but slows the compiler to a crawl.
         var violations = LineLengthRule.validateFile(self)
-        violations.extend(leadingWhitespaceViolations(contents))
+        violations.extend(LeadingWhitespaceRule.validateFile(self))
         violations.extend(trailingLineWhitespaceViolations(lines))
         violations.extend(trailingNewlineViolations(contents))
         violations.extend(forceCastViolations())

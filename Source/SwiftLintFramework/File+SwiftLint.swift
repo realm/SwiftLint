@@ -49,40 +49,12 @@ extension File {
                     violations.extend(self.astViolationsInDictionary(subDict))
                     violations.extend(self.validateTypeName(kind, dict: subDict))
                     violations.extend(self.validateVariableName(kind, dict: subDict))
-                    violations.extend(self.validateTypeBodyLength(kind, dict: subDict))
+                    violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
                     violations.extend(self.validateFunctionBodyLength(kind, dict: subDict))
                     violations.extend(self.validateNesting(kind, dict: subDict))
             }
             return violations
         }
-    }
-
-    func validateTypeBodyLength(kind: SwiftDeclarationKind, dict: XPCDictionary) ->
-        [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Enum
-        ]
-        if !contains(typeKinds, kind) {
-            return []
-        }
-        var violations = [StyleViolation]()
-        if let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }),
-            let bodyOffset = flatMap(dict["key.bodyoffset"] as? Int64, { Int($0) }),
-            let bodyLength = flatMap(dict["key.bodylength"] as? Int64, { Int($0) }) {
-            let location = Location(file: self, offset: offset)
-            let startLine = self.contents.lineAndCharacterForByteOffset(bodyOffset)
-            let endLine = self.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
-            if let startLine = startLine?.line, let endLine = endLine?.line
-                where endLine - startLine > 200 {
-                violations.append(StyleViolation(type: .Length,
-                    location: location,
-                    reason: "Type body should be span 200 lines or less: currently spans " +
-                    "\(endLine - startLine) lines"))
-            }
-        }
-        return violations
     }
 
     func validateFunctionBodyLength(kind: SwiftDeclarationKind, dict: XPCDictionary) ->

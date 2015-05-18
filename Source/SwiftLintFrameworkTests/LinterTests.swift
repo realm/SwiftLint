@@ -137,6 +137,7 @@ class LinterTests: XCTestCase {
                 "}\n"
             XCTAssertEqual(violations(longerTypeBody), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: 1),
+                severity: .VeryLow,
                 reason: "Type body should be span 200 lines or less: currently spans 201 lines")])
         }
     }

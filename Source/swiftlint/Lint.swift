@@ -25,7 +25,7 @@ struct LintCommand: CommandType {
         var numberOfViolations = 0
         for (index, file) in enumerate(files) {
             println("Linting '\(file.lastPathComponent)' (\(index + 1)/\(files.count))")
-            for violation in Linter(file: File(path: file)!).styleViolations {
+            for violation in Linter(file: File(path: file)!, configuration: Configuration()).styleViolations {
                 println(violation)
                 numberOfViolations++
             }

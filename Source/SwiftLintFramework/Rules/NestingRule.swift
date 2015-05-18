@@ -59,7 +59,8 @@ struct NestingRule: Rule {
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }
-        violations.extend(compact((dictionary["key.substructure"] as? XPCArray ?? []).map { subItem in
+        let substructure = dictionary["key.substructure"] as? XPCArray ?? []
+        violations.extend(compact(substructure.map { subItem in
             let subDict = subItem as? XPCDictionary
             let kindString = subDict?["key.kind"] as? String
             let kind = flatMap(kindString) { kindString in

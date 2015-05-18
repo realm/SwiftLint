@@ -23,7 +23,10 @@ public struct StyleViolation: Printable, Equatable {
         self.init(type: type, location: location, severity: .Low, reason: reason)
     }
 
-    public init(type: StyleViolationType, location: Location, severity: ViolationSeverity, reason: String? = nil) {
+    public init(type: StyleViolationType,
+        location: Location,
+        severity: ViolationSeverity,
+        reason: String? = nil) {
         self.severity = severity
         self.type = type
         self.location = location

@@ -10,7 +10,8 @@ of your source files for more accurate results.
 
 ## Installation
 
-Installation requires [Homebrew](http://brew.sh).
+Installation requires [Homebrew](http://brew.sh) (pending
+[Homebrew/homebrew#39863](https://github.com/Homebrew/homebrew/pull/39863)).
 
 `$ brew install swiftlint`
 

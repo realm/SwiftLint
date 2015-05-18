@@ -123,6 +123,7 @@ class LinterTests: XCTestCase {
             "}\n"
         XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(type: .Length,
             location: Location(file: nil, line: 1),
+            severity: .VeryLow,
             reason: "Function body should be span 40 lines or less: currently spans 41 lines")])
     }
 

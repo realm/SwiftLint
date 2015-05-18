@@ -10,10 +10,9 @@ of your source files for more accurate results.
 
 ## Installation
 
-Installation requires [Homebrew](http://brew.sh) (pending
-[Homebrew/homebrew#39863](https://github.com/Homebrew/homebrew/pull/39863)).
+The easiest way to install SwiftLint is by downloading `SwiftLint.pkg` from the [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and running it.
 
-`$ brew install swiftlint`
+You can also build from source by cloning this project and running `make install`.
 
 ## Usage
 

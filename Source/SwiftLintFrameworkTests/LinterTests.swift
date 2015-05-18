@@ -263,6 +263,7 @@ class LinterTests: XCTestCase {
         XCTAssertEqual(violations("//\n"), [])
         XCTAssertEqual(violations("// \n"), [StyleViolation(type: .TrailingWhitespace,
             location: Location(file: nil, line: 1),
+            severity: .Medium,
             reason: "Line #1 should have no trailing whitespace: current has 1 trailing " +
             "whitespace characters")])
     }

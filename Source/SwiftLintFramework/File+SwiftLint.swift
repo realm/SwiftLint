@@ -12,7 +12,8 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind] = []) -> [NSRange] {
+    public func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind] = []) ->
+        [NSRange] {
         return flatMap(NSRegularExpression(pattern: pattern, options: nil, error: nil)) { regex in
             let range = NSRange(location: 0, length: count(self.contents.utf16))
             let syntax = SyntaxMap(file: self)
@@ -37,24 +38,6 @@ extension File {
                 })
             }
         } ?? []
-    }
-
-    func trailingLineWhitespaceViolations(lines: [Line]) -> [StyleViolation] {
-        return lines.map { line in
-            (
-                index: line.index,
-                trailingWhitespaceCount: line.content.countOfTailingCharactersInSet(
-                    NSCharacterSet.whitespaceCharacterSet()
-                )
-            )
-        }.filter {
-            $0.trailingWhitespaceCount > 0
-        }.map {
-            StyleViolation(type: .TrailingWhitespace,
-                location: Location(file: self.path, line: $0.index),
-                reason: "Line #\($0.index) should have no trailing whitespace: " +
-                "current has \($0.trailingWhitespaceCount) trailing whitespace characters")
-        }
     }
 
     func trailingNewlineViolations(contents: String) -> [StyleViolation] {
@@ -275,7 +258,7 @@ extension File {
         //        but slows the compiler to a crawl.
         var violations = LineLengthRule.validateFile(self)
         violations.extend(LeadingWhitespaceRule.validateFile(self))
-        violations.extend(trailingLineWhitespaceViolations(lines))
+        violations.extend(TrailingWhitespaceRule.validateFile(self))
         violations.extend(trailingNewlineViolations(contents))
         violations.extend(ForceCastRule.validateFile(self))
         violations.extend(fileLengthViolations(lines))

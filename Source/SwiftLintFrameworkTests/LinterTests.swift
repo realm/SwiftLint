@@ -25,7 +25,7 @@ class LinterTests: XCTestCase {
 
             XCTAssertEqual(violations("\(kind) Ab_ {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1),
-                severity: .Medium,
+                severity: .High,
                 reason: "Type name should only contain alphanumeric characters: 'Ab_'")])
 
             XCTAssertEqual(violations("\(kind) abc {}\n"), [StyleViolation(type: .NameFormat,
@@ -85,18 +85,21 @@ class LinterTests: XCTestCase {
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de_: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1),
+                        severity: .High,
                         reason: "Variable name should only contain alphanumeric characters: 'de_'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) Def: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1),
+                        severity: .High,
                         reason: "Variable name should start with a lowercase character: 'Def'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1),
+                        severity: .Medium,
                         reason: "Variable name should be between 3 and 40 characters in length: " +
                         "'de'")
                     ])
@@ -107,6 +110,7 @@ class LinterTests: XCTestCase {
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1),
+                        severity: .Medium,
                         reason: "Variable name should be between 3 and 40 characters in length: " +
                         "'\(longerName)'")
                     ])

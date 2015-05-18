@@ -1,5 +1,5 @@
 //
-//  TypeNameRule.swift
+//  VariableNameRule.swift
 //  SwiftLint
 //
 //  Created by JP Simard on 2015-05-16.
@@ -9,8 +9,8 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct TypeNameRule: Rule {
-    static let identifier = "type_name"
+struct VariableNameRule: Rule {
+    static let identifier = "variable_name"
     static let parameters = [RuleParameter<Void>]()
 
     static func validateFile(file: File) -> [StyleViolation] {
@@ -33,14 +33,15 @@ struct TypeNameRule: Rule {
     static func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum,
-            .Enumelement
+        let variableKinds: [SwiftDeclarationKind] = [
+            .VarClass,
+            .VarGlobal,
+            .VarInstance,
+            .VarLocal,
+            .VarParameter,
+            .VarStatic
         ]
-        if !contains(typeKinds, kind) {
+        if !contains(variableKinds, kind) {
             return []
         }
         var violations = [StyleViolation]()
@@ -52,17 +53,17 @@ struct TypeNameRule: Rule {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .High,
-                    reason: "Type name should only contain alphanumeric characters: '\(name)'"))
-            } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
+                    reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
+            } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .High,
-                    reason: "Type name should start with an uppercase character: '\(name)'"))
+                    reason: "Variable name should start with a lowercase character: '\(name)'"))
             } else if count(name) < 3 || count(name) > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Medium,
-                    reason: "Type name should be between 3 and 40 characters in length: " +
+                    reason: "Variable name should be between 3 and 40 characters in length: " +
                     "'\(name)'"))
             }
         }

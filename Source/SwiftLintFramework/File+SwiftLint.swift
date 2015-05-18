@@ -46,50 +46,15 @@ extension File {
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                    violations.extend(self.astViolationsInDictionary(subDict))
-                    violations.extend(TypeNameRule.validateFile(self, kind: kind, dictionary: subDict))
-                    violations.extend(self.validateVariableName(kind, dict: subDict))
-                    violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
-                    violations.extend(FunctionBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
-                    violations.extend(self.validateNesting(kind, dict: subDict))
+                violations.extend(self.astViolationsInDictionary(subDict))
+                violations.extend(TypeNameRule.validateFile(self, kind: kind, dictionary: subDict))
+                violations.extend(VariableNameRule.validateFile(self, kind: kind, dictionary: subDict))
+                violations.extend(TypeBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
+                violations.extend(FunctionBodyLengthRule.validateFile(self, kind: kind, dictionary: subDict))
+                violations.extend(self.validateNesting(kind, dict: subDict))
             }
             return violations
         }
-    }
-
-    func validateVariableName(kind: SwiftDeclarationKind, dict: XPCDictionary) -> [StyleViolation] {
-        let variableKinds: [SwiftDeclarationKind] = [
-            .VarClass,
-            .VarGlobal,
-            .VarInstance,
-            .VarLocal,
-            .VarParameter,
-            .VarStatic
-        ]
-        if !contains(variableKinds, kind) {
-            return []
-        }
-        var violations = [StyleViolation]()
-        if let name = dict["key.name"] as? String,
-            let offset = flatMap(dict["key.offset"] as? Int64, { Int($0) }) {
-            let location = Location(file: self, offset: offset)
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
-            } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Variable name should start with a lowercase character: '\(name)'"))
-            } else if count(name) < 3 || count(name) > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    reason: "Variable name should be between 3 and 40 characters in length: " +
-                    "'\(name)'"))
-            }
-        }
-        return violations
     }
 
     func validateNesting(kind: SwiftDeclarationKind, dict: XPCDictionary, level: Int = 0) -> [StyleViolation] {

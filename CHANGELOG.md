@@ -2,12 +2,14 @@
 
 ##### Breaking
 
-* The `Rule` protocol's members are now non-static.  
+* The `Rule` and `ASTRule` protocol members are now non-static.  
   [aarondaub](https://github.com/aarondaub)
 
 ##### Enhancements
 
-None.
+* The following rules now conform to `ASTRule`: 
+  FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
+  [JP Simard](https://github.com/jpsim)
 
 ##### Bug Fixes
 

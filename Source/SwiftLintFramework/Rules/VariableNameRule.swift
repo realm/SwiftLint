@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct VariableNameRule: Rule {
+struct VariableNameRule: ASTRule {
     let identifier = "variable_name"
     let parameters = [RuleParameter<Void>]()
 

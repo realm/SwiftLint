@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct TypeBodyLengthRule: Rule {
+struct TypeBodyLengthRule: ASTRule {
     let identifier = "type_body_length"
     let parameters = [
         RuleParameter(severity: .VeryLow, value: 200),

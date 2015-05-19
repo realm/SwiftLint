@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct NestingRule: Rule {
+struct NestingRule: ASTRule {
     let identifier = "nesting"
     let parameters = [RuleParameter<Void>]()
 

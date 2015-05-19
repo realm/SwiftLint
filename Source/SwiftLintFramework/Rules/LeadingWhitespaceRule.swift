@@ -9,10 +9,10 @@
 import SourceKittenFramework
 
 struct LeadingWhitespaceRule: Rule {
-    static let identifier = "leading_whitespace"
-    static let parameters = [RuleParameter<Void>]()
+    let identifier = "leading_whitespace"
+    let parameters = [RuleParameter<Void>]()
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
             NSCharacterSet.whitespaceAndNewlineCharacterSet()
         )

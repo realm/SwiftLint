@@ -10,8 +10,8 @@ import SourceKittenFramework
 import SwiftXPC
 
 struct TypeBodyLengthRule: Rule {
-    static let identifier = "type_body_length"
-    static let parameters = [
+    let identifier = "type_body_length"
+    let parameters = [
         RuleParameter(severity: .VeryLow, value: 200),
         RuleParameter(severity: .Low, value: 250),
         RuleParameter(severity: .Medium, value: 300),
@@ -19,11 +19,11 @@ struct TypeBodyLengthRule: Rule {
         RuleParameter(severity: .VeryHigh, value: 400)
     ]
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         return self.validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    static func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
@@ -36,7 +36,7 @@ struct TypeBodyLengthRule: Rule {
         }
     }
 
-    static func validateFile(file: File,
+    func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [

@@ -9,10 +9,10 @@
 import SourceKittenFramework
 
 struct TrailingNewlineRule: Rule {
-    static let identifier = "trailing_newline"
-    static let parameters = [RuleParameter<Void>]()
+    let identifier = "trailing_newline"
+    let parameters = [RuleParameter<Void>]()
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         let countOfTrailingNewlines = file.contents.countOfTailingCharactersInSet(
             NSCharacterSet.newlineCharacterSet()
         )

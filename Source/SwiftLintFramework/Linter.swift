@@ -16,19 +16,19 @@ public struct Linter {
     public var styleViolations: [StyleViolation] {
         return reduce(
             [
-                LineLengthRule.validateFile(file),
-                LeadingWhitespaceRule.validateFile(file),
-                TrailingWhitespaceRule.validateFile(file),
-                TrailingNewlineRule.validateFile(file),
-                ForceCastRule.validateFile(file),
-                FileLengthRule.validateFile(file),
-                TodoRule.validateFile(file),
-                ColonRule.validateFile(file),
-                TypeNameRule.validateFile(file),
-                VariableNameRule.validateFile(file),
-                TypeBodyLengthRule.validateFile(file),
-                FunctionBodyLengthRule.validateFile(file),
-                NestingRule.validateFile(file)
+                LineLengthRule().validateFile(file),
+                LeadingWhitespaceRule().validateFile(file),
+                TrailingWhitespaceRule().validateFile(file),
+                TrailingNewlineRule().validateFile(file),
+                ForceCastRule().validateFile(file),
+                FileLengthRule().validateFile(file),
+                TodoRule().validateFile(file),
+                ColonRule().validateFile(file),
+                TypeNameRule().validateFile(file),
+                VariableNameRule().validateFile(file),
+                TypeBodyLengthRule().validateFile(file),
+                FunctionBodyLengthRule().validateFile(file),
+                NestingRule().validateFile(file)
             ], [], +)
     }
 

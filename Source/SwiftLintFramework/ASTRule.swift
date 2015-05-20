@@ -10,9 +10,9 @@ import SourceKittenFramework
 import SwiftXPC
 
 protocol ASTRule: Rule {
-    static func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation]
+    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation]
 
-    static func validateFile(file: File,
+    func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation]
 }

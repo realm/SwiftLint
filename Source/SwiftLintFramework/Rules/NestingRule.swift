@@ -9,15 +9,15 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct NestingRule: Rule {
-    static let identifier = "nesting"
-    static let parameters = [RuleParameter<Void>]()
+struct NestingRule: ASTRule {
+    let identifier = "nesting"
+    let parameters = [RuleParameter<Void>]()
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         return self.validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    static func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
@@ -30,13 +30,13 @@ struct NestingRule: Rule {
         }
     }
 
-    static func validateFile(file: File,
+    func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         return self.validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    static func validateFile(file: File,
+    func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary,
         level: Int) -> [StyleViolation] {

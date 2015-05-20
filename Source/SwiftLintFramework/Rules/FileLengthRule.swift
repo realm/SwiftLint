@@ -9,8 +9,8 @@
 import SourceKittenFramework
 
 struct FileLengthRule: Rule {
-    static let identifier = "file_length"
-    static let parameters = [
+    let identifier = "file_length"
+    let parameters = [
         RuleParameter(severity: .VeryLow, value: 400),
         RuleParameter(severity: .Low, value: 500),
         RuleParameter(severity: .Medium, value: 750),
@@ -18,7 +18,7 @@ struct FileLengthRule: Rule {
         RuleParameter(severity: .VeryHigh, value: 2000)
     ]
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         let lines = file.contents.lines()
         for parameter in reverse(parameters) {
             if lines.count > parameter.value {

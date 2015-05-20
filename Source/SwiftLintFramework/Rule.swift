@@ -11,8 +11,8 @@ import SourceKittenFramework
 protocol Rule {
     typealias ParameterType
 
-    static var identifier: String { get }
-    static var parameters: [RuleParameter<ParameterType>] { get }
+    var identifier: String { get }
+    var parameters: [RuleParameter<ParameterType>] { get }
 
-    static func validateFile(file: File) -> [StyleViolation]
+    func validateFile(file: File) -> [StyleViolation]
 }

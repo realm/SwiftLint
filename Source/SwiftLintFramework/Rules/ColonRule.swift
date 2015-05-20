@@ -9,10 +9,10 @@
 import SourceKittenFramework
 
 struct ColonRule: Rule {
-    static let identifier = "colon"
-    static let parameters = [RuleParameter<Void>]()
+    let identifier = "colon"
+    let parameters = [RuleParameter<Void>]()
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])
         let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",

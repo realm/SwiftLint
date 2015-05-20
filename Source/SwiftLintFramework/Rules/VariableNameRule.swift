@@ -9,15 +9,15 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct VariableNameRule: Rule {
-    static let identifier = "variable_name"
-    static let parameters = [RuleParameter<Void>]()
+struct VariableNameRule: ASTRule {
+    let identifier = "variable_name"
+    let parameters = [RuleParameter<Void>]()
 
-    static func validateFile(file: File) -> [StyleViolation] {
+    func validateFile(file: File) -> [StyleViolation] {
         return self.validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    static func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
@@ -30,7 +30,7 @@ struct VariableNameRule: Rule {
         }
     }
 
-    static func validateFile(file: File,
+    func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         let variableKinds: [SwiftDeclarationKind] = [

@@ -301,30 +301,28 @@ class LinterTests: XCTestCase {
     }
 
     func testTodoOrFIXME() {
-        for type in ["TODO", "FIXME"] {
-            XCTAssertEqual(violations("let string = \"// \(type):\"\n"), [])
-            XCTAssertEqual(violations("// \(type):\n"), [StyleViolation(type: .TODO,
-                location: Location(file: nil, line: 1),
-                reason: "TODOs and FIXMEs should be avoided")])
-        }
+        let rule = TodoRule()
+        verifyRule(rule, type: .TODO)
     }
 
-    func testColon() {
-        let rule = ColonRule()
-        let good = rule.goodExamples
+    func verifyRule(rule: RuleExample, type: StyleViolationType) {
+        let good = rule.correctExamples
 
         for string in good {
             XCTAssertEqual(violations(string), [])
         }
 
-        let bad = rule.badExamples
-
-        for string in bad {
-            XCTAssertEqual(violations(string).map({$0.type}), [.Colon])
+        for string in rule.failingExamples {
+            XCTAssertEqual(violations(string).map({$0.type}), [type])
         }
 
-        for string in bad.map({ "// \($0)" }) {
+        for string in rule.failingExamples.map({ "// \($0)" }) {
             XCTAssertEqual(violations(string), [])
         }
+    }
+
+    func testColon() {
+        let rule = ColonRule()
+        verifyRule(rule, type: .Colon)
     }
 }

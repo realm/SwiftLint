@@ -12,6 +12,9 @@ public struct ColonRule: Rule, RuleExample {
     let identifier = "colon"
     let parameters = [RuleParameter<Void>]()
 
+    public init() {
+    }
+
     func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])

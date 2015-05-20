@@ -11,6 +11,9 @@ import SourceKittenFramework
 public struct ColonRule: Rule, RuleExample {
     let identifier = "colon"
 
+    public init() {
+    }
+
     func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])

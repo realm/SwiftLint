@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		83894F221B0C928A006214E1 /* ExplainCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* ExplainCommand.swift */; };
+		83894F241B0CAD41006214E1 /* StructuredText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F231B0CAD41006214E1 /* StructuredText.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -102,6 +103,7 @@
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* ExplainCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplainCommand.swift; sourceTree = "<group>"; };
+		83894F231B0CAD41006214E1 /* StructuredText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StructuredText.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
 		D0D1212419E878CC005E4BAA /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		D0D1212619E878CC005E4BAA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				E83A0B341A5D382B0041A60A /* Version.swift */,
 				5499CA981A2394BD00783309 /* Supporting Files */,
 				83894F211B0C928A006214E1 /* ExplainCommand.swift */,
+				83894F231B0CAD41006214E1 /* StructuredText.swift */,
 			);
 			name = swiftlint;
 			path = Source/swiftlint;
@@ -582,6 +585,7 @@
 				E83A0B351A5D382B0041A60A /* Version.swift in Sources */,
 				E861519B1B0573B900C54AC0 /* Lint.swift in Sources */,
 				D0E7B65619E9C76900EDBA4D /* main.swift in Sources */,
+				83894F241B0CAD41006214E1 /* StructuredText.swift in Sources */,
 				83894F221B0C928A006214E1 /* ExplainCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

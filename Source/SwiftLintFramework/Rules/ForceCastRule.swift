@@ -10,7 +10,6 @@ import SourceKittenFramework
 
 struct ForceCastRule: Rule {
     let identifier = "force_cast"
-    let parameters = [RuleParameter<Void>]()
 
     func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in

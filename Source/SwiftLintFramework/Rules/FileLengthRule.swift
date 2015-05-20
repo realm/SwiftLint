@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-struct FileLengthRule: Rule {
+struct FileLengthRule: ParameterizedRule {
     let identifier = "file_length"
     let parameters = [
         RuleParameter(severity: .VeryLow, value: 400),

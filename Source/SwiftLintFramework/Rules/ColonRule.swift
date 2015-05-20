@@ -10,7 +10,6 @@ import SourceKittenFramework
 
 struct ColonRule: Rule {
     let identifier = "colon"
-    let parameters = [RuleParameter<Void>]()
 
     func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",

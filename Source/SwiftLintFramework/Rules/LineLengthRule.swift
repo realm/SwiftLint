@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-struct LineLengthRule: Rule {
+struct LineLengthRule: ParameterizedRule {
     let identifier = "line_length"
     let parameters = [
         RuleParameter(severity: .VeryLow, value: 100),

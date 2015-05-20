@@ -282,30 +282,22 @@ class LinterTests: XCTestCase {
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations("// \n"), [StyleViolation(type: .TrailingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "Line #1 should have no trailing whitespace: current has 1 trailing " +
-            "whitespace characters")])
+        verifyRule(TrailingWhitespaceRule(), type: .TrailingWhitespace, violateInComments: true)
     }
 
     func testForceCasting() {
-        XCTAssertEqual(violations("NSNumber() as? Int\n"), [])
-        XCTAssertEqual(violations("// NSNumber() as! Int\n"), [])
-        XCTAssertEqual(violations("NSNumber() as! Int\n"),
-            [StyleViolation(type: .ForceCast,
-                location: Location(file: nil, line: 1),
-                severity: .High,
-                reason: "Force casts should be avoided")])
+        verifyRule(ForceCastRule(), type: .ForceCast)
     }
 
     func testTodoOrFIXME() {
-        let rule = TodoRule()
-        verifyRule(rule, type: .TODO)
+        verifyRule(TodoRule(), type: .TODO)
     }
 
-    func verifyRule(rule: RuleExample, type: StyleViolationType) {
+    func testColon() {
+        verifyRule(ColonRule(), type: .Colon)
+    }
+
+    func verifyRule(rule: RuleExample, type: StyleViolationType, violateInComments: Bool = false) {
         let good = rule.correctExamples
 
         for string in good {
@@ -316,13 +308,10 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations(string).map({$0.type}), [type])
         }
 
-        for string in rule.failingExamples.map({ "// \($0)" }) {
-            XCTAssertEqual(violations(string), [])
+        if !violateInComments {
+            for string in rule.failingExamples.map({ "// \($0)" }) {
+                XCTAssertEqual(violations(string), [])
+            }
         }
-    }
-
-    func testColon() {
-        let rule = ColonRule()
-        verifyRule(rule, type: .Colon)
     }
 }

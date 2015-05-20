@@ -8,14 +8,14 @@
 
 import SourceKittenFramework
 
-public struct ColonRule: Rule, RuleExample {
+public struct ColonRule: Rule {
     let identifier = "colon"
     let parameters = [RuleParameter<Void>]()
 
     public init() {
     }
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])
         let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
@@ -28,29 +28,25 @@ public struct ColonRule: Rule, RuleExample {
         }
     }
 
-    public var ruleName = "Colon Rule"
-
-    public var ruleDescription = "This rule checks whether you associate the colon with the identifier."
-
-    public var correctExamples = [
-        "let abc: Void\n",
-        "let abc: [Void: Void]\n",
-        "let abc: (Void, Void)\n",
-        "func abc(def: Void) {}\n"
-    ]
-
-    public var failingExamples = [
-        "let abc:Void\n",
-        "let abc:  Void\n",
-        "let abc :Void\n",
-        "let abc : Void\n",
-        "let abc : [Void: Void]\n",
-        "func abc(def:Void) {}\n",
-        "func abc(def:  Void) {}\n",
-        "func abc(def :Void) {}\n",
-        "func abc(def : Void) {}\n"
-    ]
-
-    public var showExamples = true
-
+    public let example: RuleExample? = RuleExample(
+        ruleName: "Colon Rule",
+        ruleDescription: "This rule checks whether you associate the colon with the identifier.",
+        correctExamples: [
+            "let abc: Void\n",
+            "let abc: [Void: Void]\n",
+            "let abc: (Void, Void)\n",
+            "func abc(def: Void) {}\n"
+        ],
+        failingExamples: [
+            "let abc:Void\n",
+            "let abc:  Void\n",
+            "let abc :Void\n",
+            "let abc : Void\n",
+            "let abc : [Void: Void]\n",
+            "func abc(def:Void) {}\n",
+            "func abc(def:  Void) {}\n",
+            "func abc(def :Void) {}\n",
+            "func abc(def : Void) {}\n"
+        ]
+    )
 }

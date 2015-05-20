@@ -66,4 +66,6 @@ struct TypeBodyLengthRule: ASTRule {
         }
         return []
     }
+
+    let example: RuleExample? = nil
 }

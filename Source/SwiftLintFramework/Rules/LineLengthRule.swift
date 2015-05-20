@@ -32,4 +32,6 @@ struct LineLengthRule: Rule {
             return nil
         })
     }
+
+    let example: RuleExample? = nil
 }

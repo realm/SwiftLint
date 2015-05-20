@@ -77,4 +77,6 @@ struct FunctionBodyLengthRule: ASTRule {
         }
         return []
     }
+
+    let example: RuleExample? = nil
 }

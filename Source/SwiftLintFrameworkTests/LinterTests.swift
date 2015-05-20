@@ -282,19 +282,19 @@ class LinterTests: XCTestCase {
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule(), type: .TrailingWhitespace, violateInComments: true)
+        verifyRule(TrailingWhitespaceRule().example!, type: .TrailingWhitespace, violateInComments: true)
     }
 
     func testForceCasting() {
-        verifyRule(ForceCastRule(), type: .ForceCast)
+        verifyRule(ForceCastRule().example!, type: .ForceCast)
     }
 
     func testTodoOrFIXME() {
-        verifyRule(TodoRule(), type: .TODO)
+        verifyRule(TodoRule().example!, type: .TODO)
     }
 
     func testColon() {
-        verifyRule(ColonRule(), type: .Colon)
+        verifyRule(ColonRule().example!, type: .Colon)
     }
 
     func verifyRule(rule: RuleExample, type: StyleViolationType, violateInComments: Bool = false) {

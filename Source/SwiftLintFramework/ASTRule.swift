@@ -17,10 +17,10 @@ protocol ASTRule: Rule {
         dictionary: XPCDictionary) -> [StyleViolation]
 }
 
-public protocol RuleExample {
-    var ruleName: String { get }
-    var ruleDescription: String { get }
-    var correctExamples: [String] { get }
-    var failingExamples: [String] { get }
-    var showExamples: Bool { get }
+public struct RuleExample {
+    public let ruleName: String
+    public let ruleDescription: String
+    public let correctExamples: [String]
+    public let failingExamples: [String]
+    public let showExamples: Bool = true
 }

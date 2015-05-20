@@ -25,4 +25,6 @@ struct LeadingWhitespaceRule: Rule {
         }
         return []
     }
+
+    let example: RuleExample? = nil
 }

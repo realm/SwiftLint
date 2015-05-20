@@ -31,4 +31,6 @@ struct FileLengthRule: Rule {
         }
         return []
     }
+
+    let example: RuleExample? = nil
 }

@@ -68,4 +68,6 @@ struct TypeNameRule: ASTRule {
         }
         return violations
     }
+
+    let example: RuleExample? = nil
 }

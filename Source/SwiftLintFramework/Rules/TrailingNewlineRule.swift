@@ -25,4 +25,6 @@ struct TrailingNewlineRule: Rule {
         }
         return []
     }
+
+    let example: RuleExample? = nil
 }

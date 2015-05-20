@@ -51,4 +51,6 @@ public struct ColonRule: Rule, RuleExample {
         "func abc(def : Void) {}\n"
     ]
 
+    public var showExamples = true
+
 }

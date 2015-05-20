@@ -10,30 +10,40 @@ import Foundation
 import SwiftXPC
 import SourceKittenFramework
 
+private func flatten<A>(x: [A?]) -> [A] {
+    return x.reduce([]) { (var arr, optionalElement) in
+        if let el = optionalElement {
+            arr.append(el)
+        }
+        return arr
+    }
+}
+
 public struct Linter {
     private let file: File
 
+    private let rules: [Validatable] = [
+        LineLengthRule(),
+        LeadingWhitespaceRule(),
+        TrailingWhitespaceRule(),
+        TrailingNewlineRule(),
+        ForceCastRule(),
+        FileLengthRule(),
+        TodoRule(),
+        ColonRule(),
+        TypeNameRule(),
+        VariableNameRule(),
+        TypeBodyLengthRule(),
+        FunctionBodyLengthRule(),
+        NestingRule()
+    ]
+
     public var styleViolations: [StyleViolation] {
-        return reduce(
-            [
-                LineLengthRule().validateFile(file),
-                LeadingWhitespaceRule().validateFile(file),
-                TrailingWhitespaceRule().validateFile(file),
-                TrailingNewlineRule().validateFile(file),
-                ForceCastRule().validateFile(file),
-                FileLengthRule().validateFile(file),
-                TodoRule().validateFile(file),
-                ColonRule().validateFile(file),
-                TypeNameRule().validateFile(file),
-                VariableNameRule().validateFile(file),
-                TypeBodyLengthRule().validateFile(file),
-                FunctionBodyLengthRule().validateFile(file),
-                NestingRule().validateFile(file)
-            ], [], +)
+        return reduce(rules.map { $0.validateFile(self.file) }, [], +)
     }
 
-    public static var explainableRules: [RuleExample] {
-        return [ColonRule()]
+    public var explainableRules: [RuleExample] {
+        return flatten(rules.map { $0 as? RuleExample })
     }
 
     /**

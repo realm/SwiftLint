@@ -37,6 +37,8 @@ public struct TodoRule: Rule, RuleExample {
         "// FIXME:\n"
     ]
 
+    public var showExamples = true
+
 
 
 }

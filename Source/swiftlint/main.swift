@@ -12,7 +12,7 @@ let registry = CommandRegistry<()>()
 registry.register(LintCommand())
 registry.register(VersionCommand())
 registry.register(HelpCommand(registry: registry))
-registry.register(ExplainCommand())
+registry.register(RulesCommand())
 
 registry.main(defaultVerb: "lint") { error in
     fputs("\(error)\n", stderr)

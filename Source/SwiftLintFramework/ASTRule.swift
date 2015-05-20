@@ -22,4 +22,5 @@ public protocol RuleExample {
     var ruleDescription: String { get }
     var correctExamples: [String] { get }
     var failingExamples: [String] { get }
+    var showExamples: Bool { get }
 }

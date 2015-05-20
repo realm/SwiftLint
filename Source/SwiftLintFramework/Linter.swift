@@ -32,6 +32,10 @@ public struct Linter {
             ], [], +)
     }
 
+    public static var explainableRules: [RuleExample] {
+        return [ColonRule()]
+    }
+
     /**
     Initialize a Linter by passing in a File.
 

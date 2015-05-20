@@ -36,6 +36,6 @@ public struct ForceCastRule: Rule, RuleExample {
         "NSNumber() as! Int\n"
     ]
 
-
+    public var showExamples = true
 
 }

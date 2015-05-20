@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-protocol Rule {
+protocol Validatable {
     var identifier: String { get }
     func validateFile(file: File) -> [StyleViolation]
 }

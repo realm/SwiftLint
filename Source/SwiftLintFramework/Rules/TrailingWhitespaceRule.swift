@@ -43,4 +43,6 @@ public struct TrailingWhitespaceRule: Rule, RuleExample {
     public var failingExamples = [
         "// \n"
     ]
+
+    public var showExamples = false
 }

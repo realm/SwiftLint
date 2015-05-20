@@ -310,27 +310,15 @@ class LinterTests: XCTestCase {
     }
 
     func testColon() {
-        let good = [
-            "let abc: Void\n",
-            "let abc: [Void: Void]\n",
-            "let abc: (Void, Void)\n",
-            "func abc(def: Void) {}\n"
-        ]
+        let rule = ColonRule()
+        let good = rule.goodExamples
+
         for string in good {
             XCTAssertEqual(violations(string), [])
         }
 
-        let bad = [
-            "let abc:Void\n",
-            "let abc:  Void\n",
-            "let abc :Void\n",
-            "let abc : Void\n",
-            "let abc : [Void: Void]\n",
-            "func abc(def:Void) {}\n",
-            "func abc(def:  Void) {}\n",
-            "func abc(def :Void) {}\n",
-            "func abc(def : Void) {}\n"
-        ]
+        let bad = rule.badExamples
+
         for string in bad {
             XCTAssertEqual(violations(string).map({$0.type}), [.Colon])
         }

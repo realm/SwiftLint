@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-struct ColonRule: Rule {
+public struct ColonRule: Rule, RuleExample {
     let identifier = "colon"
 
     func validateFile(file: File) -> [StyleViolation] {
@@ -23,4 +23,26 @@ struct ColonRule: Rule {
                 reason: "When specifying a type, always associate the colon with the identifier")
         }
     }
+
+    public var ruleDescription = "This rule checks whether you associate the colon with the identifier."
+
+    public var correctExamples = [
+        "let abc: Void\n",
+        "let abc: [Void: Void]\n",
+        "let abc: (Void, Void)\n",
+        "func abc(def: Void) {}\n"
+    ]
+
+    public var failingExamples = [
+        "let abc:Void\n",
+        "let abc:  Void\n",
+        "let abc :Void\n",
+        "let abc : Void\n",
+        "let abc : [Void: Void]\n",
+        "func abc(def:Void) {}\n",
+        "func abc(def:  Void) {}\n",
+        "func abc(def :Void) {}\n",
+        "func abc(def : Void) {}\n"
+    ]
+
 }

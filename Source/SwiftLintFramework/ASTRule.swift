@@ -16,3 +16,9 @@ protocol ASTRule: Rule {
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation]
 }
+
+public protocol RuleExample {
+    var ruleDescription: String { get }
+    var correctExamples: [String] { get }
+    var failingExamples: [String] { get }
+}

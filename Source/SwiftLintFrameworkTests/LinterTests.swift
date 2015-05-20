@@ -268,36 +268,26 @@ class LinterTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations("\n"), [StyleViolation(type: .LeadingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
-            "characters")])
-        XCTAssertEqual(violations(" //\n"), [StyleViolation(type: .LeadingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
-            "characters")])
+        verifyRule(LeadingWhitespaceRule().example, type: .LeadingWhitespace, checkCommentsDoesNotViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule().example!, type: .TrailingWhitespace, violateInComments: true)
+        verifyRule(TrailingWhitespaceRule().example, type: .TrailingWhitespace, checkCommentsDoesNotViolate: false)
     }
 
     func testForceCasting() {
-        verifyRule(ForceCastRule().example!, type: .ForceCast)
+        verifyRule(ForceCastRule().example, type: .ForceCast)
     }
 
     func testTodoOrFIXME() {
-        verifyRule(TodoRule().example!, type: .TODO)
+        verifyRule(TodoRule().example, type: .TODO)
     }
 
     func testColon() {
-        verifyRule(ColonRule().example!, type: .Colon)
+        verifyRule(ColonRule().example, type: .Colon)
     }
 
-    func verifyRule(rule: RuleExample, type: StyleViolationType, violateInComments: Bool = false) {
+    func verifyRule(rule: RuleExample, type: StyleViolationType, checkCommentsDoesNotViolate: Bool = true) {
         let good = rule.correctExamples
 
         for string in good {
@@ -308,7 +298,7 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations(string).map({$0.type}), [type])
         }
 
-        if !violateInComments {
+        if checkCommentsDoesNotViolate {
             for string in rule.failingExamples.map({ "// \($0)" }) {
                 XCTAssertEqual(violations(string), [])
             }

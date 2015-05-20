@@ -26,5 +26,11 @@ struct TrailingNewlineRule: Rule {
         return []
     }
 
-    let example: RuleExample? = nil
+    let example: RuleExample = RuleExample(
+        ruleName: "Trailing newline rule",
+        ruleDescription: "Files should have a single trailing newline.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
+
 }

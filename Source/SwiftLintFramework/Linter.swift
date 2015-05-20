@@ -10,15 +10,6 @@ import Foundation
 import SwiftXPC
 import SourceKittenFramework
 
-private func flatten<A>(x: [A?]) -> [A] {
-    return x.reduce([]) { (var arr, optionalElement) in
-        if let el = optionalElement {
-            arr.append(el)
-        }
-        return arr
-    }
-}
-
 public struct Linter {
     private let file: File
 
@@ -39,11 +30,11 @@ public struct Linter {
     ]
 
     public var styleViolations: [StyleViolation] {
-        return reduce(rules.map { $0.validateFile(self.file) }, [], +)
+        return rules.flatMap { $0.validateFile(self.file) }
     }
 
     public var explainableRules: [RuleExample] {
-        return flatten(rules.map { $0.example })
+        return compact(rules.map { $0.example })
     }
 
     /**

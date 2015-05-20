@@ -70,5 +70,10 @@ struct VariableNameRule: ASTRule {
         return violations
     }
 
-    let example: RuleExample? = nil
+    let example: RuleExample = RuleExample(
+        ruleName: "Variable Name Rule",
+        ruleDescription: "Variable name should only contain alphanumeric characters, start with a a lowercase character and be between 3 and 40 characters in length.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
 }

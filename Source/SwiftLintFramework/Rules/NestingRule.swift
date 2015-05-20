@@ -76,5 +76,11 @@ struct NestingRule: ASTRule {
         return violations
     }
 
-    let example: RuleExample? = nil
+    let example: RuleExample = RuleExample(
+        ruleName: "Nesting Rule",
+        ruleDescription: "Types should be nested at most 1 level deep, and statements should be nested at most 5 levels deep.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
+
 }

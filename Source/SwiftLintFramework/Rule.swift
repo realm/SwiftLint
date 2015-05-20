@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public protocol Validatable {
     func validateFile(file: File) -> [StyleViolation]
-    var example: RuleExample? { get }
+    var example: RuleExample { get }
 }
 
 protocol Rule: Validatable {

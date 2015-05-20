@@ -61,7 +61,7 @@ enum StructuredText {
     var markdown: String {
         switch self {
         case let .Header(level, t): return join("", Array(count: level, repeatedValue: "#")) + " " + t
-        case .Paragraph(let t): return t.chomped
+        case .Paragraph(let t): return t
         case .List(let items): return "\n".join(items.map { "* " + $0.markdown })
         case .Joined(let items): return "\n\n".join(items.map { $0.markdown } )
         }
@@ -71,7 +71,7 @@ enum StructuredText {
         switch self {
         case .Header(1, let t): return t.uppercaseString
         case let .Header(other, t): return t
-        case .Paragraph(let t): return t.chomped
+        case .Paragraph(let t): return t
         case .List(let items): return "\n".join(items.map { "* " + $0.ansi })
         case .Joined(let items): return "\n\n".join(items.map { $0.ansi } )
         }

@@ -9,10 +9,11 @@
 import SourceKittenFramework
 
 protocol Rule {
-    typealias ParameterType
-
     var identifier: String { get }
-    var parameters: [RuleParameter<ParameterType>] { get }
-
     func validateFile(file: File) -> [StyleViolation]
+}
+
+protocol ParameterizedRule: Rule {
+    typealias ParameterType
+    var parameters: [RuleParameter<ParameterType>] { get }
 }

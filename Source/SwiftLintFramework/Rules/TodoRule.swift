@@ -10,7 +10,6 @@ import SourceKittenFramework
 
 struct TodoRule: Rule {
     let identifier = "todo"
-    let parameters = [RuleParameter<Void>]()
 
     func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in

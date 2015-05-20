@@ -10,7 +10,6 @@ import SourceKittenFramework
 
 struct TrailingWhitespaceRule: Rule {
     let identifier = "trailing_whitespace"
-    let parameters = [RuleParameter<Void>]()
 
     func validateFile(file: File) -> [StyleViolation] {
         return file.contents.lines().map { line in

@@ -11,7 +11,6 @@ import SwiftXPC
 
 struct TypeNameRule: ASTRule {
     let identifier = "type_name"
-    let parameters = [RuleParameter<Void>]()
 
     func validateFile(file: File) -> [StyleViolation] {
         return self.validateFile(file, dictionary: Structure(file: file).dictionary)

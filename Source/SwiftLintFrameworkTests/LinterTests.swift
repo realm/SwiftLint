@@ -153,28 +153,7 @@ class LinterTests: XCTestCase {
     }
 
     func testNesting() {
-        for kind in ["class", "struct", "enum"] {
-            XCTAssertEqual(violations("\(kind) Class0 { \(kind) Class1 {} }\n"), [])
-            XCTAssertEqual(violations("\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"),
-                [
-                    StyleViolation(type: .Nesting,
-                        location: Location(file: nil, line: 1),
-                        reason: "Types should be nested at most 1 level deep")
-                ])
-        }
-        XCTAssertEqual(violations(
-            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-            "func func5() {\n}\n}\n}\n}\n}\n}\n"
-            ), [])
-        XCTAssertEqual(violations(
-            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-            "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
-            ),
-            [
-                StyleViolation(type: .Nesting,
-                    location: Location(file: nil, line: 6),
-                    reason: "Statements should be nested at most 5 levels deep")
-            ])
+        verifyRule(NestingRule().example, type: StyleViolationType.Nesting, checkCommentsDoesNotViolate: false)
     }
 
     func testControlStatements() {
@@ -268,75 +247,40 @@ class LinterTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations("\n"), [StyleViolation(type: .LeadingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
-            "characters")])
-        XCTAssertEqual(violations(" //\n"), [StyleViolation(type: .LeadingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "File shouldn't start with whitespace: currently starts with 1 whitespace " +
-            "characters")])
+        verifyRule(LeadingWhitespaceRule().example, type: .LeadingWhitespace, checkCommentsDoesNotViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations("// \n"), [StyleViolation(type: .TrailingWhitespace,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "Line #1 should have no trailing whitespace: current has 1 trailing " +
-            "whitespace characters")])
+        verifyRule(TrailingWhitespaceRule().example, type: .TrailingWhitespace, checkCommentsDoesNotViolate: false)
     }
 
     func testForceCasting() {
-        XCTAssertEqual(violations("NSNumber() as? Int\n"), [])
-        XCTAssertEqual(violations("// NSNumber() as! Int\n"), [])
-        XCTAssertEqual(violations("NSNumber() as! Int\n"),
-            [StyleViolation(type: .ForceCast,
-                location: Location(file: nil, line: 1),
-                severity: .High,
-                reason: "Force casts should be avoided")])
+        verifyRule(ForceCastRule().example, type: .ForceCast)
     }
 
     func testTodoOrFIXME() {
-        for type in ["TODO", "FIXME"] {
-            XCTAssertEqual(violations("let string = \"// \(type):\"\n"), [])
-            XCTAssertEqual(violations("// \(type):\n"), [StyleViolation(type: .TODO,
-                location: Location(file: nil, line: 1),
-                reason: "TODOs and FIXMEs should be avoided")])
-        }
+        verifyRule(TodoRule().example, type: .TODO)
     }
 
     func testColon() {
-        let good = [
-            "let abc: Void\n",
-            "let abc: [Void: Void]\n",
-            "let abc: (Void, Void)\n",
-            "func abc(def: Void) {}\n"
-        ]
+        verifyRule(ColonRule().example, type: .Colon)
+    }
+
+    func verifyRule(rule: RuleExample, type: StyleViolationType, checkCommentsDoesNotViolate: Bool = true) {
+        let good = rule.correctExamples
+
         for string in good {
             XCTAssertEqual(violations(string), [])
         }
 
-        let bad = [
-            "let abc:Void\n",
-            "let abc:  Void\n",
-            "let abc :Void\n",
-            "let abc : Void\n",
-            "let abc : [Void: Void]\n",
-            "func abc(def:Void) {}\n",
-            "func abc(def:  Void) {}\n",
-            "func abc(def :Void) {}\n",
-            "func abc(def : Void) {}\n"
-        ]
-        for string in bad {
-            XCTAssertEqual(violations(string).map({$0.type}), [.Colon])
+        for string in rule.failingExamples {
+            XCTAssertEqual(violations(string).map({$0.type}), [type])
         }
 
-        for string in bad.map({ "// \($0)" }) {
-            XCTAssertEqual(violations(string), [])
+        if checkCommentsDoesNotViolate {
+            for string in rule.failingExamples.map({ "// \($0)" }) {
+                XCTAssertEqual(violations(string), [])
+            }
         }
     }
 }

@@ -8,11 +8,15 @@
 
 import SourceKittenFramework
 
-protocol Rule {
+public protocol Validatable {
+    func validateFile(file: File) -> [StyleViolation]
+    var example: RuleExample { get }
+}
+
+protocol Rule: Validatable {
     typealias ParameterType
 
     var identifier: String { get }
     var parameters: [RuleParameter<ParameterType>] { get }
 
-    func validateFile(file: File) -> [StyleViolation]
 }

@@ -32,4 +32,11 @@ struct LineLengthRule: Rule {
             return nil
         })
     }
+
+    let example: RuleExample = RuleExample(
+        ruleName: "Line Length Rule",
+        ruleDescription: "Lines should be less than 100 characters",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
 }

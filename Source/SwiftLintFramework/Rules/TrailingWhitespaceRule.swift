@@ -8,11 +8,13 @@
 
 import SourceKittenFramework
 
-struct TrailingWhitespaceRule: Rule {
+public struct TrailingWhitespaceRule: Rule {
+    public init() { }
+
     let identifier = "trailing_whitespace"
     let parameters = [RuleParameter<Void>]()
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(file: File) -> [StyleViolation] {
         return file.contents.lines().map { line in
             (
                 index: line.index,
@@ -30,4 +32,12 @@ struct TrailingWhitespaceRule: Rule {
                 "current has \($0.trailingWhitespaceCount) trailing whitespace characters")
         }
     }
+
+    public let example: RuleExample = RuleExample(
+        ruleName: "Trailing Whitespace Rule",
+        ruleDescription: "This rule checks whether you don't have any trailing whitespace.",
+        correctExamples: [ "//\n" ],
+        failingExamples: [ "// \n" ],
+        showExamples: false
+    )
 }

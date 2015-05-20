@@ -66,4 +66,12 @@ struct TypeBodyLengthRule: ASTRule {
         }
         return []
     }
+
+    let example: RuleExample = RuleExample(
+        ruleName: "Type body Length Rule",
+        ruleDescription: "Type body should span 200 lines or less.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
+
 }

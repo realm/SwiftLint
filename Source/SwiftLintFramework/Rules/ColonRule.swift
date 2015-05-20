@@ -24,6 +24,8 @@ public struct ColonRule: Rule, RuleExample {
         }
     }
 
+    public var ruleName = "Colon Rule"
+
     public var ruleDescription = "This rule checks whether you associate the colon with the identifier."
 
     public var correctExamples = [

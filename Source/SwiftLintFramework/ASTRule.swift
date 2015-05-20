@@ -18,6 +18,7 @@ protocol ASTRule: Rule {
 }
 
 public protocol RuleExample {
+    var ruleName: String { get }
     var ruleDescription: String { get }
     var correctExamples: [String] { get }
     var failingExamples: [String] { get }

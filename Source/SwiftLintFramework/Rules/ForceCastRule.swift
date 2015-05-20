@@ -22,7 +22,7 @@ public struct ForceCastRule: Rule {
         }
     }
 
-    public let example: RuleExample? = RuleExample(
+    public let example: RuleExample = RuleExample(
         ruleName: "Force Cast Rule",
         ruleDescription: "This rule checks whether you don't do force casts.",
         correctExamples: [

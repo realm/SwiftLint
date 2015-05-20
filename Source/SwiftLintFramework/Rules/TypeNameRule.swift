@@ -68,5 +68,10 @@ struct TypeNameRule: ASTRule {
         return violations
     }
 
-    let example: RuleExample? = nil
+    let example: RuleExample = RuleExample(
+        ruleName: "Type Name Rule",
+        ruleDescription: "Type name should only contain alphanumeric characters, start with an uppercase character and between 3 and 40 characters in length.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false)
 }

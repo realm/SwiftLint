@@ -22,5 +22,13 @@ public struct RuleExample {
     public let ruleDescription: String
     public let correctExamples: [String]
     public let failingExamples: [String]
-    public let showExamples: Bool = true
+    public let showExamples: Bool
+
+    init(ruleName: String, ruleDescription: String, correctExamples: [String], failingExamples: [String], showExamples: Bool = true) {
+        self.ruleName = ruleName
+        self.ruleDescription = ruleDescription
+        self.correctExamples = correctExamples
+        self.failingExamples = failingExamples
+        self.showExamples = showExamples
+    }
 }

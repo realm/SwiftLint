@@ -32,10 +32,11 @@ public struct TrailingWhitespaceRule: Rule {
         }
     }
 
-    public let example: RuleExample? = RuleExample(
+    public let example: RuleExample = RuleExample(
         ruleName: "Trailing Whitespace Rule",
         ruleDescription: "This rule checks whether you don't have any trailing whitespace.",
         correctExamples: [ "//\n" ],
-        failingExamples: [ "// \n" ]
+        failingExamples: [ "// \n" ],
+        showExamples: false
     )
 }

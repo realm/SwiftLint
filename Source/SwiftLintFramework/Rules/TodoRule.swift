@@ -22,7 +22,7 @@ public struct TodoRule: Rule {
         }
     }
 
-    public let example: RuleExample? = RuleExample(
+    public let example: RuleExample = RuleExample(
         ruleName: "Todo Rule",
         ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
         correctExamples: [

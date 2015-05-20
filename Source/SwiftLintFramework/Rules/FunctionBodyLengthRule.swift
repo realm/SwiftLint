@@ -78,5 +78,11 @@ struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
         return []
     }
 
-    let example: RuleExample? = nil
+    let example: RuleExample = RuleExample(
+        ruleName: "Function Body Length Rule",
+        ruleDescription: "This rule checks whether your function bodies are less than 40 lines.",
+        correctExamples: [],
+        failingExamples: [],
+        showExamples: false
+    )
 }

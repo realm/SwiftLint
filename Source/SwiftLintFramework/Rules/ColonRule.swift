@@ -27,7 +27,7 @@ public struct ColonRule: Rule {
         }
     }
 
-    public let example: RuleExample? = RuleExample(
+    public let example: RuleExample = RuleExample(
         ruleName: "Colon Rule",
         ruleDescription: "This rule checks whether you associate the colon with the identifier.",
         correctExamples: [

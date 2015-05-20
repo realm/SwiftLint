@@ -74,4 +74,6 @@ struct NestingRule: ASTRule {
         })
         return violations
     }
+
+    let example: RuleExample? = nil
 }

@@ -43,7 +43,7 @@ public struct Linter {
     }
 
     public var explainableRules: [RuleExample] {
-        return flatten(rules.map { $0 as? RuleExample })
+        return flatten(rules.map { $0.example })
     }
 
     /**

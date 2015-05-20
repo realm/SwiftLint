@@ -8,12 +8,12 @@
 
 import SourceKittenFramework
 
-public struct ForceCastRule: Rule, RuleExample {
+public struct ForceCastRule: Rule {
     public init() { }
 
     let identifier = "force_cast"
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
             return StyleViolation(type: .ForceCast,
                 location: Location(file: file, offset: range.location),
@@ -22,20 +22,14 @@ public struct ForceCastRule: Rule, RuleExample {
         }
     }
 
-    public var ruleName = "Force Cast Rule"
-
-    public var ruleDescription = "This rule checks whether you don't do force casts."
-
-    public var correctExamples = [
-        "NSNumber() as? Int\n",
-        "// NSNumber() as! Int\n",
-
-    ]
-
-    public var failingExamples = [
-        "NSNumber() as! Int\n"
-    ]
-
-    public var showExamples = true
+    public let example: RuleExample? = RuleExample(
+        ruleName: "Force Cast Rule",
+        ruleDescription: "This rule checks whether you don't do force casts.",
+        correctExamples: [
+            "NSNumber() as? Int\n",
+            "// NSNumber() as! Int\n",
+        ],
+        failingExamples: [ "NSNumber() as! Int\n" ]
+    )
 
 }

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct LinterContext {
-  let file: File
+  var file: File
   var enabledRules: [Rule] = [LineLengthRule(),
     LeadingWhitespaceRule(),
     TrailingWhitespaceRule(),

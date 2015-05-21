@@ -51,7 +51,7 @@ public struct Linter {
         }
         
       } else if line.content.trim() == linterContextEnd && inContext {
-        contexxtDepth -= 1
+        contextDepth -= 1
         inContext = contextDepth != 0
         
         contextEndingLineNumber = currentLineNumber
@@ -78,7 +78,9 @@ public struct Linter {
       
       let substring = "\n".join(sublines + [""]) // postpend the empty string to keep trailing newlines
       let file = File(contents: substring)
-      return Linter(file: file)
+      var context = self.context
+      context.file = file
+      return Linter(context: context)
     }
     
     return linters
@@ -91,5 +93,16 @@ public struct Linter {
     */
     public init(file: File) {
         self.context = LinterContext(file: file)
+    }
+  
+    /**
+    Initialize a Linter by passing in a LinterContext.
+    This is for having a child Linter inherit properties
+    from their parent.
+  
+    :param: context LinterContext to inherit from
+    */
+  private init(context: LinterContext) {
+      self.context = context
     }
 }

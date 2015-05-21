@@ -35,9 +35,10 @@ public struct Linter {
     var currentLineNumber = 0
     var inContext = false
     
-    typealias LinterRegion = (start: Int, end: Int)
+    typealias LinterRegion = (start: Int, exclusiveEnd: Int)
+    let lines = self.context.file.contents.lines()
     
-    var regions: [LinterRegion] = flatten(self.context.file.contents.lines().map { (line: Line) -> (LinterRegion)? in
+    var regions: [LinterRegion] = flatten(lines.map { (line: Line) -> (LinterRegion)? in
       if line.content == linterContextBegin {
         let startingNewContext = !inContext
         
@@ -46,14 +47,14 @@ public struct Linter {
         contextStartingLineNumber = currentLineNumber + 1
         
         if startingNewContext { // starting a new context, so we need the region for the code BEFORE this
-          return (contextEndingLineNumber, currentLineNumber - 1)
+          return (contextEndingLineNumber, currentLineNumber)
         }
         
       } else if line.content == linterContextEnd && inContext {
         contextDepth -= 1
         inContext = contextDepth != 0
         
-        contextEndingLineNumber = currentLineNumber - 1
+        contextEndingLineNumber = currentLineNumber
         if !inContext {
           return (contextStartingLineNumber, contextEndingLineNumber)
         }
@@ -65,12 +66,18 @@ public struct Linter {
     // regions now contains all the regions except
     // potentially the last, if there is code after the last linterContextEnd
     // let's add that region to regions
-    let lastRegion: LinterRegion = (contextEndingLineNumber, max(self.context.file.contents.lines().count - 1, 0))
-    regions.append(lastRegion)
-    
-    
+    if contextEndingLineNumber <= lines.count {
+      regions.append((start: contextEndingLineNumber,
+                      exclusiveEnd: lines.count))
+    }
+
     let linters = regions.map { (region: LinterRegion) -> Linter in
-      let file = File(contents: (self.context.file.contents as NSString).substringWithRange(NSMakeRange(region.start, region.end - region.start)))
+      let sublines: [String] = map((lines[region.start ..< region.exclusiveEnd])) {
+        $0.content
+      }
+      
+      let substring = "\n".join(sublines + [""]) // postpend the empty string to keep trailing newlines
+      let file = File(contents: substring)
       return Linter(file: file)
     }
     

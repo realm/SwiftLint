@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		345D0CA01B0D3A5A00EF7A41 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D0C9F1B0D3A5A00EF7A41 /* Array+SwiftLint.swift */; };
+		345D0CA21B0D3EC100EF7A41 /* LinterContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345D0CA11B0D3EC100EF7A41 /* LinterContext.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -98,6 +100,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		345D0C9F1B0D3A5A00EF7A41 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
+		345D0CA11B0D3EC100EF7A41 /* LinterContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinterContext.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -310,10 +314,12 @@
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
+				345D0CA11B0D3EC100EF7A41 /* LinterContext.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
 				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
+				345D0C9F1B0D3A5A00EF7A41 /* Array+SwiftLint.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
@@ -540,6 +546,7 @@
 			files = (
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				E88DEA861B0991BF00A66CB0 /* TrailingWhitespaceRule.swift in Sources */,
+				345D0CA01B0D3A5A00EF7A41 /* Array+SwiftLint.swift in Sources */,
 				E88DEA841B0990F500A66CB0 /* ColonRule.swift in Sources */,
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
@@ -559,6 +566,7 @@
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,
 				E88DEA821B0990A700A66CB0 /* TodoRule.swift in Sources */,
 				E88DEA901B099A3100A66CB0 /* FunctionBodyLengthRule.swift in Sources */,
+				345D0CA21B0D3EC100EF7A41 /* LinterContext.swift in Sources */,
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
 				E88DEA7E1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift in Sources */,
 			);

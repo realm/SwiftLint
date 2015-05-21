@@ -18,6 +18,10 @@ extension String {
         }
         return lines
     }
+  
+  func trim(characterSet: NSCharacterSet = NSCharacterSet.whitespaceCharacterSet()) -> String {
+      return stringByTrimmingCharactersInSet(characterSet)
+    }
 
     func isUppercase() -> Bool {
         return self == uppercaseString

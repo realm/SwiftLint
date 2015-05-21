@@ -17,6 +17,17 @@ func violations(string: String) -> [StyleViolation] {
 
 class LinterTests: XCTestCase {
 
+    // MARK: Nesting
+  
+    func testNestingEquivalentToNoNesting() {
+      let lines = ["1", "2", "\n"]
+      let linesWithNesting = ["1", "// swift-lint:begin-context", "2", "// swift-lint:end-context", "\n"]
+      let (contents, contentsWithNesting) = ("\n".join(lines), "\n".join(linesWithNesting))
+      let (file, fileWithNesting) = (File(contents: contents), File(contents: contentsWithNesting))
+      let (linter, linterWithNesting) = (Linter(file: file), Linter(file: fileWithNesting))
+      XCTAssertEqual(linter.styleViolations, linterWithNesting.styleViolations, "Nesting shouldn't impact styleViolations")
+    }
+  
     // MARK: AST Violations
 
     func testTypeNames() {

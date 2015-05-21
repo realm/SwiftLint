@@ -10,8 +10,8 @@ import Foundation
 import SourceKittenFramework
 
 public struct LinterContext {
-  var file: File
-  var enabledRules: [Rule] = [LineLengthRule(),
+  var region: File
+  private var potentiallyEnabledRules: [Rule] = [LineLengthRule(),
     LeadingWhitespaceRule(),
     TrailingWhitespaceRule(),
     TrailingNewlineRule(),
@@ -25,13 +25,25 @@ public struct LinterContext {
     FunctionBodyLengthRule(),
     NestingRule()]
   var disabledRules: [Rule] = []
+  var parentEnabledRules: [Rule] = []
   
   public init(file: File) {
-    self.file = file
+    self.region = file
+  }
+  
+  public init(insideOf context: LinterContext, file: File) {
+    (self.region, self.parentEnabledRules) = (file, context.enabledRules())
+  }
+  
+  public func enabledRules() -> [Rule] {
+    // All of our enabled rules that are not enabled in our parent
+    return potentiallyEnabledRules.filter { (rule: Rule) -> Bool in
+      return self.parentEnabledRules.filter { $0.identifier == rule.identifier}.count == 0
+    }
   }
   
   func ruleWith(identifier: String, enabled: Bool) -> Rule? {
-    let arrayToSearch = enabled ? self.enabledRules : self.disabledRules
+    let arrayToSearch = enabled ? self.potentiallyEnabledRules : self.disabledRules
     
     return filter(arrayToSearch) {
       return $0.identifier == identifier
@@ -47,7 +59,7 @@ public struct LinterContext {
   }
   
   private mutating func changeRule(identifier: String, enabled: Bool) -> Bool {
-    var (rulesToAddTo, rulesToRemoveFrom) = enabled ? (self.enabledRules, self.disabledRules) : (self.disabledRules, self.enabledRules)
+    var (rulesToAddTo, rulesToRemoveFrom) = enabled ? (self.potentiallyEnabledRules, self.disabledRules) : (self.disabledRules, self.potentiallyEnabledRules)
     
     if let rule = ruleWith(identifier, enabled: !enabled) {
       moveRule(rule, enabled: enabled)
@@ -57,7 +69,7 @@ public struct LinterContext {
   }
   
   private mutating func moveRule(rule: Rule, enabled: Bool) {
-    let rulesTuple = enabled ? (self.enabledRules, self.disabledRules) : (self.disabledRules, self.enabledRules)
+    let rulesTuple = enabled ? (self.potentiallyEnabledRules, self.disabledRules) : (self.disabledRules, self.potentiallyEnabledRules)
     var (rulesToAddTo, rulesToRemoveFrom): ([Rule], [Rule]) = rulesTuple
     
     rulesToAddTo.append(rule)
@@ -65,6 +77,6 @@ public struct LinterContext {
       return candidateRule.identifier != rule.identifier
     }
     
-    (self.enabledRules, self.disabledRules) = enabled ? (rulesToAddTo, rulesToRemoveFrom) : (rulesToRemoveFrom, rulesToAddTo)
+    (self.potentiallyEnabledRules, self.disabledRules) = enabled ? (rulesToAddTo, rulesToRemoveFrom) : (rulesToRemoveFrom, rulesToAddTo)
   }
 }

@@ -39,7 +39,7 @@ public struct Linter {
     let lines = self.context.file.contents.lines()
     
     var regions: [LinterRegion] = flatten(lines.map { (line: Line) -> (LinterRegion)? in
-      if line.content == linterContextBegin {
+      if line.content.trim() == linterContextBegin {
         let startingNewContext = !inContext
         
         inContext = true
@@ -50,8 +50,8 @@ public struct Linter {
           return (contextEndingLineNumber, currentLineNumber)
         }
         
-      } else if line.content == linterContextEnd && inContext {
-        contextDepth -= 1
+      } else if line.content.trim() == linterContextEnd && inContext {
+        contexxtDepth -= 1
         inContext = contextDepth != 0
         
         contextEndingLineNumber = currentLineNumber

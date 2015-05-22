@@ -28,8 +28,12 @@ public enum ViolationSeverity: Int, Printable, Comparable {
         }
     }
 
+    public var isError: Bool {
+        return self > Medium
+    }
+
     public var xcodeSeverityDescription: String {
-        return self <= Medium ? "warning" : "error"
+        return self.isError ? "error" : "warning"
     }
 }
 

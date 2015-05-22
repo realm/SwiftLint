@@ -22,20 +22,33 @@ struct LintCommand: CommandType {
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         println("Finding Swift files in current directory...")
         let files = recursivelyFindSwiftFilesInDirectory(fileManager.currentDirectoryPath)
-        var numberOfViolations = 0
+        var numberOfViolations = 0, numberOfSeriousViolations = 0
         for (index, file) in enumerate(files) {
             println("Linting '\(file.lastPathComponent)' (\(index + 1)/\(files.count))")
             for violation in Linter(file: File(path: file)!).styleViolations {
                 println(violation)
                 numberOfViolations++
+                if violation.severity.isError {
+                    numberOfSeriousViolations++
+                }
             }
         }
+        let violationSuffix = (numberOfViolations != 1 ? "s" : "")
+        let filesSuffix = (files.count != 1 ? "s." : ".")
         println(
-            "Done linting! Found \(numberOfViolations) violation" +
-            (numberOfViolations != 1 ? "s" : "") +
-            " in \(files.count) file" + (files.count != 1 ? "s." : ".")
+            "Done linting!" +
+            " Found \(numberOfViolations) violation\(violationSuffix)," +
+            " \(numberOfSeriousViolations) serious" +
+            " in \(files.count) file\(filesSuffix)"
         )
-        return success()
+        if numberOfSeriousViolations <= 0 {
+            return success()
+        } else {
+            // This represents failure of the content (i.e. violations in the files linted)
+            // and not failure of the scanning process itself. The current command architecture
+            // doesn't discriminate between these types.
+            return failure(CommandantError<()>.CommandError(Box()))
+        }
     }
 }
 

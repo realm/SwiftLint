@@ -33,7 +33,7 @@ public enum ViolationSeverity: Int, Printable, Comparable {
     }
 
     public var xcodeSeverityDescription: String {
-        return self.isError ? "error" : "warning"
+        return isError ? "error" : "warning"
     }
 }
 

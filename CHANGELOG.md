@@ -15,6 +15,11 @@
   FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
   [JP Simard](https://github.com/jpsim)
 
+* swiftlint returns a non-zero error code when a warning of high-severity
+  or above is found in the source files being linted.
+ [Pat Wallace](https://github.com/pawrsccouk)
+ [#30](https://github.com/realm/SwiftLint/issues/30)
+
 ##### Bug Fixes
 
 None.

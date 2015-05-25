@@ -38,7 +38,7 @@ public struct LineLengthRule: ParameterizedRule {
 
     public let example = RuleExample(
         ruleName: "Line Length Rule",
-        ruleDescription: "Lines should be less than 100 characters",
+        ruleDescription: "Lines should be less than 100 characters.",
         nonTriggeringExamples: [],
         triggeringExamples: [],
         showExamples: false

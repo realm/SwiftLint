@@ -18,10 +18,14 @@ enum StructuredText {
 
     var markdown: String {
         switch self {
-        case let .Header(level, t): return join("", Array(count: level, repeatedValue: "#")) + " " + t
-        case .Paragraph(let t): return t
-        case .List(let items): return "\n".join(items.map { "* " + $0.markdown })
-        case .Joined(let items): return "\n\n".join(items.map { $0.markdown } )
+        case let .Header(level, t):
+            return join("", Array(count: level, repeatedValue: "#")) + " \(t)"
+        case .Paragraph(let t):
+            return t
+        case .List(let items):
+            return "\n".join(items.map { "* " + $0.markdown })
+        case .Joined(let items):
+            return "\n\n".join(items.map { $0.markdown } )
         }
     }
 

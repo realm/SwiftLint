@@ -19,28 +19,26 @@ func describeExample(example: RuleExample) -> StructuredText {
     ]
     if example.showExamples {
         description += [
-            .Header(level: 2, text: "Examples that do not trigger the rule"),
+            .Header(level: 2, text: "Examples that do not trigger the rule:"),
             .List(example.nonTriggeringExamples.map { .Paragraph($0.chomped) }),
-            .Header(level: 2, text: "Examples that trigger the rule"),
+            .Header(level: 2, text: "Examples that trigger the rule:"),
             .List(example.triggeringExamples.map { .Paragraph($0.chomped) })
         ]
     }
     return .Joined(description)
 }
 
-
-
 struct RulesCommand: CommandType {
     let verb = "rules"
     let function = "Display the list of rules and examples"
-    
+
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         switch mode {
         case let .Arguments:
             let ruleExamples = Linter(file: File(contents: "")).explainableRules
             let text = StructuredText.Joined(ruleExamples.map(describeExample))
             println(text.ansi)
-            
+
         default:
             break
         }

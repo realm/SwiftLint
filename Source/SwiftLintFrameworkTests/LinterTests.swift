@@ -213,7 +213,8 @@ class LinterTests: XCTestCase {
             XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: 1),
                 severity: testCase.2,
-                reason: "Line should be 100 characters or less: currently \(testCase.1) characters")])
+                reason: "Line should be 100 characters or less: " +
+                "currently \(testCase.1) characters")])
         }
     }
 
@@ -247,11 +248,15 @@ class LinterTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule().example, type: .LeadingWhitespace, commentDoesntViolate: false)
+        verifyRule(LeadingWhitespaceRule().example,
+            type: .LeadingWhitespace,
+            commentDoesntViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule().example, type: .TrailingWhitespace, commentDoesntViolate: false)
+        verifyRule(TrailingWhitespaceRule().example,
+            type: .TrailingWhitespace,
+            commentDoesntViolate: false)
     }
 
     func testForceCasting() {
@@ -266,7 +271,9 @@ class LinterTests: XCTestCase {
         verifyRule(ColonRule().example, type: .Colon)
     }
 
-    func verifyRule(rule: RuleExample, type: StyleViolationType, commentDoesntViolate: Bool = true) {
+    func verifyRule(rule: RuleExample,
+        type: StyleViolationType,
+        commentDoesntViolate: Bool = true) {
         XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0)}), [])
         XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0).map({$0.type})}),
             Array(count: rule.triggeringExamples.count, repeatedValue: type))

@@ -30,8 +30,8 @@ public struct LeadingWhitespaceRule: Rule {
     public let example: RuleExample = RuleExample(
         ruleName: "Leading Whitespace Rule",
         ruleDescription: "This rule checks whether you don't have any leading whitespace in your file.",
-        correctExamples: [ "//\n" ],
-        failingExamples: [ "\n", " //\n" ],
+        nonTriggeringExamples: [ "//\n" ],
+        triggeringExamples: [ "\n", " //\n" ],
         showExamples: false
     )
 }

@@ -28,8 +28,8 @@ struct TrailingNewlineRule: Rule {
     let example: RuleExample = RuleExample(
         ruleName: "Trailing newline rule",
         ruleDescription: "Files should have a single trailing newline.",
-        correctExamples: [],
-        failingExamples: [],
+        nonTriggeringExamples: [],
+        triggeringExamples: [],
         showExamples: false)
 
 }

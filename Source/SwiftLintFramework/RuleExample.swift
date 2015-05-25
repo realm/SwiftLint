@@ -11,15 +11,15 @@ import Foundation
 public struct RuleExample {
     public let ruleName: String
     public let ruleDescription: String
-    public let correctExamples: [String]
-    public let failingExamples: [String]
+    public let nonTriggeringExamples: [String]
+    public let triggeringExamples: [String]
     public let showExamples: Bool
     
-    init(ruleName: String, ruleDescription: String, correctExamples: [String], failingExamples: [String], showExamples: Bool = true) {
+    init(ruleName: String, ruleDescription: String, nonTriggeringExamples: [String], triggeringExamples: [String], showExamples: Bool = true) {
         self.ruleName = ruleName
         self.ruleDescription = ruleDescription
-        self.correctExamples = correctExamples
-        self.failingExamples = failingExamples
+        self.nonTriggeringExamples = nonTriggeringExamples
+        self.triggeringExamples = triggeringExamples
         self.showExamples = showExamples
     }
 }

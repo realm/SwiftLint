@@ -25,11 +25,11 @@ public struct ForceCastRule: Rule {
     public let example: RuleExample = RuleExample(
         ruleName: "Force Cast Rule",
         ruleDescription: "This rule checks whether you don't do force casts.",
-        correctExamples: [
+        nonTriggeringExamples: [
             "NSNumber() as? Int\n",
             "// NSNumber() as! Int\n",
         ],
-        failingExamples: [ "NSNumber() as! Int\n" ]
+        triggeringExamples: [ "NSNumber() as! Int\n" ]
     )
 
 }

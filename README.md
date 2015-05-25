@@ -30,6 +30,10 @@ as its contents.
 
 ![](screenshot.png)
 
+### Atom
+
+To integrate SwiftLint with Atom install the `linter-swiftlint` package from APM.
+
 ### Command Line
 
 ```

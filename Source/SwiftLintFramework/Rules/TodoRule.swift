@@ -9,9 +9,9 @@
 import SourceKittenFramework
 
 public struct TodoRule: Rule {
-    let identifier = "todo"
+    public init() {}
 
-    public init() { }
+    public let identifier = "todo"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
@@ -22,7 +22,7 @@ public struct TodoRule: Rule {
         }
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Todo Rule",
         ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
         nonTriggeringExamples: [
@@ -34,6 +34,4 @@ public struct TodoRule: Rule {
             "// FIXME:\n"
         ]
     )
-
-
 }

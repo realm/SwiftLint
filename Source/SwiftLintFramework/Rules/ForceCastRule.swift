@@ -9,9 +9,9 @@
 import SourceKittenFramework
 
 public struct ForceCastRule: Rule {
-    public init() { }
+    public init() {}
 
-    let identifier = "force_cast"
+    public let identifier = "force_cast"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
@@ -22,7 +22,7 @@ public struct ForceCastRule: Rule {
         }
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Force Cast Rule",
         ruleDescription: "This rule checks whether you don't do force casts.",
         nonTriggeringExamples: [
@@ -31,5 +31,4 @@ public struct ForceCastRule: Rule {
         ],
         triggeringExamples: [ "NSNumber() as! Int\n" ]
     )
-
 }

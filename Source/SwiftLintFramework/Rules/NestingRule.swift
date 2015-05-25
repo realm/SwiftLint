@@ -10,28 +10,28 @@ import SourceKittenFramework
 import SwiftXPC
 
 public struct NestingRule: ASTRule {
-    public init() { }
+    public init() {}
 
-    let identifier = "nesting"
+    public let identifier = "nesting"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return self.validateFile(file, dictionary: Structure(file: file).dictionary)
+        return validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                    violations.extend(self.validateFile(file, dictionary: subDict))
-                    violations.extend(self.validateFile(file, kind: kind, dictionary: subDict))
+                    violations.extend(validateFile(file, dictionary: subDict))
+                    violations.extend(validateFile(file, kind: kind, dictionary: subDict))
             }
             return violations
         }
     }
 
-    func validateFile(file: File,
+    public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         return self.validateFile(file, kind: kind, dictionary: dictionary, level: 0)
@@ -72,14 +72,15 @@ public struct NestingRule: ASTRule {
             }
             return nil
         } as [(SwiftDeclarationKind, XPCDictionary)?]).flatMap { (kind, dict) in
-            return self.validateFile(file, kind: kind, dictionary: dict, level: level + 1)
+            return validateFile(file, kind: kind, dictionary: dict, level: level + 1)
         })
         return violations
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Nesting Rule",
-        ruleDescription: "Types should be nested at most 1 level deep, and statements should be nested at most 5 levels deep.",
+        ruleDescription: "Types should be nested at most 1 level deep, " +
+        "and statements should be nested at most 5 levels deep.",
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
             ["\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
@@ -90,7 +91,6 @@ public struct NestingRule: ASTRule {
             } + [
             "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
             "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
-            ],
-        showExamples: true)
-
+            ]
+    )
 }

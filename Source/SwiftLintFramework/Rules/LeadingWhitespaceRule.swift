@@ -9,9 +9,9 @@
 import SourceKittenFramework
 
 public struct LeadingWhitespaceRule: Rule {
-    public init() { }
+    public init() {}
 
-    let identifier = "leading_whitespace"
+    public let identifier = "leading_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
@@ -27,9 +27,9 @@ public struct LeadingWhitespaceRule: Rule {
         return []
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Leading Whitespace Rule",
-        ruleDescription: "This rule checks whether you don't have any leading whitespace in your file.",
+        ruleDescription: "This rule checks that there's no leading whitespace in your file.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "\n", " //\n" ],
         showExamples: false

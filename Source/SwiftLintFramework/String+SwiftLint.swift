@@ -28,7 +28,7 @@ extension String {
     }
 
     public var chomped: String {
-        return self.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+        return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }
 }
 

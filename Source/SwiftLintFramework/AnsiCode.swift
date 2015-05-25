@@ -13,21 +13,19 @@ enum AnsiCode: Int {
     case Bold = 1
     case RedForeground = 31
     case GreenForeground = 32
-    
-    
-    
+
     var string: String {
         return "\u{001B}[0;\(rawValue)m"
     }
-    
+
     func wrap(text: String) -> String {
-        return self.string + text + AnsiCode.Reset.string
+        return string + text + AnsiCode.Reset.string
     }
-    
+
     static func red(string: String) -> String {
         return AnsiCode.RedForeground.wrap(string)
     }
-    
+
     static func green(string: String) -> String {
         return AnsiCode.GreenForeground.wrap(string)
     }

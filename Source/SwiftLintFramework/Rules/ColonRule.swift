@@ -9,10 +9,9 @@
 import SourceKittenFramework
 
 public struct ColonRule: Rule {
-    let identifier = "colon"
+    public init() {}
 
-    public init() {
-    }
+    public let identifier = "colon"
 
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
@@ -27,7 +26,7 @@ public struct ColonRule: Rule {
         }
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Colon Rule",
         ruleDescription: "This rule checks whether you associate the colon with the identifier.",
         nonTriggeringExamples: [

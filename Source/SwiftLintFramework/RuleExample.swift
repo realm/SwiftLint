@@ -6,16 +6,18 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-import Foundation
-
 public struct RuleExample {
     public let ruleName: String
     public let ruleDescription: String
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
     public let showExamples: Bool
-    
-    init(ruleName: String, ruleDescription: String, nonTriggeringExamples: [String], triggeringExamples: [String], showExamples: Bool = true) {
+
+    public init(ruleName: String,
+                ruleDescription: String,
+                nonTriggeringExamples: [String],
+                triggeringExamples: [String],
+                showExamples: Bool = true) {
         self.ruleName = ruleName
         self.ruleDescription = ruleDescription
         self.nonTriggeringExamples = nonTriggeringExamples

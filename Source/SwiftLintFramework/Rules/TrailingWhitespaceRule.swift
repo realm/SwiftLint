@@ -9,9 +9,9 @@
 import SourceKittenFramework
 
 public struct TrailingWhitespaceRule: Rule {
-    public init() { }
+    public init() {}
 
-    let identifier = "trailing_whitespace"
+    public let identifier = "trailing_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.contents.lines().map { line in
@@ -32,7 +32,7 @@ public struct TrailingWhitespaceRule: Rule {
         }
     }
 
-    public let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Trailing Whitespace Rule",
         ruleDescription: "This rule checks whether you don't have any trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],

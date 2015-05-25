@@ -13,7 +13,7 @@ import SourceKittenFramework
 public struct Linter {
     private let file: File
 
-    private let rules: [Validatable] = [
+    private let rules: [Rule] = [
         LineLengthRule(),
         LeadingWhitespaceRule(),
         TrailingWhitespaceRule(),

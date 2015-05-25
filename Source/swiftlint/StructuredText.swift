@@ -15,7 +15,7 @@ enum StructuredText {
     case Paragraph(StructuredInlineText)
     case List([StructuredText])
     case Joined([StructuredText])
-    
+
     var markdown: String {
         switch self {
         case let .Header(level, t): return join("", Array(count: level, repeatedValue: "#")) + " " + t
@@ -24,7 +24,7 @@ enum StructuredText {
         case .Joined(let items): return "\n\n".join(items.map { $0.markdown } )
         }
     }
-    
+
     var ansi: String {
         switch self {
         case .Header(1, let t): return t.uppercaseString

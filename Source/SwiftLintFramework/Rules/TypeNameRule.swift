@@ -9,27 +9,29 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct TypeNameRule: ASTRule {
-    let identifier = "type_name"
+public struct TypeNameRule: ASTRule {
+    public init() {}
 
-    func validateFile(file: File) -> [StyleViolation] {
-        return self.validateFile(file, dictionary: Structure(file: file).dictionary)
+    public let identifier = "type_name"
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        return validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                violations.extend(self.validateFile(file, dictionary: subDict))
-                violations.extend(self.validateFile(file, kind: kind, dictionary: subDict))
+                violations.extend(validateFile(file, dictionary: subDict))
+                violations.extend(validateFile(file, kind: kind, dictionary: subDict))
             }
             return violations
         }
     }
 
-    func validateFile(file: File,
+    public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [
@@ -68,10 +70,12 @@ struct TypeNameRule: ASTRule {
         return violations
     }
 
-    let example: RuleExample = RuleExample(
+    public let example = RuleExample(
         ruleName: "Type Name Rule",
-        ruleDescription: "Type name should only contain alphanumeric characters, start with an uppercase character and between 3 and 40 characters in length.",
+        ruleDescription: "Type name should only contain alphanumeric characters, " +
+        "start with an uppercase character and between 3 and 40 characters in length.",
         nonTriggeringExamples: [],
         triggeringExamples: [],
-        showExamples: false)
+        showExamples: false
+    )
 }

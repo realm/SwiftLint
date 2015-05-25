@@ -153,7 +153,7 @@ class LinterTests: XCTestCase {
     }
 
     func testNesting() {
-        verifyRule(NestingRule().example, type: StyleViolationType.Nesting, checkCommentsDoesNotViolate: false)
+        verifyRule(NestingRule().example, type: .Nesting, commentDoesntViolate: false)
     }
 
     func testControlStatements() {
@@ -247,11 +247,11 @@ class LinterTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule().example, type: .LeadingWhitespace, checkCommentsDoesNotViolate: false)
+        verifyRule(LeadingWhitespaceRule().example, type: .LeadingWhitespace, commentDoesntViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule().example, type: .TrailingWhitespace, checkCommentsDoesNotViolate: false)
+        verifyRule(TrailingWhitespaceRule().example, type: .TrailingWhitespace, commentDoesntViolate: false)
     }
 
     func testForceCasting() {
@@ -266,21 +266,13 @@ class LinterTests: XCTestCase {
         verifyRule(ColonRule().example, type: .Colon)
     }
 
-    func verifyRule(rule: RuleExample, type: StyleViolationType, checkCommentsDoesNotViolate: Bool = true) {
-        let good = rule.correctExamples
+    func verifyRule(rule: RuleExample, type: StyleViolationType, commentDoesntViolate: Bool = true) {
+        XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0)}), [])
+        XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0).map({$0.type})}),
+            Array(count: rule.triggeringExamples.count, repeatedValue: type))
 
-        for string in good {
-            XCTAssertEqual(violations(string), [])
-        }
-
-        for string in rule.failingExamples {
-            XCTAssertEqual(violations(string).map({$0.type}), [type])
-        }
-
-        if checkCommentsDoesNotViolate {
-            for string in rule.failingExamples.map({ "// \($0)" }) {
-                XCTAssertEqual(violations(string), [])
-            }
+        if commentDoesntViolate {
+            XCTAssertEqual(rule.triggeringExamples.flatMap({violations("// " + $0)}), [])
         }
     }
 }

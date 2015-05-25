@@ -20,6 +20,10 @@
   [Pat Wallace](https://github.com/pawrsccouk)
   [#30](https://github.com/realm/SwiftLint/issues/30)
 
+* Added `rules` command to display which rules are currently applied along
+  with examples.  
+  [Chris Eidhof](https://github.com/chriseidhof)
+
 ##### Bug Fixes
 
 None.

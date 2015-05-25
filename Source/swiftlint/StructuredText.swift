@@ -7,50 +7,9 @@
 //
 
 import Foundation
+//import SourceKitten
 
 typealias StructuredInlineText = String
-
-private extension Array {
-    func dropWhile(x: Element -> Bool) -> [Element] {
-        var count = 0
-        while x(self[count]) { count++ }
-        var copy = self
-        copy.removeRange(0..<count)
-        return copy
-    }
-}
-
-
-extension String {
-    var chomped: String {
-        return String(reverse(self).dropWhile { $0 == "\n" }.reverse())
-    }
-}
-
-enum AnsiCode: Int {
-    case Reset = 0
-    case Bold = 1
-    case RedForeground = 31
-    case GreenForeground = 32
-    
-    
-    
-    var string: String {
-        return "\u{001B}[0;\(rawValue)m"
-    }
-    
-    func wrap(text: String) -> String {
-        return self.string + text + AnsiCode.Reset.string
-    }
-    
-    static func red(string: String) -> String {
-        return AnsiCode.RedForeground.wrap(string)
-    }
-    
-    static func green(string: String) -> String {
-        return AnsiCode.GreenForeground.wrap(string)
-    }
-}
 
 enum StructuredText {
     case Header(level: Int, text: StructuredInlineText)

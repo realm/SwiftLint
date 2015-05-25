@@ -30,7 +30,7 @@ public struct Linter {
     ]
 
     public var styleViolations: [StyleViolation] {
-        return rules.flatMap { $0.validateFile(self.file) }
+        return rules.flatMap { $0.validateFile(file) }
     }
 
     public var explainableRules: [RuleExample] {

@@ -19,10 +19,10 @@ func describeExample(example: RuleExample) -> StructuredText {
     ]
     if example.showExamples {
         description += [
-            .Header(level: 2, text: "Correct examples"),
-            .List(example.correctExamples.map { .Paragraph($0.chomped) }),
-            .Header(level: 2, text: "Failing examples"),
-            .List(example.failingExamples.map { .Paragraph($0.chomped) })
+            .Header(level: 2, text: "Examples that do not trigger the rule"),
+            .List(example.nonTriggeringExamples.map { .Paragraph($0.chomped) }),
+            .Header(level: 2, text: "Examples that trigger the rule"),
+            .List(example.triggeringExamples.map { .Paragraph($0.chomped) })
         ]
     }
     return .Joined(description)

@@ -81,12 +81,12 @@ public struct NestingRule: ASTRule {
     public let example: RuleExample = RuleExample(
         ruleName: "Nesting Rule",
         ruleDescription: "Types should be nested at most 1 level deep, and statements should be nested at most 5 levels deep.",
-        correctExamples: ["class", "struct", "enum"].flatMap { kind in
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
             ["\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\n}\n}\n}\n}\n}\n}\n"]
         },
-        failingExamples: ["class", "struct", "enum"].map { kind in
+        triggeringExamples: ["class", "struct", "enum"].map { kind in
             "\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"
             } + [
             "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +

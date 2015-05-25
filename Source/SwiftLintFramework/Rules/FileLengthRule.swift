@@ -35,7 +35,7 @@ struct FileLengthRule: Rule {
     let example: RuleExample = RuleExample(
         ruleName: "File Line Length Rule",
         ruleDescription: "Files should be less than 400 lines",
-        correctExamples: [],
-        failingExamples: [],
+        nonTriggeringExamples: [],
+        triggeringExamples: [],
         showExamples: false)
 }

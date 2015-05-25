@@ -31,13 +31,13 @@ public struct ColonRule: Rule {
     public let example: RuleExample = RuleExample(
         ruleName: "Colon Rule",
         ruleDescription: "This rule checks whether you associate the colon with the identifier.",
-        correctExamples: [
+        nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",
             "let abc: (Void, Void)\n",
             "func abc(def: Void) {}\n"
         ],
-        failingExamples: [
+        triggeringExamples: [
             "let abc:Void\n",
             "let abc:  Void\n",
             "let abc :Void\n",

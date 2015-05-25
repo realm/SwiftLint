@@ -36,7 +36,7 @@ struct LineLengthRule: Rule {
     let example: RuleExample = RuleExample(
         ruleName: "Line Length Rule",
         ruleDescription: "Lines should be less than 100 characters",
-        correctExamples: [],
-        failingExamples: [],
+        nonTriggeringExamples: [],
+        triggeringExamples: [],
         showExamples: false)
 }

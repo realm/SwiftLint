@@ -20,9 +20,9 @@ func describeExample(example: RuleExample) -> StructuredText {
     if example.showExamples {
         description += [
             .Header(level: 2, text: "Correct examples"),
-            .List(items: example.correctExamples.map { .Paragraph($0.chomped) }),
+            .List(example.correctExamples.map { .Paragraph($0.chomped) }),
             .Header(level: 2, text: "Failing examples"),
-            .List(items: example.failingExamples.map { .Paragraph($0.chomped) })
+            .List(example.failingExamples.map { .Paragraph($0.chomped) })
         ]
     }
     return .Joined(description)

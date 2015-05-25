@@ -7,14 +7,13 @@
 //
 
 import Foundation
-//import SourceKitten
 
 typealias StructuredInlineText = String
 
 enum StructuredText {
     case Header(level: Int, text: StructuredInlineText)
     case Paragraph(StructuredInlineText)
-    case List(items: [StructuredText])
+    case List([StructuredText])
     case Joined([StructuredText])
     
     var markdown: String {

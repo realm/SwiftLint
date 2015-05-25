@@ -8,8 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
-		83894F241B0CAD41006214E1 /* StructuredText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F231B0CAD41006214E1 /* StructuredText.swift */; };
-		83D71E241B131C11000395DE /* AnsiCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E231B131C11000395DE /* AnsiCode.swift */; };
+		83D71E281B131ECE000395DE /* RuleExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleExample.swift */; };
+		83D71E2B1B131EED000395DE /* AnsiCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E231B131C11000395DE /* AnsiCode.swift */; };
+		83D71E2C1B131EF0000395DE /* StructuredText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F231B0CAD41006214E1 /* StructuredText.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -106,6 +107,7 @@
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83894F231B0CAD41006214E1 /* StructuredText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StructuredText.swift; path = ../swiftlint/StructuredText.swift; sourceTree = "<group>"; };
 		83D71E231B131C11000395DE /* AnsiCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnsiCode.swift; sourceTree = "<group>"; };
+		83D71E261B131EB5000395DE /* RuleExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleExample.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
 		D0D1212419E878CC005E4BAA /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		D0D1212619E878CC005E4BAA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				83D71E231B131C11000395DE /* AnsiCode.swift */,
 			);
 			name = "Pretty Printing";
+			path = ../SwiftLintFramework;
 			sourceTree = "<group>";
 		};
 		D0D1210F19E87861005E4BAA = {
@@ -243,6 +246,7 @@
 		D0D1211A19E87861005E4BAA /* swiftlint */ = {
 			isa = PBXGroup;
 			children = (
+				83D71E251B131C15000395DE /* Pretty Printing */,
 				D0D1211B19E87861005E4BAA /* main.swift */,
 				E861519A1B0573B900C54AC0 /* Lint.swift */,
 				E83A0B341A5D382B0041A60A /* Version.swift */,
@@ -324,6 +328,7 @@
 			children = (
 				E88DEA7A1B098D7300A66CB0 /* Rules */,
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
+				83D71E261B131EB5000395DE /* RuleExample.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
@@ -334,7 +339,6 @@
 				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
 				D0D1216F19E87B05005E4BAA /* Supporting Files */,
-				83D71E251B131C15000395DE /* Pretty Printing */,
 			);
 			name = SwiftLintFramework;
 			path = Source/SwiftLintFramework;
@@ -555,6 +559,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83D71E281B131ECE000395DE /* RuleExample.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				E88DEA861B0991BF00A66CB0 /* TrailingWhitespaceRule.swift in Sources */,
 				E88DEA841B0990F500A66CB0 /* ColonRule.swift in Sources */,
@@ -594,10 +599,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				E83A0B351A5D382B0041A60A /* Version.swift in Sources */,
-				83D71E241B131C11000395DE /* AnsiCode.swift in Sources */,
+				83D71E2C1B131EF0000395DE /* StructuredText.swift in Sources */,
 				E861519B1B0573B900C54AC0 /* Lint.swift in Sources */,
 				D0E7B65619E9C76900EDBA4D /* main.swift in Sources */,
-				83894F241B0CAD41006214E1 /* StructuredText.swift in Sources */,
+				83D71E2B1B131EED000395DE /* AnsiCode.swift in Sources */,
 				83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

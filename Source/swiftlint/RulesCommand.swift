@@ -35,7 +35,7 @@ struct RulesCommand: CommandType {
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         switch mode {
         case let .Arguments:
-            let ruleExamples = Linter(file: File(contents: "")).explainableRules
+            let ruleExamples = Linter(file: File(contents: "")).ruleExamples
             let text = StructuredText.Joined(ruleExamples.map(describeExample))
             println(text.ansi)
 

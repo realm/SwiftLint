@@ -33,7 +33,7 @@ public struct Linter {
         return rules.flatMap { $0.validateFile(file) }
     }
 
-    public var explainableRules: [RuleExample] {
+    public var ruleExamples: [RuleExample] {
         return compact(rules.map { $0.example })
     }
 

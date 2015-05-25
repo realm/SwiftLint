@@ -6,7 +6,12 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-struct RuleParameter<T> {
-    let severity: ViolationSeverity
-    let value: T
+public struct RuleParameter<T> {
+    public let severity: ViolationSeverity
+    public let value: T
+
+    public init(severity: ViolationSeverity, value: T) {
+        self.severity = severity
+        self.value = value
+    }
 }

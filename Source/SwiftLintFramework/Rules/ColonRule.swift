@@ -8,10 +8,12 @@
 
 import SourceKittenFramework
 
-struct ColonRule: Rule {
-    let identifier = "colon"
+public struct ColonRule: Rule {
+    public init() {}
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public let identifier = "colon"
+
+    public func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])
         let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
@@ -23,4 +25,26 @@ struct ColonRule: Rule {
                 reason: "When specifying a type, always associate the colon with the identifier")
         }
     }
+
+    public let example = RuleExample(
+        ruleName: "Colon Rule",
+        ruleDescription: "This rule checks whether you associate the colon with the identifier.",
+        nonTriggeringExamples: [
+            "let abc: Void\n",
+            "let abc: [Void: Void]\n",
+            "let abc: (Void, Void)\n",
+            "func abc(def: Void) {}\n"
+        ],
+        triggeringExamples: [
+            "let abc:Void\n",
+            "let abc:  Void\n",
+            "let abc :Void\n",
+            "let abc : Void\n",
+            "let abc : [Void: Void]\n",
+            "func abc(def:Void) {}\n",
+            "func abc(def:  Void) {}\n",
+            "func abc(def :Void) {}\n",
+            "func abc(def : Void) {}\n"
+        ]
+    )
 }

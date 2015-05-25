@@ -8,10 +8,12 @@
 
 import SourceKittenFramework
 
-struct TodoRule: Rule {
-    let identifier = "todo"
+public struct TodoRule: Rule {
+    public init() {}
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public let identifier = "todo"
+
+    public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
@@ -19,4 +21,17 @@ struct TodoRule: Rule {
                 reason: "TODOs and FIXMEs should be avoided")
         }
     }
+
+    public let example = RuleExample(
+        ruleName: "Todo Rule",
+        ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
+        nonTriggeringExamples: [
+            "let string = \"// TODO:\"\n",
+            "let string = \"// FIXME:\"\n"
+        ],
+        triggeringExamples: [
+            "// TODO:\n",
+            "// FIXME:\n"
+        ]
+    )
 }

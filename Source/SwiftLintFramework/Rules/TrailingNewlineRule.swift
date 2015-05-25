@@ -8,10 +8,12 @@
 
 import SourceKittenFramework
 
-struct TrailingNewlineRule: Rule {
-    let identifier = "trailing_newline"
+public struct TrailingNewlineRule: Rule {
+    public init() {}
 
-    func validateFile(file: File) -> [StyleViolation] {
+    public let identifier = "trailing_newline"
+
+    public func validateFile(file: File) -> [StyleViolation] {
         let countOfTrailingNewlines = file.contents.countOfTailingCharactersInSet(
             NSCharacterSet.newlineCharacterSet()
         )
@@ -24,4 +26,12 @@ struct TrailingNewlineRule: Rule {
         }
         return []
     }
+
+    public let example = RuleExample(
+        ruleName: "Trailing newline rule",
+        ruleDescription: "Files should have a single trailing newline.",
+        nonTriggeringExamples: [],
+        triggeringExamples: [],
+        showExamples: false
+    )
 }

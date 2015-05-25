@@ -9,9 +9,12 @@
 import SourceKittenFramework
 import SwiftXPC
 
-struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
-    let identifier = "type_body_length"
-    let parameters = [
+public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
+    public init() {}
+
+    public let identifier = "type_body_length"
+
+    public let parameters = [
         RuleParameter(severity: .VeryLow, value: 200),
         RuleParameter(severity: .Low, value: 250),
         RuleParameter(severity: .Medium, value: 300),
@@ -19,24 +22,24 @@ struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
         RuleParameter(severity: .VeryHigh, value: 400)
     ]
 
-    func validateFile(file: File) -> [StyleViolation] {
-        return self.validateFile(file, dictionary: Structure(file: file).dictionary)
+    public func validateFile(file: File) -> [StyleViolation] {
+        return validateFile(file, dictionary: Structure(file: file).dictionary)
     }
 
-    func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
+    public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
         return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
                 let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                    violations.extend(self.validateFile(file, dictionary: subDict))
-                    violations.extend(self.validateFile(file, kind: kind, dictionary: subDict))
+                    violations.extend(validateFile(file, dictionary: subDict))
+                    violations.extend(validateFile(file, kind: kind, dictionary: subDict))
             }
             return violations
         }
     }
 
-    func validateFile(file: File,
+    public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [
@@ -66,4 +69,12 @@ struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
         }
         return []
     }
+
+    public let example = RuleExample(
+        ruleName: "Type body Length Rule",
+        ruleDescription: "Type body should span 200 lines or less.",
+        nonTriggeringExamples: [],
+        triggeringExamples: [],
+        showExamples: false
+    )
 }

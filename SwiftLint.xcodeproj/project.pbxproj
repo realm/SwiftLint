@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
+		83D71E281B131ECE000395DE /* RuleExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleExample.swift */; };
+		83D71E2B1B131EED000395DE /* AnsiCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E231B131C11000395DE /* AnsiCode.swift */; };
+		83D71E2C1B131EF0000395DE /* StructuredText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F231B0CAD41006214E1 /* StructuredText.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65619E9C76900EDBA4D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1211B19E87861005E4BAA /* main.swift */; };
 		E812249A1B04F85B001783D2 /* LinterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81224991B04F85B001783D2 /* LinterTests.swift */; };
 		E812249C1B04FADC001783D2 /* Linter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E812249B1B04FADC001783D2 /* Linter.swift */; };
-		E83A0B351A5D382B0041A60A /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A0B341A5D382B0041A60A /* Version.swift */; };
-		E861519B1B0573B900C54AC0 /* Lint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* Lint.swift */; };
+		E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A0B341A5D382B0041A60A /* VersionCommand.swift */; };
+		E861519B1B0573B900C54AC0 /* LintCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* LintCommand.swift */; };
 		E86847371A587AF40043DC65 /* SwiftXPC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E86847361A587AF40043DC65 /* SwiftXPC.framework */; };
 		E86847381A587B0A0043DC65 /* SwiftXPC.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E86847361A587AF40043DC65 /* SwiftXPC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E868473C1A587C6E0043DC65 /* sourcekitd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E868473B1A587C6E0043DC65 /* sourcekitd.framework */; };
@@ -100,6 +104,10 @@
 /* Begin PBXFileReference section */
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
+		83894F231B0CAD41006214E1 /* StructuredText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StructuredText.swift; path = ../swiftlint/StructuredText.swift; sourceTree = "<group>"; };
+		83D71E231B131C11000395DE /* AnsiCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnsiCode.swift; sourceTree = "<group>"; };
+		83D71E261B131EB5000395DE /* RuleExample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleExample.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
 		D0D1212419E878CC005E4BAA /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		D0D1212619E878CC005E4BAA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -127,8 +135,8 @@
 		D0E7B65819E9CA0800EDBA4D /* swiftlint */ = {isa = PBXFileReference; lastKnownFileType = text; path = swiftlint; sourceTree = BUILT_PRODUCTS_DIR; };
 		E81224991B04F85B001783D2 /* LinterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinterTests.swift; sourceTree = "<group>"; };
 		E812249B1B04FADC001783D2 /* Linter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Linter.swift; sourceTree = "<group>"; };
-		E83A0B341A5D382B0041A60A /* Version.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Version.swift; sourceTree = "<group>"; };
-		E861519A1B0573B900C54AC0 /* Lint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lint.swift; sourceTree = "<group>"; };
+		E83A0B341A5D382B0041A60A /* VersionCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
+		E861519A1B0573B900C54AC0 /* LintCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LintCommand.swift; sourceTree = "<group>"; };
 		E86847361A587AF40043DC65 /* SwiftXPC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftXPC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E868473B1A587C6E0043DC65 /* sourcekitd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = sourcekitd.framework; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/sourcekitd.framework; sourceTree = DEVELOPER_DIR; };
 		E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -203,6 +211,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		83D71E251B131C15000395DE /* Pretty Printing */ = {
+			isa = PBXGroup;
+			children = (
+				83D71E231B131C11000395DE /* AnsiCode.swift */,
+				83894F231B0CAD41006214E1 /* StructuredText.swift */,
+			);
+			name = "Pretty Printing";
+			path = ../SwiftLintFramework;
+			sourceTree = "<group>";
+		};
 		D0D1210F19E87861005E4BAA = {
 			isa = PBXGroup;
 			children = (
@@ -228,9 +246,11 @@
 		D0D1211A19E87861005E4BAA /* swiftlint */ = {
 			isa = PBXGroup;
 			children = (
+				E861519A1B0573B900C54AC0 /* LintCommand.swift */,
 				D0D1211B19E87861005E4BAA /* main.swift */,
-				E861519A1B0573B900C54AC0 /* Lint.swift */,
-				E83A0B341A5D382B0041A60A /* Version.swift */,
+				83D71E251B131C15000395DE /* Pretty Printing */,
+				83894F211B0C928A006214E1 /* RulesCommand.swift */,
+				E83A0B341A5D382B0041A60A /* VersionCommand.swift */,
 				5499CA981A2394BD00783309 /* Supporting Files */,
 			);
 			name = swiftlint;
@@ -306,13 +326,14 @@
 		D0D1216E19E87B05005E4BAA /* SwiftLintFramework */ = {
 			isa = PBXGroup;
 			children = (
-				E88DEA7A1B098D7300A66CB0 /* Rules */,
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
 				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
+				83D71E261B131EB5000395DE /* RuleExample.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
+				E88DEA7A1B098D7300A66CB0 /* Rules */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
@@ -538,6 +559,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83D71E281B131ECE000395DE /* RuleExample.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				E88DEA861B0991BF00A66CB0 /* TrailingWhitespaceRule.swift in Sources */,
 				E88DEA841B0990F500A66CB0 /* ColonRule.swift in Sources */,
@@ -576,9 +598,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E83A0B351A5D382B0041A60A /* Version.swift in Sources */,
-				E861519B1B0573B900C54AC0 /* Lint.swift in Sources */,
+				E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */,
+				83D71E2C1B131EF0000395DE /* StructuredText.swift in Sources */,
+				E861519B1B0573B900C54AC0 /* LintCommand.swift in Sources */,
 				D0E7B65619E9C76900EDBA4D /* main.swift in Sources */,
+				83D71E2B1B131EED000395DE /* AnsiCode.swift in Sources */,
+				83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -825,7 +850,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -836,7 +861,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Test;
@@ -847,7 +872,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -858,7 +883,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Profile;

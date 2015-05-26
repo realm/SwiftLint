@@ -157,7 +157,7 @@ class LinterTests: XCTestCase {
     }
 
     func testControlStatements() {
-        verifyRule(ControlStatementRule().example, type: .ControlStatement, commentDoesntViolate: false)
+        verifyRule(ControlStatementRule().example, type: .ControlStatement, commentDoesntViolate: true)
     }
 
     func testNumberOfFunctionsInAType() {

@@ -157,7 +157,7 @@ class LinterTests: XCTestCase {
     }
 
     func testControlStatements() {
-        // TODO: if,for,while,do statements shouldn't wrap their conditionals in parentheses.
+        verifyRule(ControlStatementRule().example, type: .ControlStatement, commentDoesntViolate: true)
     }
 
     func testNumberOfFunctionsInAType() {

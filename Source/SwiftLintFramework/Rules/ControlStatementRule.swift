@@ -14,13 +14,17 @@ public struct ControlStatementRule: Rule {
     public let identifier = "control_statement"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let statement = file.matchPattern("\\s{0,}(if|for|while)\\s{0,}\\(",
-            withSyntaxKinds: [.Keyword])
-        return statement.map { range in
+        let ifStatement = file.matchPattern("\\s{0,}(if)\\s{0,}\\(",
+            withSyntaxKinds: [.Keyword]).map{ return ($0, "if") }
+        let forStatement = file.matchPattern("\\s{0,}(for)\\s{0,}\\(",
+            withSyntaxKinds: [.Keyword]).map{ return ($0, "for") }
+        let whileStatement = file.matchPattern("\\s{0,}(while)\\s{0,}\\(",
+            withSyntaxKinds: [.Keyword]).map{ return ($0, "while") }
+        return (ifStatement + forStatement + whileStatement).map { violation in
             return StyleViolation(type: .ControlStatement,
-                location: Location(file: file, offset: range.location),
+                location: Location(file: file, offset: violation.0.location),
                 severity: .Low,
-                reason: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.")
+                reason: "\(violation.1) statements shouldn't wrap their conditionals in parentheses.")
         }
     }
 

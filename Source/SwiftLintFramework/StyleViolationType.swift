@@ -16,7 +16,7 @@ public enum StyleViolationType: String, Printable {
     case TODO               = "TODO or FIXME"
     case Colon              = "Colon"
     case Nesting            = "Nesting"
-    case ControlStatement   = "Control Statement"
+    case ControlStatement   = "Control Statement Parentheses"
 
     public var description: String { return rawValue }
 }

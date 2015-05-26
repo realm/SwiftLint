@@ -34,17 +34,10 @@ public struct ControlStatementRule: Rule {
         nonTriggeringExamples: [
             "if condition {\n",
             "renderGif(data)\n",
-            "// if (hasBetterSyntax) {\n",
-            "// for (item in collection) {\n",
-            "// for (var index = 0; index < 42; index++) {\n",
-            "// for(item in collection) {\n",
-            "// for(var index = 0; index < 42; index++) {\n",
             "for item in collection {\n",
             "for var index = 0; index < 42; index++ {\n",
-            "// while (condition) {\n",
             "while condition {\n",
             "} while condition {\n",
-            "// } while (condition {\n",
             "do { ; } while condition {\n"
         ],
         triggeringExamples: [

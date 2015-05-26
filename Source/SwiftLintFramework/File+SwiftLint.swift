@@ -16,7 +16,7 @@ extension File {
         [NSRange] {
         return flatMap(NSRegularExpression(pattern: pattern, options: nil, error: nil)) { regex in
             let range = NSRange(location: 0, length: count(self.contents.utf16))
-            let syntax = SyntaxMap(file: self)
+            let syntax = self.syntaxMap
             let matches = regex.matchesInString(self.contents, options: nil, range: range)
             return map(matches as? [NSTextCheckingResult]) { matches in
                 return compact(matches.map { match in

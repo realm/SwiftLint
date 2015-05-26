@@ -15,7 +15,7 @@ public struct TypeNameRule: ASTRule {
     public let identifier = "type_name"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return validateFile(file, dictionary: Structure(file: file).dictionary)
+        return validateFile(file, dictionary: file.structure.dictionary)
     }
 
     public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {

@@ -24,6 +24,9 @@
   with examples.  
   [Chris Eidhof](https://github.com/chriseidhof)
 
+* Cache parsing to reduce execution time by more than 50%.
+  [Nikolaj Schumacher](https://github.com/nschum)
+
 ##### Bug Fixes
 
 None.

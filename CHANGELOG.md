@@ -27,6 +27,10 @@
 * Cache parsing to reduce execution time by more than 50%.
   [Nikolaj Schumacher](https://github.com/nschum)
 
+* Added `ControlStatementRule` to make sure that if/for/while/do statements
+  do not wrap their conditionals in parentheses.  
+  [Andrea Mazzini](https://github.com/andreamazz)
+
 ##### Bug Fixes
 
 None.

@@ -1,0 +1,11 @@
+language: objective-c
+osx_image: beta-xcode6.3
+git:
+  submodules: false
+branches:
+  only:
+    - master
+script: script/cibuild
+notifications:
+  email: false
+  slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

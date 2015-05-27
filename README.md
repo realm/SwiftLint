@@ -8,6 +8,8 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
+![Test Status](https://travis-ci.org/jpsim/SourceKitten.svg?branch=master)
+
 ## Installation
 
 Using [Homebrew](http://brew.sh/)

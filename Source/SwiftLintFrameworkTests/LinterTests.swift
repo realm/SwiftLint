@@ -54,14 +54,14 @@ class LinterTests: XCTestCase {
         // TODO: Uncomment this once rdar://18845613 is fixed.
 //        XCTAssertEqual(violations("typealias Abc = Void\n"), [])
 //        XCTAssertEqual(violations("typealias abc = Void\n"), [StyleViolation(type: .NameFormat,
-//            location: Location(file: nil),
+//            location: Location(file: nil, line: 1),
 //            reason: "Type name should start with an uppercase character: 'abc'")])
 
         // Test enum element
         // TODO: Uncomment this once rdar://18845613 is fixed.
 //        XCTAssertEqual(violations("enum Abc { case Def }\n"), [])
 //        XCTAssertEqual(violations("enum Abc { case def }\n"), [StyleViolation(type: .NameFormat,
-//            location: Location(file: nil),
+//            location: Location(file: nil, line: 1),
 //            reason: "Type name should start with an uppercase character: 'def'")])
 
         // Test nested type
@@ -221,11 +221,11 @@ class LinterTests: XCTestCase {
     func testTrailingNewlineAtEndOfFile() {
         XCTAssertEqual(violations("//\n"), [])
         XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
-            location: Location(file: nil),
+            location: Location(file: nil, line: 1),
             severity: .Medium,
             reason: "File should have a single trailing newline: currently has 0")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
-            location: Location(file: nil),
+            location: Location(file: nil, line: 3),
             severity: .Medium,
             reason: "File should have a single trailing newline: currently has 2")])
     }
@@ -241,7 +241,7 @@ class LinterTests: XCTestCase {
         ]
         for testCase in testCases {
             XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,
-                location: Location(file: nil),
+                location: Location(file: nil, line: testCase.1),
                 severity: testCase.2,
                 reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
         }

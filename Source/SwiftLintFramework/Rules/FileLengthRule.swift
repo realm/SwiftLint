@@ -26,7 +26,7 @@ public struct FileLengthRule: ParameterizedRule {
         for parameter in reverse(parameters) {
             if lines.count > parameter.value {
                 return [StyleViolation(type: .Length,
-                    location: Location(file: file.path),
+                    location: Location(file: file.path, line: lines.count),
                     severity: parameter.severity,
                     reason: "File should contain 400 lines or less: currently contains " +
                     "\(lines.count)")]

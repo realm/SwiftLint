@@ -56,4 +56,3 @@ public struct ControlStatementRule: Rule {
         ]
     )
 }
-

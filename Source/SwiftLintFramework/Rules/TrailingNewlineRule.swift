@@ -19,7 +19,7 @@ public struct TrailingNewlineRule: Rule {
         )
         if countOfTrailingNewlines != 1 {
             return [StyleViolation(type: .TrailingNewline,
-                location: Location(file: file.path),
+                location: Location(file: file.path, line: file.contents.lines().count + 1),
                 severity: .Medium,
                 reason: "File should have a single trailing newline: " +
                 "currently has \(countOfTrailingNewlines)")]

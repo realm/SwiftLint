@@ -9,6 +9,10 @@
   [aarondaub](https://github.com/aarondaub)
   [#21](https://github.com/realm/SwiftLint/issues/21)
 
+* Increase default `LineLengthRule` parameters to 120, 150, 180, 200, 250.  
+  [JP Simard](https://github.com/jpsim)
+  [#28](https://github.com/realm/SwiftLint/issues/28)
+
 ##### Enhancements
 
 * The following rules now conform to `ASTRule`: 

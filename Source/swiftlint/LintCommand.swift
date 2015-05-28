@@ -54,7 +54,10 @@ struct LintCommand: CommandType {
 
 func recursivelyFindSwiftFilesInDirectory(directory: String) -> [String] {
     let subPaths = fileManager.subpathsOfDirectoryAtPath(directory, error: nil) as? [String]
-    return map(subPaths) { subPaths in
+    let filteredSubPaths = subPaths?.filter {
+        return !$0.hasPrefix("Pods")
+    }
+    return map(filteredSubPaths) { subPaths in
         return reduce(compact((["."] + subPaths).map { dirPath in
             let files = fileManager.contentsOfDirectoryAtPath(dirPath, error: nil) as? [String]
             return map(files) { files in

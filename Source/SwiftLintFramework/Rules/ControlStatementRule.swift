@@ -14,27 +14,33 @@ public struct ControlStatementRule: Rule {
     public let identifier = "control_statement"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let ifStatement = file.matchPattern("\\s{0,}(if)\\s{0,}\\(",
-            withSyntaxKinds: [.Keyword]).map{ return ($0, "if") }
-        let forStatement = file.matchPattern("\\s{0,}(for)\\s{0,}\\(",
-            withSyntaxKinds: [.Keyword]).map{ return ($0, "for") }
-        let whileStatement = file.matchPattern("\\s{0,}(while)\\s{0,}\\(",
-            withSyntaxKinds: [.Keyword]).map{ return ($0, "while") }
-        return (ifStatement + forStatement + whileStatement).map { violation in
-            return StyleViolation(type: .ControlStatement,
-                location: Location(file: file, offset: violation.0.location),
-                severity: .Low,
-                reason: "\(violation.1) statements shouldn't wrap their conditionals in parentheses.")
+        return ["if", "for", "while"].flatMap { statementKind in
+            let pattern = "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
+            return compact(file.matchPattern(pattern).map { match, syntaxKinds in
+                if syntaxKinds.first != .Keyword {
+                    return nil
+                }
+                return StyleViolation(type: .ControlStatement,
+                    location: Location(file: file, offset: match.location),
+                    severity: .Low,
+                    reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
+                    "parentheses.")
+            })
         }
     }
 
     public let example = RuleExample(
         ruleName: "Control Statement",
-        ruleDescription: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
+        ruleDescription: "if,for,while,do statements shouldn't wrap their conditionals in " +
+        "parentheses.",
         nonTriggeringExamples: [
             "if condition {\n",
+            "if (a, b) == (0, 1) {\n",
+            "if renderGif(data) {\n",
             "renderGif(data)\n",
             "for item in collection {\n",
+            "for (key, value) in dictionary {\n",
+            "for (index, value) in enumerate(array) {\n",
             "for var index = 0; index < 42; index++ {\n",
             "while condition {\n",
             "} while condition {\n",

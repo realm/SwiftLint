@@ -34,7 +34,8 @@ as its contents.
 
 ### Atom
 
-To integrate SwiftLint with Atom install the `linter-swiftlint` package from APM.
+To integrate SwiftLint with [Atom](https://atom.io/) install the
+[`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from APM.
 
 ### Command Line
 
@@ -44,6 +45,7 @@ Available commands:
 
    help      Display general or command-specific help
    lint      Print lint warnings and errors for the Swift files in the current directory (default command)
+   rules     Display the list of rules and examples
    version   Display the current version of SwiftLint
 ```
 

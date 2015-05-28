@@ -24,7 +24,7 @@
   with examples.  
   [Chris Eidhof](https://github.com/chriseidhof)
 
-* Cache parsing to reduce execution time by more than 50%.
+* Cache parsing to reduce execution time by more than 50%.  
   [Nikolaj Schumacher](https://github.com/nschum)
 
 * Added `ControlStatementRule` to make sure that if/for/while/do statements
@@ -33,7 +33,9 @@
 
 ##### Bug Fixes
 
-None.
+* Trailing newline and file length violations are now displayed in Xcode.  
+  [JP Simard](https://github.com/jpsim)
+  [#43](https://github.com/realm/SwiftLint/issues/43)
 
 
 ## 0.1.0

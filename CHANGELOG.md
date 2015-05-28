@@ -31,6 +31,10 @@
   do not wrap their conditionals in parentheses.  
   [Andrea Mazzini](https://github.com/andreamazz)
 
+* Character position is now included in violation location where appropriate.  
+  [JP Simard](https://github.com/jpsim)
+  [#62](https://github.com/realm/SwiftLint/issues/62)
+
 ##### Bug Fixes
 
 * Trailing newline and file length violations are now displayed in Xcode.  

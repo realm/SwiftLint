@@ -30,7 +30,7 @@ public struct Location: Printable, Equatable {
         self.file = file.path
         if let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(offset) {
             line = lineAndCharacter.line
-            character = nil // FIXME: Use lineAndCharacter.character once it works.
+            character = lineAndCharacter.character
         } else {
             line = nil
             character = nil

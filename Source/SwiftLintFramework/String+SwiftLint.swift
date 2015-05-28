@@ -38,16 +38,18 @@ extension NSString {
             var numberOfLines = 0
             var index = 0
             var lineRangeStart = 0
+            var previousIndex = 0
             while index < length {
                 numberOfLines++
                 if index <= range.location {
                     lineRangeStart = numberOfLines
+                    previousIndex = index
                     index = NSMaxRange(self.lineRangeForRange(NSRange(location: index, length: 1)))
                 } else {
                     break
                 }
             }
-            return (lineRangeStart, 0)
+            return (lineRangeStart, range.location - previousIndex + 1)
         }
     }
 }

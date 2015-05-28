@@ -1,41 +1,15 @@
 //
-//  LinterTests.swift
+//  ASTRuleTests.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
+//  Created by JP Simard on 5/28/15.
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-import Foundation
 import SwiftLintFramework
-import SourceKittenFramework
 import XCTest
 
-// MARK: Test Helpers
-
-func violations(string: String) -> [StyleViolation] {
-    return Linter(file: File(contents: string)).styleViolations
-}
-
-extension XCTestCase {
-    func verifyRule(rule: RuleExample,
-        type: StyleViolationType,
-        commentDoesntViolate: Bool = true) {
-            XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0)}), [])
-            XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0).map({$0.type})}),
-                Array(count: rule.triggeringExamples.count, repeatedValue: type))
-
-            if commentDoesntViolate {
-                XCTAssertEqual(rule.triggeringExamples.flatMap({violations("// " + $0)}), [])
-            }
-    }
-}
-
-// MARK: Tests
-
-class LinterTests: XCTestCase {
-    // MARK: AST Violations
-
+class ASTRuleTests: XCTestCase {
     func testTypeNames() {
         for kind in ["class", "struct", "enum"] {
             XCTAssertEqual(violations("\(kind) Abc {}\n"), [])
@@ -158,79 +132,5 @@ class LinterTests: XCTestCase {
 
     func testControlStatements() {
         verifyRule(ControlStatementRule().example, type: .ControlStatement)
-    }
-
-    // MARK: String Violations
-
-    func testLineLengths() {
-        let longLine = join("", Array(count: 100, repeatedValue: "/")) + "\n"
-        XCTAssertEqual(violations(longLine), [])
-        let testCases: [(String, Int, ViolationSeverity)] = [
-            ("/", 101, .VeryLow),
-            (join("", Array(count: 21, repeatedValue: "/")), 121, .Low),
-            (join("", Array(count: 51, repeatedValue: "/")), 151, .Medium),
-            (join("", Array(count: 101, repeatedValue: "/")), 201, .High),
-            (join("", Array(count: 151, repeatedValue: "/")), 251, .VeryHigh)
-        ]
-        for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
-                location: Location(file: nil, line: 1),
-                severity: testCase.2,
-                reason: "Line should be 100 characters or less: " +
-                "currently \(testCase.1) characters")])
-        }
-    }
-
-    func testTrailingNewlineAtEndOfFile() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
-            location: Location(file: nil, line: 1),
-            severity: .Medium,
-            reason: "File should have a single trailing newline: currently has 0")])
-        XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
-            location: Location(file: nil, line: 3),
-            severity: .Medium,
-            reason: "File should have a single trailing newline: currently has 2")])
-    }
-
-    func testFileLengths() {
-        XCTAssertEqual(violations(join("", Array(count: 400, repeatedValue: "//\n"))), [])
-        let testCases: [(String, Int, ViolationSeverity)] = [
-            (join("", Array(count: 401, repeatedValue: "//\n")), 401, .VeryLow),
-            (join("", Array(count: 501, repeatedValue: "//\n")), 501, .Low),
-            (join("", Array(count: 751, repeatedValue: "//\n")), 751, .Medium),
-            (join("", Array(count: 1001, repeatedValue: "//\n")), 1001, .High),
-            (join("", Array(count: 2001, repeatedValue: "//\n")), 2001, .VeryHigh)
-        ]
-        for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,
-                location: Location(file: nil, line: testCase.1),
-                severity: testCase.2,
-                reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
-        }
-    }
-
-    func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule().example,
-            type: .LeadingWhitespace,
-            commentDoesntViolate: false)
-    }
-
-    func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule().example,
-            type: .TrailingWhitespace,
-            commentDoesntViolate: false)
-    }
-
-    func testForceCasting() {
-        verifyRule(ForceCastRule().example, type: .ForceCast)
-    }
-
-    func testTodoOrFIXME() {
-        verifyRule(TodoRule().example, type: .TODO)
-    }
-
-    func testColon() {
-        verifyRule(ColonRule().example, type: .Colon)
     }
 }

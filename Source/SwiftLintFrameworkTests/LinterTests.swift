@@ -49,22 +49,12 @@ class LinterTests: XCTestCase {
                     "'\(longerName)'")
                 ])
         }
+        // TODO: Test typealias once rdar://18845613 is fixed.
+        // TODO: Test enum element once rdar://18845613 is fixed.
+        // TODO: Support generic type names.
+    }
 
-        // Test typealias
-        // TODO: Uncomment this once rdar://18845613 is fixed.
-//        XCTAssertEqual(violations("typealias Abc = Void\n"), [])
-//        XCTAssertEqual(violations("typealias abc = Void\n"), [StyleViolation(type: .NameFormat,
-//            location: Location(file: nil, line: 1),
-//            reason: "Type name should start with an uppercase character: 'abc'")])
-
-        // Test enum element
-        // TODO: Uncomment this once rdar://18845613 is fixed.
-//        XCTAssertEqual(violations("enum Abc { case Def }\n"), [])
-//        XCTAssertEqual(violations("enum Abc { case def }\n"), [StyleViolation(type: .NameFormat,
-//            location: Location(file: nil, line: 1),
-//            reason: "Type name should start with an uppercase character: 'def'")])
-
-        // Test nested type
+    func testNestedTypeNames() {
         XCTAssertEqual(violations("class Abc {\n    class Def {}\n}\n"), [])
         XCTAssertEqual(violations("class Abc {\n    class def\n}\n"),
             [
@@ -72,9 +62,8 @@ class LinterTests: XCTestCase {
                     location: Location(file: nil, line: 2),
                     severity: .High,
                     reason: "Type name should start with an uppercase character: 'def'")
-            ])
-
-        // TODO: Support generic type names.
+            ]
+        )
     }
 
     func testVariableNames() {
@@ -157,7 +146,7 @@ class LinterTests: XCTestCase {
     }
 
     func testControlStatements() {
-        verifyRule(ControlStatementRule().example, type: .ControlStatement, commentDoesntViolate: true)
+        verifyRule(ControlStatementRule().example, type: .ControlStatement)
     }
 
     func testNumberOfFunctionsInAType() {

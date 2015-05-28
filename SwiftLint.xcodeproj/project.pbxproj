@@ -556,7 +556,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  cd Source/SwiftLintFramework && swiftlint\nelse\n  echo \"SwiftLint not installed. Skipping lint.\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n  cd Source && swiftlint\nelse\n  echo \"SwiftLint not installed. Skipping lint.\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

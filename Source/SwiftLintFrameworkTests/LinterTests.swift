@@ -11,9 +11,27 @@ import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
+// MARK: Test Helpers
+
 func violations(string: String) -> [StyleViolation] {
     return Linter(file: File(contents: string)).styleViolations
 }
+
+extension XCTestCase {
+    func verifyRule(rule: RuleExample,
+        type: StyleViolationType,
+        commentDoesntViolate: Bool = true) {
+            XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0)}), [])
+            XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0).map({$0.type})}),
+                Array(count: rule.triggeringExamples.count, repeatedValue: type))
+
+            if commentDoesntViolate {
+                XCTAssertEqual(rule.triggeringExamples.flatMap({violations("// " + $0)}), [])
+            }
+    }
+}
+
+// MARK: Tests
 
 class LinterTests: XCTestCase {
 
@@ -49,9 +67,6 @@ class LinterTests: XCTestCase {
                     "'\(longerName)'")
                 ])
         }
-        // TODO: Test typealias once rdar://18845613 is fixed.
-        // TODO: Test enum element once rdar://18845613 is fixed.
-        // TODO: Support generic type names.
     }
 
     func testNestedTypeNames() {
@@ -107,10 +122,6 @@ class LinterTests: XCTestCase {
         }
     }
 
-    func testClosureLengths() {
-        // TODO: Closures should be 20 lines or less.
-    }
-
     func testFunctionBodyLengths() {
         let longFunctionBody = "func abc() {" +
             join("", Array(count: 40, repeatedValue: "\n")) +
@@ -147,43 +158,6 @@ class LinterTests: XCTestCase {
 
     func testControlStatements() {
         verifyRule(ControlStatementRule().example, type: .ControlStatement)
-    }
-
-    func testNumberOfFunctionsInAType() {
-        // TODO: Types should contain 10 functions or less.
-    }
-
-    func testTrailingClosureSyntax() {
-        // TODO: Trailing closure syntax should be used whenever possible.
-    }
-
-    func testNoForceUnwrapping() {
-        // TODO: Force unwrapping should not be used.
-    }
-
-    func testNoImplicitlyUnwrappedOptionals() {
-        // TODO: Implicitly unwrapped optionals should not be used.
-    }
-
-    func testPreferImplicitGettersOnReadOnly() {
-        // TODO: Read-only properties and subscripts should avoid using the `get` keyword.
-    }
-
-    func testExplicitAccessControlKeywordsForTopLevelDeclarations() {
-        // TODO: Top-level declarations should use explicit ACL keywords
-        //       (`public`, `internal`, `private`).
-    }
-
-    func testAvoidSelfOutsideClosuresAndConflicts() {
-        // TODO: Use of `self` should be limited to closures and scopes in which other
-        //       declarations conflict.
-    }
-
-    func testUseWhitespaceAroundOperatorDefinitions() {
-        // TODO: Use whitespace around operator definitions.
-        //
-        // Good: `func <|< <A>(lhs: A, rhs: A) -> A`
-        // Bad:  `func <|<<A>(lhs: A, rhs: A) -> A`
     }
 
     // MARK: String Violations
@@ -258,17 +232,5 @@ class LinterTests: XCTestCase {
 
     func testColon() {
         verifyRule(ColonRule().example, type: .Colon)
-    }
-
-    func verifyRule(rule: RuleExample,
-        type: StyleViolationType,
-        commentDoesntViolate: Bool = true) {
-        XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0)}), [])
-        XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0).map({$0.type})}),
-            Array(count: rule.triggeringExamples.count, repeatedValue: type))
-
-        if commentDoesntViolate {
-            XCTAssertEqual(rule.triggeringExamples.flatMap({violations("// " + $0)}), [])
-        }
     }
 }

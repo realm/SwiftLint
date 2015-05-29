@@ -11,9 +11,9 @@
 
 ##### Enhancements
 
-* Added a command line option `--path` to specify a path to lint.
-	[Lars Lockefeer](https://github.com/larslockefeer)
-	[#16](https://github.com/realm/SwiftLint/issues/16)
+* Added a command line option `--path` to specify a path to lint.  
+  [Lars Lockefeer](https://github.com/larslockefeer)
+  [#16](https://github.com/realm/SwiftLint/issues/16)
 
 * The following rules now conform to `ASTRule`: 
   FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  

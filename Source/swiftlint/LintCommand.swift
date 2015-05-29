@@ -25,7 +25,7 @@ struct LintCommand: CommandType {
         }
     }
 
-    func lint(path: String) -> Result<(), CommandantError<()>> {
+    private func lint(path: String) -> Result<(), CommandantError<()>> {
         let filesToLint = filesToLintAtPath(path)
         if filesToLint.count > 0 {
 

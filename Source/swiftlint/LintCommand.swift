@@ -66,6 +66,21 @@ struct LintCommand: CommandType {
         return failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
             " path \(path)"))
     }
+
+    private func filesToLintAtPath(path: String) -> [String] {
+        let absolutePath = path.absolutePathRepresentation()
+        var isDirectory: ObjCBool = false
+        if fileManager.fileExistsAtPath(absolutePath, isDirectory: &isDirectory) {
+            if isDirectory {
+                return fileManager.allFilesRecursively(directory: absolutePath).filter {
+                    $0.isSwiftFile()
+                }
+            } else if absolutePath.isSwiftFile() {
+                return [absolutePath]
+            }
+        }
+        return []
+    }
 }
 
 struct LintOptions: OptionsType {
@@ -80,27 +95,4 @@ struct LintOptions: OptionsType {
             <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or" +
                         " directory to lint")
     }
-}
-
-func filesToLintAtPath(path: String) -> [String] {
-    var standardizedPath: String?
-    var isDirectory: ObjCBool = false
-
-    let relPath = path.absolutePathRepresentation(rootDirectory: fileManager.currentDirectoryPath)
-    if fileManager.fileExistsAtPath(relPath, isDirectory: &isDirectory) {
-        standardizedPath = relPath
-    } else if fileManager.fileExistsAtPath(path, isDirectory: &isDirectory) {
-        standardizedPath = path
-    }
-
-    if let standardizedPath = standardizedPath {
-        if isDirectory {
-            return fileManager.allFilesRecursively(directory: standardizedPath).filter {
-                $0.isSwiftFile()
-            }
-        } else if standardizedPath.isSwiftFile() {
-            return [standardizedPath]
-        }
-    }
-    return []
 }

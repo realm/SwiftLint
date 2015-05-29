@@ -27,7 +27,7 @@ struct LintCommand: CommandType {
     
     func lint(path: String) -> Result<(), CommandantError<()>> {
         let filesToLint = filesToLintAtPath(path)
-        if  filesToLint.count > 0 {
+        if filesToLint.count > 0 {
             
             if path == "" {
                 println("Linting Swift files in current working directory")
@@ -76,7 +76,7 @@ struct LintOptions: OptionsType {
     
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
         return create
-            <*> m <| Option(key: "path", defaultValue: "", usage: "theff path to the file or directory to lint")
+            <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or directory to lint")
     }
 }
 

@@ -93,21 +93,12 @@ func filesToLintAtPath(path: String) -> [String] {
     
     if let standardizedPath = standardizedPath {
         if isDirectory {
-            return recursivelyFindSwiftFilesInDirectory(standardizedPath)
+            return fileManager.allFilesRecursively(directory: standardizedPath).filter {
+                $0.isSwiftFile()
+            }
         } else if standardizedPath.isSwiftFile() {
             return [standardizedPath]
         }
     }
     return []
-}
-
-func recursivelyFindSwiftFilesInDirectory(directory: String) -> [String] {
-    let subPaths = fileManager.subpathsOfDirectoryAtPath(directory, error: nil) as? [String]
-    return map(subPaths) { subPaths in
-        subPaths.map { subPath in
-            return directory.stringByAppendingPathComponent(subPath)
-        }.filter {
-            $0.isSwiftFile()
-        }
-    } ?? []
 }

@@ -1,4 +1,4 @@
-## Master
+## 0.1.1: Top Loading
 
 ##### Breaking
 
@@ -14,10 +14,6 @@
 * Added a command line option `--path` to specify a path to lint.  
   [Lars Lockefeer](https://github.com/larslockefeer)
   [#16](https://github.com/realm/SwiftLint/issues/16)
-
-* The following rules now conform to `ASTRule`: 
-  FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
-  [JP Simard](https://github.com/jpsim)
 
 * swiftlint now returns a non-zero error code when a warning of high-severity
   or above is found in the source files being linted.  
@@ -39,6 +35,10 @@
   [JP Simard](https://github.com/jpsim)
   [#62](https://github.com/realm/SwiftLint/issues/62)
 
+* The following rules now conform to `ASTRule`:
+  FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Trailing newline and file length violations are now displayed in Xcode.  
@@ -46,6 +46,6 @@
   [#43](https://github.com/realm/SwiftLint/issues/43)
 
 
-## 0.1.0
+## 0.1.0: Fresh Out Of The Dryer
 
 First Version!

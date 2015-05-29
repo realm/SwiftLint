@@ -9,7 +9,7 @@
 import Commandant
 import LlamaKit
 
-private let version = "0.1.0"
+private let version = "0.1.1"
 
 struct VersionCommand: CommandType {
     let verb = "version"

@@ -24,17 +24,17 @@ struct LintCommand: CommandType {
             return self.lint(options.path)
         }
     }
-    
+
     func lint(path: String) -> Result<(), CommandantError<()>> {
         let filesToLint = filesToLintAtPath(path)
         if filesToLint.count > 0 {
-            
+
             if path == "" {
                 println("Linting Swift files in current working directory")
             } else {
                 println("Linting Swift files at path \(path)")
             }
-            
+
             var numberOfViolations = 0, numberOfSeriousViolations = 0
             for (index, file) in enumerate(filesToLint) {
                 println("Linting '\(file.lastPathComponent)' (\(index + 1)/\(filesToLint.count))")
@@ -63,34 +63,36 @@ struct LintCommand: CommandType {
                 return failure(CommandantError<()>.CommandError(Box()))
             }
         }
-        return failure(CommandantError<()>.UsageError(description: "No lintable files found at path \(path)"))
+        return failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
+            " path \(path)"))
     }
 }
 
 struct LintOptions: OptionsType {
     let path: String
-    
+
     static func create(path: String) -> LintOptions {
         return LintOptions(path: path)
     }
-    
+
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
         return create
-            <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or directory to lint")
+            <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or" +
+                        " directory to lint")
     }
 }
 
 func filesToLintAtPath(path: String) -> [String] {
     var standardizedPath: String?
     var isDirectory: ObjCBool = false
-    
-    let relativePath = path.absolutePathRepresentation(rootDirectory: fileManager.currentDirectoryPath)
-    if fileManager.fileExistsAtPath(relativePath, isDirectory: &isDirectory) {
-        standardizedPath = relativePath
+
+    let relPath = path.absolutePathRepresentation(rootDirectory: fileManager.currentDirectoryPath)
+    if fileManager.fileExistsAtPath(relPath, isDirectory: &isDirectory) {
+        standardizedPath = relPath
     } else if fileManager.fileExistsAtPath(path, isDirectory: &isDirectory) {
         standardizedPath = path
     }
-    
+
     if let standardizedPath = standardizedPath {
         if isDirectory {
             return fileManager.allFilesRecursively(directory: standardizedPath).filter {

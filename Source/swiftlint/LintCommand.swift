@@ -84,7 +84,7 @@ func filesToLintAtPath(path: String) -> [String] {
     var standardizedPath: String?
     var isDirectory: ObjCBool = false
     
-    let relativePath = fileManager.currentDirectoryPath.stringByAppendingPathComponent(path)
+    let relativePath = path.absolutePathRepresentation(rootDirectory: fileManager.currentDirectoryPath)
     if fileManager.fileExistsAtPath(relativePath, isDirectory: &isDirectory) {
         standardizedPath = relativePath
     } else if fileManager.fileExistsAtPath(path, isDirectory: &isDirectory) {

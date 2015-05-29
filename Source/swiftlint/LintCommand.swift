@@ -21,7 +21,9 @@ struct LintCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         println("Finding Swift files in current directory...")
-        let files = recursivelyFindSwiftFilesInDirectory(fileManager.currentDirectoryPath)
+        let files = fileManager.allFilesRecursively(
+            directory: fileManager.currentDirectoryPath
+        ).filter { $0.isSwiftFile() }
         var numberOfViolations = 0, numberOfSeriousViolations = 0
         for (index, file) in enumerate(files) {
             println("Linting '\(file.lastPathComponent)' (\(index + 1)/\(files.count))")
@@ -50,21 +52,4 @@ struct LintCommand: CommandType {
             return failure(CommandantError<()>.CommandError(Box()))
         }
     }
-}
-
-func recursivelyFindSwiftFilesInDirectory(directory: String) -> [String] {
-    let subPaths = fileManager.subpathsOfDirectoryAtPath(directory, error: nil) as? [String]
-    return map(subPaths) { subPaths in
-        return reduce(compact((["."] + subPaths).map { dirPath in
-            let files = fileManager.contentsOfDirectoryAtPath(dirPath, error: nil) as? [String]
-            return map(files) { files in
-                return files.map { file in
-                    return directory.stringByAppendingPathComponent(dirPath)
-                        .stringByAppendingPathComponent(file).stringByStandardizingPath
-                }
-            }
-        }), [], +).filter {
-            $0.isSwiftFile()
-        }
-    } ?? []
 }

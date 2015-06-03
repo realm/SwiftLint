@@ -70,6 +70,11 @@ class StringRuleTests: XCTestCase {
             commentDoesntViolate: false)
     }
 
+    func testLinesShouldContainReturnArrowWhitespace() {
+        verifyRule(ReturnArrowWhitespaceRule().example,
+            type: .ReturnArrowWhitespace)
+    }
+
     func testForceCasting() {
         verifyRule(ForceCastRule().example, type: .ForceCast)
     }

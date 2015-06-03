@@ -17,6 +17,7 @@ public struct Linter {
         LineLengthRule(),
         LeadingWhitespaceRule(),
         TrailingWhitespaceRule(),
+        ReturnArrowWhitespaceRule(),
         TrailingNewlineRule(),
         ForceCastRule(),
         FileLengthRule(),

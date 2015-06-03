@@ -41,12 +41,14 @@ public struct ReturnArrowWhitespaceRule: Rule {
         nonTriggeringExamples: [
             "func abc() -> Int {}\n",
             "func abc() -> [Int] {}\n",
+            "func abc() -> (Int, Int) {}\n",
             "var abc = {(param: Int) -> Void in }\n",
             "func abc() ->\n"
         ],
         triggeringExamples: [
             "func abc()->Int {}\n",
             "func abc()->[Int] {}\n",
+            "func abc()->(Int, Int) {}\n",
             "func abc()-> Int {}\n",
             "func abc() ->Int {}\n",
             "func abc()  ->  Int {}\n",

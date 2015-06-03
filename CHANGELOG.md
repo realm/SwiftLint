@@ -6,7 +6,9 @@
 
 ##### Enhancements
 
-* None.
+* Added `ReturnArrowWhitespaceRule` to make sure that
+  you have 1 space before return arrow and return type
+  [Akira Hirakawa](https://github.com/akirahrkw)
 
 ##### Bug Fixes
 

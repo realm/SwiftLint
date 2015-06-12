@@ -21,7 +21,7 @@ struct LintCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in
-            if (options.use_stdin) {
+            if options.useSTDIN {
                 let standardInput = NSFileHandle.fileHandleWithStandardInput()
                 let stdinData = standardInput.readDataToEndOfFile()
                 let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
@@ -98,10 +98,10 @@ struct LintCommand: CommandType {
 
 struct LintOptions: OptionsType {
     let path: String
-    let use_stdin: Bool
+    let useSTDIN: Bool
 
-    static func create(path: String)(use_stdin: Bool) -> LintOptions {
-        return LintOptions(path: path, use_stdin: use_stdin)
+    static func create(path: String)(useSTDIN: Bool) -> LintOptions {
+        return LintOptions(path: path, useSTDIN: useSTDIN)
     }
 
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {

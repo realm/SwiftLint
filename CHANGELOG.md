@@ -10,6 +10,10 @@
   you have 1 space before return arrow and return type.  
   [Akira Hirakawa](https://github.com/akirahrkw)
 
+* Support linting from standard input (use `--use-stdin`).  
+  [JP Simard](https://github.com/jpsim)
+  [#78](https://github.com/realm/SwiftLint/issues/78)
+
 ##### Bug Fixes
 
 * None.

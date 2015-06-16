@@ -44,7 +44,7 @@ Returns true if `lhs` StyleViolation is equal to `rhs` StyleViolation.
 
 :returns: True if `lhs` StyleViolation is equal to `rhs` StyleViolation.
 */
-public func ==(lhs: StyleViolation, rhs: StyleViolation) -> Bool {
+public func == (lhs: StyleViolation, rhs: StyleViolation) -> Bool {
     return lhs.type == rhs.type &&
         lhs.location == rhs.location &&
         lhs.severity == rhs.severity &&

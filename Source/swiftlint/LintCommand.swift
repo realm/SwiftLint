@@ -21,6 +21,19 @@ struct LintCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in
+            if options.useSTDIN {
+                let standardInput = NSFileHandle.fileHandleWithStandardInput()
+                let stdinData = standardInput.readDataToEndOfFile()
+                let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
+                if let stdinString = stdinNSString as? String {
+                    let violations = Linter(file: File(contents: stdinString)).styleViolations
+                    println(join("\n", violations.map { $0.description }))
+                    return success()
+                }
+                return failure(CommandantError<()>.CommandError(Box()))
+            }
+
+            // Otherwise parse path.
             return self.lint(options.path)
         }
     }
@@ -85,14 +98,16 @@ struct LintCommand: CommandType {
 
 struct LintOptions: OptionsType {
     let path: String
+    let useSTDIN: Bool
 
-    static func create(path: String) -> LintOptions {
-        return LintOptions(path: path)
+    static func create(path: String)(useSTDIN: Bool) -> LintOptions {
+        return LintOptions(path: path, useSTDIN: useSTDIN)
     }
 
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
         return create
             <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or" +
                         " directory to lint")
+            <*> m <| Option(key: "use-stdin", defaultValue: false, usage: "lint standard input")
     }
 }

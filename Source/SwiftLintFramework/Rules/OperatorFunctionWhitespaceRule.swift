@@ -41,7 +41,8 @@ public struct OperatorFunctionWhitespaceRule: ASTRule {
             return []
         }
         var violations = [StyleViolation]()
-        if let nameOffset = flatMap(dictionary["key.nameoffset"] as? Int64, { Int($0) }),
+        if  let name = flatMap(dictionary["key.name"] as? String, { String($0) }),
+            let nameOffset = flatMap(dictionary["key.nameoffset"] as? Int64, { Int($0) }),
             let nameLength = flatMap(dictionary["key.namelength"] as? Int64, { Int($0) }),
             let offset = flatMap(dictionary["key.offset"] as? Int64, { Int($0) }) {
 

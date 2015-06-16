@@ -82,7 +82,6 @@ public struct OperatorFunctionWhitespaceRule: ASTRule {
         triggeringExamples: [
             "func <|(lhs: Int, rhs: Int) -> Int {}\n",
             "func <|<<A>(lhs: A, rhs: A) -> A {}\n"
-        ],
-        showExamples: true
+        ]
     )
 }

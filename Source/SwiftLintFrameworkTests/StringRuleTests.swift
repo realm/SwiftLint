@@ -79,6 +79,10 @@ class StringRuleTests: XCTestCase {
         verifyRule(ForceCastRule().example, type: .ForceCast)
     }
 
+    func testOperatorFunctionWhitespace() {
+        verifyRule(OperatorFunctionWhitespaceRule().example, type: .OperatorFunctionWhitespace)
+    }
+
     func testTodoOrFIXME() {
         verifyRule(TodoRule().example, type: .TODO)
     }

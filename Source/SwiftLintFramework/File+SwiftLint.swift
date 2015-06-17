@@ -12,7 +12,7 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    public func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind] = []) ->
+    public func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind]) ->
         [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
             return kindsInRange.count == syntaxKinds.count &&
@@ -22,9 +22,9 @@ extension File {
 
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
         return flatMap(NSRegularExpression(pattern: pattern, options: nil, error: nil)) { regex in
-            let range = NSRange(location: 0, length: count(self.contents.utf16))
-            let syntax = self.syntaxMap
-            let matches = regex.matchesInString(self.contents, options: nil, range: range)
+            let range = NSRange(location: 0, length: count(contents.utf16))
+            let syntax = syntaxMap
+            let matches = regex.matchesInString(contents, options: nil, range: range)
             return map(matches as? [NSTextCheckingResult]) { matches in
                 return matches.map { match in
                     let tokensInRange = syntax.tokens.filter {

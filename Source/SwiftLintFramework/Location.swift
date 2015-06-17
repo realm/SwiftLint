@@ -48,7 +48,7 @@ Returns true if `lhs` Location is equal to `rhs` Location.
 
 :returns: True if `lhs` Location is equal to `rhs` Location.
 */
-public func ==(lhs: Location, rhs: Location) -> Bool {
+public func == (lhs: Location, rhs: Location) -> Bool {
     return lhs.file == rhs.file &&
         lhs.line == rhs.line &&
         lhs.character == rhs.character

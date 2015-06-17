@@ -26,8 +26,7 @@ public struct ForceCastRule: Rule {
         ruleName: "Force Cast Rule",
         ruleDescription: "This rule checks whether you don't do force casts.",
         nonTriggeringExamples: [
-            "NSNumber() as? Int\n",
-            "// NSNumber() as! Int\n",
+            "NSNumber() as? Int\n"
         ],
         triggeringExamples: [ "NSNumber() as! Int\n" ]
     )

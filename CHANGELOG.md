@@ -7,7 +7,7 @@
 ##### Enhancements
 
 * Added `OperatorFunctionWhitespaceRule` to make sure that
-  you use whitespace around operators when defining them.
+  you use whitespace around operators when defining them.  
   [Akira Hirakawa](https://github.com/akirahrkw)
   [#60](https://github.com/realm/SwiftLint/issues/60)
 

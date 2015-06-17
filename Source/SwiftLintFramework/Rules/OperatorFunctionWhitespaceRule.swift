@@ -7,81 +7,44 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
-public struct OperatorFunctionWhitespaceRule: ASTRule {
+public struct OperatorFunctionWhitespaceRule: Rule {
     public init() {}
 
     public let identifier = "operator_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return validateFile(file, dictionary: file.structure.dictionary)
-    }
-
-    public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
-        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
-            var violations = [StyleViolation]()
-            if let subDict = subItem as? XPCDictionary,
-                let kindString = subDict["key.kind"] as? String,
-                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                    violations.extend(validateFile(file, dictionary: subDict))
-                    violations.extend(validateFile(file, kind: kind, dictionary: subDict))
-            }
-            return violations
+        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
+            ["%", "<", ">", "&"]
+        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
+        let pattern1 = "func\\s+[" + "".join(operators) + "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
+        let pattern2 = "func\(zeroOrManySpaces)[" + "".join(operators) + "]+\\s+(<[A-Z]+>)?\\("
+        return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
+            return syntaxKinds.first == .Keyword
+        }.map { range, _ in
+            return StyleViolation(type: .OperatorFunctionWhitespace,
+                location: Location(file: file, offset: range.location),
+                severity: .Medium,
+                reason: self.example.ruleDescription)
         }
-    }
-
-    public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
-        let functionKinds: [SwiftDeclarationKind] = [
-            .FunctionFree,
-        ]
-        if !contains(functionKinds, kind) {
-            return []
-        }
-        var violations = [StyleViolation]()
-        if let nameOffset = flatMap(dictionary["key.nameoffset"] as? Int64, { Int($0) }),
-            let nameLength = flatMap(dictionary["key.namelength"] as? Int64, { Int($0) }),
-            let offset = flatMap(dictionary["key.offset"] as? Int64, { Int($0) }) {
-
-            let location = Location(file: file, offset: offset)
-            let startAdvance = advance(file.contents.startIndex, nameOffset)
-            let endAdvance = advance(startAdvance, nameLength)
-            let range = Range(start: startAdvance, end: endAdvance)
-            let definition = file.contents.substringWithRange(range)
-
-            let ope1 = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"})
-            let ope2 = ["%", "<", ">", "&"]
-            let ope = "".join(ope1 + ope2)
-            let pattern = "^[\(ope)]+(<[A-Z]+>)?\\("
-
-            if let regex = NSRegularExpression(pattern: pattern, options: nil, error: nil) {
-                let matchRange = NSRange(location: 0, length: count(definition.utf16))
-                let matches = regex.matchesInString(definition, options: nil, range: matchRange)
-
-                if matches.count > 0 {
-                    violations.append(StyleViolation(type: .OperatorFunctionWhitespace,
-                        location: location,
-                        severity: .Medium,
-                        reason: "Use whitespace around operators when defining them"))
-                }
-            }
-        }
-        return violations
     }
 
     public let example = RuleExample(
         ruleName: "Operator Function Whitespace Rule",
-        ruleDescription: "Use whitespace around operators when defining them.",
+        ruleDescription: "Use a single whitespace around operators when " +
+            "defining them.",
         nonTriggeringExamples: [
             "func <| (lhs: Int, rhs: Int) -> Int {}\n",
             "func <|< <A>(lhs: A, rhs: A) -> A {}\n",
             "func abc(lhs: Int, rhs: Int) -> Int {}\n"
         ],
         triggeringExamples: [
-            "func <|(lhs: Int, rhs: Int) -> Int {}\n",
-            "func <|<<A>(lhs: A, rhs: A) -> A {}\n"
+            "func <|(lhs: Int, rhs: Int) -> Int {}\n",   // no spaces after
+            "func <|<<A>(lhs: A, rhs: A) -> A {}\n",     // no spaces after
+            "func <|  (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces after
+            "func <|<  <A>(lhs: A, rhs: A) -> A {}\n",   // 2 spaces after
+            "func  <| (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces before
+            "func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
         ]
     )
 }

@@ -126,10 +126,6 @@ class ASTRuleTests: XCTestCase {
         }
     }
 
-    func testOperatorFunctionWhitespace() {
-        verifyRule(OperatorFunctionWhitespaceRule().example, type: .OperatorFunctionWhitespace)
-    }
-
     func testNesting() {
         verifyRule(NestingRule().example, type: .Nesting, commentDoesntViolate: false)
     }

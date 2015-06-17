@@ -48,10 +48,10 @@ public struct OperatorFunctionWhitespaceRule: ASTRule {
             let location = Location(file: file, offset: offset)
             let startAdvance = advance(file.contents.startIndex, nameOffset)
             let endAdvance = advance(startAdvance, nameLength)
-            let range = Range<String.Index>(start: startAdvance, end: endAdvance)
+            let range = Range(start: startAdvance, end: endAdvance)
             let definition = file.contents.substringWithRange(range)
 
-            let ope1 = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({ "\\\($0)" })
+            let ope1 = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"})
             let ope2 = ["%", "<", ">", "&"]
             let ope = "".join(ope1 + ope2)
             let pattern = "^[\(ope)]+(<[A-Z]+>)?\\("

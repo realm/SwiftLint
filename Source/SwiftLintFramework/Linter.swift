@@ -16,7 +16,7 @@ public struct Linter {
     private let rules: [Rule] = [
         LineLengthRule(),
         LeadingWhitespaceRule(),
-        TrailingWhitespaceRule(),
+//        TrailingWhitespaceRule(),
         ReturnArrowWhitespaceRule(),
         TrailingNewlineRule(),
         OperatorFunctionWhitespaceRule(),

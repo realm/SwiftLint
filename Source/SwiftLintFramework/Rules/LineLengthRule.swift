@@ -14,8 +14,8 @@ public struct LineLengthRule: ParameterizedRule {
     public let identifier = "line_length"
 
     public let parameters = [
-        RuleParameter(severity: .VeryLow, value: 100),
-        RuleParameter(severity: .Low, value: 120),
+//        RuleParameter(severity: .VeryLow, value: 100),
+//        RuleParameter(severity: .Low, value: 120),
         RuleParameter(severity: .Medium, value: 150),
         RuleParameter(severity: .High, value: 200),
         RuleParameter(severity: .VeryHigh, value: 250)

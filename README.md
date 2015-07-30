@@ -1,5 +1,7 @@
 # SwiftLint
 
+Note: We have modified this to be a little less strict on whitespace and line length.
+
 An experimental tool to enforce Swift style and conventions, loosely based on
 [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide).
 

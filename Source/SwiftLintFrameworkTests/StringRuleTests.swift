@@ -34,11 +34,11 @@ class StringRuleTests: XCTestCase {
         XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 1),
             severity: .Medium,
-            reason: "File should have a single trailing newline: currently has 0")])
+            reason: "File should have a single trailing newline")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 3),
             severity: .Medium,
-            reason: "File should have a single trailing newline: currently has 2")])
+            reason: "File should have a single trailing newline")])
     }
 
     func testFileLengths() {

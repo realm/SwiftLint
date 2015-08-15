@@ -14,16 +14,20 @@ public struct TrailingNewlineRule: Rule {
     public let identifier = "trailing_newline"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let countOfTrailingNewlines = file.contents.countOfTailingCharactersInSet(
-            NSCharacterSet.newlineCharacterSet()
-        )
-        if countOfTrailingNewlines != 1 {
+        let string = file.contents
+        let start = advance(string.endIndex, -2, string.startIndex)
+        let range = Range(start: start, end: string.endIndex)
+        let substring = string[range].utf16
+        let newLineSet = NSCharacterSet.newlineCharacterSet()
+        let slices = split(substring, allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
+
+        if let slice = slices.last where count(slice) != 1 {
             return [StyleViolation(type: .TrailingNewline,
                 location: Location(file: file.path, line: file.contents.lines().count + 1),
                 severity: .Medium,
-                reason: "File should have a single trailing newline: " +
-                "currently has \(countOfTrailingNewlines)")]
+                reason: "File should have a single trailing newline")]
         }
+
         return []
     }
 

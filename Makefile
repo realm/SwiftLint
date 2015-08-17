@@ -37,6 +37,7 @@ install: package
 
 uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
+	rm -rf "$(FRAMEWORKS_FOLDER)/SourceKittenFramework.framework"
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
 installables: clean bootstrap

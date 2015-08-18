@@ -22,6 +22,9 @@
 * Improve performance of `TrailingNewlineRule`.  
   [Keith Smiley](https://github.com/keith)
 
+* Lint parentheses around switch statements.  
+  [Keith Smiley](https://github.com/keith)
+
 ##### Bug Fixes
 
 * None.

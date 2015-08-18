@@ -19,6 +19,9 @@
   [JP Simard](https://github.com/jpsim)
   [#78](https://github.com/realm/SwiftLint/issues/78)
 
+* Improve performance of `TrailingNewlineRule`  
+  [Keith Smiley](https://github.com/keith)
+
 ##### Bug Fixes
 
 * None.

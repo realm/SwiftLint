@@ -52,6 +52,8 @@
 		E88DEA921B099B1F00A66CB0 /* TypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */; };
 		E88DEA941B099C0900A66CB0 /* VariableNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */; };
 		E88DEA961B099CF200A66CB0 /* NestingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA951B099CF200A66CB0 /* NestingRule.swift */; };
+		E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; };
+		E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8AB1A2E1A649F2100452012 /* libclang.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8AB1A2D1A649F2100452012 /* libclang.dylib */; };
 		E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
 		E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
@@ -87,6 +89,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */,
 				E8BA7E141B07A400003E02D0 /* Result.framework in Copy Frameworks */,
 				E8BA7E151B07A400003E02D0 /* Commandant.framework in Copy Frameworks */,
 				E876BFBF1B0782AA00114ED5 /* SourceKittenFramework.framework in Copy Frameworks */,
@@ -142,7 +145,6 @@
 		D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftLintFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D1217D19E87B05005E4BAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0E7B63219E9C64500EDBA4D /* swiftlint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swiftlint.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D0E7B65819E9CA0800EDBA4D /* swiftlint */ = {isa = PBXFileReference; lastKnownFileType = text; path = swiftlint; sourceTree = BUILT_PRODUCTS_DIR; };
 		E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnArrowWhitespaceRule.swift; sourceTree = "<group>"; };
 		E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorFunctionWhitespaceRule.swift; sourceTree = "<group>"; };
 		E81224991B04F85B001783D2 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 		E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRule.swift; sourceTree = "<group>"; };
 		E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameRule.swift; sourceTree = "<group>"; };
 		E88DEA951B099CF200A66CB0 /* NestingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestingRule.swift; sourceTree = "<group>"; };
+		E89376AC1B8A701E0025708E /* Yaml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Yaml.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8AB1A2D1A649F2100452012 /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib; sourceTree = DEVELOPER_DIR; };
 		E8BA7E101B07A3EC003E02D0 /* Commandant.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BA7E121B07A3F3003E02D0 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -189,6 +192,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */,
 				E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */,
 				E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */,
 				E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */,
@@ -244,7 +248,6 @@
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
 				D0D1211919E87861005E4BAA /* Products */,
-				D0E7B65819E9CA0800EDBA4D /* swiftlint */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 0;
@@ -365,6 +368,7 @@
 		D0D1216F19E87B05005E4BAA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E89376AC1B8A701E0025708E /* Yaml.framework */,
 				E8BA7E121B07A3F3003E02D0 /* Result.framework */,
 				E8BA7E101B07A3EC003E02D0 /* Commandant.framework */,
 				E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */,
@@ -690,7 +694,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
-					"$(PROJECT_DIR)/build/DerivedData/SwiftLint/Build/Products/Debug",
 				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
@@ -723,7 +726,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
-					"$(PROJECT_DIR)/build/DerivedData/SwiftLint/Build/Products/Debug",
 				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
@@ -794,7 +796,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
-					"$(PROJECT_DIR)/build/DerivedData/SwiftLint/Build/Products/Debug",
 				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
@@ -851,7 +852,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
-					"$(PROJECT_DIR)/build/DerivedData/SwiftLint/Build/Products/Debug",
 				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";

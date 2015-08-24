@@ -1,4 +1,4 @@
-## Master
+## 0.1.2: FabricSoftenerRule
 
 ##### Breaking
 

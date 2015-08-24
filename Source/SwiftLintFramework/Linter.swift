@@ -13,24 +13,7 @@ import SourceKittenFramework
 public struct Linter {
     private let file: File
 
-    private let rules: [Rule] = [
-        LineLengthRule(),
-        LeadingWhitespaceRule(),
-        TrailingWhitespaceRule(),
-        ReturnArrowWhitespaceRule(),
-        TrailingNewlineRule(),
-        OperatorFunctionWhitespaceRule(),
-        ForceCastRule(),
-        FileLengthRule(),
-        TodoRule(),
-        ColonRule(),
-        TypeNameRule(),
-        VariableNameRule(),
-        TypeBodyLengthRule(),
-        FunctionBodyLengthRule(),
-        NestingRule(),
-        ControlStatementRule()
-    ]
+    private let rules: [Rule]
 
     public var styleViolations: [StyleViolation] {
         return rules.flatMap { $0.validateFile(self.file) }
@@ -45,7 +28,8 @@ public struct Linter {
 
     :param: file File to lint.
     */
-    public init(file: File) {
+    public init(file: File, configuration: Configuration = Configuration()!) {
         self.file = file
+        rules = configuration.rules
     }
 }

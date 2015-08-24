@@ -19,6 +19,8 @@
 		D0E7B65619E9C76900EDBA4D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1211B19E87861005E4BAA /* main.swift */; };
 		E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */; };
 		E5A167C91B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */; };
+		E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E809EDA01B8A71DF00399043 /* Configuration.swift */; };
+		E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */; };
 		E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81224991B04F85B001783D2 /* TestHelpers.swift */; };
 		E812249C1B04FADC001783D2 /* Linter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E812249B1B04FADC001783D2 /* Linter.swift */; };
 		E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */; };
@@ -147,6 +149,8 @@
 		D0E7B63219E9C64500EDBA4D /* swiftlint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swiftlint.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReturnArrowWhitespaceRule.swift; sourceTree = "<group>"; };
 		E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorFunctionWhitespaceRule.swift; sourceTree = "<group>"; };
+		E809EDA01B8A71DF00399043 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		E81224991B04F85B001783D2 /* TestHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelpers.swift; sourceTree = "<group>"; };
 		E812249B1B04FADC001783D2 /* Linter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Linter.swift; sourceTree = "<group>"; };
 		E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -346,6 +350,7 @@
 			isa = PBXGroup;
 			children = (
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
+				E809EDA01B8A71DF00399043 /* Configuration.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
@@ -385,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				E8BB8F991B17DDB200199606 /* ASTRuleTests.swift */,
+				E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */,
 				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
 				E8BB8F9B1B17DE3B00199606 /* StringRuleTests.swift */,
 				E81224991B04F85B001783D2 /* TestHelpers.swift */,
@@ -579,7 +585,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n  cd Source && swiftlint\nelse\n  echo \"SwiftLint not installed. Skipping lint.\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"SwiftLint not installed. Skipping lint.\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -594,6 +600,7 @@
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,
 				E88DEA841B0990F500A66CB0 /* ColonRule.swift in Sources */,
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
+				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
 				E88DEA6D1B09842200A66CB0 /* StyleViolationType.swift in Sources */,
@@ -628,6 +635,7 @@
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,
 				E8BB8F9C1B17DE3B00199606 /* StringRuleTests.swift in Sources */,
 				E8BB8F9A1B17DDB200199606 /* ASTRuleTests.swift in Sources */,
+				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,7 +704,7 @@
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
+				INFOPLIST_FILE = "Source/SwiftLintFramework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -728,7 +736,7 @@
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
+				INFOPLIST_FILE = "Source/SwiftLintFramework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -798,7 +806,7 @@
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
+				INFOPLIST_FILE = "Source/SwiftLintFramework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -854,7 +862,7 @@
 					"$(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib",
 				);
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = "$(SRCROOT)/Source/SwiftLintFramework/Info.plist";
+				INFOPLIST_FILE = "Source/SwiftLintFramework/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks $(DEVELOPER_DIR)/Toolchains/XcodeDefault.xctoolchain/usr/lib";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -891,7 +899,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
+				INFOPLIST_FILE = "Source/swiftlint/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -903,7 +911,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
+				INFOPLIST_FILE = "Source/swiftlint/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -915,7 +923,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
+				INFOPLIST_FILE = "Source/swiftlint/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -927,7 +935,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Source/swiftlint/Info.plist";
+				INFOPLIST_FILE = "Source/swiftlint/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/. @executable_path/../Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks /Library/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

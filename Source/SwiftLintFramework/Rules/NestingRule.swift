@@ -37,7 +37,7 @@ public struct NestingRule: ASTRule {
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
-        return self.validateFile(file, kind: kind, dictionary: dictionary, level: 0)
+        return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
     func validateFile(file: File,

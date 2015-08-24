@@ -12,8 +12,8 @@ import SwiftXPC
 typealias Line = (index: Int, content: String)
 
 extension File {
-    public func matchPattern(pattern: String, withSyntaxKinds syntaxKinds: [SyntaxKind]) ->
-        [NSRange] {
+    public func matchPattern(pattern: String,
+        withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
             return kindsInRange.count == syntaxKinds.count &&
                 filter(zip(kindsInRange, syntaxKinds), { $0.0 != $0.1 }).count == 0

@@ -14,9 +14,9 @@ public struct ControlStatementRule: Rule {
     public let identifier = "control_statement"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return ["if", "for", "switch", "while"].flatMap { statementKind in
+        return ["if", "for", "switch", "while"].flatMap { statementKind -> [StyleViolation] in
             let pattern = "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
-            return compact(file.matchPattern(pattern).map { match, syntaxKinds in
+            return file.matchPattern(pattern).flatMap { match, syntaxKinds in
                 if syntaxKinds.first != .Keyword {
                     return nil
                 }
@@ -25,7 +25,7 @@ public struct ControlStatementRule: Rule {
                     severity: .Low,
                     reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
                     "parentheses.")
-            })
+                }
         }
     }
 

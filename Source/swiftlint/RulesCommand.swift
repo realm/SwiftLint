@@ -8,7 +8,7 @@
 
 import Foundation
 import Commandant
-import LlamaKit
+import Result
 import SwiftLintFramework
 import SourceKittenFramework
 
@@ -34,15 +34,15 @@ struct RulesCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         switch mode {
-        case let .Arguments:
+        case .Arguments:
             let ruleExamples = Linter(file: File(contents: "")).ruleExamples
             let text = StructuredText.Joined(ruleExamples.map(describeExample))
-            println(text.ansi)
+            print(text.ansi)
 
         default:
             break
         }
-        return success()
+        return .Success()
     }
 
 }

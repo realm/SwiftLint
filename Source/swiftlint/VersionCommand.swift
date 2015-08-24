@@ -7,7 +7,7 @@
 //
 
 import Commandant
-import LlamaKit
+import Result
 
 private let version = "0.1.2"
 
@@ -17,12 +17,12 @@ struct VersionCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         switch mode {
-        case let .Arguments:
-            println(version)
+        case .Arguments:
+            print(version)
 
         default:
             break
         }
-        return success()
+        return .Success()
     }
 }

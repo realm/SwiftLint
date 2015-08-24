@@ -22,18 +22,18 @@ public struct LineLengthRule: ParameterizedRule {
     ]
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return compact(file.contents.lines().map { line in
-            for parameter in reverse(self.parameters) {
-                if count(line.content) > parameter.value {
+        return file.contents.lines().flatMap { line in
+            for parameter in self.parameters.reverse() {
+                if line.content.characters.count > parameter.value {
                     return StyleViolation(type: .Length,
                         location: Location(file: file.path, line: line.index),
                         severity: parameter.severity,
                         reason: "Line should be 100 characters or less: currently " +
-                        "\(count(line.content)) characters")
+                        "\(line.content.characters.count) characters")
                 }
             }
             return nil
-        })
+        }
     }
 
     public let example = RuleExample(

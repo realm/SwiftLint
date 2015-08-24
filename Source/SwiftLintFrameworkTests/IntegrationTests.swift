@@ -15,12 +15,14 @@ class IntegrationTests: XCTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let fileManager = NSFileManager.defaultManager()
-        let directory = fileManager.currentDirectoryPath.stringByAppendingPathComponent("Source")
+        let directory = ((((__FILE__ as NSString)
+            .stringByDeletingLastPathComponent as NSString)
+            .stringByDeletingLastPathComponent as NSString)
+            .stringByDeletingLastPathComponent as NSString)
+            .stringByAppendingPathComponent("Source")
         let allFiles = fileManager.allFilesRecursively(directory: directory)
-        let swiftFiles = allFiles.filter {
-            $0.isSwiftFile()
-        }
-        XCTAssert(contains(swiftFiles, __FILE__), "current file should be included")
+        let swiftFiles = allFiles.filter { $0.isSwiftFile() }
+        XCTAssert(swiftFiles.contains(__FILE__), "current file should be included")
         XCTAssertEqual(swiftFiles.flatMap({Linter(file: File(path: $0)!).styleViolations}), [])
     }
 }

@@ -11,14 +11,14 @@ import XCTest
 
 class StringRuleTests: XCTestCase {
     func testLineLengths() {
-        let longLine = join("", Array(count: 100, repeatedValue: "/")) + "\n"
+        let longLine = "".join(Array(count: 100, repeatedValue: "/")) + "\n"
         XCTAssertEqual(violations(longLine), [])
         let testCases: [(String, Int, ViolationSeverity)] = [
             ("/", 101, .VeryLow),
-            (join("", Array(count: 21, repeatedValue: "/")), 121, .Low),
-            (join("", Array(count: 51, repeatedValue: "/")), 151, .Medium),
-            (join("", Array(count: 101, repeatedValue: "/")), 201, .High),
-            (join("", Array(count: 151, repeatedValue: "/")), 251, .VeryHigh)
+            ("".join(Array(count: 21, repeatedValue: "/")), 121, .Low),
+            ("".join(Array(count: 51, repeatedValue: "/")), 151, .Medium),
+            ("".join(Array(count: 101, repeatedValue: "/")), 201, .High),
+            ("".join(Array(count: 151, repeatedValue: "/")), 251, .VeryHigh)
         ]
         for testCase in testCases {
             XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
@@ -42,13 +42,13 @@ class StringRuleTests: XCTestCase {
     }
 
     func testFileLengths() {
-        XCTAssertEqual(violations(join("", Array(count: 400, repeatedValue: "//\n"))), [])
+        XCTAssertEqual(violations("".join(Array(count: 400, repeatedValue: "//\n"))), [])
         let testCases: [(String, Int, ViolationSeverity)] = [
-            (join("", Array(count: 401, repeatedValue: "//\n")), 401, .VeryLow),
-            (join("", Array(count: 501, repeatedValue: "//\n")), 501, .Low),
-            (join("", Array(count: 751, repeatedValue: "//\n")), 751, .Medium),
-            (join("", Array(count: 1001, repeatedValue: "//\n")), 1001, .High),
-            (join("", Array(count: 2001, repeatedValue: "//\n")), 2001, .VeryHigh)
+            ("".join(Array(count: 401, repeatedValue: "//\n")), 401, .VeryLow),
+            ("".join(Array(count: 501, repeatedValue: "//\n")), 501, .Low),
+            ("".join(Array(count: 751, repeatedValue: "//\n")), 751, .Medium),
+            ("".join(Array(count: 1001, repeatedValue: "//\n")), 1001, .High),
+            ("".join(Array(count: 2001, repeatedValue: "//\n")), 2001, .VeryHigh)
         ]
         for testCase in testCases {
             XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,

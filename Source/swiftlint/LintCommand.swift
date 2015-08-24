@@ -8,7 +8,7 @@
 
 import Commandant
 import Foundation
-import LlamaKit
+import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
@@ -27,10 +27,10 @@ struct LintCommand: CommandType {
                 let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
                 if let stdinString = stdinNSString as? String {
                     let violations = Linter(file: File(contents: stdinString)).styleViolations
-                    println(join("\n", violations.map { $0.description }))
-                    return success()
+                    print("\n".join(violations.map { $0.description }))
+                    return .Success()
                 }
-                return failure(CommandantError<()>.CommandError(Box()))
+                return .Failure(CommandantError<()>.CommandError())
             }
 
             // Otherwise parse path.
@@ -41,18 +41,17 @@ struct LintCommand: CommandType {
     private func lint(path: String) -> Result<(), CommandantError<()>> {
         let filesToLint = filesToLintAtPath(path)
         if filesToLint.count > 0 {
-
             if path == "" {
-                println("Linting Swift files in current working directory")
+                print("Linting Swift files in current working directory")
             } else {
-                println("Linting Swift files at path \(path)")
+                print("Linting Swift files at path \(path)")
             }
-
             var numberOfViolations = 0, numberOfSeriousViolations = 0
-            for (index, file) in enumerate(filesToLint) {
-                println("Linting '\(file.lastPathComponent)' (\(index + 1)/\(filesToLint.count))")
+            for (index, file) in filesToLint.enumerate() {
+                let filename = (file as NSString).lastPathComponent
+                print("Linting '\(filename)' (\(index + 1)/\(filesToLint.count))")
                 for violation in Linter(file: File(path: file)!).styleViolations {
-                    println(violation)
+                    print(violation)
                     numberOfViolations++
                     if violation.severity.isError {
                         numberOfSeriousViolations++
@@ -61,22 +60,22 @@ struct LintCommand: CommandType {
             }
             let violationSuffix = (numberOfViolations != 1 ? "s" : "")
             let filesSuffix = (filesToLint.count != 1 ? "s." : ".")
-            println(
+            print(
                 "Done linting!" +
                 " Found \(numberOfViolations) violation\(violationSuffix)," +
                 " \(numberOfSeriousViolations) serious" +
                 " in \(filesToLint.count) file\(filesSuffix)"
             )
             if numberOfSeriousViolations <= 0 {
-                return success()
+                return .Success()
             } else {
                 // This represents failure of the content (i.e. violations in the files linted)
                 // and not failure of the scanning process itself. The current command architecture
                 // doesn't discriminate between these types.
-                return failure(CommandantError<()>.CommandError(Box()))
+                return .Failure(CommandantError<()>.CommandError())
             }
         }
-        return failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
+        return .Failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
             " path \(path)"))
     }
 

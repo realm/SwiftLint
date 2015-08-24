@@ -19,13 +19,14 @@ public struct VariableNameRule: ASTRule {
     }
 
     public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
-        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
+        let substructure = dictionary["key.substructure"] as? XPCArray ?? []
+        return substructure.flatMap { subItem -> [StyleViolation] in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
-                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                violations.extend(validateFile(file, dictionary: subDict))
-                violations.extend(validateFile(file, kind: kind, dictionary: subDict))
+                let kind = SwiftDeclarationKind(rawValue: kindString) {
+                violations.extend(self.validateFile(file, dictionary: subDict))
+                violations.extend(self.validateFile(file, kind: kind, dictionary: subDict))
             }
             return violations
         }
@@ -42,12 +43,12 @@ public struct VariableNameRule: ASTRule {
             .VarParameter,
             .VarStatic
         ]
-        if !contains(variableKinds, kind) {
+        if !variableKinds.contains(kind) {
             return []
         }
         var violations = [StyleViolation]()
         if let name = dictionary["key.name"] as? String,
-            let offset = flatMap(dictionary["key.offset"] as? Int64, { Int($0) }) {
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
@@ -60,7 +61,7 @@ public struct VariableNameRule: ASTRule {
                     location: location,
                     severity: .High,
                     reason: "Variable name should start with a lowercase character: '\(name)'"))
-            } else if count(name) < 3 || count(name) > 40 {
+            } else if name.characters.count < 3 || name.characters.count > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Medium,

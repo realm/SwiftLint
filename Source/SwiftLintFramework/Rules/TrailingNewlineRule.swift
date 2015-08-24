@@ -19,9 +19,9 @@ public struct TrailingNewlineRule: Rule {
         let range = Range(start: start, end: string.endIndex)
         let substring = string[range].utf16
         let newLineSet = NSCharacterSet.newlineCharacterSet()
-        let slices = split(substring, allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
+        let slices = substring.split(allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
 
-        if let slice = slices.last where count(slice) != 1 {
+        if let slice = slices.last where slice.count != 1 {
             return [StyleViolation(type: .TrailingNewline,
                 location: Location(file: file.path, line: file.contents.lines().count + 1),
                 severity: .Medium,

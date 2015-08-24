@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/SourceKitten"]
 	path = Carthage/Checkouts/SourceKitten
 	url = https://github.com/jpsim/SourceKitten.git
+[submodule "Carthage/Checkouts/Result"]
+	path = Carthage/Checkouts/Result
+	url = https://github.com/antitypical/Result.git

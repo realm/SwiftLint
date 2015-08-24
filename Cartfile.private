@@ -1,2 +1,2 @@
-github "Carthage/Commandant" ~> 0.5
+github "Carthage/Commandant" "swift-2.0"
 github "jspahrsummers/xcconfigs" >= 0.8

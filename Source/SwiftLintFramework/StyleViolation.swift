@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-public struct StyleViolation: Printable, Equatable {
+public struct StyleViolation: CustomStringConvertible, Equatable {
     public let type: StyleViolationType
     public let severity: ViolationSeverity
     public let location: Location

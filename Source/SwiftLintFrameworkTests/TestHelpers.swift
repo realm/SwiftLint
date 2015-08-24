@@ -14,7 +14,7 @@ func violations(string: String) -> [StyleViolation] {
     return Linter(file: File(contents: string)).styleViolations
 }
 
-private func violations(string: String, type: StyleViolationType) -> [StyleViolation] {
+private func violations(string: String, _ type: StyleViolationType) -> [StyleViolation] {
     return violations(string).filter { $0.type == type }
 }
 

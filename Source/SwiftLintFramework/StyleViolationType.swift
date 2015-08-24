@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-public enum StyleViolationType: String, Printable {
+public enum StyleViolationType: String, CustomStringConvertible {
     case NameFormat                 = "Name Format"
     case Length                     = "Length"
     case TrailingNewline            = "Trailing Newline"

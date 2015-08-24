@@ -33,11 +33,11 @@ public struct Linter {
     ]
 
     public var styleViolations: [StyleViolation] {
-        return rules.flatMap { $0.validateFile(file) }
+        return rules.flatMap { $0.validateFile(self.file) }
     }
 
     public var ruleExamples: [RuleExample] {
-        return compact(rules.map { $0.example })
+        return rules.flatMap { $0.example }
     }
 
     /**

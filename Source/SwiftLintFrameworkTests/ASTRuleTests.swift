@@ -29,7 +29,7 @@ class ASTRuleTests: XCTestCase {
                 severity: .Medium,
                 reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
 
-            let longName = join("", Array(count: 40, repeatedValue: "A"))
+            let longName = "".join(Array(count: 40, repeatedValue: "A"))
             XCTAssertEqual(violations("\(kind) \(longName) {}\n"), [])
             let longerName = longName + "A"
             XCTAssertEqual(violations("\(kind) \(longerName) {}\n"), [
@@ -57,7 +57,7 @@ class ASTRuleTests: XCTestCase {
     func testVariableNames() {
         for kind in ["class", "struct"] {
             for varType in ["var", "let"] {
-                let characterOffset = 8 + count(kind)
+                let characterOffset = 8 + kind.characters.count
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) def: Void }\n"), [])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de_: Void }\n"), [
@@ -82,7 +82,7 @@ class ASTRuleTests: XCTestCase {
                         "'de'")
                     ])
 
-                let longName = join("", Array(count: 40, repeatedValue: "d"))
+                let longName = "".join(Array(count: 40, repeatedValue: "d"))
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longName): Void }\n"), [])
                 let longerName = longName + "d"
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
@@ -98,11 +98,11 @@ class ASTRuleTests: XCTestCase {
 
     func testFunctionBodyLengths() {
         let longFunctionBody = "func abc() {" +
-            join("", Array(count: 40, repeatedValue: "\n")) +
+            "".join(Array(count: 40, repeatedValue: "\n")) +
             "}\n"
         XCTAssertEqual(violations(longFunctionBody), [])
         let longerFunctionBody = "func abc() {" +
-            join("", Array(count: 41, repeatedValue: "\n")) +
+            "".join(Array(count: 41, repeatedValue: "\n")) +
             "}\n"
         XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(type: .Length,
             location: Location(file: nil, line: 1, character: 1),
@@ -113,11 +113,11 @@ class ASTRuleTests: XCTestCase {
     func testTypeBodyLengths() {
         for kind in ["class", "struct", "enum"] {
             let longTypeBody = "\(kind) Abc {" +
-                join("", Array(count: 200, repeatedValue: "\n")) +
+                "".join(Array(count: 200, repeatedValue: "\n")) +
                 "}\n"
             XCTAssertEqual(violations(longTypeBody), [])
             let longerTypeBody = "\(kind) Abc {" +
-                join("", Array(count: 201, repeatedValue: "\n")) +
+                "".join(Array(count: 201, repeatedValue: "\n")) +
                 "}\n"
             XCTAssertEqual(violations(longerTypeBody), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: 1, character: 1),

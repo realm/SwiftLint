@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct Location: Printable, Equatable {
+public struct Location: CustomStringConvertible, Equatable {
     public let file: String?
     public let line: Int?
     public let character: Int?
@@ -16,8 +16,8 @@ public struct Location: Printable, Equatable {
         // Xcode likes warnings and errors in the following format:
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return (file ?? "<nopath>") +
-            (map(line, { ":\($0)" }) ?? "") +
-            (map(character, { ":\($0)" }) ?? "")
+            (line.map({ ":\($0)" }) ?? "") +
+            (character.map({ ":\($0)" }) ?? "")
     }
 
     public init(file: String?, line: Int? = nil, character: Int? = nil) {

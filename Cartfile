@@ -1,1 +1,1 @@
-github "jpsim/SourceKitten" ~> 0.4
+github "jpsim/SourceKitten" "swift-2.0"

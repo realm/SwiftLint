@@ -21,4 +21,4 @@
 	url = https://github.com/antitypical/Result.git
 [submodule "Carthage/Checkouts/YamlSwift"]
 	path = Carthage/Checkouts/YamlSwift
-	url = https://github.com/behrang/YamlSwift.git
+	url = https://github.com/jpsim/YamlSwift.git

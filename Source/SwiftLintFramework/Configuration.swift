@@ -37,7 +37,7 @@ public struct Configuration {
         if invalidRules.count > 0 {
             for invalidRule in invalidRules {
                 fputs("config error: '\(invalidRule)' is not a valid rule identifier\n", stderr)
-                let listOfValidRuleIdentifiers = "\n".join(validRuleIdentifiers)
+                let listOfValidRuleIdentifiers = validRuleIdentifiers.joinWithSeparator("\n")
                 fputs("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)\n", stderr)
             }
             return nil

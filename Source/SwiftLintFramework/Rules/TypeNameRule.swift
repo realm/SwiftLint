@@ -25,8 +25,10 @@ public struct TypeNameRule: ASTRule {
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
                 let kind = SwiftDeclarationKind(rawValue: kindString) {
-                violations.extend(self.validateFile(file, dictionary: subDict))
-                violations.extend(self.validateFile(file, kind: kind, dictionary: subDict))
+                violations.appendContentsOf(
+                    self.validateFile(file, dictionary: subDict) +
+                    self.validateFile(file, kind: kind, dictionary: subDict)
+                )
             }
             return violations
         }

@@ -27,7 +27,7 @@ struct LintCommand: CommandType {
                 let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
                 if let stdinString = stdinNSString as? String {
                     let violations = Linter(file: File(contents: stdinString)).styleViolations
-                    print("\n".join(violations.map { $0.description }))
+                    print(violations.map({ $0.description }).joinWithSeparator("\n"))
                     return .Success()
                 }
                 return .Failure(CommandantError<()>.CommandError())

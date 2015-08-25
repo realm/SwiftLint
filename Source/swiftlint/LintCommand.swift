@@ -123,6 +123,7 @@ struct LintOptions: OptionsType {
             <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or" +
                         " directory to lint")
             <*> m <| Option(key: "use-stdin", defaultValue: false, usage: "lint standard input")
-            <*> m <| Option(key: "exclude", defaultValue: "", usage: "comma separated files or folders to exclude")
+            <*> m <| Option(key: "exclude", defaultValue: "", usage: "comma separated files" +
+                        "or folders to exclude")
     }
 }

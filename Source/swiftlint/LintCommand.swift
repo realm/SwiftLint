@@ -34,12 +34,12 @@ struct LintCommand: CommandType {
             }
 
             // Otherwise parse path.
-            return self.lint(options.path)
+            return self.lint(options.path, exclude: options.exclude)
         }
     }
 
-    private func lint(path: String) -> Result<(), CommandantError<()>> {
-        let filesToLint = filesToLintAtPath(path)
+    private func lint(path: String, exclude: String) -> Result<(), CommandantError<()>> {
+        let filesToLint = filesToLintAtPath(path, exclude: exclude)
         if filesToLint.count > 0 {
 
             if path == "" {
@@ -80,28 +80,42 @@ struct LintCommand: CommandType {
             " path \(path)"))
     }
 
-    private func filesToLintAtPath(path: String) -> [String] {
+    private func filesToLintAtPath(path: String, exclude: String) -> [String] {
+        let excludes: [String] = split(exclude) { $0 == "," }
+
         let absolutePath = path.absolutePathRepresentation()
         var isDirectory: ObjCBool = false
+
         if fileManager.fileExistsAtPath(absolutePath, isDirectory: &isDirectory) {
             if isDirectory {
                 return fileManager.allFilesRecursively(directory: absolutePath).filter {
-                    $0.isSwiftFile()
+                    return self.shouldLintFileAtPath($0, excluding: excludes)
                 }
-            } else if absolutePath.isSwiftFile() {
+            } else if shouldLintFileAtPath(absolutePath, excluding: excludes) {
                 return [absolutePath]
             }
         }
         return []
+    }
+
+    private func shouldLintFileAtPath(path: String, excluding: [String]) -> Bool {
+        return path.isSwiftFile() && !self.excludedPath(excluding, path: path)
+    }
+
+    private func excludedPath(excludes: [String], path: String) -> Bool {
+        let excludeSet = Set(excludes)
+        let pathPartsSet = Set(path.pathComponents)
+        return !excludeSet.intersect(pathPartsSet).isEmpty
     }
 }
 
 struct LintOptions: OptionsType {
     let path: String
     let useSTDIN: Bool
+    let exclude: String
 
-    static func create(path: String)(useSTDIN: Bool) -> LintOptions {
-        return LintOptions(path: path, useSTDIN: useSTDIN)
+    static func create(path: String)(useSTDIN: Bool)(exclude: String) -> LintOptions {
+        return LintOptions(path: path, useSTDIN: useSTDIN, exclude: exclude)
     }
 
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
@@ -109,5 +123,6 @@ struct LintOptions: OptionsType {
             <*> m <| Option(key: "path", defaultValue: "", usage: "the path to the file or" +
                         " directory to lint")
             <*> m <| Option(key: "use-stdin", defaultValue: false, usage: "lint standard input")
+            <*> m <| Option(key: "exclude", defaultValue: "", usage: "comma separated files or folders to exclude")
     }
 }

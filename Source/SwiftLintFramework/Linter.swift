@@ -33,7 +33,14 @@ public struct Linter {
     ]
 
     public var styleViolations: [StyleViolation] {
-        return rules.flatMap { $0.validateFile(file) }
+        return rules.flatMap {
+            if !(file.contents as NSString).containsString("// SwiftLint ignore \($0.identifier)")
+                && !(file.contents as NSString).containsString("// SwiftLint ignore all") {
+                return $0.validateFile(file)
+            } else {
+                return []
+            }
+        }
     }
 
     public var ruleExamples: [RuleExample] {

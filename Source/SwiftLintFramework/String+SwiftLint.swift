@@ -24,7 +24,7 @@ extension String {
     }
 
     func countOfTailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
-        return String(self.characters.reverse()).countOfLeadingCharactersInSet(characterSet)
+        return String(characters.reverse()).countOfLeadingCharactersInSet(characterSet)
     }
 
     public var chomped: String {
@@ -38,13 +38,12 @@ extension NSString {
             var numberOfLines = 0, index = 0, lineRangeStart = 0, previousIndex = 0
             while index < length {
                 numberOfLines++
-                if index <= range.location {
-                    lineRangeStart = numberOfLines
-                    previousIndex = index
-                    index = NSMaxRange(self.lineRangeForRange(NSRange(location: index, length: 1)))
-                } else {
+                if index > range.location {
                     break
                 }
+                lineRangeStart = numberOfLines
+                previousIndex = index
+                index = NSMaxRange(lineRangeForRange(NSRange(location: index, length: 1)))
             }
             return (lineRangeStart, range.location - previousIndex + 1)
         }

@@ -7,27 +7,6 @@
 		<false/>
 		<key>BundleOverwriteAction</key>
 		<string>upgrade</string>
-		<key>ChildBundles</key>
-		<array>
-			<dict>
-				<key>BundleOverwriteAction</key>
-				<string></string>
-				<key>RootRelativeBundlePath</key>
-				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/SourceKittenFramework.framework</string>
-			</dict>
-			<dict>
-				<key>BundleOverwriteAction</key>
-				<string></string>
-				<key>RootRelativeBundlePath</key>
-				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/LlamaKit.framework</string>
-			</dict>
-			<dict>
-				<key>BundleOverwriteAction</key>
-				<string></string>
-				<key>RootRelativeBundlePath</key>
-				<string>Library/Frameworks/SwiftLintFramework.framework/Versions/A/Frameworks/Commandant.framework</string>
-			</dict>
-		</array>
 		<key>RootRelativeBundlePath</key>
 		<string>Library/Frameworks/SwiftLintFramework.framework</string>
 	</dict>

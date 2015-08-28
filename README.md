@@ -23,7 +23,7 @@ You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 running it.
 
 You can also build from source by cloning this project and running
-`make install`.
+`make install` (Xcode 7 Beta 6 required).
 
 ## Usage
 

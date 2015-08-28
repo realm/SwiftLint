@@ -2,7 +2,9 @@
 
 ##### Breaking
 
-* None.
+* SwiftLint now exclusively supports Swift 2.0.  
+  [JP Simard](https://github.com/jpsim)
+  [#77](https://github.com/realm/SwiftLint/issues/77)
 
 ##### Enhancements
 

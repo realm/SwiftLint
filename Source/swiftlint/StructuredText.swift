@@ -35,7 +35,7 @@ enum StructuredText {
         case .Header(_, let t): return t
         case .Paragraph(let t): return t
         case .List(let items): return items.map({ "* " + $0.ansi }).joinWithSeparator("\n")
-        case .Joined(let items): return items.map({ $0.ansi } ).joinWithSeparator("\n\n")
+        case .Joined(let items): return items.map({ $0.ansi }).joinWithSeparator("\n\n")
         }
     }
 }

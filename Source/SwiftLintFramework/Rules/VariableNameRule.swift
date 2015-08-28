@@ -52,6 +52,7 @@ public struct VariableNameRule: ASTRule {
         if let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
+            let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 violations.append(StyleViolation(type: .NameFormat,
@@ -78,8 +79,17 @@ public struct VariableNameRule: ASTRule {
         ruleName: "Variable Name Rule",
         ruleDescription: "Variable name should only contain alphanumeric characters, " +
         "start with a a lowercase character and be between 3 and 40 characters in length.",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
+        nonTriggeringExamples: [
+            "let myLet = 0",
+            "var myVar = 0",
+            "private let _myLet = 0"
+        ],
+        triggeringExamples: [
+            "let MyLet = 0",
+            "let _myLet = 0",
+            "private let myLet_ = 0",
+            "let my = 0"
+        ],
         showExamples: false
     )
 }

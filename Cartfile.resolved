@@ -1,7 +1,7 @@
 github "antitypical/Result" "0.6-beta.1"
 github "drmohundro/SWXMLHash" "050154bfc56032f04fcca37464693a17f897200a"
 github "jpsim/SwiftXPC" "d32e70f1b35cfa833be85fd40e70401f4190f5b0"
-github "jpsim/YamlSwift" "ed060df018b5693a045f207088b95ce15f433065"
+github "behrang/YamlSwift" "243ebbafb8ed60f57f9d5a7c2a4ff8099824644a"
 github "jspahrsummers/xcconfigs" "0.8.1"
 github "Carthage/Commandant" "40f503c33121431dc098adb7c44d9496e3a1de2f"
 github "jpsim/SourceKitten" "ace729472170a4ec2996b8f921fc66784e5ef4fe"

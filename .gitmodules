@@ -12,7 +12,7 @@
 	url = https://github.com/Carthage/Commandant.git
 [submodule "Carthage/Checkouts/SWXMLHash"]
 	path = Carthage/Checkouts/SWXMLHash
-	url = https://github.com/jpsim/SWXMLHash.git
+	url = https://github.com/drmohundro/SWXMLHash.git
 [submodule "Carthage/Checkouts/SourceKitten"]
 	path = Carthage/Checkouts/SourceKitten
 	url = https://github.com/jpsim/SourceKitten.git
@@ -21,4 +21,4 @@
 	url = https://github.com/antitypical/Result.git
 [submodule "Carthage/Checkouts/YamlSwift"]
 	path = Carthage/Checkouts/YamlSwift
-	url = https://github.com/jpsim/YamlSwift.git
+	url = https://github.com/behrang/YamlSwift.git

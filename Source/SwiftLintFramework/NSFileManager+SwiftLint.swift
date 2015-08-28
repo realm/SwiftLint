@@ -7,14 +7,11 @@
 //
 
 import Foundation
-import SourceKittenFramework
 
 extension NSFileManager {
-    public func allFilesRecursively(# directory: String) -> [String] {
-        let relativeFiles = (contentsOfDirectoryAtPath(directory, error: nil) as? [String] ?? []) +
-            (subpathsOfDirectoryAtPath(directory, error: nil) as? [String] ?? [])
-        return relativeFiles.map {
-            directory.stringByAppendingPathComponent($0)
-        }
+    public func allFilesRecursively(directory directory: String) -> [String] {
+        let relativeFiles = (try! contentsOfDirectoryAtPath(directory)) +
+            (try! subpathsOfDirectoryAtPath(directory))
+        return relativeFiles.map((directory as NSString).stringByAppendingPathComponent)
     }
 }

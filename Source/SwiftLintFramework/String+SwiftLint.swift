@@ -24,7 +24,7 @@ extension String {
     }
 
     func countOfTailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
-        return String(reverse(self)).countOfLeadingCharactersInSet(characterSet)
+        return String(characters.reverse()).countOfLeadingCharactersInSet(characterSet)
     }
 
     public var chomped: String {
@@ -34,20 +34,16 @@ extension String {
 
 extension NSString {
     public func lineAndCharacterForByteOffset(offset: Int) -> (line: Int, character: Int)? {
-        return flatMap(byteRangeToNSRange(start: offset, length: 0)) { range in
-            var numberOfLines = 0
-            var index = 0
-            var lineRangeStart = 0
-            var previousIndex = 0
+        return byteRangeToNSRange(start: offset, length: 0).flatMap { range in
+            var numberOfLines = 0, index = 0, lineRangeStart = 0, previousIndex = 0
             while index < length {
                 numberOfLines++
-                if index <= range.location {
-                    lineRangeStart = numberOfLines
-                    previousIndex = index
-                    index = NSMaxRange(self.lineRangeForRange(NSRange(location: index, length: 1)))
-                } else {
+                if index > range.location {
                     break
                 }
+                lineRangeStart = numberOfLines
+                previousIndex = index
+                index = NSMaxRange(lineRangeForRange(NSRange(location: index, length: 1)))
             }
             return (lineRangeStart, range.location - previousIndex + 1)
         }

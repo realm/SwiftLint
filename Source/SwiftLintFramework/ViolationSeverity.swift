@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-public enum ViolationSeverity: Int, Printable, Comparable {
+public enum ViolationSeverity: Int, CustomStringConvertible, Comparable {
     case VeryLow
     case Low
     case Medium

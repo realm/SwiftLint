@@ -17,15 +17,19 @@ public struct OperatorFunctionWhitespaceRule: Rule {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
             ["%", "<", ">", "&"]
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[" + "".join(operators) + "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[" + "".join(operators) + "]+\\s+(<[A-Z]+>)?\\("
+        let pattern1 = "func\\s+[" +
+            operators.joinWithSeparator("") +
+            "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
+        let pattern2 = "func\(zeroOrManySpaces)[" +
+            operators.joinWithSeparator("") +
+            "]+\\s+(<[A-Z]+>)?\\("
         return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
             return syntaxKinds.first == .Keyword
         }.map { range, _ in
             return StyleViolation(type: .OperatorFunctionWhitespace,
                 location: Location(file: file, offset: range.location),
                 severity: .Medium,
-                reason: self.example.ruleDescription)
+                reason: example.ruleDescription)
         }
     }
 

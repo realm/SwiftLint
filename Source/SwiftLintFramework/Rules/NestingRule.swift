@@ -19,13 +19,16 @@ public struct NestingRule: ASTRule {
     }
 
     public func validateFile(file: File, dictionary: XPCDictionary) -> [StyleViolation] {
-        return (dictionary["key.substructure"] as? XPCArray ?? []).flatMap { subItem in
+        let substructure = dictionary["key.substructure"] as? XPCArray ?? []
+        return substructure.flatMap { subItem -> [StyleViolation] in
             var violations = [StyleViolation]()
             if let subDict = subItem as? XPCDictionary,
                 let kindString = subDict["key.kind"] as? String,
-                let kind = flatMap(kindString, { SwiftDeclarationKind(rawValue: $0) }) {
-                    violations.extend(validateFile(file, dictionary: subDict))
-                    violations.extend(validateFile(file, kind: kind, dictionary: subDict))
+                let kind = SwiftDeclarationKind(rawValue: kindString) {
+                violations.appendContentsOf(
+                    self.validateFile(file, dictionary: subDict) +
+                    self.validateFile(file, kind: kind, dictionary: subDict)
+                )
             }
             return violations
         }
@@ -34,7 +37,7 @@ public struct NestingRule: ASTRule {
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
-        return self.validateFile(file, kind: kind, dictionary: dictionary, level: 0)
+        return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
     func validateFile(file: File,
@@ -47,10 +50,15 @@ public struct NestingRule: ASTRule {
             .Struct,
             .Typealias,
             .Enum,
-            .Enumelement
+            .Enumcase
         ]
-        if let offset = flatMap(dictionary["key.offset"] as? Int64, { Int($0) }) {
-            if level > 1 && contains(typeKinds, kind) {
+        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            if level > 1 && typeKinds.contains(kind) {
+                violations.append(StyleViolation(type: .Nesting,
+                    location: Location(file: file, offset: offset),
+                    reason: "Types should be nested at most 1 level deep"))
+            } else if level > 2 && kind == .Enumelement {
+                // Enum elements are implicitly wrapped in an .Enumcase
                 violations.append(StyleViolation(type: .Nesting,
                     location: Location(file: file, offset: offset),
                     reason: "Types should be nested at most 1 level deep"))
@@ -61,18 +69,18 @@ public struct NestingRule: ASTRule {
             }
         }
         let substructure = dictionary["key.substructure"] as? XPCArray ?? []
-        violations.extend(compact(substructure.map { subItem in
+        violations.appendContentsOf(substructure.flatMap { subItem in
             let subDict = subItem as? XPCDictionary
             let kindString = subDict?["key.kind"] as? String
-            let kind = flatMap(kindString) { kindString in
+            let kind = kindString.flatMap { kindString in
                 return SwiftDeclarationKind(rawValue: kindString)
             }
             if let kind = kind, subDict = subDict {
                 return (kind, subDict)
             }
             return nil
-        } as [(SwiftDeclarationKind, XPCDictionary)?]).flatMap { (kind, dict) in
-            return validateFile(file, kind: kind, dictionary: dict, level: level + 1)
+        }.flatMap { (kind, dict) -> [StyleViolation] in
+            return self.validateFile(file, kind: kind, dictionary: dict, level: level + 1)
         })
         return violations
     }

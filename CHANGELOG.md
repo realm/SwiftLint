@@ -14,6 +14,10 @@
   [JP Simard](https://github.com/jpsim)
   [#3](https://github.com/realm/SwiftLint/issues/3)
 
+* Updated `TypeNameRule` and `VariableNameRule` to allow private type & variable
+  names to start with an underscore.
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * None.

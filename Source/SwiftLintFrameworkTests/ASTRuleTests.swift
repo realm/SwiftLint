@@ -126,6 +126,14 @@ class ASTRuleTests: XCTestCase {
         }
     }
 
+    func testTypeNamesVerifyRule() {
+        verifyRule(TypeNameRule().example, type: .NameFormat)
+    }
+
+    func testVariableNamesVerifyRule() {
+        verifyRule(VariableNameRule().example, type: .NameFormat)
+    }
+
     func testNesting() {
         verifyRule(NestingRule().example, type: .Nesting, commentDoesntViolate: false)
     }

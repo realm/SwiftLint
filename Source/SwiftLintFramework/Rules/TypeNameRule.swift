@@ -51,6 +51,7 @@ public struct TypeNameRule: ASTRule {
         if let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
+            let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 violations.append(StyleViolation(type: .NameFormat,
@@ -77,8 +78,16 @@ public struct TypeNameRule: ASTRule {
         ruleName: "Type Name Rule",
         ruleDescription: "Type name should only contain alphanumeric characters, " +
         "start with an uppercase character and between 3 and 40 characters in length.",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
+        nonTriggeringExamples: [
+            "struct MyStruct {}",
+            "private struct _MyStruct {}"
+        ],
+        triggeringExamples: [
+            "struct myStruct {}",
+            "struct _MyStruct {}",
+            "private struct MyStruct_ {}",
+            "struct My {}"
+        ],
         showExamples: false
     )
 }

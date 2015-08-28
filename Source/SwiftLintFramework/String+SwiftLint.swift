@@ -8,6 +8,7 @@
 
 import Foundation
 import SourceKittenFramework
+import SwiftXPC
 
 extension String {
     func lines() -> [Line] {
@@ -29,6 +30,14 @@ extension String {
 
     public var chomped: String {
         return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    }
+
+    public func nameStrippingLeadingUnderscoreIfPrivate(dict: XPCDictionary) -> String {
+        let privateACL = "source.lang.swift.accessibility.private"
+        if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
+            return self[startIndex.successor()..<endIndex]
+        }
+        return self
     }
 }
 

@@ -23,7 +23,7 @@ public struct Linter {
                     return true
                 }
                 guard let violationRegion = regions.filter({
-                    $0.startLine < line && $0.endLine > line
+                    $0.startLine <= line && $0.endLine >= line
                 }).first else {
                     return true
                 }

@@ -33,8 +33,8 @@ extension File {
                 if let actionString = actionString as String?,
                     action = CommandAction(rawValue: actionString),
                     lineRange = nsStringContents.lineRangeWithByteRange(start: start, length: 0) {
-                        scanner.scanString(" ", intoString: nil)
-                        let ruleStart = scanner.string.startIndex.advancedBy(scanner.scanLocation)
+                        let ruleLocation = scanner.scanLocation + 1
+                        let ruleStart = scanner.string.startIndex.advancedBy(ruleLocation)
                         let rule = scanner.string.substringFromIndex(ruleStart)
                         return (action, rule, lineRange.start)
                 }

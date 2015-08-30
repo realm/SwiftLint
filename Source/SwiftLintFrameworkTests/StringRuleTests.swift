@@ -62,35 +62,35 @@ class StringRuleTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule().example,
+        verifyRule(LeadingWhitespaceRule(),
             type: .LeadingWhitespace,
             commentDoesntViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule().example,
+        verifyRule(TrailingWhitespaceRule(),
             type: .TrailingWhitespace,
             commentDoesntViolate: false)
     }
 
     func testLinesShouldContainReturnArrowWhitespace() {
-        verifyRule(ReturnArrowWhitespaceRule().example,
+        verifyRule(ReturnArrowWhitespaceRule(),
             type: .ReturnArrowWhitespace)
     }
 
     func testForceCasting() {
-        verifyRule(ForceCastRule().example, type: .ForceCast)
+        verifyRule(ForceCastRule(), type: .ForceCast)
     }
 
     func testOperatorFunctionWhitespace() {
-        verifyRule(OperatorFunctionWhitespaceRule().example, type: .OperatorFunctionWhitespace)
+        verifyRule(OperatorFunctionWhitespaceRule(), type: .OperatorFunctionWhitespace)
     }
 
     func testTodoOrFIXME() {
-        verifyRule(TodoRule().example, type: .TODO, commentDoesntViolate: false)
+        verifyRule(TodoRule(), type: .TODO, commentDoesntViolate: false)
     }
 
     func testColon() {
-        verifyRule(ColonRule().example, type: .Colon)
+        verifyRule(ColonRule(), type: .Colon)
     }
 }

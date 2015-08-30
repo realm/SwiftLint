@@ -23,17 +23,17 @@ public typealias Command = (CommandAction, String, Int)
 extension File {
     public func regions() -> [Region] {
         let nsStringContents = contents as NSString
-        let commands = matchPattern("swiftlint:(enable|disable):.+",
+        let commands = matchPattern("swiftlint:(enable|disable)\\ .+",
             withSyntaxKinds: [.Comment]).flatMap { range -> Command? in
                 let scanner = NSScanner(string: nsStringContents.substringWithRange(range))
                 scanner.scanString("swiftlint:", intoString: nil)
                 var actionString: NSString? = nil
-                scanner.scanUpToString(":", intoString: &actionString)
+                scanner.scanUpToString(" ", intoString: &actionString)
                 let start = range.location
                 if let actionString = actionString as String?,
                     action = CommandAction(rawValue: actionString),
                     lineRange = nsStringContents.lineRangeWithByteRange(start: start, length: 0) {
-                        scanner.scanString(":", intoString: nil)
+                        scanner.scanString(" ", intoString: nil)
                         let ruleStart = scanner.string.startIndex.advancedBy(scanner.scanLocation)
                         let rule = scanner.string.substringFromIndex(ruleStart)
                         return (action, rule, lineRange.start)

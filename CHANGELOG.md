@@ -19,7 +19,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * Disable and re-enable rules from within source code comments using
-  `// swiftlint:disable:$IDENTIFIER` and `// swiftlint:enable:$IDENTIFIER`.  
+  `// swiftlint:disable $IDENTIFIER` and `// swiftlint:enable $IDENTIFIER`.  
   [JP Simard](https://github.com/jpsim)
   [#4](https://github.com/realm/SwiftLint/issues/4)
 

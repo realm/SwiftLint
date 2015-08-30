@@ -87,7 +87,7 @@ class StringRuleTests: XCTestCase {
     }
 
     func testTodoOrFIXME() {
-        verifyRule(TodoRule().example, type: .TODO)
+        verifyRule(TodoRule().example, type: .TODO, commentDoesntViolate: false)
     }
 
     func testColon() {

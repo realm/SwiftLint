@@ -9,47 +9,40 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public typealias Line = (index: Int, content: String)
-
-public typealias Region = (startLine: Int, endLine: Int, disabledRules: [String])
-
-public enum CommandAction: String {
-    case Enable = "enable"
-    case Disable = "disable"
-}
-
-public typealias Command = (CommandAction, String, Int)
+internal typealias Line = (index: Int, content: String)
 
 extension File {
     public func regions() -> [Region] {
         let nsStringContents = contents as NSString
-        let commands = matchPattern("swiftlint:(enable|disable)\\ .+",
-            withSyntaxKinds: [.Comment]).flatMap { range -> Command? in
-                let scanner = NSScanner(string: nsStringContents.substringWithRange(range))
-                scanner.scanString("swiftlint:", intoString: nil)
-                var actionString: NSString? = nil
-                scanner.scanUpToString(" ", intoString: &actionString)
-                let start = range.location
-                if let actionString = actionString as String?,
-                    action = CommandAction(rawValue: actionString),
-                    lineRange = nsStringContents.lineRangeWithByteRange(start: start, length: 0) {
-                        let ruleLocation = scanner.scanLocation + 1
-                        let ruleStart = scanner.string.startIndex.advancedBy(ruleLocation)
-                        let rule = scanner.string.substringFromIndex(ruleStart)
-                        return (action, rule, lineRange.start)
-                }
-                return nil
-        }
-        let totalNumberOfLines = contents.lines().count
-        var regions: [Region] = [(1, commands.first?.2 ?? totalNumberOfLines, [])]
+        let commands = matchPattern("swiftlint:(enable|disable)\\ [^\\s]+",
+            withSyntaxKinds: [.Comment]).flatMap { Command(string: nsStringContents, range: $0) }
+        let lines = contents.lines()
+        let totalNumberOfLines = lines.count
+        let numberOfCharactersInLastLine = lines.last?.content.characters.count
+        let firstRegion = Region(start:
+            Location(file: path, line: 1, character: 0),
+            end: Location(file: path,
+                line: commands.first?.line ?? totalNumberOfLines,
+                character: commands.first?.character ?? numberOfCharactersInLastLine),
+            disabledRuleIdentifiers: [])
+        var regions = [firstRegion]
         var disabledRules = Set<String>()
         let commandPairs = zip(commands, Array(commands.dropFirst().map({Optional($0)})) + [nil])
         for (command, nextCommand) in commandPairs {
-            switch command.0 {
-            case .Disable: disabledRules.insert(command.1)
-            case .Enable: disabledRules.remove(command.1)
+            switch command.action {
+            case .Disable: disabledRules.insert(command.ruleIdentifier)
+            case .Enable: disabledRules.remove(command.ruleIdentifier)
             }
-            regions.append((command.2, nextCommand?.2 ?? totalNumberOfLines, Array(disabledRules)))
+            regions.append(
+                Region(
+                    start: Location(file: path,
+                        line: command.line,
+                        character: command.character),
+                    end: Location(file: path,
+                        line: nextCommand?.line ?? totalNumberOfLines,
+                        character: nextCommand?.character ?? numberOfCharactersInLastLine),
+                    disabledRuleIdentifiers: disabledRules)
+            )
         }
         return regions
     }

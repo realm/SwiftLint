@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct Location: CustomStringConvertible, Equatable {
+public struct Location: CustomStringConvertible, Comparable {
     public let file: String?
     public let line: Int?
     public let character: Int?
@@ -38,18 +38,20 @@ public struct Location: CustomStringConvertible, Equatable {
     }
 }
 
-// MARK: Equatable
+// MARK: Comparable
 
-/**
-Returns true if `lhs` Location is equal to `rhs` Location.
-
-:param: lhs Location to compare to `rhs`.
-:param: rhs Location to compare to `lhs`.
-
-:returns: True if `lhs` Location is equal to `rhs` Location.
-*/
 public func == (lhs: Location, rhs: Location) -> Bool {
     return lhs.file == rhs.file &&
         lhs.line == rhs.line &&
         lhs.character == rhs.character
+}
+
+public func < (lhs: Location, rhs: Location) -> Bool {
+    if lhs.file != rhs.file {
+        return lhs.file < rhs.file
+    }
+    if lhs.line != rhs.line {
+        return lhs.line < rhs.line
+    }
+    return lhs.character < rhs.character
 }

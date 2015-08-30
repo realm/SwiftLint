@@ -23,8 +23,8 @@ public typealias Command = (CommandAction, String, Int)
 extension File {
     public func regions() -> [Region] {
         let nsStringContents = contents as NSString
-        let commands = matchPattern("swiftlint:(enable|disable):force_cast")
-            .flatMap { range, syntaxKinds -> Command? in
+        let commands = matchPattern("swiftlint:(enable|disable):.*",
+            withSyntaxKinds: [.Comment]).flatMap { range -> Command? in
                 let scanner = NSScanner(string: nsStringContents.substringWithRange(range))
                 scanner.scanString("swiftlint:", intoString: nil)
                 var actionString: NSString? = nil
@@ -69,7 +69,9 @@ extension File {
         let matches = regex.matchesInString(contents, options: [], range: range)
         return matches.map { match in
             let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range)
+                NSLocationInRange($0.offset, match.range) ||
+                    NSLocationInRange(match.range.location,
+                        NSRange(location: $0.offset, length: $0.length))
             }
             let kindsInRange = tokensInRange.flatMap {
                 SyntaxKind(rawValue: $0.type)

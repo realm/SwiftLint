@@ -57,17 +57,17 @@ public struct VariableNameRule: ASTRule {
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .High,
+                    severity: .Error,
                     reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
             } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .High,
+                    severity: .Error,
                     reason: "Variable name should start with a lowercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .Medium,
+                    severity: .Warning,
                     reason: "Variable name should be between 3 and 40 characters in length: " +
                     "'\(name)'"))
             }

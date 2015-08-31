@@ -16,17 +16,17 @@ class ASTRuleTests: XCTestCase {
 
             XCTAssertEqual(violations("\(kind) Ab_ {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1, character: 1),
-                severity: .High,
+                severity: .Error,
                 reason: "Type name should only contain alphanumeric characters: 'Ab_'")])
 
             XCTAssertEqual(violations("\(kind) abc {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1, character: 1),
-                severity: .High,
+                severity: .Error,
                 reason: "Type name should start with an uppercase character: 'abc'")])
 
             XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(type: .NameFormat,
                 location: Location(file: nil, line: 1, character: 1),
-                severity: .Medium,
+                severity: .Warning,
                 reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
 
             let longName = Repeat(count: 40, repeatedValue: "A").joinWithSeparator("")
@@ -35,7 +35,7 @@ class ASTRuleTests: XCTestCase {
             XCTAssertEqual(violations("\(kind) \(longerName) {}\n"), [
                 StyleViolation(type: .NameFormat,
                     location: Location(file: nil, line: 1, character: 1),
-                    severity: .Medium,
+                    severity: .Warning,
                     reason: "Type name should be between 3 and 40 characters in length: " +
                     "'\(longerName)'")
                 ])
@@ -48,7 +48,7 @@ class ASTRuleTests: XCTestCase {
             [
                 StyleViolation(type: .NameFormat,
                     location: Location(file: nil, line: 2, character: 5),
-                    severity: .High,
+                    severity: .Error,
                     reason: "Type name should start with an uppercase character: 'def'")
             ]
         )
@@ -63,21 +63,21 @@ class ASTRuleTests: XCTestCase {
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de_: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        severity: .High,
+                        severity: .Error,
                         reason: "Variable name should only contain alphanumeric characters: 'de_'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) Def: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        severity: .High,
+                        severity: .Error,
                         reason: "Variable name should start with a lowercase character: 'Def'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        severity: .Medium,
+                        severity: .Warning,
                         reason: "Variable name should be between 3 and 40 characters in length: " +
                         "'de'")
                     ])
@@ -88,7 +88,7 @@ class ASTRuleTests: XCTestCase {
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
                     StyleViolation(type: .NameFormat,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        severity: .Medium,
+                        severity: .Warning,
                         reason: "Variable name should be between 3 and 40 characters in length: " +
                         "'\(longerName)'")
                     ])
@@ -106,7 +106,7 @@ class ASTRuleTests: XCTestCase {
             "}\n"
         XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(type: .Length,
             location: Location(file: nil, line: 1, character: 1),
-            severity: .VeryLow,
+            severity: .Warning,
             reason: "Function body should be span 40 lines or less: currently spans 41 lines")])
     }
 
@@ -121,7 +121,7 @@ class ASTRuleTests: XCTestCase {
                 "}\n"
             XCTAssertEqual(violations(longerTypeBody), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: 1, character: 1),
-                severity: .VeryLow,
+                severity: .Warning,
                 reason: "Type body should be span 200 lines or less: currently spans 201 lines")])
         }
     }

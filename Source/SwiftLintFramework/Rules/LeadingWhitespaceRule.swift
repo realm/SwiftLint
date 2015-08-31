@@ -20,7 +20,7 @@ public struct LeadingWhitespaceRule: Rule {
         if countOfLeadingWhitespace != 0 {
             return [StyleViolation(type: .LeadingWhitespace,
                 location: Location(file: file.path, line: 1),
-                severity: .Medium,
+                severity: .Warning,
                 reason: "File shouldn't start with whitespace: " +
                 "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
         }

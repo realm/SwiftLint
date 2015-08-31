@@ -6,42 +6,13 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-public enum ViolationSeverity: Int, CustomStringConvertible, Comparable {
-    case VeryLow
-    case Low
-    case Medium
-    case High
-    case VeryHigh
-
-    public var description: String {
-        switch self {
-        case .VeryLow:
-            return "Very Low"
-        case .Low:
-            return "Low"
-        case .Medium:
-            return "Medium"
-        case .High:
-            return "High"
-        case .VeryHigh:
-            return "Very High"
-        }
-    }
-
-    public var isError: Bool {
-        return self > Medium
-    }
-
-    public var xcodeSeverityDescription: String {
-        return isError ? "error" : "warning"
-    }
+public enum ViolationSeverity: String, Comparable {
+    case Warning
+    case Error
 }
 
 // MARK: Comparable
 
-public func == (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
-    return lhs.rawValue == rhs.rawValue
-}
 public func < (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
-    return lhs.rawValue < rhs.rawValue
+    return lhs == .Warning && rhs == .Error
 }

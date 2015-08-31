@@ -56,17 +56,17 @@ public struct TypeNameRule: ASTRule {
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .High,
+                    severity: .Error,
                     reason: "Type name should only contain alphanumeric characters: '\(name)'"))
             } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .High,
+                    severity: .Error,
                     reason: "Type name should start with an uppercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
-                    severity: .Medium,
+                    severity: .Warning,
                     reason: "Type name should be between 3 and 40 characters in length: " +
                     "'\(name)'"))
             }

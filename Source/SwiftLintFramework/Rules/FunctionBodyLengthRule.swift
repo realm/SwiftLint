@@ -15,11 +15,8 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
     public let identifier = "function_body_length"
 
     public let parameters = [
-        RuleParameter(severity: .VeryLow, value: 40),
-        RuleParameter(severity: .Low, value: 50),
-        RuleParameter(severity: .Medium, value: 75),
-        RuleParameter(severity: .High, value: 100),
-        RuleParameter(severity: .VeryHigh, value: 200)
+        RuleParameter(severity: .Warning, value: 40),
+        RuleParameter(severity: .Error, value: 100)
     ]
 
     public func validateFile(file: File) -> [StyleViolation] {

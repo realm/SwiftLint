@@ -13,6 +13,7 @@ public struct VariableNameRule: ASTRule {
     public init() {}
 
     public let identifier = "variable_name"
+    public static let name = "Variable Name Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -55,17 +56,17 @@ public struct VariableNameRule: ASTRule {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Error,
                     reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
             } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Error,
                     reason: "Variable name should start with a lowercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Warning,
                     reason: "Variable name should be between 3 and 40 characters in length: " +
@@ -76,7 +77,7 @@ public struct VariableNameRule: ASTRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Variable Name Rule",
+        ruleName: name,
         ruleDescription: "Variable name should only contain alphanumeric characters, " +
         "start with a a lowercase character and be between 3 and 40 characters in length.",
         nonTriggeringExamples: [

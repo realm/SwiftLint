@@ -13,6 +13,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
     public init() {}
 
     public let identifier = "return_arrow_whitespace"
+    public static let name = "Returning Whitespace Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         // space doesn't include \n so that "func abc()->\n" can pass validation
@@ -28,7 +29,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
             withSyntaxKinds: [.Typeidentifier])
 
         return (pattern1 + pattern2).map { match in
-            return StyleViolation(type: .ReturnArrowWhitespace,
+            return StyleViolation(rule: self,
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
                 reason: "File should have 1 space before return arrow and return type")
@@ -36,7 +37,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Returning Whitespace Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether you have 1 space before " +
         "return arrow and return type",
         nonTriggeringExamples: [

@@ -12,6 +12,7 @@ public struct ColonRule: Rule {
     public init() {}
 
     public let identifier = "colon"
+    public static let name = "Colon Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
@@ -19,15 +20,16 @@ public struct ColonRule: Rule {
         let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
             withSyntaxKinds: [.Identifier, .Typeidentifier])
         return (pattern1 + pattern2).map { range in
-            return StyleViolation(type: .Colon,
+            return StyleViolation(rule: self,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: "When specifying a type, always associate the colon with the identifier")
         }
     }
+    
 
     public let example = RuleExample(
-        ruleName: "Colon Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether you associate the colon with the identifier.",
         nonTriggeringExamples: [
             "let abc: Void\n",

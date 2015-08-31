@@ -13,6 +13,7 @@ public struct NestingRule: ASTRule {
     public init() {}
 
     public let identifier = "nesting"
+    public static let name = "Nesting Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -54,16 +55,16 @@ public struct NestingRule: ASTRule {
         ]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(type: .Nesting,
+                violations.append(StyleViolation(rule: self,
                     location: Location(file: file, offset: offset),
                     reason: "Types should be nested at most 1 level deep"))
             } else if level > 2 && kind == .Enumelement {
                 // Enum elements are implicitly wrapped in an .Enumcase
-                violations.append(StyleViolation(type: .Nesting,
+                violations.append(StyleViolation(rule: self,
                     location: Location(file: file, offset: offset),
                     reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {
-                violations.append(StyleViolation(type: .Nesting,
+                violations.append(StyleViolation(rule: self,
                     location: Location(file: file, offset: offset),
                     reason: "Statements should be nested at most 5 levels deep"))
             }
@@ -86,7 +87,7 @@ public struct NestingRule: ASTRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Nesting Rule",
+        ruleName: name,
         ruleDescription: "Types should be nested at most 1 level deep, " +
         "and statements should be nested at most 5 levels deep.",
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in

@@ -12,6 +12,7 @@ public struct TrailingNewlineRule: Rule {
     public init() {}
 
     public let identifier = "trailing_newline"
+    public static let name = "Trailing newline rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         let string = file.contents
@@ -22,7 +23,7 @@ public struct TrailingNewlineRule: Rule {
         let slices = substring.split(allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
 
         if let slice = slices.last where slice.count != 1 {
-            return [StyleViolation(type: .TrailingNewline,
+            return [StyleViolation(rule: self,
                 location: Location(file: file.path, line: file.contents.lines().count + 1),
                 severity: .Warning,
                 reason: "File should have a single trailing newline")]
@@ -32,7 +33,7 @@ public struct TrailingNewlineRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Trailing newline rule",
+        ruleName: name,
         ruleDescription: "Files should have a single trailing newline.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

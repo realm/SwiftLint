@@ -12,6 +12,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
     public init() {}
 
     public let identifier = "operator_whitespace"
+    public static let name = "Operator Function Whitespace Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
@@ -26,7 +27,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
         return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
             return syntaxKinds.first == .Keyword
         }.map { range, _ in
-            return StyleViolation(type: .OperatorFunctionWhitespace,
+            return StyleViolation(rule: self,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: example.ruleDescription)
@@ -34,7 +35,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Operator Function Whitespace Rule",
+        ruleName: name,
         ruleDescription: "Use a single whitespace around operators when " +
             "defining them.",
         nonTriggeringExamples: [

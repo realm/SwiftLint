@@ -7,7 +7,7 @@
 //
 
 public struct StyleViolation: CustomStringConvertible, Equatable {
-    public let type: StyleViolationType
+    public let rule: Rule
     public let severity: ViolationSeverity
     public let location: Location
     public let reason: String?
@@ -15,20 +15,20 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return "\(location): " +
             "\(severity.rawValue.lowercaseString): " +
-            "\(type) Violation (\(severity) Severity): " +
+            "\(rule.dynamicType.name) Violation (\(severity) Severity): " +
             (reason ?? "")
     }
 
-    public init(type: StyleViolationType, location: Location, reason: String? = nil) {
-        self.init(type: type, location: location, severity: .Warning, reason: reason)
+    public init(rule: Rule, location: Location, reason: String? = nil) {
+        self.init(rule: rule, location: location, severity: .Warning, reason: reason)
     }
 
-    public init(type: StyleViolationType,
+    public init(rule: Rule,
         location: Location,
         severity: ViolationSeverity,
         reason: String? = nil) {
         self.severity = severity
-        self.type = type
+        self.rule = rule
         self.location = location
         self.reason = reason
     }
@@ -45,7 +45,7 @@ Returns true if `lhs` StyleViolation is equal to `rhs` StyleViolation.
 :returns: True if `lhs` StyleViolation is equal to `rhs` StyleViolation.
 */
 public func == (lhs: StyleViolation, rhs: StyleViolation) -> Bool {
-    return lhs.type == rhs.type &&
+    return lhs.rule.identifier == rhs.rule.identifier &&
         lhs.location == rhs.location &&
         lhs.severity == rhs.severity &&
         lhs.reason == rhs.reason

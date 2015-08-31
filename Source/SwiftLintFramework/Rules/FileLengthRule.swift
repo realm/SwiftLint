@@ -12,6 +12,7 @@ public struct FileLengthRule: ParameterizedRule {
     public init() {}
 
     public let identifier = "file_length"
+    public static let name = "File Line Length Rule"
 
     public let parameters = [
         RuleParameter(severity: .Warning, value: 400),
@@ -22,7 +23,7 @@ public struct FileLengthRule: ParameterizedRule {
         let lines = file.contents.lines()
         for parameter in parameters.reverse() {
             if lines.count > parameter.value {
-                return [StyleViolation(type: .Length,
+                return [StyleViolation(rule: self,
                     location: Location(file: file.path, line: lines.count),
                     severity: parameter.severity,
                     reason: "File should contain 400 lines or less: currently contains " +
@@ -33,7 +34,7 @@ public struct FileLengthRule: ParameterizedRule {
     }
 
     public let example = RuleExample(
-        ruleName: "File Line Length Rule",
+        ruleName: name,
         ruleDescription: "Files should be less than 400 lines.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

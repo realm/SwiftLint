@@ -13,6 +13,7 @@ public struct TypeNameRule: ASTRule {
     public init() {}
 
     public let identifier = "type_name"
+    public static let name = "Type Name Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -54,17 +55,17 @@ public struct TypeNameRule: ASTRule {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Error,
                     reason: "Type name should only contain alphanumeric characters: '\(name)'"))
             } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Error,
                     reason: "Type name should start with an uppercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(rule: self,
                     location: location,
                     severity: .Warning,
                     reason: "Type name should be between 3 and 40 characters in length: " +
@@ -75,7 +76,7 @@ public struct TypeNameRule: ASTRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Type Name Rule",
+        ruleName: name,
         ruleDescription: "Type name should only contain alphanumeric characters, " +
         "start with an uppercase character and between 3 and 40 characters in length.",
         nonTriggeringExamples: [

@@ -87,7 +87,7 @@ disabled_rules: # rule identifiers to exclude from running
   - operator_whitespace
   - return_arrow_whitespace
   - todo
-  - trailing_new_line
+  - trailing_newline
   - trailing_whitespace
   - type_body_length
   - type_name

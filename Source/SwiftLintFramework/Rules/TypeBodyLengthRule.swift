@@ -10,14 +10,20 @@ import SourceKittenFramework
 import SwiftXPC
 
 public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
-    public init() {}
+    public init() {
+        self.init(parameters: [
+            RuleParameter(severity: .Warning, value: 200),
+            RuleParameter(severity: .Error, value: 350)
+        ])
+    }
+
+    public init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
 
     public let identifier = "type_body_length"
 
-    public let parameters = [
-        RuleParameter(severity: .Warning, value: 200),
-        RuleParameter(severity: .Error, value: 350)
-    ]
+    public let parameters: [RuleParameter<Int>]
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -62,8 +68,8 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
                     return [StyleViolation(type: .Length,
                         location: location,
                         severity: parameter.severity,
-                        reason: "Type body should be span 200 lines or less: currently spans " +
-                        "\(endLine - startLine) lines")]
+                        reason: "Type body should be span \(parameters.first!.value) lines " +
+                        "or less: currently spans \(endLine - startLine) lines")]
                 }
             }
         }

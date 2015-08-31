@@ -14,13 +14,13 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
     public var description: String {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return "\(location): " +
-            "\(severity.xcodeSeverityDescription): " +
+            "\(severity.rawValue.lowercaseString): " +
             "\(type) Violation (\(severity) Severity): " +
             (reason ?? "")
     }
 
     public init(type: StyleViolationType, location: Location, reason: String? = nil) {
-        self.init(type: type, location: location, severity: .Low, reason: reason)
+        self.init(type: type, location: location, severity: .Warning, reason: reason)
     }
 
     public init(type: StyleViolationType,

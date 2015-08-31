@@ -14,11 +14,8 @@ public struct FileLengthRule: ParameterizedRule {
     public let identifier = "file_length"
 
     public let parameters = [
-        RuleParameter(severity: .VeryLow, value: 400),
-        RuleParameter(severity: .Low, value: 500),
-        RuleParameter(severity: .Medium, value: 750),
-        RuleParameter(severity: .High, value: 1000),
-        RuleParameter(severity: .VeryHigh, value: 2000)
+        RuleParameter(severity: .Warning, value: 400),
+        RuleParameter(severity: .Error, value: 1000)
     ]
 
     public func validateFile(file: File) -> [StyleViolation] {

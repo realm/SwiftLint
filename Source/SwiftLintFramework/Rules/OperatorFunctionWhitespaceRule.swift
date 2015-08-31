@@ -28,7 +28,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
         }.map { range, _ in
             return StyleViolation(type: .OperatorFunctionWhitespace,
                 location: Location(file: file, offset: range.location),
-                severity: .Medium,
+                severity: .Warning,
                 reason: example.ruleDescription)
         }
     }

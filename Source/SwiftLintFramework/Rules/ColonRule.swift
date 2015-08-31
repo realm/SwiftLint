@@ -21,7 +21,7 @@ public struct ColonRule: Rule {
         return (pattern1 + pattern2).map { range in
             return StyleViolation(type: .Colon,
                 location: Location(file: file, offset: range.location),
-                severity: .Low,
+                severity: .Warning,
                 reason: "When specifying a type, always associate the colon with the identifier")
         }
     }

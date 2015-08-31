@@ -17,7 +17,7 @@ public struct ForceCastRule: Rule {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
             return StyleViolation(type: .ForceCast,
                 location: Location(file: file, offset: range.location),
-                severity: .High,
+                severity: .Error,
                 reason: "Force casts should be avoided")
         }
     }

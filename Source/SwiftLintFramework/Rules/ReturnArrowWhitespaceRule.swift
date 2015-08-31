@@ -30,7 +30,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
         return (pattern1 + pattern2).map { match in
             return StyleViolation(type: .ReturnArrowWhitespace,
                 location: Location(file: file, offset: match.location),
-                severity: .Low,
+                severity: .Warning,
                 reason: "File should have 1 space before return arrow and return type")
         }
     }

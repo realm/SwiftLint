@@ -6,6 +6,11 @@
   [JP Simard](https://github.com/jpsim)
   [#77](https://github.com/realm/SwiftLint/issues/77)
 
+* `ViolationSeverity` now has an associated type of `String` and two members:
+  `.Warning` and `.Error`.  
+  [JP Simard](https://github.com/jpsim)
+  [#113](https://github.com/realm/SwiftLint/issues/113)
+
 ##### Enhancements
 
 * Configure SwiftLint via a YAML file:

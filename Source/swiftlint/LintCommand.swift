@@ -60,7 +60,7 @@ struct LintCommand: CommandType {
                 for violation in Linter(file: file, configuration: configuration).styleViolations {
                     print(violation)
                     numberOfViolations++
-                    if violation.severity.isError {
+                    if violation.severity == .Error {
                         numberOfSeriousViolations++
                     }
                 }

@@ -14,11 +14,8 @@ class StringRuleTests: XCTestCase {
         let longLine = Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n"
         XCTAssertEqual(violations(longLine), [])
         let testCases: [(String, Int, ViolationSeverity)] = [
-            ("/", 101, .VeryLow),
-            (Repeat(count: 21, repeatedValue: "/").joinWithSeparator(""), 121, .Low),
-            (Repeat(count: 51, repeatedValue: "/").joinWithSeparator(""), 151, .Medium),
-            (Repeat(count: 101, repeatedValue: "/").joinWithSeparator(""), 201, .High),
-            (Repeat(count: 151, repeatedValue: "/").joinWithSeparator(""), 251, .VeryHigh)
+            ("/", 101, .Warning),
+            (Repeat(count: 101, repeatedValue: "/").joinWithSeparator(""), 201, .Error)
         ]
         for testCase in testCases {
             XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
@@ -33,11 +30,11 @@ class StringRuleTests: XCTestCase {
         XCTAssertEqual(violations("//\n"), [])
         XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 1),
-            severity: .Medium,
+            severity: .Warning,
             reason: "File should have a single trailing newline")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 3),
-            severity: .Medium,
+            severity: .Warning,
             reason: "File should have a single trailing newline")])
     }
 
@@ -47,11 +44,8 @@ class StringRuleTests: XCTestCase {
             []
         )
         let testCases: [(String, Int, ViolationSeverity)] = [
-            (Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator(""), 401, .VeryLow),
-            (Repeat(count: 501, repeatedValue: "//\n").joinWithSeparator(""), 501, .Low),
-            (Repeat(count: 751, repeatedValue: "//\n").joinWithSeparator(""), 751, .Medium),
-            (Repeat(count: 1001, repeatedValue: "//\n").joinWithSeparator(""), 1001, .High),
-            (Repeat(count: 2001, repeatedValue: "//\n").joinWithSeparator(""), 2001, .VeryHigh)
+            (Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator(""), 401, .Warning),
+            (Repeat(count: 1001, repeatedValue: "//\n").joinWithSeparator(""), 1001, .Error)
         ]
         for testCase in testCases {
             XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,

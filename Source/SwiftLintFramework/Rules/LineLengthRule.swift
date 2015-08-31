@@ -12,6 +12,7 @@ public struct LineLengthRule: ParameterizedRule {
     public init() {}
 
     public let identifier = "line_length"
+    public static let name = "Line Length Rule"
 
     public let parameters = [
         RuleParameter(severity: .Warning, value: 100),
@@ -22,7 +23,7 @@ public struct LineLengthRule: ParameterizedRule {
         return file.contents.lines().flatMap { line in
             for parameter in parameters.reverse() {
                 if line.content.characters.count > parameter.value {
-                    return StyleViolation(type: .Length,
+                    return StyleViolation(rule: self,
                         location: Location(file: file.path, line: line.index),
                         severity: parameter.severity,
                         reason: "Line should be 100 characters or less: currently " +
@@ -34,7 +35,7 @@ public struct LineLengthRule: ParameterizedRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Line Length Rule",
+        ruleName: name,
         ruleDescription: "Lines should be less than 100 characters.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

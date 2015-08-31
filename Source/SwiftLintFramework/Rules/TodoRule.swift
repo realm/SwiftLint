@@ -12,10 +12,11 @@ public struct TodoRule: Rule {
     public init() {}
 
     public let identifier = "todo"
+    public static let name = "Todo Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
-            return StyleViolation(type: .TODO,
+            return StyleViolation(rule: self,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: "TODOs and FIXMEs should be avoided")
@@ -23,7 +24,7 @@ public struct TodoRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Todo Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
         nonTriggeringExamples: [
             "let string = \"// TODO:\"\n",

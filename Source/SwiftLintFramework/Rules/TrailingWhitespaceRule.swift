@@ -12,6 +12,7 @@ public struct TrailingWhitespaceRule: Rule {
     public init() {}
 
     public let identifier = "trailing_whitespace"
+    public static let name = "Trailing Whitespace Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.contents.lines().map { line in
@@ -24,7 +25,7 @@ public struct TrailingWhitespaceRule: Rule {
         }.filter {
             $0.trailingWhitespaceCount > 0
         }.map {
-            StyleViolation(type: .TrailingWhitespace,
+            StyleViolation(rule: self,
                 location: Location(file: file.path, line: $0.index),
                 severity: .Warning,
                 reason: "Line #\($0.index) should have no trailing whitespace: " +
@@ -33,7 +34,7 @@ public struct TrailingWhitespaceRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Trailing Whitespace Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether you don't have any trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "// \n" ],

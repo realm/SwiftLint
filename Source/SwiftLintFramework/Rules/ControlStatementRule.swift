@@ -12,6 +12,7 @@ public struct ControlStatementRule: Rule {
     public init() {}
 
     public let identifier = "control_statement"
+    public static let name = "Control Statement"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return ["if", "for", "switch", "while"].flatMap { statementKind -> [StyleViolation] in
@@ -20,7 +21,7 @@ public struct ControlStatementRule: Rule {
                 if syntaxKinds.first != .Keyword {
                     return nil
                 }
-                return StyleViolation(type: .ControlStatement,
+                return StyleViolation(rule: self,
                     location: Location(file: file, offset: match.location),
                     severity: .Warning,
                     reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
@@ -30,7 +31,7 @@ public struct ControlStatementRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Control Statement",
+        ruleName: name,
         ruleDescription: "if,for,while,do statements shouldn't wrap their conditionals in " +
         "parentheses.",
         nonTriggeringExamples: [

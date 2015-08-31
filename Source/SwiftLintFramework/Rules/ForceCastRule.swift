@@ -12,10 +12,11 @@ public struct ForceCastRule: Rule {
     public init() {}
 
     public let identifier = "force_cast"
+    public static let name = "Force Cast Rule"
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
-            return StyleViolation(type: .ForceCast,
+            return StyleViolation(rule: self,
                 location: Location(file: file, offset: range.location),
                 severity: .Error,
                 reason: "Force casts should be avoided")
@@ -23,7 +24,7 @@ public struct ForceCastRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Force Cast Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether you don't do force casts.",
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"

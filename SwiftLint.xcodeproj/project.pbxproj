@@ -33,7 +33,6 @@
 		E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; };
 		E876BFBF1B0782AA00114ED5 /* SourceKittenFramework.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */; };
-		E88DEA6D1B09842200A66CB0 /* StyleViolationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */; };
 		E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6E1B09843F00A66CB0 /* Location.swift */; };
 		E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */; };
 		E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */; };
@@ -161,7 +160,6 @@
 		E868473B1A587C6E0043DC65 /* sourcekitd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = sourcekitd.framework; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/sourcekitd.framework; sourceTree = DEVELOPER_DIR; };
 		E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleViolation.swift; sourceTree = "<group>"; };
-		E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleViolationType.swift; sourceTree = "<group>"; };
 		E88DEA6E1B09843F00A66CB0 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViolationSeverity.swift; sourceTree = "<group>"; };
 		E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -362,7 +360,6 @@
 				E88DEA7A1B098D7300A66CB0 /* Rules */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
-				E88DEA6C1B09842200A66CB0 /* StyleViolationType.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
 				D0D1216F19E87B05005E4BAA /* Supporting Files */,
 			);
@@ -603,7 +600,6 @@
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
-				E88DEA6D1B09842200A66CB0 /* StyleViolationType.swift in Sources */,
 				E88DEA941B099C0900A66CB0 /* VariableNameRule.swift in Sources */,
 				E88DEA8A1B0992B300A66CB0 /* FileLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,

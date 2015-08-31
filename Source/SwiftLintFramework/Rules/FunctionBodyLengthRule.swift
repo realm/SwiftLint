@@ -13,6 +13,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
     public init() {}
 
     public let identifier = "function_body_length"
+    public static let name = "Function Body Length Rule"
 
     public let parameters = [
         RuleParameter(severity: .Warning, value: 40),
@@ -70,7 +71,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
             for parameter in parameters.reverse() {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
-                    return [StyleViolation(type: .Length,
+                        return [StyleViolation(rule: self,
                         location: location,
                         severity: parameter.severity,
                         reason: "Function body should be span 40 lines or less: currently spans " +
@@ -82,7 +83,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Function Body Length Rule",
+        ruleName: name,
         ruleDescription: "This rule checks whether your function bodies are less than 40 lines.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

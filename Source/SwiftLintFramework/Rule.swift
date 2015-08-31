@@ -10,6 +10,7 @@ import SourceKittenFramework
 
 public protocol Rule {
     var identifier: String { get }
+    static var name: String { get }
     func validateFile(file: File) -> [StyleViolation]
     var example: RuleExample { get }
 }

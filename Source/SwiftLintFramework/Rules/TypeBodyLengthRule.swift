@@ -13,6 +13,7 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
     public init() {}
 
     public let identifier = "type_body_length"
+    public static let name = "Type body Length Rule"
 
     public let parameters = [
         RuleParameter(severity: .Warning, value: 200),
@@ -59,7 +60,7 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
             for parameter in parameters.reverse() {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
-                    return [StyleViolation(type: .Length,
+                        return [StyleViolation(rule: self,
                         location: location,
                         severity: parameter.severity,
                         reason: "Type body should be span 200 lines or less: currently spans " +
@@ -71,7 +72,7 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
     }
 
     public let example = RuleExample(
-        ruleName: "Type body Length Rule",
+        ruleName: name,
         ruleDescription: "Type body should span 200 lines or less.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

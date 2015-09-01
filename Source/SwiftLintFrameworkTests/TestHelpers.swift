@@ -19,15 +19,19 @@ private func violations(string: String, _ type: StyleViolationType) -> [StyleVio
 }
 
 extension XCTestCase {
-    func verifyRule(rule: RuleExample,
+    func verifyRule(rule: Rule,
         type: StyleViolationType,
         commentDoesntViolate: Bool = true) {
-        XCTAssertEqual(rule.nonTriggeringExamples.flatMap({violations($0, type)}), [])
-        XCTAssertEqual(rule.triggeringExamples.flatMap({violations($0, type).map({$0.type})}),
-            Array(count: rule.triggeringExamples.count, repeatedValue: type))
+        let example = rule.example
+        XCTAssertEqual(example.nonTriggeringExamples.flatMap({violations($0, type)}), [])
+        XCTAssertEqual(example.triggeringExamples.flatMap({violations($0, type).map({$0.type})}),
+            Array(count: example.triggeringExamples.count, repeatedValue: type))
 
         if commentDoesntViolate {
-            XCTAssertEqual(rule.triggeringExamples.flatMap({violations("// " + $0, type)}), [])
+            XCTAssertEqual(example.triggeringExamples.flatMap({violations("// " + $0, type)}), [])
         }
+
+        let command = "// swiftlint:disable \(rule.identifier)\n"
+        XCTAssertEqual(example.triggeringExamples.flatMap({violations(command + $0, type)}), [])
     }
 }

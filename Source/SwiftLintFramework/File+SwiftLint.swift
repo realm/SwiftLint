@@ -9,9 +9,44 @@
 import SourceKittenFramework
 import SwiftXPC
 
-typealias Line = (index: Int, content: String)
+internal typealias Line = (index: Int, content: String)
 
 extension File {
+    public func regions() -> [Region] {
+        let nsStringContents = contents as NSString
+        let commands = matchPattern("swiftlint:(enable|disable)\\ [^\\s]+",
+            withSyntaxKinds: [.Comment]).flatMap { Command(string: nsStringContents, range: $0) }
+        let lines = contents.lines()
+        let totalNumberOfLines = lines.count
+        let numberOfCharactersInLastLine = lines.last?.content.characters.count
+        let firstRegion = Region(start:
+            Location(file: path, line: 1, character: 0),
+            end: Location(file: path,
+                line: commands.first?.line ?? totalNumberOfLines,
+                character: commands.first?.character ?? numberOfCharactersInLastLine),
+            disabledRuleIdentifiers: [])
+        var regions = [firstRegion]
+        var disabledRules = Set<String>()
+        let commandPairs = zip(commands, Array(commands.dropFirst().map({Optional($0)})) + [nil])
+        for (command, nextCommand) in commandPairs {
+            switch command.action {
+            case .Disable: disabledRules.insert(command.ruleIdentifier)
+            case .Enable: disabledRules.remove(command.ruleIdentifier)
+            }
+            regions.append(
+                Region(
+                    start: Location(file: path,
+                        line: command.line,
+                        character: command.character),
+                    end: Location(file: path,
+                        line: nextCommand?.line ?? totalNumberOfLines,
+                        character: nextCommand?.character ?? numberOfCharactersInLastLine),
+                    disabledRuleIdentifiers: disabledRules)
+            )
+        }
+        return regions
+    }
+
     public func matchPattern(pattern: String,
         withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
@@ -27,7 +62,9 @@ extension File {
         let matches = regex.matchesInString(contents, options: [], range: range)
         return matches.map { match in
             let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range)
+                NSLocationInRange($0.offset, match.range) ||
+                    NSLocationInRange(match.range.location,
+                        NSRange(location: $0.offset, length: $0.length))
             }
             let kindsInRange = tokensInRange.flatMap {
                 SyntaxKind(rawValue: $0.type)

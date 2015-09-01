@@ -127,18 +127,18 @@ class ASTRuleTests: XCTestCase {
     }
 
     func testTypeNamesVerifyRule() {
-        verifyRule(TypeNameRule().example, type: .NameFormat)
+        verifyRule(TypeNameRule(), type: .NameFormat)
     }
 
     func testVariableNamesVerifyRule() {
-        verifyRule(VariableNameRule().example, type: .NameFormat)
+        verifyRule(VariableNameRule(), type: .NameFormat)
     }
 
     func testNesting() {
-        verifyRule(NestingRule().example, type: .Nesting, commentDoesntViolate: false)
+        verifyRule(NestingRule(), type: .Nesting, commentDoesntViolate: false)
     }
 
     func testControlStatements() {
-        verifyRule(ControlStatementRule().example, type: .ControlStatement)
+        verifyRule(ControlStatementRule(), type: .ControlStatement)
     }
 }

@@ -27,10 +27,6 @@ extension String {
         return self == uppercaseString
     }
 
-    func countOfTailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
-        return String(characters.reverse()).countOfLeadingCharactersInSet(characterSet)
-    }
-
     public var chomped: String {
         return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }

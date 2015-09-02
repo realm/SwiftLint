@@ -11,6 +11,18 @@ import SourceKittenFramework
 import SwiftXPC
 
 extension String {
+    func hasTrailingWhitespace() -> Bool {
+        if isEmpty {
+            return false
+        }
+
+        if let character = utf16.suffix(1).first {
+            return NSCharacterSet.whitespaceCharacterSet().characterIsMember(character)
+        }
+
+        return false
+    }
+
     func isUppercase() -> Bool {
         return self == uppercaseString
     }

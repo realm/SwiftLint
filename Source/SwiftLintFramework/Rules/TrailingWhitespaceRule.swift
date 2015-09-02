@@ -14,21 +14,13 @@ public struct TrailingWhitespaceRule: Rule {
     public let identifier = "trailing_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.lines.map { line in
-            (
-                index: line.index,
-                trailingWhitespaceCount: line.content.countOfTailingCharactersInSet(
-                    NSCharacterSet.whitespaceCharacterSet()
-                )
-            )
-        }.filter {
-            $0.trailingWhitespaceCount > 0
+        return file.lines.filter {
+            $0.content.hasTrailingWhitespace()
         }.map {
             StyleViolation(type: .TrailingWhitespace,
                 location: Location(file: file.path, line: $0.index),
                 severity: .Warning,
-                reason: "Line #\($0.index) should have no trailing whitespace: " +
-                "current has \($0.trailingWhitespaceCount) trailing whitespace characters")
+                reason: "Line #\($0.index) should have no trailing whitespace")
         }
     }
 

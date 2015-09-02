@@ -37,7 +37,8 @@
 
 ##### Bug Fixes
 
-* None.
+* Improve performance of `TrailingWhitespaceRule`.  
+  [Keith Smiley](https://github.com/keith)
 
 
 ## 0.1.2: FabricSoftenerRule

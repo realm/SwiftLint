@@ -11,12 +11,20 @@ import SourceKittenFramework
 import SwiftXPC
 
 extension String {
-    func isUppercase() -> Bool {
-        return self == uppercaseString
+    func hasTrailingWhitespace() -> Bool {
+        if isEmpty {
+            return false
+        }
+
+        if let character = utf16.suffix(1).first {
+            return NSCharacterSet.whitespaceCharacterSet().characterIsMember(character)
+        }
+
+        return false
     }
 
-    func countOfTailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
-        return String(characters.reverse()).countOfLeadingCharactersInSet(characterSet)
+    func isUppercase() -> Bool {
+        return self == uppercaseString
     }
 
     public var chomped: String {

@@ -14,7 +14,7 @@ public struct TrailingWhitespaceRule: Rule {
     public let identifier = "trailing_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.contents.lines().map { line in
+        return file.lines.map { line in
             (
                 index: line.index,
                 trailingWhitespaceCount: line.content.countOfTailingCharactersInSet(

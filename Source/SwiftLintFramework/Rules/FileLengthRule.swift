@@ -19,14 +19,14 @@ public struct FileLengthRule: ParameterizedRule {
     ]
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let lines = file.contents.lines()
+        let lineCount = file.lines.count
         for parameter in parameters.reverse() {
-            if lines.count > parameter.value {
+            if lineCount > parameter.value {
                 return [StyleViolation(type: .Length,
-                    location: Location(file: file.path, line: lines.count),
+                    location: Location(file: file.path, line: lineCount),
                     severity: parameter.severity,
                     reason: "File should contain 400 lines or less: currently contains " +
-                    "\(lines.count)")]
+                    "\(lineCount)")]
             }
         }
         return []

@@ -16,7 +16,6 @@ extension File {
         let nsStringContents = contents as NSString
         let commands = matchPattern("swiftlint:(enable|disable)\\ [^\\s]+",
             withSyntaxKinds: [.Comment]).flatMap { Command(string: nsStringContents, range: $0) }
-        let lines = contents.lines()
         let totalNumberOfLines = lines.count
         let numberOfCharactersInLastLine = lines.last?.content.characters.count
         let firstRegion = Region(start:

@@ -19,7 +19,7 @@ public struct LineLengthRule: ParameterizedRule {
     ]
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.contents.lines().flatMap { line in
+        return file.lines.flatMap { line in
             for parameter in parameters.reverse() {
                 if line.content.characters.count > parameter.value {
                     return StyleViolation(type: .Length,

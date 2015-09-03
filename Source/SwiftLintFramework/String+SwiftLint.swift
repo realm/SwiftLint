@@ -11,15 +11,6 @@ import SourceKittenFramework
 import SwiftXPC
 
 extension String {
-    func lines() -> [Line] {
-        var lines = [Line]()
-        var lineIndex = 1
-        enumerateLines { line, stop in
-            lines.append((lineIndex++, line))
-        }
-        return lines
-    }
-
     func isUppercase() -> Bool {
         return self == uppercaseString
     }

@@ -37,12 +37,12 @@ struct LintCommand: CommandType {
             }
 
             // Otherwise parse path.
-            return lint(options.path, configuration: configuration)
+            return lint(options.path, configuration: configuration, strict: options.strict)
         }
     }
 
     private func lint(path: String,
-        configuration: Configuration) -> Result<(), CommandantError<()>> {
+        configuration: Configuration, strict: Bool) -> Result<(), CommandantError<()>> {
         let filesToLint = (configuration.included.count == 0 ? filesToLintAtPath(path) : [])
             .filter({ !configuration.excluded.flatMap(filesToLintAtPath).contains($0) }) +
             configuration.included.flatMap(filesToLintAtPath)
@@ -73,7 +73,9 @@ struct LintCommand: CommandType {
                 " \(numberOfSeriousViolations) serious" +
                 " in \(filesToLint.count) file\(filesSuffix)"
             )
-            if numberOfSeriousViolations <= 0 {
+            if strict && numberOfViolations > 0 {
+                return .Failure(CommandantError<()>.CommandError())
+            } else if numberOfSeriousViolations <= 0 {
                 return .Success()
             }
             return .Failure(CommandantError<()>.CommandError())
@@ -102,9 +104,13 @@ struct LintOptions: OptionsType {
     let path: String
     let useSTDIN: Bool
     let configurationFile: String
+    let strict: Bool
 
-    static func create(path: String)(useSTDIN: Bool)(configurationFile: String) -> LintOptions {
-        return LintOptions(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile)
+    static func create(path: String)(useSTDIN: Bool)(configurationFile: String)(strict: Bool)
+        -> LintOptions
+    {
+        return LintOptions(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
+            strict: strict)
     }
 
     static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
@@ -118,5 +124,8 @@ struct LintOptions: OptionsType {
             <*> m <| Option(key: "config",
                 defaultValue: ".swiftlint.yml",
                 usage: "the path to SwiftLint's configuration file")
+            <*> m <| Option(key: "strict",
+                defaultValue: false,
+                usage: "fail on warnings")
     }
 }

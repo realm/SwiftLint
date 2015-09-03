@@ -28,6 +28,10 @@
   [JP Simard](https://github.com/jpsim)
   [#4](https://github.com/realm/SwiftLint/issues/4)
 
+* Add `--strict` lint flag which makes the lint fail if there are any
+  warnings.  
+  [Keith Smiley](https://github.com/keith)
+
 ##### Bug Fixes
 
 * None.

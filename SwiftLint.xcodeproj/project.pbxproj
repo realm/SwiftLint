@@ -427,13 +427,13 @@
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 				E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */,
+				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
 				E88DEA811B0990A700A66CB0 /* TodoRule.swift */,
 				E88DEA871B09924C00A66CB0 /* TrailingNewlineRule.swift */,
 				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
 				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
-				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";

@@ -107,8 +107,7 @@ struct LintOptions: OptionsType {
     let strict: Bool
 
     static func create(path: String)(useSTDIN: Bool)(configurationFile: String)(strict: Bool)
-        -> LintOptions
-    {
+        -> LintOptions {
         return LintOptions(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
             strict: strict)
     }

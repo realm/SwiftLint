@@ -15,7 +15,9 @@ public struct ReturnArrowWhitespaceRule: Rule {
     public let identifier = "return_arrow_whitespace"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let spaceRegex = "(\\h{0}|\\h{2,})"
+        // just horizontal spacing so that "func abc()->\n" can pass validation
+        let space = "[ \\f\\r\\t]"
+        let spaceRegex = "(\(space){0}|\(space){2,})"
 
         // ex: func abc()-> Int {
         let pattern1 = file.matchPattern("\\)\(spaceRegex)\\->\\s*\\S+",

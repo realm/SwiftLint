@@ -58,7 +58,7 @@ struct LintCommand: CommandType {
                 print("Linting '\(filename)' (\(index + 1)/\(filesToLint.count))")
                 let file = File(path: path)!
                 for violation in Linter(file: file, configuration: configuration).styleViolations {
-                    print(violation)
+                    fputs("\(violation)\n", stderr)
                     numberOfViolations++
                     if violation.severity == .Error {
                         numberOfSeriousViolations++

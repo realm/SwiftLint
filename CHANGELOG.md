@@ -40,6 +40,9 @@
 * Improve performance of `TrailingWhitespaceRule`.  
   [Keith Smiley](https://github.com/keith)
 
+* Allow newlines in function return arrow.  
+  [JP Simard](https://github.com/jpsim)
+
 
 ## 0.1.2: FabricSoftenerRule
 

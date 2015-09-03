@@ -32,6 +32,9 @@
   warnings.  
   [Keith Smiley](https://github.com/keith)
 
+* Violations are now printed to stderr.  
+  [Keith Smiley](https://github.com/keith)
+
 ##### Bug Fixes
 
 * None.

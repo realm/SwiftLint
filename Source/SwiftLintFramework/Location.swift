@@ -47,9 +47,6 @@ public func == (lhs: Location, rhs: Location) -> Bool {
 }
 
 public func < (lhs: Location, rhs: Location) -> Bool {
-    if lhs.file != rhs.file {
-        return lhs.file < rhs.file
-    }
     if lhs.line != rhs.line {
         return lhs.line < rhs.line
     }

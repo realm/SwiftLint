@@ -43,6 +43,9 @@
 * Allow newlines in function return arrow.  
   [JP Simard](https://github.com/jpsim)
 
+* Don't compare text when comparing `Location`s.  
+  [Keith Smiley](https://github.com/keith)
+
 
 ## 0.1.2: FabricSoftenerRule
 

@@ -18,13 +18,7 @@ extension File {
             withSyntaxKinds: [.Comment]).flatMap { Command(string: nsStringContents, range: $0) }
         let totalNumberOfLines = lines.count
         let numberOfCharactersInLastLine = lines.last?.content.characters.count
-        let firstRegion = Region(start:
-            Location(file: path, line: 1, character: 0),
-            end: Location(file: path,
-                line: commands.first?.line ?? totalNumberOfLines,
-                character: commands.first?.character ?? numberOfCharactersInLastLine),
-            disabledRuleIdentifiers: [])
-        var regions = [firstRegion]
+        var regions = [Region]()
         var disabledRules = Set<String>()
         let commandPairs = zip(commands, Array(commands.dropFirst().map({Optional($0)})) + [nil])
         for (command, nextCommand) in commandPairs {

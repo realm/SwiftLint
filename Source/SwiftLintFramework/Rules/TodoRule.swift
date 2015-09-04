@@ -14,7 +14,7 @@ public struct TodoRule: Rule {
     public let identifier = "todo"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("\\b(TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
+        return file.matchPattern("\\b(TODO|FIXME)\\b", withSyntaxKinds: [.Comment]).map { range in
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
@@ -32,6 +32,8 @@ public struct TodoRule: Rule {
         triggeringExamples: [
             "// TODO:\n",
             "// FIXME:\n",
+            "// TODO(note)\n",
+            "// FIXME(note)\n",
             "/* FIXME: */\n",
             "/* TODO: */\n",
             "/** FIXME: */\n",

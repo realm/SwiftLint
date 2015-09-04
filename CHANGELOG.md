@@ -35,6 +35,9 @@
 * Violations are now printed to stderr.  
   [Keith Smiley](https://github.com/keith)
 
+* Add rule for header comment boilerplate.  
+  [Keith Smiley](https://github.com/keith)
+
 ##### Bug Fixes
 
 * Improve performance of `TrailingWhitespaceRule`.  

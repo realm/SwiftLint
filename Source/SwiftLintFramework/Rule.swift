@@ -35,5 +35,6 @@ public let allRules: [Rule] = [
     TypeBodyLengthRule(),
     FunctionBodyLengthRule(),
     NestingRule(),
-    ControlStatementRule()
+    ControlStatementRule(),
+    HeaderCommentRule(),
 ]

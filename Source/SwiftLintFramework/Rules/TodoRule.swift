@@ -8,13 +8,23 @@
 
 import SourceKittenFramework
 
+extension SyntaxKind {
+    /// Returns if the syntax kind is comment-like.
+    public var isCommentLike: Bool {
+        return [Comment, CommentMark, CommentURL, DocComment, DocCommentField].contains(self)
+    }
+}
+
 public struct TodoRule: Rule {
     public init() {}
 
     public let identifier = "todo"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("\\b(TODO|FIXME)\\b", withSyntaxKinds: [.Comment]).map { range in
+        return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
+            if syntaxKinds.filter({ !$0.isCommentLike }).count > 0 {
+                return nil
+            }
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,

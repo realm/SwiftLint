@@ -30,7 +30,7 @@ struct LintCommand: CommandType {
                 if let stdinString = stdinNSString as? String {
                     let file = File(contents: stdinString)
                     let linter = Linter(file: file, configuration: configuration)
-                    print(linter.styleViolations.map({ $0.description }).joinWithSeparator("\n"))
+                    print(linter.generateReport())
                     return .Success()
                 }
                 return .Failure(CommandantError<()>.CommandError())

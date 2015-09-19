@@ -35,6 +35,12 @@
 * Violations are now printed to stderr.  
   [Keith Smiley](https://github.com/keith)
 
+* Custom reporters are now supported. Specify a value for the `reporter:` key in
+  your configuration file. Available reporters are `xcode` (default), `json`,
+  `csv`.  
+  [JP Simard](https://github.com/jpsim)
+  [#42](https://github.com/realm/SwiftLint/issues/42)
+
 ##### Bug Fixes
 
 * Improve performance of `TrailingWhitespaceRule`.  

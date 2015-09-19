@@ -15,7 +15,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return "\(location): " +
             "\(severity.rawValue.lowercaseString): " +
-            "\(type) Violation (\(severity) Severity): " +
+            "\(type) Violation: " +
             (reason ?? "")
     }
 

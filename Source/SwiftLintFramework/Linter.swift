@@ -12,8 +12,8 @@ import SourceKittenFramework
 
 public struct Linter {
     private let file: File
-
     private let rules: [Rule]
+    private let reporter: Reporter.Type
 
     public var styleViolations: [StyleViolation] {
         let regions = file.regions()
@@ -29,6 +29,10 @@ public struct Linter {
         }
     }
 
+    public func generateReport() -> String {
+        return reporter.generateReport(styleViolations)
+    }
+
     public var ruleExamples: [RuleExample] {
         return rules.flatMap { $0.example }
     }
@@ -41,5 +45,6 @@ public struct Linter {
     public init(file: File, configuration: Configuration = Configuration()!) {
         self.file = file
         rules = configuration.rules
+        reporter = configuration.reporterFromString
     }
 }

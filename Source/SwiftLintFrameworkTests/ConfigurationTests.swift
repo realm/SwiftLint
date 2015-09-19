@@ -27,6 +27,8 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.disabledRules, [])
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
+        XCTAssertEqual(config.reporter, "xcode")
+        XCTAssertEqual(config.reporterFromString.identifier, "xcode")
     }
 
     func testDisabledRules() {

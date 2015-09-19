@@ -18,15 +18,33 @@ public struct Configuration {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
+    public let reporter: String        // reporter (xcode, json, csv)
 
     public var rules: [Rule] {
         return allRules.filter { !disabledRules.contains($0.identifier) }
     }
 
-    public init?(disabledRules: [String] = [], included: [String] = [], excluded: [String] = []) {
+    public var reporterFromString: Reporter.Type {
+        switch reporter {
+        case XcodeReporter.identifier:
+            return XcodeReporter.self
+        case JSONReporter.identifier:
+            return JSONReporter.self
+        case CSVReporter.identifier:
+            return CSVReporter.self
+        default:
+            fatalError("no reporter with identifier '\(reporter)' available.")
+        }
+    }
+
+    public init?(disabledRules: [String] = [],
+                 included: [String] = [],
+                 excluded: [String] = [],
+                 reporter: String = "xcode") {
         self.disabledRules = disabledRules
         self.included = included
         self.excluded = excluded
+        self.reporter = reporter
 
         // Validate that all rule identifiers map to a defined rule
 
@@ -67,7 +85,8 @@ public struct Configuration {
         self.init(
             disabledRules: yamlConfig["disabled_rules"].arrayOfStrings ?? [],
             included: yamlConfig["included"].arrayOfStrings ?? [],
-            excluded: yamlConfig["excluded"].arrayOfStrings ?? []
+            excluded: yamlConfig["excluded"].arrayOfStrings ?? [],
+            reporter: yamlConfig["reporter"].string ?? XcodeReporter.identifier
         )
     }
 

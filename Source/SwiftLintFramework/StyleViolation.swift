@@ -12,11 +12,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
     public let location: Location
     public let reason: String?
     public var description: String {
-        // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
-        return "\(location): " +
-            "\(severity.rawValue.lowercaseString): " +
-            "\(type) Violation (\(severity) Severity): " +
-            (reason ?? "")
+        return XcodeReporter.generateForSingleViolation(self)
     }
 
     public init(type: StyleViolationType, location: Location, reason: String? = nil) {

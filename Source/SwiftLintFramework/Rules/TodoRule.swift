@@ -8,13 +8,23 @@
 
 import SourceKittenFramework
 
+extension SyntaxKind {
+    /// Returns if the syntax kind is comment-like.
+    public var isCommentLike: Bool {
+        return [Comment, CommentMark, CommentURL, DocComment, DocCommentField].contains(self)
+    }
+}
+
 public struct TodoRule: Rule {
     public init() {}
 
     public let identifier = "todo"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("// (TODO|FIXME):", withSyntaxKinds: [.Comment]).map { range in
+        return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
+            if syntaxKinds.filter({ !$0.isCommentLike }).count > 0 {
+                return nil
+            }
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
@@ -26,12 +36,18 @@ public struct TodoRule: Rule {
         ruleName: "Todo Rule",
         ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
         nonTriggeringExamples: [
-            "let string = \"// TODO:\"\n",
-            "let string = \"// FIXME:\"\n"
+            "// notaTODO:\n",
+            "// notaFIXME:\n"
         ],
         triggeringExamples: [
             "// TODO:\n",
-            "// FIXME:\n"
+            "// FIXME:\n",
+            "// TODO(note)\n",
+            "// FIXME(note)\n",
+            "/* FIXME: */\n",
+            "/* TODO: */\n",
+            "/** FIXME: */\n",
+            "/** TODO: */\n"
         ]
     )
 }

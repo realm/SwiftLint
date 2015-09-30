@@ -89,7 +89,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
 
     public let example = RuleExample(
         ruleName: "Function Body Length Rule",
-        ruleDescription: "This rule checks whether your function bodies are less than 40 lines.",
+        ruleDescription: "Enforce maximum function length",
         nonTriggeringExamples: [],
         triggeringExamples: [],
         showExamples: false

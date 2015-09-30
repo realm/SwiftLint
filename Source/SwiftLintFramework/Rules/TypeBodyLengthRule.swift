@@ -78,7 +78,7 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
 
     public let example = RuleExample(
         ruleName: "Type body Length Rule",
-        ruleDescription: "Type body should span 200 lines or less.",
+        ruleDescription: "Enforce maximum type body length",
         nonTriggeringExamples: [],
         triggeringExamples: [],
         showExamples: false

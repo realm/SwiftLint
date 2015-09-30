@@ -9,8 +9,6 @@
 import SourceKittenFramework
 import SwiftXPC
 
-internal typealias Line = (index: Int, content: String)
-
 extension File {
     public func regions() -> [Region] {
         let nsStringContents = contents as NSString

@@ -40,7 +40,7 @@ public struct FileLengthRule: ParameterizedRule {
 
     public let example = RuleExample(
         ruleName: "File Line Length Rule",
-        ruleDescription: "Files should be less than 400 lines.",
+        ruleDescription: "Enforce maximum file length",
         nonTriggeringExamples: [],
         triggeringExamples: [],
         showExamples: false

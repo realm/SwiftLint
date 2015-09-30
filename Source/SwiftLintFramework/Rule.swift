@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public protocol Rule {
+    init()
     var identifier: String { get }
     func validateFile(file: File) -> [StyleViolation]
     var example: RuleExample { get }
@@ -16,6 +17,7 @@ public protocol Rule {
 
 public protocol ParameterizedRule: Rule {
     typealias ParameterType
+    init(parameters: [RuleParameter<ParameterType>])
     var parameters: [RuleParameter<ParameterType>] { get }
 }
 

@@ -20,22 +20,3 @@ public protocol ParameterizedRule: Rule {
     init(parameters: [RuleParameter<ParameterType>])
     var parameters: [RuleParameter<ParameterType>] { get }
 }
-
-public let allRules: [Rule] = [
-    LineLengthRule(),
-    LeadingWhitespaceRule(),
-    TrailingWhitespaceRule(),
-    ReturnArrowWhitespaceRule(),
-    TrailingNewlineRule(),
-    OperatorFunctionWhitespaceRule(),
-    ForceCastRule(),
-    FileLengthRule(),
-    TodoRule(),
-    ColonRule(),
-    TypeNameRule(),
-    VariableNameRule(),
-    TypeBodyLengthRule(),
-    FunctionBodyLengthRule(),
-    NestingRule(),
-    ControlStatementRule()
-]

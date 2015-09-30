@@ -162,11 +162,6 @@ public struct Configuration {
     }
 
     public static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
-        let severities: [ViolationSeverity] = [.Warning, .Error]
-        var parameters = [RuleParameter<T>]()
-        for (index, value) in array.enumerate() {
-            parameters.append(RuleParameter(severity: severities[index], value: value))
-        }
-        return parameters
+        return zip([.Warning, .Error], array).map(RuleParameter.init)
     }
 }

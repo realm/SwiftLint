@@ -10,10 +10,10 @@ import Yaml
 
 extension Yaml {
     var arrayOfStrings: [Swift.String]? {
-        return array?.flatMap { $0.string }
+        return array?.flatMap { $0.string } ?? string.map { [$0] }
     }
     var arrayOfInts: [Swift.Int]? {
-        return array?.flatMap { $0.int }
+        return array?.flatMap { $0.int } ?? int.map { [$0] }
     }
 }
 

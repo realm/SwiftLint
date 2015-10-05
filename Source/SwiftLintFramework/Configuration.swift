@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import Yaml
 
 extension Yaml {
@@ -112,7 +113,7 @@ public struct Configuration {
                 let yamlContents = try NSString(contentsOfFile: fullPath,
                     encoding: NSUTF8StringEncoding) as String
                 if let _ = Configuration(yaml: yamlContents) {
-                    print("Loading configuration from '\(path)'")
+                    fputs("Loading configuration from '\(path)'\n", stderr)
                     self.init(yaml: yamlContents)!
                 } else {
                     self.init()!

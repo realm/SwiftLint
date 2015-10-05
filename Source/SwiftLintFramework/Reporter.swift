@@ -9,4 +9,5 @@
 public protocol Reporter: CustomStringConvertible {
     static var identifier: String { get }
     static func generateReport(violations: [StyleViolation]) -> String
+    static var isRealtime: Bool { get }
 }

@@ -1,3 +1,26 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Print to stderr for all informational logs. Only reporter outputs is logged to
+  stdout.  
+  [JP Simard](https://github.com/jpsim)
+
+* JSON and CSV reporters now only print at the very end of the linting
+  process.  
+  [JP Simard](https://github.com/jpsim)
+
+##### Bug Fixes
+
+* Custom reporters are now supported even when not running with `--use-stdin`.  
+  [JP Simard](https://github.com/jpsim)
+  [#151](https://github.com/realm/SwiftLint/issues/151)
+
+
 ## 0.2.0: Tumble Dry
 
 ##### Breaking

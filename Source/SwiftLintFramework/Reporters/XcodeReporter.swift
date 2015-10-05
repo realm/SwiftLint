@@ -8,6 +8,7 @@
 
 public struct XcodeReporter: Reporter {
     public static let identifier = "xcode"
+    public static let isRealtime = true
 
     public var description: String {
         return "Reports violations in the format Xcode uses to display in the IDE. (default)"

@@ -13,7 +13,7 @@ import SourceKittenFramework
 public struct Linter {
     private let file: File
     private let rules: [Rule]
-    private let reporter: Reporter.Type
+    public let reporter: Reporter.Type
 
     public var styleViolations: [StyleViolation] {
         let regions = file.regions()
@@ -27,10 +27,6 @@ public struct Linter {
                 return !violationRegion.disabledRuleIdentifiers.contains(rule.identifier)
             }
         }
-    }
-
-    public func generateReport() -> String {
-        return reporter.generateReport(styleViolations)
     }
 
     public var ruleExamples: [RuleExample] {

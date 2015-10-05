@@ -28,10 +28,9 @@ struct LintCommand: CommandType {
                 let stdinData = standardInput.readDataToEndOfFile()
                 let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
                 if let stdinString = stdinNSString as? String {
-                    let file = File(contents: stdinString)
-                    let linter = Linter(file: file, configuration: configuration)
-                    print(linter.generateReport())
-                    return .Success()
+                    return lint([File(contents: stdinString)],
+                        configuration: configuration,
+                        strict: options.strict)
                 }
                 return .Failure(CommandantError<()>.CommandError())
             }
@@ -41,47 +40,63 @@ struct LintCommand: CommandType {
         }
     }
 
-    private func lint(path: String,
-        configuration: Configuration, strict: Bool) -> Result<(), CommandantError<()>> {
+    private func lint(path: String, configuration: Configuration, strict: Bool) ->
+        Result<(), CommandantError<()>> {
         let filesToLint = (configuration.included.count == 0 ? filesToLintAtPath(path) : [])
             .filter({ !configuration.excluded.flatMap(filesToLintAtPath).contains($0) }) +
             configuration.included.flatMap(filesToLintAtPath)
-        if filesToLint.count > 0 {
-            if path.isEmpty {
-                print("Linting Swift files in current working directory")
-            } else {
-                print("Linting Swift files at path \(path)")
-            }
-            var numberOfViolations = 0, numberOfSeriousViolations = 0
-            for (index, path) in filesToLint.enumerate() {
-                let filename = (path as NSString).lastPathComponent
-                print("Linting '\(filename)' (\(index + 1)/\(filesToLint.count))")
-                let file = File(path: path)!
-                for violation in Linter(file: file, configuration: configuration).styleViolations {
-                    fputs("\(violation)\n", stderr)
-                    numberOfViolations++
-                    if violation.severity == .Error {
-                        numberOfSeriousViolations++
-                    }
-                }
-            }
-            let violationSuffix = (numberOfViolations != 1 ? "s" : "")
-            let filesSuffix = (filesToLint.count != 1 ? "s." : ".")
-            print(
-                "Done linting!" +
-                " Found \(numberOfViolations) violation\(violationSuffix)," +
-                " \(numberOfSeriousViolations) serious" +
-                " in \(filesToLint.count) file\(filesSuffix)"
-            )
-            if strict && numberOfViolations > 0 {
-                return .Failure(CommandantError<()>.CommandError())
-            } else if numberOfSeriousViolations <= 0 {
-                return .Success()
-            }
-            return .Failure(CommandantError<()>.CommandError())
+        if path.isEmpty {
+            fputs("Linting Swift files in current working directory\n", stderr)
+        } else {
+            fputs("Linting Swift files at path \(path)\n", stderr)
+        }
+        let files = filesToLint.flatMap(File.init)
+        if files.count > 0 {
+            return lint(files, configuration: configuration, strict: strict)
         }
         return .Failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
             " path \(path)"))
+    }
+
+    private func lint(files: [File], configuration: Configuration, strict: Bool) ->
+        Result<(), CommandantError<()>> {
+        var violations = [StyleViolation]()
+        var reporter: Reporter.Type = XcodeReporter.self
+        for (index, file) in files.enumerate() {
+            if let path = file.path {
+                let filename = (path as NSString).lastPathComponent
+                fputs("Linting '\(filename)' (\(index + 1)/\(files.count))\n", stderr)
+            }
+            let linter = Linter(file: file, configuration: configuration)
+            let currentViolations = linter.styleViolations
+            violations += currentViolations
+            reporter = linter.reporter
+            if reporter.isRealtime {
+                let report = reporter.generateReport(currentViolations)
+                if !report.isEmpty {
+                    print(report)
+                }
+            }
+        }
+        if !reporter.isRealtime {
+            print(reporter.generateReport(violations))
+        }
+        let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
+        let violationSuffix = (violations.count != 1 ? "s" : "")
+        let filesSuffix = (files.count != 1 ? "s." : ".")
+        fputs(
+            "Done linting!" +
+            " Found \(violations.count) violation\(violationSuffix)," +
+            " \(numberOfSeriousViolations) serious" +
+            " in \(files.count) file\(filesSuffix)\n",
+            stderr
+        )
+        if strict && violations.count > 0 {
+            return .Failure(CommandantError<()>.CommandError())
+        } else if numberOfSeriousViolations <= 0 {
+            return .Success()
+        }
+        return .Failure(CommandantError<()>.CommandError())
     }
 
     private func filesToLintAtPath(path: String) -> [String] {

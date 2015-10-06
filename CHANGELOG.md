@@ -20,6 +20,10 @@
   [JP Simard](https://github.com/jpsim)
   [#151](https://github.com/realm/SwiftLint/issues/151)
 
+* Deduplicate files in the current directory.  
+  [JP Simard](https://github.com/jpsim)
+  [#154](https://github.com/realm/SwiftLint/issues/154)
+
 
 ## 0.2.0: Tumble Dry
 

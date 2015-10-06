@@ -10,8 +10,7 @@ import Foundation
 
 extension NSFileManager {
     public func allFilesRecursively(directory directory: String) -> [String] {
-        let relativeFiles = (try! contentsOfDirectoryAtPath(directory)) +
-            (try! subpathsOfDirectoryAtPath(directory))
-        return relativeFiles.map((directory as NSString).stringByAppendingPathComponent)
+        return try! subpathsOfDirectoryAtPath(directory)
+            .map((directory as NSString).stringByAppendingPathComponent)
     }
 }

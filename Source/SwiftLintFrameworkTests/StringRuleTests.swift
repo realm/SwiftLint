@@ -33,7 +33,7 @@ class StringRuleTests: XCTestCase {
             severity: .Warning,
             reason: "File should have a single trailing newline")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
-            location: Location(file: nil, line: 3),
+            location: Location(file: nil, line: 2),
             severity: .Warning,
             reason: "File should have a single trailing newline")])
     }

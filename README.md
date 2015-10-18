@@ -69,6 +69,27 @@ and are subject to change.
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
+### Disable a rule in code
+
+Rules can be disabled with a comment inside a source file with the following format: 
+
+`/// swiftlint:disable <rule>`
+
+The rule will be disabled until the end of the file or until the linter sees a matching enable comment:
+
+`/// swiftlint:enable <rule>`
+
+For example:
+
+```swift
+/// swiftlint:disable colon
+let noWarning :String = "" // No warning about colons immediately after variable names!
+/// swiftlint:enable colon
+let yesWarning :String = "" // Warning generated about colons immediately after variable names
+```
+
+To find the identifier for a rule, look in [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules) for the rule class you want to disable and find the `identifier` variable.
+
 ### Configuration
 
 Configure SwiftLint by adding a `.swiftlint.yml` file from the directory you'll

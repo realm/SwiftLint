@@ -88,7 +88,7 @@ let noWarning :String = "" // No warning about colons immediately after variable
 let yesWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
-To find the identifier for a rule, look in [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules) for the rule class you want to disable and find the `identifier` variable.
+Run `swiftlint rules` to print a list of all available rules and their identifiers.
 
 ### Configuration
 

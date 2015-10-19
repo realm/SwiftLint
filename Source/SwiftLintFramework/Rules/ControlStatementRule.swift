@@ -30,7 +30,7 @@ public struct ControlStatementRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Control Statement",
+        ruleName: "Control Statement Rule",
         ruleDescription: "if,for,while,do statements shouldn't wrap their conditionals in " +
         "parentheses.",
         nonTriggeringExamples: [

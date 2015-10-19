@@ -32,7 +32,7 @@ public struct TrailingNewlineRule: Rule {
     }
 
     public let example = RuleExample(
-        ruleName: "Trailing newline rule",
+        ruleName: "Trailing Newline Rule",
         ruleDescription: "Files should have a single trailing newline.",
         nonTriggeringExamples: [],
         triggeringExamples: [],

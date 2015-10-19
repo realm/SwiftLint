@@ -29,10 +29,6 @@ public struct Linter {
         }
     }
 
-    public var ruleExamples: [RuleExample] {
-        return rules.flatMap { $0.example }
-    }
-
     /**
     Initialize a Linter by passing in a File.
 

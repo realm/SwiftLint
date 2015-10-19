@@ -2,7 +2,8 @@
 
 ##### Breaking
 
-* None.
+* `swiftlint rules` now just prints a list of all available rules and their
+  identifiers.
 
 ##### Enhancements
 

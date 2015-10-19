@@ -6,43 +6,19 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-import Foundation
 import Commandant
 import Result
 import SwiftLintFramework
-import SourceKittenFramework
-
-func describeExample(example: RuleExample) -> StructuredText {
-    var description: [StructuredText] = [
-        .Header(level: 1, text: example.ruleName),
-        .Paragraph(example.ruleDescription)
-    ]
-    if example.showExamples {
-        description += [
-            .Header(level: 2, text: "Examples that do not trigger the rule:"),
-            .List(example.nonTriggeringExamples.map { .Paragraph($0.chomped) }),
-            .Header(level: 2, text: "Examples that trigger the rule:"),
-            .List(example.triggeringExamples.map { .Paragraph($0.chomped) })
-        ]
-    }
-    return .Joined(description)
-}
 
 struct RulesCommand: CommandType {
     let verb = "rules"
-    let function = "Display the list of rules and examples"
+    let function = "Display the list of rules and their identifiers"
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
-        switch mode {
-        case .Arguments:
-            let ruleExamples = Linter(file: File(contents: "")).ruleExamples
-            let text = StructuredText.Joined(ruleExamples.map(describeExample))
-            print(text.ansi)
-
-        default:
-            break
-        }
+        let ruleDescriptions = Configuration.rulesFromYAML(nil)
+            .map({ "\($0.example.ruleName) (\($0.identifier))" })
+            .joinWithSeparator("\n")
+        print(ruleDescriptions)
         return .Success()
     }
-
 }

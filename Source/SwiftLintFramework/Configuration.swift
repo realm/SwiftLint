@@ -152,13 +152,15 @@ public struct Configuration {
         } else {
             rules.append(TypeBodyLengthRule())
         }
-        if let params = yaml?[.String(FunctionBodyLengthRule().identifier)].arrayOfInts {
+        if let params   = yaml?[.String(FunctionBodyLengthRule().identifier)].arrayOfInts {
             rules.append(FunctionBodyLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(FunctionBodyLengthRule())
         }
         rules.append(NestingRule())
         rules.append(ControlStatementRule())
+        rules.append(OpeningBraceRule())
+
         return rules
     }
 

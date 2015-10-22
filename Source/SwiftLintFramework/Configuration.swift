@@ -145,7 +145,11 @@ public struct Configuration {
         }
         rules.append(TodoRule())
         rules.append(ColonRule())
-        rules.append(TypeNameRule())
+        if let params = yaml?[.String(TypeNameRule().identifier)].arrayOfInts {
+            rules.append(TypeNameRule(parameters: ruleParametersFromArray(params)))
+        } else {
+            rules.append(TypeNameRule())
+        }
         rules.append(VariableNameRule())
         if let params = yaml?[.String(TypeBodyLengthRule().identifier)].arrayOfInts {
             rules.append(TypeBodyLengthRule(parameters: ruleParametersFromArray(params)))

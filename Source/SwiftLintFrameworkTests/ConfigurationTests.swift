@@ -49,4 +49,18 @@ class ConfigurationTests: XCTestCase {
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
             " YAML string should fail")
     }
+
+    func testTypeNameRuleConfiguration() {
+        let configYaml = "type_name:\n  - 2\n - 4\n";
+        guard let config = Configuration(yaml: configYaml) else {
+            XCTFail("initializing Configuration should not fail")
+            return
+        }
+        guard let rule = config.rules.filter({ $0.identifier == "type_name" }).first
+            as? TypeNameRule else {
+                XCTFail("Should parse type_name rule")
+                return
+        }
+        XCTAssertEqual(rule.parameters.flatMap({ $0.value }), [2,4])
+    }
 }

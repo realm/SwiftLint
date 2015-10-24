@@ -14,9 +14,11 @@ public struct ControlStatementRule: Rule {
     public let identifier = "control_statement"
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return ["if", "for", "guard", "switch", "while"].flatMap { statementKind -> [StyleViolation] in
-            let pattern = statementKind == "guard" ?
-                "\(statementKind)\\s*\\([^,]*\\)\\s*else\\s*\\{" : "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
+        let statements = ["if", "for", "guard", "switch", "while"]
+        return statements.flatMap { statementKind -> [StyleViolation] in
+            let pattern = statementKind == "guard"
+                ? "\(statementKind)\\s*\\([^,]*\\)\\s*else\\s*\\{"
+                : "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
             return file.matchPattern(pattern).flatMap { match, syntaxKinds in
                 if syntaxKinds.first != .Keyword {
                     return nil
@@ -43,6 +45,7 @@ public struct ControlStatementRule: Rule {
             "for (key, value) in dictionary {\n",
             "for (index, value) in enumerate(array) {\n",
             "for var index = 0; index < 42; index++ {\n",
+            "guard condition else {\n",
             "while condition {\n",
             "} while condition {\n",
             "do { ; } while condition {\n",
@@ -55,6 +58,8 @@ public struct ControlStatementRule: Rule {
             "for (var index = 0; index < 42; index++) {\n",
             "for(item in collection) {\n",
             "for(var index = 0; index < 42; index++) {\n",
+            "guard (condition) else {\n",
+            "guard (condition) else {\n",
             "while (condition) {\n",
             "while(condition) {\n",
             "} while (condition) {\n",

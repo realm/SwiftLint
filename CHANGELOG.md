@@ -7,6 +7,11 @@
 
 ##### Enhancements
 
+* Added `StatementPositionRule` to make sure that catch, else if and else
+  statements are on the same line as closing brace preceding them and after one
+  space.
+  [Alex Culeva](https://github.com/S2dentik)
+
 * Added `Comma Rule` to ensure there is a single space after a comma.  
   [Alex Culeva](https://github.com/S2dentik)
 
@@ -14,7 +19,7 @@
   [zippy1978](https://github.com/zippy1978)
 
 * Add `OpeningBraceRule` to make sure there is exactly a space before opening
-  brace and it is on the same line as declaration.  
+  brace and it is on the same line as declaration.
   [Alex Culeva](https://github.com/S2dentik)
 
 * Print to stderr for all informational logs. Only reporter outputs is logged to

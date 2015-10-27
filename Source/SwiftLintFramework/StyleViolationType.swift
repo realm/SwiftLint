@@ -21,6 +21,7 @@ public enum StyleViolationType: String, CustomStringConvertible {
     case ControlStatement           = "Control Statement Parentheses"
     case OpeningBrace               = "Opening Brace"
     case Comma                      = "Comma"
+    case StatementPosition          = "Statement Position"
 
     public var description: String { return rawValue }
 }

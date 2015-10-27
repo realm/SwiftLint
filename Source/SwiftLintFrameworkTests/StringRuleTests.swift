@@ -95,4 +95,8 @@ class StringRuleTests: XCTestCase {
     func testComma() {
         verifyRule(CommaRule(), type: .Comma)
     }
+
+    func testStatementPosition() {
+        verifyRule(StatementPositionRule(), type: .StatementPosition)
+    }
 }

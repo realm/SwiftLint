@@ -1,5 +1,11 @@
 ## Master
 
+##### Enhancements
+
+* Added `OpeningBraceRule` to make sure there is exactly a space before opening
+  brace and it is on the same line as declaration.
+  [Alex Culeva](https://github.com/S2dentik)
+
 ##### Breaking
 
 * `swiftlint rules` now just prints a list of all available rules and their

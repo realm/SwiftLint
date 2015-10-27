@@ -63,4 +63,40 @@ extension File {
             return (match.range, kindsInRange)
         }
     }
+
+    //Added by S2dent
+    /**
+    This function returns only matches that are not contained in a syntax kind
+    specified.
+
+    - parameter pattern: regex pattern to be matched inside file.
+    - parameter excludingSyntaxKinds: syntax kinds the matches to be filtered
+    when inside them.
+
+    - returns: An array of [NSRange] objects consisting of regex matches inside
+    file contents.
+    */
+    public func matchPattern(pattern: String,
+        excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
+        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let range = NSRange(location: 0, length: contents.utf16.count)
+        let syntax = syntaxMap
+        let matches = regex.matchesInString(contents, options: [], range: range)
+        return matches.filter { match in
+            let tokensInRange = syntax.tokens.filter {
+                NSLocationInRange($0.offset, match.range) ||
+                    NSLocationInRange(match.range.location,
+                        NSRange(location: $0.offset, length: $0.length))
+            }
+            for token in tokensInRange {
+                if NSIntersectionRange(NSRange(location: token.offset,
+                    length:token.length), match.range).length > 0 &&
+                    syntaxKinds.contains(SyntaxKind(rawValue: token.type)!) {
+                    return false
+                }
+            }
+
+            return true
+        }.map { $0.range }
+    }
 }

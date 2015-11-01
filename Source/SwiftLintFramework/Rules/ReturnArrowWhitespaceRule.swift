@@ -31,7 +31,8 @@ public struct ReturnArrowWhitespaceRule: Rule {
             return StyleViolation(type: .ReturnArrowWhitespace,
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
-                reason: "File should have 1 space before return arrow and return type")
+                reason: "File should have 1 space before return arrow and return type",
+                rule: self)
         }
     }
 

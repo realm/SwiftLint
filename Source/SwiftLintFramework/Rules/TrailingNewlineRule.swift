@@ -25,7 +25,8 @@ public struct TrailingNewlineRule: Rule {
             return [StyleViolation(type: .TrailingNewline,
                 location: Location(file: file.path, line: max(file.lines.count, 1)),
                 severity: .Warning,
-                reason: "File should have a single trailing newline")]
+                reason: "File should have a single trailing newline",
+                rule: self)]
         }
 
         return []

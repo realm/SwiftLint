@@ -58,18 +58,21 @@ public struct VariableNameRule: ASTRule {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Error,
-                    reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
+                    reason: "Variable name should only contain alphanumeric characters: '\(name)'",
+                    rule: self))
             } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Error,
-                    reason: "Variable name should start with a lowercase character: '\(name)'"))
+                    reason: "Variable name should start with a lowercase character: '\(name)'",
+                    rule: self))
             } else if name.characters.count < 3 || name.characters.count > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Warning,
                     reason: "Variable name should be between 3 and 40 characters in length: " +
-                    "'\(name)'"))
+                    "'\(name)'",
+                    rule: self))
             }
         }
         return violations

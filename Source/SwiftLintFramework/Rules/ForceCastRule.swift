@@ -18,7 +18,8 @@ public struct ForceCastRule: Rule {
             return StyleViolation(type: .ForceCast,
                 location: Location(file: file, offset: range.location),
                 severity: .Error,
-                reason: "Force casts should be avoided")
+                reason: "Force casts should be avoided",
+                rule: self)
         }
     }
 

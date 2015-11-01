@@ -24,7 +24,8 @@ public struct ControlStatementRule: Rule {
                     location: Location(file: file, offset: match.location),
                     severity: .Warning,
                     reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
-                    "parentheses.")
+                    "parentheses.",
+                    rule: self)
                 }
         }
     }

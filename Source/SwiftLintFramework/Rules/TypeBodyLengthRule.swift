@@ -69,7 +69,8 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
                         location: location,
                         severity: parameter.severity,
                         reason: "Type body should be span \(parameters.first!.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines")]
+                        "or less: currently spans \(endLine - startLine) lines",
+                        rule: self)]
                 }
             }
         }

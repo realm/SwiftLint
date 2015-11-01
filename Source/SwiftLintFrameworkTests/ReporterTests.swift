@@ -29,8 +29,8 @@ class ReporterTests: XCTestCase {
     func testXcodeReporter() {
         XCTAssertEqual(
             XcodeReporter.generateReport(generateViolations()),
-            "filename:1:2: warning: Length Violation: Violation Reason.\n" +
-            "filename:1:2: error: Length Violation: Violation Reason."
+            "filename:1:2: warning: Length Violation: Violation Reason. (line_length)\n" +
+            "filename:1:2: error: Length Violation: Violation Reason. (line_length)"
         )
     }
 

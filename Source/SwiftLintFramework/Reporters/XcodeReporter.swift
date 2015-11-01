@@ -24,6 +24,6 @@ public struct XcodeReporter: Reporter {
             "\(violation.severity.rawValue.lowercaseString): " +
             "\(violation.type) Violation: " +
             (violation.reason ?? "") + " " +
-            "(\(violation.rule?.identifier ?? ""))"
+            "(" + (violation.rule?.identifier ?? "") + ")"
     }
 }

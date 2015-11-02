@@ -15,6 +15,9 @@
   process.  
   [JP Simard](https://github.com/jpsim)
 
+* Add support for `guard` statements to ControlStatementRule.  
+  [David Potter](https://github.com/Tableau-David-Potter)
+
 ##### Bug Fixes
 
 * Custom reporters are now supported even when not running with `--use-stdin`.  

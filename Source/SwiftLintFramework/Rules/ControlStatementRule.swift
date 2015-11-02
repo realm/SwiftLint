@@ -59,7 +59,6 @@ public struct ControlStatementRule: Rule {
             "for(item in collection) {\n",
             "for(var index = 0; index < 42; index++) {\n",
             "guard (condition) else {\n",
-            "guard (condition) else {\n",
             "while (condition) {\n",
             "while(condition) {\n",
             "} while (condition) {\n",

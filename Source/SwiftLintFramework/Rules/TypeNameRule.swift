@@ -9,10 +9,21 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct TypeNameRule: ASTRule {
-    public init() {}
+public struct TypeNameRule: ASTRule, ParameterizedRule {
+    public init() {
+        self.init(parameters: [
+            RuleParameter(severity: .Warning, value: 3),
+            RuleParameter(severity: .Warning, value: 40)
+            ])
+    }
+
+    public init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
 
     public let identifier = "type_name"
+
+    public let parameters: [RuleParameter<Int>]
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -63,11 +74,11 @@ public struct TypeNameRule: ASTRule {
                     location: location,
                     severity: .Error,
                     reason: "Type name should start with an uppercase character: '\(name)'"))
-            } else if name.characters.count < 3 || name.characters.count > 40 {
+            } else if name.characters.count < parameters[0].value || name.characters.count > parameters[1].value {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Warning,
-                    reason: "Type name should be between 3 and 40 characters in length: " +
+                    reason: "Type name should be between \(parameters[0].value) and \(parameters[1].value) characters in length: " +
                     "'\(name)'"))
             }
         }
@@ -77,7 +88,7 @@ public struct TypeNameRule: ASTRule {
     public let example = RuleExample(
         ruleName: "Type Name Rule",
         ruleDescription: "Type name should only contain alphanumeric characters, " +
-        "start with an uppercase character and between 3 and 40 characters in length.",
+        "start with an uppercase character and have character length within specified range (default: 3-40).",
         nonTriggeringExamples: [
             "struct MyStruct {}",
             "private struct _MyStruct {}"

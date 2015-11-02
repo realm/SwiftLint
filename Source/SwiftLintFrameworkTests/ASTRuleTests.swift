@@ -7,6 +7,7 @@
 //
 
 import SwiftLintFramework
+import SourceKittenFramework
 import XCTest
 
 class ASTRuleTests: XCTestCase {
@@ -128,6 +129,31 @@ class ASTRuleTests: XCTestCase {
 
     func testTypeNamesVerifyRule() {
         verifyRule(TypeNameRule(), type: .NameFormat)
+    }
+
+    func testParameterizedTypeNameRule() {
+        let rule = TypeNameRule(parameters: [
+            RuleParameter(severity: .Warning, value: 2),
+            RuleParameter(severity: .Warning, value: 4)
+            ])
+
+        let tooShortViolations = rule.validateFile(File(contents: "struct A{}"))
+        XCTAssert(tooShortViolations.count == 1, "Should have single violation")
+        if let violation = tooShortViolations.first {
+            XCTAssert(violation.type == .NameFormat, "Unexpected type")
+            XCTAssert(violation.severity == .Warning, "Unexpected severity")
+            XCTAssert(violation.location == Location(file: nil, line: 1, character: 1),
+                "Unexpected location")
+        }
+
+        let tooLongViolations = rule.validateFile(File(contents: "struct Abcde{}"))
+        XCTAssert(tooLongViolations.count == 1, "Should have single violation")
+        if let violation = tooLongViolations.first {
+            XCTAssert(violation.type == .NameFormat, "Unexpected type")
+            XCTAssert(violation.severity == .Warning, "Unexpected severity")
+            XCTAssert(violation.location == Location(file: nil, line: 1, character: 1),
+                "Unexpected location")
+        }
     }
 
     func testVariableNamesVerifyRule() {

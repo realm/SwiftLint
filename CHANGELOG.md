@@ -8,7 +8,7 @@
 ##### Enhancements
 
 * Added `OpeningBraceRule` to make sure there is exactly a space before opening
-  brace and it is on the same line as declaration.
+  brace and it is on the same line as declaration.  
   [Alex Culeva](https://github.com/S2dentik)
 
 * Print to stderr for all informational logs. Only reporter outputs is logged to

@@ -80,7 +80,8 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
                         location: location,
                         severity: parameter.severity,
                         reason: "Function body should be span \(parameters.first!.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines")]
+                        "or less: currently spans \(endLine - startLine) lines",
+                        ruleId: self.identifier)]
                 }
             }
         }

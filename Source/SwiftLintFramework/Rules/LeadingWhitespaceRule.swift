@@ -22,7 +22,8 @@ public struct LeadingWhitespaceRule: Rule {
                 location: Location(file: file.path, line: 1),
                 severity: .Warning,
                 reason: "File shouldn't start with whitespace: " +
-                "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
+                "currently starts with \(countOfLeadingWhitespace) whitespace characters",
+                ruleId: self.identifier)]
         }
         return []
     }

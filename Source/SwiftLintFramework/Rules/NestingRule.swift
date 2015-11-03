@@ -53,19 +53,18 @@ public struct NestingRule: ASTRule {
             .Enumcase
         ]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            let location = Location(file: file, offset: offset)
             if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(type: .Nesting,
-                    location: Location(file: file, offset: offset),
-                    reason: "Types should be nested at most 1 level deep"))
+                violations.append(StyleViolation(type: .Nesting, location: location,
+                    reason: "Types should be nested at most 1 level deep", ruleId: self.identifier))
             } else if level > 2 && kind == .Enumelement {
                 // Enum elements are implicitly wrapped in an .Enumcase
-                violations.append(StyleViolation(type: .Nesting,
-                    location: Location(file: file, offset: offset),
-                    reason: "Types should be nested at most 1 level deep"))
+                violations.append(StyleViolation(type: .Nesting, location: location,
+                    reason: "Types should be nested at most 1 level deep", ruleId: self.identifier))
             } else if level > 5 {
-                violations.append(StyleViolation(type: .Nesting,
-                    location: Location(file: file, offset: offset),
-                    reason: "Statements should be nested at most 5 levels deep"))
+                violations.append(StyleViolation(type: .Nesting, location: location,
+                    reason: "Statements should be nested at most 5 levels deep",
+                    ruleId: self.identifier))
             }
         }
         let substructure = dictionary["key.substructure"] as? XPCArray ?? []

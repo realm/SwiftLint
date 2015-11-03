@@ -29,7 +29,8 @@ public struct OperatorFunctionWhitespaceRule: Rule {
             return StyleViolation(type: .OperatorFunctionWhitespace,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
-                reason: example.ruleDescription)
+                reason: example.ruleDescription,
+                ruleId: self.identifier)
         }
     }
 

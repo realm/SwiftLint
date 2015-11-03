@@ -22,7 +22,8 @@ public struct ColonRule: Rule {
             return StyleViolation(type: .Colon,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
-                reason: "When specifying a type, always associate the colon with the identifier")
+                reason: "When specifying a type, always associate the colon with the identifier",
+                ruleId: self.identifier)
         }
     }
 

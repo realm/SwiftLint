@@ -32,7 +32,8 @@ public struct LineLengthRule: ParameterizedRule {
                         location: Location(file: file.path, line: line.index),
                         severity: parameter.severity,
                         reason: "Line should be \(parameters.first!.value) characters or less: " +
-                        "currently \(line.content.characters.count) characters")
+                        "currently \(line.content.characters.count) characters",
+                        ruleId: self.identifier)
                 }
             }
             return nil

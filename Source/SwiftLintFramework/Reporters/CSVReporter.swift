@@ -23,7 +23,8 @@ public struct CSVReporter: Reporter {
             "character",
             "severity",
             "type",
-            "reason"
+            "reason",
+            "rule_id"
         ]
         return (keys + violations.flatMap(arrayForViolation)).joinWithSeparator(",")
     }
@@ -35,7 +36,8 @@ public struct CSVReporter: Reporter {
             violation.location.character,
             violation.severity.rawValue,
             violation.type.description,
-            violation.reason
+            violation.reason,
+            violation.ruleId
         ]
         return values.map({ $0?.description ?? "" })
     }

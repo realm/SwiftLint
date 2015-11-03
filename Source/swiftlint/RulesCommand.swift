@@ -16,7 +16,7 @@ struct RulesCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         let ruleDescriptions = Configuration.rulesFromYAML(nil)
-            .map({ "\($0.example.ruleName) (\($0.identifier))" })
+            .map({ "\($0.example.ruleName) (\($0.identifier)): \($0.example.ruleDescription)"})
             .joinWithSeparator("\n")
         print(ruleDescriptions)
         return .Success()

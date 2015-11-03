@@ -9,7 +9,7 @@
 
 * Added `StatementPositionRule` to make sure that catch, else if and else
   statements are on the same line as closing brace preceding them and after one
-  space.
+  space.  
   [Alex Culeva](https://github.com/S2dentik)
 
 * Added `Comma Rule` to ensure there is a single space after a comma.  

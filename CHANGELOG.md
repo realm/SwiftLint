@@ -1,4 +1,4 @@
-## Master
+## 0.3.0: Wrinkly Rules
 
 ##### Breaking
 
@@ -6,6 +6,9 @@
   identifiers.
 
 ##### Enhancements
+
+* Support for Swift 2.1.  
+  [JP Simard](https://github.com/jpsim)
 
 * Added `StatementPositionRule` to make sure that catch, else if and else
   statements are on the same line as closing brace preceding them and after one

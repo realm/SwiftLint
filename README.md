@@ -10,6 +10,8 @@ of your source files for more accurate results.
 
 ![Test Status](https://travis-ci.org/realm/SwiftLint.svg?branch=master)
 
+![](screenshot.png)
+
 ## Installation
 
 Using [Homebrew](http://brew.sh/)
@@ -41,8 +43,6 @@ fi
 ```
 
 ![](runscript.png)
-
-![](screenshot.png)
 
 ### Atom
 

@@ -7,7 +7,10 @@
 
 ##### Enhancements
 
-* Added `OpeningBraceRule` to make sure there is exactly a space before opening
+* Add rule identifier to all linter reports.  
+  [zippy1978](https://github.com/zippy1978)
+
+* Add `OpeningBraceRule` to make sure there is exactly a space before opening
   brace and it is on the same line as declaration.  
   [Alex Culeva](https://github.com/S2dentik)
 

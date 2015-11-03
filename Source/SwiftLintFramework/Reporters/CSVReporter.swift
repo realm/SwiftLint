@@ -37,7 +37,7 @@ public struct CSVReporter: Reporter {
             violation.severity.rawValue,
             violation.type.description,
             violation.reason,
-            violation.rule?.identifier
+            violation.ruleId
         ]
         return values.map({ $0?.description ?? "" })
     }

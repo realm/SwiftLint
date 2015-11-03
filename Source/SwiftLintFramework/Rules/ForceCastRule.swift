@@ -19,7 +19,7 @@ public struct ForceCastRule: Rule {
                 location: Location(file: file, offset: range.location),
                 severity: .Error,
                 reason: "Force casts should be avoided",
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

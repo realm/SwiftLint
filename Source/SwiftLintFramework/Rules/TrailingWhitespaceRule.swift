@@ -21,7 +21,7 @@ public struct TrailingWhitespaceRule: Rule {
                 location: Location(file: file.path, line: $0.index),
                 severity: .Warning,
                 reason: "Line #\($0.index) should have no trailing whitespace",
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

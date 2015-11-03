@@ -10,27 +10,28 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
     public let type: StyleViolationType
     public let severity: ViolationSeverity
     public let location: Location
-    public let rule: Rule?
+    public let ruleId: String?
     public let reason: String?
     public var description: String {
         return XcodeReporter.generateForSingleViolation(self)
     }
 
     public init(type: StyleViolationType, location: Location,
-        reason: String? = nil, rule: Rule? = nil) {
-        self.init(type: type, location: location, severity: .Warning, reason: reason, rule: rule)
+        reason: String? = nil, ruleId: String? = nil) {
+        self.init(type: type, location: location, severity: .Warning,
+            reason: reason, ruleId: ruleId)
     }
 
     public init(type: StyleViolationType,
         location: Location,
         severity: ViolationSeverity,
         reason: String? = nil,
-        rule: Rule? = nil) {
+        ruleId: String? = nil) {
         self.severity = severity
         self.type = type
         self.location = location
         self.reason = reason
-        self.rule = rule
+        self.ruleId = ruleId
     }
 }
 

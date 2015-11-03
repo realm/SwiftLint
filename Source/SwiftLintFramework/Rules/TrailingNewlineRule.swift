@@ -26,7 +26,7 @@ public struct TrailingNewlineRule: Rule {
                 location: Location(file: file.path, line: max(file.lines.count, 1)),
                 severity: .Warning,
                 reason: "File should have a single trailing newline",
-                rule: self)]
+                ruleId: self.identifier)]
         }
 
         return []

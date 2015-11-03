@@ -28,7 +28,7 @@ public struct JSONReporter: Reporter {
             "character": violation.location.character ?? NSNull(),
             "severity": violation.severity.rawValue,
             "type": violation.type.description,
-            "rule_id": violation.rule?.identifier ?? NSNull(),
+            "rule_id": violation.ruleId ?? NSNull(),
             "reason": violation.reason ?? NSNull()
         ]
     }

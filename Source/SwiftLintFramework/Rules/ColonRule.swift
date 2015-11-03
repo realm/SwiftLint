@@ -23,7 +23,7 @@ public struct ColonRule: Rule {
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: "When specifying a type, always associate the colon with the identifier",
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

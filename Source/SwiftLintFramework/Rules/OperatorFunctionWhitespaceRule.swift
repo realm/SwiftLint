@@ -30,7 +30,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: example.ruleDescription,
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

@@ -32,7 +32,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
                 reason: "File should have 1 space before return arrow and return type",
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

@@ -25,7 +25,7 @@ public struct ControlStatementRule: Rule {
                     severity: .Warning,
                     reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
                     "parentheses.",
-                    rule: self)
+                    ruleId: self.identifier)
                 }
         }
     }

@@ -33,7 +33,7 @@ public struct FileLengthRule: ParameterizedRule {
                     severity: parameter.severity,
                     reason: "File should contain \(parameters.first!.value) lines or less: " +
                     "currently contains \(lineCount)",
-                    rule: self)]
+                    ruleId: self.identifier)]
             }
         }
         return []

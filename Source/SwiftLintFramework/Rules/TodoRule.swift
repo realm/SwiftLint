@@ -29,7 +29,7 @@ public struct TodoRule: Rule {
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
                 reason: "TODOs and FIXMEs should be avoided",
-                rule: self)
+                ruleId: self.identifier)
         }
     }
 

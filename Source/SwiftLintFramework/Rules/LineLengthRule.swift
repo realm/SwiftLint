@@ -33,7 +33,7 @@ public struct LineLengthRule: ParameterizedRule {
                         severity: parameter.severity,
                         reason: "Line should be \(parameters.first!.value) characters or less: " +
                         "currently \(line.content.characters.count) characters",
-                        rule: self)
+                        ruleId: self.identifier)
                 }
             }
             return nil

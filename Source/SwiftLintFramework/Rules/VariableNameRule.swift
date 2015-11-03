@@ -48,34 +48,13 @@ public struct VariableNameRule: ASTRule {
         if !variableKinds.contains(kind) {
             return []
         }
-        var violations = [StyleViolation]()
         if let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            let location = Location(file: file, offset: offset)
-            let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    severity: .Error,
-                    reason: "Variable name should only contain alphanumeric characters: '\(name)'",
-                    ruleId: self.identifier))
-            } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    severity: .Error,
-                    reason: "Variable name should start with a lowercase character: '\(name)'",
-                    ruleId: self.identifier))
-            } else if name.characters.count < 3 || name.characters.count > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
-                    severity: .Warning,
-                    reason: "Variable name should be between 3 and 40 characters in length: " +
-                    "'\(name)'",
-                    ruleId: self.identifier))
-            }
+                return name.violationsForNameAtLocation(Location(file: file, offset: offset),
+                    dictionary: dictionary,
+                    identifier: self.identifier)
         }
-        return violations
+        return []
     }
 
     public let example = RuleExample(
@@ -95,4 +74,38 @@ public struct VariableNameRule: ASTRule {
         ],
         showExamples: false
     )
+}
+
+extension String {
+    private func violationsForNameAtLocation(location: Location,
+        dictionary: XPCDictionary, identifier: String) -> [StyleViolation] {
+        var violations = [StyleViolation]()
+        if characters.first == "$" {
+            // skip block variables
+            return violations
+        }
+        let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
+        let nameCharacterSet = NSCharacterSet(charactersInString: name)
+        if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+            violations.append(StyleViolation(type: .NameFormat,
+                location: location,
+                severity: .Error,
+                reason: "Variable name should only contain alphanumeric characters: '\(name)'",
+                ruleId: identifier))
+        } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
+            violations.append(StyleViolation(type: .NameFormat,
+                location: location,
+                severity: .Error,
+                reason: "Variable name should start with a lowercase character: '\(name)'",
+                ruleId: identifier))
+        } else if name.characters.count < 3 || name.characters.count > 40 {
+            violations.append(StyleViolation(type: .NameFormat,
+                location: location,
+                severity: .Warning,
+                reason: "Variable name should be between 3 and 40 characters in length: " +
+                "'\(name)'",
+                ruleId: identifier))
+        }
+        return violations
+    }
 }

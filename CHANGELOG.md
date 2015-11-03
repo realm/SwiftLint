@@ -28,6 +28,9 @@
 * Add support for `guard` statements to ControlStatementRule.  
   [David Potter](https://github.com/Tableau-David-Potter)
 
+* Lint parameter variables.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Custom reporters are now supported even when not running with `--use-stdin`.  

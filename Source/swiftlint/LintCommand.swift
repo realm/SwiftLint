@@ -127,18 +127,18 @@ struct LintOptions: OptionsType {
             strict: strict)
     }
 
-    static func evaluate(m: CommandMode) -> Result<LintOptions, CommandantError<()>> {
+    static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
         return create
-            <*> m <| Option(key: "path",
+            <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to lint")
-            <*> m <| Option(key: "use-stdin",
+            <*> mode <| Option(key: "use-stdin",
                 defaultValue: false,
                 usage: "lint standard input")
-            <*> m <| Option(key: "config",
+            <*> mode <| Option(key: "config",
                 defaultValue: ".swiftlint.yml",
                 usage: "the path to SwiftLint's configuration file")
-            <*> m <| Option(key: "strict",
+            <*> mode <| Option(key: "strict",
                 defaultValue: false,
                 usage: "fail on warnings")
     }

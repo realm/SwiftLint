@@ -7,7 +7,7 @@
 
 ##### Enhancements
 
-* Added `Comma Rule` to ensure there is a single space after a comma.
+* Added `Comma Rule` to ensure there is a single space after a comma.  
   [Alex Culeva](https://github.com/S2dentik)
 
 * Add rule identifier to all linter reports.  

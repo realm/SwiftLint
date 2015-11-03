@@ -118,6 +118,12 @@ included: # paths to include during linting. `--path` is ignored if present. tak
 excluded: # paths to ignore during linting. overridden by `included`.
   - Carthage
   - Pods
+# parameterized rules can be customized from this configuration file
+line_length: 110
+# parameterized rules are first parameterized as a warning level, then error level.
+type_body_length:
+  - 300 # warning
+  - 400 # error
 ```
 
 ## License

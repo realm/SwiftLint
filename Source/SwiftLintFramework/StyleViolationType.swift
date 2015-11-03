@@ -20,6 +20,7 @@ public enum StyleViolationType: String, CustomStringConvertible {
     case Nesting                    = "Nesting"
     case ControlStatement           = "Control Statement Parentheses"
     case OpeningBrace               = "Opening Brace"
+    case Comma                      = "Comma"
 
     public var description: String { return rawValue }
 }

@@ -90,5 +90,9 @@ class StringRuleTests: XCTestCase {
 
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule(), type: .OpeningBrace)
+	}
+
+    func testComma() {
+        verifyRule(CommaRule(), type: .Comma)
     }
 }

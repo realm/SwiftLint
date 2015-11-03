@@ -161,6 +161,7 @@ public struct Configuration {
         rules.append(ControlStatementRule())
         rules.append(OpeningBraceRule())
         rules.append(CommaRule())
+        rules.append(StatementPositionRule())
 
         return rules
     }

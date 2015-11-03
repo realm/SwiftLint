@@ -30,9 +30,17 @@ You can also build from source by cloning this project and running
 ### Xcode
 
 Integrate SwiftLint into an Xcode scheme to get warnings and errors displayed
-in the IDE. Just add a new "Run Script Phase" with `/usr/local/bin/swiftlint`
-as its contents. Like this:
-![](http://i.imgur.com/K0DaKq4.png)
+in the IDE. Just add a new "Run Script Phase" with:
+
+```bash
+if which swiftlint >/dev/null; then
+  swiftlint
+else
+  echo "SwiftLint does not exist, download from https://github.com/realm/SwiftLint"
+fi
+```
+
+![](runscript.png)
 
 ![](screenshot.png)
 

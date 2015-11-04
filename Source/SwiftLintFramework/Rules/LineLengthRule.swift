@@ -31,9 +31,9 @@ public struct LineLengthRule: ParameterizedRule {
                     return StyleViolation(type: .Length,
                         location: Location(file: file.path, line: line.index),
                         severity: parameter.severity,
+                        ruleId: self.identifier,
                         reason: "Line should be \(parameters.first!.value) characters or less: " +
-                        "currently \(line.content.characters.count) characters",
-                        ruleId: self.identifier)
+                        "currently \(line.content.characters.count) characters")
                 }
             }
             return nil

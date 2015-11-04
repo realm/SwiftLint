@@ -22,6 +22,7 @@ public struct StatementPositionRule: Rule {
             return StyleViolation(type: .StatementPosition,
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
+                ruleId: self.identifier,
                 reason: "Else and catch must be on the same line and one space " +
                     "after previous declaration")
         }

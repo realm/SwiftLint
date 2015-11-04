@@ -1,3 +1,20 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* All rules now print their identifiers in reports.  
+  [JP Simard](https://github.com/jpsim)
+  [#180](https://github.com/realm/SwiftLint/issues/180)
+
+
 ## 0.3.0: Wrinkly Rules
 
 ##### Breaking

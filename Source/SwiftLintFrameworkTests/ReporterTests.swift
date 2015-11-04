@@ -16,13 +16,13 @@ class ReporterTests: XCTestCase {
             StyleViolation(type: .Length,
                 location: Location(file: "filename", line: 1, character: 2),
                 severity: .Warning,
-                reason: "Violation Reason.",
-                ruleId: rule.identifier),
+                ruleId: rule.identifier,
+                reason: "Violation Reason."),
             StyleViolation(type: .Length,
                 location: Location(file: "filename", line: 1, character: 2),
                 severity: .Error,
-                reason: "Violation Reason.",
-                ruleId: rule.identifier)
+                ruleId: rule.identifier,
+                reason: "Violation Reason.")
         ]
     }
 

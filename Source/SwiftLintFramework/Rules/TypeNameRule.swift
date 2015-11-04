@@ -57,21 +57,21 @@ public struct TypeNameRule: ASTRule {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Error,
-                    reason: "Type name should only contain alphanumeric characters: '\(name)'",
-                    ruleId: self.identifier))
+                    ruleId: self.identifier,
+                    reason: "Type name should only contain alphanumeric characters: '\(name)'"))
             } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Error,
-                    reason: "Type name should start with an uppercase character: '\(name)'",
-                    ruleId: self.identifier))
+                    ruleId: self.identifier,
+                    reason: "Type name should start with an uppercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
                 violations.append(StyleViolation(type: .NameFormat,
                     location: location,
                     severity: .Warning,
+                    ruleId: self.identifier,
                     reason: "Type name should be between 3 and 40 characters in length: " +
-                    "'\(name)'",
-                    ruleId: self.identifier))
+                    "'\(name)'"))
             }
         }
         return violations

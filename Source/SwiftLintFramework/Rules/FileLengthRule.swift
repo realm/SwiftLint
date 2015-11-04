@@ -20,30 +20,25 @@ public struct FileLengthRule: ParameterizedRule {
         self.parameters = parameters
     }
 
-    public let identifier = "file_length"
-
     public let parameters: [RuleParameter<Int>]
+
+    public static let description = RuleDescription(
+        identifier: "file_length",
+        name: "File Line Length",
+        description: "Enforce maximum file length"
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
         for parameter in parameters.reverse() {
             if lineCount > parameter.value {
-                return [StyleViolation(type: .Length,
-                    location: Location(file: file.path, line: lineCount),
+                return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
-                    ruleId: self.identifier,
+                    location: Location(file: file.path, line: lineCount),
                     reason: "File should contain \(parameters.first!.value) lines or less: " +
                     "currently contains \(lineCount)")]
             }
         }
         return []
     }
-
-    public let example = RuleExample(
-        ruleName: "File Line Length Rule",
-        ruleDescription: "Enforce maximum file length",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
-        showExamples: false
-    )
 }

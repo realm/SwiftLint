@@ -10,9 +10,8 @@ import SourceKittenFramework
 
 public protocol Rule {
     init()
-    var identifier: String { get }
+    static var description: RuleDescription { get }
     func validateFile(file: File) -> [StyleViolation]
-    var example: RuleExample { get }
 }
 
 public protocol ParameterizedRule: Rule {

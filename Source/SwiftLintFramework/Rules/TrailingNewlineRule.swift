@@ -11,7 +11,11 @@ import SourceKittenFramework
 public struct TrailingNewlineRule: Rule {
     public init() {}
 
-    public let identifier = "trailing_newline"
+    public static let description = RuleDescription(
+        identifier: "trailing_newline",
+        name: "Trailing Newline",
+        description: "Files should have a single trailing newline."
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let string = file.contents
@@ -21,22 +25,10 @@ public struct TrailingNewlineRule: Rule {
         let newLineSet = NSCharacterSet.newlineCharacterSet()
         let slices = substring.split(allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
 
-        if let slice = slices.last where slice.count != 1 {
-            return [StyleViolation(type: .TrailingNewline,
-                location: Location(file: file.path, line: max(file.lines.count, 1)),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "File should have a single trailing newline")]
-        }
+        guard let slice = slices.last where slice.count != 1 else { return [] }
 
-        return []
+        return [StyleViolation(ruleDescription: self.dynamicType.description,
+            location: Location(file: file.path, line: max(file.lines.count, 1)),
+            reason: "File should have a single trailing newline")]
     }
-
-    public let example = RuleExample(
-        ruleName: "Trailing Newline Rule",
-        ruleDescription: "Files should have a single trailing newline.",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
-        showExamples: false
-    )
 }

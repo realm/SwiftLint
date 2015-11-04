@@ -21,9 +21,13 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
         self.parameters = parameters
     }
 
-    public let identifier = "function_body_length"
-
     public let parameters: [RuleParameter<Int>]
+
+    public static let description = RuleDescription(
+        identifier: "function_body_length",
+        name: "Function Body Length",
+        description: "Enforce maximum function length"
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -76,10 +80,9 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
             for parameter in parameters.reverse() {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
-                    return [StyleViolation(type: .Length,
-                        location: location,
+                    return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: parameter.severity,
-                        ruleId: self.identifier,
+                        location: location,
                         reason: "Function body should be span \(parameters.first!.value) lines " +
                         "or less: currently spans \(endLine - startLine) lines")]
                 }
@@ -87,12 +90,4 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
         }
         return []
     }
-
-    public let example = RuleExample(
-        ruleName: "Function Body Length Rule",
-        ruleDescription: "Enforce maximum function length",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
-        showExamples: false
-    )
 }

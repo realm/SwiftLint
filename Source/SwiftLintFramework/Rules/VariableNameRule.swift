@@ -12,7 +12,23 @@ import SwiftXPC
 public struct VariableNameRule: ASTRule {
     public init() {}
 
-    public let identifier = "variable_name"
+    public static let description = RuleDescription(
+        identifier: "variable_name",
+        name: "Variable Name",
+        description: "Variable name should only contain alphanumeric characters, " +
+        "start with a a lowercase character and be between 3 and 40 characters in length.",
+        nonTriggeringExamples: [
+            "let myLet = 0",
+            "var myVar = 0",
+            "private let _myLet = 0"
+        ],
+        triggeringExamples: [
+            "let MyLet = 0",
+            "let _myLet = 0",
+            "private let myLet_ = 0",
+            "let my = 0"
+        ]
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -48,37 +64,18 @@ public struct VariableNameRule: ASTRule {
         if !variableKinds.contains(kind) {
             return []
         }
-        if let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-                return name.violationsForNameAtLocation(Location(file: file, offset: offset),
-                    dictionary: dictionary,
-                    identifier: self.identifier)
+        guard let name = dictionary["key.name"] as? String,
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
+                return []
         }
-        return []
+        return name.violationsForNameAtLocation(Location(file: file, offset: offset),
+            dictionary: dictionary, ruleDescription: self.dynamicType.description)
     }
-
-    public let example = RuleExample(
-        ruleName: "Variable Name Rule",
-        ruleDescription: "Variable name should only contain alphanumeric characters, " +
-        "start with a a lowercase character and be between 3 and 40 characters in length.",
-        nonTriggeringExamples: [
-            "let myLet = 0",
-            "var myVar = 0",
-            "private let _myLet = 0"
-        ],
-        triggeringExamples: [
-            "let MyLet = 0",
-            "let _myLet = 0",
-            "private let myLet_ = 0",
-            "let my = 0"
-        ],
-        showExamples: false
-    )
 }
 
 extension String {
-    private func violationsForNameAtLocation(location: Location,
-        dictionary: XPCDictionary, identifier: String) -> [StyleViolation] {
+    private func violationsForNameAtLocation(location: Location, dictionary: XPCDictionary,
+        ruleDescription: RuleDescription) -> [StyleViolation] {
         var violations = [StyleViolation]()
         if characters.first == "$" {
             // skip block variables
@@ -87,22 +84,18 @@ extension String {
         let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
         let nameCharacterSet = NSCharacterSet(charactersInString: name)
         if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-            violations.append(StyleViolation(type: .NameFormat,
-                location: location,
+            violations.append(StyleViolation(ruleDescription: ruleDescription,
                 severity: .Error,
-                ruleId: identifier,
+                location: location,
                 reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
         } else if name.substringToIndex(name.startIndex.successor()).isUppercase() {
-            violations.append(StyleViolation(type: .NameFormat,
-                location: location,
+            violations.append(StyleViolation(ruleDescription: ruleDescription,
                 severity: .Error,
-                ruleId: identifier,
+                location: location,
                 reason: "Variable name should start with a lowercase character: '\(name)'"))
         } else if name.characters.count < 3 || name.characters.count > 40 {
-            violations.append(StyleViolation(type: .NameFormat,
+            violations.append(StyleViolation(ruleDescription: ruleDescription,
                 location: location,
-                severity: .Warning,
-                ruleId: identifier,
                 reason: "Variable name should be between 3 and 40 characters in length: " +
                 "'\(name)'"))
         }

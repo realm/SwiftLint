@@ -11,17 +11,14 @@ import XCTest
 
 class ReporterTests: XCTestCase {
     func generateViolations() -> [StyleViolation] {
-        let rule: Rule = LineLengthRule()
+        let location = Location(file: "filename", line: 1, character: 2)
         return [
-            StyleViolation(type: .Length,
-                location: Location(file: "filename", line: 1, character: 2),
-                severity: .Warning,
-                ruleId: rule.identifier,
+            StyleViolation(ruleDescription: LineLengthRule.description,
+                location: location,
                 reason: "Violation Reason."),
-            StyleViolation(type: .Length,
-                location: Location(file: "filename", line: 1, character: 2),
+            StyleViolation(ruleDescription: LineLengthRule.description,
                 severity: .Error,
-                ruleId: rule.identifier,
+                location: location,
                 reason: "Violation Reason.")
         ]
     }
@@ -29,8 +26,8 @@ class ReporterTests: XCTestCase {
     func testXcodeReporter() {
         XCTAssertEqual(
             XcodeReporter.generateReport(generateViolations()),
-            "filename:1:2: warning: Length Violation: Violation Reason. (line_length)\n" +
-            "filename:1:2: error: Length Violation: Violation Reason. (line_length)"
+            "filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)\n" +
+            "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)"
         )
     }
 
@@ -45,7 +42,7 @@ class ReporterTests: XCTestCase {
                 "    \"rule_id\" : \"line_length\",\n" +
                 "    \"line\" : 1,\n" +
                 "    \"severity\" : \"Warning\",\n" +
-                "    \"type\" : \"Length\"\n" +
+                "    \"type\" : \"Line Length\"\n" +
                 "  },\n" +
                 "  {\n" +
                 "    \"reason\" : \"Violation Reason.\",\n" +
@@ -54,7 +51,7 @@ class ReporterTests: XCTestCase {
                 "    \"rule_id\" : \"line_length\",\n" +
                 "    \"line\" : 1,\n" +
                 "    \"severity\" : \"Error\",\n" +
-                "    \"type\" : \"Length\"\n" +
+                "    \"type\" : \"Line Length\"\n" +
                 "  }\n" +
             "]"
         )
@@ -64,8 +61,8 @@ class ReporterTests: XCTestCase {
         XCTAssertEqual(
             CSVReporter.generateReport(generateViolations()),
             "file,line,character,severity,type,reason,rule_id," +
-            "filename,1,2,Warning,Length,Violation Reason.,line_length," +
-            "filename,1,2,Error,Length,Violation Reason.,line_length"
+            "filename,1,2,Warning,Line Length,Violation Reason.,line_length," +
+            "filename,1,2,Error,Line Length,Violation Reason.,line_length"
         )
     }
 }

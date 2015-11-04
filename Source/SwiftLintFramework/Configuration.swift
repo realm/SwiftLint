@@ -42,7 +42,7 @@ public struct Configuration {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromYAML(nil)) {
+                 rules: [Rule] = Configuration.rulesFromYAML()) {
         self.disabledRules = disabledRules
         self.included = included
         self.excluded = excluded
@@ -50,7 +50,9 @@ public struct Configuration {
 
         // Validate that all rule identifiers map to a defined rule
 
-        let validRuleIdentifiers = Configuration.rulesFromYAML(nil).map { $0.identifier }
+        let validRuleIdentifiers = Configuration.rulesFromYAML().map {
+            $0.dynamicType.description.identifier
+        }
 
         let ruleSet = Set(disabledRules)
         let invalidRules = ruleSet.filter({ !validRuleIdentifiers.contains($0) })
@@ -79,7 +81,7 @@ public struct Configuration {
             return nil
         }
 
-        self.rules = rules.filter { !disabledRules.contains($0.identifier) }
+        self.rules = rules.filter { !disabledRules.contains($0.dynamicType.description.identifier) }
     }
 
     public init?(yaml: String) {
@@ -125,9 +127,9 @@ public struct Configuration {
         }
     }
 
-    public static func rulesFromYAML(yaml: Yaml?) -> [Rule] {
+    public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         var rules = [Rule]()
-        if let params = yaml?[.String(LineLengthRule().identifier)].arrayOfInts {
+        if let params = yaml?[.String(LineLengthRule.description.identifier)].arrayOfInts {
             rules.append(LineLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(LineLengthRule())
@@ -138,7 +140,7 @@ public struct Configuration {
         rules.append(TrailingNewlineRule())
         rules.append(OperatorFunctionWhitespaceRule())
         rules.append(ForceCastRule())
-        if let params = yaml?[.String(FileLengthRule().identifier)].arrayOfInts {
+        if let params = yaml?[.String(FileLengthRule.description.identifier)].arrayOfInts {
             rules.append(FileLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(FileLengthRule())
@@ -147,12 +149,12 @@ public struct Configuration {
         rules.append(ColonRule())
         rules.append(TypeNameRule())
         rules.append(VariableNameRule())
-        if let params = yaml?[.String(TypeBodyLengthRule().identifier)].arrayOfInts {
+        if let params = yaml?[.String(TypeBodyLengthRule.description.identifier)].arrayOfInts {
             rules.append(TypeBodyLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(TypeBodyLengthRule())
         }
-        if let params = yaml?[.String(FunctionBodyLengthRule().identifier)].arrayOfInts {
+        if let params = yaml?[.String(FunctionBodyLengthRule.description.identifier)].arrayOfInts {
             rules.append(FunctionBodyLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(FunctionBodyLengthRule())

@@ -24,16 +24,13 @@ public struct Linter {
                 }).first else {
                     return true
                 }
-                return !violationRegion.disabledRuleIdentifiers.contains(rule.identifier)
+                return !violationRegion.disabledRuleIdentifiers.contains(
+                    rule.dynamicType.description.identifier
+                )
             }
         }
     }
 
-    /**
-    Initialize a Linter by passing in a File.
-
-    :param: file File to lint.
-    */
     public init(file: File, configuration: Configuration = Configuration()!) {
         self.file = file
         rules = configuration.rules

@@ -11,33 +11,11 @@ import SourceKittenFramework
 public struct OperatorFunctionWhitespaceRule: Rule {
     public init() {}
 
-    public let identifier = "operator_whitespace"
-
-    public func validateFile(file: File) -> [StyleViolation] {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
-            ["%", "<", ">", "&"]
-        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[" +
-            operators.joinWithSeparator("") +
-            "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[" +
-            operators.joinWithSeparator("") +
-            "]+\\s+(<[A-Z]+>)?\\("
-        return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .Keyword
-        }.map { range, _ in
-            return StyleViolation(type: .OperatorFunctionWhitespace,
-                location: Location(file: file, offset: range.location),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: example.ruleDescription)
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Operator Function Whitespace Rule",
-        ruleDescription: "Use a single whitespace around operators when " +
-            "defining them.",
+    public static let description = RuleDescription(
+        identifier: "operator_whitespace",
+        name: "Operator Function Whitespace",
+        description: "Use a single whitespace around operators when " +
+        "defining them.",
         nonTriggeringExamples: [
             "func <| (lhs: Int, rhs: Int) -> Int {}\n",
             "func <|< <A>(lhs: A, rhs: A) -> A {}\n",
@@ -52,4 +30,21 @@ public struct OperatorFunctionWhitespaceRule: Rule {
             "func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
+            ["%", "<", ">", "&"]
+        let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
+        let pattern1 = "func\\s+[" + operators.joinWithSeparator("") +
+            "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
+        let pattern2 = "func\(zeroOrManySpaces)[" + operators.joinWithSeparator("") +
+            "]+\\s+(<[A-Z]+>)?\\("
+        return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
+            return syntaxKinds.first == .Keyword
+        }.map { range, _ in
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: range.location),
+                reason: self.dynamicType.description.description)
+        }
+    }
 }

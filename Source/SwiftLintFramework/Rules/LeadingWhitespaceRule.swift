@@ -11,28 +11,24 @@ import SourceKittenFramework
 public struct LeadingWhitespaceRule: Rule {
     public init() {}
 
-    public let identifier = "leading_whitespace"
+    public static let description = RuleDescription(
+        identifier: "leading_whitespace",
+        name: "Leading Whitespace",
+        description: "This rule checks that there's no leading whitespace in your file.",
+        nonTriggeringExamples: [ "//\n" ],
+        triggeringExamples: [ "\n", " //\n" ]
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
             NSCharacterSet.whitespaceAndNewlineCharacterSet()
         )
-        if countOfLeadingWhitespace != 0 {
-            return [StyleViolation(type: .LeadingWhitespace,
-                location: Location(file: file.path, line: 1),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "File shouldn't start with whitespace: " +
-                "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
+        if countOfLeadingWhitespace == 0 {
+            return []
         }
-        return []
+        return [StyleViolation(ruleDescription: self.dynamicType.description,
+            location: Location(file: file.path, line: 1),
+            reason: "File shouldn't start with whitespace: " +
+            "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
     }
-
-    public let example = RuleExample(
-        ruleName: "Leading Whitespace Rule",
-        ruleDescription: "This rule checks that there's no leading whitespace in your file.",
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ],
-        showExamples: false
-    )
 }

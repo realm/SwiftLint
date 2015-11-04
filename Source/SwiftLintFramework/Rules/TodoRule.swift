@@ -18,24 +18,10 @@ extension SyntaxKind {
 public struct TodoRule: Rule {
     public init() {}
 
-    public let identifier = "todo"
-
-    public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
-            if syntaxKinds.filter({ !$0.isCommentLike }).count > 0 {
-                return nil
-            }
-            return StyleViolation(type: .TODO,
-                location: Location(file: file, offset: range.location),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "TODOs and FIXMEs should be avoided")
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Todo Rule",
-        ruleDescription: "This rule checks whether you removed all TODOs and FIXMEs.",
+    public static let description = RuleDescription(
+        identifier: "todo",
+        name: "Todo",
+        description: "This rule checks whether you removed all TODOs and FIXMEs.",
         nonTriggeringExamples: [
             "// notaTODO:\n",
             "// notaFIXME:\n"
@@ -51,4 +37,15 @@ public struct TodoRule: Rule {
             "/** TODO: */\n"
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
+            if syntaxKinds.filter({ !$0.isCommentLike }).count > 0 {
+                return nil
+            }
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: range.location),
+                reason: "TODOs and FIXMEs should be avoided")
+        }
+    }
 }

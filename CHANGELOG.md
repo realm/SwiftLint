@@ -2,7 +2,10 @@
 
 ##### Breaking
 
-* None.
+* API: Rename RuleExample to RuleDescription, remove StyleViolationType and
+  combine Rule().identifier and Rule().example into Rule.description.  
+  [JP Simard](https://github.com/jpsim)
+  [#183](https://github.com/realm/SwiftLint/issues/183)
 
 ##### Enhancements
 

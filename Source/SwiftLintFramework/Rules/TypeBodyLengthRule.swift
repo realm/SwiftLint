@@ -21,9 +21,13 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
         self.parameters = parameters
     }
 
-    public let identifier = "type_body_length"
-
     public let parameters: [RuleParameter<Int>]
+
+    public static let description = RuleDescription(
+        identifier: "type_body_length",
+        name: "Type body Length",
+        description: "Enforce maximum type body length"
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -48,11 +52,7 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Enum
-        ]
+        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Enum]
         if !typeKinds.contains(kind) {
             return []
         }
@@ -65,23 +65,13 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
             for parameter in parameters.reverse() {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
-                    return [StyleViolation(type: .Length,
-                        location: location,
-                        severity: parameter.severity,
-                        ruleId: self.identifier,
-                        reason: "Type body should be span \(parameters.first!.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines")]
+                        return [StyleViolation(ruleDescription: self.dynamicType.description,
+                            severity: parameter.severity, location: location,
+                            reason: "Type body should be span \(parameters.first!.value) lines " +
+                            "or less: currently spans \(endLine - startLine) lines")]
                 }
             }
         }
         return []
     }
-
-    public let example = RuleExample(
-        ruleName: "Type body Length Rule",
-        ruleDescription: "Enforce maximum type body length",
-        nonTriggeringExamples: [],
-        triggeringExamples: [],
-        showExamples: false
-    )
 }

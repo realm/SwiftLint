@@ -11,25 +11,10 @@ import SourceKittenFramework
 public struct ColonRule: Rule {
     public init() {}
 
-    public let identifier = "colon"
-
-    public func validateFile(file: File) -> [StyleViolation] {
-        let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        return (pattern1 + pattern2).map { range in
-            return StyleViolation(type: .Colon,
-                location: Location(file: file, offset: range.location),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "When specifying a type, always associate the colon with the identifier")
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Colon Rule",
-        ruleDescription: "This rule checks whether you associate the colon with the identifier.",
+    public static let description = RuleDescription(
+        identifier: "colon",
+        name: "Colon",
+        description: "This rule checks whether you associate the colon with the identifier.",
         nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",
@@ -48,4 +33,16 @@ public struct ColonRule: Rule {
             "func abc(def : Void) {}\n"
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
+            withSyntaxKinds: [.Identifier, .Typeidentifier])
+        let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
+            withSyntaxKinds: [.Identifier, .Typeidentifier])
+        return (pattern1 + pattern2).map { range in
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: range.location),
+                reason: "When specifying a type, always associate the colon with the identifier")
+        }
+    }
 }

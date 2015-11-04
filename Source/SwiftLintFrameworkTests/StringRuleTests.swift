@@ -18,26 +18,24 @@ class StringRuleTests: XCTestCase {
             (Repeat(count: 101, repeatedValue: "/").joinWithSeparator(""), 201, .Error)
         ]
         for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
-                location: Location(file: nil, line: 1),
+            XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(
+                ruleDescription: LineLengthRule.description,
                 severity: testCase.2,
-                ruleId: "line_length",
-                reason: "Line should be 100 characters or less: " +
-                "currently \(testCase.1) characters")])
+                location: Location(file: nil, line: 1),
+                reason: "Line should be 100 characters or less: currently \(testCase.1) " +
+                "characters")])
         }
     }
 
     func testTrailingNewlineAtEndOfFile() {
         XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
+        XCTAssertEqual(violations(""), [StyleViolation(
+            ruleDescription: TrailingNewlineRule.description,
             location: Location(file: nil, line: 1),
-            severity: .Warning,
-            ruleId: "trailing_newline",
             reason: "File should have a single trailing newline")])
-        XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
+        XCTAssertEqual(violations("//\n\n"), [StyleViolation(
+            ruleDescription: TrailingNewlineRule.description,
             location: Location(file: nil, line: 2),
-            severity: .Warning,
-            ruleId: "trailing_newline",
             reason: "File should have a single trailing newline")])
     }
 
@@ -51,56 +49,51 @@ class StringRuleTests: XCTestCase {
             (Repeat(count: 1001, repeatedValue: "//\n").joinWithSeparator(""), 1001, .Error)
         ]
         for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,
-                location: Location(file: nil, line: testCase.1),
+            XCTAssertEqual(violations(testCase.0), [StyleViolation(
+                ruleDescription: FileLengthRule.description,
                 severity: testCase.2,
-                ruleId: "file_length",
+                location: Location(file: nil, line: testCase.1),
                 reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
         }
     }
 
     func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule(),
-            type: .LeadingWhitespace,
-            commentDoesntViolate: false)
+        verifyRule(LeadingWhitespaceRule.description, commentDoesntViolate: false)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule(),
-            type: .TrailingWhitespace,
-            commentDoesntViolate: false)
+        verifyRule(TrailingWhitespaceRule.description, commentDoesntViolate: false)
     }
 
     func testLinesShouldContainReturnArrowWhitespace() {
-        verifyRule(ReturnArrowWhitespaceRule(),
-            type: .ReturnArrowWhitespace)
+        verifyRule(ReturnArrowWhitespaceRule.description)
     }
 
     func testForceCasting() {
-        verifyRule(ForceCastRule(), type: .ForceCast)
+        verifyRule(ForceCastRule.description)
     }
 
     func testOperatorFunctionWhitespace() {
-        verifyRule(OperatorFunctionWhitespaceRule(), type: .OperatorFunctionWhitespace)
+        verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 
     func testTodoOrFIXME() {
-        verifyRule(TodoRule(), type: .TODO, commentDoesntViolate: false)
+        verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
     func testColon() {
-        verifyRule(ColonRule(), type: .Colon)
+        verifyRule(ColonRule.description)
     }
 
     func testOpeningBrace() {
-        verifyRule(OpeningBraceRule(), type: .OpeningBrace)
+        verifyRule(OpeningBraceRule.description)
 	}
 
     func testComma() {
-        verifyRule(CommaRule(), type: .Comma)
+        verifyRule(CommaRule.description)
     }
 
     func testStatementPosition() {
-        verifyRule(StatementPositionRule(), type: .StatementPosition)
+        verifyRule(StatementPositionRule.description)
     }
 }

@@ -11,32 +11,10 @@ import SourceKittenFramework
 public struct ControlStatementRule: Rule {
     public init() {}
 
-    public let identifier = "control_statement"
-
-    public func validateFile(file: File) -> [StyleViolation] {
-        let statements = ["if", "for", "guard", "switch", "while"]
-        return statements.flatMap { statementKind -> [StyleViolation] in
-            let pattern = statementKind == "guard"
-                ? "\(statementKind)\\s*\\([^,]*\\)\\s*else\\s*\\{"
-                : "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
-            return file.matchPattern(pattern).flatMap { match, syntaxKinds in
-                if syntaxKinds.first != .Keyword {
-                    return nil
-                }
-                return StyleViolation(type: .ControlStatement,
-                    location: Location(file: file, offset: match.location),
-                    severity: .Warning,
-                    ruleId: self.identifier,
-                    reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
-                    "parentheses.")
-                }
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Control Statement Rule",
-        ruleDescription: "if,for,while,do statements shouldn't wrap their conditionals in " +
-        "parentheses.",
+    public static let description = RuleDescription(
+        identifier: "control_statement",
+        name: "Control Statement",
+        description: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
         nonTriggeringExamples: [
             "if condition {\n",
             "if (a, b) == (0, 1) {\n",
@@ -69,4 +47,22 @@ public struct ControlStatementRule: Rule {
             "switch (foo) {\n",
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        let statements = ["if", "for", "guard", "switch", "while"]
+        return statements.flatMap { statementKind -> [StyleViolation] in
+            let pattern = statementKind == "guard"
+                ? "\(statementKind)\\s*\\([^,]*\\)\\s*else\\s*\\{"
+                : "\(statementKind)\\s*\\([^,]*\\)\\s*\\{"
+            return file.matchPattern(pattern).flatMap { match, syntaxKinds in
+                if syntaxKinds.first != .Keyword {
+                    return nil
+                }
+                return StyleViolation(ruleDescription: self.dynamicType.description,
+                    location: Location(file: file, offset: match.location),
+                    reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
+                    "parentheses.")
+                }
+        }
+    }
 }

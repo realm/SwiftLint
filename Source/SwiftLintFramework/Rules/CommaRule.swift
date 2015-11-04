@@ -10,28 +10,12 @@ import Foundation
 import SourceKittenFramework
 
 public struct CommaRule: Rule {
-    public init() { }
-    public let identifier = "comma"
+    public init() {}
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(\\,[^\\s])|(\\s\\,)"
-        let excludingKinds = [SyntaxKind.Comment, .CommentMark, .CommentURL,
-            .DocComment, .DocCommentField, .String]
-
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
-            return StyleViolation(type: .Comma,
-                location: Location(file: file, offset: match.location),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "One space before and no after must be present next to " +
-                "commas")
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Comma Spacing Rule",
-        ruleDescription: "One space before and no after must be present next to " +
-        "any comma.",
+    public static let description = RuleDescription(
+        identifier: "comma",
+        name: "Comma Spacing",
+        description: "One space before and no after must be present next to any comma.",
         nonTriggeringExamples: [
             "func abc(a: String, b: String) { }",
             "abc(a: \"string\", b: \"string\"",
@@ -43,4 +27,16 @@ public struct CommaRule: Rule {
             "enum a { case a ,b }"
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        let pattern = "(\\,[^\\s])|(\\s\\,)"
+        let excludingKinds: [SyntaxKind] = [.Comment, .CommentMark, .CommentURL,
+            .DocComment, .DocCommentField, .String]
+
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: match.location),
+                reason: "One space before and no after must be present next to commas")
+        }
+    }
 }

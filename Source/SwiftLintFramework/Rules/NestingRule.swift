@@ -12,7 +12,23 @@ import SwiftXPC
 public struct NestingRule: ASTRule {
     public init() {}
 
-    public let identifier = "nesting"
+    public static let description = RuleDescription(
+        identifier: "nesting",
+        name: "Nesting",
+        description: "Types should be nested at most 1 level deep, " +
+        "and statements should be nested at most 5 levels deep.",
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
+            ["\(kind) Class0 { \(kind) Class1 {} }\n",
+                "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
+                "func func5() {\n}\n}\n}\n}\n}\n}\n"]
+        },
+        triggeringExamples: ["class", "struct", "enum"].map { kind in
+            "\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"
+            } + [
+                "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
+                "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
+        ]
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -34,8 +50,7 @@ public struct NestingRule: ASTRule {
         }
     }
 
-    public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
+    public func validateFile(file: File, kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
         return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
@@ -45,25 +60,19 @@ public struct NestingRule: ASTRule {
         dictionary: XPCDictionary,
         level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum,
-            .Enumcase
-        ]
+        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum, .Enumcase]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
             if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(type: .Nesting, location: location,
-                    ruleId: self.identifier, reason: "Types should be nested at most 1 level deep"))
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                    location: location, reason: "Types should be nested at most 1 level deep"))
             } else if level > 2 && kind == .Enumelement {
                 // Enum elements are implicitly wrapped in an .Enumcase
-                violations.append(StyleViolation(type: .Nesting, location: location,
-                    ruleId: self.identifier, reason: "Types should be nested at most 1 level deep"))
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                    location: location, reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {
-                violations.append(StyleViolation(type: .Nesting, location: location,
-                    ruleId: self.identifier,
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                    location: location,
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }
@@ -83,21 +92,4 @@ public struct NestingRule: ASTRule {
         })
         return violations
     }
-
-    public let example = RuleExample(
-        ruleName: "Nesting Rule",
-        ruleDescription: "Types should be nested at most 1 level deep, " +
-        "and statements should be nested at most 5 levels deep.",
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
-            ["\(kind) Class0 { \(kind) Class1 {} }\n",
-                "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-                "func func5() {\n}\n}\n}\n}\n}\n}\n"]
-        },
-        triggeringExamples: ["class", "struct", "enum"].map { kind in
-            "\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"
-            } + [
-            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-            "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
-            ]
-    )
 }

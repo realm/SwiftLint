@@ -11,27 +11,12 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: Rule {
     public init() {}
-    public let identifier = "statement_position"
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])(?:else|catch))"
-        let excludingKinds = [SyntaxKind.Comment, .CommentMark, .CommentURL,
-            .DocComment, .DocCommentField, .String]
-
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
-            return StyleViolation(type: .StatementPosition,
-                location: Location(file: file, offset: match.location),
-                severity: .Warning,
-                ruleId: self.identifier,
-                reason: "Else and catch must be on the same line and one space " +
-                    "after previous declaration")
-        }
-    }
-
-    public let example = RuleExample(
-        ruleName: "Statement Position Rule",
-        ruleDescription: "This rule checks whether statements are correctly " +
-            "positioned.",
+    public static let description = RuleDescription(
+        identifier: "statement_position",
+        name: "Statement Position",
+        description: "This rule checks whether statements are correctly " +
+        "positioned.",
         nonTriggeringExamples: [
             "} else if {",
             "} else {",
@@ -45,4 +30,17 @@ public struct StatementPositionRule: Rule {
             "}\n\t  catch {"
         ]
     )
+
+    public func validateFile(file: File) -> [StyleViolation] {
+        let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])(?:else|catch))"
+        let excludingKinds: [SyntaxKind] = [.Comment, .CommentMark, .CommentURL, .DocComment,
+            .DocCommentField, .String]
+
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: match.location),
+                reason: "Else and catch must be on the same line and one space " +
+                "after previous declaration")
+        }
+    }
 }

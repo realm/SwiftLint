@@ -12,7 +12,22 @@ import SwiftXPC
 public struct TypeNameRule: ASTRule {
     public init() {}
 
-    public let identifier = "type_name"
+    public static let description = RuleDescription(
+        identifier: "type_name",
+        name: "Type Name",
+        description: "Type name should only contain alphanumeric characters, " +
+        "start with an uppercase character and between 3 and 40 characters in length.",
+        nonTriggeringExamples: [
+            "struct MyStruct {}",
+            "private struct _MyStruct {}"
+        ],
+        triggeringExamples: [
+            "struct myStruct {}",
+            "struct _MyStruct {}",
+            "private struct MyStruct_ {}",
+            "struct My {}"
+        ]
+    )
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
@@ -54,43 +69,21 @@ public struct TypeNameRule: ASTRule {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: .Error,
-                    ruleId: self.identifier,
+                    location: location,
                     reason: "Type name should only contain alphanumeric characters: '\(name)'"))
             } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                violations.append(StyleViolation(type: .NameFormat,
-                    location: location,
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: .Error,
-                    ruleId: self.identifier,
+                    location: location,
                     reason: "Type name should start with an uppercase character: '\(name)'"))
             } else if name.characters.count < 3 || name.characters.count > 40 {
-                violations.append(StyleViolation(type: .NameFormat,
+                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
                     location: location,
-                    severity: .Warning,
-                    ruleId: self.identifier,
-                    reason: "Type name should be between 3 and 40 characters in length: " +
-                    "'\(name)'"))
+                    reason: "Type name should be between 3 and 40 characters in length: '\(name)'"))
             }
         }
         return violations
     }
-
-    public let example = RuleExample(
-        ruleName: "Type Name Rule",
-        ruleDescription: "Type name should only contain alphanumeric characters, " +
-        "start with an uppercase character and between 3 and 40 characters in length.",
-        nonTriggeringExamples: [
-            "struct MyStruct {}",
-            "private struct _MyStruct {}"
-        ],
-        triggeringExamples: [
-            "struct myStruct {}",
-            "struct _MyStruct {}",
-            "private struct MyStruct_ {}",
-            "struct My {}"
-        ],
-        showExamples: false
-    )
 }

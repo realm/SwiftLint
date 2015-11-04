@@ -90,9 +90,9 @@ The rule will be disabled until the end of the file or until the linter sees a m
 For example:
 
 ```swift
-/// swiftlint:disable colon
+// swiftlint:disable colon
 let noWarning :String = "" // No warning about colons immediately after variable names!
-/// swiftlint:enable colon
+// swiftlint:enable colon
 let yesWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 

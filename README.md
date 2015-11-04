@@ -81,11 +81,11 @@ directory to see the currently implemented rules.
 
 Rules can be disabled with a comment inside a source file with the following format: 
 
-`/// swiftlint:disable <rule>`
+`// swiftlint:disable <rule>`
 
 The rule will be disabled until the end of the file or until the linter sees a matching enable comment:
 
-`/// swiftlint:enable <rule>`
+`// swiftlint:enable <rule>`
 
 For example:
 

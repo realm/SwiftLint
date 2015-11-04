@@ -21,9 +21,9 @@ public struct LeadingWhitespaceRule: Rule {
             return [StyleViolation(type: .LeadingWhitespace,
                 location: Location(file: file.path, line: 1),
                 severity: .Warning,
+                ruleId: self.identifier,
                 reason: "File shouldn't start with whitespace: " +
-                "currently starts with \(countOfLeadingWhitespace) whitespace characters",
-                ruleId: self.identifier)]
+                "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
         }
         return []
     }

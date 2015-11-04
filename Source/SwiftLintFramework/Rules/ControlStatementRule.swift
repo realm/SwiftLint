@@ -26,9 +26,9 @@ public struct ControlStatementRule: Rule {
                 return StyleViolation(type: .ControlStatement,
                     location: Location(file: file, offset: match.location),
                     severity: .Warning,
+                    ruleId: self.identifier,
                     reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
-                    "parentheses.",
-                    ruleId: self.identifier)
+                    "parentheses.")
                 }
         }
     }

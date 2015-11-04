@@ -22,6 +22,7 @@ public struct CommaRule: Rule {
             return StyleViolation(type: .Comma,
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
+                ruleId: self.identifier,
                 reason: "One space before and no after must be present next to " +
                 "commas")
         }

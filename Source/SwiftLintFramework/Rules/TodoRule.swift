@@ -28,8 +28,8 @@ public struct TodoRule: Rule {
             return StyleViolation(type: .TODO,
                 location: Location(file: file, offset: range.location),
                 severity: .Warning,
-                reason: "TODOs and FIXMEs should be avoided",
-                ruleId: self.identifier)
+                ruleId: self.identifier,
+                reason: "TODOs and FIXMEs should be avoided")
         }
     }
 

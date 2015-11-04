@@ -21,6 +21,7 @@ class StringRuleTests: XCTestCase {
             XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: 1),
                 severity: testCase.2,
+                ruleId: "line_length",
                 reason: "Line should be 100 characters or less: " +
                 "currently \(testCase.1) characters")])
         }
@@ -31,10 +32,12 @@ class StringRuleTests: XCTestCase {
         XCTAssertEqual(violations(""), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 1),
             severity: .Warning,
+            ruleId: "trailing_newline",
             reason: "File should have a single trailing newline")])
         XCTAssertEqual(violations("//\n\n"), [StyleViolation(type: .TrailingNewline,
             location: Location(file: nil, line: 2),
             severity: .Warning,
+            ruleId: "trailing_newline",
             reason: "File should have a single trailing newline")])
     }
 
@@ -51,6 +54,7 @@ class StringRuleTests: XCTestCase {
             XCTAssertEqual(violations(testCase.0), [StyleViolation(type: .Length,
                 location: Location(file: nil, line: testCase.1),
                 severity: testCase.2,
+                ruleId: "file_length",
                 reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
         }
     }

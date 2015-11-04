@@ -68,9 +68,9 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
                     return [StyleViolation(type: .Length,
                         location: location,
                         severity: parameter.severity,
+                        ruleId: self.identifier,
                         reason: "Type body should be span \(parameters.first!.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines",
-                        ruleId: self.identifier)]
+                        "or less: currently spans \(endLine - startLine) lines")]
                 }
             }
         }

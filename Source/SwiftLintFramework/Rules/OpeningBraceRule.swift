@@ -22,6 +22,7 @@ public struct OpeningBraceRule: Rule {
             return StyleViolation(type: StyleViolationType.OpeningBrace,
                 location: Location(file: file, offset: match.location),
                 severity: .Warning,
+                ruleId: self.identifier,
                 reason: "Opening brace after a space and on same line " +
                 "as declaration")
         }

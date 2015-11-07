@@ -11,6 +11,8 @@
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
+		CAF900141BED8B17006A371D /* VariableNameMaxLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */; };
+		CAF900151BED8B17006A371D /* VariableNameMinLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF900131BED8B17006A371D /* VariableNameMinLengthRule.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -131,6 +133,8 @@
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
+		CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameMaxLengthRule.swift; sourceTree = "<group>"; };
+		CAF900131BED8B17006A371D /* VariableNameMinLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameMinLengthRule.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
 		D0D1212419E878CC005E4BAA /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		D0D1212619E878CC005E4BAA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -447,6 +451,8 @@
 				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
+				CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */,
+				CAF900131BED8B17006A371D /* VariableNameMinLengthRule.swift */,
 				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
 			);
 			path = Rules;
@@ -621,6 +627,7 @@
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
+				CAF900151BED8B17006A371D /* VariableNameMinLengthRule.swift in Sources */,
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,
@@ -642,6 +649,7 @@
 				E881985A1BEA96EA00333A11 /* OperatorFunctionWhitespaceRule.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
+				CAF900141BED8B17006A371D /* VariableNameMaxLengthRule.swift in Sources */,
 				E88198421BEA929F00333A11 /* NestingRule.swift in Sources */,
 				E881985B1BEA974E00333A11 /* StatementPositionRule.swift in Sources */,
 				E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */,

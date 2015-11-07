@@ -129,26 +129,49 @@ public struct Configuration {
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         var rules = [Rule]()
-        if let params = yaml?[.String(LineLengthRule.description.identifier)].arrayOfInts {
-            rules.append(LineLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(LineLengthRule())
-        }
         rules.append(LeadingWhitespaceRule())
         rules.append(TrailingWhitespaceRule())
         rules.append(ReturnArrowWhitespaceRule())
         rules.append(TrailingNewlineRule())
         rules.append(OperatorFunctionWhitespaceRule())
         rules.append(ForceCastRule())
+        rules.append(TodoRule())
+        rules.append(ColonRule())
+        rules.append(TypeNameRule())
+        rules.append(VariableNameRule())
+        rules.append(NestingRule())
+        rules.append(ControlStatementRule())
+        rules.append(OpeningBraceRule())
+        rules.append(CommaRule())
+        rules.append(StatementPositionRule())
+        rules += parameterRulesFromYAML(yaml)
+        return rules
+    }
+
+    private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
+        var rules = [Rule]()
+        if let params = yaml?[.String(LineLengthRule.description.identifier)].arrayOfInts {
+            rules.append(LineLengthRule(parameters: ruleParametersFromArray(params)))
+        } else {
+            rules.append(LineLengthRule())
+        }
         if let params = yaml?[.String(FileLengthRule.description.identifier)].arrayOfInts {
             rules.append(FileLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
             rules.append(FileLengthRule())
         }
-        rules.append(TodoRule())
-        rules.append(ColonRule())
-        rules.append(TypeNameRule())
-        rules.append(VariableNameRule())
+        if let params = yaml?[.String(VariableNameMaxLengthRule.description.identifier)]
+            .arrayOfInts {
+                rules.append(VariableNameMaxLengthRule(parameters: ruleParametersFromArray(params)))
+        } else {
+            rules.append(VariableNameMaxLengthRule())
+        }
+        if let params = yaml?[.String(VariableNameMinLengthRule.description.identifier)]
+            .arrayOfInts {
+                rules.append(VariableNameMinLengthRule(parameters: ruleParametersFromArray(params)))
+        } else {
+            rules.append(VariableNameMinLengthRule())
+        }
         if let params = yaml?[.String(TypeBodyLengthRule.description.identifier)].arrayOfInts {
             rules.append(TypeBodyLengthRule(parameters: ruleParametersFromArray(params)))
         } else {
@@ -159,12 +182,6 @@ public struct Configuration {
         } else {
             rules.append(FunctionBodyLengthRule())
         }
-        rules.append(NestingRule())
-        rules.append(ControlStatementRule())
-        rules.append(OpeningBraceRule())
-        rules.append(CommaRule())
-        rules.append(StatementPositionRule())
-
         return rules
     }
 

@@ -76,22 +76,61 @@ class ASTRuleTests: XCTestCase {
                         location: Location(file: nil, line: 1, character: characterOffset),
                         reason: "Variable name should start with a lowercase character: 'Def'")
                     ])
-                XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
-                    StyleViolation(
-                        ruleDescription: VariableNameRule.description,
-                        location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be between 3 and 40 characters in length: " +
-                        "'de'")
-                    ])
+            }
+        }
+    }
+
+    func testVariableNameMaxLengths() {
+        for kind in ["class", "struct"] {
+            for varType in ["var", "let"] {
+                let characterOffset = 8 + kind.characters.count
                 let longName = Repeat(count: 40, repeatedValue: "d").joinWithSeparator("")
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longName): Void }\n"), [])
                 let longerName = longName + "d"
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
                     StyleViolation(
-                        ruleDescription: VariableNameRule.description,
+                        ruleDescription: VariableNameMaxLengthRule.description,
+                        severity: .Warning,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be between 3 and 40 characters in length: " +
-                        "'\(longerName)'")
+                        reason: "Variable name should be 40 characters or less: currently " +
+                        "41 characters")
+                    ])
+
+                let longestName = Repeat(count: 60, repeatedValue: "d").joinWithSeparator("")
+                    + "d"
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longestName): Void }\n"), [
+                    StyleViolation(
+                        ruleDescription: VariableNameMaxLengthRule.description,
+                        severity: .Error,
+                        location: Location(file: nil, line: 1, character: characterOffset),
+                        reason: "Variable name should be 60 characters or less: currently " +
+                        "61 characters")
+                    ])
+            }
+        }
+    }
+
+    func testVariableNameMinLengths() {
+        for kind in ["class", "struct"] {
+            for varType in ["var", "let"] {
+                let characterOffset = 8 + kind.characters.count
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) def: Void }\n"), [])
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) d: Void }\n"), [
+                    StyleViolation(
+                        ruleDescription: VariableNameMinLengthRule.description,
+                        severity: .Error,
+                        location: Location(file: nil, line: 1, character: characterOffset),
+                        reason: "Variable name should be 2 characters or more: currently " +
+                        "1 characters")
+                    ])
+
+                XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
+                    StyleViolation(
+                        ruleDescription: VariableNameMinLengthRule.description,
+                        severity: .Warning,
+                        location: Location(file: nil, line: 1, character: characterOffset),
+                        reason: "Variable name should be 3 characters or more: currently " +
+                        "2 characters")
                     ])
             }
         }
@@ -133,6 +172,14 @@ class ASTRuleTests: XCTestCase {
 
     func testVariableNamesVerifyRule() {
         verifyRule(VariableNameRule.description)
+    }
+
+    func testVariableNameMaxLengthsVerifyRule() {
+        verifyRule(VariableNameMaxLengthRule.description)
+    }
+
+    func testVariableNameMinLengthsVerifyRule() {
+        verifyRule(VariableNameMinLengthRule.description)
     }
 
     func testNesting() {

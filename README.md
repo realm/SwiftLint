@@ -132,6 +132,14 @@ line_length: 110
 type_body_length:
   - 300 # warning
   - 400 # error
+# parameterized rules are first parameterized as a warning level, then error level.
+variable_name_max_length:
+  - 40 # warning
+  - 60 # error
+# parameterized rules are first parameterized as a warning level, then error level.
+variable_name_min_length:
+  - 3 # warning
+  - 2 # error
 ```
 
 ## License

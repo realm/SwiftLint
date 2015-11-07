@@ -15,10 +15,9 @@ public struct VariableNameRule: ASTRule {
     public static let description = RuleDescription(
         identifier: "variable_name",
         name: "Variable Name",
-        description: "Variable name should only contain alphanumeric characters, " +
-          "start with a a lowercase character and be between 3 and 40 characters in length. " +
-          "In an exception to the above, variable names may start with a capital letter when " +
-          "they are declared static and immutable.",
+        description: "Variable name should only contain alphanumeric characters and " +
+          "start with a a lowercase character. In an exception to the above, variable " +
+          "names may start with a capital letter when they are declared static and immutable.",
         nonTriggeringExamples: [
             "let myLet = 0",
             "var myVar = 0",
@@ -28,8 +27,7 @@ public struct VariableNameRule: ASTRule {
         triggeringExamples: [
             "let MyLet = 0",
             "let _myLet = 0",
-            "private let myLet_ = 0",
-            "let my = 0"
+            "private let myLet_ = 0"
         ]
     )
 
@@ -78,11 +76,6 @@ extension String {
                   severity: .Error,
                   location: location,
                   reason: "Variable name should start with a lowercase character: '\(name)'"))
-          } else if name.characters.count < 3 || name.characters.count > 40 {
-              violations.append(StyleViolation(ruleDescription: ruleDescription,
-                  location: location,
-                  reason: "Variable name should be between 3 and 40 characters in length: " +
-                  "'\(name)'"))
           }
         }
         return violations

@@ -128,61 +128,44 @@ public struct Configuration {
     }
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        var rules = [Rule]()
-        rules.append(LeadingWhitespaceRule())
-        rules.append(TrailingWhitespaceRule())
-        rules.append(ReturnArrowWhitespaceRule())
-        rules.append(TrailingNewlineRule())
-        rules.append(OperatorFunctionWhitespaceRule())
-        rules.append(ForceCastRule())
-        rules.append(TodoRule())
-        rules.append(ColonRule())
-        rules.append(TypeNameRule())
-        rules.append(VariableNameRule())
-        rules.append(NestingRule())
-        rules.append(ControlStatementRule())
-        rules.append(OpeningBraceRule())
-        rules.append(CommaRule())
-        rules.append(StatementPositionRule())
-        rules += parameterRulesFromYAML(yaml)
-        return rules
+        return [
+            LeadingWhitespaceRule(),
+            TrailingWhitespaceRule(),
+            ReturnArrowWhitespaceRule(),
+            TrailingNewlineRule(),
+            OperatorFunctionWhitespaceRule(),
+            ForceCastRule(),
+            TodoRule(),
+            ColonRule(),
+            TypeNameRule(),
+            VariableNameRule(),
+            NestingRule(),
+            ControlStatementRule(),
+            OpeningBraceRule(),
+            CommaRule(),
+            StatementPositionRule()
+        ] + parameterRulesFromYAML(yaml)
     }
 
     private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        var rules = [Rule]()
-        if let params = yaml?[.String(LineLengthRule.description.identifier)].arrayOfInts {
-            rules.append(LineLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(LineLengthRule())
+        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = { type in
+            return (yaml?[.String(type.description.identifier)].arrayOfInts)
+                .map(ruleParametersFromArray)
         }
-        if let params = yaml?[.String(FileLengthRule.description.identifier)].arrayOfInts {
-            rules.append(FileLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(FileLengthRule())
-        }
-        if let params = yaml?[.String(VariableNameMaxLengthRule.description.identifier)]
-            .arrayOfInts {
-                rules.append(VariableNameMaxLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(VariableNameMaxLengthRule())
-        }
-        if let params = yaml?[.String(VariableNameMinLengthRule.description.identifier)]
-            .arrayOfInts {
-                rules.append(VariableNameMinLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(VariableNameMinLengthRule())
-        }
-        if let params = yaml?[.String(TypeBodyLengthRule.description.identifier)].arrayOfInts {
-            rules.append(TypeBodyLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(TypeBodyLengthRule())
-        }
-        if let params = yaml?[.String(FunctionBodyLengthRule.description.identifier)].arrayOfInts {
-            rules.append(FunctionBodyLengthRule(parameters: ruleParametersFromArray(params)))
-        } else {
-            rules.append(FunctionBodyLengthRule())
-        }
-        return rules
+        return [
+            intParams(LineLengthRule).map(LineLengthRule.init) ?? 
+                LineLengthRule(),
+            intParams(FileLengthRule).map(FileLengthRule.init) ?? 
+                FileLengthRule(),
+            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ??
+                VariableNameMaxLengthRule(),
+            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ??
+                VariableNameMinLengthRule(),
+            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? 
+                TypeBodyLengthRule(),
+            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ??
+                FunctionBodyLengthRule()
+        ]
     }
 
     public static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {

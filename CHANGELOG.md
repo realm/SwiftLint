@@ -11,7 +11,7 @@
 
 * The `VariableNameRule` now allows capitalized variable names when they are
   declared static. This allows stylistic usage common in cases like
-  `OptionSetType` subclasses.
+  `OptionSetType` subclasses.  
   [Will Fleming](https://github.com/wfleming)
 
 ##### Bug Fixes

@@ -153,9 +153,9 @@ public struct Configuration {
                 .map(ruleParametersFromArray)
         }
         return [
-            intParams(LineLengthRule).map(LineLengthRule.init) ?? 
+            intParams(LineLengthRule).map(LineLengthRule.init) ??
                 LineLengthRule(),
-            intParams(FileLengthRule).map(FileLengthRule.init) ?? 
+            intParams(FileLengthRule).map(FileLengthRule.init) ??
                 FileLengthRule(),
             intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ??
                 VariableNameMaxLengthRule(),

@@ -183,7 +183,7 @@ class ASTRuleTests: XCTestCase {
     }
 
     func testNesting() {
-        verifyRule(NestingRule.description, commentDoesntViolate: false)
+        verifyRule(NestingRule.description)
     }
 
     func testControlStatements() {

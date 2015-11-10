@@ -20,6 +20,10 @@
   [JP Simard](https://github.com/jpsim)
   [#180](https://github.com/realm/SwiftLint/issues/180)
 
+* Nesting rule no longer triggers a violation for enums nested one level deep.  
+  [JP Simard](https://github.com/jpsim)
+  [#190](https://github.com/realm/SwiftLint/issues/190)
+
 
 ## 0.3.0: Wrinkly Rules
 

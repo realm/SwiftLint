@@ -21,10 +21,11 @@ public struct NestingRule: ASTRule {
             ["\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\n}\n}\n}\n}\n}\n}\n"]
-        },
+        } + ["enum Enum0 { enum Enum1 { case Case } }"],
         triggeringExamples: ["class", "struct", "enum"].map { kind in
             "\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"
             } + [
+                "enum Enum0 { enum Enum1 { enum Enum2 { case Case } } }",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
         ]
@@ -40,14 +41,10 @@ public struct NestingRule: ASTRule {
         dictionary: XPCDictionary,
         level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
-        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum, .Enumcase]
+        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
             if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: location, reason: "Types should be nested at most 1 level deep"))
-            } else if level > 2 && kind == .Enumelement {
-                // Enum elements are implicitly wrapped in an .Enumcase
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
                     location: location, reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {

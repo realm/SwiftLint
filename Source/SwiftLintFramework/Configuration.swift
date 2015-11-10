@@ -161,7 +161,7 @@ public struct Configuration {
                 VariableNameMaxLengthRule(),
             intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ??
                 VariableNameMinLengthRule(),
-            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? 
+            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ??
                 TypeBodyLengthRule(),
             intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ??
                 FunctionBodyLengthRule()

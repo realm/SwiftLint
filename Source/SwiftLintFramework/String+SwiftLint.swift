@@ -38,6 +38,28 @@ extension String {
         }
         return self
     }
+
+    subscript (range: Range<Int>) -> String {
+        get {
+            let subStart = startIndex.advancedBy(range.startIndex, limit: endIndex)
+            let subEnd = subStart.advancedBy(range.endIndex - range.startIndex, limit: endIndex)
+            return substringWithRange(Range(start: subStart, end: subEnd))
+        }
+    }
+
+    func substring(from: Int, length: Int? = nil) -> String {
+        if let length = length {
+            return self[from..<from + length]
+        }
+        return substringFromIndex(startIndex.advancedBy(from, limit: endIndex))
+    }
+
+    public func lastIndexOf(search: String) -> Int? {
+        if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
+            return startIndex.distanceTo(range.startIndex)
+        }
+        return nil
+    }
 }
 
 extension NSString {

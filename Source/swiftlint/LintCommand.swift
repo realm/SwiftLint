@@ -33,6 +33,11 @@ struct LintCommand: CommandType {
                         strict: options.strict)
                 }
                 return .Failure(CommandantError<()>.CommandError())
+            } else if options.useScriptInputFiles {
+                return scriptInputFiles().flatMap { paths in
+                    let files = paths.flatMap(File.init)
+                    return lint(files, configuration: configuration, strict: options.strict)
+                }
             }
 
             // Otherwise parse path.
@@ -113,6 +118,43 @@ struct LintCommand: CommandType {
         }
         return []
     }
+
+    private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
+        func getEnvironmentVariable(variable: String) -> Result<String, CommandantError<()>> {
+            let environment = NSProcessInfo.processInfo().environment
+            if let value = environment[variable] {
+                return .Success(value)
+            } else {
+                return .Failure(.UsageError(description: "Environment variable not set:" +
+                    " \(variable)"))
+            }
+        }
+
+        let count: Result<Int, CommandantError<()>> = getEnvironmentVariable(
+            "SCRIPT_INPUT_FILE_COUNT").flatMap { count in
+            if let i = Int(count) {
+                return .Success(i)
+            } else {
+                return .Failure(.UsageError(description: "SCRIPT_INPUT_FILE_COUNT did not specify" +
+                    " a number"))
+            }
+        }
+
+        return count.flatMap { count in
+            let variables = (0..<count)
+                .map { return getEnvironmentVariable("SCRIPT_INPUT_FILE_\($0)") }
+                .flatMap { path -> String? in
+                    switch path {
+                    case let .Success(path):
+                        return path
+                    case let .Failure(error):
+                        fputs("\(error)\n", stderr)
+                        return nil
+                    }
+            }
+            return Result(variables)
+        }
+    }
 }
 
 struct LintOptions: OptionsType {
@@ -120,11 +162,12 @@ struct LintOptions: OptionsType {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
+    let useScriptInputFiles: Bool
 
     static func create(path: String)(useSTDIN: Bool)(configurationFile: String)(strict: Bool)
-        -> LintOptions {
+        (useScriptInputFiles: Bool) -> LintOptions {
         return LintOptions(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
-            strict: strict)
+            strict: strict, useScriptInputFiles: useScriptInputFiles)
     }
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
@@ -141,5 +184,8 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "strict",
                 defaultValue: false,
                 usage: "fail on warnings")
+            <*> mode <| Option(key: "use-script-input-files",
+                defaultValue: false,
+                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
 }

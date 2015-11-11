@@ -14,11 +14,24 @@
   `OptionSetType` subclasses.  
   [Will Fleming](https://github.com/wfleming)
 
+* Add `VariableNameMaxLengthRule` and `VariableNameMinLengthRule` parameter rules. 
+  Remove length checks on `VariableNameRule`.  
+  [Mickael Morier](https://github.com/mmorier)
+
 ##### Bug Fixes
 
 * All rules now print their identifiers in reports.  
   [JP Simard](https://github.com/jpsim)
   [#180](https://github.com/realm/SwiftLint/issues/180)
+
+* `ControlStatementRule` now detects all violations.  
+  [Mickael Morier](https://github.com/mmorier)
+  [#187](https://github.com/realm/SwiftLint/issues/187)
+
+* `ControlStatementRule` no longer triggers a violation for acceptable use of 
+  parentheses.  
+  [Mickael Morier](https://github.com/mmorier)
+  [#189](https://github.com/realm/SwiftLint/issues/189)
 
 * Nesting rule no longer triggers a violation for enums nested one level deep.  
   [JP Simard](https://github.com/jpsim)

@@ -48,15 +48,17 @@ extension String {
     }
 
     func substring(from: Int, length: Int? = nil) -> String {
-        let length = length ?? characters.count
-        return self[from..<from + length]
+        if let length = length {
+            return self[from..<from + length]
+        }
+        return substringFromIndex(startIndex.advancedBy(from, limit: endIndex))
     }
 
-    public func lastIndexOf(search: String) -> Int {
+    public func lastIndexOf(search: String) -> Int? {
         if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
             return startIndex.distanceTo(range.startIndex)
         }
-        return -1
+        return nil
     }
 }
 

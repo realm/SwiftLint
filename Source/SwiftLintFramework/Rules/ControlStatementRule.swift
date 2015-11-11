@@ -77,7 +77,10 @@ public struct ControlStatementRule: Rule {
             return true
         }
 
-        let lastClosingParenthesePosition = content.lastIndexOf(")")
+        guard let lastClosingParenthesePosition = content.lastIndexOf(")") else {
+            return false
+        }
+
         var depth = 0
         var index = 0
         for char in content.characters {

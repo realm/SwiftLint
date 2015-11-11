@@ -35,7 +35,7 @@ struct LintCommand: CommandType {
                 return .Failure(CommandantError<()>.CommandError())
             } else if options.useScriptInputFiles {
                 return scriptInputFiles().flatMap { paths in
-                    let files = paths.flatMap(File.init)
+                    let files = paths.filter { $0.isSwiftFile() }.flatMap(File.init)
                     return lint(files, configuration: configuration, strict: options.strict)
                 }
             }

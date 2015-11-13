@@ -32,8 +32,6 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDisabledRules() {
-        XCTAssert(Configuration(yaml: "disabled_rules:\n  - a") == nil,
-            "initializing Configuration with invalid rules in YAML string should fail")
         let disabledConfig = Configuration(yaml: "disabled_rules:\n  - nesting\n  - todo")!
         XCTAssertEqual(disabledConfig.disabledRules,
             ["nesting", "todo"],
@@ -50,5 +48,23 @@ class ConfigurationTests: XCTestCase {
         let duplicateConfig = Configuration( yaml: "disabled_rules:\n  - todo\n  - todo")
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
             " YAML string should fail")
+    }
+
+    func testDisabledRulesWithUnknownRule() {
+        let validRule = "nesting"
+        let bogusRule = "no_sprites_with_elf_shoes"
+        let configuration = Configuration(yaml: "disabled_rules:\n" +
+            "  - \(validRule)\n  - \(bogusRule)\n")!
+
+        XCTAssertEqual(configuration.disabledRules,
+            [validRule],
+            "initializing Configuration with valid rules in YAML string should succeed")
+        let expectedIdentifiers = Configuration.rulesFromYAML()
+            .map({ $0.dynamicType.description.identifier })
+            .filter({ ![validRule].contains($0) })
+        let configuredIdentifiers = configuration.rules.map {
+            $0.dynamicType.description.identifier
+        }
+        XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 }

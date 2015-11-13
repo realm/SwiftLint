@@ -43,7 +43,6 @@ public struct Configuration {
                  excluded: [String] = [],
                  reporter: String = "xcode",
                  rules: [Rule] = Configuration.rulesFromYAML()) {
-        self.disabledRules = disabledRules
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
@@ -54,34 +53,35 @@ public struct Configuration {
             $0.dynamicType.description.identifier
         }
 
-        let ruleSet = Set(disabledRules)
-        let invalidRules = ruleSet.filter({ !validRuleIdentifiers.contains($0) })
+        let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0)})
+        let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
         if invalidRules.count > 0 {
             for invalidRule in invalidRules {
                 fputs("config error: '\(invalidRule)' is not a valid rule identifier\n", stderr)
-                let listOfValidRuleIdentifiers = validRuleIdentifiers.joinWithSeparator("\n")
-                fputs("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)\n", stderr)
             }
-            return nil
+            let listOfValidRuleIdentifiers = validRuleIdentifiers.joinWithSeparator("\n")
+            fputs("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)\n", stderr)
         }
 
         // Validate that rule identifiers aren't listed multiple times
 
-        if ruleSet.count != disabledRules.count {
-            let duplicateRules = disabledRules.reduce([String: Int]()) { (var accu, element) in
+        let ruleSet = Set(validDisabledRules)
+        if ruleSet.count != validDisabledRules.count {
+            let duplicateRules = validDisabledRules.reduce([String: Int]()) { (var accu, element) in
                 accu[element] = accu[element]?.successor() ?? 1
                 return accu
-            }.filter {
-                $0.1 > 1
-            }
+            }.filter { $0.1 > 1 }
             for duplicateRule in duplicateRules {
                 fputs("config error: '\(duplicateRule.0)' is listed \(duplicateRule.1) times\n",
                     stderr)
             }
             return nil
         }
+        self.disabledRules = validDisabledRules
 
-        self.rules = rules.filter { !disabledRules.contains($0.dynamicType.description.identifier) }
+        self.rules = rules.filter {
+            !validDisabledRules.contains($0.dynamicType.description.identifier)
+        }
     }
 
     public init?(yaml: String) {

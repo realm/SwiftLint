@@ -19,7 +19,11 @@ public struct ColonRule: Rule {
             "let abc: Void\n",
             "let abc: [Void: Void]\n",
             "let abc: (Void, Void)\n",
-            "func abc(def: Void) {}\n"
+            "let abc: String=\"def\"\n",
+            "let abc: Int=0\n",
+            "let abc: Enum=Enum.Value\n",
+            "func abc(def: Void) {}\n",
+            "func abc(def: Void, ghi: Void) {}\n"
         ],
         triggeringExamples: [
             "let abc:Void\n",
@@ -27,19 +31,28 @@ public struct ColonRule: Rule {
             "let abc :Void\n",
             "let abc : Void\n",
             "let abc : [Void: Void]\n",
+            "let abc :String=\"def\"\n",
+            "let abc :Int=0\n",
+            "let abc :Int = 0\n",
+            "let abc:Int=0\n",
+            "let abc:Int = 0\n",
+            "let abc:Enum=Enum.Value\n",
             "func abc(def:Void) {}\n",
             "func abc(def:  Void) {}\n",
             "func abc(def :Void) {}\n",
-            "func abc(def : Void) {}\n"
+            "func abc(def : Void) {}\n",
+            "func abc(def: Void, ghi :Void) {}\n"
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern1 = file.matchPattern("\\w+\\s+:\\s*\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        let pattern2 = file.matchPattern("\\w+:(?:\\s{0}|\\s{2,})\\S+",
-            withSyntaxKinds: [.Identifier, .Typeidentifier])
-        return (pattern1 + pattern2).map { range in
+        let pattern = "\\w+\\s+:\\s*\\S+|\\w+:(?:\\s{0}|\\s{2,})\\S+"
+
+        return file.matchPattern(pattern).flatMap { range, syntaxKinds in
+            if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
+                return nil
+            }
+
             return StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: range.location),
                 reason: "When specifying a type, always associate the colon with the identifier")

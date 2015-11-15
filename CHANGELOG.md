@@ -37,6 +37,11 @@
   [JP Simard](https://github.com/jpsim)
   [#190](https://github.com/realm/SwiftLint/issues/190)
 
+* `ColonRule` now triggers a violation even if equal operator is collapse to type 
+   and value  
+  [Mickael Morier](https://github.com/mmorier)
+  [#135](https://github.com/realm/SwiftLint/issues/135)
+
 
 ## 0.3.0: Wrinkly Rules
 

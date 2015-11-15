@@ -42,15 +42,9 @@ public struct ReturnArrowWhitespaceRule: Rule {
         let space = "[ \\f\\r\\t]"
         let spaceRegex = "(\(space){0}|\(space){2,})"
 
-        // ex: func abc()-> Int {
-        let pattern1 = file.matchPattern("\\)\(spaceRegex)\\->\\s*\\S+",
-            withSyntaxKinds: [.Typeidentifier])
-
-        // ex: func abc() ->Int {
-        let pattern2 = file.matchPattern("\\)\\s\\->\(spaceRegex)\\S+",
-            withSyntaxKinds: [.Typeidentifier])
-
-        return (pattern1 + pattern2).map { match in
+        // ex: `func abc()-> Int {` & `func abc() ->Int {`
+        let pattern = "\\)(\(spaceRegex)\\->\\s*|\\s\\->\(spaceRegex))\\S+"
+        return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier]).map { match in
             return StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: match.location),
                 reason: "File should have 1 space before return arrow and return type")

@@ -71,14 +71,12 @@ extension String {
                 return []
             }
             let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-            for parameter in parameters.reverse() {
-                if name.characters.count < parameter.value {
-                    return [StyleViolation(ruleDescription: ruleDescription,
-                        severity: parameter.severity,
-                        location: location,
-                        reason: "Variable name should be \(parameter.value) characters " +
-                        "or more: currently \(name.characters.count) characters")]
-                }
+            for parameter in parameters.reverse() where name.characters.count < parameter.value {
+                return [StyleViolation(ruleDescription: ruleDescription,
+                    severity: parameter.severity,
+                    location: location,
+                    reason: "Variable name should be \(parameter.value) characters " +
+                            "or more: currently \(name.characters.count) characters")]
             }
             return []
     }

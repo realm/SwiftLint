@@ -1,5 +1,5 @@
 github "antitypical/Result" "0.6.0-beta.5"
-github "drmohundro/SWXMLHash" "2.0.3"
+github "drmohundro/SWXMLHash" "2.0.4"
 github "jpsim/SwiftXPC" "1.1.0"
 github "behrang/YamlSwift" "1.2.2"
 github "jspahrsummers/xcconfigs" "0.8.1"

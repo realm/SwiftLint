@@ -32,14 +32,12 @@ public struct NestingRule: ASTRule {
     )
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
+                             dictionary: XPCDictionary) -> [StyleViolation] {
         return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary,
-        level: Int) -> [StyleViolation] {
+    func validateFile(file: File, kind: SwiftDeclarationKind, dictionary: XPCDictionary,
+                      level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {

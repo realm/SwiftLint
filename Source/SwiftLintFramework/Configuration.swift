@@ -102,29 +102,23 @@ public struct Configuration {
         let failIfRequired = {
             if !optional { fatalError("Could not read configuration file at path '\(fullPath)'") }
         }
-        if path.isEmpty {
+        if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
             failIfRequired()
             self.init()!
-        } else {
-            if !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
-                failIfRequired()
-                self.init()!
+            return
+        }
+        do {
+            let yamlContents = try NSString(contentsOfFile: fullPath,
+                encoding: NSUTF8StringEncoding) as String
+            if let _ = Configuration(yaml: yamlContents) {
+                fputs("Loading configuration from '\(path)'\n", stderr)
+                self.init(yaml: yamlContents)!
                 return
             }
-            do {
-                let yamlContents = try NSString(contentsOfFile: fullPath,
-                    encoding: NSUTF8StringEncoding) as String
-                if let _ = Configuration(yaml: yamlContents) {
-                    fputs("Loading configuration from '\(path)'\n", stderr)
-                    self.init(yaml: yamlContents)!
-                } else {
-                    self.init()!
-                }
-            } catch {
-                failIfRequired()
-                self.init()!
-            }
+        } catch {
+            failIfRequired()
         }
+        self.init()!
     }
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {

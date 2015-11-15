@@ -1,3 +1,11 @@
+//
+//  File+Cache.swift
+//  SwiftLint
+//
+//  Created by Nikolaj Schumacher on 2015-05-26.
+//  Copyright (c) 2015 Realm. All rights reserved.
+//
+
 import SourceKittenFramework
 
 private var structureCache = Cache({file in Structure(file: file)})
@@ -13,17 +21,15 @@ private struct Cache<T> {
     }
 
     private mutating func get(file: File) -> T {
-        if let path = file.path {
-            if let value = values[path] {
-                return value
-            } else {
-                let value = factory(file)
-                values[path] = value
-                return value
-            }
-        } else {
+        guard let path = file.path else {
             return factory(file)
         }
+        if let value = values[path] {
+            return value
+        }
+        let value = factory(file)
+        values[path] = value
+        return value
     }
 
     private mutating func clear() {

@@ -46,7 +46,7 @@ class StringRuleTests: XCTestCase {
     }
 
     func testFileShouldntStartWithWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, commentDoesntViolate: false)
+        verifyRule(LeadingWhitespaceRule.description)
     }
 
     func testLinesShouldntContainTrailingWhitespace() {

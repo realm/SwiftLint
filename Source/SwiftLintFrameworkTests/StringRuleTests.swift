@@ -27,18 +27,6 @@ class StringRuleTests: XCTestCase {
         }
     }
 
-    func testTrailingNewlineAtEndOfFile() {
-        XCTAssertEqual(violations("//\n"), [])
-        XCTAssertEqual(violations(""), [StyleViolation(
-            ruleDescription: TrailingNewlineRule.description,
-            location: Location(file: nil, line: 1),
-            reason: "File should have a single trailing newline")])
-        XCTAssertEqual(violations("//\n\n"), [StyleViolation(
-            ruleDescription: TrailingNewlineRule.description,
-            location: Location(file: nil, line: 2),
-            reason: "File should have a single trailing newline")])
-    }
-
     func testFileLengths() {
         XCTAssertEqual(
             violations(Repeat(count: 400, repeatedValue: "//\n").joinWithSeparator("")),
@@ -95,5 +83,9 @@ class StringRuleTests: XCTestCase {
 
     func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
+    }
+
+    func testTrailingNewline() {
+        verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false)
     }
 }

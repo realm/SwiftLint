@@ -14,7 +14,14 @@ public struct TrailingNewlineRule: Rule {
     public static let description = RuleDescription(
         identifier: "trailing_newline",
         name: "Trailing Newline",
-        description: "Files should have a single trailing newline."
+        description: "Files should have a single trailing newline.",
+        nonTriggeringExamples: [
+            "let a = 0\n"
+        ],
+        triggeringExamples: [
+            "let a = 0",
+            "let a = 0\n\n"
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

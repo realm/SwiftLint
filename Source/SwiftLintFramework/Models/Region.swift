@@ -19,4 +19,16 @@ public struct Region {
         self.end = end
         self.disabledRuleIdentifiers = disabledRuleIdentifiers
     }
+
+    public func contains(violation: StyleViolation) -> Bool {
+        return start <= violation.location && end >= violation.location
+    }
+
+    public func isRuleEnabled(rule: Rule) -> Bool {
+        return !isRuleDisabled(rule)
+    }
+
+    public func isRuleDisabled(rule: Rule) -> Bool {
+        return disabledRuleIdentifiers.contains(rule.dynamicType.description.identifier)
+    }
 }

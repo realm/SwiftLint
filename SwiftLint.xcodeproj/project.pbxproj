@@ -39,6 +39,7 @@
 		E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; };
 		E876BFBF1B0782AA00114ED5 /* SourceKittenFramework.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */; };
+		E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */; };
 		E88198421BEA929F00333A11 /* NestingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA951B099CF200A66CB0 /* NestingRule.swift */; };
 		E88198441BEA93D200333A11 /* ColonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA831B0990F500A66CB0 /* ColonRule.swift */; };
 		E88198521BEA941300333A11 /* TodoRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA811B0990A700A66CB0 /* TodoRule.swift */; };
@@ -181,6 +182,7 @@
 		E868473B1A587C6E0043DC65 /* sourcekitd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = sourcekitd.framework; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/sourcekitd.framework; sourceTree = DEVELOPER_DIR; };
 		E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxKind+SwiftLint.swift"; sourceTree = "<group>"; };
+		E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingSemicolonRule.swift; sourceTree = "<group>"; };
 		E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleViolation.swift; sourceTree = "<group>"; };
 		E88DEA6E1B09843F00A66CB0 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViolationSeverity.swift; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 				692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */,
 				E88DEA811B0990A700A66CB0 /* TodoRule.swift */,
 				E88DEA871B09924C00A66CB0 /* TrailingNewlineRule.swift */,
+				E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */,
 				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
@@ -678,6 +681,7 @@
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
 				CAF900141BED8B17006A371D /* VariableNameMaxLengthRule.swift in Sources */,
+				E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */,
 				E88198421BEA929F00333A11 /* NestingRule.swift in Sources */,
 				E881985B1BEA974E00333A11 /* StatementPositionRule.swift in Sources */,
 				E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */,

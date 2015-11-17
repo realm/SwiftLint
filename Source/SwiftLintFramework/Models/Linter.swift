@@ -18,15 +18,11 @@ public struct Linter {
     public var styleViolations: [StyleViolation] {
         let regions = file.regions()
         return rules.flatMap { rule in
-            return rule.validateFile(self.file).filter { styleViolation in
-                guard let violationRegion = regions.filter({
-                    $0.start <= styleViolation.location && $0.end >= styleViolation.location
-                }).first else {
+            return rule.validateFile(self.file).filter { violation in
+                guard let violationRegion = regions.filter({ $0.contains(violation) }).first else {
                     return true
                 }
-                return !violationRegion.disabledRuleIdentifiers.contains(
-                    rule.dynamicType.description.identifier
-                )
+                return violationRegion.isRuleEnabled(rule)
             }
         }
     }

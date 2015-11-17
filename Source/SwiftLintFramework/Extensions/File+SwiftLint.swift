@@ -47,7 +47,7 @@ extension File {
     }
 
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
-        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let regex = try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntax = syntaxMap
         let matches = regex.matchesInString(contents, options: [], range: range)
@@ -78,7 +78,7 @@ extension File {
     */
     public func matchPattern(pattern: String,
         excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        let regex = try! NSRegularExpression(pattern: pattern, options: [])
+        let regex = try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntax = syntaxMap
         let matches = regex.matchesInString(contents, options: [], range: range)

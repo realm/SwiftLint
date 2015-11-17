@@ -16,14 +16,17 @@ public struct TrailingSemicolonRule: Rule {
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons.",
         nonTriggeringExamples: [ "let a = 0\n" ],
-        triggeringExamples: [ "let a = 0;\n" ]
+        triggeringExamples: [
+            "let a = 0;\n",
+            "let a = 0;\nlet b = 1\n"
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.lines.filter { $0.content.hasSuffix(";") }.map {
+        let excludingKinds = SyntaxKind.commentAndStringKinds()
+        return file.matchPattern(";$", excludingSyntaxKinds: excludingKinds).flatMap {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file.path, line: $0.index),
-                reason: "Line #\($0.index) should have no trailing semicolon")
+                location: Location(file: file, offset: $0.location))
         }
     }
 }

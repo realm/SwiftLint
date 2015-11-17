@@ -19,8 +19,7 @@ private func violations(string: String, _ description: RuleDescription) -> [Styl
 }
 
 extension XCTestCase {
-    func verifyRule(ruleDescription: RuleDescription,
-        commentDoesntViolate: Bool = true) {
+    func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true) {
         XCTAssertEqual(
             ruleDescription.nonTriggeringExamples.flatMap({violations($0, ruleDescription)}),
             []
@@ -29,15 +28,14 @@ extension XCTestCase {
             ruleDescription.triggeringExamples.flatMap({
                 violations($0, ruleDescription).map({$0.ruleDescription})
             }),
-            Array(count: ruleDescription.triggeringExamples.count, repeatedValue: ruleDescription))
+            Array(count: ruleDescription.triggeringExamples.count, repeatedValue: ruleDescription)
+        )
 
         if commentDoesntViolate {
-            XCTAssertEqual(
-                ruleDescription.triggeringExamples.flatMap({
-                    violations("/** " + $0, ruleDescription)
-                }),
-                []
-            )
+            let commentedViolations = ruleDescription.triggeringExamples.flatMap {
+                violations("/** " + $0, ruleDescription)
+            }
+            XCTAssertEqual(commentedViolations, [])
         }
 
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"

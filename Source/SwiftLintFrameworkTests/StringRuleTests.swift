@@ -90,6 +90,6 @@ class StringRuleTests: XCTestCase {
     }
 
     func testTrailingSemicolon() {
-        verifyRule(TrailingSemicolonRule.description, commentDoesntViolate: false)
+        verifyRule(TrailingSemicolonRule.description)
     }
 }

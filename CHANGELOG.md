@@ -14,8 +14,8 @@
   `OptionSetType` subclasses.  
   [Will Fleming](https://github.com/wfleming)
 
-* Add `VariableNameMaxLengthRule` and `VariableNameMinLengthRule` parameter rules. 
-  Remove length checks on `VariableNameRule`.  
+* Add `VariableNameMaxLengthRule` and `VariableNameMinLengthRule` parameter
+  rules. Remove length checks on `VariableNameRule`.  
   [Mickael Morier](https://github.com/mmorier)
 
 ##### Bug Fixes
@@ -37,8 +37,8 @@
   [JP Simard](https://github.com/jpsim)
   [#190](https://github.com/realm/SwiftLint/issues/190)
 
-* `ColonRule` now triggers a violation even if equal operator is collapse to type 
-   and value  
+* `ColonRule` now triggers a violation even if equal operator is collapse to
+  type and value.  
   [Mickael Morier](https://github.com/mmorier)
   [#135](https://github.com/realm/SwiftLint/issues/135)
 

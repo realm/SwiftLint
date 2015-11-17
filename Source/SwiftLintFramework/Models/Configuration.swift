@@ -123,43 +123,38 @@ public struct Configuration {
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         return [
-            LeadingWhitespaceRule(),
-            TrailingWhitespaceRule(),
-            ReturnArrowWhitespaceRule(),
-            TrailingNewlineRule(),
-            OperatorFunctionWhitespaceRule(),
-            ForceCastRule(),
-            TodoRule(),
             ColonRule(),
+            CommaRule(),
+            ControlStatementRule(),
+            ForceCastRule(),
+            LeadingWhitespaceRule(),
+            NestingRule(),
+            OpeningBraceRule(),
+            OperatorFunctionWhitespaceRule(),
+            ReturnArrowWhitespaceRule(),
+            StatementPositionRule(),
+            TodoRule(),
+            TrailingNewlineRule(),
+            TrailingWhitespaceRule(),
             TypeNameRule(),
             VariableNameRule(),
-            NestingRule(),
-            ControlStatementRule(),
-            OpeningBraceRule(),
-            CommaRule(),
-            StatementPositionRule()
         ] + parameterRulesFromYAML(yaml)
     }
 
     private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = { type in
-            return (yaml?[.String(type.description.identifier)].arrayOfInts)
-                .map(ruleParametersFromArray)
+        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
+            (yaml?[.String($0.description.identifier)].arrayOfInts).map(ruleParametersFromArray)
         }
+        // swiftlint:disable line_length
         return [
-            intParams(LineLengthRule).map(LineLengthRule.init) ??
-                LineLengthRule(),
-            intParams(FileLengthRule).map(FileLengthRule.init) ??
-                FileLengthRule(),
-            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ??
-                VariableNameMaxLengthRule(),
-            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ??
-                VariableNameMinLengthRule(),
-            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ??
-                TypeBodyLengthRule(),
-            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ??
-                FunctionBodyLengthRule()
+            intParams(FileLengthRule).map(FileLengthRule.init) ?? FileLengthRule(),
+            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
+            intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
+            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
+            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
+            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
         ]
+        // swiftlint:enable line_length
     }
 
     public static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {

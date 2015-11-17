@@ -46,7 +46,7 @@ public struct CommaRule: CorrectableRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        guard validateFile(file).count > 0 else { return [] }
+        if validateFile(file).isEmpty { return [] }
         let pattern = "\\s*\\,\\s*([^\\s])"
 
         let description = self.dynamicType.description

@@ -15,7 +15,7 @@ public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
 
     public init?(config: AnyObject) {
         self.init()
-        if let config = [Int].arrayOf(config) where config.count > 0 {
+        if let config = [Int].arrayOf(config) where !config.isEmpty {
             warning = RuleParameter(severity: .Warning, value: config[0])
             if config.count > 1 {
                 error = RuleParameter(severity: .Error, value: config[1])

@@ -134,12 +134,7 @@ public struct ColonRule: CorrectableRule {
             if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
                 return false
             }
-
-            if Set(syntaxKinds).intersect(Set(SyntaxKind.commentAndStringKinds())).count > 0 {
-                return false
-            }
-
-            return true
+            return Set(syntaxKinds).intersect(Set(SyntaxKind.commentAndStringKinds())).isEmpty
         }.flatMap { $0.0 }
     }
 

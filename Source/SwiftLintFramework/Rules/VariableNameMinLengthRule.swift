@@ -14,7 +14,7 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 3),
             RuleParameter(severity: .Error, value: 2)
-            ])
+        ])
     }
 
     public init(parameters: [RuleParameter<Int>]) {
@@ -65,19 +65,20 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
 
 extension String {
     private func violationsForNameAtLocation(location: Location, dictionary: XPCDictionary,
-        ruleDescription: RuleDescription, parameters: [RuleParameter<Int>]) -> [StyleViolation] {
-            if characters.first == "$" {
-                // skip block variables
-                return []
-            }
-            let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-            for parameter in parameters.reverse() where name.characters.count < parameter.value {
-                return [StyleViolation(ruleDescription: ruleDescription,
-                    severity: parameter.severity,
-                    location: location,
-                    reason: "Variable name should be \(parameter.value) characters " +
-                            "or more: currently \(name.characters.count) characters")]
-            }
+                                             ruleDescription: RuleDescription,
+                                             parameters: [RuleParameter<Int>]) -> [StyleViolation] {
+        if characters.first == "$" {
+            // skip block variables
             return []
+        }
+        let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
+        for parameter in parameters.reverse() where name.characters.count < parameter.value {
+            return [StyleViolation(ruleDescription: ruleDescription,
+                severity: parameter.severity,
+                location: location,
+                reason: "Variable name should be \(parameter.value) characters " +
+                        "or more: currently \(name.characters.count) characters")]
+        }
+        return []
     }
 }

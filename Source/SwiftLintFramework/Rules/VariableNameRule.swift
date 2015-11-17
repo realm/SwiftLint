@@ -56,28 +56,27 @@ public struct VariableNameRule: ASTRule {
 
 extension String {
     private func violationsForNameAtLocation(location: Location, dictionary: XPCDictionary,
-        ruleDescription: RuleDescription) -> [StyleViolation] {
-        var violations = [StyleViolation]()
+                                             ruleDescription: RuleDescription) -> [StyleViolation] {
         if characters.first == "$" {
             // skip block variables
-            return violations
+            return []
         }
         if let kind = SwiftDeclarationKind(rawValue: (dictionary["key.kind"] as? String)!) {
           let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
           let nameCharacterSet = NSCharacterSet(charactersInString: name)
           let firstCharacter = name.substringToIndex(name.startIndex.successor())
           if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-              violations.append(StyleViolation(ruleDescription: ruleDescription,
+              return [StyleViolation(ruleDescription: ruleDescription,
                   severity: .Error,
                   location: location,
-                  reason: "Variable name should only contain alphanumeric characters: '\(name)'"))
+                  reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
           } else if kind != SwiftDeclarationKind.VarStatic && firstCharacter.isUppercase() {
-              violations.append(StyleViolation(ruleDescription: ruleDescription,
+            return [StyleViolation(ruleDescription: ruleDescription,
                   severity: .Error,
                   location: location,
-                  reason: "Variable name should start with a lowercase character: '\(name)'"))
+                  reason: "Variable name should start with a lowercase character: '\(name)'")]
           }
         }
-        return violations
+        return []
     }
 }

@@ -14,7 +14,7 @@ public struct ForceCastRule: Rule {
     public static let description = RuleDescription(
         identifier: "force_cast",
         name: "Force Cast",
-        description: "This rule checks whether you don't do force casts.",
+        description: "Force casts should be avoided.",
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"
         ],

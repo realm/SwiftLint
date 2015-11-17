@@ -26,7 +26,7 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
     public static let description = RuleDescription(
         identifier: "variable_name_min_length",
         name: "Variable Name Min Length Rule",
-        description: "Variable name should be 3 characters or more.",
+        description: "Variable name should not be too short.",
         nonTriggeringExamples: [
             "let myLet = 0",
             "var myVar = 0",

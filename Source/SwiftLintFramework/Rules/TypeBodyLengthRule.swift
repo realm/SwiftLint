@@ -25,8 +25,8 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
 
     public static let description = RuleDescription(
         identifier: "type_body_length",
-        name: "Type body Length",
-        description: "Enforce maximum type body length"
+        name: "Type Body Length",
+        description: "Type bodies should not span too many lines."
     )
 
     public func validateFile(file: File,

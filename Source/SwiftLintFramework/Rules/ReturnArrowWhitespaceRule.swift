@@ -15,8 +15,8 @@ public struct ReturnArrowWhitespaceRule: Rule {
     public static let description = RuleDescription(
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",
-        description: "This rule checks whether you have 1 space before " +
-        "return arrow and return type. Newlines are also acceptable.",
+        description: "Return arrow and return type should be separated by a single space or on a " +
+                     "separate line.",
         nonTriggeringExamples: [
             "func abc() -> Int {}\n",
             "func abc() -> [Int] {}\n",

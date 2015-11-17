@@ -21,7 +21,7 @@ public struct TodoRule: Rule {
     public static let description = RuleDescription(
         identifier: "todo",
         name: "Todo",
-        description: "This rule checks whether you removed all TODOs and FIXMEs.",
+        description: "TODOs and FIXMEs should be avoided.",
         nonTriggeringExamples: [
             "// notaTODO:\n",
             "// notaFIXME:\n"

@@ -26,7 +26,7 @@ public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
     public static let description = RuleDescription(
         identifier: "variable_name_max_length",
         name: "Variable Name Max Length Rule",
-        description: "Variable name should be 40 characters or less.",
+        description: "Variable name should not be too long.",
         nonTriggeringExamples: [
             "let myLet = 0",
             "var myVar = 0",

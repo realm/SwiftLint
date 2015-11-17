@@ -14,8 +14,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
     public static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
-        description: "Use a single whitespace around operators when " +
-        "defining them.",
+        description: "Operators should be surrounded by a single whitespace when defining them.",
         nonTriggeringExamples: [
             "func <| (lhs: Int, rhs: Int) -> Int {}\n",
             "func <|< <A>(lhs: A, rhs: A) -> A {}\n",

@@ -15,8 +15,8 @@ public struct OpeningBraceRule: Rule {
     public static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",
-        description: "Check whether there is a space before opening brace and it is on the same " +
-        "line.",
+        description: "Opening braces should be preceded by a single space and on the same line " +
+                     "as the declaration.",
         nonTriggeringExamples: [
             "func abc() {\n}",
             "[].map() { $0 }",

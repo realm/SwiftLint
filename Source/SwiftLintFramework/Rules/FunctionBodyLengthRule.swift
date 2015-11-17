@@ -26,7 +26,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
     public static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",
-        description: "Enforce maximum function length"
+        description: "Functions bodies should not span too many lines."
     )
 
     public func validateFile(file: File,

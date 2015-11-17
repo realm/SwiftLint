@@ -14,7 +14,7 @@ public struct ColonRule: Rule {
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",
-        description: "This rule checks whether you associate the colon with the identifier.",
+        description: "Colons should be next to the identifier when specifying a type.",
         nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",

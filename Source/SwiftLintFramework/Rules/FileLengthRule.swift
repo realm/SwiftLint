@@ -25,7 +25,7 @@ public struct FileLengthRule: ParameterizedRule {
     public static let description = RuleDescription(
         identifier: "file_length",
         name: "File Line Length",
-        description: "Enforce maximum file length"
+        description: "Files should not span too many lines."
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

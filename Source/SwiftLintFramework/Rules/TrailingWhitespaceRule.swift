@@ -14,7 +14,7 @@ public struct TrailingWhitespaceRule: Rule {
     public static let description = RuleDescription(
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
-        description: "This rule checks whether you don't have any trailing whitespace.",
+        description: "Lines should not have trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "// \n" ]
     )

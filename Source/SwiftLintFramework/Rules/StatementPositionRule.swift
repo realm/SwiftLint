@@ -15,8 +15,8 @@ public struct StatementPositionRule: Rule {
     public static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
-        description: "This rule checks whether statements are correctly " +
-        "positioned.",
+        description: "Else and catch should be on the same line, one space after the previous " +
+                     "declaration.",
         nonTriggeringExamples: [
             "} else if {",
             "} else {",

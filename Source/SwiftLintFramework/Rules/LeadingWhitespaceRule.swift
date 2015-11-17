@@ -14,7 +14,7 @@ public struct LeadingWhitespaceRule: Rule {
     public static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
-        description: "This rule checks that there's no leading whitespace in your file.",
+        description: "Files should not contain leading whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "\n", " //\n" ]
     )

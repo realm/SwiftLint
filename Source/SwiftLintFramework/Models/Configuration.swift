@@ -135,6 +135,7 @@ public struct Configuration {
             StatementPositionRule(),
             TodoRule(),
             TrailingNewlineRule(),
+            TrailingSemicolonRule(),
             TrailingWhitespaceRule(),
             TypeNameRule(),
             VariableNameRule(),

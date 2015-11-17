@@ -18,6 +18,9 @@
   rules. Remove length checks on `VariableNameRule`.  
   [Mickael Morier](https://github.com/mmorier)
 
+* Add trailing semicolon rule.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * All rules now print their identifiers in reports.  

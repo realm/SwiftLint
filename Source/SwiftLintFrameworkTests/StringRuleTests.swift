@@ -88,4 +88,8 @@ class StringRuleTests: XCTestCase {
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false)
     }
+
+    func testTrailingSemicolon() {
+        verifyRule(TrailingSemicolonRule.description, commentDoesntViolate: false)
+    }
 }

@@ -33,9 +33,18 @@ extension XCTestCase {
 
         if commentDoesntViolate {
             let commentedViolations = ruleDescription.triggeringExamples.flatMap {
-                violations("/** " + $0, ruleDescription)
+                violations("/**\n  " + $0 + "\n */", ruleDescription)
             }
             XCTAssertEqual(commentedViolations, [])
+        } else {
+            let commentedViolations = ruleDescription.triggeringExamples.flatMap {
+                violations("/**\n  " + $0 + "\n */", ruleDescription)
+            }.map({$0.ruleDescription})
+            XCTAssertEqual(
+                commentedViolations,
+                Array(count: ruleDescription.triggeringExamples.count,
+                      repeatedValue: ruleDescription)
+            )
         }
 
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"

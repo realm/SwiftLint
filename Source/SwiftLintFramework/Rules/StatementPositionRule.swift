@@ -35,11 +35,9 @@ public struct StatementPositionRule: Rule {
         let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])(?:else|catch))"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: match.location),
-                reason: "Else and catch must be on the same line and one space " +
-                "after previous declaration")
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap {
+            StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0.location))
         }
     }
 }

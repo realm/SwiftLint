@@ -10,7 +10,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
     public let ruleDescription: RuleDescription
     public let severity: ViolationSeverity
     public let location: Location
-    public let reason: String?
+    public let reason: String
     public var description: String {
         return XcodeReporter.generateForSingleViolation(self)
     }
@@ -20,7 +20,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
             self.ruleDescription = ruleDescription
             self.severity = severity
             self.location = location
-            self.reason = reason
+            self.reason = reason ?? ruleDescription.description
     }
 }
 

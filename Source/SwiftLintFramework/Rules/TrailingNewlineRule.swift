@@ -28,7 +28,6 @@ public struct TrailingNewlineRule: Rule {
         guard let slice = slices.last where slice.count != 1 else { return [] }
 
         return [StyleViolation(ruleDescription: self.dynamicType.description,
-            location: Location(file: file.path, line: max(file.lines.count, 1)),
-            reason: "File should have a single trailing newline")]
+            location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 }

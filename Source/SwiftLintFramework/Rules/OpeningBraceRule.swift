@@ -34,10 +34,9 @@ public struct OpeningBraceRule: Rule {
         let pattern = "((?:[^( ]|[\\t\\n\\f\\r (] )\\{)"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map { match in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: match.location),
-                reason: "Opening brace after a space and on same line as declaration")
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+            StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0.location))
         }
     }
 }

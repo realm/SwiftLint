@@ -32,10 +32,9 @@ public struct CommaRule: Rule {
         let pattern = "(\\,[^\\s])|(\\s\\,)"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: match.location),
-                reason: "One space before and no after must be present next to commas")
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap {
+            StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0.location))
         }
     }
 }

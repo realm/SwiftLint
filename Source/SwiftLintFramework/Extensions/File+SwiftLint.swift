@@ -42,7 +42,7 @@ extension File {
         withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
             return kindsInRange.count == syntaxKinds.count &&
-                zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).count == 0
+                zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).isEmpty
         }.map { $0.0 }
     }
 

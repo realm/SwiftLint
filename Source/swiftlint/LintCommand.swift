@@ -47,7 +47,7 @@ struct LintCommand: CommandType {
 
     private func lint(path: String, configuration: Configuration, strict: Bool) ->
         Result<(), CommandantError<()>> {
-        let filesToLint = (configuration.included.count == 0 ? filesToLintAtPath(path) : [])
+        let filesToLint = (configuration.included.isEmpty ? filesToLintAtPath(path) : [])
             .filter({ !configuration.excluded.flatMap(filesToLintAtPath).contains($0) }) +
             configuration.included.flatMap(filesToLintAtPath)
         if path.isEmpty {
@@ -56,7 +56,7 @@ struct LintCommand: CommandType {
             fputs("Linting Swift files at path \(path)\n", stderr)
         }
         let files = filesToLint.flatMap(File.init)
-        if files.count > 0 {
+        if !files.isEmpty {
             return lint(files, configuration: configuration, strict: strict)
         }
         return .Failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
@@ -96,7 +96,7 @@ struct LintCommand: CommandType {
             " in \(files.count) file\(filesSuffix)\n",
             stderr
         )
-        if strict && violations.count > 0 {
+        if strict && !violations.isEmpty {
             return .Failure(CommandantError<()>.CommandError())
         } else if numberOfSeriousViolations <= 0 {
             return .Success()

@@ -55,7 +55,7 @@ public struct Configuration {
 
         let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0)})
         let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
-        if invalidRules.count > 0 {
+        if !invalidRules.isEmpty {
             for invalidRule in invalidRules {
                 fputs("config error: '\(invalidRule)' is not a valid rule identifier\n", stderr)
             }

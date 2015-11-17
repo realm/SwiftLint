@@ -40,7 +40,7 @@ public struct TodoRule: Rule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
-            if syntaxKinds.filter({ !$0.isCommentLike }).count > 0 {
+            if !syntaxKinds.filter({ !$0.isCommentLike }).isEmpty {
                 return nil
             }
             return StyleViolation(ruleDescription: self.dynamicType.description,

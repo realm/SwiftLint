@@ -24,8 +24,7 @@ public struct TrailingWhitespaceRule: Rule {
             $0.content.hasTrailingWhitespace()
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file.path, line: $0.index),
-                reason: "Line #\($0.index) should have no trailing whitespace")
+                location: Location(file: file.path, line: $0.index))
         }
     }
 }

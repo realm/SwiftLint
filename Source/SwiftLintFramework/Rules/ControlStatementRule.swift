@@ -64,9 +64,7 @@ public struct ControlStatementRule: Rule {
                     return nil
                 }
                 return StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: Location(file: file, offset: match.location),
-                    reason: "\(statementKind) statements shouldn't wrap their conditionals in " +
-                    "parentheses.")
+                    location: Location(file: file, offset: match.location))
                 }
         }
 

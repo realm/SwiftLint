@@ -44,8 +44,7 @@ public struct TodoRule: Rule {
                 return nil
             }
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: range.location),
-                reason: "TODOs and FIXMEs should be avoided")
+                location: Location(file: file, offset: range.location))
         }
     }
 }

@@ -54,8 +54,7 @@ public struct ColonRule: Rule {
             }
 
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: range.location),
-                reason: "When specifying a type, always associate the colon with the identifier")
+                location: Location(file: file, offset: range.location))
         }
     }
 }

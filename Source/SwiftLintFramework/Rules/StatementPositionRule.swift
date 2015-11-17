@@ -33,8 +33,7 @@ public struct StatementPositionRule: Rule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])(?:else|catch))"
-        let excludingKinds: [SyntaxKind] = [.Comment, .CommentMark, .CommentURL, .DocComment,
-            .DocCommentField, .String]
+        let excludingKinds = SyntaxKind.commentAndStringKinds()
 
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap { match in
             return StyleViolation(ruleDescription: self.dynamicType.description,

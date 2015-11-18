@@ -21,6 +21,9 @@
 * Add trailing semicolon rule.  
   [JP Simard](https://github.com/jpsim)
 
+* Add force try rule.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * All rules now print their identifiers in reports.  

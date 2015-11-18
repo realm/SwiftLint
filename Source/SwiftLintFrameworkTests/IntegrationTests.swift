@@ -20,9 +20,13 @@ class IntegrationTests: XCTestCase {
             .stringByDeletingLastPathComponent as NSString)
             .stringByDeletingLastPathComponent as NSString)
             .stringByAppendingPathComponent("Source")
-        let allFiles = fileManager.allFilesRecursively(directory: directory)
-        let swiftFiles = allFiles.filter { $0.isSwiftFile() }
-        XCTAssert(swiftFiles.contains(__FILE__), "current file should be included")
-        XCTAssertEqual(swiftFiles.flatMap({Linter(file: File(path: $0)!).styleViolations}), [])
+        do {
+            let allFiles = try fileManager.allFilesRecursively(directory: directory)
+            let swiftFiles = allFiles.filter { $0.isSwiftFile() }
+            XCTAssert(swiftFiles.contains(__FILE__), "current file should be included")
+            XCTAssertEqual(swiftFiles.flatMap({Linter(file: File(path: $0)!).styleViolations}), [])
+        } catch {
+            fatalError("Couldn't find files in \(directory): \(error)")
+        }
     }
 }

@@ -109,8 +109,12 @@ struct LintCommand: CommandType {
         var isDirectory: ObjCBool = false
         if fileManager.fileExistsAtPath(absolutePath, isDirectory: &isDirectory) {
             if isDirectory {
-                return fileManager.allFilesRecursively(directory: absolutePath).filter {
-                    $0.isSwiftFile()
+                do {
+                    return try fileManager.allFilesRecursively(directory: absolutePath).filter {
+                        $0.isSwiftFile()
+                    }
+                } catch {
+                    fatalError("Couldn't find files in \(absolutePath): \(error)")
                 }
             } else if absolutePath.isSwiftFile() {
                 return [absolutePath]

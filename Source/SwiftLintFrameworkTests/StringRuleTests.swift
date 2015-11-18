@@ -23,7 +23,7 @@ class StringRuleTests: XCTestCase {
                 severity: testCase.2,
                 location: Location(file: nil, line: 1),
                 reason: "Line should be 100 characters or less: currently \(testCase.1) " +
-                "characters")])
+                        "characters")])
         }
     }
 
@@ -59,6 +59,10 @@ class StringRuleTests: XCTestCase {
 
     func testForceCasting() {
         verifyRule(ForceCastRule.description)
+    }
+
+    func testForceTry() {
+        verifyRule(ForceTryRule.description)
     }
 
     func testOperatorFunctionWhitespace() {

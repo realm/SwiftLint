@@ -9,8 +9,8 @@
 import Foundation
 
 extension NSFileManager {
-    public func allFilesRecursively(directory directory: String) -> [String] {
-        return try! subpathsOfDirectoryAtPath(directory)
+    public func allFilesRecursively(directory directory: String) throws -> [String] {
+        return try subpathsOfDirectoryAtPath(directory)
             .map((directory as NSString).stringByAppendingPathComponent)
     }
 }

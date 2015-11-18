@@ -31,52 +31,25 @@ public struct VariableNameRule: ASTRule {
         ]
     )
 
-    public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
-        let variableKinds: [SwiftDeclarationKind] = [
-            .VarClass,
-            .VarGlobal,
-            .VarInstance,
-            .VarLocal,
-            .VarParameter,
-            .VarStatic
-        ]
-        if !variableKinds.contains(kind) {
+    public func validateFile(file: File, kind: SwiftDeclarationKind,
+                             dictionary: XPCDictionary) -> [StyleViolation] {
+        return file.validateVariableName(dictionary, kind: kind).map { name, offset in
+            let nameCharacterSet = NSCharacterSet(charactersInString: name)
+            let firstCharacter = name.substringToIndex(name.startIndex.successor())
+            let description = self.dynamicType.description
+            let location = Location(file: file, offset: offset)
+            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+                return [StyleViolation(ruleDescription: description,
+                    severity: .Error,
+                    location: location,
+                    reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
+            } else if kind != SwiftDeclarationKind.VarStatic && firstCharacter.isUppercase() {
+                return [StyleViolation(ruleDescription: description,
+                    severity: .Error,
+                    location: location,
+                    reason: "Variable name should start with a lowercase character: '\(name)'")]
+            }
             return []
-        }
-        guard let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
-                return []
-        }
-        return name.violationsForNameAtLocation(Location(file: file, offset: offset),
-            dictionary: dictionary, ruleDescription: self.dynamicType.description)
-    }
-}
-
-extension String {
-    private func violationsForNameAtLocation(location: Location, dictionary: XPCDictionary,
-                                             ruleDescription: RuleDescription) -> [StyleViolation] {
-        if characters.first == "$" {
-            // skip block variables
-            return []
-        }
-        if let kind = SwiftDeclarationKind(rawValue: (dictionary["key.kind"] as? String)!) {
-          let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-          let nameCharacterSet = NSCharacterSet(charactersInString: name)
-          let firstCharacter = name.substringToIndex(name.startIndex.successor())
-          if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-              return [StyleViolation(ruleDescription: ruleDescription,
-                  severity: .Error,
-                  location: location,
-                  reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
-          } else if kind != SwiftDeclarationKind.VarStatic && firstCharacter.isUppercase() {
-            return [StyleViolation(ruleDescription: ruleDescription,
-                  severity: .Error,
-                  location: location,
-                  reason: "Variable name should start with a lowercase character: '\(name)'")]
-          }
-        }
-        return []
+        } ?? []
     }
 }

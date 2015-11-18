@@ -99,4 +99,14 @@ extension File {
             return true
         }.map { $0.range }
     }
+
+    public func validateVariableName(dictionary: XPCDictionary, kind: SwiftDeclarationKind) ->
+                                     (name: String, offset: Int)? {
+        guard let name = dictionary["key.name"] as? String,
+            offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) where
+            SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
+                return nil
+        }
+        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+    }
 }

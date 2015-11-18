@@ -39,46 +39,18 @@ public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
         ]
     )
 
-    public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
-            let variableKinds: [SwiftDeclarationKind] = [
-                .VarClass,
-                .VarGlobal,
-                .VarInstance,
-                .VarLocal,
-                .VarParameter,
-                .VarStatic
-            ]
-            if !variableKinds.contains(kind) {
-                return []
+    public func validateFile(file: File, kind: SwiftDeclarationKind,
+                             dictionary: XPCDictionary) -> [StyleViolation] {
+        return file.validateVariableName(dictionary, kind: kind).map { name, offset in
+            let charCount = name.characters.count
+            for parameter in self.parameters.reverse() where charCount > parameter.value {
+                return [StyleViolation(ruleDescription: self.dynamicType.description,
+                    severity: parameter.severity,
+                    location: Location(file: file, offset: offset),
+                    reason: "Variable name should be \(parameter.value) characters " +
+                            "or less: currently \(charCount) characters")]
             }
-            guard let name = dictionary["key.name"] as? String,
-                      offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
-                return []
-            }
-            return name.violationsForNameAtLocation(Location(file: file, offset: offset),
-                dictionary: dictionary, ruleDescription: self.dynamicType.description,
-                parameters: self.parameters)
-    }
-}
-
-extension String {
-    private func violationsForNameAtLocation(location: Location, dictionary: XPCDictionary,
-                                             ruleDescription: RuleDescription,
-                                             parameters: [RuleParameter<Int>]) -> [StyleViolation] {
-        if characters.first == "$" {
-            // skip block variables
             return []
-        }
-        let name = nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-        for parameter in parameters.reverse() where name.characters.count > parameter.value {
-            return [StyleViolation(ruleDescription: ruleDescription,
-                severity: parameter.severity,
-                location: location,
-                reason: "Variable name should be \(parameter.value) characters " +
-                        "or less: currently \(name.characters.count) characters")]
-        }
-        return []
+        } ?? []
     }
 }

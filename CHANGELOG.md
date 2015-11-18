@@ -2,6 +2,21 @@
 
 ##### Breaking
 
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+
+## 0.4.0: Wrinkle Release
+
+##### Breaking
+
 * API: Rename RuleExample to RuleDescription, remove StyleViolationType and
   combine Rule().identifier and Rule().example into Rule.description.  
   [JP Simard](https://github.com/jpsim)

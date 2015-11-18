@@ -48,6 +48,10 @@
   [Mickael Morier](https://github.com/mmorier)
   [#135](https://github.com/realm/SwiftLint/issues/135)
 
+* Fix an issue where logs would be printed asynchronously over each other.  
+  [JP Simard](https://github.com/jpsim)
+  [#200](https://github.com/realm/SwiftLint/issues/200)
+
 
 ## 0.3.0: Wrinkly Rules
 

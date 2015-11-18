@@ -57,10 +57,10 @@ public struct Configuration {
         let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
         if !invalidRules.isEmpty {
             for invalidRule in invalidRules {
-                fputs("config error: '\(invalidRule)' is not a valid rule identifier\n", stderr)
+                queuedPrintError("config error: '\(invalidRule)' is not a valid rule identifier")
             }
             let listOfValidRuleIdentifiers = validRuleIdentifiers.joinWithSeparator("\n")
-            fputs("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)\n", stderr)
+            queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
         }
 
         // Validate that rule identifiers aren't listed multiple times
@@ -71,10 +71,9 @@ public struct Configuration {
                 accu[element] = accu[element]?.successor() ?? 1
                 return accu
             }.filter { $0.1 > 1 }
-            for duplicateRule in duplicateRules {
-                fputs("config error: '\(duplicateRule.0)' is listed \(duplicateRule.1) times\n",
-                    stderr)
-            }
+            queuedPrintError(duplicateRules.map { rule in
+                "config error: '\(rule.0)' is listed \(rule.1) times"
+            }.joinWithSeparator("\n"))
             return nil
         }
         self.disabledRules = validDisabledRules
@@ -111,7 +110,7 @@ public struct Configuration {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
             if let _ = Configuration(yaml: yamlContents) {
-                fputs("Loading configuration from '\(path)'\n", stderr)
+                queuedPrintError("Loading configuration from '\(path)'")
                 self.init(yaml: yamlContents)!
                 return
             }

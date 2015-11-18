@@ -51,9 +51,9 @@ struct LintCommand: CommandType {
             .filter({ !configuration.excluded.flatMap(filesToLintAtPath).contains($0) }) +
             configuration.included.flatMap(filesToLintAtPath)
         if path.isEmpty {
-            fputs("Linting Swift files in current working directory\n", stderr)
+            queuedPrintError("Linting Swift files in current working directory")
         } else {
-            fputs("Linting Swift files at path \(path)\n", stderr)
+            queuedPrintError("Linting Swift files at path \(path)")
         }
         let files = filesToLint.flatMap(File.init)
         if !files.isEmpty {
@@ -70,7 +70,7 @@ struct LintCommand: CommandType {
         for (index, file) in files.enumerate() {
             if let path = file.path {
                 let filename = (path as NSString).lastPathComponent
-                fputs("Linting '\(filename)' (\(index + 1)/\(files.count))\n", stderr)
+                queuedPrintError("Linting '\(filename)' (\(index + 1)/\(files.count))")
             }
             let linter = Linter(file: file, configuration: configuration)
             let currentViolations = linter.styleViolations
@@ -79,22 +79,21 @@ struct LintCommand: CommandType {
             if reporter.isRealtime {
                 let report = reporter.generateReport(currentViolations)
                 if !report.isEmpty {
-                    print(report)
+                    queuedPrint(report)
                 }
             }
         }
         if !reporter.isRealtime {
-            print(reporter.generateReport(violations))
+            queuedPrint(reporter.generateReport(violations))
         }
         let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
         let violationSuffix = (violations.count != 1 ? "s" : "")
         let filesSuffix = (files.count != 1 ? "s." : ".")
-        fputs(
+        queuedPrintError(
             "Done linting!" +
             " Found \(violations.count) violation\(violationSuffix)," +
             " \(numberOfSeriousViolations) serious" +
-            " in \(files.count) file\(filesSuffix)\n",
-            stderr
+            " in \(files.count) file\(filesSuffix)"
         )
         if strict && !violations.isEmpty {
             return .Failure(CommandantError<()>.CommandError())
@@ -152,7 +151,7 @@ struct LintCommand: CommandType {
                     case let .Success(path):
                         return path
                     case let .Failure(error):
-                        fputs("\(error)\n", stderr)
+                        queuedPrintError(String(error))
                         return nil
                     }
             }

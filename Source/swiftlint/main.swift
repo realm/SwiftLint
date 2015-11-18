@@ -7,6 +7,7 @@
 //
 
 import Commandant
+import SwiftLintFramework
 
 let registry = CommandRegistry<()>()
 registry.register(LintCommand())
@@ -15,5 +16,5 @@ registry.register(HelpCommand(registry: registry))
 registry.register(RulesCommand())
 
 registry.main(defaultVerb: LintCommand().verb) { error in
-    fputs("\(error)\n", stderr)
+    queuedPrintError(String(error))
 }

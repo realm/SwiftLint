@@ -39,6 +39,11 @@
 * Add force try rule.  
   [JP Simard](https://github.com/jpsim)
 
+* Support linting from Input Files provided by Run Script Phase of Xcode with
+   `--use-script-input-files`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#193](https://github.com/realm/SwiftLint/pull/193)
+
 ##### Bug Fixes
 
 * All rules now print their identifiers in reports.  

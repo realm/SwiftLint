@@ -40,8 +40,8 @@ public struct TypeBodyLengthRule: ASTRule, ParameterizedRule {
             let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
             let location = Location(file: file, offset: offset)
-            let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
-            let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
+            let startLine = file.contents.lineAndCharacterForCharacterOffset(bodyOffset)
+            let endLine = file.contents.lineAndCharacterForCharacterOffset(bodyOffset + bodyLength)
             for parameter in parameters.reverse() {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {

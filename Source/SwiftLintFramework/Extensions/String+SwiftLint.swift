@@ -63,19 +63,18 @@ extension String {
 }
 
 extension NSString {
-    public func lineAndCharacterForByteOffset(offset: Int) -> (line: Int, character: Int)? {
-        return byteRangeToNSRange(start: offset, length: 0).flatMap { range in
-            var numberOfLines = 0, index = 0, lineRangeStart = 0, previousIndex = 0
-            while index < length {
-                numberOfLines++
-                if index > range.location {
-                    break
-                }
-                lineRangeStart = numberOfLines
-                previousIndex = index
-                index = NSMaxRange(lineRangeForRange(NSRange(location: index, length: 1)))
+    public func lineAndCharacterForCharacterOffset(offset: Int) -> (line: Int, character: Int)? {
+        let range = NSRange(location: offset, length: 0)
+        var numberOfLines = 0, index = 0, lineRangeStart = 0, previousIndex = 0
+        while index < length {
+            numberOfLines++
+            if index > range.location {
+                break
             }
-            return (lineRangeStart, range.location - previousIndex + 1)
+            lineRangeStart = numberOfLines
+            previousIndex = index
+            index = NSMaxRange(lineRangeForRange(NSRange(location: index, length: 1)))
         }
+        return (lineRangeStart, range.location - previousIndex + 1)
     }
 }

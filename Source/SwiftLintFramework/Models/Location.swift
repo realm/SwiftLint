@@ -28,7 +28,7 @@ public struct Location: CustomStringConvertible, Comparable {
 
     public init(file: File, offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(offset) {
+        if let lineAndCharacter = file.contents.lineAndCharacterForCharacterOffset(offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {

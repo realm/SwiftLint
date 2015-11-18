@@ -63,7 +63,7 @@ extension String {
 }
 
 extension NSString {
-    public func lineAndCharacterForByteOffset(offset: Int) -> (line: Int, character: Int)? {
+    public func lineAndCharacterForCharacterOffset(offset: Int) -> (line: Int, character: Int)? {
         let range = NSRange(location: offset, length: 0)
         var numberOfLines = 0, index = 0, lineRangeStart = 0, previousIndex = 0
         while index < length {

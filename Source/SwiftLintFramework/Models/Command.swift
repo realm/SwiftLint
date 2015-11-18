@@ -33,7 +33,7 @@ public struct Command {
         scanner.scanUpToString(" ", intoString: &actionNSString)
         guard let actionString = actionNSString as String?,
             action = CommandAction(rawValue: actionString),
-            lineAndCharacter = string.lineAndCharacterForByteOffset(NSMaxRange(range)) else {
+            lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
                 return nil
         }
         self.action = action

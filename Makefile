@@ -32,7 +32,7 @@ clean:
 	rm -rf "$(TEMPORARY_FOLDER)"
 	$(BUILD_TOOL) $(XCODEFLAGS) clean
 
-install: package
+install: uninstall package
 	sudo installer -pkg SwiftLint.pkg -target /
 
 uninstall:
@@ -51,8 +51,8 @@ prefix_install: installables
 	mkdir -p "$(PREFIX)/Frameworks" "$(PREFIX)/bin"
 	cp -rf "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework" "$(PREFIX)/Frameworks/"
 	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(PREFIX)/bin/"
-	install_name_tool -add_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/"  "$(PREFIX)/bin/swiftlint"
-	install_name_tool -add_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks/"  "$(PREFIX)/bin/swiftlint"
+	install_name_tool -add_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/" "$(PREFIX)/bin/swiftlint"
+	install_name_tool -add_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/Current/Frameworks/" "$(PREFIX)/bin/swiftlint"
 
 package: installables
 	pkgbuild \

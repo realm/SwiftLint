@@ -25,14 +25,14 @@ extension XCTestCase {
             []
         )
         XCTAssertEqual(
-            ruleDescription.triggeringExamples.flatMap({
-                violations($0, ruleDescription).map({$0.ruleDescription})
+            ruleDescription.triggeringExamples.flatMap({ example in
+                violations(example, ruleDescription).map({$0.ruleDescription})
             }),
             Array(count: ruleDescription.triggeringExamples.count, repeatedValue: ruleDescription)
         )
 
-        let commentedViolations = ruleDescription.triggeringExamples.flatMap {
-            violations("/**\n  " + $0 + "\n */", ruleDescription)
+        let commentedViolations = ruleDescription.triggeringExamples.flatMap { example in
+            violations("/**\n  " + example + "\n */", ruleDescription)
         }.map({$0.ruleDescription})
         XCTAssertEqual(
             commentedViolations,

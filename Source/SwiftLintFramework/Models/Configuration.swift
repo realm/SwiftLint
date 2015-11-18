@@ -49,8 +49,8 @@ public struct Configuration {
 
         // Validate that all rule identifiers map to a defined rule
 
-        let validRuleIdentifiers = Configuration.rulesFromYAML().map {
-            $0.dynamicType.description.identifier
+        let validRuleIdentifiers = Configuration.rulesFromYAML().map { rule in
+            rule.dynamicType.description.identifier
         }
 
         let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0)})
@@ -79,8 +79,8 @@ public struct Configuration {
         }
         self.disabledRules = validDisabledRules
 
-        self.rules = rules.filter {
-            !validDisabledRules.contains($0.dynamicType.description.identifier)
+        self.rules = rules.filter { rule in
+            !validDisabledRules.contains(rule.dynamicType.description.identifier)
         }
     }
 
@@ -145,8 +145,9 @@ public struct Configuration {
     }
 
     private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
-            (yaml?[.String($0.description.identifier)].arrayOfInts).map(ruleParametersFromArray)
+        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = { ruleType in
+            (yaml?[.String(ruleType.description.identifier)].arrayOfInts)
+                .map(ruleParametersFromArray)
         }
         // swiftlint:disable line_length
         return [

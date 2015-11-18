@@ -22,9 +22,9 @@ public struct ForceCastRule: Rule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map {
+        return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map { range in
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: .Error, location: Location(file: file, offset: $0.location))
+                severity: .Error, location: Location(file: file, offset: range.location))
         }
     }
 }

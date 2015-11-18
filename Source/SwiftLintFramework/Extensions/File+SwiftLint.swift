@@ -9,6 +9,14 @@
 import SourceKittenFramework
 import SwiftXPC
 
+private func regex(pattern: String) -> NSRegularExpression {
+    // all patterns used for regular expressions in SwiftLint are string literals which have
+    // been confirmed to work, so it's ok to force-try here.
+    // swiftlint:disable force_try
+    return try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
+    // swiftlint:enable force_try
+}
+
 extension File {
     public func regions() -> [Region] {
         let nsStringContents = contents as NSString
@@ -39,7 +47,7 @@ extension File {
     }
 
     public func matchPattern(pattern: String,
-        withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
+                             withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
             return kindsInRange.count == syntaxKinds.count &&
                 zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).isEmpty
@@ -47,19 +55,16 @@ extension File {
     }
 
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
-        let regex = try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntax = syntaxMap
-        let matches = regex.matchesInString(contents, options: [], range: range)
+        let matches = regex(pattern).matchesInString(contents, options: [], range: range)
         return matches.map { match in
             let tokensInRange = syntax.tokens.filter {
                 NSLocationInRange($0.offset, match.range) ||
                     NSLocationInRange(match.range.location,
                         NSRange(location: $0.offset, length: $0.length))
-            }
-            let kindsInRange = tokensInRange.flatMap {
-                SyntaxKind(rawValue: $0.type)
-            }
+            }.map { $0.type }
+            let kindsInRange = tokensInRange.flatMap(SyntaxKind.init)
             return (match.range, kindsInRange)
         }
     }
@@ -77,11 +82,10 @@ extension File {
     file contents.
     */
     public func matchPattern(pattern: String,
-        excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        let regex = try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
+                             excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntax = syntaxMap
-        let matches = regex.matchesInString(contents, options: [], range: range)
+        let matches = regex(pattern).matchesInString(contents, options: [], range: range)
         return matches.filter { match in
             let tokensInRange = syntax.tokens.filter {
                 NSLocationInRange($0.offset, match.range) ||

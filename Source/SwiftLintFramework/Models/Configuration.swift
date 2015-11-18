@@ -127,6 +127,7 @@ public struct Configuration {
             CommaRule(),
             ControlStatementRule(),
             ForceCastRule(),
+            ForceTryRule(),
             LeadingWhitespaceRule(),
             NestingRule(),
             OpeningBraceRule(),

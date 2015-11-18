@@ -89,6 +89,10 @@ class StringRuleTests: XCTestCase {
         verifyRule(StatementPositionRule.description)
     }
 
+    func testMultilineClosureArgument() {
+        verifyRule(MultilineClosureArgumentRule.description, commentDoesntViolate: false)
+    }
+
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false)
     }

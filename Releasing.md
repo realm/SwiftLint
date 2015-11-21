@@ -3,7 +3,6 @@
 For SwiftLint contributors, follow these steps to cut a release:
 
 1. Update version number in the following files:
-    * `Source/swiftlint/VersionCommand.swift`
     * `Source/swiftlint/Supporting Files/Info.plist`
     * `Source/SwiftLintFramework/Supporting Files/Info.plist`
 2. Come up with a witty washer/dryer themed release name. Past names include:

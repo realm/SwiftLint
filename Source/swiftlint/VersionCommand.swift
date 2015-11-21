@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import Commandant
 import Result
 
-private let version = "0.4.0"
+private let version = NSBundle.mainBundle()
+    .objectForInfoDictionaryKey("CFBundleShortVersionString")!
 
 struct VersionCommand: CommandType {
     let verb = "version"

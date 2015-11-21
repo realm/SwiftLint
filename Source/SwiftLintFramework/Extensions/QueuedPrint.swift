@@ -19,14 +19,22 @@ private let outputQueue: dispatch_queue_t = {
     return queue
 }()
 
-/// A thread-safe version of Swift's standard print().
+/**
+ A thread-safe version of Swift's standard print().
+
+ - parameter object: Object to print.
+*/
 public func queuedPrint<T>(object: T) {
     dispatch_async(outputQueue) {
         print(object)
     }
 }
 
-/// A thread-safe, newline-terminated version of fputs(..., stderr).
+/**
+A thread-safe, newline-terminated version of fputs(..., stderr).
+
+- parameter string: String to print.
+*/
 public func queuedPrintError(string: String) {
     dispatch_async(outputQueue) {
         fputs(string + "\n", stderr)

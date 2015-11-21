@@ -145,7 +145,7 @@ struct LintCommand: CommandType {
 
         return count.flatMap { count in
             let variables = (0..<count)
-                .map { return getEnvironmentVariable("SCRIPT_INPUT_FILE_\($0)") }
+                .map { getEnvironmentVariable("SCRIPT_INPUT_FILE_\($0)") }
                 .flatMap { path -> String? in
                     switch path {
                     case let .Success(path):

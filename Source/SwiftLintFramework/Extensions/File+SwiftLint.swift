@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-private func regex(pattern: String) -> NSRegularExpression {
+internal func regex(pattern: String) -> NSRegularExpression {
     // all patterns used for regular expressions in SwiftLint are string literals which have
     // been confirmed to work, so it's ok to force-try here.
     // swiftlint:disable force_try

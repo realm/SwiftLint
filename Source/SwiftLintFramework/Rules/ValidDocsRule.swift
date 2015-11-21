@@ -22,20 +22,13 @@ extension File {
                 return substructureOffsets
         }
         let declaration = contents[Int(offset)..<Int(bodyOffset)]
-        if missingReturnDocumentation(declaration, comment: comment) {
-            return substructureOffsets + [Int(offset)]
-        }
-        if superfluousReturnDocumentation(declaration, comment: comment, kind: kind) {
-            return substructureOffsets + [Int(offset)]
-        }
-        if superfluousOrMissingThrowsDocumentation(declaration, comment: comment) {
-            return substructureOffsets + [Int(offset)]
-        }
-        if missingParameterDocumentation(declaration, substructure: substructure, offset: offset,
-            bodyOffset: bodyOffset, comment: comment) {
-            return substructureOffsets + [Int(offset)]
-        }
-        return substructureOffsets
+        let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
+            superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
+            superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||
+            missingParameterDocumentation(declaration, substructure: substructure, offset: offset,
+                                          bodyOffset: bodyOffset, comment: comment)
+
+        return substructureOffsets + (hasViolation ? [Int(offset)] : [])
     }
 }
 

@@ -22,7 +22,7 @@ private let outputQueue: dispatch_queue_t = {
 /// A thread-safe version of Swift's standard print().
 public func queuedPrint<T>(object: T) {
     dispatch_async(outputQueue) {
-        print(object, terminator: "")
+        print(object)
     }
 }
 

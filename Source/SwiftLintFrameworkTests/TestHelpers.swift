@@ -32,7 +32,7 @@ extension XCTestCase {
         )
 
         let commentedViolations = ruleDescription.triggeringExamples.flatMap {
-            violations("/**\n  " + $0 + "\n */", ruleDescription)
+            violations("/*\n  " + $0 + "\n */", ruleDescription)
         }.map({$0.ruleDescription})
         XCTAssertEqual(
             commentedViolations,

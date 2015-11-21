@@ -53,17 +53,13 @@ public struct NestingRule: ASTRule {
         }
         let substructure = dictionary["key.substructure"] as? XPCArray ?? []
         violations.appendContentsOf(substructure.flatMap { subItem in
-            let subDict = subItem as? XPCDictionary
-            let kindString = subDict?["key.kind"] as? String
-            let kind = kindString.flatMap { kindString in
-                return SwiftDeclarationKind(rawValue: kindString)
-            }
-            if let kind = kind, subDict = subDict {
+            if let subDict = subItem as? XPCDictionary,
+                kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }
             return nil
-        }.flatMap { (kind, dict) -> [StyleViolation] in
-            return self.validateFile(file, kind: kind, dictionary: dict, level: level + 1)
+        }.flatMap { kind, subDict in
+            return self.validateFile(file, kind: kind, dictionary: subDict, level: level + 1)
         })
         return violations
     }

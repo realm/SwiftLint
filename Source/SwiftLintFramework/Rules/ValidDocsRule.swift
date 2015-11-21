@@ -21,7 +21,8 @@ extension File {
                 return substructureOffsets
         }
         let declaration = contents[Int(offset)..<Int(bodyOffset)]
-        if let comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) {
+        if let comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap)
+            where !comment.containsString(":nodoc:") {
             let parameterNames = substructure?.filter {
                 ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .VarParameter
             }.filter { subDict in
@@ -29,16 +30,21 @@ extension File {
             }.flatMap {
                 $0["key.name"] as? String
             } ?? []
-            let parameterLabels = parameterNames.map { parameter -> String in
+            let parameters = parameterNames.map { parameter -> (label: String, parameter: String) in
                 let fullRange = NSRange(location: 0, length: Int(bodyOffset - offset))
                 let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
                     .firstMatchInString(declaration, options: [], range: fullRange)
                 if let match = firstMatch {
-                    return (declaration as NSString).substringWithRange(match.rangeAtIndex(1))
+                    let label = (declaration as NSString).substringWithRange(match.rangeAtIndex(1))
+                    return (label, parameter)
                 }
-                return parameter
+                return (parameter, parameter)
             }
-            if !parameterLabels.filter({ !comment.containsString("- parameter \($0):") }).isEmpty {
+            let undocumentedParameters = parameters.filter {
+                !comment.containsString("- parameter \($0.label):") &&
+                    !comment.containsString("- parameter \($0.parameter):")
+            }
+            if !undocumentedParameters.isEmpty {
                 return substructureOffsets + [Int(offset)]
             }
         }
@@ -55,10 +61,11 @@ public struct ValidDocsRule: Rule {
             "/// docs\npublic func a() {}\n",
             "/// docs\n/// - parameter param: this is void\npublic func a(param: Void) {}\n",
             "/// docs\n/// - parameter label: this is void\npublic func a(label param: Void) {}",
+            "/// docs\n/// - parameter param: this is void\npublic func a(label param: Void) {}",
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",
-            "/// docs\n/// - parameter param: this is void\npublic func a(label param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic func a(label param: Void) {}",
         ]
     )
 

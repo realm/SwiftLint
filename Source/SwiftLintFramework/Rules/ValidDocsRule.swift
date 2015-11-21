@@ -30,7 +30,8 @@ extension File {
             }.flatMap {
                 $0["key.name"] as? String
             } ?? []
-            let parameters = parameterNames.map { parameter -> (label: String, parameter: String) in
+            typealias LabelAndParameter = (label: String, parameter: String)
+            let labelsAndParameters = parameterNames.map { parameter -> LabelAndParameter in
                 let fullRange = NSRange(location: 0, length: Int(bodyOffset - offset))
                 let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
                     .firstMatchInString(declaration, options: [], range: fullRange)
@@ -40,7 +41,7 @@ extension File {
                 }
                 return (parameter, parameter)
             }
-            let undocumentedParameters = parameters.filter {
+            let undocumentedParameters = labelsAndParameters.filter {
                 !comment.containsString("- parameter \($0.label):") &&
                     !comment.containsString("- parameter \($0.parameter):")
             }

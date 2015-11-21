@@ -20,11 +20,11 @@ public struct TrailingWhitespaceRule: Rule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.lines.filter {
-            $0.content.hasTrailingWhitespace()
-        }.map {
+        return file.lines.filter { line in
+            line.content.hasTrailingWhitespace()
+        }.map { line in
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file.path, line: $0.index))
+                location: Location(file: file.path, line: line.index))
         }
     }
 }

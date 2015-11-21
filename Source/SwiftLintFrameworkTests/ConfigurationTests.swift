@@ -39,8 +39,8 @@ class ConfigurationTests: XCTestCase {
         let expectedIdentifiers = Configuration.rulesFromYAML()
             .map({ $0.dynamicType.description.identifier })
             .filter({ !["nesting", "todo"].contains($0) })
-        let configuredIdentifiers = disabledConfig.rules.map {
-            $0.dynamicType.description.identifier
+        let configuredIdentifiers = disabledConfig.rules.map { rule in
+            rule.dynamicType.description.identifier
         }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
@@ -62,8 +62,8 @@ class ConfigurationTests: XCTestCase {
         let expectedIdentifiers = Configuration.rulesFromYAML()
             .map({ $0.dynamicType.description.identifier })
             .filter({ ![validRule].contains($0) })
-        let configuredIdentifiers = configuration.rules.map {
-            $0.dynamicType.description.identifier
+        let configuredIdentifiers = configuration.rules.map { rule in
+            rule.dynamicType.description.identifier
         }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }

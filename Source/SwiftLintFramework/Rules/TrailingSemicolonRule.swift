@@ -24,9 +24,9 @@ public struct TrailingSemicolonRule: Rule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         let excludingKinds = SyntaxKind.commentAndStringKinds()
-        return file.matchPattern(";$", excludingSyntaxKinds: excludingKinds).flatMap {
+        return file.matchPattern(";$", excludingSyntaxKinds: excludingKinds).flatMap { range in
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, offset: range.location))
         }
     }
 }

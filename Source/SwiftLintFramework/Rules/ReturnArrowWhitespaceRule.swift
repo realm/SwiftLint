@@ -44,9 +44,9 @@ public struct ReturnArrowWhitespaceRule: Rule {
 
         // ex: `func abc()-> Int {` & `func abc() ->Int {`
         let pattern = "\\)(\(spaceRegex)\\->\\s*|\\s\\->\(spaceRegex))\\S+"
-        return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier]).map {
+        return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier]).map { range in
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, offset: range.location))
         }
     }
 }

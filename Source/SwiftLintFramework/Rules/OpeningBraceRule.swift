@@ -34,9 +34,9 @@ public struct OpeningBraceRule: Rule {
         let pattern = "((?:[^( ]|[\\t\\n\\f\\r (] )\\{)"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map { range in
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, offset: range.location))
         }
     }
 }

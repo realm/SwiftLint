@@ -59,10 +59,10 @@ extension File {
         let syntax = syntaxMap
         let matches = regex(pattern).matchesInString(contents, options: [], range: range)
         return matches.map { match in
-            let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range) ||
+            let tokensInRange = syntax.tokens.filter { token in
+                NSLocationInRange(token.offset, match.range) ||
                     NSLocationInRange(match.range.location,
-                        NSRange(location: $0.offset, length: $0.length))
+                        NSRange(location: token.offset, length: token.length))
             }.map { $0.type }
             let kindsInRange = tokensInRange.flatMap(SyntaxKind.init)
             return (match.range, kindsInRange)
@@ -87,10 +87,10 @@ extension File {
         let syntax = syntaxMap
         let matches = regex(pattern).matchesInString(contents, options: [], range: range)
         return matches.filter { match in
-            let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range) ||
+            let tokensInRange = syntax.tokens.filter { token in
+                NSLocationInRange(token.offset, match.range) ||
                     NSLocationInRange(match.range.location,
-                        NSRange(location: $0.offset, length: $0.length))
+                        NSRange(location: token.offset, length: token.length))
             }
             for token in tokensInRange {
                 if NSIntersectionRange(NSRange(location: token.offset,

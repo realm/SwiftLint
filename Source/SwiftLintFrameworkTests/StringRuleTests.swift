@@ -103,7 +103,7 @@ class StringRuleTests: XCTestCase {
     }
 
     func testMissingDocs() {
-        verifyRule(MissingDocsRule.description, commentDoesntViolate: false)
+        verifyRule(MissingDocsRule.description)
     }
 
     func testTrailingSemicolon() {

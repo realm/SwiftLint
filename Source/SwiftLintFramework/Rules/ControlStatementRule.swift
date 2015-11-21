@@ -65,7 +65,7 @@ public struct ControlStatementRule: Rule {
                 }
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     location: Location(file: file, offset: match.location))
-                }
+            }
         }
 
     }

@@ -28,12 +28,19 @@ extension File {
         if superfluousReturnDocumentation(declaration, comment: comment, kind: kind) {
             return substructureOffsets + [Int(offset)]
         }
+        if superfluousOrMissingThrowsDocumentation(declaration, comment: comment) {
+            return substructureOffsets + [Int(offset)]
+        }
         if missingParameterDocumentation(declaration, substructure: substructure, offset: offset,
             bodyOffset: bodyOffset, comment: comment) {
             return substructureOffsets + [Int(offset)]
         }
         return substructureOffsets
     }
+}
+
+func superfluousOrMissingThrowsDocumentation(declaration: String, comment: String) -> Bool {
+    return declaration.containsString(" throws ") == !comment.containsString("- throws:")
 }
 
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool {
@@ -94,12 +101,15 @@ public struct ValidDocsRule: Rule {
             "/// Returns false\npublic func no() -> Bool { return false }",
             "/// Returns false\nvar no: Bool { return false }",
             "/// docs\nvar no: Bool { return false }",
+            "/// docs\n/// - throws: NSError\nfunc a() throws {}",
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",
             "/// docs\n/// - parameter invalid: this is void\npublic func a(label param: Void) {}",
             "/// docs\npublic func no() -> Bool { return false }",
             "/// Returns false\npublic func a() {}",
+            "/// docs\n/// - throws: NSError\nfunc a() {}",
+            "/// docs\nfunc a() throws {}",
         ]
     )
 

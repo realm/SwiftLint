@@ -10,12 +10,17 @@ import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
-func violations(string: String) -> [StyleViolation] {
-    return Linter(file: File(contents: string)).styleViolations
+let allRuleIdentifiers = Configuration.rulesFromYAML().map {
+    $0.dynamicType.description.identifier
+}
+
+func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
+    return Linter(file: File(contents: string), configuration: config).styleViolations
 }
 
 private func violations(string: String, _ description: RuleDescription) -> [StyleViolation] {
-    return violations(string).filter { $0.ruleDescription == description }
+    let disabledRules = allRuleIdentifiers.filter { $0 != description.identifier }
+    return violations(string, config: Configuration(disabledRules: disabledRules)!)
 }
 
 extension XCTestCase {

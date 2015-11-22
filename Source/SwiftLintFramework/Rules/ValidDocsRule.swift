@@ -25,8 +25,9 @@ extension File {
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
             superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||
-            missingParameterDocumentation(declaration, substructure: substructure, offset: offset,
-                                          bodyOffset: bodyOffset, comment: comment)
+            superfluousOrMissingParameterDocumentation(declaration, substructure: substructure,
+                                                       offset: offset, bodyOffset: bodyOffset,
+                                                       comment: comment)
 
         return substructureOffsets + (hasViolation ? [Int(offset)] : [])
     }
@@ -54,8 +55,9 @@ func superfluousReturnDocumentation(declaration: String, comment: String,
     return !delcarationReturns(declaration, kind: kind) && commentReturns(comment)
 }
 
-func missingParameterDocumentation(declaration: String, substructure: [XPCDictionary],
-                                   offset: Int64, bodyOffset: Int64, comment: String) -> Bool {
+func superfluousOrMissingParameterDocumentation(declaration: String, substructure: [XPCDictionary],
+                                                offset: Int64, bodyOffset: Int64,
+                                                comment: String) -> Bool {
     let parameterNames = substructure.filter {
         ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .VarParameter
     }.filter { subDict in
@@ -73,11 +75,18 @@ func missingParameterDocumentation(declaration: String, substructure: [XPCDictio
         }
         return (parameter, parameter)
     }
-    let undocumentedParameters = labelsAndParams.filter {
-        !comment.containsString("- parameter \($0.label):") &&
-            !comment.containsString("- parameter \($0.parameter):")
+    let commentRange = NSRange(location: 0, length: comment.utf16.count)
+    let commentParameterMatches = regex("- parameter (.+):")
+        .matchesInString(comment, options: [], range: commentRange)
+    let commentParameters = commentParameterMatches.map { match in
+        return (comment as NSString).substringWithRange(match.rangeAtIndex(1))
     }
-    return !undocumentedParameters.isEmpty
+    if commentParameters.count != labelsAndParams.count {
+        return true
+    }
+    return !zip(commentParameters, labelsAndParams).filter {
+        ![$1.label, $1.parameter].contains($0)
+    }.isEmpty
 }
 
 public struct ValidDocsRule: Rule {
@@ -98,7 +107,9 @@ public struct ValidDocsRule: Rule {
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",
+            "/// docs\n/// - parameter invalid: this is void\npublic func a(param: Void) {}",
             "/// docs\n/// - parameter invalid: this is void\npublic func a(label param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic func a() {}",
             "/// docs\npublic func no() -> Bool { return false }",
             "/// Returns false\npublic func a() {}",
             "/// docs\n/// - throws: NSError\nfunc a() {}",

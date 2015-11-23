@@ -23,32 +23,51 @@ private func violations(string: String, _ description: RuleDescription) -> [Styl
     return violations(string, config: Configuration(disabledRules: disabledRules)!)
 }
 
+extension String {
+    private func toStringLiteral() -> String {
+        return "\"" + stringByReplacingOccurrencesOfString("\n", withString: "\\n") + "\""
+    }
+}
+
 extension XCTestCase {
-    func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true) {
-        XCTAssertEqual(
-            ruleDescription.nonTriggeringExamples.flatMap({violations($0, ruleDescription)}),
-            []
+    func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true,
+                    stringDoesntViolate: Bool = true) {
+
+        // Non-triggering examples don't violate
+        XCTAssert(
+            ruleDescription.nonTriggeringExamples.flatMap({
+                violations($0, ruleDescription)
+            }).isEmpty
         )
+
+        // Triggering examples violate
+        XCTAssertEqual(
+            ruleDescription.triggeringExamples.flatMap({ violations($0, ruleDescription) }).count,
+            ruleDescription.triggeringExamples.count
+        )
+
+        // Comment doesn't violate
         XCTAssertEqual(
             ruleDescription.triggeringExamples.flatMap({
-                violations($0, ruleDescription).map({$0.ruleDescription})
-            }),
-            Array(count: ruleDescription.triggeringExamples.count, repeatedValue: ruleDescription)
+                violations("/*\n  " + $0 + "\n */", ruleDescription)
+            }).count,
+            commentDoesntViolate ? 0 : ruleDescription.triggeringExamples.count
         )
 
-        let commentedViolations = ruleDescription.triggeringExamples.flatMap {
-            violations("/*\n  " + $0 + "\n */", ruleDescription)
-        }.map({$0.ruleDescription})
+        // String doesn't violate
         XCTAssertEqual(
-            commentedViolations,
-            Array(count: commentDoesntViolate ? 0 : ruleDescription.triggeringExamples.count,
-                  repeatedValue: ruleDescription)
+            ruleDescription.triggeringExamples.flatMap({
+                violations($0.toStringLiteral(), ruleDescription)
+            }).count,
+            stringDoesntViolate ? 0 : ruleDescription.triggeringExamples.count
         )
 
+        // "disable" command doesn't violate
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssertEqual(
-            ruleDescription.triggeringExamples.flatMap({violations(command + $0, ruleDescription)}),
-            []
+        XCTAssert(
+            ruleDescription.triggeringExamples.flatMap({
+                violations(command + $0, ruleDescription)
+            }).isEmpty
         )
     }
 }

@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Statement position rule no longer triggers for non-keyword uses of `catch` and
+  `else`.  
+  [JP Simard](https://github.com/jpsim)
+  [#237](https://github.com/realm/SwiftLint/issues/237)
 
 
 ## 0.4.0: Wrinkle Release

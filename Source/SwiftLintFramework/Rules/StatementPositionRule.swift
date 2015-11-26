@@ -21,7 +21,9 @@ public struct StatementPositionRule: Rule {
             "} else if {",
             "} else {",
             "} catch {",
-            "\"}else{\""
+            "\"}else{\"",
+            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
         ],
         triggeringExamples: [
             "}else if {",
@@ -32,10 +34,9 @@ public struct StatementPositionRule: Rule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])(?:else|catch))"
-        let excludingKinds = SyntaxKind.commentAndStringKinds()
+        let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])\\b(?:else|catch))\\b"
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap {
+        return file.matchPattern(pattern, withSyntaxKinds: [.Keyword]).flatMap {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: $0.location))
         }

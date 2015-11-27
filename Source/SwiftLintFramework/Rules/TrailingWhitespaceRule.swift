@@ -9,8 +9,6 @@
 import SourceKittenFramework
 
 public struct TrailingWhitespaceRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",

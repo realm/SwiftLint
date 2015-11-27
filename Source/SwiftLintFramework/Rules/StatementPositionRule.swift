@@ -10,8 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct StatementPositionRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",

@@ -10,8 +10,6 @@ import SourceKittenFramework
 import SwiftXPC
 
 public struct VariableNameRule: ASTRule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "variable_name",
         name: "Variable Name",

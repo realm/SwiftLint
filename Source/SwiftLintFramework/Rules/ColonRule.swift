@@ -9,8 +9,6 @@
 import SourceKittenFramework
 
 public struct ColonRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",

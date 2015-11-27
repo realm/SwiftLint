@@ -9,8 +9,6 @@
 import SourceKittenFramework
 
 public struct TrailingSemicolonRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",

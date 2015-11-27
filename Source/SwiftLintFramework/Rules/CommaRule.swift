@@ -10,8 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct CommaRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "comma",
         name: "Comma Spacing",

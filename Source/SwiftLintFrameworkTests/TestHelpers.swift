@@ -32,42 +32,29 @@ extension String {
 extension XCTestCase {
     func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true) {
+        let triggers = ruleDescription.triggeringExamples
+        let nonTriggers = ruleDescription.nonTriggeringExamples
 
         // Non-triggering examples don't violate
-        XCTAssert(
-            ruleDescription.nonTriggeringExamples.flatMap({
-                violations($0, ruleDescription)
-            }).isEmpty
-        )
+        XCTAssert(nonTriggers.flatMap({ violations($0, ruleDescription) }).isEmpty)
 
         // Triggering examples violate
-        XCTAssertEqual(
-            ruleDescription.triggeringExamples.flatMap({ violations($0, ruleDescription) }).count,
-            ruleDescription.triggeringExamples.count
-        )
+        XCTAssertEqual(triggers.flatMap({ violations($0, ruleDescription) }).count, triggers.count)
 
         // Comment doesn't violate
         XCTAssertEqual(
-            ruleDescription.triggeringExamples.flatMap({
-                violations("/*\n  " + $0 + "\n */", ruleDescription)
-            }).count,
-            commentDoesntViolate ? 0 : ruleDescription.triggeringExamples.count
+            triggers.flatMap({ violations("/*\n  " + $0 + "\n */", ruleDescription) }).count,
+            commentDoesntViolate ? 0 : triggers.count
         )
 
         // String doesn't violate
         XCTAssertEqual(
-            ruleDescription.triggeringExamples.flatMap({
-                violations($0.toStringLiteral(), ruleDescription)
-            }).count,
-            stringDoesntViolate ? 0 : ruleDescription.triggeringExamples.count
+            triggers.flatMap({ violations($0.toStringLiteral(), ruleDescription) }).count,
+            stringDoesntViolate ? 0 : triggers.count
         )
 
         // "disable" command doesn't violate
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssert(
-            ruleDescription.triggeringExamples.flatMap({
-                violations(command + $0, ruleDescription)
-            }).isEmpty
-        )
+        XCTAssert(triggers.flatMap({ violations(command + $0, ruleDescription) }).isEmpty)
     }
 }

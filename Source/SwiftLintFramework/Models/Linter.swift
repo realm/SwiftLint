@@ -12,6 +12,7 @@ import SourceKittenFramework
 
 private func correctableRules() -> [CorrectableRule] {
     return [
+        TrailingNewlineRule(),
         TrailingWhitespaceRule()
     ]
 }

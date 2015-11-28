@@ -36,7 +36,7 @@ public struct StatementPositionRule: Rule {
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])\\b(?:else|catch))\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.Keyword]).flatMap {
+        return file.matchPattern(pattern, withSyntaxKinds: [.Keyword]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: $0.location))
         }

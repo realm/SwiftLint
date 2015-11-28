@@ -32,7 +32,7 @@ public struct CommaRule: Rule {
         let pattern = "(\\,[^\\s])|(\\s\\,)"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).flatMap {
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: $0.location))
         }

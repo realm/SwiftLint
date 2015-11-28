@@ -16,7 +16,7 @@ public struct VariableNameRule: ASTRule {
         identifier: "variable_name",
         name: "Variable Name",
         description: "Variable name should only contain alphanumeric characters and " +
-          "start with a a lowercase character or should only contain capital letters. " +
+          "start with a lowercase character or should only contain capital letters. " +
           "In an exception to the above, variable names may start with a capital letter " +
           "when they are declared static and immutable.",
         nonTriggeringExamples: [

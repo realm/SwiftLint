@@ -50,6 +50,12 @@ public struct TrailingNewlineRule: CorrectableRule {
         guard let count = file.contents.trailingNewlineCount() where count != 1 else {
             return []
         }
+        let region = file.regions().filter {
+            $0.contains(Location(file: file.path, line: max(file.lines.count, 1)))
+        }.first
+        if region?.isRuleDisabled(self) == true {
+            return []
+        }
         if count < 1 {
             file.append("\n")
         } else {

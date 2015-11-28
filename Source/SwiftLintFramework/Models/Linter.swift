@@ -27,7 +27,8 @@ public struct Linter {
         let regions = file.regions()
         return rules.flatMap { rule in
             return rule.validateFile(self.file).filter { violation in
-                guard let violationRegion = regions.filter({ $0.contains(violation) }).first else {
+                guard let violationRegion = regions.filter({ $0.contains(violation.location) })
+                                                   .first else {
                     return true
                 }
                 return violationRegion.isRuleEnabled(rule)

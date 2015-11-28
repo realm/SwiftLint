@@ -31,9 +31,17 @@ public struct TrailingWhitespaceRule: CorrectableRule {
         let whitespaceCharacterSet = NSCharacterSet.whitespaceCharacterSet()
         var correctedLines = [String]()
         var corrections = [Correction]()
+        let fileRegions = file.regions()
         for line in file.lines {
             let correctedLine = (line.content as NSString)
                 .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
+            let region = fileRegions.filter {
+                $0.contains(Location(file: file.path, line: line.index, character: 0))
+            }.first
+            if region?.isRuleDisabled(self) == true {
+                correctedLines.append(line.content)
+                continue
+            }
             if line.content != correctedLine {
                 let description = self.dynamicType.description
                 let location = Location(file: file.path, line: line.index)

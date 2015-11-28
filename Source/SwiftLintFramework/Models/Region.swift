@@ -20,8 +20,8 @@ public struct Region {
         self.disabledRuleIdentifiers = disabledRuleIdentifiers
     }
 
-    public func contains(violation: StyleViolation) -> Bool {
-        return start <= violation.location && end >= violation.location
+    public func contains(location: Location) -> Bool {
+        return start <= location && end >= location
     }
 
     public func isRuleEnabled(rule: Rule) -> Bool {

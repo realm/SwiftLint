@@ -16,6 +16,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#161](https://github.com/realm/SwiftLint/issues/161)
 
+* Add `--autocorrect` flag to automatically correct certain violations
+  (currently only `trailing_newline`, `trailing_semicolon` &
+  `trailing_whitespace`).
+  [JP Simard](https://github.com/jpsim)
+  [#5](https://github.com/realm/SwiftLint/issues/5)
+
 ##### Bug Fixes
 
 * Statement position rule no longer triggers for non-keyword uses of `catch` and

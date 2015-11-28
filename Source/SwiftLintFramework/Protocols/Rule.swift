@@ -20,5 +20,5 @@ public protocol ParameterizedRule: Rule {
 }
 
 public protocol CorrectableRule: Rule {
-    func correctFile(file: File)
+    func correctFile(file: File) -> [Correction]
 }

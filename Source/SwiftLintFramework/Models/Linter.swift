@@ -41,7 +41,11 @@ public struct Linter {
         reporter = configuration.reporterFromString
     }
 
-    public func correct() {
-        correctableRules().forEach { $0.correctFile(file) }
+    public func correct() -> [Correction] {
+        var corrections = [Correction]()
+        for rule in correctableRules() {
+            corrections += rule.correctFile(file)
+        }
+        return corrections
     }
 }

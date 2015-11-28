@@ -34,7 +34,6 @@ public struct TrailingNewlineRule: CorrectableRule {
         ],
         corrections: [
             "let a = 0": "let a = 0\n",
-            "let a = 0\n": "let a = 0\n",
             "let a = 0\n\n": "let a = 0\n"
         ]
     )
@@ -47,14 +46,16 @@ public struct TrailingNewlineRule: CorrectableRule {
             location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correctFile(file: File) {
+    public func correctFile(file: File) -> [Correction] {
         guard let count = file.contents.trailingNewlineCount() where count != 1 else {
-            return
+            return []
         }
         if count < 1 {
             file.append("\n")
         } else {
             file.write(file.contents.substringToIndex(file.contents.endIndex.advancedBy(1 - count)))
         }
+        let location = Location(file: file.path, line: max(file.lines.count, 1))
+        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
     }
 }

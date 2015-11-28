@@ -37,15 +37,15 @@ public struct TrailingSemicolonRule: CorrectableRule {
         }
     }
 
-    public func correctFile(file: File) {
+    public func correctFile(file: File) -> [Correction] {
         let violatingRanges = file.violatingTrailingSemicolonRanges()
         let adjustedRanges = violatingRanges.reduce([NSRange]()) { adjustedRanges, element in
             let adjustedLocation = element.location - adjustedRanges.count
             let adjustedRange = NSRange(location: adjustedLocation, length: element.length)
             return adjustedRanges + [adjustedRange]
         }
-        guard !adjustedRanges.isEmpty else {
-            return
+        if adjustedRanges.isEmpty {
+            return []
         }
         var correctedContents = file.contents
         for range in adjustedRanges {
@@ -54,5 +54,9 @@ public struct TrailingSemicolonRule: CorrectableRule {
                 .stringByReplacingCharactersInRange(indexRange, withString: "")
         }
         file.write(correctedContents)
+        return adjustedRanges.map {
+            Correction(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0.location))
+        }
     }
 }

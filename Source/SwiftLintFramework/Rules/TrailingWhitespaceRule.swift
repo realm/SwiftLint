@@ -27,13 +27,25 @@ public struct TrailingWhitespaceRule: CorrectableRule {
         }
     }
 
-    public func correctFile(file: File) {
+    public func correctFile(file: File) -> [Correction] {
         let whitespaceCharacterSet = NSCharacterSet.whitespaceCharacterSet()
-        let correctedContents = file.lines.map {
-            ($0.content as NSString).stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
-        }.joinWithSeparator("\n") + "\n" // re-add trailing newline
-        if correctedContents != file.contents {
-            file.write(correctedContents)
+        var correctedLines = [String]()
+        var corrections = [Correction]()
+        for line in file.lines {
+            let correctedLine = (line.content as NSString)
+                .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
+            if line.content != correctedLine {
+                let description = self.dynamicType.description
+                let location = Location(file: file.path, line: line.index)
+                corrections.append(Correction(ruleDescription: description, location: location))
+            }
+            correctedLines.append(correctedLine)
         }
+        if !corrections.isEmpty {
+            // join and re-add trailing newline
+            file.write(correctedLines.joinWithSeparator("\n") + "\n")
+            return corrections
+        }
+        return []
     }
 }

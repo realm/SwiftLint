@@ -78,6 +78,7 @@
 		E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8AB1A2E1A649F2100452012 /* libclang.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E8AB1A2D1A649F2100452012 /* libclang.dylib */; };
 		E8B067811C13E49600E9E13F /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
+		E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
 		E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
 		E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
 		E8BA7E141B07A400003E02D0 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -224,6 +225,7 @@
 		E89376AC1B8A701E0025708E /* Yaml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Yaml.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8AB1A2D1A649F2100452012 /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib; sourceTree = DEVELOPER_DIR; };
 		E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+CommandLine.swift"; sourceTree = "<group>"; };
+		E8B67C3D1C095E6300FDED8E /* Correction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Correction.swift; sourceTree = "<group>"; };
 		E8BA7E101B07A3EC003E02D0 /* Commandant.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BA7E121B07A3F3003E02D0 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BB8F991B17DDB200199606 /* ASTRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTRuleTests.swift; sourceTree = "<group>"; };
@@ -496,6 +498,7 @@
 			isa = PBXGroup;
 			children = (
 				E80E018C1B92C0F60078EB70 /* Command.swift */,
+				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
 				E809EDA01B8A71DF00399043 /* Configuration.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
@@ -711,6 +714,7 @@
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
+				E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */,
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,

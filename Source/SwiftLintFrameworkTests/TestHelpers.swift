@@ -37,7 +37,8 @@ private func assertCorrection(before: String, expected: String) {
         XCTFail("couldn't read file at path '\(path)' for assertCorrection()")
         return
     }
-    Linter(file: file).correct()
+    let corrections = Linter(file: file).correct()
+    XCTAssertEqual(corrections.count, 1)
     XCTAssertEqual(file.contents, expected)
     do {
         let corrected = try NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String

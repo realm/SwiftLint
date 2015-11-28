@@ -6,9 +6,9 @@
 
 ##### Enhancements
 
-* The `VariableNameRule` now allows variable names when the entire
-name is capitalized. This allows stylistic usage common in cases like
-`URL` and other acronyms.
+* The `VariableNameRule` now allows variable names when the entire name is
+  capitalized. This allows stylistic usage common in cases like `URL` and other
+  acronyms.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#161](https://github.com/realm/SwiftLint/issues/161)
 

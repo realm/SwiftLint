@@ -13,6 +13,7 @@ import SourceKittenFramework
 private func correctableRules() -> [CorrectableRule] {
     return [
         TrailingNewlineRule(),
+        TrailingSemicolonRule(),
         TrailingWhitespaceRule()
     ]
 }

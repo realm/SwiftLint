@@ -39,12 +39,9 @@ extension String {
         return self
     }
 
-    subscript (range: Range<Int>) -> String {
-        get {
-            let subStart = startIndex.advancedBy(range.startIndex, limit: endIndex)
-            let subEnd = subStart.advancedBy(range.endIndex - range.startIndex, limit: endIndex)
-            return substringWithRange(Range(start: subStart, end: subEnd))
-        }
+    internal subscript (range: Range<Int>) -> String {
+        let nsrange = NSRange(location: range.startIndex, length: range.endIndex - range.startIndex)
+        return substringWithRange(nsrangeToIndexRange(nsrange))
     }
 
     func substring(from: Int, length: Int? = nil) -> String {
@@ -59,5 +56,11 @@ extension String {
             return startIndex.distanceTo(range.startIndex)
         }
         return nil
+    }
+
+    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index> {
+        let start = startIndex.advancedBy(nsrange.location, limit: endIndex)
+        let end = start.advancedBy(nsrange.length, limit: endIndex)
+        return start..<end
     }
 }

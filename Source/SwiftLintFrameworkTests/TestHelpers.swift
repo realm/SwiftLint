@@ -23,6 +23,30 @@ private func violations(string: String, _ description: RuleDescription) -> [Styl
     return violations(string, config: Configuration(disabledRules: disabledRules)!)
 }
 
+private func assertCorrection(before: String, expected: String) {
+    guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift").path else {
+        XCTFail("coun't generate temporary path for assertCorrection()")
+        return
+    }
+    if before.dataUsingEncoding(NSUTF8StringEncoding)?.writeToFile(path, atomically: true) != true {
+        XCTFail("coun't write to file for assertCorrection()")
+        return
+    }
+    guard let file = File(path: path) else {
+        XCTFail("couldn't read file at path '\(path)' for assertCorrection()")
+        return
+    }
+    Linter(file: file).correct()
+    XCTAssertEqual(file.contents, expected)
+    do {
+        let corrected = try NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
+        XCTAssertEqual(corrected, expected)
+    } catch {
+        XCTFail("coun't read file at path '\(path)': \(error)")
+    }
+}
+
 extension String {
     private func toStringLiteral() -> String {
         return "\"" + stringByReplacingOccurrencesOfString("\n", withString: "\\n") + "\""
@@ -56,5 +80,8 @@ extension XCTestCase {
         // "disable" command doesn't violate
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
         XCTAssert(triggers.flatMap({ violations(command + $0, ruleDescription) }).isEmpty)
+
+        // corrections
+        ruleDescription.corrections.forEach(assertCorrection)
     }
 }

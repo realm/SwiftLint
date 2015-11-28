@@ -18,3 +18,7 @@ public protocol ParameterizedRule: Rule {
     init(parameters: [RuleParameter<ParameterType>])
     var parameters: [RuleParameter<ParameterType>] { get }
 }
+
+public protocol CorrectableRule: Rule {
+    func correctFile(file: File)
+}

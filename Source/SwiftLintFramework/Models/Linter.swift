@@ -10,6 +10,10 @@ import Foundation
 import SwiftXPC
 import SourceKittenFramework
 
+private func correctableRules() -> [CorrectableRule] {
+    return []
+}
+
 public struct Linter {
     private let file: File
     private let rules: [Rule]
@@ -31,5 +35,9 @@ public struct Linter {
         self.file = file
         rules = configuration.rules
         reporter = configuration.reporterFromString
+    }
+
+    public func correct() {
+        correctableRules().forEach { $0.correctFile(file) }
     }
 }

@@ -43,7 +43,11 @@ public struct Linter {
 
     public func correct() -> [Correction] {
         var corrections = [Correction]()
-        for rule in correctableRules() {
+        let enabledRules = correctableRules().filter { correctableRule in
+            let description = correctableRule.dynamicType.description
+            return rules.map({ $0.dynamicType.description }).contains(description)
+        }
+        for rule in enabledRules {
             corrections += rule.correctFile(file)
         }
         return corrections

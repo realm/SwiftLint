@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct LegacyConstructorRule: Rule {
     public init() {}
@@ -36,15 +35,11 @@ public struct LegacyConstructorRule: Rule {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
             "NSMakeRange"]
 
-        return constructors.flatMap { constructor -> [StyleViolation] in
-            let pattern = "\\b(" + constructor + ")\\b"
-            let matches = file.matchPattern(pattern,
-                excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
+        let pattern = "\\b(" + constructors.joinWithSeparator("|") + ")\\b"
 
-            return matches.flatMap { match -> StyleViolation in
-                return StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: Location(file: file, offset: match.location))
-            }
+        return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
+            StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0.location))
         }
     }
 }

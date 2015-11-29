@@ -97,4 +97,8 @@ class StringRuleTests: XCTestCase {
     func testTrailingSemicolon() {
         verifyRule(TrailingSemicolonRule.description)
     }
+
+    func testLegacyConstructor() {
+        verifyRule(LegacyConstructorRule.description)
+    }
 }

@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add legacy constructor rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
 * The `VariableNameRule` now allows variable names when the entire name is
   capitalized. This allows stylistic usage common in cases like `URL` and other
   acronyms.  

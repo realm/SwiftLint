@@ -15,9 +15,8 @@ struct RulesCommand: CommandType {
     let function = "Display the list of rules and their identifiers"
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
-        let ruleDescriptions = Configuration.rulesFromYAML().map { rule in
-            let description = rule.dynamicType.description
-            return "\(description.name) (\(description.identifier)): \(description.description)"
+        let ruleDescriptions = Configuration.rulesFromYAML().map {
+            $0.dynamicType.description.consoleDescription
         }.joinWithSeparator("\n")
         print(ruleDescriptions)
         return .Success()

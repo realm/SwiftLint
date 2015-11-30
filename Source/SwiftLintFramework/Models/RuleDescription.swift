@@ -13,6 +13,8 @@ public struct RuleDescription: Equatable {
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
 
+    public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
+
     public init(identifier: String, name: String, description: String,
         nonTriggeringExamples: [String] = [],
         triggeringExamples: [String] = []) {

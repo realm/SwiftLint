@@ -9,17 +9,30 @@
 import SourceKittenFramework
 import SwiftXPC
 
-extension File {
-    private func inheritedMembersForDictionary(dictionary: XPCDictionary) -> [String] {
-        return (dictionary["key.inheritedtypes"] as? XPCArray)?.flatMap { type in
-            let typeXPCDictionary = type as? XPCDictionary
-            let typeDictionary = typeXPCDictionary as? [String: String]
-            return typeDictionary?["key.name"]
-        }.flatMap { File.allDeclarationsByType[$0] ?? [] } ?? []
+private func dictArrayForDictionary(dictionary: XPCDictionary, key: String) -> [[String: String]]? {
+    return (dictionary[key] as? XPCArray)?.flatMap {
+        ($0 as? XPCDictionary) as? [String: String]
     }
+}
 
+private func declarationOverrides(dictionary: XPCDictionary) -> Bool {
+    return dictArrayForDictionary(dictionary, key: "key.attributes")?.flatMap {
+        $0["key.attribute"]
+    }.contains("source.decl.attribute.override") ?? false
+}
+
+private func inheritedMembersForDictionary(dictionary: XPCDictionary) -> [String] {
+    return dictArrayForDictionary(dictionary, key: "key.inheritedtypes")?.flatMap {
+        $0["key.name"]
+    }.flatMap { File.allDeclarationsByType[$0] ?? [] } ?? []
+}
+
+extension File {
     private func missingDocOffsets(dictionary: XPCDictionary, acl: [AccessControlLevel],
                                    skipping: [String] = []) -> [Int] {
+        if declarationOverrides(dictionary) {
+            return []
+        }
         if let name = dictionary["key.name"] as? String where skipping.contains(name) {
             return []
         }
@@ -88,7 +101,13 @@ public struct MissingDocsRule: ParameterizedRule {
             "/* regular comment */\nfunc a() {}\n",
             // protocol member is documented, but inherited member is not
             "/// docs\npublic protocol A {\n/// docs\nvar b: Int { get } }\n" +
-                "/// docs\npublic struct C: A {\npublic let b: Int\n}"
+                "/// docs\npublic struct C: A {\npublic let b: Int\n}",
+            // locally-defined superclass member is documented, but subclass member is not
+            "/// docs\npublic class A {\n/// docs\npublic func b() {}\n}\n" +
+                "/// docs\npublic class B: A { override public func b() {} }\n",
+            // externally-defined superclass member is documented, but subclass member is not
+            "import Foundation\n/// docs\npublic class B: NSObject {\n" +
+                "// no docs\noverride public var description: String { fatalError() } }\n"
         ],
         triggeringExamples: [
             // public, undocumented

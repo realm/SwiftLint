@@ -94,6 +94,10 @@ class StringRuleTests: XCTestCase {
                    stringDoesntViolate: false)
     }
 
+    func testValidDocs() {
+        verifyRule(ValidDocsRule.description)
+    }
+
     func testTrailingSemicolon() {
         verifyRule(TrailingSemicolonRule.description)
     }

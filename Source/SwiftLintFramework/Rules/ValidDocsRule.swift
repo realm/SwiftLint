@@ -41,6 +41,10 @@ func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool
     return declaration.containsString("->") || SwiftDeclarationKind.variableKinds().contains(kind)
 }
 
+func commentHasBatchedParameters(comment: String) -> Bool {
+    return comment.lowercaseString.containsString("- parameters:")
+}
+
 func commentReturns(comment: String) -> Bool {
     return comment.containsString("- returns:") ||
         comment.rangeOfString("Returns")?.startIndex == comment.startIndex
@@ -58,6 +62,8 @@ func superfluousReturnDocumentation(declaration: String, comment: String,
 func superfluousOrMissingParameterDocumentation(declaration: String, substructure: [XPCDictionary],
                                                 offset: Int64, bodyOffset: Int64,
                                                 comment: String) -> Bool {
+    // This function doesn't handle batched parameters, so skip those.
+    if commentHasBatchedParameters(comment) { return false }
     let parameterNames = substructure.filter {
         ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .VarParameter
     }.filter { subDict in

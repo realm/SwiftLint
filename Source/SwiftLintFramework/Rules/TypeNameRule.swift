@@ -10,8 +10,6 @@ import SourceKittenFramework
 import SwiftXPC
 
 public struct TypeNameRule: ASTRule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",

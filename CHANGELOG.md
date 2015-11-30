@@ -2,7 +2,7 @@
 
 ##### Breaking
 
-* None.
+* `init()` is no longer a member of the `Rule` protocol.
 
 ##### Enhancements
 

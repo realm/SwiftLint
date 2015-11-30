@@ -9,8 +9,6 @@
 import SourceKittenFramework
 
 public struct ControlStatementRule: Rule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",

@@ -10,8 +10,6 @@ import SourceKittenFramework
 import SwiftXPC
 
 public struct NestingRule: ASTRule {
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "nesting",
         name: "Nesting",

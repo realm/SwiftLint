@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 extension String {
-    public func trailingNewlineCount() -> Int? {
+    private func trailingNewlineCount() -> Int? {
         let start = endIndex.advancedBy(-2, limit: startIndex)
         let range = Range(start: start, end: endIndex)
         let substring = self[range].utf16

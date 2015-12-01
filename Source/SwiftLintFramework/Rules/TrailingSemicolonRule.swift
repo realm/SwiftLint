@@ -55,9 +55,10 @@ public struct TrailingSemicolonRule: CorrectableRule {
         }
         var correctedContents = file.contents
         for range in adjustedRanges {
-            let indexRange = correctedContents.nsrangeToIndexRange(range)
-            correctedContents = correctedContents
-                .stringByReplacingCharactersInRange(indexRange, withString: "")
+            if let indexRange = correctedContents.nsrangeToIndexRange(range) {
+                correctedContents = correctedContents
+                    .stringByReplacingCharactersInRange(indexRange, withString: "")
+            }
         }
         file.write(correctedContents)
         return adjustedRanges.map {

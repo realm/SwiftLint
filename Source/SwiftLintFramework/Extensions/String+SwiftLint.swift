@@ -41,7 +41,10 @@ extension String {
 
     internal subscript (range: Range<Int>) -> String {
         let nsrange = NSRange(location: range.startIndex, length: range.endIndex - range.startIndex)
-        return substringWithRange(nsrangeToIndexRange(nsrange))
+        if let indexRange = nsrangeToIndexRange(nsrange) {
+            return substringWithRange(indexRange)
+        }
+        fatalError("invalid range")
     }
 
     func substring(from: Int, length: Int? = nil) -> String {
@@ -58,9 +61,12 @@ extension String {
         return nil
     }
 
-    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index> {
-        let start = startIndex.advancedBy(nsrange.location, limit: endIndex)
-        let end = start.advancedBy(nsrange.length, limit: endIndex)
-        return start..<end
+    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index>? {
+        let from16 = utf16.startIndex.advancedBy(nsrange.location, limit: utf16.endIndex)
+        let to16 = from16.advancedBy(nsrange.length, limit: utf16.endIndex)
+        if let from = Index(from16, within: self), to = Index(to16, within: self) {
+            return from..<to
+        }
+        return nil
     }
 }

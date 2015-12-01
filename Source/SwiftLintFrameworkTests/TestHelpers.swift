@@ -26,11 +26,11 @@ private func violations(string: String, _ description: RuleDescription) -> [Styl
 private func assertCorrection(before: String, expected: String) {
     guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift").path else {
-        XCTFail("coun't generate temporary path for assertCorrection()")
+        XCTFail("couldn't generate temporary path for assertCorrection()")
         return
     }
     if before.dataUsingEncoding(NSUTF8StringEncoding)?.writeToFile(path, atomically: true) != true {
-        XCTFail("coun't write to file for assertCorrection()")
+        XCTFail("couldn't write to file for assertCorrection()")
         return
     }
     guard let file = File(path: path) else {
@@ -44,7 +44,7 @@ private func assertCorrection(before: String, expected: String) {
         let corrected = try NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) as String
         XCTAssertEqual(corrected, expected)
     } catch {
-        XCTFail("coun't read file at path '\(path)': \(error)")
+        XCTFail("couldn't read file at path '\(path)': \(error)")
     }
 }
 

@@ -144,9 +144,9 @@ variable_name_min_length:
 
 ### Auto-correct
 
-SwiftLint has *experimental* support for automatically correcting certain
-violations (currently only `trailing_newline`, `trailing_semicolon` &
-`trailing_whitespace`). Files on disk are overwritten with a corrected version.
+SwiftLint can automatically correct certain violations (currently only
+`trailing_newline`, `trailing_semicolon` & `trailing_whitespace`). Files on disk
+are overwritten with a corrected version.
 
 Please make sure to have backups of these files before running
 `swiftlint lint --autocorrect`, otherwise important data may be lost.

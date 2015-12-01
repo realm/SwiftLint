@@ -10,14 +10,6 @@ import Foundation
 import SwiftXPC
 import SourceKittenFramework
 
-private func correctableRules() -> [CorrectableRule] {
-    return [
-        TrailingNewlineRule(),
-        TrailingSemicolonRule(),
-        TrailingWhitespaceRule()
-    ]
-}
-
 public struct Linter {
     private let file: File
     private let rules: [Rule]
@@ -44,11 +36,7 @@ public struct Linter {
 
     public func correct() -> [Correction] {
         var corrections = [Correction]()
-        let enabledRules = correctableRules().filter { correctableRule in
-            let description = correctableRule.dynamicType.description
-            return rules.map({ $0.dynamicType.description }).contains(description)
-        }
-        for rule in enabledRules {
+        for rule in rules.flatMap({ $0 as? CorrectableRule }) {
             corrections += rule.correctFile(file)
         }
         return corrections

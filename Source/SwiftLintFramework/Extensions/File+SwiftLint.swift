@@ -19,14 +19,14 @@ internal func regex(pattern: String) -> NSRegularExpression {
 
 extension File {
     public func regions() -> [Region] {
-        let nsStringContents = contents as NSString
+        let contents = self.contents as NSString
         let commands = matchPattern("swiftlint:(enable|disable)\\ [^\\s]+",
-            withSyntaxKinds: [.Comment]).flatMap { Command(string: nsStringContents, range: $0) }
+            withSyntaxKinds: [.Comment]).flatMap { Command(string: contents, range: $0) }
         let totalNumberOfLines = lines.count
         let numberOfCharactersInLastLine = lines.last?.content.characters.count
         var regions = [Region]()
         var disabledRules = Set<String>()
-        let commandPairs = zip(commands, Array(commands.dropFirst().map({Optional($0)})) + [nil])
+        let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
             case .Disable: disabledRules.insert(command.ruleIdentifier)
@@ -55,16 +55,17 @@ extension File {
     }
 
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
-        let range = NSRange(location: 0, length: contents.utf16.count)
+        let contents = self.contents as NSString
+        let range = NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
-        let matches = regex(pattern).matchesInString(contents, options: [], range: range)
+        let matches = regex(pattern).matchesInString(self.contents, options: [], range: range)
         return matches.map { match in
-            let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range) ||
-                    NSLocationInRange(match.range.location,
-                        NSRange(location: $0.offset, length: $0.length))
-            }.map { $0.type }
-            let kindsInRange = tokensInRange.flatMap(SyntaxKind.init)
+            let kindsInRange = syntax.tokens.filter { token in
+                let tokenRange = contents
+                    .byteRangeToNSRange(start: token.offset, length: token.length) ??
+                    NSRange(location: token.offset, length: token.length)
+                return NSIntersectionRange(match.range, tokenRange).length > 0
+            }.map({ $0.type }).flatMap(SyntaxKind.init)
             return (match.range, kindsInRange)
         }
     }
@@ -83,25 +84,9 @@ extension File {
     */
     public func matchPattern(pattern: String,
                              excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        let range = NSRange(location: 0, length: contents.utf16.count)
-        let syntax = syntaxMap
-        let matches = regex(pattern).matchesInString(contents, options: [], range: range)
-        return matches.filter { match in
-            let tokensInRange = syntax.tokens.filter {
-                NSLocationInRange($0.offset, match.range) ||
-                    NSLocationInRange(match.range.location,
-                        NSRange(location: $0.offset, length: $0.length))
-            }
-            for token in tokensInRange {
-                if NSIntersectionRange(NSRange(location: token.offset,
-                    length:token.length), match.range).length > 0 &&
-                    syntaxKinds.contains(SyntaxKind(rawValue: token.type)!) {
-                    return false
-                }
-            }
-
-            return true
-        }.map { $0.range }
+        return matchPattern(pattern).filter {
+            $0.1.filter(syntaxKinds.contains).isEmpty
+        }.map { $0.0 }
     }
 
     public func validateVariableName(dictionary: XPCDictionary, kind: SwiftDeclarationKind) ->

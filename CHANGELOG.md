@@ -23,6 +23,10 @@
   [JP Simard](https://github.com/jpsim)
   [#237](https://github.com/realm/SwiftLint/issues/237)
 
+* Fix issues with multi-byte characters.  
+  [JP Simard](https://github.com/jpsim)
+  [#234](https://github.com/realm/SwiftLint/issues/234)
+
 
 ## 0.4.0: Wrinkle Release
 

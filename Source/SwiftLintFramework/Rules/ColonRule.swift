@@ -21,7 +21,8 @@ public struct ColonRule: Rule {
             "let abc: Int=0\n",
             "let abc: Enum=Enum.Value\n",
             "func abc(def: Void) {}\n",
-            "func abc(def: Void, ghi: Void) {}\n"
+            "func abc(def: Void, ghi: Void) {}\n",
+            "// 周斌佳年周斌佳\nlet abc: String = \"abc:\""
         ],
         triggeringExamples: [
             "let abc:Void\n",

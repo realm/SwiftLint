@@ -46,6 +46,7 @@ installables: clean bootstrap
 	mv -f "$(SWIFTLINTFRAMEWORK_BUNDLE)" "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
 	mv -f "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint"
 	rm -rf "$(BUILT_BUNDLE)"
+	install_name_tool -delete_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint"
 
 prefix_install: installables
 	mkdir -p "$(PREFIX)/Frameworks" "$(PREFIX)/bin"

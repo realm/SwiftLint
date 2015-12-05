@@ -19,3 +19,6 @@
 [submodule "Carthage/Checkouts/SourceKitten"]
 	path = Carthage/Checkouts/SourceKitten
 	url = https://github.com/jpsim/SourceKitten.git
+[submodule "Carthage/Checkouts/Curry"]
+	path = Carthage/Checkouts/Curry
+	url = https://github.com/thoughtbot/Curry.git

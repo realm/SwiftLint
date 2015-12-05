@@ -7,6 +7,7 @@
 //
 
 import Commandant
+import Curry
 import Foundation
 import Result
 import SourceKittenFramework
@@ -167,14 +168,9 @@ struct LintOptions: OptionsType {
     let strict: Bool
     let useScriptInputFiles: Bool
 
-    static func create(path: String)(useSTDIN: Bool)(configurationFile: String)(strict: Bool)
-        (useScriptInputFiles: Bool) -> LintOptions {
-        return LintOptions(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
-            strict: strict, useScriptInputFiles: useScriptInputFiles)
-    }
-
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
-        return create
+        let curriedInit = curry(self.init)
+        return curriedInit
             <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to lint")

@@ -94,7 +94,7 @@ extension Configuration {
             if let stdinString = stdinNSString as? String {
                 return .Success([File(contents: stdinString)])
             }
-            return .Failure(.UsageError(description: "stdin isn't a string"))
+            return .Failure(.UsageError(description: "stdin isn't a UTF8-encoded string"))
         } else if NSProcessInfo.processInfo().environment.keys.contains(inputFileKey) {
             return scriptInputFiles().map { $0.flatMap(File.maybeSwiftFile) }
         }

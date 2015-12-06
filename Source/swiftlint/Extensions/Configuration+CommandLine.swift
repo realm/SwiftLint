@@ -12,9 +12,10 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
+private let fileManager = NSFileManager.defaultManager()
 private let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
 
-func scriptInputFiles() -> Result<[String], CommandantError<()>> {
+private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     func getEnvironmentVariable(variable: String) -> Result<String, CommandantError<()>> {
         let environment = NSProcessInfo.processInfo().environment
         if let value = environment[variable] {
@@ -63,11 +64,31 @@ extension Configuration {
         self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"))
     }
 
-    func lintableFilesForPath(path: String) -> [File] {
+    private func lintableFilesForPath(path: String) -> [File] {
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
         let excludedPaths = excluded.flatMap(fileManager.filesToLintAtPath)
         let includedPaths = included.flatMap(fileManager.filesToLintAtPath)
         let allPaths = pathsForPath.filter(excludedPaths.contains) + includedPaths
         return allPaths.flatMap(File.maybeSwiftFile)
+    }
+
+    func getFiles(path: String, action: String, useSTDIN: Bool) ->
+                  Result<[File], CommandantError<()>> {
+        if useSTDIN {
+            let standardInput = NSFileHandle.fileHandleWithStandardInput()
+            let stdinData = standardInput.readDataToEndOfFile()
+            let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
+            if let stdinString = stdinNSString as? String {
+                return .Success([File(contents: stdinString)])
+            }
+            return .Failure(.UsageError(description: "stdin isn't a string"))
+        } else if NSProcessInfo.processInfo().environment.keys.contains(inputFileKey) {
+            return scriptInputFiles().map { $0.flatMap(File.maybeSwiftFile) }
+        }
+        queuedPrintError(
+            "\(action) Swift files " +
+            (path.isEmpty ? "in current working directory" : "at path \(path)")
+        )
+        return .Success(lintableFilesForPath(path))
     }
 }

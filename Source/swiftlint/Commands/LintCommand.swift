@@ -13,8 +13,6 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-let fileManager = NSFileManager.defaultManager()
-
 struct LintCommand: CommandType {
     let verb = "lint"
     let function = "Print lint warnings and errors for the Swift files in the current directory " +
@@ -23,25 +21,11 @@ struct LintCommand: CommandType {
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in
             let configuration = Configuration(commandLinePath: options.configurationFile)
-            if options.useSTDIN {
-                let standardInput = NSFileHandle.fileHandleWithStandardInput()
-                let stdinData = standardInput.readDataToEndOfFile()
-                let stdinNSString = NSString(data: stdinData, encoding: NSUTF8StringEncoding)
-                if let stdinString = stdinNSString as? String {
-                    return lint([File(contents: stdinString)],
-                        configuration: configuration,
+            return configuration.getFiles(options.path, action: "Linting",
+                useSTDIN: options.useSTDIN).flatMap { files in
+                    return lint(files, configuration: configuration, strict: options.strict,
                         strict: options.strict)
-                }
-                return .Failure(CommandantError<()>.CommandError())
-            } else if options.useScriptInputFiles {
-                return scriptInputFiles().flatMap { paths in
-                    let files = paths.filter { $0.isSwiftFile() }.flatMap(File.init)
-                    return lint(files, configuration: configuration, strict: options.strict)
-                }
             }
-
-            // Otherwise parse path.
-            return lint(options.path, configuration: configuration, strict: options.strict)
         }
     }
 
@@ -106,7 +90,6 @@ struct LintOptions: OptionsType {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
-    let useScriptInputFiles: Bool
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
         let curriedInit = curry(self.init)
@@ -123,8 +106,5 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "strict",
                 defaultValue: false,
                 usage: "fail on warnings")
-            <*> mode <| Option(key: "use-script-input-files",
-                defaultValue: false,
-                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
 }

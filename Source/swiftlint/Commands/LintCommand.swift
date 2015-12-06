@@ -20,68 +20,41 @@ struct LintCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in
+            var violations = [StyleViolation]()
+            var reporter: Reporter.Type!
             let configuration = Configuration(commandLinePath: options.configurationFile)
-            return configuration.getFiles(options.path, action: "Linting",
-                useSTDIN: options.useSTDIN).flatMap { files in
-                    return lint(files, configuration: configuration, strict: options.strict,
-                        strict: options.strict)
-            }
-        }
-    }
-
-    private func lint(path: String, configuration: Configuration, strict: Bool) ->
-        Result<(), CommandantError<()>> {
-        let files = configuration.lintableFilesForPath(path)
-        if path.isEmpty {
-            queuedPrintError("Linting Swift files in current working directory")
-        } else {
-            queuedPrintError("Linting Swift files at path \(path)")
-        }
-        if !files.isEmpty {
-            return lint(files, configuration: configuration, strict: strict)
-        }
-        return .Failure(CommandantError<()>.UsageError(description: "No lintable files found at" +
-            " path \(path)"))
-    }
-
-    private func lint(files: [File], configuration: Configuration, strict: Bool) ->
-        Result<(), CommandantError<()>> {
-        var violations = [StyleViolation]()
-        var reporter: Reporter.Type = XcodeReporter.self
-        for (index, file) in files.enumerate() {
-            if let path = file.path {
-                let filename = (path as NSString).lastPathComponent
-                queuedPrintError("Linting '\(filename)' (\(index + 1)/\(files.count))")
-            }
-            let linter = Linter(file: file, configuration: configuration)
-            let currentViolations = linter.styleViolations
-            violations += currentViolations
-            reporter = linter.reporter
-            if reporter.isRealtime {
-                let report = reporter.generateReport(currentViolations)
-                if !report.isEmpty {
-                    queuedPrint(report)
+            return configuration.visitLintableFiles(options.path, action: "Linting",
+                useSTDIN: options.useSTDIN) { linter in
+                let currentViolations = linter.styleViolations
+                violations += currentViolations
+                if reporter == nil { reporter = linter.reporter }
+                if reporter.isRealtime {
+                    let report = reporter.generateReport(currentViolations)
+                    if !report.isEmpty {
+                        queuedPrint(report)
+                    }
                 }
+            }.flatMap { files in
+                if !reporter.isRealtime {
+                    queuedPrint(reporter.generateReport(violations))
+                }
+                let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
+                let violationSuffix = (violations.count != 1 ? "s" : "")
+                let filesSuffix = (files.count != 1 ? "s." : ".")
+                queuedPrintError(
+                    "Done linting!" +
+                        " Found \(violations.count) violation\(violationSuffix)," +
+                        " \(numberOfSeriousViolations) serious" +
+                    " in \(files.count) file\(filesSuffix)"
+                )
+                if options.strict && !violations.isEmpty {
+                    return .Failure(CommandantError<()>.CommandError())
+                } else if numberOfSeriousViolations <= 0 {
+                    return .Success()
+                }
+                return .Failure(CommandantError<()>.CommandError())
             }
         }
-        if !reporter.isRealtime {
-            queuedPrint(reporter.generateReport(violations))
-        }
-        let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
-        let violationSuffix = (violations.count != 1 ? "s" : "")
-        let filesSuffix = (files.count != 1 ? "s." : ".")
-        queuedPrintError(
-            "Done linting!" +
-            " Found \(violations.count) violation\(violationSuffix)," +
-            " \(numberOfSeriousViolations) serious" +
-            " in \(files.count) file\(filesSuffix)"
-        )
-        if strict && !violations.isEmpty {
-            return .Failure(CommandantError<()>.CommandError())
-        } else if numberOfSeriousViolations <= 0 {
-            return .Success()
-        }
-        return .Failure(CommandantError<()>.CommandError())
     }
 }
 
@@ -92,8 +65,7 @@ struct LintOptions: OptionsType {
     let strict: Bool
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
-        let curriedInit = curry(self.init)
-        return curriedInit
+        return curry(self.init)
             <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to lint")

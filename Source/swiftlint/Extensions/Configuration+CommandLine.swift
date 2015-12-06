@@ -64,6 +64,28 @@ extension Configuration {
         self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"))
     }
 
+    func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
+                            visitorBlock: (Linter) -> ()) -> Result<[File], CommandantError<()>> {
+        return getFiles(path, action: action, useSTDIN: useSTDIN)
+            .flatMap { files -> Result<[File], CommandantError<()>> in
+                if files.isEmpty {
+                    let errorMessage = "No lintable files found at path '\(path)'"
+                    return .Failure(CommandantError<()>.UsageError(description: errorMessage))
+                }
+                return .Success(files)
+            }.flatMap { files in
+                let fileCount = files.count
+                for (index, file) in files.enumerate() {
+                    if let path = file.path {
+                        let filename = (path as NSString).lastPathComponent
+                        queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
+                    }
+                    visitorBlock(Linter(file: file, configuration: self))
+                }
+                return .Success(files)
+        }
+    }
+
     private func lintableFilesForPath(path: String) -> [File] {
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
         let excludedPaths = excluded.flatMap(fileManager.filesToLintAtPath)
@@ -72,8 +94,8 @@ extension Configuration {
         return allPaths.flatMap(File.maybeSwiftFile)
     }
 
-    func getFiles(path: String, action: String, useSTDIN: Bool) ->
-                  Result<[File], CommandantError<()>> {
+    private func getFiles(path: String, action: String, useSTDIN: Bool) ->
+                          Result<[File], CommandantError<()>> {
         if useSTDIN {
             let standardInput = NSFileHandle.fileHandleWithStandardInput()
             let stdinData = standardInput.readDataToEndOfFile()

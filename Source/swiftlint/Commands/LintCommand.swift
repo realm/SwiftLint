@@ -104,25 +104,6 @@ struct LintCommand: CommandType {
         return .Failure(CommandantError<()>.CommandError())
     }
 
-    private func filesToLintAtPath(path: String) -> [String] {
-        let absolutePath = (path.absolutePathRepresentation() as NSString).stringByStandardizingPath
-        var isDirectory: ObjCBool = false
-        if fileManager.fileExistsAtPath(absolutePath, isDirectory: &isDirectory) {
-            if isDirectory {
-                do {
-                    return try fileManager.allFilesRecursively(directory: absolutePath).filter {
-                        $0.isSwiftFile()
-                    }
-                } catch {
-                    fatalError("Couldn't find files in \(absolutePath): \(error)")
-                }
-            } else if absolutePath.isSwiftFile() {
-                return [absolutePath]
-            }
-        }
-        return []
-    }
-
     private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
         func getEnvironmentVariable(variable: String) -> Result<String, CommandantError<()>> {
             let environment = NSProcessInfo.processInfo().environment

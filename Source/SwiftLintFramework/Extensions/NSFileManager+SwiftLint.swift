@@ -13,4 +13,24 @@ extension NSFileManager {
         return try subpathsOfDirectoryAtPath(directory)
             .map((directory as NSString).stringByAppendingPathComponent)
     }
+
+    public func filesToLintAtPath(path: String) -> [String] {
+        let absolutePath = (path.absolutePathRepresentation() as NSString).stringByStandardizingPath
+        var isDirectory: ObjCBool = false
+        guard fileExistsAtPath(absolutePath, isDirectory: &isDirectory) else {
+            return []
+        }
+        if isDirectory {
+            do {
+                return try allFilesRecursively(directory: absolutePath).filter {
+                    $0.isSwiftFile()
+                }
+            } catch {
+                fatalError("Couldn't find files in \(absolutePath): \(error)")
+            }
+        } else if absolutePath.isSwiftFile() {
+            return [absolutePath]
+        }
+        return []
+    }
 }

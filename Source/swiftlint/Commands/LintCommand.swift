@@ -99,43 +99,6 @@ struct LintCommand: CommandType {
         }
         return .Failure(CommandantError<()>.CommandError())
     }
-
-    private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
-        func getEnvironmentVariable(variable: String) -> Result<String, CommandantError<()>> {
-            let environment = NSProcessInfo.processInfo().environment
-            if let value = environment[variable] {
-                return .Success(value)
-            } else {
-                return .Failure(.UsageError(description: "Environment variable not set:" +
-                    " \(variable)"))
-            }
-        }
-
-        let count: Result<Int, CommandantError<()>> = getEnvironmentVariable(
-            "SCRIPT_INPUT_FILE_COUNT").flatMap { count in
-            if let i = Int(count) {
-                return .Success(i)
-            } else {
-                return .Failure(.UsageError(description: "SCRIPT_INPUT_FILE_COUNT did not specify" +
-                    " a number"))
-            }
-        }
-
-        return count.flatMap { count in
-            let variables = (0..<count)
-                .map { getEnvironmentVariable("SCRIPT_INPUT_FILE_\($0)") }
-                .flatMap { path -> String? in
-                    switch path {
-                    case let .Success(path):
-                        return path
-                    case let .Failure(error):
-                        queuedPrintError(String(error))
-                        return nil
-                    }
-            }
-            return Result(variables)
-        }
-    }
 }
 
 struct LintOptions: OptionsType {

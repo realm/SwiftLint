@@ -22,8 +22,7 @@ struct LintCommand: CommandType {
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in
-            let configuration = Configuration(path: options.configurationFile,
-                optional: !Process.arguments.contains("--config"))
+            let configuration = Configuration(commandLinePath: options.configurationFile)
             if options.useSTDIN {
                 let standardInput = NSFileHandle.fileHandleWithStandardInput()
                 let stdinData = standardInput.readDataToEndOfFile()

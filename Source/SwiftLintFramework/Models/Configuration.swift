@@ -7,7 +7,10 @@
 //
 
 import Foundation
+import SourceKittenFramework
 import Yaml
+
+private let fileManager = NSFileManager.defaultManager()
 
 extension Yaml {
     var arrayOfStrings: [Swift.String]? {
@@ -160,7 +163,15 @@ public struct Configuration {
         // swiftlint:enable line_length
     }
 
-    public static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
+    private static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
         return zip([.Warning, .Error], array).map(RuleParameter.init)
+    }
+
+    public func lintableFilesForPath(path: String) -> [File] {
+        let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
+        let excludedPaths = excluded.flatMap(fileManager.filesToLintAtPath)
+        let includedPaths = included.flatMap(fileManager.filesToLintAtPath)
+        let allPaths = pathsForPath.filter(excludedPaths.contains) + includedPaths
+        return allPaths.flatMap { File(path: $0) }
     }
 }

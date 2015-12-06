@@ -12,7 +12,6 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-private let fileManager = NSFileManager.defaultManager()
 private let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
 
 private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
@@ -84,14 +83,6 @@ extension Configuration {
                 }
                 return .Success(files)
         }
-    }
-
-    private func lintableFilesForPath(path: String) -> [File] {
-        let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
-        let excludedPaths = excluded.flatMap(fileManager.filesToLintAtPath)
-        let includedPaths = included.flatMap(fileManager.filesToLintAtPath)
-        let allPaths = pathsForPath.filter(excludedPaths.contains) + includedPaths
-        return allPaths.flatMap(File.maybeSwiftFile)
     }
 
     private func getFiles(path: String, action: String, useSTDIN: Bool) ->

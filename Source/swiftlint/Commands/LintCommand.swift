@@ -40,19 +40,18 @@ struct LintCommand: CommandType {
                 }
                 let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
                 let violationSuffix = (violations.count != 1 ? "s" : "")
-                let filesSuffix = (files.count != 1 ? "s." : ".")
+                let fileCount = files.count
+                let filesSuffix = (fileCount != 1 ? "s." : ".")
                 queuedPrintError(
                     "Done linting!" +
-                        " Found \(violations.count) violation\(violationSuffix)," +
-                        " \(numberOfSeriousViolations) serious" +
-                    " in \(files.count) file\(filesSuffix)"
+                    " Found \(violations.count) violation\(violationSuffix)," +
+                    " \(numberOfSeriousViolations) serious" +
+                    " in \(fileCount) file\(filesSuffix)"
                 )
-                if options.strict && !violations.isEmpty {
+                if (options.strict && !violations.isEmpty) || numberOfSeriousViolations > 0 {
                     return .Failure(CommandantError<()>.CommandError())
-                } else if numberOfSeriousViolations <= 0 {
-                    return .Success()
                 }
-                return .Failure(CommandantError<()>.CommandError())
+                return .Success()
             }
         }
     }

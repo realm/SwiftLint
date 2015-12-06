@@ -184,7 +184,7 @@
 		E816194D1BFBFEAB00946723 /* ForceTryRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceTryRule.swift; sourceTree = "<group>"; };
 		E81619521BFC162C00946723 /* QueuedPrint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueuedPrint.swift; sourceTree = "<group>"; };
 		E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidDocsRule.swift; sourceTree = "<group>"; };
-		E82161411C138DA900E0CF4F /* Curry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Curry.framework; path = Curry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E82161411C138DA900E0CF4F /* Curry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Curry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+SwiftLint.swift"; sourceTree = "<group>"; };
 		E832F10C1B17E725003F265F /* IntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		E83A0B341A5D382B0041A60A /* VersionCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
@@ -298,11 +298,9 @@
 		D0D1211A19E87861005E4BAA /* swiftlint */ = {
 			isa = PBXGroup;
 			children = (
-				5499CA981A2394BD00783309 /* Supporting Files */,
-				E861519A1B0573B900C54AC0 /* LintCommand.swift */,
-				83894F211B0C928A006214E1 /* RulesCommand.swift */,
-				E83A0B341A5D382B0041A60A /* VersionCommand.swift */,
+				E85FF9921C13E35400714267 /* Commands */,
 				D0D1211B19E87861005E4BAA /* main.swift */,
+				5499CA981A2394BD00783309 /* Supporting Files */,
 			);
 			name = swiftlint;
 			path = Source/swiftlint;
@@ -427,6 +425,16 @@
 				D0D1217D19E87B05005E4BAA /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E85FF9921C13E35400714267 /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				E861519A1B0573B900C54AC0 /* LintCommand.swift */,
+				83894F211B0C928A006214E1 /* RulesCommand.swift */,
+				E83A0B341A5D382B0041A60A /* VersionCommand.swift */,
+			);
+			path = Commands;
 			sourceTree = "<group>";
 		};
 		E86396C31BADAC0D002C9E88 /* Reporters */ = {

@@ -149,7 +149,7 @@ SwiftLint can automatically correct certain violations (currently only
 are overwritten with a corrected version.
 
 Please make sure to have backups of these files before running
-`swiftlint lint --autocorrect`, otherwise important data may be lost.
+`swiftlint autocorrect`, otherwise important data may be lost.
 
 Standard linting is disabled while correcting because of the high likelihood of
 violations (or their offsets) being incorrect after modifying a file while

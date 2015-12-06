@@ -16,7 +16,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#161](https://github.com/realm/SwiftLint/issues/161)
 
-* Add `--autocorrect` flag to automatically correct certain violations
+* Add `autocorrect` command to automatically correct certain violations
   (currently only `trailing_newline`, `trailing_semicolon` &
   `trailing_whitespace`).
   [JP Simard](https://github.com/jpsim)

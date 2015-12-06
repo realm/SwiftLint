@@ -11,6 +11,7 @@ import SwiftLintFramework
 
 let registry = CommandRegistry<()>()
 registry.register(LintCommand())
+registry.register(AutoCorrectCommand())
 registry.register(VersionCommand())
 registry.register(RulesCommand())
 registry.register(HelpCommand(registry: registry))

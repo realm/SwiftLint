@@ -17,8 +17,7 @@ let fileManager = NSFileManager.defaultManager()
 
 struct LintCommand: CommandType {
     let verb = "lint"
-    let function = "Print lint warnings and errors for the Swift files in the current directory " +
-                   "(default command)"
+    let function = "Print lint warnings and errors (default command)"
 
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return LintOptions.evaluate(mode).flatMap { options in

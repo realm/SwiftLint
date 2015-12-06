@@ -12,8 +12,8 @@ import SwiftLintFramework
 let registry = CommandRegistry<()>()
 registry.register(LintCommand())
 registry.register(VersionCommand())
-registry.register(HelpCommand(registry: registry))
 registry.register(RulesCommand())
+registry.register(HelpCommand(registry: registry))
 
 registry.main(defaultVerb: LintCommand().verb) { error in
     queuedPrintError(String(error))

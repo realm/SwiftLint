@@ -47,15 +47,12 @@ struct LintCommand: CommandType {
 
     private func lint(path: String, configuration: Configuration, strict: Bool) ->
         Result<(), CommandantError<()>> {
-        let filesToLint = (configuration.included.isEmpty ? filesToLintAtPath(path) : [])
-            .filter({ !configuration.excluded.flatMap(filesToLintAtPath).contains($0) }) +
-            configuration.included.flatMap(filesToLintAtPath)
+        let files = configuration.lintableFilesForPath(path)
         if path.isEmpty {
             queuedPrintError("Linting Swift files in current working directory")
         } else {
             queuedPrintError("Linting Swift files at path \(path)")
         }
-        let files = filesToLint.flatMap(File.init)
         if !files.isEmpty {
             return lint(files, configuration: configuration, strict: strict)
         }

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 import SwiftXPC
 
@@ -97,5 +98,31 @@ extension File {
                 return nil
         }
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+    }
+
+    public func append(string: String) {
+        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+            fatalError("can't encode '\(string)' with UTF8")
+        }
+        guard let path = path, fileHandle = NSFileHandle(forWritingAtPath: path) else {
+            fatalError("can't write to path '\(self.path)'")
+        }
+        fileHandle.seekToEndOfFile()
+        fileHandle.writeData(stringData)
+        fileHandle.closeFile()
+        contents += string
+        lines = contents.lines()
+    }
+
+    public func write(string: String) {
+        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+            fatalError("can't encode '\(string)' with UTF8")
+        }
+        guard let path = path else {
+            fatalError("file needs a path to call write(_:)")
+        }
+        stringData.writeToFile(path, atomically: true)
+        contents = string
+        lines = contents.lines()
     }
 }

@@ -12,17 +12,19 @@ public struct RuleDescription: Equatable {
     public let description: String
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
+    public let corrections: [String: String]
 
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
     public init(identifier: String, name: String, description: String,
-        nonTriggeringExamples: [String] = [],
-        triggeringExamples: [String] = []) {
+        nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
+        corrections: [String: String] = [:]) {
         self.identifier = identifier
         self.name = name
         self.description = description
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
+        self.corrections = corrections
     }
 }
 

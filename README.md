@@ -25,7 +25,7 @@ You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 running it.
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 7 Beta 6 required).
+`git submodule update --init --recursive; make install` (Xcode 7.1).
 
 ## Usage
 
@@ -141,6 +141,19 @@ variable_name_min_length:
   - 3 # warning
   - 2 # error
 ```
+
+### Auto-correct
+
+SwiftLint can automatically correct certain violations (currently only
+`trailing_newline`, `trailing_semicolon` & `trailing_whitespace`). Files on disk
+are overwritten with a corrected version.
+
+Please make sure to have backups of these files before running
+`swiftlint autocorrect`, otherwise important data may be lost.
+
+Standard linting is disabled while correcting because of the high likelihood of
+violations (or their offsets) being incorrect after modifying a file while
+applying corrections.
 
 ## License
 

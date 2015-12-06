@@ -8,13 +8,14 @@
 
 import SourceKittenFramework
 
-public struct TrailingWhitespaceRule: Rule {
+public struct TrailingWhitespaceRule: CorrectableRule {
     public static let description = RuleDescription(
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
         description: "Lines should not have trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "// \n" ]
+        triggeringExamples: [ "// \n" ],
+        corrections: [ "// \n": "//\n" ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -24,5 +25,35 @@ public struct TrailingWhitespaceRule: Rule {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file.path, line: $0.index))
         }
+    }
+
+    public func correctFile(file: File) -> [Correction] {
+        let whitespaceCharacterSet = NSCharacterSet.whitespaceCharacterSet()
+        var correctedLines = [String]()
+        var corrections = [Correction]()
+        let fileRegions = file.regions()
+        for line in file.lines {
+            let correctedLine = (line.content as NSString)
+                .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
+            let region = fileRegions.filter {
+                $0.contains(Location(file: file.path, line: line.index, character: 0))
+            }.first
+            if region?.isRuleDisabled(self) == true {
+                correctedLines.append(line.content)
+                continue
+            }
+            if line.content != correctedLine {
+                let description = self.dynamicType.description
+                let location = Location(file: file.path, line: line.index)
+                corrections.append(Correction(ruleDescription: description, location: location))
+            }
+            correctedLines.append(correctedLine)
+        }
+        if !corrections.isEmpty {
+            // join and re-add trailing newline
+            file.write(correctedLines.joinWithSeparator("\n") + "\n")
+            return corrections
+        }
+        return []
     }
 }

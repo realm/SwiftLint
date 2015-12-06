@@ -39,12 +39,12 @@ extension String {
         return self
     }
 
-    subscript (range: Range<Int>) -> String {
-        get {
-            let subStart = startIndex.advancedBy(range.startIndex, limit: endIndex)
-            let subEnd = subStart.advancedBy(range.endIndex - range.startIndex, limit: endIndex)
-            return substringWithRange(Range(start: subStart, end: subEnd))
+    internal subscript (range: Range<Int>) -> String {
+        let nsrange = NSRange(location: range.startIndex, length: range.endIndex - range.startIndex)
+        if let indexRange = nsrangeToIndexRange(nsrange) {
+            return substringWithRange(indexRange)
         }
+        fatalError("invalid range")
     }
 
     func substring(from: Int, length: Int? = nil) -> String {
@@ -57,6 +57,15 @@ extension String {
     public func lastIndexOf(search: String) -> Int? {
         if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
             return startIndex.distanceTo(range.startIndex)
+        }
+        return nil
+    }
+
+    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index>? {
+        let from16 = utf16.startIndex.advancedBy(nsrange.location, limit: utf16.endIndex)
+        let to16 = from16.advancedBy(nsrange.length, limit: utf16.endIndex)
+        if let from = Index(from16, within: self), to = Index(to16, within: self) {
+            return from..<to
         }
         return nil
     }

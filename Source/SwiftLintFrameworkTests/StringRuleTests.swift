@@ -105,4 +105,8 @@ class StringRuleTests: XCTestCase {
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
     }
+
+    func testRealmObject() {
+        verifyRule(RealmObjectRule.description)
+    }
 }

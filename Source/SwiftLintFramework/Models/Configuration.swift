@@ -135,6 +135,7 @@ public struct Configuration {
             NestingRule(),
             OpeningBraceRule(),
             OperatorFunctionWhitespaceRule(),
+            RealmObjectRule(),
             ReturnArrowWhitespaceRule(),
             StatementPositionRule(),
             TodoRule(),

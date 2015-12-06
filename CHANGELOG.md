@@ -16,6 +16,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#161](https://github.com/realm/SwiftLint/issues/161)
 
+* Add Realm Object rule to validate Realm Swift models.  
+  [JP Simard](https://github.com/jpsim)
+  [realm/realm-cocoa#2929](https://github.com/realm/realm-cocoa/issues/2929)
+
 ##### Bug Fixes
 
 * Statement position rule no longer triggers for non-keyword uses of `catch` and

@@ -67,4 +67,26 @@ class ConfigurationTests: XCTestCase {
         }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
+
+    private class TestFileManager: NSFileManager {
+        private override func filesToLintAtPath(path: String) -> [String] {
+            switch path {
+            case "directory": return ["directory/File1.swift", "directory/File2.swift",
+                "directory/excluded/Excluded.swift",  "directory/ExcludedFile.swift"]
+            case "directory/excluded" : return ["directory/excluded/Excluded.swift"]
+            case "directory/ExcludedFile.swift" : return ["directory/ExcludedFile.swift"]
+            default: break
+            }
+            XCTFail("Should not be called with path \(path)")
+            return []
+        }
+    }
+
+    func testExcludedPaths() {
+        let configuration = Configuration(disabledRules: [], included: ["directory"],
+            excluded: ["directory/excluded",  "directory/ExcludedFile.swift"],
+            reporter: "json", rules: [])!
+        let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
 }

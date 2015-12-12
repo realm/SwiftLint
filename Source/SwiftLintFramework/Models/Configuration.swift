@@ -167,11 +167,16 @@ public struct Configuration {
         return zip([.Warning, .Error], array).map(RuleParameter.init)
     }
 
-    public func lintableFilesForPath(path: String) -> [File] {
+    public func lintablePathsForPath(path: String,
+                                     fileManager: NSFileManager = fileManager) -> [String] {
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
         let excludedPaths = excluded.flatMap(fileManager.filesToLintAtPath)
         let includedPaths = included.flatMap(fileManager.filesToLintAtPath)
-        let allPaths = pathsForPath.filter(excludedPaths.contains) + includedPaths
+        return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
+    }
+
+    public func lintableFilesForPath(path: String) -> [File] {
+        let allPaths = self.lintablePathsForPath(path)
         return allPaths.flatMap { File(path: $0) }
     }
 }

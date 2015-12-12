@@ -121,11 +121,13 @@ disabled_rules: # rule identifiers to exclude from running
   - type_body_length
   - type_name
   - variable_name
-included: # paths to include during linting. `--path` is ignored if present. takes precendence over `excluded`.
+included: # paths to include during linting. `--path` is ignored if present.
   - Source
-excluded: # paths to ignore during linting. overridden by `included`.
+excluded: # paths to ignore during linting.
   - Carthage
   - Pods
+  - Source/ExcludedFolder
+  - Source/EcludedFile.swift
 # parameterized rules can be customized from this configuration file
 line_length: 110
 # parameterized rules are first parameterized as a warning level, then error level.

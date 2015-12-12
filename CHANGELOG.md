@@ -22,6 +22,9 @@
   [JP Simard](https://github.com/jpsim)
   [#5](https://github.com/realm/SwiftLint/issues/5)
 
+* Allow to exclude files from `included` directory with `excluded`.  
+  [Michal Laskowski](https://github.com/michallaskowski)
+  
 ##### Bug Fixes
 
 * Statement position rule no longer triggers for non-keyword uses of `catch` and

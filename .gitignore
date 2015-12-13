@@ -45,3 +45,4 @@ Carthage/Build
 # SwiftLint
 
 SwiftLint.pkg
+SwiftLintFramework.framework.zip

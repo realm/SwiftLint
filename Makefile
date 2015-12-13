@@ -63,3 +63,9 @@ package: installables
 		--root "$(TEMPORARY_FOLDER)" \
 		--version "$(VERSION_STRING)" \
 		"$(OUTPUT_PACKAGE)"
+
+archive:
+	carthage build --no-skip-current --platform mac
+	carthage archive SwiftLintFramework
+
+release: package archive

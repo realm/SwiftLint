@@ -20,7 +20,8 @@ struct AutoCorrectCommand: CommandType {
     func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
         return AutoCorrectOptions.evaluate(mode).flatMap { options in
             let configuration = Configuration(commandLinePath: options.configurationFile)
-            return configuration.visitLintableFiles(options.path, action: "Correcting") { linter in
+            return configuration.visitLintableFiles(options.path, action: "Correcting",
+                useScriptInputFiles: options.useScriptInputFiles) { linter in
                 let corrections = linter.correct()
                 if !corrections.isEmpty {
                     let correctionLogs = corrections.map({ $0.consoleDescription })
@@ -37,6 +38,7 @@ struct AutoCorrectCommand: CommandType {
 struct AutoCorrectOptions: OptionsType {
     let path: String
     let configurationFile: String
+    let useScriptInputFiles: Bool
 
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<()>> {
         return curry(self.init)
@@ -46,5 +48,8 @@ struct AutoCorrectOptions: OptionsType {
             <*> mode <| Option(key: "config",
                 defaultValue: ".swiftlint.yml",
                 usage: "the path to SwiftLint's configuration file")
+            <*> mode <| Option(key: "use-script-input-files",
+                defaultValue: false,
+                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
 }

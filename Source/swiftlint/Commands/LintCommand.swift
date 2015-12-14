@@ -23,7 +23,8 @@ struct LintCommand: CommandType {
             var reporter: Reporter.Type!
             let configuration = Configuration(commandLinePath: options.configurationFile)
             return configuration.visitLintableFiles(options.path, action: "Linting",
-                useSTDIN: options.useSTDIN) { linter in
+                useSTDIN: options.useSTDIN,
+                useScriptInputFiles: options.useScriptInputFiles) { linter in
                 let currentViolations = linter.styleViolations
                 violations += currentViolations
                 if reporter == nil { reporter = linter.reporter }
@@ -61,9 +62,11 @@ struct LintOptions: OptionsType {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
+    let useScriptInputFiles: Bool
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<()>> {
-        return curry(self.init)
+        let curriedInitializer = curry(self.init)
+        return curriedInitializer
             <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to lint")
@@ -76,5 +79,8 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "strict",
                 defaultValue: false,
                 usage: "fail on warnings")
+            <*> mode <| Option(key: "use-script-input-files",
+                defaultValue: false,
+                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
 }

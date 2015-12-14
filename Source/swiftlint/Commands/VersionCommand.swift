@@ -10,7 +10,7 @@ import Foundation
 import Commandant
 import Result
 
-private let version = NSBundle.mainBundle()
+private let version = NSBundle(identifier: "io.realm.SwiftLintFramework")!
     .objectForInfoDictionaryKey("CFBundleShortVersionString")!
 
 struct VersionCommand: CommandType {

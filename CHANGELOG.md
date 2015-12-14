@@ -1,3 +1,11 @@
+## Master
+
+##### Bug Fixes
+
+* Make linting faster than 0.5.0, but slower than 0.4.0  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#119](https://github.com/jpsim/SourceKitten/issues/119)
+
 ## 0.5.0: Downy™
 
 ##### Breaking
@@ -24,7 +32,7 @@
 
 * Allow to exclude files from `included` directory with `excluded`.  
   [Michal Laskowski](https://github.com/michallaskowski)
-  
+
 ##### Bug Fixes
 
 * Statement position rule no longer triggers for non-keyword uses of `catch` and
@@ -78,7 +86,7 @@
   [Mickael Morier](https://github.com/mmorier)
   [#187](https://github.com/realm/SwiftLint/issues/187)
 
-* `ControlStatementRule` no longer triggers a violation for acceptable use of 
+* `ControlStatementRule` no longer triggers a violation for acceptable use of
   parentheses.  
   [Mickael Morier](https://github.com/mmorier)
   [#189](https://github.com/realm/SwiftLint/issues/189)

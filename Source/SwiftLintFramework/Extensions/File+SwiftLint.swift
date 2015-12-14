@@ -61,11 +61,11 @@ extension File {
         let syntax = syntaxMap
         let matches = regex(pattern).matchesInString(self.contents, options: [], range: range)
         return matches.map { match in
-            let matchRangeInByte = contents.NSRangeToByteRange(start: match.range.location,
+            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
                 length: match.range.length) ?? match.range
             let kindsInRange = syntax.tokens.filter { token in
-                let tokenRange = NSRange(location: token.offset, length: token.length)
-                return NSIntersectionRange(matchRangeInByte, tokenRange).length > 0
+                let tokenByteRange = NSRange(location: token.offset, length: token.length)
+                return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
             }.map({ $0.type }).flatMap(SyntaxKind.init)
             return (match.range, kindsInRange)
         }

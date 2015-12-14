@@ -4,7 +4,7 @@
 
 * Make linting faster than 0.5.0, but slower than 0.4.0  
   [Norio Nomura](https://github.com/norio-nomura)
-  [#263](https://github.com/realm/SwiftLint/pull/263)
+  [#119](https://github.com/jpsim/SourceKitten/issues/119)
 
 ## 0.5.0: Downy™
 

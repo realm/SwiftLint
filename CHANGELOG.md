@@ -1,10 +1,24 @@
 ## Master
 
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
 ##### Bug Fixes
 
 * Make linting faster than 0.5.0, but slower than 0.4.0  
   [Norio Nomura](https://github.com/norio-nomura)
   [#119](https://github.com/jpsim/SourceKitten/issues/119)
+
+* Re-introduce `--use-script-input-files` option for `lint` & `autocorrect`
+  commands. Should also fix some issues when running SwiftLint from an Xcode
+  build phase.  
+  [JP Simard](https://github.com/jpsim)
+  [#264](https://github.com/realm/SwiftLint/issues/264)
 
 ## 0.5.0: Downy™
 
@@ -72,7 +86,7 @@
   [JP Simard](https://github.com/jpsim)
 
 * Support linting from Input Files provided by Run Script Phase of Xcode with
-   `--use-script-input-files`.  
+  `--use-script-input-files`.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#193](https://github.com/realm/SwiftLint/pull/193)
 

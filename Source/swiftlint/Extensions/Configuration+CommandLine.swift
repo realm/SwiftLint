@@ -12,8 +12,6 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-private let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
-
 private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     func getEnvironmentVariable(variable: String) -> Result<String, CommandantError<()>> {
         let environment = NSProcessInfo.processInfo().environment
@@ -24,6 +22,7 @@ private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     }
 
     let count: Result<Int, CommandantError<()>> = {
+        let inputFileKey = "SCRIPT_INPUT_FILE_COUNT"
         guard let countString = NSProcessInfo.processInfo().environment[inputFileKey] else {
             return .Failure(.UsageError(description: "\(inputFileKey) variable not set"))
         }
@@ -64,8 +63,10 @@ extension Configuration {
     }
 
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
-                            visitorBlock: (Linter) -> ()) -> Result<[File], CommandantError<()>> {
-        return getFiles(path, action: action, useSTDIN: useSTDIN)
+                            useScriptInputFiles: Bool, visitorBlock: (Linter) -> ()) ->
+                            Result<[File], CommandantError<()>> {
+        return getFiles(path, action: action, useSTDIN: useSTDIN,
+                        useScriptInputFiles: useScriptInputFiles)
             .flatMap { files -> Result<[File], CommandantError<()>> in
                 if files.isEmpty {
                     let errorMessage = "No lintable files found at path '\(path)'"
@@ -85,8 +86,8 @@ extension Configuration {
         }
     }
 
-    private func getFiles(path: String, action: String, useSTDIN: Bool) ->
-                          Result<[File], CommandantError<()>> {
+    private func getFiles(path: String, action: String, useSTDIN: Bool,
+                          useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
             let standardInput = NSFileHandle.fileHandleWithStandardInput()
             let stdinData = standardInput.readDataToEndOfFile()
@@ -95,7 +96,7 @@ extension Configuration {
                 return .Success([File(contents: stdinString)])
             }
             return .Failure(.UsageError(description: "stdin isn't a UTF8-encoded string"))
-        } else if NSProcessInfo.processInfo().environment.keys.contains(inputFileKey) {
+        } else if useScriptInputFiles {
             return scriptInputFiles().map { $0.flatMap(File.maybeSwiftFile) }
         }
         queuedPrintError(

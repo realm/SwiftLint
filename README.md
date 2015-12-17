@@ -106,21 +106,12 @@ run SwiftLint from. The following parameters can be configured:
 ```yaml
 disabled_rules: # rule identifiers to exclude from running
   - colon
+  - comma
   - control_statement
-  - file_length
   - force_cast
-  - function_body_length
-  - leading_whitespace
-  - line_length
-  - nesting
-  - operator_whitespace
-  - return_arrow_whitespace
-  - todo
-  - trailing_newline
-  - trailing_whitespace
-  - type_body_length
-  - type_name
-  - variable_name
+  - ...
+  # Find all the available rules by running:
+  # swiftlint rules
 included: # paths to include during linting. `--path` is ignored if present.
   - Source
 excluded: # paths to ignore during linting.

@@ -38,7 +38,13 @@ func superfluousOrMissingThrowsDocumentation(declaration: String, comment: Strin
 }
 
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool {
-    return declaration.containsString("->") || SwiftDeclarationKind.variableKinds().contains(kind)
+    if SwiftDeclarationKind.variableKinds().contains(kind) { return true }
+
+    let outsideBraces = NSMutableString(string: declaration)
+    regex("(\\s*->\\s*).*[^(]\\)").replaceMatchesInString(outsideBraces, options: [],
+        range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
+
+    return outsideBraces.containsString("->")
 }
 
 func commentHasBatchedParameters(comment: String) -> Bool {
@@ -51,7 +57,11 @@ func commentReturns(comment: String) -> Bool {
 }
 
 func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
-    return declaration.containsString("->") && !commentReturns(comment)
+    let outsideBraces = NSMutableString(string: declaration)
+    regex("(\\s*->\\s*).*[^(]\\)").replaceMatchesInString(outsideBraces, options: [],
+        range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
+
+    return outsideBraces.containsString("->") && !commentReturns(comment)
 }
 
 func superfluousReturnDocumentation(declaration: String, comment: String,
@@ -110,6 +120,16 @@ public struct ValidDocsRule: Rule {
             "/// Returns false\nvar no: Bool { return false }",
             "/// docs\nvar no: Bool { return false }",
             "/// docs\n/// - throws: NSError\nfunc a() throws {}",
+            "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
+            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n///- parameter param2: this is void too\n/// - returns: false",
+            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\npublic func no(param: (Void -> Void)?) {}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n///- parameter param2: this is void too" +
+            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",
@@ -120,6 +140,16 @@ public struct ValidDocsRule: Rule {
             "/// Returns false\npublic func a() {}",
             "/// docs\n/// - throws: NSError\nfunc a() {}",
             "/// docs\nfunc a() throws {}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n///- parameter param2: this is void too" +
+            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
+            "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
+            "\npublic func no(param: (Void -> Void)?) {}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n///- parameter param2: this is void too\n/// - returns: false" +
+            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
         ]
     )
 

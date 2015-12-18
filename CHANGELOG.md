@@ -1,4 +1,4 @@
-## Master
+## 0.5.2: Snuggle™
 
 ##### Breaking
 

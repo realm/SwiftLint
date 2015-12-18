@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Performance improvements & unicode fixes (via SourceKitten).  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
 

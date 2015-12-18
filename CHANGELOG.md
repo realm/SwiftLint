@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix `ValidDocsRule` false positive when documenting functions with closure
+  parameters.  
+  [diogoguimaraes](https://github.com/diogoguimaraes)
+  [#267](https://github.com/realm/SwiftLint/issues/267)
 
 ## 0.5.1: Lint Tray Malfunction
 

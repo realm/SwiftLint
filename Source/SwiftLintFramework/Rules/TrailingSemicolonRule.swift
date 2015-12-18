@@ -38,13 +38,10 @@ public struct TrailingSemicolonRule: CorrectableRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        let fileRegions = file.regions()
-        let violatingRanges = file.violatingTrailingSemicolonRanges().filter { range in
-            let region = fileRegions.filter {
-                $0.contains(Location(file: file, offset: range.location))
-            }.first
-            return region?.isRuleEnabled(self) ?? true
-        }
+        let violatingRanges = file.ruleEnabledViolatingRanges(
+            file.violatingTrailingSemicolonRanges(),
+            forRule: self
+        )
         let adjustedRanges = violatingRanges.reduce([NSRange]()) { adjustedRanges, element in
             let adjustedLocation = element.location - adjustedRanges.count
             let adjustedRange = NSRange(location: adjustedLocation, length: element.length)

@@ -56,14 +56,10 @@ public struct OpeningBraceRule: CorrectableRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        let fileRegions = file.regions()
-        let violatingRanges = file.violatingOpeningBraceRanges().filter { range in
-            let region = fileRegions.filter {
-                $0.contains(Location(file: file, offset: range.location))
-            }.first
-            return region?.isRuleEnabled(self) ?? true
-        }
-
+        let violatingRanges = file.ruleEnabledViolatingRanges(
+            file.violatingOpeningBraceRanges(),
+            forRule: self
+        )
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 

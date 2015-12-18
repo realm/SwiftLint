@@ -126,3 +126,17 @@ extension File {
         lines = contents.lines()
     }
 }
+
+extension File {
+    internal func ruleEnabledViolatingRanges(violatingRanges: [NSRange], forRule rule: Rule)
+        -> [NSRange] {
+        let fileRegions = self.regions()
+        let violatingRanges = violatingRanges.filter { range in
+            let region = fileRegions.filter {
+                $0.contains(Location(file: self, offset: range.location))
+            }.first
+            return region?.isRuleEnabled(rule) ?? true
+        }
+        return violatingRanges
+    }
+}

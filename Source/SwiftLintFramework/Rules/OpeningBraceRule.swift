@@ -9,15 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-private let violatingPattern = "((?:[^( ]|[\\t\\n\\f\\r (] )\\{)"
-private let correctString = " {"
-
-private let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
 
 extension File {
     private func violatingOpeningBraceRanges() -> [NSRange] {
         return matchPattern(
-            violatingPattern,
+            "((?:[^( ]|[\\s(][\\s]+)\\{)",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
         )
     }
@@ -39,6 +36,15 @@ public struct OpeningBraceRule: CorrectableRule {
             "func abc()\n\t{ }",
             "[].map(){ $0 }",
             "[].map( { } )"
+        ],
+        corrections: [
+            "struct Rule{}\n": "struct Rule {}\n",
+            "struct Rule\n{\n}\n": "struct Rule {\n}\n",
+            "struct Rule\n\n\t{\n}\n": "struct Rule {\n}\n",
+            "struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}\n":
+                "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
+            "[].map(){ $0 }\n": "[].map() { $0 }\n",
+            "[].map( { } )\n": "[].map({ } )\n",
         ]
     )
 
@@ -58,53 +64,65 @@ public struct OpeningBraceRule: CorrectableRule {
             return region?.isRuleEnabled(self) ?? true
         }
 
-        let adjustedRanges = writeToFile(file, violatingRanges: violatingRanges)
-
-        return adjustedRanges.map {
-            Correction(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
-        }
+        return writeToFile(file, violatingRanges: violatingRanges)
     }
 
-    private func writeToFile(file: File, violatingRanges: [NSRange]) -> [NSRange] {
-        let correctStringCount = correctString.characters.count
+    private func writeToFile(file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
-        var adjustedRanges = [NSRange]()
-        var previousLengthDelta = 0
+        var adjustedOffsets = [Int]()
 
-        for violatingRange in violatingRanges {
-            guard let range = file.contents.nsrangeToIndexRange(violatingRange) else {
-                continue
-            }
-            let capturedString = file.contents[range]
-            let adjustedRange: NSRange
+        for violatingRange in violatingRanges.reverse() {
+            let (contents, adjustedRange) =
+            correctContents(correctedContents, violatingRange: violatingRange)
 
-            if capturedString.characters.count == 2 &&
-                capturedString.rangeOfCharacterFromSet(whitespaceAndNewlineCharacterSet) == nil {
-                // if "struct Command{" is violated with violating string = "d{",
-                // adjust range to only replace "{"
-                adjustedRange = NSRange(
-                    location: violatingRange.location - previousLengthDelta + 1,
-                    length: correctStringCount - 1
-                )
-                previousLengthDelta = violatingRange.length - correctStringCount - 1
-            } else {
-                adjustedRange = NSRange(
-                    location: violatingRange.location - previousLengthDelta,
-                    length: correctStringCount
-                )
-                previousLengthDelta = violatingRange.length - correctStringCount
-            }
-            adjustedRanges += [adjustedRange]
-
-            if let indexRange = correctedContents.nsrangeToIndexRange(adjustedRange) {
-                correctedContents = correctedContents
-                    .stringByReplacingCharactersInRange(indexRange, withString: correctString)
+            correctedContents = contents
+            if let adjustedRange = adjustedRange {
+                adjustedOffsets.insert(adjustedRange.location, atIndex: 0)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedRanges
+        return adjustedOffsets.map {
+            Correction(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, offset: $0))
+        }
+    }
+
+    private func correctContents(contents: String, violatingRange: NSRange)
+        -> (correctedContents: String, adjustedRange: NSRange?) {
+        guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
+            return (contents, nil)
+        }
+        let capturedString = contents[indexRange]
+        var adjustedRange = violatingRange
+        var correctString = " {"
+
+        // "struct Command{" has violating string = "d{", so ignore first "d"
+        if capturedString.characters.count == 2 &&
+            capturedString.rangeOfCharacterFromSet(whitespaceAndNewlineCharacterSet) == nil {
+            adjustedRange = NSRange(
+                location: violatingRange.location + 1,
+                length: violatingRange.length - 1
+            )
+        }
+
+        // "[].map( { } )" has violating string = "( {",
+        // so ignore first "(" and use "{" as correction string instead
+        if capturedString.hasPrefix("(") {
+            adjustedRange = NSRange(
+                location: violatingRange.location + 1,
+                length: violatingRange.length - 1
+            )
+            correctString = "{"
+        }
+
+        if let indexRange = contents.nsrangeToIndexRange(adjustedRange) {
+            let correctedContents = contents
+                .stringByReplacingCharactersInRange(indexRange, withString: correctString)
+            return (correctedContents, adjustedRange)
+        } else {
+            return (contents, nil)
+        }
     }
 }

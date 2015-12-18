@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+private let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
 
 extension File {
     private func violatingOpeningBraceRanges() -> [NSRange] {

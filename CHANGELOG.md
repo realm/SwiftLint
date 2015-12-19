@@ -9,6 +9,9 @@
 * Improve autocorrect for OpeningBraceRule.  
   [Yasuhiro Inami](https://github.com/inamiy)
 
+* Add ClosingBraceRule.  
+  [Yasuhiro Inami](https://github.com/inamiy)
+
 ##### Bug Fixes
 
 * None.

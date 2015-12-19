@@ -1,3 +1,18 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Improve autocorrect for OpeningBraceRule.  
+  [Yasuhiro Inami](https://github.com/inamiy)
+
+##### Bug Fixes
+
+* None.
+
 ## 0.5.2: Snuggle™
 
 ##### Breaking

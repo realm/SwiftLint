@@ -81,6 +81,10 @@ class StringRuleTests: XCTestCase {
         verifyRule(OpeningBraceRule.description)
 	}
 
+    func testClosingBrace() {
+        verifyRule(ClosingBraceRule.description)
+    }
+
     func testComma() {
         verifyRule(CommaRule.description)
     }

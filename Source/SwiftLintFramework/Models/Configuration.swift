@@ -125,6 +125,7 @@ public struct Configuration {
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         return [
+            ClosingBraceRule(),
             ColonRule(),
             CommaRule(),
             ControlStatementRule(),

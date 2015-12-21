@@ -63,6 +63,7 @@ struct LintOptions: OptionsType {
     let strict: Bool
     let useScriptInputFiles: Bool
 
+    // swiftlint:disable line_length
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
         let curriedInitializer = curry(self.init)
         return curriedInitializer
@@ -82,4 +83,5 @@ struct LintOptions: OptionsType {
                 defaultValue: false,
                 usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
+    // swiftlint:enable line_length
 }

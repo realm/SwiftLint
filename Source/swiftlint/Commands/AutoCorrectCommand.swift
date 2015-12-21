@@ -38,6 +38,7 @@ struct AutoCorrectOptions: OptionsType {
     let configurationFile: String
     let useScriptInputFiles: Bool
 
+    // swiftlint:disable line_length
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         return curry(self.init)
             <*> mode <| Option(key: "path",
@@ -50,4 +51,5 @@ struct AutoCorrectOptions: OptionsType {
                 defaultValue: false,
                 usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
+    // swiftlint:enable line_length
 }

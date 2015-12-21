@@ -138,7 +138,7 @@ variable_name_min_length:
 ### Auto-correct
 
 SwiftLint can automatically correct certain violations (currently only
-`trailing_newline`, `trailing_semicolon` & `trailing_whitespace`). Files on disk
+`trailing_newline`, `trailing_semicolon`, `trailing_whitespace`, `colon`). Files on disk
 are overwritten with a corrected version.
 
 Please make sure to have backups of these files before running

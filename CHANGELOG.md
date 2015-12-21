@@ -8,6 +8,8 @@
 
 * Improve autocorrect for OpeningBraceRule.  
   [Yasuhiro Inami](https://github.com/inamiy)
+* Add autocorrect for ColonRule.  
+  [Brian Partridge](https://github.com/brianpartridge)
 
 ##### Bug Fixes
 

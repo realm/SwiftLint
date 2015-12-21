@@ -77,7 +77,7 @@ public struct ColonRule: CorrectableRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = (patterns() as NSArray).componentsJoinedByString("|")
+        let pattern = patterns().joinWithSeparator("|")
 
         return validMatchesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,

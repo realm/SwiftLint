@@ -130,6 +130,7 @@ public struct Configuration {
             ControlStatementRule(),
             ForceCastRule(),
             ForceTryRule(),
+            FunctionNamingCaseRule(),
             LeadingWhitespaceRule(),
             LegacyConstructorRule(),
             NestingRule(),

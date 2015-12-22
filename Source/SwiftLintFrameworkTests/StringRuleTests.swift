@@ -105,4 +105,8 @@ class StringRuleTests: XCTestCase {
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
     }
+
+    func testFunctionNamingCase() {
+        verifyRule(FunctionNamingCaseRule.description)
+    }
 }

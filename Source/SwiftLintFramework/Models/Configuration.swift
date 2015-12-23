@@ -87,7 +87,11 @@ public struct Configuration {
     }
 
     public init?(yaml: String) {
-        guard let yamlConfig = Yaml.load(yaml).value else {
+        let yamlResult = Yaml.load(yaml)
+        guard let yamlConfig = yamlResult.value else {
+            if let error = yamlResult.error {
+                queuedPrint(error)
+            }
             return nil
         }
         self.init(
@@ -116,6 +120,8 @@ public struct Configuration {
                 queuedPrintError("Loading configuration from '\(path)'")
                 self.init(yaml: yamlContents)!
                 return
+            } else {
+                failIfRequired()
             }
         } catch {
             failIfRequired()

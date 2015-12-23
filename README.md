@@ -138,9 +138,8 @@ reporter: "csv" # reporter type (xcode, json, csv)
 
 ### Auto-correct
 
-SwiftLint can automatically correct certain violations (currently only
-`trailing_newline`, `trailing_semicolon`, `trailing_whitespace`, `colon`). Files on disk
-are overwritten with a corrected version.
+SwiftLint can automatically correct certain violations. Files on disk are
+overwritten with a corrected version.
 
 Please make sure to have backups of these files before running
 `swiftlint autocorrect`, otherwise important data may be lost.

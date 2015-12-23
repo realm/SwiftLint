@@ -79,7 +79,7 @@ public struct ColonRule: CorrectableRule {
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern = patterns().joinWithSeparator("|")
 
-        return validMatchesInFile(file, withPattern: pattern).flatMap { range in
+        return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: range.location))
         }
@@ -126,7 +126,7 @@ public struct ColonRule: CorrectableRule {
         return [spacingLeftOfColonPattern, spacingRightOfColonPattern]
     }
 
-    private func validMatchesInFile(file: File, withPattern pattern: String) -> [NSRange] {
+    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
         return file.matchPattern(pattern).filter { range, syntaxKinds in
             if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
                 return false
@@ -141,16 +141,16 @@ public struct ColonRule: CorrectableRule {
     }
 
     private func correctFile(file: File, withPattern pattern: String) -> [Correction] {
-        let matches = validMatchesInFile(file, withPattern: pattern)
+        let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
 
         let regularExpression = regex(pattern)
+        let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reverse() {
             contents = regularExpression.stringByReplacingMatchesInString(contents,
                 options: [], range: range, withTemplate: "$1: $2")
-            let description = self.dynamicType.description
             let location = Location(file: file, offset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }

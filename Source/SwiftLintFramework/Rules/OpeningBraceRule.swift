@@ -44,7 +44,7 @@ public struct OpeningBraceRule: CorrectableRule {
             "struct Parent {\n\tstruct Child\n\t{\n\t\tlet foo: Int\n\t}\n}\n":
                 "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
             "[].map(){ $0 }\n": "[].map() { $0 }\n",
-            "[].map( { } )\n": "[].map({ } )\n",
+            "[].map( { })\n": "[].map({ })\n",
         ]
     )
 
@@ -65,7 +65,7 @@ public struct OpeningBraceRule: CorrectableRule {
 
     private func writeToFile(file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
-        var adjustedOffsets = [Int]()
+        var adjustedLocations = [Int]()
 
         for violatingRange in violatingRanges.reverse() {
             let (contents, adjustedRange) =
@@ -73,13 +73,13 @@ public struct OpeningBraceRule: CorrectableRule {
 
             correctedContents = contents
             if let adjustedRange = adjustedRange {
-                adjustedOffsets.insert(adjustedRange.location, atIndex: 0)
+                adjustedLocations.insert(adjustedRange.location, atIndex: 0)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedOffsets.map {
+        return adjustedLocations.map {
             Correction(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, offset: $0))
         }

@@ -120,6 +120,8 @@ public struct Configuration {
                 queuedPrintError("Loading configuration from '\(path)'")
                 self.init(yaml: yamlContents)!
                 return
+            } else {
+                failIfRequired()
             }
         } catch {
             failIfRequired()

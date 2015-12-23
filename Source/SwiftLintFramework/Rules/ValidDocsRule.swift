@@ -14,11 +14,12 @@ extension File {
         let substructure = (dictionary["key.substructure"] as? XPCArray)?
             .flatMap { $0 as? XPCDictionary } ?? []
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
-        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
-            offset = dictionary["key.offset"] as? Int64,
+        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
+            where kind != .VarParameter,
+            let offset = dictionary["key.offset"] as? Int64,
             bodyOffset = dictionary["key.bodyoffset"] as? Int64,
             comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap)
-            where kind != .VarParameter && !comment.containsString(":nodoc:") else {
+            where !comment.containsString(":nodoc:") else {
                 return substructureOffsets
         }
         let declaration = contents[Int(offset)..<Int(bodyOffset)]

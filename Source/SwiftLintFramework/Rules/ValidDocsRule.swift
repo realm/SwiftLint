@@ -99,7 +99,8 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
     let commentParameters = commentParameterMatches.map { match in
         return (comment as NSString).substringWithRange(match.rangeAtIndex(1))
     }
-    if labelsAndParams.count - commentParameters.count > optionallyDocumentedParameterCount {
+    if commentParameters.count > labelsAndParams.count ||
+        labelsAndParams.count - commentParameters.count > optionallyDocumentedParameterCount {
         return true
     }
     return !zip(commentParameters, labelsAndParams).filter {

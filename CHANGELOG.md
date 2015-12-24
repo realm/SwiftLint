@@ -17,7 +17,8 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positives in ValidDocsRule.
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.5.2: Snuggle™
 

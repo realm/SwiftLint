@@ -92,13 +92,14 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
         }
         return (parameter, parameter)
     }
+    let optionallyDocumentedParameterCount = labelsAndParams.filter({ $0.0 == "_" }).count
     let commentRange = NSRange(location: 0, length: comment.utf16.count)
     let commentParameterMatches = regex("- parameter ([^:]+)")
         .matchesInString(comment, options: [], range: commentRange)
     let commentParameters = commentParameterMatches.map { match in
         return (comment as NSString).substringWithRange(match.rangeAtIndex(1))
     }
-    if commentParameters.count != labelsAndParams.count {
+    if labelsAndParams.count - commentParameters.count > optionallyDocumentedParameterCount {
         return true
     }
     return !zip(commentParameters, labelsAndParams).filter {

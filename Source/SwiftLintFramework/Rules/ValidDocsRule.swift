@@ -93,7 +93,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
         return (parameter, parameter)
     }
     let commentRange = NSRange(location: 0, length: comment.utf16.count)
-    let commentParameterMatches = regex("- parameter (.+):")
+    let commentParameterMatches = regex("- parameter ([^:]+)")
         .matchesInString(comment, options: [], range: commentRange)
     let commentParameters = commentParameterMatches.map { match in
         return (comment as NSString).substringWithRange(match.rangeAtIndex(1))

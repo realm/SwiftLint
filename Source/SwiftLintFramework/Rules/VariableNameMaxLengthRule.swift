@@ -43,10 +43,10 @@ public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
                              dictionary: XPCDictionary) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let charCount = name.characters.count
-            for parameter in self.parameters.reverse() where charCount > parameter.value {
+            for parameter in parameters.reverse() where charCount > parameter.value {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
-                    location: Location(file: file, offset: offset),
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should be \(parameter.value) characters " +
                             "or less: currently \(charCount) characters")]
             }

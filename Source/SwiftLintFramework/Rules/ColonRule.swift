@@ -81,7 +81,7 @@ public struct ColonRule: CorrectableRule {
 
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: range.location))
+                location: Location(file: file, characterOffset: range.location))
         }
     }
 
@@ -151,7 +151,7 @@ public struct ColonRule: CorrectableRule {
         for range in matches.reverse() {
             contents = regularExpression.stringByReplacingMatchesInString(contents,
                 options: [], range: range, withTemplate: "$1: $2")
-            let location = Location(file: file, offset: range.location)
+            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)

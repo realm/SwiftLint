@@ -41,7 +41,7 @@ public struct VariableNameRule: ASTRule {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             let description = self.dynamicType.description
-            let location = Location(file: file, offset: offset)
+            let location = Location(file: file, byteOffset: offset)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,

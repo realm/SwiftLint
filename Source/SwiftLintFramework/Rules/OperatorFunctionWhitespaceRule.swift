@@ -40,7 +40,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
             return syntaxKinds.first == .Keyword
         }.map { range, _ in
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: range.location))
+                location: Location(file: file, characterOffset: range.location))
         }
     }
 }

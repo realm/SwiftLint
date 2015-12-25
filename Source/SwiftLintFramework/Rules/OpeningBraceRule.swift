@@ -51,7 +51,7 @@ public struct OpeningBraceRule: CorrectableRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -81,7 +81,7 @@ public struct OpeningBraceRule: CorrectableRule {
 
         return adjustedLocations.map {
             Correction(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0))
+                location: Location(file: file, characterOffset: $0))
         }
     }
 

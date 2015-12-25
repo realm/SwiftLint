@@ -33,7 +33,7 @@ public struct TrailingSemicolonRule: CorrectableRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.violatingTrailingSemicolonRanges().map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -60,7 +60,7 @@ public struct TrailingSemicolonRule: CorrectableRule {
         file.write(correctedContents)
         return adjustedRanges.map {
             Correction(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

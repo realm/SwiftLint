@@ -159,7 +159,7 @@ public struct ValidDocsRule: Rule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.invalidDocOffsets(file.structure.dictionary).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0))
+                location: Location(file: file, byteOffset: $0))
         }
     }
 }

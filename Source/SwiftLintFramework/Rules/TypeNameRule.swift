@@ -42,7 +42,7 @@ public struct TypeNameRule: ASTRule {
         }
         if let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            let location = Location(file: file, offset: offset)
+            let location = Location(file: file, byteOffset: offset)
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {

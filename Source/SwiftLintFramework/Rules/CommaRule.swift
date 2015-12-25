@@ -32,7 +32,7 @@ public struct CommaRule: Rule {
 
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, offset: $0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

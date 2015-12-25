@@ -1,3 +1,21 @@
+## Master
+
+##### Breaking
+
+* Remove `Location.init(file:offset:)` in favor of the more explicit
+  `Location.init(file:byteOffset:)` & `Location.init(file:characterOffset:)`.  
+  [JP Simard](https://github.com/jpsim)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix multibyte handling in many rules.  
+  [JP Simard](https://github.com/jpsim)
+  [#279](https://github.com/realm/SwiftLint/issues/279)
+
 ## 0.5.3: Mountain Scent
 
 ##### Breaking
@@ -17,8 +35,9 @@
 
 ##### Bug Fixes
 
-* Fix false positives in ValidDocsRule.
+* Fix false positives in ValidDocsRule.  
   [JP Simard](https://github.com/jpsim)
+  [#267](https://github.com/realm/SwiftLint/issues/267)
 
 ## 0.5.2: Snuggle™
 

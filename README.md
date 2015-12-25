@@ -133,7 +133,7 @@ variable_name_max_length:
 variable_name_min_length:
   - 3 # warning
   - 2 # error
-reporter: "csv" # reporter type (xcode, json, csv)
+reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 ```
 
 ### Auto-correct

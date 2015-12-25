@@ -25,7 +25,7 @@ public struct Configuration {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
-    public let reporter: String        // reporter (xcode, json, csv)
+    public let reporter: String        // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
 
     public var reporterFromString: Reporter.Type {
@@ -36,6 +36,8 @@ public struct Configuration {
             return JSONReporter.self
         case CSVReporter.identifier:
             return CSVReporter.self
+        case CheckstyleReporter.identifier:
+            return CheckstyleReporter.self
         default:
             fatalError("no reporter with identifier '\(reporter)' available.")
         }

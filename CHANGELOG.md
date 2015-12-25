@@ -8,7 +8,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `checkstyle` reporter to generate XML reports in the Checkstyle 4.3
+  format.
+  [JP Simard](https://github.com/jpsim)
+  [#277](https://github.com/realm/SwiftLint/issues/277)
 
 ##### Bug Fixes
 

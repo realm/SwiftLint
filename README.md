@@ -79,11 +79,13 @@ directory to see the currently implemented rules.
 
 ### Disable a rule in code
 
-Rules can be disabled with a comment inside a source file with the following format: 
+Rules can be disabled with a comment inside a source file with the following
+format: 
 
 `// swiftlint:disable <rule>`
 
-The rule will be disabled until the end of the file or until the linter sees a matching enable comment:
+The rule will be disabled until the end of the file or until the linter sees a
+matching enable comment:
 
 `// swiftlint:enable <rule>`
 
@@ -93,10 +95,26 @@ For example:
 // swiftlint:disable colon
 let noWarning :String = "" // No warning about colons immediately after variable names!
 // swiftlint:enable colon
-let yesWarning :String = "" // Warning generated about colons immediately after variable names
+let hasWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
-Run `swiftlint rules` to print a list of all available rules and their identifiers.
+It's also possible to modify a disable or enable command by appending
+`:previous`, `:this` or `:next` for only applying the command to the previous,
+this (current) or next line respectively.
+
+For example:
+
+```swift
+// swiftlint:disable:next force_cast
+let noWarning = NSNumber() as! Int
+let hasWarning = NSNumber() as! Int
+let noWarning2 = NSNumber() as! Int // swiftlint:disable:this force_cast
+let noWarning3 = NSNumber() as! Int
+// swiftlint:disable:previous force_cast
+```
+
+Run `swiftlint rules` to print a list of all available rules and their
+identifiers.
 
 ### Configuration
 
@@ -125,14 +143,6 @@ line_length: 110
 type_body_length:
   - 300 # warning
   - 400 # error
-# parameterized rules are first parameterized as a warning level, then error level.
-variable_name_max_length:
-  - 40 # warning
-  - 60 # error
-# parameterized rules are first parameterized as a warning level, then error level.
-variable_name_min_length:
-  - 3 # warning
-  - 2 # error
 reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 ```
 

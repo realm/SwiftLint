@@ -23,7 +23,7 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#294](https://github.com/realm/SwiftLint/issues/294)
 
-* valid_docs rule doesn't handle multibyte characters.  
+* The `valid_docs` rule now handles multibyte characters.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#295](https://github.com/realm/SwiftLint/issues/295)
 

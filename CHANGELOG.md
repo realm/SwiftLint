@@ -16,7 +16,7 @@
   [JP Simard](https://github.com/jpsim)
   [#279](https://github.com/realm/SwiftLint/issues/279)
 
-* NSRangeException crash in swiftlint.
+* Fix an `NSRangeException` crash.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#294](https://github.com/realm/SwiftLint/issues/294)
 

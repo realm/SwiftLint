@@ -88,6 +88,7 @@
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8C0DFCE1AD349E5007EE3D4 /* SWXMLHash.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8C164C21BEA9EDA00177258 /* ASTRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB8F991B17DDB200199606 /* ASTRuleTests.swift */; };
+		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -235,6 +236,7 @@
 		E8BB8F991B17DDB200199606 /* ASTRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTRuleTests.swift; sourceTree = "<group>"; };
 		E8BB8F9B1B17DE3B00199606 /* StringRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringRuleTests.swift; sourceTree = "<group>"; };
 		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -450,6 +452,7 @@
 		E86396C31BADAC0D002C9E88 /* Reporters */ = {
 			isa = PBXGroup;
 			children = (
+				E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */,
 				E86396CA1BADB519002C9E88 /* CSVReporter.swift */,
 				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
 				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
@@ -725,6 +728,7 @@
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
+				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
 				E88198591BEA95F100333A11 /* LeadingWhitespaceRule.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,

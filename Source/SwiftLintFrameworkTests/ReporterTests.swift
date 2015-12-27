@@ -65,4 +65,16 @@ class ReporterTests: XCTestCase {
             "filename,1,2,Error,Line Length,Violation Reason.,line_length"
         )
     }
+
+    func testCheckstyleReporter() {
+        XCTAssertEqual(
+            CheckstyleReporter.generateReport(generateViolations()),
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">\n" +
+            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"warning\" " +
+            "message=\"Violation Reason.\"/>\n\t</file>\n" +
+            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
+            "message=\"Violation Reason.\"/>\n\t</file>\n" +
+            "</checkstyle>"
+        )
+    }
 }

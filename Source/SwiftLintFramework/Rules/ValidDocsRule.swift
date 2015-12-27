@@ -133,6 +133,7 @@ public struct ValidDocsRule: Rule {
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too" +
             "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",

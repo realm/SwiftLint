@@ -10,12 +10,17 @@ import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
+private let violationMarker = "↓"
+
 let allRuleIdentifiers = Configuration.rulesFromYAML().map {
     $0.dynamicType.description.identifier
 }
 
 func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
-    return Linter(file: File(contents: string), configuration: config).styleViolations
+    let stringStrippingMarkers = string.stringByReplacingOccurrencesOfString(violationMarker,
+        withString: "")
+    let file = File(contents: stringStrippingMarkers)
+    return Linter(file: file, configuration: config).styleViolations
 }
 
 private func violations(string: String, _ description: RuleDescription) -> [StyleViolation] {
@@ -65,6 +70,18 @@ extension XCTestCase {
 
         // Triggering examples violate
         XCTAssertEqual(triggers.flatMap({ violations($0, ruleDescription) }).count, triggers.count)
+        let triggersWithMarkers = triggers.filter { $0.containsString(violationMarker) }
+
+        // Triggering examples with violation markers violate at the marker's location
+        for trigger in triggersWithMarkers {
+            let firstViolation = violations(trigger, ruleDescription).first!
+            let markerLocation = (trigger as NSString).rangeOfString(violationMarker).location
+            let cleanTrigger = trigger.stringByReplacingOccurrencesOfString(violationMarker,
+                withString: "")
+            let file = File(contents: cleanTrigger)
+            let location = Location(file: file, characterOffset: markerLocation)
+            XCTAssertEqual(firstViolation.location, location)
+        }
 
         // Comment doesn't violate
         XCTAssertEqual(

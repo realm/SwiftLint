@@ -19,12 +19,12 @@ public struct OperatorFunctionWhitespaceRule: Rule {
             "func abc(lhs: Int, rhs: Int) -> Int {}\n"
         ],
         triggeringExamples: [
-            "func <|(lhs: Int, rhs: Int) -> Int {}\n",   // no spaces after
-            "func <|<<A>(lhs: A, rhs: A) -> A {}\n",     // no spaces after
-            "func <|  (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces after
-            "func <|<  <A>(lhs: A, rhs: A) -> A {}\n",   // 2 spaces after
-            "func  <| (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces before
-            "func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
+            "↓func <|(lhs: Int, rhs: Int) -> Int {}\n",   // no spaces after
+            "↓func <|<<A>(lhs: A, rhs: A) -> A {}\n",     // no spaces after
+            "↓func <|  (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces after
+            "↓func <|<  <A>(lhs: A, rhs: A) -> A {}\n",   // 2 spaces after
+            "↓func  <| (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces before
+            "↓func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
         ]
     )
 

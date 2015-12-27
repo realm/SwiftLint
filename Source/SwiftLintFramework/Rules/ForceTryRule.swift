@@ -17,7 +17,7 @@ public struct ForceTryRule: Rule {
             "func a() throws {}; do { try a() } catch {}"
         ],
         triggeringExamples: [
-            "func a() throws {}; try! a()"
+            "func a() throws {}; ↓try! a()"
         ]
     )
 

@@ -135,24 +135,25 @@ public struct ValidDocsRule: Rule {
             "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
         ],
         triggeringExamples: [
-            "/// docs\npublic func a(param: Void) {}\n",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a(param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a(label param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a() {}",
-            "/// docs\npublic func no() -> Bool { return false }",
-            "/// Returns false\npublic func a() {}",
-            "/// docs\n/// - throws: NSError\nfunc a() {}",
-            "/// docs\nfunc a() throws {}",
+            "/// docs\npublic ↓func a(param: Void) {}\n",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(label param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a() {}",
+            "/// docs\npublic ↓func no() -> Bool { return false }",
+            "/// Returns false\npublic ↓func a() {}",
+            "/// docs\n/// - throws: NSError\n↓func a() {}",
+            "/// docs\n↓func a() throws {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
+            "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
+            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
+            "Bool {return false}",
             "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?) {}",
+            "\npublic ↓func no(param: (Void -> Void)?) {}",
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
         ]
     )
 

@@ -24,14 +24,14 @@ public struct ReturnArrowWhitespaceRule: Rule {
             "func abc()\n    -> Int {}\n"
         ],
         triggeringExamples: [
-            "func abc()->Int {}\n",
-            "func abc()->[Int] {}\n",
-            "func abc()->(Int, Int) {}\n",
-            "func abc()-> Int {}\n",
-            "func abc() ->Int {}\n",
-            "func abc()  ->  Int {}\n",
-            "var abc = {(param: Int) ->Bool in }\n",
-            "var abc = {(param: Int)->Bool in }\n"
+            "func abc(↓)->Int {}\n",
+            "func abc(↓)->[Int] {}\n",
+            "func abc(↓)->(Int, Int) {}\n",
+            "func abc(↓)-> Int {}\n",
+            "func abc(↓) ->Int {}\n",
+            "func abc(↓)  ->  Int {}\n",
+            "var abc = {(param: Int↓) ->Bool in }\n",
+            "var abc = {(param: Int↓)->Bool in }\n"
         ]
     )
 

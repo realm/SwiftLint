@@ -21,11 +21,11 @@ public struct LegacyConstructorRule: Rule {
             "NSRange(location: 10, length: 1)",
         ],
         triggeringExamples: [
-            "CGPointMake(10, 10)",
-            "CGSizeMake(10, 10)",
-            "CGRectMake(0, 0, 10, 10)",
-            "CGVectorMake(10, 10)",
-            "NSMakeRange(10, 1)",
+            "↓CGPointMake(10, 10)",
+            "↓CGSizeMake(10, 10)",
+            "↓CGRectMake(0, 0, 10, 10)",
+            "↓CGVectorMake(10, 10)",
+            "↓NSMakeRange(10, 1)",
         ]
     )
 

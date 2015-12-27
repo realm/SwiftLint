@@ -22,7 +22,8 @@ extension File {
             where !comment.containsString(":nodoc:") else {
                 return substructureOffsets
         }
-        let declaration = contents[Int(offset)..<Int(bodyOffset)]
+        let declaration = (contents as NSString)
+            .substringWithByteRange(start: Int(offset), length: Int(bodyOffset - offset))!
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
             superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||

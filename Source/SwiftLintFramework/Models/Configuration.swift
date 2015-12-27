@@ -27,6 +27,8 @@ public struct Configuration {
     public let excluded: [String]      // excluded
     public let reporter: String        // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
+    public var rootPath: String?       // the root path of the lint to search for nested configs.
+    private var configPath: String?    // if successfully load from a path
 
     public var reporterFromString: Reporter.Type {
         switch reporter {
@@ -121,6 +123,7 @@ public struct Configuration {
             if let _ = Configuration(yaml: yamlContents) {
                 queuedPrintError("Loading configuration from '\(path)'")
                 self.init(yaml: yamlContents)!
+                configPath = fullPath
                 return
             } else {
                 failIfRequired()
@@ -187,5 +190,37 @@ public struct Configuration {
     public func lintableFilesForPath(path: String) -> [File] {
         let allPaths = self.lintablePathsForPath(path)
         return allPaths.flatMap { File(path: $0) }
+    }
+
+    public func configForFile(file: File) -> Configuration {
+        if let containingDir = file.path?.stringByDeletingLastPathComponent {
+            return configForPath(containingDir)
+        }
+        return self
+    }
+}
+
+// Nested configs
+extension Configuration {
+    private func configForPath(path: String) -> Configuration {
+        let configSearchPath = path.stringByAppendingPathComponent(".swiftlint.yml")
+
+        // If a config exists and it isn't us, load and merge the configs
+        if configSearchPath != configPath &&
+            NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
+            return merge(Configuration(path: configSearchPath, optional: false))
+        }
+
+        // If we are not at the root path, continue down the tree
+        if path != rootPath {
+            return configForPath(path.stringByDeletingLastPathComponent)
+        }
+
+        // If nothing else, return ourselves
+        return self
+    }
+
+    private func merge(config: Configuration) -> Configuration {
+        return config
     }
 }

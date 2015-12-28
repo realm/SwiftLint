@@ -24,10 +24,10 @@ public struct StatementPositionRule: Rule {
             "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
         ],
         triggeringExamples: [
-            "}else if {",
-            "}  else {",
-            "}\ncatch {",
-            "}\n\t  catch {"
+            "↓}else if {",
+            "}↓  else {",
+            "}↓\ncatch {",
+            "}\n\t↓  catch {"
         ]
     )
 

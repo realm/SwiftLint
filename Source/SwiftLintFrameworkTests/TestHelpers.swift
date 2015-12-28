@@ -10,12 +10,17 @@ import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
+private let violationMarker = "↓"
+
 let allRuleIdentifiers = Configuration.rulesFromYAML().map {
     $0.dynamicType.description.identifier
 }
 
 func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
-    return Linter(file: File(contents: string), configuration: config).styleViolations
+    let stringStrippingMarkers = string.stringByReplacingOccurrencesOfString(violationMarker,
+        withString: "")
+    let file = File(contents: stringStrippingMarkers)
+    return Linter(file: file, configuration: config).styleViolations
 }
 
 private func violations(string: String, _ description: RuleDescription) -> [StyleViolation] {
@@ -63,8 +68,20 @@ extension XCTestCase {
         // Non-triggering examples don't violate
         XCTAssert(nonTriggers.flatMap({ violations($0, ruleDescription) }).isEmpty)
 
+        var violationsCount = 0
+        for trigger in triggers {
+            let triggerViolations = violations(trigger, ruleDescription)
+            violationsCount += triggerViolations.count
+            // Triggering examples with violation markers violate at the marker's location
+            let markerLocation = (trigger as NSString).rangeOfString(violationMarker).location
+            if markerLocation == NSNotFound { continue }
+            let cleanTrigger = trigger.stringByReplacingOccurrencesOfString(violationMarker,
+                withString: "")
+            XCTAssertEqual(triggerViolations.first!.location,
+                Location(file: File(contents: cleanTrigger), characterOffset: markerLocation))
+        }
         // Triggering examples violate
-        XCTAssertEqual(triggers.flatMap({ violations($0, ruleDescription) }).count, triggers.count)
+        XCTAssertEqual(violationsCount, triggers.count)
 
         // Comment doesn't violate
         XCTAssertEqual(

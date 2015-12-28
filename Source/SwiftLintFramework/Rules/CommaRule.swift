@@ -20,9 +20,9 @@ public struct CommaRule: Rule {
             "enum a { case a, b, c }"
         ],
         triggeringExamples: [
-            "func abc(a: String ,b: String) { }",
-            "abc(a: \"string\",b: \"string\"",
-            "enum a { case a ,b }"
+            "func abc(a: String↓ ,b: String) { }",
+            "abc(a: \"string\"↓,b: \"string\"",
+            "enum a { case a↓ ,b }"
         ]
     )
 

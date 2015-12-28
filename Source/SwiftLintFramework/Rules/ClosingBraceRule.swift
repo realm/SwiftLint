@@ -30,7 +30,7 @@ public struct ClosingBraceRule: CorrectableRule {
             "[].map({ })"
         ],
         triggeringExamples: [
-            "[].map({ } )"
+            "[].map({ ↓} )"
         ],
         corrections: [
             "[].map({ } )\n": "[].map({ })\n"

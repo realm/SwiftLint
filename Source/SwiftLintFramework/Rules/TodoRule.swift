@@ -25,14 +25,14 @@ public struct TodoRule: Rule {
             "// notaFIXME:\n"
         ],
         triggeringExamples: [
-            "// TODO:\n",
-            "// FIXME:\n",
-            "// TODO(note)\n",
-            "// FIXME(note)\n",
-            "/* FIXME: */\n",
-            "/* TODO: */\n",
-            "/** FIXME: */\n",
-            "/** TODO: */\n"
+            "// ↓TODO:\n",
+            "// ↓FIXME:\n",
+            "// ↓TODO(note)\n",
+            "// ↓FIXME(note)\n",
+            "/* ↓FIXME: */\n",
+            "/* ↓TODO: */\n",
+            "/** ↓FIXME: */\n",
+            "/** ↓TODO: */\n"
         ]
     )
 

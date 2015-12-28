@@ -33,9 +33,9 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
             "private let _myLet = 0"
         ],
         triggeringExamples: [
-            "let i = 0",
-            "var id = 0",
-            "private let _i = 0"
+            "↓let i = 0",
+            "↓var id = 0",
+            "private ↓let _i = 0"
         ]
     )
 

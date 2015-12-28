@@ -33,9 +33,9 @@ public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
             "private let _myLet = 0"
         ],
         triggeringExamples: [
-            "let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-            "var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
-            "private let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"
+            "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
+            "↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
+            "private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"
         ]
     )
 

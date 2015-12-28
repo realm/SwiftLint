@@ -21,8 +21,8 @@ public struct TrailingSemicolonRule: CorrectableRule {
         description: "Lines should not have trailing semicolons.",
         nonTriggeringExamples: [ "let a = 0\n" ],
         triggeringExamples: [
-            "let a = 0;\n",
-            "let a = 0;\nlet b = 1\n"
+            "let a = 0↓;\n",
+            "let a = 0↓;\nlet b = 1\n"
         ],
         corrections: [
             "let a = 0;\n": "let a = 0\n",

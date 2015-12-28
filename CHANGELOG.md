@@ -19,6 +19,10 @@
   [JP Simard](https://github.com/jpsim)
   [#279](https://github.com/realm/SwiftLint/issues/279)
 
+* Fix an `NSRangeException` crash.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#294](https://github.com/realm/SwiftLint/issues/294)
+
 ## 0.5.3: Mountain Scent
 
 ##### Breaking

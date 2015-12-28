@@ -83,7 +83,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
         $0["key.name"] as? String
     } ?? []
     let labelsAndParams = parameterNames.map { parameter -> (label: String, parameter: String) in
-        let fullRange = NSRange(location: 0, length: Int(bodyOffset - offset))
+        let fullRange = NSRange(location: 0, length: declaration.utf16.count)
         let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
             .firstMatchInString(declaration, options: [], range: fullRange)
         if let match = firstMatch {

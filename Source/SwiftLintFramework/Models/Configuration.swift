@@ -27,7 +27,8 @@ public struct Configuration {
     public let excluded: [String]      // excluded
     public let reporter: String        // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
-    public var rootPath: String?       // the root path of the lint to search for nested configs.
+    public let useNestedConfigs: Bool  // process nested configs, will default to false
+    public var rootPath: String?       // the root path of the lint to search for nested configs
     private var configPath: String?    // if successfully load from a path
 
     public var reporterFromString: Reporter.Type {
@@ -49,10 +50,12 @@ public struct Configuration {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromYAML()) {
+                 rules: [Rule] = Configuration.rulesFromYAML(),
+                 useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
 
@@ -103,7 +106,8 @@ public struct Configuration {
             included: yamlConfig["included"].arrayOfStrings ?? [],
             excluded: yamlConfig["excluded"].arrayOfStrings ?? [],
             reporter: yamlConfig["reporter"].string ?? XcodeReporter.identifier,
-            rules: Configuration.rulesFromYAML(yamlConfig)
+            rules: Configuration.rulesFromYAML(yamlConfig),
+            useNestedConfigs: yamlConfig["use_nested_configs"].bool ?? false
         )
     }
 
@@ -193,7 +197,8 @@ public struct Configuration {
     }
 
     public func configForFile(file: File) -> Configuration {
-        if let containingDir = file.path?.stringByDeletingLastPathComponent {
+        if  useNestedConfigs,
+            let containingDir = file.path?.stringByDeletingLastPathComponent {
             return configForPath(containingDir)
         }
         return self

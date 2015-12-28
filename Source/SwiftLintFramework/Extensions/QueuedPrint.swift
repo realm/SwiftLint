@@ -34,12 +34,9 @@ public func queuedPrint<T>(object: T) {
 A thread-safe, newline-terminated version of fputs(..., stderr).
 
 - parameter string: String to print.
-- parameter silent: True suppresses output
 */
-public func queuedPrintError(string: String, silent: Bool = false) {
-    if !silent {
-        dispatch_async(outputQueue) {
-            fputs(string + "\n", stderr)
-        }
+public func queuedPrintError(string: String) {
+    dispatch_async(outputQueue) {
+        fputs(string + "\n", stderr)
     }
 }

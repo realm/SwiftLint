@@ -94,13 +94,13 @@ public struct Configuration {
     }
 
     public init?(yaml: String) {
-        let yamlResult = Yaml.load(yaml)
-        guard let yamlConfig = yamlResult.value else {
-            if let error = yamlResult.error {
-                queuedPrint(error)
-            }
+        guard let yamlConfig = Configuration.loadYaml(yaml) else {
             return nil
         }
+        self.init(yamlConfig: yamlConfig)
+    }
+
+    private init?(yamlConfig: Yaml) {
         self.init(
             disabledRules: yamlConfig["disabled_rules"].arrayOfStrings ?? [],
             included: yamlConfig["included"].arrayOfStrings ?? [],
@@ -111,7 +111,19 @@ public struct Configuration {
         )
     }
 
-    public init(path: String = ".swiftlint.yml", optional: Bool = true) {
+    private static func loadYaml(yaml: String) -> Yaml? {
+        let yamlResult = Yaml.load(yaml)
+        if let yamlConfig = yamlResult.value {
+            return yamlConfig
+        } else {
+            if let error = yamlResult.error {
+                queuedPrint(error)
+            }
+            return nil
+        }
+    }
+
+    public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let failIfRequired = {
             if !optional { fatalError("Could not read configuration file at path '\(fullPath)'") }
@@ -124,9 +136,9 @@ public struct Configuration {
         do {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
-            if let _ = Configuration(yaml: yamlContents) {
+            if let yamlConfig = Configuration.loadYaml(yamlContents) {
                 queuedPrintError("Loading configuration from '\(path)'")
-                self.init(yaml: yamlContents)!
+                self.init(yamlConfig: yamlConfig)!
                 configPath = fullPath
                 return
             } else {

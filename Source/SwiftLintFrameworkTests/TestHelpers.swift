@@ -68,20 +68,20 @@ extension XCTestCase {
         // Non-triggering examples don't violate
         XCTAssert(nonTriggers.flatMap({ violations($0, ruleDescription) }).isEmpty)
 
-        // Triggering examples violate
-        XCTAssertEqual(triggers.flatMap({ violations($0, ruleDescription) }).count, triggers.count)
-        let triggersWithMarkers = triggers.filter { $0.containsString(violationMarker) }
-
-        // Triggering examples with violation markers violate at the marker's location
-        for trigger in triggersWithMarkers {
-            let firstViolation = violations(trigger, ruleDescription).first!
+        var violationsCount = 0
+        for trigger in triggers {
+            let triggerViolations = violations(trigger, ruleDescription)
+            violationsCount += triggerViolations.count
+            // Triggering examples with violation markers violate at the marker's location
             let markerLocation = (trigger as NSString).rangeOfString(violationMarker).location
+            if markerLocation == NSNotFound { continue }
             let cleanTrigger = trigger.stringByReplacingOccurrencesOfString(violationMarker,
                 withString: "")
-            let file = File(contents: cleanTrigger)
-            let location = Location(file: file, characterOffset: markerLocation)
-            XCTAssertEqual(firstViolation.location, location)
+            XCTAssertEqual(triggerViolations.first!.location,
+                Location(file: File(contents: cleanTrigger), characterOffset: markerLocation))
         }
+        // Triggering examples violate
+        XCTAssertEqual(violationsCount, triggers.count)
 
         // Comment doesn't violate
         XCTAssertEqual(

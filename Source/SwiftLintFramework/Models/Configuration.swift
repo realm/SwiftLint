@@ -137,7 +137,7 @@ public struct Configuration {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
             if let yamlConfig = Configuration.loadYaml(yamlContents) {
-                queuedPrintError("Loading configuration from '\(path)'")
+                queuedPrintError("Loading configuration from '\(path)'", silent: silent)
                 self.init(yamlConfig: yamlConfig)!
                 configPath = fullPath
                 return
@@ -225,7 +225,7 @@ extension Configuration {
         // If a config exists and it isn't us, load and merge the configs
         if configSearchPath != configPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
-            return merge(Configuration(path: configSearchPath, optional: false))
+            return merge(Configuration(path: configSearchPath, optional: false, silent: true))
         }
 
         // If we are not at the root path, continue down the tree

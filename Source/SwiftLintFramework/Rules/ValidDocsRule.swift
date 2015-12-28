@@ -22,7 +22,8 @@ extension File {
             where !comment.containsString(":nodoc:") else {
                 return substructureOffsets
         }
-        let declaration = contents[Int(offset)..<Int(bodyOffset)]
+        let declaration = (contents as NSString)
+            .substringWithByteRange(start: Int(offset), length: Int(bodyOffset - offset))!
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
             superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||
@@ -133,6 +134,7 @@ public struct ValidDocsRule: Rule {
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too" +
             "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
         ],
         triggeringExamples: [
             "/// docs\npublic func a(param: Void) {}\n",

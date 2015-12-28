@@ -23,6 +23,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#294](https://github.com/realm/SwiftLint/issues/294)
 
+* The `valid_docs` rule now handles multibyte characters.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#295](https://github.com/realm/SwiftLint/issues/295)
+
 ## 0.5.3: Mountain Scent
 
 ##### Breaking

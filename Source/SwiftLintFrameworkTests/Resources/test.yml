@@ -1,0 +1,29 @@
+dictionary1:
+  bool: true
+  int: 1
+  double: 1.0
+  string: string
+  array:
+    - true
+    - 1
+    - 1.0
+    - string
+    - bool: true
+      int: 1
+      double: 1.0
+      string: string
+
+dictionary2:
+  bool: true
+  int: 1
+  double: 1.0
+  string: string
+  array:
+    - true
+    - 1
+    - 1.0
+    - string
+    - bool: true
+      int: 1
+      double: 1.0
+      string: string

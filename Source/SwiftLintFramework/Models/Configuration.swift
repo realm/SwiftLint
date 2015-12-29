@@ -12,7 +12,7 @@ import Yaml
 
 private let fileManager = NSFileManager.defaultManager()
 
-public struct Configuration {
+public struct Configuration: Equatable {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded

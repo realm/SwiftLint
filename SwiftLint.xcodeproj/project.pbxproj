@@ -14,6 +14,7 @@
 		3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */; };
 		3B12C9C11C3209CB000B423F /* test.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B12C9BF1C3209AC000B423F /* test.yml */; };
 		3B12C9C31C320A53000B423F /* Yaml+SwiftLintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */; };
+		3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C41C322032000B423F /* MasterRuleList.swift */; };
 		3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C61C3361CB000B423F /* RuleTests.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
@@ -153,6 +154,7 @@
 		3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yaml+SwiftLint.swift"; sourceTree = "<group>"; };
 		3B12C9BF1C3209AC000B423F /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.yml; sourceTree = "<group>"; };
 		3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yaml+SwiftLintTests.swift"; sourceTree = "<group>"; };
+		3B12C9C41C322032000B423F /* MasterRuleList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterRuleList.swift; sourceTree = "<group>"; };
 		3B12C9C61C3361CB000B423F /* RuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleTests.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
 				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
+				3B12C9C41C322032000B423F /* MasterRuleList.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -751,6 +754,7 @@
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
+				3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,
 				CAF900151BED8B17006A371D /* VariableNameMinLengthRule.swift in Sources */,

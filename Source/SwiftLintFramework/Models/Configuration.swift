@@ -219,7 +219,7 @@ public struct Configuration {
     }
 }
 
-// Nested configs
+// MARK: - Nested Configurations Extension
 extension Configuration {
     private func configForPath(path: String) -> Configuration {
         let configSearchPath = path.stringByAppendingPathComponent(".swiftlint.yml")
@@ -235,10 +235,13 @@ extension Configuration {
             return configForPath(path.stringByDeletingLastPathComponent)
         }
 
-        // If nothing else, return ourselves
+        // If nothing else, return self
         return self
     }
 
+    // Currently merge simply overrides the current configuration with the new configuration.
+    // This requires that all config files be fully specified. In the future this will be changed
+    // to do a more intelligent merge allowing for partial nested configs.
     private func merge(config: Configuration) -> Configuration {
         return config
     }

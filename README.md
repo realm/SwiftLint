@@ -114,7 +114,7 @@ disabled_rules: # rule identifiers to exclude from running
   # swiftlint rules
 included: # paths to include during linting. `--path` is ignored if present.
   - Source
-excluded: # paths to ignore during linting.
+excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
   - Pods
   - Source/ExcludedFolder

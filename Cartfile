@@ -1,1 +1,1 @@
-github "jpsim/SourceKitten" "master"
+github "jpsim/SourceKitten" ~> 0.7

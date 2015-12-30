@@ -6,7 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class ConfigurationTests: XCTestCase {
@@ -97,16 +97,15 @@ class ConfigurationTests: XCTestCase {
                                                         excluded: ["Source/I_Did_Very_Bad_things"],
                                                         reporter: "shhhh",
                                                            rules: [RuleMock1()],
-                                                useNestedConfigs: true)
+                                                useNestedConfigs: true)!
     private let configurationMock2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
                                                         included: ["Source"],
                                                         excluded: ["Source/I_Did_Very_Bad_things"],
                                                         reporter: "shhhh",
                                                            rules: [RuleMock2()],
-                                                useNestedConfigs: true)
+                                                useNestedConfigs: true)!
 
     func testIsEqualTo() {
-
         let configuration2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
                                                 included: ["Source"],
                                                 excluded: ["Source/I_Did_Very_Bad_things"],
@@ -118,5 +117,11 @@ class ConfigurationTests: XCTestCase {
 
     func testIsNotEqualTo() {
         XCTAssertNotEqual(configurationMock1, configurationMock2)
+    }
+
+    // MARK: - Testing Nested Configurations
+
+    func testMerge() {
+        XCTAssertEqual(configurationMock1.merge(configurationMock2), configurationMock2)
     }
 }

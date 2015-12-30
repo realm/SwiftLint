@@ -93,35 +93,6 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Configuration Equality
 
-    private let configurationMock1 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                        included: ["Source"],
-                                                        excluded: ["Source/I_Did_Very_Bad_things"],
-                                                        reporter: "shhhh",
-                                                           rules: [RuleMock1()],
-                                                useNestedConfigs: true)!
-    private let configurationMock2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                        included: ["Source"],
-                                                        excluded: ["Source/I_Did_Very_Bad_things"],
-                                                        reporter: "shhhh",
-                                                           rules: [RuleMock2()],
-                                                useNestedConfigs: true)!
-
-    func testIsEqualTo() {
-        let configuration2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                included: ["Source"],
-                                                excluded: ["Source/I_Did_Very_Bad_things"],
-                                                reporter: "shhhh",
-                                                   rules: [RuleMock1()],
-                                        useNestedConfigs: true)
-        XCTAssertEqual(configurationMock1, configuration2)
-    }
-
-    func testIsNotEqualTo() {
-        XCTAssertNotEqual(configurationMock1, configurationMock2)
-    }
-
-    // MARK: - Testing Nested Configurations
-
     private var projectMockConfig0: Configuration {
         var config = Configuration(path: projectMockYAML0, optional: false, silent: true)
         config.rootPath = projectMockPathLevel0
@@ -132,8 +103,18 @@ class ConfigurationTests: XCTestCase {
         return Configuration(path: projectMockYAML2, optional: false, silent: true)
     }
 
+    func testIsEqualTo() {
+        XCTAssertEqual(projectMockConfig0, projectMockConfig0)
+    }
+
+    func testIsNotEqualTo() {
+        XCTAssertNotEqual(projectMockConfig0, projectMockConfig2)
+    }
+
+    // MARK: - Testing Nested Configurations
+
     func testMerge() {
-        XCTAssertEqual(configurationMock1.merge(configurationMock2), configurationMock2)
+        XCTAssertEqual(projectMockConfig0.merge(projectMockConfig2), projectMockConfig2)
     }
 
     func testLevel0() {
@@ -157,7 +138,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDoNotUseNestedConfigs() {
-        var config = Configuration(yaml: "\nuse_nested_configs: false\n")!
+        var config = Configuration(yaml: "use_nested_configs: false\n")!
         config.rootPath = projectMockPathLevel0
         XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
                        config)

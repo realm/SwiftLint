@@ -21,7 +21,7 @@ extension Yaml {
     }
 }
 
-public struct Configuration {
+public struct Configuration: Equatable {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
@@ -220,6 +220,7 @@ public struct Configuration {
 }
 
 // MARK: - Nested Configurations Extension
+
 extension Configuration {
     private func configForPath(path: String) -> Configuration {
         let configSearchPath = path.stringByAppendingPathComponent(".swiftlint.yml")
@@ -245,4 +246,25 @@ extension Configuration {
     private func merge(config: Configuration) -> Configuration {
         return config
     }
+}
+
+// Mark - == Implementation
+
+public func == (lhs: Configuration, rhs: Configuration) -> Bool {
+    return (lhs.disabledRules == rhs.disabledRules) &&
+           (lhs.excluded == rhs.excluded) &&
+           (lhs.included == rhs.included) &&
+           (lhs.reporter == rhs.reporter) &&
+           (lhs.useNestedConfigs == rhs.useNestedConfigs) &&
+           (lhs.configPath == rhs.configPath) &&
+           (lhs.rootPath == lhs.rootPath) &&
+           (lhs.rules == rhs.rules)
+}
+
+func == (lhs: [Rule], rhs: [Rule]) -> Bool {
+    if lhs.count == rhs.count {
+        return zip(lhs, rhs).map { $0.isEqualTo($1) }.reduce(true) { $0 && $1 }
+    }
+
+    return false
 }

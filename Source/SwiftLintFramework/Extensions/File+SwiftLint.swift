@@ -11,18 +11,22 @@ import SourceKittenFramework
 import SwiftXPC
 
 internal func regex(pattern: String) -> NSRegularExpression {
-    // all patterns used for regular expressions in SwiftLint are string literals which have
-    // been confirmed to work, so it's ok to force-try here.
-    // swiftlint:disable force_try
+    // all patterns used for regular expressions in SwiftLint are string literals which have been
+    // confirmed to work, so it's ok to force-try here.
+
+    // swiftlint:disable:next force_try
     return try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
-    // swiftlint:enable force_try
 }
 
 extension File {
     public func regions() -> [Region] {
         let contents = self.contents as NSString
-        let commands = matchPattern("swiftlint:(enable|disable)\\ [^\\s]+",
-            withSyntaxKinds: [.Comment]).flatMap { Command(string: contents, range: $0) }
+        let commands = matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
+            withSyntaxKinds: [.Comment]).flatMap { range in
+                return Command(string: contents, range: range)
+        }.flatMap { command in
+            return command.expand()
+        }
         let totalNumberOfLines = lines.count
         let numberOfCharactersInLastLine = lines.last?.content.characters.count
         var regions = [Region]()
@@ -115,11 +119,11 @@ extension File {
     }
 
     public func write(string: String) {
-        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
-            fatalError("can't encode '\(string)' with UTF8")
-        }
         guard let path = path else {
             fatalError("file needs a path to call write(_:)")
+        }
+        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+            fatalError("can't encode '\(string)' with UTF8")
         }
         stringData.writeToFile(path, atomically: true)
         contents = string

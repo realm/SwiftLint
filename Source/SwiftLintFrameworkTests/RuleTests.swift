@@ -10,21 +10,21 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
-class RuleMock1: Rule {
-    static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
-    func validateFile(file: File) -> [StyleViolation] {
-        return []
-    }
-}
-
-class RuleMock2: Rule {
-    static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
-    func validateFile(file: File) -> [StyleViolation] {
-        return []
-    }
-}
-
 class RuleTests: XCTestCase {
+
+    private class RuleMock1: Rule {
+        static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
+        func validateFile(file: File) -> [StyleViolation] {
+            return []
+        }
+    }
+
+    private class RuleMock2: Rule {
+        static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
+        func validateFile(file: File) -> [StyleViolation] {
+            return []
+        }
+    }
 
     private class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
         let parameters: [RuleParameter<Int>]

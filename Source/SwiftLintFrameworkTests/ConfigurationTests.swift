@@ -7,6 +7,7 @@
 //
 
 @testable import SwiftLintFramework
+import SourceKittenFramework
 import XCTest
 
 class ConfigurationTests: XCTestCase {
@@ -121,7 +122,92 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Nested Configurations
 
+    private var projectMockConfig0: Configuration {
+        var config = Configuration(path: projectMockYAML0, optional: false, silent: true)
+        config.rootPath = projectMockPathLevel0
+        return config
+    }
+
+    private var projectMockConfig2: Configuration {
+        return Configuration(path: projectMockYAML2, optional: false, silent: true)
+    }
+
     func testMerge() {
         XCTAssertEqual(configurationMock1.merge(configurationMock2), configurationMock2)
+    }
+
+    func testLevel0() {
+        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift0)!),
+                       projectMockConfig0)
+    }
+
+    func testLevel1() {
+        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift1)!),
+                       projectMockConfig0)
+    }
+
+    func testLevel2() {
+        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift2)!),
+                       projectMockConfig0.merge(projectMockConfig2))
+    }
+
+    func testLevel3() {
+        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift3)!),
+                       projectMockConfig0.merge(projectMockConfig2))
+    }
+
+    func testDoNotUseNestedConfigs() {
+        var config = Configuration(yaml: "\nuse_nested_configs: false\n")!
+        config.rootPath = projectMockPathLevel0
+        XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
+                       config)
+    }
+}
+
+// MARK: - ProjectMock Paths
+
+extension XCTestCase {
+    var bundlePath: String {
+        return NSBundle(forClass: self.dynamicType).resourcePath!
+    }
+
+    var projectMockPathLevel0: String {
+        return bundlePath.stringByAppendingPathComponent("ProjectMock")
+    }
+
+    var projectMockPathLevel1: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("Level1")
+    }
+
+    var projectMockPathLevel2: String {
+        return projectMockPathLevel1.stringByAppendingPathComponent("Level2")
+    }
+
+    var projectMockPathLevel3: String {
+        return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
+    }
+
+    var projectMockYAML0: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent(".swiftlint.yml")
+    }
+
+    var projectMockYAML2: String {
+        return projectMockPathLevel2.stringByAppendingPathComponent(".swiftlint.yml")
+    }
+
+    var projectMockSwift0: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("Level0.swift")
+    }
+
+    var projectMockSwift1: String {
+        return projectMockPathLevel1.stringByAppendingPathComponent("Level1.swift")
+    }
+
+    var projectMockSwift2: String {
+        return projectMockPathLevel2.stringByAppendingPathComponent("Level2.swift")
+    }
+
+    var projectMockSwift3: String {
+        return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
 }

@@ -260,11 +260,3 @@ public func == (lhs: Configuration, rhs: Configuration) -> Bool {
            (lhs.rootPath == lhs.rootPath) &&
            (lhs.rules == rhs.rules)
 }
-
-func == (lhs: [Rule], rhs: [Rule]) -> Bool {
-    if lhs.count == rhs.count {
-        return zip(lhs, rhs).map { $0.isEqualTo($1) }.reduce(true) { $0 && $1 }
-    }
-
-    return false
-}

@@ -80,4 +80,8 @@ class RuleTests: XCTestCase {
             .isEqualTo(RuleMock2()))
     }
 
+    func testRuleArraysWithDifferentCountsNotEqual() {
+        XCTAssertNotEqual([RuleMock1(), RuleMock2()], [RuleMock1()])
+    }
+
 }

@@ -36,12 +36,12 @@ public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }
 
-//// MARK: - == implementation
-//
-//public func == (lhs: Rule, rhs: Rule) -> Bool {
-//    return lhs.isEqualTo(rhs)
-//}
-//
-//public func == <T: ParameterizedRule>(lhs: T, rhs: T) -> Bool {
-//    return lhs.isEqualTo(rhs)
-//}
+// MARK: - == Implementations
+
+func == (lhs: [Rule], rhs: [Rule]) -> Bool {
+    if lhs.count == rhs.count {
+        return zip(lhs, rhs).map { $0.isEqualTo($1) }.reduce(true) { $0 && $1 }
+    }
+
+    return false
+}

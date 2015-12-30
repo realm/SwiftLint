@@ -90,35 +90,33 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
+    // MARK: - Testing Configuration Equality
+
+    private let configurationMock1 = Configuration(disabledRules: ["nobody-does-this-anyway"],
+                                                        included: ["Source"],
+                                                        excluded: ["Source/I_Did_Very_Bad_things"],
+                                                        reporter: "shhhh",
+                                                           rules: [RuleMock1()],
+                                                useNestedConfigs: true)
+    private let configurationMock2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
+                                                        included: ["Source"],
+                                                        excluded: ["Source/I_Did_Very_Bad_things"],
+                                                        reporter: "shhhh",
+                                                           rules: [RuleMock2()],
+                                                useNestedConfigs: true)
+
     func testIsEqualTo() {
-        let configuration1 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                included: ["Source"],
-                                                excluded: ["Source/I_Did_Very_Bad_things"],
-                                                reporter: "shhhh",
-                                                   rules: [RuleMock1()],
-                                        useNestedConfigs: true)
+
         let configuration2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
                                                 included: ["Source"],
                                                 excluded: ["Source/I_Did_Very_Bad_things"],
                                                 reporter: "shhhh",
                                                    rules: [RuleMock1()],
                                         useNestedConfigs: true)
-        XCTAssertEqual(configuration1, configuration2)
+        XCTAssertEqual(configurationMock1, configuration2)
     }
 
     func testIsNotEqualTo() {
-        let configuration1 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                included: ["Source"],
-                                                excluded: ["Source/I_Did_Very_Bad_things"],
-                                                reporter: "shhhh",
-                                                   rules: [RuleMock1()],
-                                        useNestedConfigs: true)
-        let configuration2 = Configuration(disabledRules: ["nobody-does-this-anyway"],
-                                                included: ["Source"],
-                                                excluded: ["Source/I_Did_Very_Bad_things"],
-                                                reporter: "shhhh",
-                                                   rules: [RuleMock2()],
-                                        useNestedConfigs: true)
-        XCTAssertNotEqual(configuration1, configuration2)
+        XCTAssertNotEqual(configurationMock1, configurationMock2)
     }
 }

@@ -146,6 +146,20 @@ type_body_length:
 reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 ```
 
+#### Nested Configurations
+
+SwiftLint supports nesting configuration files for more granular control over
+the linting process.
+
+  * Set the `use_nested_configs: true` value in your root `.swiftlint.yml` file 
+  * Include additional `.swiftlint.yml` files where necessary in your directory
+    structure.
+  * Each file will be linted using the configuration file that is in it's
+    directory or at the deepest level of it's parent directories. Otherwise the
+    root configuration will be used.
+  * `excluded`, `included`, and `use_nested_configs` are ignored for nested
+    configurations
+
 ### Auto-correct
 
 SwiftLint can automatically correct certain violations. Files on disk are

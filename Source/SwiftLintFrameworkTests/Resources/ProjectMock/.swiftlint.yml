@@ -3,7 +3,7 @@ disabled_rules:
 included:
   - "everything"
 exluded:
-  - "the place where i commited many coding sins"
+  - "the place where i committed many coding sins"
 line_length: 10000000000
 reporter: "json"
 use_nested_configs: true

@@ -32,10 +32,10 @@ public struct OpeningBraceRule: CorrectableRule {
             "[].map({ })"
         ],
         triggeringExamples: [
-            "func abc(){\n}",
-            "func abc()\n\t{ }",
-            "[].map(){ $0 }",
-            "[].map( { } )"
+            "func abc(↓){\n}",
+            "func abc()↓\n\t{ }",
+            "[].map(↓){ $0 }",
+            "[].map↓( { } )"
         ],
         corrections: [
             "struct Rule{}\n": "struct Rule {}\n",

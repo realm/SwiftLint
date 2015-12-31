@@ -31,22 +31,22 @@ public struct ControlStatementRule: Rule {
             "switch foo {\n"
         ],
         triggeringExamples: [
-            "if (condition) {\n",
-            "if(condition) {\n",
-            "if ((a || b) && (c || d)) {\n",
-            "if ((min...max).contains(value)) {\n",
-            "for (item in collection) {\n",
-            "for (var index = 0; index < 42; index++) {\n",
-            "for(item in collection) {\n",
-            "for(var index = 0; index < 42; index++) {\n",
-            "guard (condition) else {\n",
-            "while (condition) {\n",
-            "while(condition) {\n",
-            "} while (condition) {\n",
-            "} while(condition) {\n",
-            "do { ; } while(condition) {\n",
-            "do { ; } while (condition) {\n",
-            "switch (foo) {\n"
+            "↓if (condition) {\n",
+            "↓if(condition) {\n",
+            "↓if ((a || b) && (c || d)) {\n",
+            "↓if ((min...max).contains(value)) {\n",
+            "↓for (item in collection) {\n",
+            "↓for (var index = 0; index < 42; index++) {\n",
+            "↓for(item in collection) {\n",
+            "↓for(var index = 0; index < 42; index++) {\n",
+            "↓guard (condition) else {\n",
+            "↓while (condition) {\n",
+            "↓while(condition) {\n",
+            "} ↓while (condition) {\n",
+            "} ↓while(condition) {\n",
+            "do { ; } ↓while(condition) {\n",
+            "do { ; } ↓while (condition) {\n",
+            "↓switch (foo) {\n"
         ]
     )
 

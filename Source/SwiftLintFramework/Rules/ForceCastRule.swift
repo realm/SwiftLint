@@ -16,7 +16,7 @@ public struct ForceCastRule: Rule {
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"
         ],
-        triggeringExamples: [ "NSNumber() as! Int\n" ]
+        triggeringExamples: [ "NSNumber() ↓as! Int\n" ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

@@ -21,11 +21,10 @@ public struct NestingRule: ASTRule {
                 "func func5() {\n}\n}\n}\n}\n}\n}\n"]
         } + ["enum Enum0 { enum Enum1 { case Case } }"],
         triggeringExamples: ["class", "struct", "enum"].map { kind in
-            "\(kind) Class0 { \(kind) Class1 { \(kind) Class2 {} } }\n"
+            "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
             } + [
-                "enum Enum0 { enum Enum1 { enum Enum2 { case Case } } }",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-                "func func5() {\nfunc func6() {\n}\n}\n}\n}\n}\n}\n}\n"
+                "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
         ]
     )
 

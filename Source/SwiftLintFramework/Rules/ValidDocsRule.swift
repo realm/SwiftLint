@@ -22,7 +22,8 @@ extension File {
             where !comment.containsString(":nodoc:") else {
                 return substructureOffsets
         }
-        let declaration = contents[Int(offset)..<Int(bodyOffset)]
+        let declaration = (contents as NSString)
+            .substringWithByteRange(start: Int(offset), length: Int(bodyOffset - offset))!
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
             superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||
@@ -83,7 +84,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
         $0["key.name"] as? String
     } ?? []
     let labelsAndParams = parameterNames.map { parameter -> (label: String, parameter: String) in
-        let fullRange = NSRange(location: 0, length: Int(bodyOffset - offset))
+        let fullRange = NSRange(location: 0, length: declaration.utf16.count)
         let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
             .firstMatchInString(declaration, options: [], range: fullRange)
         if let match = firstMatch {
@@ -133,26 +134,28 @@ public struct ValidDocsRule: Rule {
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too" +
             "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
         ],
         triggeringExamples: [
-            "/// docs\npublic func a(param: Void) {}\n",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a(param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a(label param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic func a() {}",
-            "/// docs\npublic func no() -> Bool { return false }",
-            "/// Returns false\npublic func a() {}",
-            "/// docs\n/// - throws: NSError\nfunc a() {}",
-            "/// docs\nfunc a() throws {}",
+            "/// docs\npublic ↓func a(param: Void) {}\n",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(label param: Void) {}",
+            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a() {}",
+            "/// docs\npublic ↓func no() -> Bool { return false }",
+            "/// Returns false\npublic ↓func a() {}",
+            "/// docs\n/// - throws: NSError\n↓func a() {}",
+            "/// docs\n↓func a() throws {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
+            "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
+            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
+            "Bool {return false}",
             "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?) {}",
+            "\npublic ↓func no(param: (Void -> Void)?) {}",
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
         ]
     )
 

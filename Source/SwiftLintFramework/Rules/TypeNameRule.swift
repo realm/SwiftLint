@@ -20,10 +20,10 @@ public struct TypeNameRule: ASTRule {
             "private struct _MyStruct {}"
         ],
         triggeringExamples: [
-            "struct myStruct {}",
-            "struct _MyStruct {}",
-            "private struct MyStruct_ {}",
-            "struct My {}"
+            "↓struct myStruct {}",
+            "↓struct _MyStruct {}",
+            "private ↓struct MyStruct_ {}",
+            "↓struct My {}"
         ]
     )
 

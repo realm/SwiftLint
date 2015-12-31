@@ -13,6 +13,11 @@
   [JP Simard](https://github.com/jpsim)
   [#277](https://github.com/realm/SwiftLint/issues/277)
 
+* Support command comment modifiers (`previous`, `this` & `next`) to limit the
+  command's scope to a single line.
+  [JP Simard](https://github.com/jpsim)
+  [#222](https://github.com/realm/SwiftLint/issues/222)
+
 * Add nested `.swiftlint.yml` configuration support.  
   [Scott Hoyt](https://github.com/scottrhoyt)
   [#299](https://github.com/realm/SwiftLint/issues/299)
@@ -22,6 +27,14 @@
 * Fix multibyte handling in many rules.  
   [JP Simard](https://github.com/jpsim)
   [#279](https://github.com/realm/SwiftLint/issues/279)
+
+* Fix an `NSRangeException` crash.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#294](https://github.com/realm/SwiftLint/issues/294)
+
+* The `valid_docs` rule now handles multibyte characters.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#295](https://github.com/realm/SwiftLint/issues/295)
 
 ## 0.5.3: Mountain Scent
 

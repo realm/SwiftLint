@@ -25,9 +25,9 @@ public struct VariableNameRule: ASTRule {
             "let URL: NSURL? = nil"
         ],
         triggeringExamples: [
-            "let MyLet = 0",
-            "let _myLet = 0",
-            "private let myLet_ = 0"
+            "↓let MyLet = 0",
+            "↓let _myLet = 0",
+            "private ↓let myLet_ = 0"
         ]
     )
 

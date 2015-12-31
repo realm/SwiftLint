@@ -13,6 +13,10 @@
   [JP Simard](https://github.com/jpsim)
   [#277](https://github.com/realm/SwiftLint/issues/277)
 
+* Add nested `.swiftlint.yml` configuration support.
+  [Scott Hoyt](https://github.com/scottrhoyt)
+  [#299](https://github.com/realm/SwiftLint/issues/299)
+
 ##### Bug Fixes
 
 * Fix multibyte handling in many rules.  

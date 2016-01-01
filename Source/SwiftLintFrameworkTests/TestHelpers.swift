@@ -12,7 +12,7 @@ import XCTest
 
 private let violationMarker = "↓"
 
-let allRuleIdentifiers = Configuration.rulesFromYAML().map {
+let allRuleIdentifiers = Configuration.rulesFromDict().map {
     $0.dynamicType.description.identifier
 }
 

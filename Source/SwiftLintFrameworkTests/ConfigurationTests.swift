@@ -37,7 +37,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
             ["nesting", "todo"],
             "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Configuration.rulesFromYAML()
+        let expectedIdentifiers = Configuration.rulesFromDict()
             .map({ $0.dynamicType.description.identifier })
             .filter({ !["nesting", "todo"].contains($0) })
         let configuredIdentifiers = disabledConfig.rules.map {
@@ -60,7 +60,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
             [validRule],
             "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Configuration.rulesFromYAML()
+        let expectedIdentifiers = Configuration.rulesFromDict()
             .map({ $0.dynamicType.description.identifier })
             .filter({ ![validRule].contains($0) })
         let configuredIdentifiers = configuration.rules.map {

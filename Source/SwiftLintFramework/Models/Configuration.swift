@@ -41,7 +41,7 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromYAML(),
+                 rules: [Rule] = Configuration.rulesFromDict(),
                  useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
@@ -50,7 +50,7 @@ public struct Configuration: Equatable {
 
         // Validate that all rule identifiers map to a defined rule
 
-        let validRuleIdentifiers = Configuration.rulesFromYAML().map {
+        let validRuleIdentifiers = Configuration.rulesFromDict().map {
             $0.dynamicType.description.identifier
         }
 
@@ -90,6 +90,7 @@ public struct Configuration: Equatable {
             included: dict["included"] as? [String] ?? [],
             excluded: dict["excluded"] as? [String] ?? [],
             reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
+            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
             rules: Configuration.rulesFromDict(dict)
         )
     }
@@ -102,14 +103,12 @@ public struct Configuration: Equatable {
     }
 
     private init?(yamlConfig: Yaml) {
-        self.init(
-            disabledRules: yamlConfig["disabled_rules"].arrayOfStrings ?? [],
-            included: yamlConfig["included"].arrayOfStrings ?? [],
-            excluded: yamlConfig["excluded"].arrayOfStrings ?? [],
-            reporter: yamlConfig["reporter"].string ?? XcodeReporter.identifier,
-            rules: Configuration.rulesFromYAML(yamlConfig),
-            useNestedConfigs: yamlConfig["use_nested_configs"].bool ?? false
-        )
+        if let dict = yamlConfig.flatDictionary {
+            self.init(dict: dict)
+        } else {
+            // TODO: Decide if this is how you want to handle this.
+            self.init(useNestedConfigs: false)
+        }
     }
 
     private static func loadYaml(yaml: String) -> Yaml? {
@@ -150,7 +149,7 @@ public struct Configuration: Equatable {
         self.init()!
     }
 
-    public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
+    public static func rulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
         return [
             ClosingBraceRule(),
             ColonRule(),
@@ -173,48 +172,7 @@ public struct Configuration: Equatable {
             TypeNameRule(),
             ValidDocsRule(),
             VariableNameRule(),
-        ] + parameterRulesFromYAML(yaml)
-    }
-
-    public static func rulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
-        return [
-            ClosingBraceRule(),
-            ColonRule(),
-            CommaRule(),
-            ControlStatementRule(),
-            ForceCastRule(),
-            ForceTryRule(),
-            LeadingWhitespaceRule(),
-            LegacyConstructorRule(),
-            NestingRule(),
-            OpeningBraceRule(),
-            OperatorFunctionWhitespaceRule(),
-            ReturnArrowWhitespaceRule(),
-            StatementPositionRule(),
-            TodoRule(),
-            TrailingNewlineRule(),
-            TrailingSemicolonRule(),
-            TrailingWhitespaceRule(),
-            TypeNameRule(),
-            ValidDocsRule(),
-            VariableNameRule(),
             ] + parameterRulesFromDict(dict)
-    }
-
-    private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
-            (yaml?[.String($0.description.identifier)].arrayOfInts).map(ruleParametersFromArray)
-        }
-        // swiftlint:disable line_length
-        return [
-            intParams(FileLengthRule).map(FileLengthRule.init) ?? FileLengthRule(),
-            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
-            intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
-            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
-            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
-            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
-        ]
-        // swiftlint:enable line_length
     }
 
     private static func parameterRulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {

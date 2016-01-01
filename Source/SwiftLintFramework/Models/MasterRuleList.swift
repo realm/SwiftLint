@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: Try using type instead of instance for Rule list
 struct RuleList {
     let list: [String: Rule]
     init(rules: Rule...) {

@@ -84,6 +84,16 @@ public struct Configuration: Equatable {
         }
     }
 
+    public init?(dict: [String: AnyObject]) {
+        self.init(
+            disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            included: dict["included"] as? [String] ?? [],
+            excluded: dict["excluded"] as? [String] ?? [],
+            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
+            rules: Configuration.rulesFromDict(dict)
+        )
+    }
+
     public init?(yaml: String) {
         guard let yamlConfig = Configuration.loadYaml(yaml) else {
             return nil
@@ -166,9 +176,50 @@ public struct Configuration: Equatable {
         ] + parameterRulesFromYAML(yaml)
     }
 
+    public static func rulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
+        return [
+            ClosingBraceRule(),
+            ColonRule(),
+            CommaRule(),
+            ControlStatementRule(),
+            ForceCastRule(),
+            ForceTryRule(),
+            LeadingWhitespaceRule(),
+            LegacyConstructorRule(),
+            NestingRule(),
+            OpeningBraceRule(),
+            OperatorFunctionWhitespaceRule(),
+            ReturnArrowWhitespaceRule(),
+            StatementPositionRule(),
+            TodoRule(),
+            TrailingNewlineRule(),
+            TrailingSemicolonRule(),
+            TrailingWhitespaceRule(),
+            TypeNameRule(),
+            ValidDocsRule(),
+            VariableNameRule(),
+            ] + parameterRulesFromDict(dict)
+    }
+
     private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
             (yaml?[.String($0.description.identifier)].arrayOfInts).map(ruleParametersFromArray)
+        }
+        // swiftlint:disable line_length
+        return [
+            intParams(FileLengthRule).map(FileLengthRule.init) ?? FileLengthRule(),
+            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
+            intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
+            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
+            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
+            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
+        ]
+        // swiftlint:enable line_length
+    }
+
+    private static func parameterRulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
+        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
+            (dict?[$0.description.identifier] as? [Int]).map(ruleParametersFromArray)
         }
         // swiftlint:disable line_length
         return [

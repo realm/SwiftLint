@@ -80,7 +80,7 @@ directory to see the currently implemented rules.
 ### Disable a rule in code
 
 Rules can be disabled with a comment inside a source file with the following
-format: 
+format:
 
 `// swiftlint:disable <rule>`
 
@@ -151,14 +151,14 @@ reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 SwiftLint supports nesting configuration files for more granular control over
 the linting process.
 
-  * Set the `use_nested_configs: true` value in your root `.swiftlint.yml` file 
-  * Include additional `.swiftlint.yml` files where necessary in your directory
-    structure.
-  * Each file will be linted using the configuration file that is in it's
-    directory or at the deepest level of it's parent directories. Otherwise the
-    root configuration will be used.
-  * `excluded`, `included`, and `use_nested_configs` are ignored for nested
-    configurations
+* Set the `use_nested_configs: true` value in your root `.swiftlint.yml` file
+* Include additional `.swiftlint.yml` files where necessary in your directory
+  structure.
+* Each file will be linted using the configuration file that is in its
+  directory or at the deepest level of its parent directories. Otherwise the
+  root configuration will be used.
+* `excluded`, `included`, and `use_nested_configs` are ignored for nested
+  configurations.
 
 ### Auto-correct
 

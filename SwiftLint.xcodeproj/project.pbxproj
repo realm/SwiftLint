@@ -16,6 +16,7 @@
 		3B12C9C31C320A53000B423F /* Yaml+SwiftLintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */; };
 		3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C41C322032000B423F /* MasterRuleList.swift */; };
 		3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C61C3361CB000B423F /* RuleTests.swift */; };
+		3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B30C4A01C3785B300E04027 /* YamlParserTests.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
@@ -157,6 +158,7 @@
 		3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yaml+SwiftLintTests.swift"; sourceTree = "<group>"; };
 		3B12C9C41C322032000B423F /* MasterRuleList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterRuleList.swift; sourceTree = "<group>"; };
 		3B12C9C61C3361CB000B423F /* RuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleTests.swift; sourceTree = "<group>"; };
+		3B30C4A01C3785B300E04027 /* YamlParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParserTests.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
 				3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */,
 				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
+				3B30C4A01C3785B300E04027 /* YamlParserTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Source/SwiftLintFrameworkTests;
@@ -818,6 +821,7 @@
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,
 				E86396C71BADAFE6002C9E88 /* ReporterTests.swift in Sources */,
 				3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */,
+				3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */,
 				E88198631BEA9A5400333A11 /* StringRuleTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
 			);

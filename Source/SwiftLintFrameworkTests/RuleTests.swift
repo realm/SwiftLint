@@ -113,42 +113,35 @@ class RuleTests: XCTestCase {
     }
 
     func testParameterizedConfigurableRuleInits() {
-        let config = [RuleMock1.description.identifier: [1, 2]]
+        let config = [1, 2]
         let rule = ConfigurableRuleMock1.init(config: config)
-        XCTAssertEqual(rule.parameters, RuleParameter<Int>.ruleParametersFromArray([1, 2]))
+        XCTAssertEqual(rule!.parameters, RuleParameter<Int>.ruleParametersFromArray([1, 2]))
     }
 
     func testParameterizedConfigurableRuleDoesntInit() {
-        let config = [RuleMock1.description.identifier: ["a", "b"]]
-        let rule = ConfigurableRuleMock1.init(config: config)
-        XCTAssertNotEqual(rule.parameters, RuleParameter<Int>.ruleParametersFromArray([1, 2]))
-    }
-
-    func testParameterizedConfigurableFallbackInit() {
-        let config = [RuleMock1.description.identifier: ["a", "b"]]
-        let rule = ConfigurableRuleMock1.init(config: config)
-        XCTAssertEqual(rule.parameters, ConfigurableRuleMock1().parameters)
+        let config = ["a", "b"]
+        XCTAssertNil(ConfigurableRuleMock1.init(config: config))
     }
 
     func testParameterizedConfigurableRuleEqual() {
-        let config1 = [RuleMock1.description.identifier: [1, 2]]
-        let config2 = [RuleMock1.description.identifier: [1, 2]]
-        XCTAssertTrue(ConfigurableRuleMock1.init(config: config1)
-           .isEqualTo(ConfigurableRuleMock1.init(config: config2)))
+        let config1 = [1, 2]
+        let config2 = [1, 2]
+        XCTAssertTrue(ConfigurableRuleMock1.init(config: config1)!
+           .isEqualTo(ConfigurableRuleMock1.init(config: config2)!))
     }
 
     func testParameterizedConfigurableRuleNotEqual() {
-        let config1 = [RuleMock1.description.identifier: [1, 2]]
-        let config2 = [RuleMock1.description.identifier: [3, 4]]
-        XCTAssertFalse(ConfigurableRuleMock1.init(config: config1)
-            .isEqualTo(ConfigurableRuleMock1.init(config: config2)))
+        let config1 = [1, 2]
+        let config2 = [3, 4]
+        XCTAssertFalse(ConfigurableRuleMock1.init(config: config1)!
+            .isEqualTo(ConfigurableRuleMock1.init(config: config2)!))
     }
 
     func testDifferentParameterizedConfigurableRulesNotEqual() {
-        let config1 = [RuleMock1.description.identifier: [1, 2]]
-        let config2 = [RuleMock2.description.identifier: [1, 2]]
-        XCTAssertFalse(ConfigurableRuleMock1.init(config: config1)
-            .isEqualTo(ConfigurableRuleMock2.init(config: config2)))
+        let config1 = [1, 2]
+        let config2 = [1, 2]
+        XCTAssertFalse(ConfigurableRuleMock1.init(config: config1)!
+            .isEqualTo(ConfigurableRuleMock2.init(config: config2)!))
     }
 
 }

@@ -28,8 +28,7 @@ public protocol ParameterizedRule: Rule {
 }
 
 public protocol ConfigurableRule: Rule {
-    // TODO: Should switch this to AnyObject and failable
-    init(config: [String: AnyObject])
+    init?(config: AnyObject)
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
@@ -42,11 +41,11 @@ extension ParameterizedRule {
 
 extension ParameterizedRule where Self: ConfigurableRule, ParameterType == Int {
 
-    public init(config: [String: AnyObject]) {
-        if let array = Self.arrayOfInts(config[Self.description.identifier]) {
+    public init?(config: AnyObject) {
+        if let array = Self.arrayOfInts(config) {
             self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
         } else {
-            self.init()
+            return nil
         }
     }
 

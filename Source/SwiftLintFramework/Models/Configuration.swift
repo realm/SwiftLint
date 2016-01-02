@@ -122,10 +122,15 @@ public struct Configuration: Equatable {
     static func rulesFromDict(dict: [String: AnyObject]? = nil, ruleList: RuleList = masterRuleList) -> [Rule] {
         var rules = [Rule]()
         for rule in ruleList.list.values {
+            let identifier = rule.description.identifier
             if rule is ConfigurableRule.Type,
-               let ruleConfig = dict?[rule.description.identifier] {
+               let ruleConfig = dict?[identifier] {
                 // swiftlint:disable force_cast
-                rules.append((rule as! ConfigurableRule.Type).init(config: [rule.description.identifier: ruleConfig]))
+                if let configuredRule = (rule as! ConfigurableRule.Type).init(config: ruleConfig) {
+                    rules.append(configuredRule)
+                } else {
+                    queuedPrintError("Invalid config for \(identifier). Falling back to default")
+                }
                 // swiftlint:enabld force_cast
             } else {
                 rules.append(rule.init())

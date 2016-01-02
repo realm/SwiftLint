@@ -8,7 +8,6 @@
 
 import Foundation
 import SourceKittenFramework
-import Yaml
 
 private let fileManager = NSFileManager.defaultManager()
 
@@ -84,42 +83,19 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: AnyObject]) {
-        self.init(
-            disabledRules: dict["disabled_rules"] as? [String] ?? [],
-            included: dict["included"] as? [String] ?? [],
-            excluded: dict["excluded"] as? [String] ?? [],
-            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
-            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
-            rules: Configuration.rulesFromDict(dict)
-        )
-    }
-
-    public init?(yaml: String) {
-        guard let yamlConfig = Configuration.loadYaml(yaml) else {
-            return nil
-        }
-        self.init(yamlConfig: yamlConfig)
-    }
-
-    private init?(yamlConfig: Yaml) {
-        if let dict = yamlConfig.flatDictionary {
-            self.init(dict: dict)
+    public init?(dict: [String: AnyObject]?) {
+        if let dict = dict {
+            self.init(
+                disabledRules: dict["disabled_rules"] as? [String] ?? [],
+                included: dict["included"] as? [String] ?? [],
+                excluded: dict["excluded"] as? [String] ?? [],
+                reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
+                useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
+                rules: Configuration.rulesFromDict(dict)
+            )
         } else {
-            // TODO: Decide if this is how you want to handle this.
             self.init(useNestedConfigs: false)
         }
-    }
-
-    private static func loadYaml(yaml: String) -> Yaml? {
-        let yamlResult = Yaml.load(yaml)
-        if let yamlConfig = yamlResult.value {
-            return yamlConfig
-        }
-        if let error = yamlResult.error {
-            queuedPrint(error)
-        }
-        return nil
     }
 
     public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
@@ -133,16 +109,13 @@ public struct Configuration: Equatable {
         do {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
-            if let yamlConfig = Configuration.loadYaml(yamlContents) {
-                if !silent {
-                    queuedPrintError("Loading configuration from '\(path)'")
-                }
-                self.init(yamlConfig: yamlConfig)!
-                configPath = fullPath
-                return
-            } else {
-                fail()
+            let dict = try YamlParser.parse(yamlContents)
+            if !silent {
+                queuedPrintError("Loading configuration from '\(path)'")
             }
+            self.init(dict: dict)!
+            configPath = fullPath
+            return
         } catch {
             fail()
         }

@@ -102,4 +102,17 @@ extension XCTestCase {
         // corrections
         ruleDescription.corrections.forEach(assertCorrection)
     }
+    
+    func checkError<T: protocol<ErrorType, Equatable>>(error: T, closure: () throws -> () ) {
+        do {
+            try closure()
+            XCTFail("No error caught")
+        } catch let rError as T {
+            if error != rError {
+                XCTFail("Wrong error caught")
+            }
+        } catch {
+            XCTFail("Wrong error caught")
+        }
+    }
 }

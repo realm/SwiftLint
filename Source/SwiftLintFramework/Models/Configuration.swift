@@ -115,12 +115,11 @@ public struct Configuration: Equatable {
         let yamlResult = Yaml.load(yaml)
         if let yamlConfig = yamlResult.value {
             return yamlConfig
-        } else {
-            if let error = yamlResult.error {
-                queuedPrint(error)
-            }
-            return nil
         }
+        if let error = yamlResult.error {
+            queuedPrint(error)
+        }
+        return nil
     }
 
     public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
-public struct RuleParameter<T: Equatable> : Equatable {
+public struct RuleParameter<T: Equatable>: Equatable {
     public let severity: ViolationSeverity
     public let value: T
 

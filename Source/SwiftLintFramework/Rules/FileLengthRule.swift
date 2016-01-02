@@ -47,11 +47,4 @@ public struct FileLengthRule: ParameterizedRule, ConfigurableRule {
         }
         return []
     }
-
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? FileLengthRule {
-            return self.parameters == rule.parameters
-        }
-        return false
-    }
 }

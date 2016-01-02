@@ -78,11 +78,4 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule, ConfigurableRu
         }
         return []
     }
-
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? FunctionBodyLengthRule {
-            return self.parameters == rule.parameters
-        }
-        return false
-    }
 }

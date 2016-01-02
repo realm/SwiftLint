@@ -61,11 +61,4 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule, Configurabl
             return []
         } ?? []
     }
-
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? VariableNameMinLengthRule {
-            return self.parameters == rule.parameters
-        }
-        return false
-    }
 }

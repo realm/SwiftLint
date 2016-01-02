@@ -40,6 +40,15 @@ extension ParameterizedRule {
     }
 }
 
+extension ParameterizedRule where Self: ConfigurableRule {
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? Self {
+            return self.parameters == rule.parameters
+        }
+        return false
+    }
+}
+
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }

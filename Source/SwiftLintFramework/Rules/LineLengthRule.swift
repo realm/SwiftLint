@@ -49,12 +49,4 @@ public struct LineLengthRule: ParameterizedRule, ConfigurableRule {
             return nil
         }
     }
-
-    // TODO: Extract to Parameterized rule
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? LineLengthRule {
-            return self.parameters == rule.parameters
-        }
-        return false
-    }
 }

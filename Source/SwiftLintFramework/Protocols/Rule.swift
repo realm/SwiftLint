@@ -40,7 +40,25 @@ extension ParameterizedRule {
     }
 }
 
-extension ParameterizedRule where Self: ConfigurableRule {
+extension ParameterizedRule where Self: ConfigurableRule, ParameterType == Int {
+
+    public init(config: [String: AnyObject]) {
+        if let array = Self.arrayOfInts(config[Self.description.identifier]) {
+            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
+        } else {
+            self.init()
+        }
+    }
+
+    static func arrayOfInts(obj: AnyObject?) -> [Int]? {
+        if let array = obj as? [Int] {
+            return array
+        } else if let number = obj as? Int {
+            return [number]
+        }
+        return nil
+    }
+
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
         if let rule = rule as? Self {
             return self.parameters == rule.parameters

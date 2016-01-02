@@ -16,14 +16,6 @@ public struct FileLengthRule: ParameterizedRule, ConfigurableRule {
         ])
     }
 
-    public init(config: [String : AnyObject]) {
-        if let array = config[self.dynamicType.description.identifier] as? [Int] {
-            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
-        } else {
-            self.init()
-        }
-    }
-
     public init(parameters: [RuleParameter<Int>]) {
         self.parameters = parameters
     }

@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct LegacyConstructorRule: CorrectableRule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "legacy_constructor",
         name: "Legacy Constructor",

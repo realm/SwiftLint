@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct ForceTryRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "force_try",
         name: "Force Try",

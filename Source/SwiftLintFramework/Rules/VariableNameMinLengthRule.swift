@@ -9,12 +9,20 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
+public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule, ConfigurableRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 3),
             RuleParameter(severity: .Error, value: 2)
         ])
+    }
+
+    public init(config: [String : AnyObject]) {
+        if let array = config[self.dynamicType.description.identifier] as? [Int] {
+            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
+        } else {
+            self.init()
+        }
     }
 
     public init(parameters: [RuleParameter<Int>]) {
@@ -52,5 +60,12 @@ public struct VariableNameMinLengthRule: ASTRule, ParameterizedRule {
             }
             return []
         } ?? []
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? VariableNameMinLengthRule {
+            return self.parameters == rule.parameters
+        }
+        return false
     }
 }

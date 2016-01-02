@@ -9,12 +9,20 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
+public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule, ConfigurableRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 40),
             RuleParameter(severity: .Error, value: 100)
         ])
+    }
+
+    public init(config: [String : AnyObject]) {
+        if let array = config[self.dynamicType.description.identifier] as? [Int] {
+            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
+        } else {
+            self.init()
+        }
     }
 
     public init(parameters: [RuleParameter<Int>]) {
@@ -69,5 +77,12 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
             }
         }
         return []
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? FunctionBodyLengthRule {
+            return self.parameters == rule.parameters
+        }
+        return false
     }
 }

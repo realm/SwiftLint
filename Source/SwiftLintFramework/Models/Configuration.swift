@@ -118,48 +118,24 @@ public struct Configuration: Equatable {
         self.init()!
     }
 
-    public static func rulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
-        return [
-            ClosingBraceRule(),
-            ColonRule(),
-            CommaRule(),
-            ConditionalBindingCascadeRule(),
-            ControlStatementRule(),
-            ForceCastRule(),
-            ForceTryRule(),
-            LeadingWhitespaceRule(),
-            LegacyConstructorRule(),
-            NestingRule(),
-            OpeningBraceRule(),
-            OperatorFunctionWhitespaceRule(),
-            ReturnArrowWhitespaceRule(),
-            StatementPositionRule(),
-            TodoRule(),
-            TrailingNewlineRule(),
-            TrailingSemicolonRule(),
-            TrailingWhitespaceRule(),
-            TypeNameRule(),
-            ValidDocsRule(),
-            VariableNameRule(),
-            ] + parameterRulesFromDict(dict)
-    }
-
-    private static func parameterRulesFromDict(dict: [String: AnyObject]? = nil) -> [Rule] {
-        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
-            (dict?[$0.description.identifier] as? [Int]).map(ruleParametersFromArray)
+    // TODO: Rename to rulesFromConfigDict
+    static func rulesFromDict(dict: [String: AnyObject]? = nil, ruleList: RuleList = masterRuleList) -> [Rule] {
+        var rules = [Rule]()
+        for rule in ruleList.list.values {
+            if rule is ConfigurableRule.Type,
+               let ruleConfig = dict?[rule.description.identifier] {
+                // swiftlint:disable force_cast
+                rules.append((rule as! ConfigurableRule.Type).init(config: [rule.description.identifier: ruleConfig]))
+                // swiftlint:enabld force_cast
+            } else {
+                rules.append(rule.init())
+            }
         }
-        // swiftlint:disable line_length
-        return [
-            intParams(FileLengthRule).map(FileLengthRule.init) ?? FileLengthRule(),
-            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
-            intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
-            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
-            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
-            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
-        ]
-        // swiftlint:enable line_length
+
+        return rules
     }
 
+    // TODO: Extract this
     private static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
         return zip([.Warning, .Error], array).map(RuleParameter.init)
     }

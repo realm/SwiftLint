@@ -10,6 +10,9 @@ import Foundation
 import SourceKittenFramework
 
 public struct ReturnArrowWhitespaceRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "return_arrow_whitespace",
         name: "Returning Whitespace",

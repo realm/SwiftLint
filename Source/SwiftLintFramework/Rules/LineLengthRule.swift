@@ -8,12 +8,20 @@
 
 import SourceKittenFramework
 
-public struct LineLengthRule: ParameterizedRule {
+public struct LineLengthRule: ParameterizedRule, ConfigurableRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 100),
             RuleParameter(severity: .Error, value: 200)
         ])
+    }
+
+    public init(config: [String : AnyObject]) {
+        if let array = config[self.dynamicType.description.identifier] as? [Int] {
+            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
+        } else {
+            self.init()
+        }
     }
 
     public init(parameters: [RuleParameter<Int>]) {
@@ -40,5 +48,13 @@ public struct LineLengthRule: ParameterizedRule {
             }
             return nil
         }
+    }
+
+    // TODO: Extract to Parameterized rule
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? LineLengthRule {
+            return self.parameters == rule.parameters
+        }
+        return false
     }
 }

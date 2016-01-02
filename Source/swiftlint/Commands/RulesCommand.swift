@@ -15,9 +15,8 @@ struct RulesCommand: CommandType {
     let function = "Display the list of rules and their identifiers"
 
     func run(options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        let ruleDescriptions = Configuration.rulesFromDict().map {
-            $0.dynamicType.description.consoleDescription
-        }.joinWithSeparator("\n")
+        let ruleDescriptions = masterRuleList.list.keys
+        .joinWithSeparator("\n")
         print(ruleDescriptions)
         return .Success()
     }

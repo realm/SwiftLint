@@ -8,12 +8,20 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ParameterizedRule {
+public struct FileLengthRule: ParameterizedRule, ConfigurableRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 400),
             RuleParameter(severity: .Error, value: 1000)
         ])
+    }
+
+    public init(config: [String : AnyObject]) {
+        if let array = config[self.dynamicType.description.identifier] as? [Int] {
+            self.init(parameters: RuleParameter<Int>.ruleParametersFromArray(array))
+        } else {
+            self.init()
+        }
     }
 
     public init(parameters: [RuleParameter<Int>]) {
@@ -38,5 +46,12 @@ public struct FileLengthRule: ParameterizedRule {
                         "currently contains \(lineCount)")]
         }
         return []
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? FileLengthRule {
+            return self.parameters == rule.parameters
+        }
+        return false
     }
 }

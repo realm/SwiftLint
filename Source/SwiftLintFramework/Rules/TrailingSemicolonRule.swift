@@ -15,6 +15,9 @@ extension File {
 }
 
 public struct TrailingSemicolonRule: CorrectableRule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",

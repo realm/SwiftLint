@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct ForceCastRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "force_cast",
         name: "Force Cast",

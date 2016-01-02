@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct ColonRule: CorrectableRule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",

@@ -13,6 +13,7 @@ import SourceKittenFramework
 class RuleTests: XCTestCase {
 
     private class RuleMock1: Rule {
+        required init() {}
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
             return []
@@ -20,6 +21,7 @@ class RuleTests: XCTestCase {
     }
 
     private class RuleMock2: Rule {
+        required init() {}
         static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
             return []
@@ -27,6 +29,9 @@ class RuleTests: XCTestCase {
     }
 
     private class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
+        required init() {
+            parameters = []
+        }
         let parameters: [RuleParameter<Int>]
         required init(parameters: [RuleParameter<Int>]) {
             self.parameters = parameters
@@ -34,6 +39,9 @@ class RuleTests: XCTestCase {
     }
 
     private class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
+        required init() {
+            parameters = []
+        }
         let parameters: [RuleParameter<Int>]
         required init(parameters: [RuleParameter<Int>]) {
             self.parameters = parameters

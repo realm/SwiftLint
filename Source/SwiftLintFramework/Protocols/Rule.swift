@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public protocol Rule {
+    init() // Rules need to be able to be initialized with default values
     static var description: RuleDescription { get }
     func validateFile(file: File) -> [StyleViolation]
 }
@@ -17,12 +18,19 @@ extension Rule {
     func isEqualTo(rule: Rule) -> Bool {
         return self.dynamicType.description == rule.dynamicType.description
     }
+    // TODO: Add identifier extension
 }
 
 public protocol ParameterizedRule: Rule {
     typealias ParameterType: Equatable
     init(parameters: [RuleParameter<ParameterType>])
     var parameters: [RuleParameter<ParameterType>] { get }
+}
+
+public protocol ConfigurableRule: Rule {
+    // TODO: Should switch this to AnyObject and failable
+    init(config: [String: AnyObject])
+    func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
 extension ParameterizedRule {

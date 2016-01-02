@@ -14,6 +14,10 @@ public struct RuleParameter<T: Equatable>: Equatable {
         self.severity = severity
         self.value = value
     }
+
+    static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
+        return zip([.Warning, .Error], array).map(RuleParameter<T>.init)
+    }
 }
 
 // MARK: - Equatable

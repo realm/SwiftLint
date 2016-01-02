@@ -102,7 +102,7 @@ extension XCTestCase {
         // corrections
         ruleDescription.corrections.forEach(assertCorrection)
     }
-    
+
     func checkError<T: protocol<ErrorType, Equatable>>(error: T, closure: () throws -> () ) {
         do {
             try closure()

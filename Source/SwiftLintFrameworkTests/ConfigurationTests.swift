@@ -11,10 +11,12 @@ import SourceKittenFramework
 import XCTest
 
 class ConfigurationTests: XCTestCase {
+    // TODO: Find a way around force try
+    // swiftlint:disable force_try
     func testInit() {
-        XCTAssert(Configuration(dict: try? YamlParser.parse("")) != nil,
+        XCTAssert(Configuration(dict: try! YamlParser.parse("")) != nil,
             "initializing Configuration with empty YAML string should succeed")
-        XCTAssert(Configuration(dict: try? YamlParser.parse("a: 1\nb: 2")) != nil,
+        XCTAssert(Configuration(dict: try! YamlParser.parse("a: 1\nb: 2")) != nil,
             "initializing Configuration with valid YAML string should succeed")
         
         // TODO: Should move these to YAML parsing tests
@@ -24,7 +26,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testEmptyConfiguration() {
-        guard let config = Configuration(dict: try? YamlParser.parse("")) else {
+        guard let config = Configuration(dict: try! YamlParser.parse("")) else {
             XCTFail("empty YAML string should yield non-nil Configuration")
             return
         }
@@ -36,7 +38,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDisabledRules() {
-        let disabledConfig = Configuration(dict: try? YamlParser.parse("disabled_rules:\n  - nesting\n  - todo"))!
+        let disabledConfig = Configuration(dict: try! YamlParser.parse("disabled_rules:\n  - nesting\n  - todo"))!
         XCTAssertEqual(disabledConfig.disabledRules,
             ["nesting", "todo"],
             "initializing Configuration with valid rules in YAML string should succeed")
@@ -49,7 +51,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
-        let duplicateConfig = Configuration(dict: try? YamlParser.parse("disabled_rules:\n  - todo\n  - todo"))
+        let duplicateConfig = Configuration(dict: try! YamlParser.parse("disabled_rules:\n  - todo\n  - todo"))
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
             " YAML string should fail")
     }
@@ -57,7 +59,7 @@ class ConfigurationTests: XCTestCase {
     func testDisabledRulesWithUnknownRule() {
         let validRule = "nesting"
         let bogusRule = "no_sprites_with_elf_shoes"
-        let configuration = Configuration(dict: try? YamlParser.parse("disabled_rules:\n" +
+        let configuration = Configuration(dict: try! YamlParser.parse("disabled_rules:\n" +
             "  - \(validRule)\n  - \(bogusRule)\n"))!
 
         XCTAssertEqual(configuration.disabledRules,
@@ -141,11 +143,13 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDoNotUseNestedConfigs() {
-        var config = Configuration(dict: try? YamlParser.parse("use_nested_configs: false\n"))!
+        var config = Configuration(dict: try! YamlParser.parse("use_nested_configs: false\n"))!
         config.rootPath = projectMockPathLevel0
         XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
                        config)
     }
+    // TODO: Remove
+    // swiftlint:enable force_try
 }
 
 // MARK: - ProjectMock Paths

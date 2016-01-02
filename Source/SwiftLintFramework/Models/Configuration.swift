@@ -83,19 +83,15 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: AnyObject]?) {
-        if let dict = dict {
-            self.init(
-                disabledRules: dict["disabled_rules"] as? [String] ?? [],
-                included: dict["included"] as? [String] ?? [],
-                excluded: dict["excluded"] as? [String] ?? [],
-                reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
-                useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
-                rules: Configuration.rulesFromDict(dict)
-            )
-        } else {
-            self.init(useNestedConfigs: false)
-        }
+    public init?(dict: [String: AnyObject]) {
+        self.init(
+            disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            included: dict["included"] as? [String] ?? [],
+            excluded: dict["excluded"] as? [String] ?? [],
+            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
+            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
+            rules: Configuration.rulesFromDict(dict)
+        )
     }
 
     public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {

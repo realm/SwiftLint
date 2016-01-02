@@ -70,14 +70,6 @@ extension String {
         return nil
     }
 
-    var stringByDeletingLastPathComponent: String {
-        return (self as NSString).stringByDeletingLastPathComponent
-    }
-
-    func stringByAppendingPathComponent(pathComponent: String) -> String {
-        return (self as NSString).stringByAppendingPathComponent(pathComponent)
-    }
-
     public func absolutePathStandardized() -> String {
         return (self.absolutePathRepresentation() as NSString).stringByStandardizingPath
     }

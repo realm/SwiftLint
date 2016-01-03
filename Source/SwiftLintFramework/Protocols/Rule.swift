@@ -16,7 +16,6 @@ public protocol Rule {
 
 extension Rule {
     func isEqualTo(rule: Rule) -> Bool {
-        // TODO: Is there a better way to do this?
         switch (self, rule) {
         case (let rule1 as ConfigurableRule, let rule2 as ConfigurableRule):
             return rule1.isEqualTo(rule2)

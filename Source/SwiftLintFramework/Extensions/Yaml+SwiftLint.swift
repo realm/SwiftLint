@@ -16,7 +16,7 @@ extension Yaml {
                 newDict[key.stringValue] = value.flatValue
             }
             return newDict
-        } else if self.count == 0 || self == .Null { // TODO: Make sure you want to go this route
+        } else if self.count == 0 || self == .Null {
             return [:]
         }
 

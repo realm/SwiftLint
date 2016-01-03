@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Always fail if a YAML configuration file was found but could not be parsed.  
+  [JP Simard](https://github.com/jpsim)
+  [#310](https://github.com/realm/SwiftLint/issues/310)
+
 ## 0.5.4: Bounce™
 
 ##### Breaking

@@ -21,7 +21,8 @@ struct LintCommand: CommandType {
         return LintOptions.evaluate(mode).flatMap { options in
             var violations = [StyleViolation]()
             var reporter: Reporter.Type!
-            let configuration = Configuration(commandLinePath: options.configurationFile)
+            var configuration = Configuration(commandLinePath: options.configurationFile)
+            configuration.rootPath = options.path.absolutePathStandardized()
             return configuration.visitLintableFiles(options.path, action: "Linting",
                 useSTDIN: options.useSTDIN,
                 useScriptInputFiles: options.useScriptInputFiles) { linter in

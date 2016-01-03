@@ -69,4 +69,8 @@ extension String {
         }
         return nil
     }
+
+    public func absolutePathStandardized() -> String {
+        return (self.absolutePathRepresentation() as NSString).stringByStandardizingPath
+    }
 }

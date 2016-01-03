@@ -21,12 +21,15 @@ extension Yaml {
     }
 }
 
-public struct Configuration {
+public struct Configuration: Equatable {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
     public let reporter: String        // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
+    public let useNestedConfigs: Bool  // process nested configs, will default to false
+    public var rootPath: String?       // the root path of the lint to search for nested configs
+    private var configPath: String?    // if successfully load from a path
 
     public var reporterFromString: Reporter.Type {
         switch reporter {
@@ -47,10 +50,12 @@ public struct Configuration {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromYAML()) {
+                 rules: [Rule] = Configuration.rulesFromYAML(),
+                 useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
 
@@ -89,23 +94,35 @@ public struct Configuration {
     }
 
     public init?(yaml: String) {
-        let yamlResult = Yaml.load(yaml)
-        guard let yamlConfig = yamlResult.value else {
-            if let error = yamlResult.error {
-                queuedPrint(error)
-            }
+        guard let yamlConfig = Configuration.loadYaml(yaml) else {
             return nil
         }
+        self.init(yamlConfig: yamlConfig)
+    }
+
+    private init?(yamlConfig: Yaml) {
         self.init(
             disabledRules: yamlConfig["disabled_rules"].arrayOfStrings ?? [],
             included: yamlConfig["included"].arrayOfStrings ?? [],
             excluded: yamlConfig["excluded"].arrayOfStrings ?? [],
             reporter: yamlConfig["reporter"].string ?? XcodeReporter.identifier,
-            rules: Configuration.rulesFromYAML(yamlConfig)
+            rules: Configuration.rulesFromYAML(yamlConfig),
+            useNestedConfigs: yamlConfig["use_nested_configs"].bool ?? false
         )
     }
 
-    public init(path: String = ".swiftlint.yml", optional: Bool = true) {
+    private static func loadYaml(yaml: String) -> Yaml? {
+        let yamlResult = Yaml.load(yaml)
+        if let yamlConfig = yamlResult.value {
+            return yamlConfig
+        }
+        if let error = yamlResult.error {
+            queuedPrint(error)
+        }
+        return nil
+    }
+
+    public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let failIfRequired = {
             if !optional { fatalError("Could not read configuration file at path '\(fullPath)'") }
@@ -118,9 +135,12 @@ public struct Configuration {
         do {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
-            if let _ = Configuration(yaml: yamlContents) {
-                queuedPrintError("Loading configuration from '\(path)'")
-                self.init(yaml: yamlContents)!
+            if let yamlConfig = Configuration.loadYaml(yamlContents) {
+                if !silent {
+                    queuedPrintError("Loading configuration from '\(path)'")
+                }
+                self.init(yamlConfig: yamlConfig)!
+                configPath = fullPath
                 return
             } else {
                 failIfRequired()
@@ -188,4 +208,55 @@ public struct Configuration {
         let allPaths = self.lintablePathsForPath(path)
         return allPaths.flatMap { File(path: $0) }
     }
+
+    public func configForFile(file: File) -> Configuration {
+        if useNestedConfigs,
+            let containingDir = (file.path as NSString?)?.stringByDeletingLastPathComponent {
+            return configForPath(containingDir)
+        }
+        return self
+    }
+}
+
+// MARK: - Nested Configurations Extension
+
+public extension Configuration {
+    func configForPath(path: String) -> Configuration {
+        let path = path as NSString
+        let configSearchPath = path.stringByAppendingPathComponent(".swiftlint.yml")
+
+        // If a config exists and it isn't us, load and merge the configs
+        if configSearchPath != configPath &&
+            NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
+            return merge(Configuration(path: configSearchPath, optional: false, silent: true))
+        }
+
+        // If we are not at the root path, continue down the tree
+        if path != rootPath {
+            return configForPath(path.stringByDeletingLastPathComponent)
+        }
+
+        // If nothing else, return self
+        return self
+    }
+
+    // Currently merge simply overrides the current configuration with the new configuration.
+    // This requires that all config files be fully specified. In the future this will be changed
+    // to do a more intelligent merge allowing for partial nested configs.
+    func merge(config: Configuration) -> Configuration {
+        return config
+    }
+}
+
+// Mark - == Implementation
+
+public func == (lhs: Configuration, rhs: Configuration) -> Bool {
+    return (lhs.disabledRules == rhs.disabledRules) &&
+           (lhs.excluded == rhs.excluded) &&
+           (lhs.included == rhs.included) &&
+           (lhs.reporter == rhs.reporter) &&
+           (lhs.useNestedConfigs == rhs.useNestedConfigs) &&
+           (lhs.configPath == rhs.configPath) &&
+           (lhs.rootPath == lhs.rootPath) &&
+           (lhs.rules == rhs.rules)
 }

@@ -130,6 +130,7 @@ public struct Configuration: Equatable {
                     rules.append(configuredRule)
                 } else {
                     queuedPrintError("Invalid config for \(identifier). Falling back to default")
+                    rules.append(rule.init())
                 }
                 // swiftlint:enabld force_cast
             } else {

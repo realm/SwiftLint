@@ -16,7 +16,13 @@ public protocol Rule {
 
 extension Rule {
     func isEqualTo(rule: Rule) -> Bool {
-        return self.dynamicType.description == rule.dynamicType.description
+        // TODO: Is there a better way to do this?
+        switch (self, rule) {
+        case (let rule1 as ConfigurableRule, let rule2 as ConfigurableRule):
+            return rule1.isEqualTo(rule2)
+        default:
+            return self.dynamicType.description == rule.dynamicType.description
+        }
     }
     // TODO: Add identifier extension
 }

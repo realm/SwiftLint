@@ -138,6 +138,23 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
                        config)
     }
+
+    // MARK: - Testing Rules from config dictionary
+
+    let testRuleList = RuleList(rules: ConfigurableRuleMock1.self)
+
+    func testConfiguresCorrectlyFromDict() {
+        let ruleConfig = [1, 2]
+        let config = [ConfigurableRuleMock1.description.identifier: ruleConfig]
+        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        XCTAssertTrue(rules == [ConfigurableRuleMock1(config: ruleConfig)! as Rule])
+    }
+
+    func testConfigureFallsBackCorrectly() {
+        let config = [ConfigurableRuleMock1.description.identifier: ["a", "b"]]
+        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        XCTAssertTrue(rules == [ConfigurableRuleMock1() as Rule])
+    }
 }
 
 // MARK: - ProjectMock Paths

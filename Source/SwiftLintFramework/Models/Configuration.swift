@@ -141,11 +141,6 @@ public struct Configuration: Equatable {
         return rules
     }
 
-    // TODO: Extract this
-    private static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
-        return zip([.Warning, .Error], array).map(RuleParameter.init)
-    }
-
     public func lintablePathsForPath(path: String,
                                      fileManager: NSFileManager = fileManager) -> [String] {
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []

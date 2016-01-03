@@ -12,7 +12,7 @@ import XCTest
 
 private let violationMarker = "↓"
 
-let allRuleIdentifiers = Array(SwiftLintFramework.masterRuleList.list.keys)
+let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
 func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
     let stringStrippingMarkers = string.stringByReplacingOccurrencesOfString(violationMarker,

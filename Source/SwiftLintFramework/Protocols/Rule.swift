@@ -24,7 +24,6 @@ extension Rule {
             return self.dynamicType.description == rule.dynamicType.description
         }
     }
-    // TODO: Add identifier extension
 }
 
 public protocol ParameterizedRule: Rule {

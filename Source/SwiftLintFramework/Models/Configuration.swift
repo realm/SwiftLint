@@ -118,8 +118,8 @@ public struct Configuration: Equatable {
         self.init()!
     }
 
-    // TODO: Rename to rulesFromConfigDict
-    static func rulesFromDict(dict: [String: AnyObject]? = nil, ruleList: RuleList = masterRuleList) -> [Rule] {
+    static func rulesFromDict(dict: [String: AnyObject]? = nil,
+                          ruleList: RuleList = masterRuleList) -> [Rule] {
         var rules = [Rule]()
         for rule in ruleList.list.values {
             let identifier = rule.description.identifier

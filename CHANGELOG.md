@@ -1,3 +1,18 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+
 ## 0.5.5: Magic Drying Fluff Balls™
 
 <http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>
@@ -19,6 +34,7 @@
 * Make commands with modifiers work for violations with line-only locations.  
   [JP Simard](https://github.com/jpsim)
   [#316](https://github.com/realm/SwiftLint/issues/316)
+
 
 ## 0.5.4: Bounce™
 
@@ -57,6 +73,7 @@
 * The `valid_docs` rule now handles multibyte characters.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#295](https://github.com/realm/SwiftLint/issues/295)
+
 
 ## 0.5.3: Mountain Scent
 
@@ -99,6 +116,7 @@
   [diogoguimaraes](https://github.com/diogoguimaraes)
   [#267](https://github.com/realm/SwiftLint/issues/267)
 
+
 ## 0.5.1: Lint Tray Malfunction
 
 ##### Breaking
@@ -120,6 +138,7 @@
   build phase.  
   [JP Simard](https://github.com/jpsim)
   [#264](https://github.com/realm/SwiftLint/issues/264)
+
 
 ## 0.5.0: Downy™
 

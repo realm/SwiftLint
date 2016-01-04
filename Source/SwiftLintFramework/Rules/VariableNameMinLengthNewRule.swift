@@ -37,8 +37,8 @@ public struct VariableNameMinLengthNewRule: ASTRule, ConfigurableRule {
     private var error = RuleParameter(severity: .Error, value: 2)
 
     public static let description = RuleDescription(
-        identifier: "variable_name_min_length_new",
-        name: "New Variable Name Min Length Rule",
+        identifier: "variable_name_min_length",
+        name: "Variable Name Min Length Rule",
         description: "Variable name should not be too short.",
         nonTriggeringExamples: [
             "let myLet = 0",

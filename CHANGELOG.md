@@ -1,4 +1,6 @@
-## Master
+## 0.5.5: Magic Drying Fluff Balls™
+
+<http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>
 
 ##### Breaking
 

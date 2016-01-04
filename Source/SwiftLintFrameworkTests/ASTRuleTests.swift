@@ -147,7 +147,7 @@ class ASTRuleTests: XCTestCase {
         XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
-            reason: "Function body should be span 40 lines or less: currently spans 41 lines")])
+            reason: "Function body should span 40 lines or less: currently spans 41 lines")])
     }
 
     func testTypeBodyLengths() {
@@ -162,7 +162,7 @@ class ASTRuleTests: XCTestCase {
             XCTAssertEqual(violations(longerTypeBody), [StyleViolation(
                 ruleDescription: TypeBodyLengthRule.description,
                 location: Location(file: nil, line: 1, character: 1),
-                reason: "Type body should be span 200 lines or less: currently spans 201 lines")])
+                reason: "Type body should span 200 lines or less: currently spans 201 lines")])
         }
     }
 

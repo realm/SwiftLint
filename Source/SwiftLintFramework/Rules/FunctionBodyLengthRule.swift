@@ -63,7 +63,7 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: parameter.severity,
                         location: location,
-                        reason: "Function body should be span \(parameters.first!.value) lines " +
+                        reason: "Function body should span \(parameters.first!.value) lines " +
                         "or less: currently spans \(endLine - startLine) lines")]
                 }
             }

@@ -20,35 +20,50 @@ internal func regex(pattern: String) -> NSRegularExpression {
 
 extension File {
     public func regions() -> [Region] {
-        let contents = self.contents as NSString
-        let commands = matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
-            withSyntaxKinds: [.Comment]).flatMap { range in
-                return Command(string: contents, range: range)
-        }.flatMap { command in
-            return command.expand()
-        }
-        let totalNumberOfLines = lines.count
-        let numberOfCharactersInLastLine = lines.last?.content.characters.count
         var regions = [Region]()
         var disabledRules = Set<String>()
+        let commands = self.commands()
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
             case .Disable: disabledRules.insert(command.ruleIdentifier)
             case .Enable: disabledRules.remove(command.ruleIdentifier)
             }
-            regions.append(
-                Region(
-                    start: Location(file: path,
-                        line: command.line,
-                        character: command.character),
-                    end: Location(file: path,
-                        line: nextCommand?.line ?? totalNumberOfLines,
-                        character: nextCommand?.character ?? numberOfCharactersInLastLine),
-                    disabledRuleIdentifiers: disabledRules)
-            )
+            let start = Location(file: path, line: command.line, character: command.character)
+            let end = endOfNextCommand(nextCommand)
+            regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
         }
         return regions
+    }
+
+    private func commands() -> [Command] {
+        let contents = self.contents as NSString
+        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
+            withSyntaxKinds: [.Comment]).flatMap { range in
+                return Command(string: contents, range: range)
+            }.flatMap { command in
+                return command.expand()
+        }
+    }
+
+    private func endOfNextCommand(nextCommand: Command?) -> Location {
+        guard let nextCommand = nextCommand else {
+            return Location(file: path, line: Int.max, character: Int.max)
+        }
+        let nextLine: Int
+        let nextCharacter: Int?
+        if let nextCommandCharacter = nextCommand.character {
+            nextLine = nextCommand.line
+            if nextCommand.character > 0 {
+                nextCharacter = nextCommandCharacter - 1
+            } else {
+                nextCharacter = nil
+            }
+        } else {
+            nextLine = max(nextCommand.line - 1, 0)
+            nextCharacter = Int.max
+        }
+        return Location(file: path, line: nextLine, character: nextCharacter)
     }
 
     public func matchPattern(pattern: String,

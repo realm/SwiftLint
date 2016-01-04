@@ -30,10 +30,10 @@ public struct Command {
     let action: CommandAction
     let ruleIdentifier: String
     let line: Int
-    let character: Int
+    let character: Int?
     let modifier: CommandModifier?
 
-    public init(action: CommandAction, ruleIdentifier: String, line: Int = 0, character: Int = 0,
+    public init(action: CommandAction, ruleIdentifier: String, line: Int = 0, character: Int? = nil,
                 modifier: CommandModifier? = nil) {
         self.action = action
         self.ruleIdentifier = ruleIdentifier
@@ -84,17 +84,20 @@ public struct Command {
         case .Previous:
             return [
                 Command(action: action, ruleIdentifier: ruleIdentifier, line: line - 1),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line)
+                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line - 1,
+                    character: Int.max)
             ]
         case .This:
             return [
                 Command(action: action, ruleIdentifier: ruleIdentifier, line: line),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line + 1)
+                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line,
+                    character: Int.max)
             ]
         case .Next:
             return [
                 Command(action: action, ruleIdentifier: ruleIdentifier, line: line + 1),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line + 2)
+                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line + 1,
+                    character: Int.max)
             ]
         }
     }

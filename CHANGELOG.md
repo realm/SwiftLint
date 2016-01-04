@@ -14,6 +14,10 @@
   [JP Simard](https://github.com/jpsim)
   [#310](https://github.com/realm/SwiftLint/issues/310)
 
+* Make commands with modifiers work for violations with line-only locations.  
+  [JP Simard](https://github.com/jpsim)
+  [#316](https://github.com/realm/SwiftLint/issues/316)
+
 ## 0.5.4: Bounce™
 
 ##### Breaking

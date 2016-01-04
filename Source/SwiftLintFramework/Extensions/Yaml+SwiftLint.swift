@@ -20,7 +20,6 @@ extension Yaml {
             return [:]
         }
 
-        print("Could not parse config dictionary")
         return nil
     }
 
@@ -33,7 +32,6 @@ extension Yaml {
             return newArr
         }
 
-        print("Could not parse config array")
         return nil
     }
 

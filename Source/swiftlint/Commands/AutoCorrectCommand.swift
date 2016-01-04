@@ -17,20 +17,18 @@ struct AutoCorrectCommand: CommandType {
     let verb = "autocorrect"
     let function = "Automatically correct warnings and errors"
 
-    func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
-        return AutoCorrectOptions.evaluate(mode).flatMap { options in
-            let configuration = Configuration(commandLinePath: options.configurationFile)
-            return configuration.visitLintableFiles(options.path, action: "Correcting",
-                useScriptInputFiles: options.useScriptInputFiles) { linter in
-                let corrections = linter.correct()
-                if !corrections.isEmpty {
-                    let correctionLogs = corrections.map({ $0.consoleDescription })
-                    queuedPrint(correctionLogs.joinWithSeparator("\n"))
-                }
-            }.flatMap { files in
-                queuedPrintError("Done correcting \(files.count) files!")
-                return .Success()
+    func run(options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
+        let configuration = Configuration(commandLinePath: options.configurationFile)
+        return configuration.visitLintableFiles(options.path, action: "Correcting",
+            useScriptInputFiles: options.useScriptInputFiles) { linter in
+            let corrections = linter.correct()
+            if !corrections.isEmpty {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joinWithSeparator("\n"))
             }
+        }.flatMap { files in
+            queuedPrintError("Done correcting \(files.count) files!")
+            return .Success()
         }
     }
 }
@@ -40,7 +38,8 @@ struct AutoCorrectOptions: OptionsType {
     let configurationFile: String
     let useScriptInputFiles: Bool
 
-    static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<()>> {
+    // swiftlint:disable line_length
+    static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         return curry(self.init)
             <*> mode <| Option(key: "path",
                 defaultValue: "",
@@ -52,4 +51,5 @@ struct AutoCorrectOptions: OptionsType {
                 defaultValue: false,
                 usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
+    // swiftlint:enable line_length
 }

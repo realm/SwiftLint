@@ -17,14 +17,8 @@ struct VersionCommand: CommandType {
     let verb = "version"
     let function = "Display the current version of SwiftLint"
 
-    func run(mode: CommandMode) -> Result<(), CommandantError<()>> {
-        switch mode {
-        case .Arguments:
-            print(version)
-
-        default:
-            break
-        }
+    func run(options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
+        print(version)
         return .Success()
     }
 }

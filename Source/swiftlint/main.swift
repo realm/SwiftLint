@@ -9,7 +9,7 @@
 import Commandant
 import SwiftLintFramework
 
-let registry = CommandRegistry<()>()
+let registry = CommandRegistry<CommandantError<()>>()
 registry.register(LintCommand())
 registry.register(AutoCorrectCommand())
 registry.register(VersionCommand())

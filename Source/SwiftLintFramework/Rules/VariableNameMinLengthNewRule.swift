@@ -71,9 +71,11 @@ public struct VariableNameMinLengthNewRule: ASTRule, ConfigurableRule {
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
         if let rule = rule as? VariableNameMinLengthNewRule {
+            // Need to use alternate method to compare excluded due to apparent bug in
+            // the way that SwiftXPC compares [String]
             return self.error == rule.error &&
                    self.warning == rule.warning &&
-                   self.excluded == rule.excluded
+                   zip(self.excluded, rule.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
         }
         return false
     }

@@ -19,7 +19,7 @@ extension String {
         }
         return count
     }
-    
+
     private func trailingNewlineCount() -> Int? {
         return countOfTrailingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }

@@ -9,11 +9,19 @@
 import SourceKittenFramework
 
 extension String {
+    private func countOfTrailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
+        var count = 0
+        for char in utf16.lazy.reverse() {
+            if !characterSet.characterIsMember(char) {
+                break
+            }
+            count++
+        }
+        return count
+    }
+    
     private func trailingNewlineCount() -> Int? {
-        let newLineSet = NSCharacterSet.newlineCharacterSet()
-        let slices = self.utf16.split(allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
-
-        return slices.last?.count
+        return countOfTrailingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }
 }
 

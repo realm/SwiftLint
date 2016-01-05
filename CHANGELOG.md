@@ -10,7 +10,8 @@
 
 ##### Bug Fixes
 
-* None.
+* AutoCorrect for TrailingNewlineRule only removes at most one line.
+  [John Estropia](https://github.com/JohnEstropia)
 
 
 ## 0.5.5: Magic Drying Fluff Balls™

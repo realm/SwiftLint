@@ -24,7 +24,7 @@ public struct ClosingBraceRule: CorrectableRule {
     public static let description = RuleDescription(
         identifier: "closing_brace",
         name: "Closing Brace Spacing",
-        description: "Closing brace with closing parenthesis" +
+        description: "Closing brace with closing parenthesis " +
                      "should not have any whitespaces in the middle.",
         nonTriggeringExamples: [
             "[].map({ })"

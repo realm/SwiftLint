@@ -9,14 +9,19 @@
 import SourceKittenFramework
 
 extension String {
-    private func trailingNewlineCount() -> Int? {
-        let start = endIndex.advancedBy(-2, limit: startIndex)
-        let range = Range(start: start, end: endIndex)
-        let substring = self[range].utf16
-        let newLineSet = NSCharacterSet.newlineCharacterSet()
-        let slices = substring.split(allowEmptySlices: true) { !newLineSet.characterIsMember($0) }
+    private func countOfTrailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
+        var count = 0
+        for char in utf16.lazy.reverse() {
+            if !characterSet.characterIsMember(char) {
+                break
+            }
+            count++
+        }
+        return count
+    }
 
-        return slices.last?.count
+    private func trailingNewlineCount() -> Int? {
+        return countOfTrailingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }
 }
 
@@ -34,7 +39,8 @@ public struct TrailingNewlineRule: CorrectableRule {
         ],
         corrections: [
             "let a = 0": "let a = 0\n",
-            "let a = 0\n\n": "let a = 0\n"
+            "let b = 0\n\n": "let b = 0\n",
+            "let c = 0\n\n\n\n": "let c = 0\n"
         ]
     )
 

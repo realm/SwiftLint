@@ -1,8 +1,8 @@
 //
-//  VariableNameMinLengthNewRule.swift
+//  VariableNameMinLengthRule.swift
 //  SwiftLint
 //
-//  Created by Scott Hoyt on 01/02/2016.
+//  Created by Mickaël Morier on 04/11/2015.
 //  Copyright © 2015 Realm. All rights reserved.
 //
 

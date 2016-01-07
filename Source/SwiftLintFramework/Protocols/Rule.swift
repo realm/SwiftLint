@@ -46,11 +46,10 @@ extension ParameterizedRule {
 extension ParameterizedRule where Self: ConfigurableRule {
 
     public init?(config: AnyObject) {
-        if let array = Self.arrayOf(config) {
-            self.init(parameters: RuleParameter<ParameterType>.ruleParametersFromArray(array))
-        } else {
+        guard let array = Self.arrayOf(config) else {
             return nil
         }
+        self.init(parameters: RuleParameter<ParameterType>.ruleParametersFromArray(array))
     }
 
     static func arrayOf(obj: AnyObject?) -> [ParameterType]? {

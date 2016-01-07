@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Add AutoCorrect for StatementPositionRule.  
+  [Raphael Randschau](https://github.com/nicolai86)
 
 ##### Bug Fixes
 

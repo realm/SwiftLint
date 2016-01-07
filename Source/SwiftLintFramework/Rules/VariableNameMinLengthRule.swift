@@ -70,13 +70,14 @@ public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
     }
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? VariableNameMinLengthRule {
-            // Need to use alternate method to compare excluded due to apparent bug in
-            // the way that SwiftXPC compares [String]
-            return self.error == rule.error &&
-                   self.warning == rule.warning &&
-                   zip(self.excluded, rule.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
+        guard let rule = rule as? VariableNameMinLengthRule else {
+            return false
         }
-        return false
+
+        // Need to use alternate method to compare excluded due to apparent bug in
+        // the way that SwiftXPC compares [String]
+        return self.error == rule.error &&
+            self.warning == rule.warning &&
+            zip(self.excluded, rule.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
     }
 }

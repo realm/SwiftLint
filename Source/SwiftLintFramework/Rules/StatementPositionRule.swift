@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StatementPositionRule: Rule {
+public struct StatementPositionRule: CorrectableRule {
     public static let description = RuleDescription(
         identifier: "statement_position",
         name: "Statement Position",
@@ -28,15 +28,48 @@ public struct StatementPositionRule: Rule {
             "}↓  else {",
             "}↓\ncatch {",
             "}\n\t↓  catch {"
+        ],
+        corrections: [
+            "}\n else {\n": "} else {\n",
+            "}\n   else if {\n": "} else if {\n",
+            "}\n catch {\n": "} catch {\n"
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "((?:\\}|[\\s] |[\\n\\t\\r])\\b(?:else|catch))\\b"
+        let pattern = "(?:\\}|[\\s] |[\\n\\t\\r])\\b(?:else|catch)\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.Keyword]).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, characterOffset: $0.location))
+        return violationRangesInFile(file, withPattern: pattern).flatMap { range in
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                location: Location(file: file, characterOffset: range.location))
         }
+    }
+
+    public func correctFile(file: File) -> [Correction] {
+        let pattern = "\\}\\s+((?:else|catch))\\b"
+
+        let matches = violationRangesInFile(file, withPattern: pattern)
+        guard !matches.isEmpty else { return [] }
+
+        let regularExpression = regex(pattern)
+        let description = self.dynamicType.description
+        var corrections = [Correction]()
+        var contents = file.contents
+        for range in matches.reverse() {
+            contents = regularExpression.stringByReplacingMatchesInString(contents,
+                options: [], range: range, withTemplate: "} $1")
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+        file.write(contents)
+        return corrections
+    }
+
+    // MARK: - Private Methods
+
+    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
+        return file.matchPattern(pattern).filter { range, syntaxKinds in
+            return syntaxKinds.startsWith([.Keyword])
+        }.flatMap { $0.0 }
     }
 }

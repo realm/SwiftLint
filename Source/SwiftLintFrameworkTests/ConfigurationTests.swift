@@ -14,7 +14,7 @@ class ConfigurationTests: XCTestCase {
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
             "initializing Configuration with empty Dictionary should succeed")
-        XCTAssert(Configuration(dict: ["a" : 1, "b" : 2]) != nil,
+        XCTAssert(Configuration(dict: ["a": 1, "b": 2]) != nil,
             "initializing Configuration with valid Dictionary should succeed")
     }
 

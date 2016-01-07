@@ -36,9 +36,9 @@ extension Yaml {
         case .String(let myString):
             return myString
         case .Array:
-            return self.flatArray! // This is valid because .Array will always flatten
+            return flatArray! // This is valid because .Array will always flatten
         case .Dictionary:
-            return self.flatDictionary! // This is valid because .Dictionary will always flatten
+            return flatDictionary! // This is valid because .Dictionary will always flatten
         case .Null:
             return NSNull()
         }

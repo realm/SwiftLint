@@ -23,17 +23,7 @@ extension Yaml {
         return nil
     }
 
-    var flatArray: [AnyObject]? {
-        if let arr = array {
-            var newArr: [AnyObject] = []
-            for value in arr {
-                newArr.append(value.flatValue)
-            }
-            return newArr
-        }
-
-        return nil
-    }
+    var flatArray: [AnyObject]? { return array?.map { $0.flatValue } }
 
     var flatValue: AnyObject {
         switch self {

@@ -12,10 +12,6 @@ import Yaml
 
 class YamlSwiftLintTests: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func testFlattenYaml() {
         let yamlResult = Yaml.load(getTestYaml())
         if let error = yamlResult.error {

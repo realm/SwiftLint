@@ -31,7 +31,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDisabledRules() {
-        let disabledConfig = Configuration(dict: ["disabled_rules" :  ["nesting", "todo"]])!
+        let disabledConfig = Configuration(dict: ["disabled_rules":  ["nesting", "todo"]])!
         XCTAssertEqual(disabledConfig.disabledRules,
             ["nesting", "todo"],
             "initializing Configuration with valid rules in Dictionary should succeed")
@@ -43,15 +43,15 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
-        let duplicateConfig = Configuration(dict: ["disabled_rules" :  ["todo", "todo"]])
+        let duplicateConfig = Configuration(dict: ["disabled_rules":  ["todo", "todo"]])
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
-            " Dictionary should fail")
+            "Dictionary should fail")
     }
 
     func testDisabledRulesWithUnknownRule() {
         let validRule = "nesting"
         let bogusRule = "no_sprites_with_elf_shoes"
-        let configuration = Configuration(dict: ["disabled_rules" : [validRule, bogusRule]])!
+        let configuration = Configuration(dict: ["disabled_rules": [validRule, bogusRule]])!
 
         XCTAssertEqual(configuration.disabledRules,
             [validRule],
@@ -133,7 +133,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDoNotUseNestedConfigs() {
-        var config = Configuration(dict: ["use_nested_configs" : false])!
+        var config = Configuration(dict: ["use_nested_configs": false])!
         config.rootPath = projectMockPathLevel0
         XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
                        config)

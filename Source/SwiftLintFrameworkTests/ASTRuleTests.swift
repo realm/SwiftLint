@@ -150,7 +150,7 @@ class ASTRuleTests: XCTestCase {
             reason: "Function body should span 40 lines or less: currently spans 41 lines")])
         let longerFunctionBodyWithComments = "func abc() {" +
             Repeat(count: 40, repeatedValue: " // this is a comment\n").joinWithSeparator("") +
-        "}\n"
+            "}\n"
         XCTAssertEqual(violations(longerFunctionBodyWithComments), [])
     }
 

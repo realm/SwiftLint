@@ -8,6 +8,7 @@
 
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)
+
 * Add AutoCorrect for CommaRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 

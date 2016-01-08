@@ -12,6 +12,9 @@
 * Add AutoCorrect for CommaRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 
+* Add AutoCorrect for LegacyConstructorRule.  
+  [Raphael Randschau](https://github.com/nicolai86)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

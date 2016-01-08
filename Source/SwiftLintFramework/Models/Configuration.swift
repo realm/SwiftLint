@@ -151,10 +151,10 @@ public struct Configuration: Equatable {
 
     public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
         return [
-            ConditionalBindingCascadeRule(),
             ClosingBraceRule(),
             ColonRule(),
             CommaRule(),
+            ConditionalBindingCascadeRule(),
             ControlStatementRule(),
             ForceCastRule(),
             ForceTryRule(),

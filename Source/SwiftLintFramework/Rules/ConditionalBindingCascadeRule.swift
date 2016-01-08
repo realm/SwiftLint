@@ -12,7 +12,7 @@ public struct ConditionalBindingCascadeRule: Rule {
     public static let description = RuleDescription(
         identifier: "conditional_binding_cascade",
         name: "Conditional Binding Cascade",
-        description: "Repeated `let` statements in a conditional binding cascade should be avoided.",
+        description: "Repeated `let` statements in conditional binding cascade should be avoided.",
         nonTriggeringExamples: [
             "if let a = b, c = d {",
             "if let a = b, \n c = d {",
@@ -28,15 +28,16 @@ public struct ConditionalBindingCascadeRule: Rule {
             "guard let a = b, let c = d else {"
         ]
     )
-    
+
     public func validateFile(file: File) -> [StyleViolation] {
         let conditionalBindingKeywords = ["if", "guard"]
-        let pattern =  "(" + conditionalBindingKeywords.joinWithSeparator("|") + ") let((.|\\s)*?)let((.|\\s)*?)\\{"
-        
-        return file.matchPattern(pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, characterOffset: $0.location))
+        let pattern =  "^(" +
+                        conditionalBindingKeywords.joinWithSeparator("|") +
+                        ") let((.|\\s)*?)let((.|\\s)*?)\\{"
+        return file.matchPattern(pattern,
+            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
+                StyleViolation(ruleDescription: self.dynamicType.description,
+                    location: Location(file: file, characterOffset: $0.location))
         }
     }
 }
-

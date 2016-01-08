@@ -9,6 +9,10 @@
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 
+* Add ConditionalBindingCascadeRule.
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

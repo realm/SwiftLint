@@ -43,7 +43,7 @@ func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool
     if SwiftDeclarationKind.variableKinds().contains(kind) { return true }
 
     let outsideBraces = NSMutableString(string: declaration)
-    regex("(\\s*->\\s*).*[^(]\\)").replaceMatchesInString(outsideBraces, options: [],
+    regex("(\\s*->\\s*)[^(]*\\)").replaceMatchesInString(outsideBraces, options: [],
         range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
 
     return outsideBraces.containsString("->")
@@ -60,7 +60,7 @@ func commentReturns(comment: String) -> Bool {
 
 func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
     let outsideBraces = NSMutableString(string: declaration)
-    regex("(\\s*->\\s*).*[^(]\\)").replaceMatchesInString(outsideBraces, options: [],
+    regex("(\\s*->\\s*)[^(]*\\)").replaceMatchesInString(outsideBraces, options: [],
         range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
 
     return outsideBraces.containsString("->") && !commentReturns(comment)

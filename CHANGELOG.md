@@ -14,6 +14,10 @@
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  
   [John Estropia](https://github.com/JohnEstropia)
 
+* `valid_docs` did not detect tuple as return value.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#324](https://github.com/realm/SwiftLint/issues/324)
+
 ## 0.5.5: Magic Drying Fluff Balls™
 
 <http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>

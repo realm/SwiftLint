@@ -105,7 +105,7 @@ extension File {
             let kindsInRange = syntax.tokens.filter { token in
                 let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
                 return tokenLine?.line == line.index
-                }.map({ $0.type }).flatMap(SyntaxKind.init)
+            }.map({ $0.type }).flatMap(SyntaxKind.init)
             return (line.index, kindsInRange)
         }
     }

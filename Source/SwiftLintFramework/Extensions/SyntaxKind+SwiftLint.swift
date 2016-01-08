@@ -10,6 +10,10 @@ import SourceKittenFramework
 
 extension SyntaxKind {
     static func commentAndStringKinds() -> [SyntaxKind] {
-        return [.Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField, .String]
+        return commentKinds() + [.String]
+    }
+
+    static func commentKinds() -> [SyntaxKind] {
+        return [.Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField]
     }
 }

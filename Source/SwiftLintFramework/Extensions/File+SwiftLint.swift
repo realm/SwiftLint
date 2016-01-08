@@ -91,6 +91,25 @@ extension File {
         }
     }
 
+    public func syntaxKindsByLine(startLine: Int? = nil,
+                                  endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
+        let contents = self.contents as NSString
+        let syntax = syntaxMap
+
+        return lines.flatMap { line in
+            if let startLine = startLine, endLine = endLine
+                where startLine > line.index || endLine < line.index {
+                return nil
+            }
+
+            let kindsInRange = syntax.tokens.filter { token in
+                let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
+                return tokenLine?.line == line.index
+                }.map({ $0.type }).flatMap(SyntaxKind.init)
+            return (line.index, kindsInRange)
+        }
+    }
+
     //Added by S2dent
     /**
     This function returns only matches that are not contained in a syntax kind

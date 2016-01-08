@@ -21,6 +21,23 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
         description: "Functions bodies should not span too many lines."
     )
 
+    private func numberOfCommentOnlyLines(file: File, startLine: Int, endLine: Int) -> Int {
+        return file.syntaxKindsByLine(startLine, endLine: endLine).filter { match -> Bool in
+            // skip blank lines
+            guard !match.1.isEmpty else {
+                return false
+            }
+
+            let commentKinds = SyntaxKind.commentKinds()
+            return match.1.filter { !commentKinds.contains($0) }.isEmpty
+        }.count
+    }
+
+    private func lineCount(file: File, startLine: Int, endLine: Int) -> Int {
+        let commentedLines = numberOfCommentOnlyLines(file, startLine: startLine, endLine: endLine)
+        return endLine - startLine - commentedLines
+    }
+
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
@@ -50,8 +67,9 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
             for parameter in [error, warning] {
+                let limit = parameter.value
                 if let startLine = startLine?.line, let endLine = endLine?.line
-                    where endLine - startLine > parameter.value {
+                    where lineCount(file, startLine: startLine, endLine: endLine) > limit {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: parameter.severity,
                         location: location,

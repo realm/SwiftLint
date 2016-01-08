@@ -148,6 +148,10 @@ class ASTRuleTests: XCTestCase {
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
             reason: "Function body should span 40 lines or less: currently spans 41 lines")])
+        let longerFunctionBodyWithComments = "func abc() {" +
+            Repeat(count: 40, repeatedValue: " // this is a comment\n").joinWithSeparator("") +
+        "}\n"
+        XCTAssertEqual(violations(longerFunctionBodyWithComments), [])
     }
 
     func testTypeBodyLengths() {

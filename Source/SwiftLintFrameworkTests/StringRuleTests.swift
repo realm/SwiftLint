@@ -109,4 +109,8 @@ class StringRuleTests: XCTestCase {
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
     }
+    
+    func testConditionalBindingCascade() {
+        verifyRule(ConditionalBindingCascadeRule.description)
+    }
 }

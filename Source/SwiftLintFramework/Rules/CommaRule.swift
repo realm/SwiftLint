@@ -13,7 +13,7 @@ public struct CommaRule: CorrectableRule {
     public static let description = RuleDescription(
         identifier: "comma",
         name: "Comma Spacing",
-        description: "One space before and no after must be present next to any comma.",
+        description: "There should be no space before and one after any comma.",
         nonTriggeringExamples: [
             "func abc(a: String, b: String) { }",
             "abc(a: \"string\", b: \"string\"",

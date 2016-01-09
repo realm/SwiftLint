@@ -10,7 +10,7 @@ import Foundation
 
 public struct RuleList {
     public let list: [String: Rule.Type]
-    init(rules: Rule.Type...) {
+    public init(rules: Rule.Type...) {
         var tmpList = [String: Rule.Type]()
         for rule in rules {
             tmpList[rule.description.identifier] = rule

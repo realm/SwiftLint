@@ -118,7 +118,7 @@ public struct Configuration: Equatable {
         self.init()!
     }
 
-    static func rulesFromDict(dict: [String: AnyObject]? = nil,
+    public static func rulesFromDict(dict: [String: AnyObject]? = nil,
                           ruleList: RuleList = masterRuleList) -> [Rule] {
         var rules = [Rule]()
         for rule in ruleList.list.values {

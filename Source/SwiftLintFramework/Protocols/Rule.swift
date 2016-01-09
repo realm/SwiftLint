@@ -75,7 +75,7 @@ public protocol CorrectableRule: Rule {
 
 // MARK: - == Implementations
 
-func == (lhs: [Rule], rhs: [Rule]) -> Bool {
+public func == (lhs: [Rule], rhs: [Rule]) -> Bool {
     if lhs.count == rhs.count {
         return zip(lhs, rhs).map { $0.isEqualTo($1) }.reduce(true) { $0 && $1 }
     }

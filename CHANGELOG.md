@@ -15,6 +15,9 @@
 * Add AutoCorrect for LegacyConstructorRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 
+* Improve performance by reducing calls to SourceKit.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

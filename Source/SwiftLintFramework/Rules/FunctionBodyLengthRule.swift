@@ -22,20 +22,26 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
     )
 
     private func numberOfCommentOnlyLines(file: File, startLine: Int, endLine: Int) -> Int {
-        return file.syntaxKindsByLine(startLine, endLine: endLine).filter { match -> Bool in
+        let commentKinds = Set(SyntaxKind.commentKinds())
+
+        return file.syntaxKindsByLine(startLine, endLine: endLine).filter { _, kinds -> Bool in
             // skip blank lines
-            guard !match.1.isEmpty else {
+            guard !kinds.isEmpty else {
                 return false
             }
 
-            let commentKinds = SyntaxKind.commentKinds()
-            return match.1.filter { !commentKinds.contains($0) }.isEmpty
+            return kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count
     }
 
     private func lineCount(file: File, startLine: Int, endLine: Int) -> Int {
         let commentedLines = numberOfCommentOnlyLines(file, startLine: startLine, endLine: endLine)
         return endLine - startLine - commentedLines
+    }
+
+    private func exceedsLineCountExcludingComments(file: File, _ start: Int, _ end: Int,
+                                                   _ limit: Int) -> Bool {
+        return end - start > limit && lineCount(file, startLine: start, endLine: end) > limit
     }
 
     public func validateFile(file: File,
@@ -69,7 +75,7 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
             for parameter in [error, warning] {
                 let limit = parameter.value
                 if let startLine = startLine?.line, let endLine = endLine?.line
-                    where lineCount(file, startLine: startLine, endLine: endLine) > limit {
+                    where exceedsLineCountExcludingComments(file, startLine, endLine, limit) {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: parameter.severity,
                         location: location,

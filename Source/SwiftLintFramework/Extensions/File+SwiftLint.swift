@@ -92,22 +92,19 @@ extension File {
     }
 
     public func syntaxKindsByLine(startLine: Int? = nil,
-                                  endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
+                              endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
         let contents = self.contents as NSString
-        let syntax = syntaxMap
-
-        return lines.flatMap { line in
-            if let startLine = startLine, endLine = endLine
-                where startLine > line.index || endLine < line.index {
-                return nil
-            }
-
-            let kindsInRange = syntax.tokens.filter { token in
-                let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
-                return tokenLine?.line == line.index
-            }.map({ $0.type }).flatMap(SyntaxKind.init)
-            return (line.index, kindsInRange)
+        let kindsWithLines = syntaxMap.tokens.map { token -> (Int, SyntaxKind) in
+            let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
+            return (tokenLine!.line, SyntaxKind(rawValue: token.type)!)
+        }.filter { line, token in
+            return line >= startLine && line <= endLine
         }
+        var results = [Int: [SyntaxKind]]()
+        for kindAndLine in kindsWithLines {
+            results[kindAndLine.0] = (results[kindAndLine.0] ?? []) + [kindAndLine.1]
+        }
+        return Array(zip(results.keys, results.values))
     }
 
     //Added by S2dent

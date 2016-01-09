@@ -1,3 +1,18 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Improve performance by reducing calls to SourceKit.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
+##### Bug Fixes
+
+* None.
+
 ## 0.5.5: Magic Drying Fluff Balls™
 
 <http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>

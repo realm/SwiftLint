@@ -8,8 +8,9 @@
 
 import SourceKittenFramework
 
-private var structureCache = Cache({file in Structure(file: file)})
-private var syntaxMapCache = Cache({file in SyntaxMap(file: file)})
+private var responseCache = Cache({file in Request.EditorOpen(file).send()})
+private var structureCache = Cache({file in Structure(sourceKitResponse: responseCache.get(file))})
+private var syntaxMapCache = Cache({file in SyntaxMap(sourceKitResponse: responseCache.get(file))})
 
 private struct Cache<T> {
 

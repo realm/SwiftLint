@@ -18,6 +18,9 @@
 * Improve performance by reducing calls to SourceKit.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Improve performance of `LineLengthRule`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

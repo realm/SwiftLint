@@ -66,8 +66,7 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
 
         // Non-triggering examples don't violate
-        let nonTriggerViolations = nonTriggers.flatMap({ violations($0, ruleDescription) })
-        XCTAssert(nonTriggerViolations.isEmpty, "Expected non-triggerring examples to not violate the rule. However, found \(nonTriggerViolations.count) examples violating rule '\(ruleDescription.name)'.")
+        XCTAssert(nonTriggers.flatMap({ violations($0, ruleDescription) }).isEmpty)
 
         var violationsCount = 0
         for trigger in triggers {

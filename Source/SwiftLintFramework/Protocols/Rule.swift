@@ -39,19 +39,10 @@ public protocol ParameterizedRule: ConfigurableRule {
 // Default implementation for ConfigurableRule conformance
 extension ParameterizedRule {
     public init?(config: AnyObject) {
-        guard let array = Self.arrayOf(config) else {
+        guard let array = [ParameterType].arrayOf(config) else {
             return nil
         }
         self.init(parameters: RuleParameter<ParameterType>.ruleParametersFromArray(array))
-    }
-
-    static func arrayOf(obj: AnyObject?) -> [ParameterType]? {
-        if let array = obj as? [ParameterType] {
-            return array
-        } else if let number = obj as? ParameterType {
-            return [number]
-        }
-        return nil
     }
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {

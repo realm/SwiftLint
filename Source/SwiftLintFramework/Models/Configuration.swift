@@ -154,6 +154,7 @@ public struct Configuration: Equatable {
             ClosingBraceRule(),
             ColonRule(),
             CommaRule(),
+            ConditionalBindingCascadeRule(),
             ControlStatementRule(),
             ForceCastRule(),
             ForceTryRule(),

@@ -56,14 +56,26 @@ APM.
 $ swiftlint help
 Available commands:
 
-   help      Display general or command-specific help
-   lint      Print lint warnings and errors for the Swift files in the current directory (default command)
-   rules     Display the list of rules and their identifiers
-   version   Display the current version of SwiftLint
+   autocorrect  Automatically correct warnings and errors
+   help         Display general or command-specific help
+   lint         Print lint warnings and errors for the Swift files in the current directory (default command)
+   rules        Display the list of rules and their identifiers
+   version      Display the current version of SwiftLint
 ```
 
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
+
+To specify a list of files when using `lint` or `autocorrect` (like the list of
+files modified by Xcode specified by the
+[`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
+plugin, or modified files in the working tree based on `git ls-files -m`) you
+can do so by passing the option `--use-script-input-files` and setting the
+following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`... `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
+
+These are same environment variables set for input files to
+[custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
 
 ## Rules
 

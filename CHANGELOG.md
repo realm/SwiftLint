@@ -9,9 +9,22 @@
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 
+* Add AutoCorrect for CommaRule.  
+  [Raphael Randschau](https://github.com/nicolai86)
+
+* Add AutoCorrect for LegacyConstructorRule.  
+  [Raphael Randschau](https://github.com/nicolai86)
+
+* Improve performance by reducing calls to SourceKit.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
+* Improve performance of `LineLengthRule`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 * Add ConditionalBindingCascadeRule.
   [Aaron McTavish](https://github.com/aamctustwo)
   [#202](https://github.com/realm/SwiftLint/issues/202)
+
 
 ##### Bug Fixes
 

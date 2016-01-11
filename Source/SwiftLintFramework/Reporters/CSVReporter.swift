@@ -8,6 +8,16 @@
 
 import Foundation
 
+extension String {
+    private func escapedForCSV() -> String {
+        let escapedString = stringByReplacingOccurrencesOfString("\"", withString: "\"\"")
+        if escapedString.containsString(",") || escapedString.containsString("\n") {
+            return "\"\(escapedString)\""
+        }
+        return escapedString
+    }
+}
+
 public struct CSVReporter: Reporter {
     public static let identifier = "csv"
     public static let isRealtime = false
@@ -31,12 +41,12 @@ public struct CSVReporter: Reporter {
 
     private static func arrayForViolation(violation: StyleViolation) -> [String] {
         let values: [AnyObject?] = [
-            violation.location.file,
+            violation.location.file?.escapedForCSV(),
             violation.location.line,
             violation.location.character,
             violation.severity.rawValue,
-            violation.ruleDescription.name,
-            violation.reason,
+            violation.ruleDescription.name.escapedForCSV(),
+            violation.reason.escapedForCSV(),
             violation.ruleDescription.identifier
         ]
         return values.map({ $0?.description ?? "" })

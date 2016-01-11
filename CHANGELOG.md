@@ -18,6 +18,9 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#324](https://github.com/realm/SwiftLint/issues/324)
 
+* Escape strings when using CSV reporter.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.5.5: Magic Drying Fluff Balls™
 
 <http://www.amazon.com/Magic-Drying-Fluff-Balls-Softening/dp/B001EIW1SG>

@@ -17,6 +17,11 @@ public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
         self.init()
         if let warningNumber = config as? Int {
             warning = RuleParameter(severity: .Warning, value: warningNumber)
+        } else if let config = config as? [Int] where config.count > 0 {
+            warning = RuleParameter(severity: .Warning, value: config[0])
+            if config.count > 1 {
+                error = RuleParameter(severity: .Error, value: config[1])
+            }
         } else if let config = config as? [String: AnyObject] {
             if let warningNumber = config["warning"] as? Int {
                 warning = RuleParameter(severity: .Warning, value: warningNumber)

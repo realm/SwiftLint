@@ -10,7 +10,7 @@ import Foundation
 
 extension String {
     private func escapedForCSV() -> String {
-        let escapedString = stringByReplacingOccurrencesOfString("\"", withString: "\"\"")
+        let escapedString = stringByReplacingOccurrencesOfString("\"", withString: "\\\"")
         if escapedString.containsString(",") || escapedString.containsString("\n") {
             return "\"\(escapedString)\""
         }

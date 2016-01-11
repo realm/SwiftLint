@@ -47,7 +47,7 @@ extension ParameterizedRule {
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
         if let rule = rule as? Self {
-            return self.parameters == rule.parameters
+            return parameters == rule.parameters
         }
         return false
     }

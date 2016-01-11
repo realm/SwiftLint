@@ -56,14 +56,20 @@ APM.
 $ swiftlint help
 Available commands:
 
-   help      Display general or command-specific help
-   lint      Print lint warnings and errors for the Swift files in the current directory (default command)
-   rules     Display the list of rules and their identifiers
-   version   Display the current version of SwiftLint
+   autocorrect  Automatically correct warnings and errors
+   help         Display general or command-specific help
+   lint         Print lint warnings and errors for the Swift files in the current directory (default command)
+   rules        Display the list of rules and their identifiers
+   version      Display the current version of SwiftLint
 ```
 
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
+
+If you want to specify a list of files when using `lint` or `autocorrect`
+(like modified files in the working tree based on `git ls-files -m`)
+you can do so by passing the option `--use-script-input-files` and setting 
+the `SCRIPT_INPUT_FILE_COUNT` environment variable.
 
 ## Rules
 

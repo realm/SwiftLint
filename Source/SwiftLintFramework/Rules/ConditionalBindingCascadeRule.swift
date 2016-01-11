@@ -17,6 +17,8 @@ public struct ConditionalBindingCascadeRule: Rule {
             "if let a = b, c = d {",
             "if let a = b, \n c = d {",
             "if let a = b, \n c = d \n {",
+            "if let a = b { if let c = d {",
+            "if let a = b { let c = d({ foo in ... })",
             "guard let a = b, c = d else {"
         ],
         triggeringExamples: [
@@ -34,7 +36,7 @@ public struct ConditionalBindingCascadeRule: Rule {
         let conditionalBindingKeywords = ["if", "guard"]
         let pattern =  "^(" +
                         conditionalBindingKeywords.joinWithSeparator("|") +
-                        ")(\\s*?)let((.|\\s)*?)let((.|\\s)*?)\\{"
+                        ")(\\s*?)let((.|\\s)*?),(\\s*?)let((.|\\s)*?)\\{"
         return file.matchPattern(pattern,
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
                 StyleViolation(ruleDescription: self.dynamicType.description,

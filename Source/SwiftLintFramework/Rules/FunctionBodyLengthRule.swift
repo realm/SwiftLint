@@ -72,15 +72,16 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
             let location = Location(file: file, byteOffset: offset)
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
-            for parameter in [error, warning] {
-                let limit = parameter.value
-                if let startLine = startLine?.line, let endLine = endLine?.line
-                    where exceedsLineCountExcludingComments(file, startLine, endLine, limit) {
-                    return [StyleViolation(ruleDescription: self.dynamicType.description,
-                        severity: parameter.severity,
-                        location: location,
-                        reason: "Function body should span \(warning.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines")]
+
+            if let startLine = startLine?.line, let endLine = endLine?.line {
+                for parameter in [error, warning]
+                    where exceedsLineCountExcludingComments(file, startLine, endLine,
+                                                            parameter.value) {
+                        return [StyleViolation(ruleDescription: self.dynamicType.description,
+                            severity: parameter.severity,
+                            location: location,
+                            reason: "Function body should span \(warning.value) lines " +
+                            "or less: currently spans \(endLine - startLine) lines")]
                 }
             }
         }

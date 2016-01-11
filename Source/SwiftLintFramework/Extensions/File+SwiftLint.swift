@@ -91,7 +91,7 @@ extension File {
         }
     }
 
-    public func syntaxKindsByLine(startLine: Int? = nil,
+    internal func syntaxKindsByLine(startLine: Int? = nil,
                                   endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
         let contents = self.contents as NSString
         let kindsWithLines = syntaxMap.tokens.map { token -> (Int, SyntaxKind) in

@@ -21,6 +21,10 @@
 * Improve performance of `LineLengthRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Add ConditionalBindingCascadeRule.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

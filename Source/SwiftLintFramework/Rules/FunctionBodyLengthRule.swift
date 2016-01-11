@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule, ConfigurableRule {
+public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 40),

@@ -9,7 +9,7 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule, ConfigurableRule {
+public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 40),

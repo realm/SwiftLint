@@ -26,7 +26,7 @@ class RuleMock2: Rule {
     }
 }
 
-class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
+final class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
     required init() {
         parameters = []
     }
@@ -36,7 +36,7 @@ class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
     }
 }
 
-class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
+final class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
     required init() {
         parameters = []
     }

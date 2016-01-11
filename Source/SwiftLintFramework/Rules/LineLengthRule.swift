@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct LineLengthRule: ParameterizedRule, ConfigurableRule {
+public struct LineLengthRule: ParameterizedRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 100),

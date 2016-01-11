@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ParameterizedRule, ConfigurableRule {
+public struct FileLengthRule: ParameterizedRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: 400),

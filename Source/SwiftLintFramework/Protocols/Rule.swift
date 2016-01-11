@@ -25,26 +25,19 @@ extension Rule {
     }
 }
 
-public protocol ParameterizedRule: Rule {
-    typealias ParameterType: Equatable
-    init(parameters: [RuleParameter<ParameterType>])
-    var parameters: [RuleParameter<ParameterType>] { get }
-}
-
 public protocol ConfigurableRule: Rule {
     init?(config: AnyObject)
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
-extension ParameterizedRule {
-    func isEqualTo(rule: Self) -> Bool {
-        return (self.dynamicType.description == rule.dynamicType.description) &&
-               (self.parameters == rule.parameters)
-    }
+public protocol ParameterizedRule: ConfigurableRule {
+    typealias ParameterType: Equatable
+    init(parameters: [RuleParameter<ParameterType>])
+    var parameters: [RuleParameter<ParameterType>] { get }
 }
 
-extension ParameterizedRule where Self: ConfigurableRule {
-
+// Default implementation for ConfigurableRule conformance
+extension ParameterizedRule {
     public init?(config: AnyObject) {
         guard let array = Self.arrayOf(config) else {
             return nil

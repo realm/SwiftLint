@@ -66,10 +66,16 @@ Available commands:
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
 
-If you want to specify a list of files when using `lint` or `autocorrect`
-(like modified files in the working tree based on `git ls-files -m`)
-you can do so by passing the option `--use-script-input-files` and setting 
-the `SCRIPT_INPUT_FILE_COUNT` environment variable.
+To specify a list of files when using `lint` or `autocorrect` (like the list of
+files modified by Xcode specified by the
+[`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
+plugin, or modified files in the working tree based on `git ls-files -m`) you
+can do so by passing the option `--use-script-input-files` and setting the
+following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`... `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
+
+These are same environment variables set for input files to
+[custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
 
 ## Rules
 

@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_function_count
 class ASTRuleTests: XCTestCase {
     func testTypeNames() {
         for kind in ["class", "struct", "enum"] {
@@ -166,6 +167,10 @@ class ASTRuleTests: XCTestCase {
         }
     }
 
+    func testTypeFunctionCountRule() {
+        verifyRule(TypeFunctionCountRule.description)
+    }
+
     func testTypeNamesVerifyRule() {
         verifyRule(TypeNameRule.description)
     }
@@ -190,3 +195,4 @@ class ASTRuleTests: XCTestCase {
         verifyRule(ControlStatementRule.description)
     }
 }
+// swiftlint:enable type_function_count

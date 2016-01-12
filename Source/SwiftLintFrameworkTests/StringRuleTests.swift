@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_function_count
 class StringRuleTests: XCTestCase {
     func testLineLengths() {
         let longLine = Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n"
@@ -114,3 +115,4 @@ class StringRuleTests: XCTestCase {
         verifyRule(ConditionalBindingCascadeRule.description)
     }
 }
+// swiftlint:enable type_function_count

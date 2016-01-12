@@ -21,6 +21,7 @@ extension Yaml {
     }
 }
 
+// swiftlint:disable type_function_count
 public struct Configuration: Equatable {
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
@@ -185,6 +186,7 @@ public struct Configuration: Equatable {
             intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
             intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
             intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
+            intParams(TypeFunctionCountRule).map(TypeFunctionCountRule.init) ?? TypeFunctionCountRule(),
             intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
             intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
         ]
@@ -216,6 +218,7 @@ public struct Configuration: Equatable {
         return self
     }
 }
+// swiftlint:enable type_function_count
 
 // MARK: - Nested Configurations Extension
 

@@ -16,6 +16,7 @@
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
+		CAB5D8791C44ABAB0021D23F /* TypeFunctionCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB5D8781C44ABAB0021D23F /* TypeFunctionCountRule.swift */; };
 		CAF900141BED8B17006A371D /* VariableNameMaxLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */; };
 		CAF900151BED8B17006A371D /* VariableNameMinLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAF900131BED8B17006A371D /* VariableNameMinLengthRule.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -157,6 +158,7 @@
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
+		CAB5D8781C44ABAB0021D23F /* TypeFunctionCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeFunctionCountRule.swift; sourceTree = "<group>"; };
 		CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameMaxLengthRule.swift; sourceTree = "<group>"; };
 		CAF900131BED8B17006A371D /* VariableNameMinLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameMinLengthRule.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -501,6 +503,7 @@
 				E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */,
 				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
+				CAB5D8781C44ABAB0021D23F /* TypeFunctionCountRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
 				E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */,
 				CAF900121BED8B17006A371D /* VariableNameMaxLengthRule.swift */,
@@ -772,6 +775,7 @@
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
 				CAF900141BED8B17006A371D /* VariableNameMaxLengthRule.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,
+				CAB5D8791C44ABAB0021D23F /* TypeFunctionCountRule.swift in Sources */,
 				E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */,
 				E88198421BEA929F00333A11 /* NestingRule.swift in Sources */,
 				E881985B1BEA974E00333A11 /* StatementPositionRule.swift in Sources */,

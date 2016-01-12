@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */; };
 		00970C751C3FC3A0007C4A83 /* ConditionalBindingCascadeRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00970C741C3FC3A0007C4A83 /* ConditionalBindingCascadeRule.swift */; };
 		02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
@@ -143,6 +144,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstantRule.swift; sourceTree = "<group>"; };
 		00970C741C3FC3A0007C4A83 /* ConditionalBindingCascadeRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalBindingCascadeRule.swift; sourceTree = "<group>"; };
 		02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNSStringTests.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
@@ -489,6 +491,7 @@
 				E816194D1BFBFEAB00946723 /* ForceTryRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
+				006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */,
 				D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */,
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
@@ -759,6 +762,7 @@
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,
+				006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */,
 				E88DEA731B0984C400A66CB0 /* String+SwiftLint.swift in Sources */,
 				E88198591BEA95F100333A11 /* LeadingWhitespaceRule.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,

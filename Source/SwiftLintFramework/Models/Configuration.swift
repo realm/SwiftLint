@@ -159,6 +159,7 @@ public struct Configuration: Equatable {
             ForceCastRule(),
             ForceTryRule(),
             LeadingWhitespaceRule(),
+            LegacyConstantRule(),
             LegacyConstructorRule(),
             NestingRule(),
             OpeningBraceRule(),

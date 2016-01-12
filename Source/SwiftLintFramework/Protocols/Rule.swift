@@ -8,6 +8,8 @@
 
 import SourceKittenFramework
 
+public protocol OptInRule {}
+
 public protocol Rule {
     init() // Rules need to be able to be initialized with default values
     static var description: RuleDescription { get }

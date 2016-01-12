@@ -37,6 +37,7 @@ public struct Configuration: Equatable {
     }
 
     public init?(disabledRules: [String] = [],
+                 enabledRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
@@ -48,7 +49,6 @@ public struct Configuration: Equatable {
         self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
-
         let validRuleIdentifiers = Configuration.rulesFromDict().map {
             $0.dynamicType.description.identifier
         }
@@ -64,9 +64,7 @@ public struct Configuration: Equatable {
         }
 
         // Validate that rule identifiers aren't listed multiple times
-
-        let ruleSet = Set(validDisabledRules)
-        if ruleSet.count != validDisabledRules.count {
+        if Set(validDisabledRules).count != validDisabledRules.count {
             let duplicateRules = validDisabledRules.reduce([String: Int]()) { (var accu, element) in
                 accu[element] = accu[element]?.successor() ?? 1
                 return accu
@@ -78,14 +76,17 @@ public struct Configuration: Equatable {
         }
         self.disabledRules = validDisabledRules
 
-        self.rules = rules.filter {
-            !validDisabledRules.contains($0.dynamicType.description.identifier)
+        self.rules = rules.filter { rule in
+            let id = rule.dynamicType.description.identifier
+            if validDisabledRules.contains(id) { return false }
+            return enabledRules.contains(id) || !(rule is OptInRule)
         }
     }
 
     public init?(dict: [String: AnyObject]) {
         self.init(
             disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            enabledRules: dict["enabled_rules"] as? [String] ?? [],
             included: dict["included"] as? [String] ?? [],
             excluded: dict["excluded"] as? [String] ?? [],
             reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
@@ -119,7 +120,7 @@ public struct Configuration: Equatable {
     }
 
     public static func rulesFromDict(dict: [String: AnyObject]? = nil,
-                          ruleList: RuleList = masterRuleList) -> [Rule] {
+                                     ruleList: RuleList = masterRuleList) -> [Rule] {
         var rules = [Rule]()
         for rule in ruleList.list.values {
             let identifier = rule.description.identifier
@@ -148,8 +149,7 @@ public struct Configuration: Equatable {
     }
 
     public func lintableFilesForPath(path: String) -> [File] {
-        let allPaths = self.lintablePathsForPath(path)
-        return allPaths.flatMap { File(path: $0) }
+        return lintablePathsForPath(path).flatMap { File(path: $0) }
     }
 
     public func configForFile(file: File) -> Configuration {

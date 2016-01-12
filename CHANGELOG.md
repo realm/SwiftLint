@@ -39,6 +39,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#202](https://github.com/realm/SwiftLint/issues/202)
 
+* Opt-in rules are now supported.  
+  [JP Simard](https://github.com/jpsim)
+  [#256](https://github.com/realm/SwiftLint/issues/256)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

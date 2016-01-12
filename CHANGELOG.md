@@ -16,7 +16,7 @@
   [#303](https://github.com/realm/SwiftLint/issues/303)
 
 * `VariableNameMinLengthRule` now supports excluding certain variable names
-  (e.g. "id")  
+  (e.g. "id").  
   [Scott Hoyt](https://github.com/scottrhoyt)
   [#231](https://github.com/realm/SwiftLint/issues/231)
 

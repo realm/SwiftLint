@@ -9,14 +9,14 @@
 import Yaml
 
 extension Yaml {
-    var flatDictionary: [Swift.String : AnyObject]? {
+    var flatDictionary: [Swift.String: AnyObject]? {
         if let dict = dictionary {
-            var newDict: [Swift.String : AnyObject] = [:]
+            var newDict: [Swift.String: AnyObject] = [:]
             for (key, value) in dict {
                 newDict[key.stringValue] = value.flatValue
             }
             return newDict
-        } else if self.count == 0 || self == .Null {
+        } else if count == 0 || self == .Null {
             return [:]
         }
 

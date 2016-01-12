@@ -79,8 +79,8 @@ public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
 
         // Need to use alternate method to compare excluded due to apparent bug in
         // the way that SwiftXPC compares [String]
-        return self.error == rule.error &&
-            self.warning == rule.warning &&
-            zip(self.excluded, rule.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
+        return error == rule.error &&
+               warning == rule.warning &&
+               zip(excluded, rule.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
     }
 }

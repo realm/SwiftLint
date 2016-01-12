@@ -22,7 +22,7 @@ the `CHANGELOG.md` file.
 
 We follow the same syntax as CocoaPods' CHANGELOG.md:
 
-1. One Markdown unnumbered list item desribing the change.
+1. One Markdown unnumbered list item describing the change.
 2. 2 trailing spaces on the last line describing the change.
 3. A list of Markdown hyperlinks to the contributors to the change. One entry
    per line. Usually just one.

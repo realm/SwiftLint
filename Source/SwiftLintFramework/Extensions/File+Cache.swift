@@ -64,6 +64,7 @@ public extension File {
         _allDeclarationsByType = [:]
         structureCache.clear()
         syntaxMapCache.clear()
+        syntaxKindsByLinesCache.clear()
     }
 
     public static var allDeclarationsByType: [String: [String]] {

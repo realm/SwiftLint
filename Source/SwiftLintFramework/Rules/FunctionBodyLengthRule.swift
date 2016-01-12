@@ -24,9 +24,13 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
     private func numberOfCommentOnlyLines(file: File, startLine: Int, endLine: Int) -> Int {
         let commentKinds = Set(SyntaxKind.commentKinds())
 
-        return file.syntaxKindsByLine(startLine, endLine: endLine).filter { _, kinds -> Bool in
+        return file.syntaxKindsByLines.filter { line, kinds -> Bool in
             // skip blank lines
             guard !kinds.isEmpty else {
+                return false
+            }
+
+            guard line >= startLine && line <= endLine else {
                 return false
             }
 

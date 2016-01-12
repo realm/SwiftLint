@@ -92,13 +92,15 @@ extension File {
     }
 
     internal func syntaxKindsByLine(startLine: Int? = nil,
-                                  endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
+                                    endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
         let contents = self.contents as NSString
-        let kindsWithLines = syntaxMap.tokens.map { token -> (Int, SyntaxKind) in
+        let kindsWithLines = syntaxMap.tokens.map { token -> (Int, SyntaxToken) in
             let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
-            return (tokenLine!.line, SyntaxKind(rawValue: token.type)!)
+            return (tokenLine!.line, token)
         }.filter { line, token in
             return line >= (startLine ?? 0) && line <= (endLine ?? Int.max)
+        }.map { (line, token) -> (Int, SyntaxKind) in
+            return (line, SyntaxKind(rawValue: token.type)!)
         }
         var results = [Int: [SyntaxKind]]()
         for kindAndLine in kindsWithLines {

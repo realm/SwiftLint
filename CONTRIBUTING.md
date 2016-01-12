@@ -2,8 +2,9 @@
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
-Rules should conform to either the `Rule`, `ASTRule` or `ParameterizedRule`
-protocols.
+Rules should conform to either the `Rule`, `ASTRule` or `ConfigurableRule`
+protocols. To activate a rule, add the rule to `masterRuleList` in
+`RuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
 
@@ -12,6 +13,37 @@ Whenever possible, prefer adding tests via the `triggeringExamples` and
 those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
 over time.
+
+### `ConfigurableRule`
+
+If your rule supports user-configurable options via `.swiftlint.yml`, you can
+accomplish this by conforming to `ConfigurableRule`:
+
+* `init?(config: AnyObject)` will be passed the result of parsing the value
+  from `.swiftlint.yml` associated with your rule's `identifier` as a key (if
+  present).
+* `config` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
+  `Dictionary`, etc.).
+* This initializer must fail if it does not understand the configuration, or
+  it cannot be fully initialized with the configuration.
+* If this initializer fails, your rule will be initialized with its default
+  values by calling `init()`.
+
+See [VariableNameMinLengthRule](https://github.com/realm/SwiftLint/blob/647371517e57de3499a77781e45f181605b21045/Source/SwiftLintFramework/Rules/VariableNameMinLengthRule.swift)
+for an example that supports the following configurations:
+
+``` yaml
+variable_name_min_length: 3
+
+variable_name_min_length:
+  - 3
+  - 2
+
+variable_name_min_length:
+  warning: 3
+  error: 2
+  excluded: id
+```
 
 ## Tracking changes
 

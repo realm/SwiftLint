@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct LeadingWhitespaceRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "leading_whitespace",
         name: "Leading Whitespace",

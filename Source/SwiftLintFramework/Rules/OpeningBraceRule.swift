@@ -21,6 +21,9 @@ extension File {
 }
 
 public struct OpeningBraceRule: CorrectableRule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "opening_brace",
         name: "Opening Brace Spacing",

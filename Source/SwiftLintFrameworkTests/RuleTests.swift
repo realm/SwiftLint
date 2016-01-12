@@ -10,35 +10,63 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
+class RuleMock1: Rule {
+    required init() {}
+    static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
+    func validateFile(file: File) -> [StyleViolation] {
+        return []
+    }
+}
+
+class RuleMock2: Rule {
+    required init() {}
+    static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
+    func validateFile(file: File) -> [StyleViolation] {
+        return []
+    }
+}
+
+final class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
+    required init() {
+        parameters = []
+    }
+    let parameters: [RuleParameter<Int>]
+    required init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
+}
+
+final class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
+    required init() {
+        parameters = []
+    }
+    let parameters: [RuleParameter<Int>]
+    required init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
+}
+
+final class ConfigurableRuleMock1: RuleMock1, ParameterizedRule, ConfigurableRule {
+    required init() {
+        parameters = []
+    }
+    let parameters: [RuleParameter<Int>]
+    required init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
+}
+
+final class ConfigurableRuleMock2: RuleMock2, ParameterizedRule, ConfigurableRule {
+    required init() {
+        parameters = []
+    }
+    let parameters: [RuleParameter<Int>]
+    required init(parameters: [RuleParameter<Int>]) {
+        self.parameters = parameters
+    }
+}
+
 class RuleTests: XCTestCase {
-
-    private class RuleMock1: Rule {
-        static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
-        func validateFile(file: File) -> [StyleViolation] {
-            return []
-        }
-    }
-
-    private class RuleMock2: Rule {
-        static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
-        func validateFile(file: File) -> [StyleViolation] {
-            return []
-        }
-    }
-
-    private class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
-        let parameters: [RuleParameter<Int>]
-        required init(parameters: [RuleParameter<Int>]) {
-            self.parameters = parameters
-        }
-    }
-
-    private class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
-        let parameters: [RuleParameter<Int>]
-        required init(parameters: [RuleParameter<Int>]) {
-            self.parameters = parameters
-        }
-    }
 
     func testRuleIsEqualTo() {
         XCTAssertTrue(RuleMock1().isEqualTo(RuleMock1()))
@@ -84,4 +112,43 @@ class RuleTests: XCTestCase {
         XCTAssertNotEqual([RuleMock1(), RuleMock2()], [RuleMock1()])
     }
 
+    func testParameterizedConfigurableRuleInits() {
+        let config = [1, 2]
+        let rule = ConfigurableRuleMock1(config: config)
+        XCTAssertEqual(rule!.parameters, RuleParameter<Int>.ruleParametersFromArray([1, 2]))
+    }
+
+    func testParameterizedConfigurableRuleDoesntInit() {
+        let config = ["a", "b"]
+        XCTAssertNil(ConfigurableRuleMock1(config: config))
+    }
+
+    func testParameterizedConfigurableRuleEqual() {
+        let config1 = [1, 2]
+        let config2 = [1, 2]
+        XCTAssertTrue(ConfigurableRuleMock1(config: config1)!
+           .isEqualTo(ConfigurableRuleMock1(config: config2)!))
+    }
+
+    func testParameterizedConfigurableRuleNotEqual() {
+        let config1 = [1, 2]
+        let config2 = [3, 4]
+        XCTAssertFalse(ConfigurableRuleMock1(config: config1)!
+            .isEqualTo(ConfigurableRuleMock1(config: config2)!))
+    }
+
+    func testDifferentParameterizedConfigurableRulesNotEqual() {
+        let config1 = [1, 2]
+        let config2 = [1, 2]
+        XCTAssertFalse(ConfigurableRuleMock1(config: config1)!
+            .isEqualTo(ConfigurableRuleMock2(config: config2)!))
+    }
+
+    func testParameterizedConfigurableRuleArrayNotEqual() {
+        let config1 = [1, 2]
+        let config2 = [3, 4]
+        let array1: [Rule] = [ConfigurableRuleMock1(config: config1)!]
+        let array2: [Rule] = [ConfigurableRuleMock1(config: config2)!]
+        XCTAssertFalse(array1 == array2)
+    }
 }

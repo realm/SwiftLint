@@ -16,6 +16,9 @@ extension SyntaxKind {
 }
 
 public struct TodoRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "todo",
         name: "Todo",

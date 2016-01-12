@@ -8,18 +8,8 @@
 
 import Foundation
 import SourceKittenFramework
-import Yaml
 
 private let fileManager = NSFileManager.defaultManager()
-
-extension Yaml {
-    var arrayOfStrings: [Swift.String]? {
-        return array?.flatMap { $0.string } ?? string.map { [$0] }
-    }
-    var arrayOfInts: [Swift.Int]? {
-        return array?.flatMap { $0.int } ?? int.map { [$0] }
-    }
-}
 
 public struct Configuration: Equatable {
     public let disabledRules: [String] // disabled_rules
@@ -50,7 +40,7 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromYAML(),
+                 rules: [Rule] = Configuration.rulesFromDict(),
                  useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
@@ -59,7 +49,7 @@ public struct Configuration: Equatable {
 
         // Validate that all rule identifiers map to a defined rule
 
-        let validRuleIdentifiers = Configuration.rulesFromYAML().map {
+        let validRuleIdentifiers = Configuration.rulesFromDict().map {
             $0.dynamicType.description.identifier
         }
 
@@ -93,33 +83,15 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(yaml: String) {
-        guard let yamlConfig = Configuration.loadYaml(yaml) else {
-            return nil
-        }
-        self.init(yamlConfig: yamlConfig)
-    }
-
-    private init?(yamlConfig: Yaml) {
+    public init?(dict: [String: AnyObject]) {
         self.init(
-            disabledRules: yamlConfig["disabled_rules"].arrayOfStrings ?? [],
-            included: yamlConfig["included"].arrayOfStrings ?? [],
-            excluded: yamlConfig["excluded"].arrayOfStrings ?? [],
-            reporter: yamlConfig["reporter"].string ?? XcodeReporter.identifier,
-            rules: Configuration.rulesFromYAML(yamlConfig),
-            useNestedConfigs: yamlConfig["use_nested_configs"].bool ?? false
+            disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            included: dict["included"] as? [String] ?? [],
+            excluded: dict["excluded"] as? [String] ?? [],
+            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
+            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
+            rules: Configuration.rulesFromDict(dict)
         )
-    }
-
-    private static func loadYaml(yaml: String) -> Yaml? {
-        let yamlResult = Yaml.load(yaml)
-        if let yamlConfig = yamlResult.value {
-            return yamlConfig
-        }
-        if let error = yamlResult.error {
-            queuedPrint(error)
-        }
-        return nil
     }
 
     public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
@@ -133,66 +105,38 @@ public struct Configuration: Equatable {
         do {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
-            if let yamlConfig = Configuration.loadYaml(yamlContents) {
-                if !silent {
-                    queuedPrintError("Loading configuration from '\(path)'")
-                }
-                self.init(yamlConfig: yamlConfig)!
-                configPath = fullPath
-                return
-            } else {
-                fail()
+            let dict = try YamlParser.parse(yamlContents)
+            if !silent {
+                queuedPrintError("Loading configuration from '\(path)'")
             }
+            self.init(dict: dict)!
+            configPath = fullPath
+            return
         } catch {
             fail()
         }
         self.init()!
     }
 
-    public static func rulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        return [
-            ClosingBraceRule(),
-            ColonRule(),
-            CommaRule(),
-            ConditionalBindingCascadeRule(),
-            ControlStatementRule(),
-            ForceCastRule(),
-            ForceTryRule(),
-            LeadingWhitespaceRule(),
-            LegacyConstructorRule(),
-            NestingRule(),
-            OpeningBraceRule(),
-            OperatorFunctionWhitespaceRule(),
-            ReturnArrowWhitespaceRule(),
-            StatementPositionRule(),
-            TodoRule(),
-            TrailingNewlineRule(),
-            TrailingSemicolonRule(),
-            TrailingWhitespaceRule(),
-            TypeNameRule(),
-            ValidDocsRule(),
-            VariableNameRule(),
-        ] + parameterRulesFromYAML(yaml)
-    }
-
-    private static func parameterRulesFromYAML(yaml: Yaml? = nil) -> [Rule] {
-        let intParams: (Rule.Type) -> [RuleParameter<Int>]? = {
-            (yaml?[.String($0.description.identifier)].arrayOfInts).map(ruleParametersFromArray)
+    public static func rulesFromDict(dict: [String: AnyObject]? = nil,
+                          ruleList: RuleList = masterRuleList) -> [Rule] {
+        var rules = [Rule]()
+        for rule in ruleList.list.values {
+            let identifier = rule.description.identifier
+            if let ConfigurableRuleType = rule as? ConfigurableRule.Type,
+               ruleConfig = dict?[identifier] {
+                if let configuredRule = ConfigurableRuleType.init(config: ruleConfig) {
+                    rules.append(configuredRule)
+                } else {
+                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
+                    rules.append(rule.init())
+                }
+            } else {
+                rules.append(rule.init())
+            }
         }
-        // swiftlint:disable line_length
-        return [
-            intParams(FileLengthRule).map(FileLengthRule.init) ?? FileLengthRule(),
-            intParams(FunctionBodyLengthRule).map(FunctionBodyLengthRule.init) ?? FunctionBodyLengthRule(),
-            intParams(LineLengthRule).map(LineLengthRule.init) ?? LineLengthRule(),
-            intParams(TypeBodyLengthRule).map(TypeBodyLengthRule.init) ?? TypeBodyLengthRule(),
-            intParams(VariableNameMaxLengthRule).map(VariableNameMaxLengthRule.init) ?? VariableNameMaxLengthRule(),
-            intParams(VariableNameMinLengthRule).map(VariableNameMinLengthRule.init) ?? VariableNameMinLengthRule(),
-        ]
-        // swiftlint:enable line_length
-    }
 
-    private static func ruleParametersFromArray<T>(array: [T]) -> [RuleParameter<T>] {
-        return zip([.Warning, .Error], array).map(RuleParameter.init)
+        return rules
     }
 
     public func lintablePathsForPath(path: String,

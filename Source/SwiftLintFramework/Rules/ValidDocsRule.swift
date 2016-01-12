@@ -110,6 +110,9 @@ func superfluousOrMissingParameterDocumentation(declaration: String, substructur
 }
 
 public struct ValidDocsRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "valid_docs",
         name: "Valid Docs",

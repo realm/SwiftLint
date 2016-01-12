@@ -2,9 +2,23 @@
 
 ##### Breaking
 
-* None.
+* `ParameterizedRule` is deprecated. Use `ConfigurableRule` instead.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+
+* To activate a `Rule`, it must be added to the global `masterRuleList`.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
 
 ##### Enhancements
+
+* `ConfigurableRule` protocol allows for improved rule configuration. See
+  `CONTRIBUTING` for more details.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+  [#303](https://github.com/realm/SwiftLint/issues/303)
+
+* `VariableNameMinLengthRule` now supports excluding certain variable names
+  (e.g. "id")  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+  [#231](https://github.com/realm/SwiftLint/issues/231)
 
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)

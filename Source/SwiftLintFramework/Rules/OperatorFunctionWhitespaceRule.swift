@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct OperatorFunctionWhitespaceRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",

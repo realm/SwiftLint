@@ -26,6 +26,9 @@ extension String {
 }
 
 public struct TrailingNewlineRule: CorrectableRule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "trailing_newline",
         name: "Trailing Newline",

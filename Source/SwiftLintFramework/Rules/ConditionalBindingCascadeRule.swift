@@ -9,6 +9,9 @@
 import SourceKittenFramework
 
 public struct ConditionalBindingCascadeRule: Rule {
+
+    public init() {}
+
     public static let description = RuleDescription(
         identifier: "conditional_binding_cascade",
         name: "Conditional Binding Cascade",

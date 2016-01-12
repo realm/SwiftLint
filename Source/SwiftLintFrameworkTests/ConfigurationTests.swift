@@ -12,16 +12,14 @@ import XCTest
 
 class ConfigurationTests: XCTestCase {
     func testInit() {
-        XCTAssert(Configuration(yaml: "") != nil,
-            "initializing Configuration with empty YAML string should succeed")
-        XCTAssert(Configuration(yaml: "a: 1\nb: 2") != nil,
-            "initializing Configuration with valid YAML string should succeed")
-        XCTAssert(Configuration(yaml: "|\na") == nil,
-            "initializing Configuration with invalid YAML string should fail")
+        XCTAssert(Configuration(dict: [:]) != nil,
+            "initializing Configuration with empty Dictionary should succeed")
+        XCTAssert(Configuration(dict: ["a": 1, "b": 2]) != nil,
+            "initializing Configuration with valid Dictionary should succeed")
     }
 
     func testEmptyConfiguration() {
-        guard let config = Configuration(yaml: "") else {
+        guard let config = Configuration(dict: [:]) else {
             XCTFail("empty YAML string should yield non-nil Configuration")
             return
         }
@@ -33,12 +31,11 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDisabledRules() {
-        let disabledConfig = Configuration(yaml: "disabled_rules:\n  - nesting\n  - todo")!
+        let disabledConfig = Configuration(dict: ["disabled_rules":  ["nesting", "todo"]])!
         XCTAssertEqual(disabledConfig.disabledRules,
             ["nesting", "todo"],
-            "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Configuration.rulesFromYAML()
-            .map({ $0.dynamicType.description.identifier })
+            "initializing Configuration with valid rules in Dictionary should succeed")
+        let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ !["nesting", "todo"].contains($0) })
         let configuredIdentifiers = disabledConfig.rules.map {
             $0.dynamicType.description.identifier
@@ -46,22 +43,20 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
-        let duplicateConfig = Configuration( yaml: "disabled_rules:\n  - todo\n  - todo")
+        let duplicateConfig = Configuration(dict: ["disabled_rules":  ["todo", "todo"]])
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
-            " YAML string should fail")
+            "Dictionary should fail")
     }
 
     func testDisabledRulesWithUnknownRule() {
         let validRule = "nesting"
         let bogusRule = "no_sprites_with_elf_shoes"
-        let configuration = Configuration(yaml: "disabled_rules:\n" +
-            "  - \(validRule)\n  - \(bogusRule)\n")!
+        let configuration = Configuration(dict: ["disabled_rules": [validRule, bogusRule]])!
 
         XCTAssertEqual(configuration.disabledRules,
             [validRule],
             "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Configuration.rulesFromYAML()
-            .map({ $0.dynamicType.description.identifier })
+        let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ ![validRule].contains($0) })
         let configuredIdentifiers = configuration.rules.map {
             $0.dynamicType.description.identifier
@@ -138,10 +133,27 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDoNotUseNestedConfigs() {
-        var config = Configuration(yaml: "use_nested_configs: false\n")!
+        var config = Configuration(dict: ["use_nested_configs": false])!
         config.rootPath = projectMockPathLevel0
         XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
                        config)
+    }
+
+    // MARK: - Testing Rules from config dictionary
+
+    let testRuleList = RuleList(rules: ConfigurableRuleMock1.self)
+
+    func testConfiguresCorrectlyFromDict() {
+        let ruleConfig = [1, 2]
+        let config = [ConfigurableRuleMock1.description.identifier: ruleConfig]
+        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        XCTAssertTrue(rules == [ConfigurableRuleMock1(config: ruleConfig)! as Rule])
+    }
+
+    func testConfigureFallsBackCorrectly() {
+        let config = [ConfigurableRuleMock1.description.identifier: ["a", "b"]]
+        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        XCTAssertTrue(rules == [ConfigurableRuleMock1() as Rule])
     }
 }
 

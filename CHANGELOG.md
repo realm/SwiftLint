@@ -43,6 +43,10 @@
   [JP Simard](https://github.com/jpsim)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 
+* Add LegacyConstantRule.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

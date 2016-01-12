@@ -113,4 +113,8 @@ class StringRuleTests: XCTestCase {
     func testConditionalBindingCascade() {
         verifyRule(ConditionalBindingCascadeRule.description)
     }
+
+    func testLegacyConstant() {
+        verifyRule(LegacyConstantRule.description)
+    }
 }

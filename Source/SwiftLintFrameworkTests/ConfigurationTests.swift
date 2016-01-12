@@ -10,6 +10,7 @@ import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
+// swiftlint:disable type_function_count
 class ConfigurationTests: XCTestCase {
     func testInit() {
         XCTAssert(Configuration(yaml: "") != nil,
@@ -198,3 +199,4 @@ extension XCTestCase {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
 }
+// swiftlint:enable type_function_count

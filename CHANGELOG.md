@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add TypeFunctionCountRule.  
+  [Brandon Kobilansky](https://github.com/bkobilansky)
+  [#53](https://github.com/realm/SwiftLint/issues/53)
+
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 

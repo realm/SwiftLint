@@ -32,6 +32,11 @@ public protocol ConfigurableRule: Rule {
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
+public protocol ViolationLevelRule: ConfigurableRule {
+    var warning: RuleParameter<Int> { get set }
+    var error: RuleParameter<Int> { get set }
+}
+
 @available(*, deprecated=0.5.6, message="Use ConfigurableRule instead.")
 public protocol ParameterizedRule: ConfigurableRule {
     typealias ParameterType: Equatable
@@ -58,6 +63,37 @@ extension ParameterizedRule {
 
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
+}
+
+// MARK: - ViolationLevelRule conformance to ConfigurableRule
+
+public extension ViolationLevelRule {
+    public init?(config: AnyObject) {
+        self.init()
+        if let config = [Int].arrayOf(config) where config.count > 0 {
+            warning = RuleParameter(severity: .Warning, value: config[0])
+            if config.count > 1 {
+                error = RuleParameter(severity: .Error, value: config[1])
+            }
+        } else if let config = config as? [String: AnyObject] {
+            if let warningNumber = config["warning"] as? Int {
+                warning = RuleParameter(severity: .Warning, value: warningNumber)
+            }
+            if let errorNumber = config["error"] as? Int {
+                error = RuleParameter(severity: .Error, value: errorNumber)
+            }
+        } else {
+            return nil
+        }
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? Self {
+            return warning == rule.warning &&
+                   error == rule.error
+        }
+        return false
+    }
 }
 
 // MARK: - == Implementations

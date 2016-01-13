@@ -68,6 +68,16 @@ final class ConfigurableRuleMock2: RuleMock2, ParameterizedRule, ConfigurableRul
 
 class RuleTests: XCTestCase {
 
+    private struct ViolationLevelRuleMock: ViolationLevelRule {
+        var warning = RuleParameter(severity: .Warning, value: 2)
+        var error = RuleParameter(severity: .Error, value: 3)
+
+        static let description = RuleDescription(identifier: "warning_error_level_mock",
+                                                       name: "",
+                                                description: "")
+        func validateFile(file: File) -> [StyleViolation] { return [] }
+    }
+
     func testRuleIsEqualTo() {
         XCTAssertTrue(RuleMock1().isEqualTo(RuleMock1()))
     }
@@ -150,5 +160,31 @@ class RuleTests: XCTestCase {
         let array1: [Rule] = [ConfigurableRuleMock1(config: config1)!]
         let array2: [Rule] = [ConfigurableRuleMock1(config: config2)!]
         XCTAssertFalse(array1 == array2)
+    }
+
+    func testViolationLevelRuleInitsWithConfigDictionary() {
+        let config = ["warning": 17, "error": 7]
+        let rule = ViolationLevelRuleMock(config: config)
+        var comp = ViolationLevelRuleMock()
+        comp.warning = RuleParameter(severity: .Warning, value: 17)
+        comp.error = RuleParameter(severity: .Error, value: 7)
+        XCTAssertEqual(rule?.isEqualTo(comp), true)
+    }
+
+    func testViolationLevelRuleInitsWithConfigArray() {
+        let config = [17, 7] as AnyObject
+        let rule = ViolationLevelRuleMock(config: config)
+        var comp = ViolationLevelRuleMock()
+        comp.warning = RuleParameter(severity: .Warning, value: 17)
+        comp.error = RuleParameter(severity: .Error, value: 7)
+        XCTAssertEqual(rule?.isEqualTo(comp), true)
+    }
+
+    func testViolationLevelRuleInitsWithLiteral() {
+        let config = 17 as AnyObject
+        let rule = ViolationLevelRuleMock(config: config)
+        var comp = ViolationLevelRuleMock()
+        comp.warning = RuleParameter(severity: .Warning, value: 17)
+        XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 }

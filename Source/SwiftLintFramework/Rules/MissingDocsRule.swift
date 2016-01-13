@@ -67,7 +67,7 @@ public enum AccessControlLevel: String {
     }
 }
 
-public struct MissingDocsRule: ParameterizedRule {
+public struct MissingDocsRule: ParameterizedRule, OptInRule {
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: .Public),

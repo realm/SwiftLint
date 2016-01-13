@@ -32,6 +32,7 @@ public protocol ConfigurableRule: Rule {
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
+@available(*, deprecated=0.5.6, message="Use ConfigurableRule instead.")
 public protocol ParameterizedRule: ConfigurableRule {
     typealias ParameterType: Equatable
     init(parameters: [RuleParameter<ParameterType>])

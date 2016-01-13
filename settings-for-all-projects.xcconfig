@@ -1,0 +1,1 @@
+OTHER_LDFLAGS=-Wl,-headerpad_max_install_names

@@ -1,4 +1,4 @@
-github "Carthage/Commandant" ~> 0.8.2
-github "thoughtbot/Curry" ~> 1.4
-github "jspahrsummers/xcconfigs" ~> 0.8
-github "behrang/YamlSwift" ~> 1.2
+github "Carthage/Commandant"
+github "thoughtbot/Curry"
+github "jspahrsummers/xcconfigs"
+github "behrang/YamlSwift"

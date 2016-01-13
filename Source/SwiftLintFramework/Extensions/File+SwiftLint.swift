@@ -15,7 +15,8 @@ internal func regex(pattern: String) -> NSRegularExpression {
     // confirmed to work, so it's ok to force-try here.
 
     // swiftlint:disable:next force_try
-    return try! NSRegularExpression(pattern: pattern, options: [.AnchorsMatchLines])
+    return try! NSRegularExpression(pattern: pattern,
+                                    options: [.AnchorsMatchLines, .DotMatchesLineSeparators])
 }
 
 extension File {

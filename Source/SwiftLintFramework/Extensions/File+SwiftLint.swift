@@ -106,6 +106,12 @@ extension File {
         for kindAndLine in kindsWithLines {
             results[kindAndLine.0] = (results[kindAndLine.0] ?? []) + [kindAndLine.1]
         }
+
+        for line in lines
+            where line.index >= (startLine ?? 0) && line.index <= (endLine ?? Int.max) {
+            results[line.index] = results[line.index] ?? []
+        }
+
         return Array(zip(results.keys, results.values))
     }
 

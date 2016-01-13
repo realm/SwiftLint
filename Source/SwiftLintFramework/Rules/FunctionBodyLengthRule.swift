@@ -25,11 +25,6 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
         let commentKinds = Set(SyntaxKind.commentKinds())
 
         return file.syntaxKindsByLines.filter { line, kinds -> Bool in
-            // skip blank lines
-            guard !kinds.isEmpty else {
-                return false
-            }
-
             guard line >= startLine && line <= endLine else {
                 return false
             }
@@ -44,8 +39,13 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
     }
 
     private func exceedsLineCountExcludingComments(file: File, _ start: Int, _ end: Int,
-                                                   _ limit: Int) -> Bool {
-        return end - start > limit && lineCount(file, startLine: start, endLine: end) > limit
+                                                   _ limit: Int) -> (Bool, Int) {
+        if end - start <= limit {
+            return (false, end - start)
+        }
+
+        let count = lineCount(file, startLine: start, endLine: end)
+        return (count > limit, count)
     }
 
     public func validateFile(file: File,
@@ -78,14 +78,17 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in [error, warning]
-                    where exceedsLineCountExcludingComments(file, startLine, endLine,
-                                                            parameter.value) {
+                for parameter in [error, warning] {
+                    let (exceedsLineCount, lineCount) = exceedsLineCountExcludingComments(file,
+                                                                startLine, endLine, parameter.value)
+                    if exceedsLineCount {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: parameter.severity,
                             location: location,
-                            reason: "Function body should span \(warning.value) lines " +
-                            "or less: currently spans \(endLine - startLine) lines")]
+                            reason: "Function body should span \(parameter.value) lines " +
+                            "or less: currently spans \(lineCount) lines")]
+                    }
+
                 }
             }
         }

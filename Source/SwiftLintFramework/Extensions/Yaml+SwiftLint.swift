@@ -16,7 +16,7 @@ extension Yaml {
                 newDict[key.stringValue] = value.flatValue
             }
             return newDict
-        } else if count == 0 || self == .Null {
+        } else if count == 0 || self == .Null { // swiftlint:disable:this empty_count
             return [:]
         }
 

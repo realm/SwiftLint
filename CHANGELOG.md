@@ -43,6 +43,11 @@
   [JP Simard](https://github.com/jpsim)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 
+* Add opt-in rule to encourage checking `isEmpty` over comparing `count` to
+  zero.  
+  [JP Simard](https://github.com/jpsim)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

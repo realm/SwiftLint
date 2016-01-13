@@ -23,7 +23,9 @@ func violations(string: String, config: Configuration = Configuration()) -> [Sty
 
 private func violations(string: String, _ description: RuleDescription) -> [StyleViolation] {
     let disabledRules = allRuleIdentifiers.filter { $0 != description.identifier }
-    return violations(string, config: Configuration(disabledRules: disabledRules)!)
+    let enabledRules = allRuleIdentifiers.filter { $0 == description.identifier }
+    let config = Configuration(disabledRules: disabledRules, enabledRules: enabledRules)!
+    return violations(string, config: config)
 }
 
 private func assertCorrection(before: String, expected: String) {

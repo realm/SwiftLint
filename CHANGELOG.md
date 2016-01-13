@@ -48,6 +48,9 @@
   [JP Simard](https://github.com/jpsim)
   [#202](https://github.com/realm/SwiftLint/issues/202)
 
+* Add opt-in "Missing Docs" rule to detect undocumented public declarations.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  

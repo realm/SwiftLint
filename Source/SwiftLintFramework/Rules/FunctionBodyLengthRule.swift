@@ -9,19 +9,11 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
-    public init() {
-        self.init(parameters: [
-            RuleParameter(severity: .Warning, value: 40),
-            RuleParameter(severity: .Error, value: 100)
-        ])
-    }
+public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
+    public var warning = RuleParameter(severity: .Warning, value: 40)
+    public var error = RuleParameter(severity: .Error, value: 100)
 
-    public init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-
-    public let parameters: [RuleParameter<Int>]
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "function_body_length",
@@ -57,13 +49,13 @@ public struct FunctionBodyLengthRule: ASTRule, ParameterizedRule {
             let location = Location(file: file, byteOffset: offset)
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
-            for parameter in parameters.reverse() {
+            for parameter in [error, warning] {
                 if let startLine = startLine?.line, let endLine = endLine?.line
                     where endLine - startLine > parameter.value {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: parameter.severity,
                         location: location,
-                        reason: "Function body should span \(parameters.first!.value) lines " +
+                        reason: "Function body should span \(warning.value) lines " +
                         "or less: currently spans \(endLine - startLine) lines")]
                 }
             }

@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import CoreGraphics
 
 public struct LegacyConstantRule: CorrectableRule {
     public init() { }
@@ -65,7 +64,7 @@ public struct LegacyConstantRule: CorrectableRule {
         var contents = file.contents
 
         for (pattern, template) in patterns {
-            let matches = file.matchPattern(pattern, excludingSyntaxKinds: [.Comment])
+            let matches = file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
 
             let regularExpression = regex(pattern)
             for range in matches.reverse() {

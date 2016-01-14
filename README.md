@@ -9,6 +9,7 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 of your source files for more accurate results.
 
 ![Test Status](https://travis-ci.org/realm/SwiftLint.svg?branch=master)
+[![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
 
 ![](screenshot.png)
 

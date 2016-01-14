@@ -67,23 +67,17 @@ public enum AccessControlLevel: String {
     }
 }
 
-public struct MissingDocsRule: ParameterizedRule, OptInRule {
+public struct MissingDocsRule: ConfigurableRule, OptInRule {
     public init?(config: AnyObject) {
         guard let array = [String].arrayOf(config) else {
             return nil
         }
         let acl = array.flatMap(AccessControlLevel.init)
-        self.init(parameters: RuleParameter<AccessControlLevel>.ruleParametersFromArray(acl))
+        parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 
     public init() {
-        self.init(parameters: [
-            RuleParameter(severity: .Warning, value: .Public),
-        ])
-    }
-
-    public init(parameters: [RuleParameter<AccessControlLevel>]) {
-        self.parameters = parameters
+        parameters = [RuleParameter(severity: .Warning, value: .Public)]
     }
 
     public let parameters: [RuleParameter<AccessControlLevel>]
@@ -136,5 +130,12 @@ public struct MissingDocsRule: ParameterizedRule, OptInRule {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 location: Location(file: file, byteOffset: $0))
         }
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? MissingDocsRule {
+            return rule.parameters == self.parameters
+        }
+        return false
     }
 }

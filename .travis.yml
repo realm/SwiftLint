@@ -9,3 +9,5 @@ script: script/cibuild | xcpretty
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

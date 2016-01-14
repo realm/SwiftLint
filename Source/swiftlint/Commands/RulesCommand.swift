@@ -1,5 +1,5 @@
 //
-//  ExplainCommand.swift
+//  RulesCommand.swift
 //  SwiftLint
 //
 //  Created by Chris Eidhof on 20/05/15.
@@ -15,9 +15,7 @@ struct RulesCommand: CommandType {
     let function = "Display the list of rules and their identifiers"
 
     func run(options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        let ruleDescriptions = masterRuleList.list.keys
-        .joinWithSeparator("\n")
-        print(ruleDescriptions)
+        print(masterRuleList.list.keys.joinWithSeparator("\n"))
         return .Success()
     }
 }

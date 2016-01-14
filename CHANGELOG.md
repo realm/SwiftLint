@@ -2,8 +2,9 @@
 
 ##### Breaking
 
-* `ParameterizedRule` is deprecated. Use `ConfigurableRule` instead.  
+* `ParameterizedRule` is removed. Use `ConfigurableRule` instead.  
   [Scott Hoyt](https://github.com/scottrhoyt)
+  [#353](https://github.com/realm/SwiftLint/issues/353)
 
 * To activate a `Rule`, it must be added to the global `masterRuleList`.  
   [Scott Hoyt](https://github.com/scottrhoyt)
@@ -19,6 +20,10 @@
   (e.g. "id").  
   [Scott Hoyt](https://github.com/scottrhoyt)
   [#231](https://github.com/realm/SwiftLint/issues/231)
+
+* `ViolationLevelRule` provides default `ConfigurableRule` implementation for
+  rules that only need integer error and warning levels.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
 
 * Add AutoCorrect for StatementPositionRule.  
   [Raphael Randschau](https://github.com/nicolai86)

@@ -1,4 +1,4 @@
-## Master
+## 0.5.6: Bug Fixlint
 
 ##### Breaking
 
@@ -10,6 +10,9 @@
   [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
+
+* Fix homebrew deployment issues.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  
   [John Estropia](https://github.com/JohnEstropia)

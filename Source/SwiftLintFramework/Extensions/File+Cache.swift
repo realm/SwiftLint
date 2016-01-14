@@ -89,7 +89,7 @@ private func rebuildAllDeclarationsByType() {
         }
         guard let name = firstSubstructureDict["key.name"] as? String,
             kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where SwiftDeclarationKind.inheritableKinds().contains(kind) else {
+            where kind == .Protocol else {
                 return nil
         }
         guard let substructure = substructureForDict(firstSubstructureDict) else {

@@ -19,11 +19,4 @@ extension SwiftDeclarationKind {
             .VarStatic
         ]
     }
-
-    internal static func inheritableKinds() -> [SwiftDeclarationKind] {
-        return [
-            .Class,
-            .Protocol
-        ]
-    }
 }

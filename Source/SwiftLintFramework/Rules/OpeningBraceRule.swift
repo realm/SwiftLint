@@ -15,7 +15,8 @@ extension File {
     private func violatingOpeningBraceRanges() -> [NSRange] {
         return matchPattern(
             "((?:[^( ]|[\\s(][\\s]+)\\{)",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
+            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+            excludingPattern: "((?:if|guard|while)\\n(?:.+\\n)+\\{)"
         )
     }
 }
@@ -34,7 +35,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
         nonTriggeringExamples: [
             "func abc() {\n}",
             "[].map() { $0 }",
-            "[].map({ })"
+            "[].map({ })",
+            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{\n}"
         ],
         triggeringExamples: [
             "func abc(↓){\n}",

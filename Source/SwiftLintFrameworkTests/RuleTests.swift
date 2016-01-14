@@ -10,71 +10,41 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
-class RuleMock1: Rule {
-    required init() {}
-    static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
-    func validateFile(file: File) -> [StyleViolation] {
-        return []
-    }
-}
+struct ViolationLevelRuleMock: ViolationLevelRule {
+    var warning = RuleParameter(severity: .Warning, value: 2)
+    var error = RuleParameter(severity: .Error, value: 3)
 
-class RuleMock2: Rule {
-    required init() {}
-    static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
-    func validateFile(file: File) -> [StyleViolation] {
-        return []
-    }
-}
-
-final class ParameterizedRuleMock1: RuleMock1, ParameterizedRule {
-    required init() {
-        parameters = []
-    }
-    let parameters: [RuleParameter<Int>]
-    required init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-}
-
-final class ParameterizedRuleMock2: RuleMock2, ParameterizedRule {
-    required init() {
-        parameters = []
-    }
-    let parameters: [RuleParameter<Int>]
-    required init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-}
-
-final class ConfigurableRuleMock1: RuleMock1, ParameterizedRule, ConfigurableRule {
-    required init() {
-        parameters = []
-    }
-    let parameters: [RuleParameter<Int>]
-    required init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-}
-
-final class ConfigurableRuleMock2: RuleMock2, ParameterizedRule, ConfigurableRule {
-    required init() {
-        parameters = []
-    }
-    let parameters: [RuleParameter<Int>]
-    required init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
+    static let description = RuleDescription(identifier: "violation_level_mock",
+        name: "",
+        description: "")
+    func validateFile(file: File) -> [StyleViolation] { return [] }
 }
 
 class RuleTests: XCTestCase {
 
-    private struct ViolationLevelRuleMock: ViolationLevelRule {
+    private struct RuleMock1: Rule {
+        init() {}
+        static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
+        func validateFile(file: File) -> [StyleViolation] {
+            return []
+        }
+    }
+
+    private struct RuleMock2: Rule {
+        init() {}
+        static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
+        func validateFile(file: File) -> [StyleViolation] {
+            return []
+        }
+    }
+
+    private struct ViolationLevelRuleMock2: ViolationLevelRule {
         var warning = RuleParameter(severity: .Warning, value: 2)
         var error = RuleParameter(severity: .Error, value: 3)
 
-        static let description = RuleDescription(identifier: "warning_error_level_mock",
-                                                       name: "",
-                                                description: "")
+        static let description = RuleDescription(identifier: "violation_level_mock2",
+            name: "",
+            description: "")
         func validateFile(file: File) -> [StyleViolation] { return [] }
     }
 
@@ -86,80 +56,8 @@ class RuleTests: XCTestCase {
         XCTAssertFalse(RuleMock1().isEqualTo(RuleMock2()))
     }
 
-    func testParameterizedRuleIsEqualTo() {
-        let params = [RuleParameter(severity: .Warning, value: 20),
-                      RuleParameter(severity: .Warning, value: 40)]
-        XCTAssertTrue(ParameterizedRuleMock1(parameters: params)
-           .isEqualTo(ParameterizedRuleMock1(parameters: params)))
-    }
-
-    func testParameterizedRuleIsNotEqualTo1() {
-        let params1 = [RuleParameter(severity: .Warning, value: 20),
-                       RuleParameter(severity: .Warning, value: 40)]
-        let params2 = [RuleParameter(severity: .Warning, value: 40),
-                       RuleParameter(severity: .Warning, value: 60)]
-        XCTAssertFalse(ParameterizedRuleMock1(parameters: params1)
-            .isEqualTo(ParameterizedRuleMock1(parameters: params2)))
-    }
-
-    func testParameterizedRuleIsNotEqualTo2() {
-        let params1 = [RuleParameter(severity: .Warning, value: 20),
-            RuleParameter(severity: .Warning, value: 40)]
-        let params2 = [RuleParameter(severity: .Warning, value: 40),
-            RuleParameter(severity: .Warning, value: 60)]
-        XCTAssertFalse(ParameterizedRuleMock1(parameters: params1)
-            .isEqualTo(ParameterizedRuleMock2(parameters: params2)))
-    }
-
-    func testParameterizedRuleIsNotEqualToRule() {
-        let params = [RuleParameter(severity: .Warning, value: 20),
-            RuleParameter(severity: .Warning, value: 40)]
-        XCTAssertFalse(ParameterizedRuleMock1(parameters: params)
-            .isEqualTo(RuleMock2()))
-    }
-
     func testRuleArraysWithDifferentCountsNotEqual() {
-        XCTAssertNotEqual([RuleMock1(), RuleMock2()], [RuleMock1()])
-    }
-
-    func testParameterizedConfigurableRuleInits() {
-        let config = [1, 2]
-        let rule = ConfigurableRuleMock1(config: config)
-        XCTAssertEqual(rule!.parameters, RuleParameter<Int>.ruleParametersFromArray([1, 2]))
-    }
-
-    func testParameterizedConfigurableRuleDoesntInit() {
-        let config = ["a", "b"]
-        XCTAssertNil(ConfigurableRuleMock1(config: config))
-    }
-
-    func testParameterizedConfigurableRuleEqual() {
-        let config1 = [1, 2]
-        let config2 = [1, 2]
-        XCTAssertTrue(ConfigurableRuleMock1(config: config1)!
-           .isEqualTo(ConfigurableRuleMock1(config: config2)!))
-    }
-
-    func testParameterizedConfigurableRuleNotEqual() {
-        let config1 = [1, 2]
-        let config2 = [3, 4]
-        XCTAssertFalse(ConfigurableRuleMock1(config: config1)!
-            .isEqualTo(ConfigurableRuleMock1(config: config2)!))
-    }
-
-    func testDifferentParameterizedConfigurableRulesNotEqual() {
-        let config1 = [1, 2]
-        let config2 = [1, 2]
-        XCTAssertFalse(ConfigurableRuleMock1(config: config1)!
-            .isEqualTo(ConfigurableRuleMock2(config: config2)!))
-    }
-
-    func testParameterizedConfigurableRuleArrayNotEqual() {
-        let config1 = [1, 2]
-        let config2 = [3, 4]
-        let array1: [Rule] = [ConfigurableRuleMock1(config: config1)!]
-        let array2: [Rule] = [ConfigurableRuleMock1(config: config2)!]
-        XCTAssertFalse(array1 == array2)
+        XCTAssertFalse([RuleMock1(), RuleMock2()] == [RuleMock1()])
     }
 
     func testViolationLevelRuleInitsWithConfigDictionary() {
@@ -186,5 +84,15 @@ class RuleTests: XCTestCase {
         var comp = ViolationLevelRuleMock()
         comp.warning = RuleParameter(severity: .Warning, value: 17)
         XCTAssertEqual(rule?.isEqualTo(comp), true)
+    }
+
+    func testViolationLevelRuleNotEqual() {
+        let config = 17 as AnyObject
+        let rule = ViolationLevelRuleMock(config: config)
+        XCTAssertEqual(rule?.isEqualTo(ViolationLevelRuleMock()), false)
+    }
+
+    func testDifferentViolationLevelRulesNotEqual() {
+        XCTAssertFalse(ViolationLevelRuleMock().isEqualTo(ViolationLevelRuleMock2()))
     }
 }

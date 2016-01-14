@@ -37,30 +37,6 @@ public protocol ViolationLevelRule: ConfigurableRule {
     var error: RuleParameter<Int> { get set }
 }
 
-@available(*, deprecated=0.5.6, message="Use ConfigurableRule instead.")
-public protocol ParameterizedRule: ConfigurableRule {
-    typealias ParameterType: Equatable
-    init(parameters: [RuleParameter<ParameterType>])
-    var parameters: [RuleParameter<ParameterType>] { get }
-}
-
-// Default implementation for ConfigurableRule conformance
-extension ParameterizedRule {
-    public init?(config: AnyObject) {
-        guard let array = [ParameterType].arrayOf(config) else {
-            return nil
-        }
-        self.init(parameters: RuleParameter<ParameterType>.ruleParametersFromArray(array))
-    }
-
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? Self {
-            return parameters == rule.parameters
-        }
-        return false
-    }
-}
-
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }

@@ -148,7 +148,7 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Carthage
   - Pods
   - Source/ExcludedFolder
-  - Source/EcludedFile.swift
+  - Source/ExcludedFile.swift
 # parameterized rules can be customized from this configuration file
 line_length: 110
 # parameterized rules are first parameterized as a warning level, then error level.

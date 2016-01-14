@@ -31,11 +31,11 @@ public struct LegacyConstructorRule: CorrectableRule {
             "↓NSMakeRange(10, 1)",
         ],
         corrections: [
-            "CGPointMake(10,  10   )\n": "CGPointMake(x: 10, y: 10)\n",
-            "CGSizeMake(10, 10)\n": "CGSizeMake(width: 10, height: 10)\n",
-            "CGRectMake(0, 0, 10, 10)\n": "CGRectMake(x: 0, y: 0, width: 10, height: 10)\n",
-            "CGVectorMake(10, 10)\n": "CGVectorMake(dx: 10, dy: 10)\n",
-            "NSMakeRange(10, 1)\n": "NSMakeRange(loc: 10, len: 1)\n",
+            "CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
+            "CGSizeMake(10, 10)\n": "CGSize(width: 10, height: 10)\n",
+            "CGRectMake(0, 0, 10, 10)\n": "CGRect(x: 0, y: 0, width: 10, height: 10)\n",
+            "CGVectorMake(10, 10)\n": "CGVector(dx: 10, dy: 10)\n",
+            "NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
         ]
     )
 
@@ -55,12 +55,12 @@ public struct LegacyConstructorRule: CorrectableRule {
         let number = "([\\-0-9\\.]+)"
         let twoNumbers = "\(number)\\s*,\\s*\(number)"
         let patterns = [
-          "CGPointMake\\(\\s*\(twoNumbers)\\s*\\)": "CGPointMake(x: $1, y: $2)",
-          "CGSizeMake\\(\\s*\(twoNumbers)\\s*\\)": "CGSizeMake(width: $1, height: $2)",
+          "CGPointMake\\(\\s*\(twoNumbers)\\s*\\)": "CGPoint(x: $1, y: $2)",
+          "CGSizeMake\\(\\s*\(twoNumbers)\\s*\\)": "CGSize(width: $1, height: $2)",
           "CGRectMake\\(\\s*\(twoNumbers)\\s*,\\s*\(twoNumbers)\\s*\\)":
-              "CGRectMake(x: $1, y: $2, width: $3, height: $4)",
-          "CGVectorMake\\(\\s*\(twoNumbers)\\s*\\)": "CGVectorMake(dx: $1, dy: $2)",
-          "NSMakeRange\\(\\s*\(twoNumbers)\\s*\\)": "NSMakeRange(loc: $1, len: $2)",
+              "CGRect(x: $1, y: $2, width: $3, height: $4)",
+          "CGVectorMake\\(\\s*\(twoNumbers)\\s*\\)": "CGVector(dx: $1, dy: $2)",
+          "NSMakeRange\\(\\s*\(twoNumbers)\\s*\\)": "NSRange(location: $1, length: $2)",
         ]
 
         let description = self.dynamicType.description

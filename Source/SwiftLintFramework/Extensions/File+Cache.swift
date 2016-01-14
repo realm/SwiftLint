@@ -84,16 +84,12 @@ private func substructureForDict(dict: XPCDictionary) -> [XPCDictionary]? {
 private func rebuildAllDeclarationsByType() {
     let structures = structureCache.values.map { $0.1 }
     let allDeclarationsByType = structures.flatMap { structure -> (String, [String])? in
-        guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first else {
-            return nil
-        }
-        guard let name = firstSubstructureDict["key.name"] as? String,
+        guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
+            name = firstSubstructureDict["key.name"] as? String,
             kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where kind == .Protocol else {
+            where kind == .Protocol,
+            let substructure = substructureForDict(firstSubstructureDict) else {
                 return nil
-        }
-        guard let substructure = substructureForDict(firstSubstructureDict) else {
-            return nil
         }
         return (name, substructure.flatMap({ $0["key.name"] as? String }))
     }

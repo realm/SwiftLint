@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 extension SwiftDeclarationKind {
-    static func variableKinds() -> [SwiftDeclarationKind] {
+    internal static func variableKinds() -> [SwiftDeclarationKind] {
         return [
             .VarClass,
             .VarGlobal,

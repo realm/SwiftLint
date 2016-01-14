@@ -14,19 +14,16 @@ import XCTest
 class IntegrationTests: XCTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
-        let fileManager = NSFileManager.defaultManager()
-        let directory = ((((__FILE__ as NSString)
+        let directory = (((__FILE__ as NSString)
             .stringByDeletingLastPathComponent as NSString)
             .stringByDeletingLastPathComponent as NSString)
-            .stringByDeletingLastPathComponent as NSString)
-            .stringByAppendingPathComponent("Source")
-        do {
-            let allFiles = try fileManager.allFilesRecursively(directory: directory)
-            let swiftFiles = allFiles.filter { $0.isSwiftFile() }
-            XCTAssert(swiftFiles.contains(__FILE__), "current file should be included")
-            XCTAssertEqual(swiftFiles.flatMap({Linter(file: File(path: $0)!).styleViolations}), [])
-        } catch {
-            fatalError("Couldn't find files in \(directory): \(error)")
-        }
+            .stringByDeletingLastPathComponent
+        NSFileManager.defaultManager().changeCurrentDirectoryPath(directory)
+        let config = Configuration(path: ".swiftlint.yml")
+        let swiftFiles = config.lintableFilesForPath("")
+        XCTAssert(swiftFiles.map({$0.path!}).contains(__FILE__), "current file should be included")
+        XCTAssertEqual(swiftFiles.flatMap({
+            Linter(file: $0, configuration: config).styleViolations
+        }), [])
     }
 }

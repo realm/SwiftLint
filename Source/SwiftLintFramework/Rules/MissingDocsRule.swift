@@ -68,6 +68,14 @@ public enum AccessControlLevel: String {
 }
 
 public struct MissingDocsRule: ParameterizedRule, OptInRule {
+    public init?(config: AnyObject) {
+        guard let array = [String].arrayOf(config) else {
+            return nil
+        }
+        let acl = array.flatMap(AccessControlLevel.init)
+        self.init(parameters: RuleParameter<AccessControlLevel>.ruleParametersFromArray(acl))
+    }
+
     public init() {
         self.init(parameters: [
             RuleParameter(severity: .Warning, value: .Public),

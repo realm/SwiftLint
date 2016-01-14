@@ -1,3 +1,11 @@
+## Pull Requests
+
+All changes, no matter how trivial, must be done via pull request. Commits
+should never be made directly on the `master` branch. If you have commit access
+to SwiftLint and believe your change to be trivial and not worth waiting for
+review, you may open a pull request and merge immediately, but this should be
+the exception, not the norm.
+
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.

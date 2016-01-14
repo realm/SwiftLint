@@ -8,19 +8,11 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ParameterizedRule {
-    public init() {
-        self.init(parameters: [
-            RuleParameter(severity: .Warning, value: 400),
-            RuleParameter(severity: .Error, value: 1000)
-        ])
-    }
+public struct FileLengthRule: ViolationLevelRule {
+    public var warning = RuleParameter(severity: .Warning, value: 400)
+    public var error = RuleParameter(severity: .Error, value: 1000)
 
-    public init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-
-    public let parameters: [RuleParameter<Int>]
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "file_length",
@@ -30,11 +22,11 @@ public struct FileLengthRule: ParameterizedRule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
-        for parameter in parameters.reverse() where lineCount > parameter.value {
+        for parameter in [error, warning] where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file.path, line: lineCount),
-                reason: "File should contain \(parameters.first!.value) lines or less: " +
+                reason: "File should contain \(warning.value) lines or less: " +
                         "currently contains \(lineCount)")]
         }
         return []

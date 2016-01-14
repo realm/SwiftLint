@@ -143,19 +143,19 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Rules from config dictionary
 
-    let testRuleList = RuleList(rules: ConfigurableRuleMock1.self)
+    let testRuleList = RuleList(rules: ViolationLevelRuleMock.self)
 
     func testConfiguresCorrectlyFromDict() {
         let ruleConfig = [1, 2]
-        let config = [ConfigurableRuleMock1.description.identifier: ruleConfig]
+        let config = [ViolationLevelRuleMock.description.identifier: ruleConfig]
         let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
-        XCTAssertTrue(rules == [ConfigurableRuleMock1(config: ruleConfig)! as Rule])
+        XCTAssertTrue(rules == [ViolationLevelRuleMock(config: ruleConfig)! as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {
-        let config = [ConfigurableRuleMock1.description.identifier: ["a", "b"]]
+        let config = [ViolationLevelRuleMock.description.identifier: ["a", "b"]]
         let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
-        XCTAssertTrue(rules == [ConfigurableRuleMock1() as Rule])
+        XCTAssertTrue(rules == [ViolationLevelRuleMock() as Rule])
     }
 }
 

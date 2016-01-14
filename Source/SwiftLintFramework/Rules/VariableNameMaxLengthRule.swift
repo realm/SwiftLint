@@ -9,19 +9,11 @@
 import SourceKittenFramework
 import SwiftXPC
 
-public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
-    public init() {
-        self.init(parameters: [
-            RuleParameter(severity: .Warning, value: 40),
-            RuleParameter(severity: .Error, value: 60)
-        ])
-    }
+public struct VariableNameMaxLengthRule: ASTRule, ViolationLevelRule {
+    public var warning = RuleParameter(severity: .Warning, value: 40)
+    public var error = RuleParameter(severity: .Error, value: 60)
 
-    public init(parameters: [RuleParameter<Int>]) {
-        self.parameters = parameters
-    }
-
-    public let parameters: [RuleParameter<Int>]
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "variable_name_max_length",
@@ -43,7 +35,7 @@ public struct VariableNameMaxLengthRule: ASTRule, ParameterizedRule {
                              dictionary: XPCDictionary) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let charCount = name.characters.count
-            for parameter in parameters.reverse() where charCount > parameter.value {
+            for parameter in [error, warning] where charCount > parameter.value {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
                     location: Location(file: file, byteOffset: offset),

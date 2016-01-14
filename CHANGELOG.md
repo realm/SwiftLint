@@ -29,9 +29,6 @@
 * Add AutoCorrect for LegacyConstructorRule.  
   [Raphael Randschau](https://github.com/nicolai86)
 
-* Improve performance by reducing calls to SourceKit.  
-  [Norio Nomura](https://github.com/norio-nomura)
-
 * Improve performance of `LineLengthRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
@@ -56,6 +53,24 @@
   [JP Simard](https://github.com/jpsim)
 
 ##### Bug Fixes
+
+* None.
+
+## 0.5.6: Bug FixLint
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Improve performance by reducing calls to SourceKit.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
+##### Bug Fixes
+
+* Fix homebrew deployment issues.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 * AutoCorrect for TrailingNewlineRule only removes at most one line.  
   [John Estropia](https://github.com/JohnEstropia)

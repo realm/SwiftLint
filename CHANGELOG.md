@@ -43,6 +43,10 @@
   [JP Simard](https://github.com/jpsim)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 
+* Add LegacyConstantRule.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
+
 * Add opt-in rule to encourage checking `isEmpty` over comparing `count` to
   zero.  
   [JP Simard](https://github.com/jpsim)

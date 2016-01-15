@@ -85,9 +85,9 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: parameter.severity,
                             location: location,
-                            reason: "Function body should span \(parameter.value) lines " +
-                            "or less: currently spans \(lineCount) lines (already ignoring " +
-                            "comment and whitespace only ones)")]
+                            reason: "Function body should span \(parameter.value) lines or less " +
+                            "excluding comments and whitespace: currently spans \(lineCount) " +
+                            "lines")]
                     }
 
                 }

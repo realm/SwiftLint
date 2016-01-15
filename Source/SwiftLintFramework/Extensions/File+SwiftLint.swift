@@ -144,6 +144,9 @@ extension File {
         let contents = self.contents as NSString
         let range = NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
+        if matches.isEmpty {
+            return []
+        }
         let exclusions = regex(excludingPattern).matchesInString(self.contents,
                                                                  options: [],
                                                                    range: range)

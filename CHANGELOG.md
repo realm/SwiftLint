@@ -10,6 +10,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#258](https://github.com/realm/SwiftLint/issues/258)
 
+* `ForceUnwrappingRule` was added as an `OptInRule` to issue warnings for all forced unwrappings
+  [Benjamin Otto](https://github.com/Argent)
+  [#374](https://github.com/realm/SwiftLint/pull/374)
+
 ##### Bug Fixes
 
 * None.

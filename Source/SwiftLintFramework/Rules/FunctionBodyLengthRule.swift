@@ -21,6 +21,33 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
         description: "Functions bodies should not span too many lines."
     )
 
+    private func numberOfCommentOnlyLines(file: File, startLine: Int, endLine: Int) -> Int {
+        let commentKinds = Set(SyntaxKind.commentKinds())
+
+        return file.syntaxKindsByLines.filter { line, kinds -> Bool in
+            guard line >= startLine && line <= endLine else {
+                return false
+            }
+
+            return kinds.filter { !commentKinds.contains($0) }.isEmpty
+        }.count
+    }
+
+    private func lineCount(file: File, startLine: Int, endLine: Int) -> Int {
+        let commentedLines = numberOfCommentOnlyLines(file, startLine: startLine, endLine: endLine)
+        return endLine - startLine - commentedLines
+    }
+
+    private func exceedsLineCountExcludingComments(file: File, _ start: Int, _ end: Int,
+                                                   _ limit: Int) -> (Bool, Int) {
+        if end - start <= limit {
+            return (false, end - start)
+        }
+
+        let count = lineCount(file, startLine: start, endLine: end)
+        return (count > limit, count)
+    }
+
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
         dictionary: XPCDictionary) -> [StyleViolation] {
@@ -49,14 +76,20 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
             let location = Location(file: file, byteOffset: offset)
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
-            for parameter in [error, warning] {
-                if let startLine = startLine?.line, let endLine = endLine?.line
-                    where endLine - startLine > parameter.value {
-                    return [StyleViolation(ruleDescription: self.dynamicType.description,
-                        severity: parameter.severity,
-                        location: location,
-                        reason: "Function body should span \(warning.value) lines " +
-                        "or less: currently spans \(endLine - startLine) lines")]
+
+            if let startLine = startLine?.line, let endLine = endLine?.line {
+                for parameter in [error, warning] {
+                    let (exceedsLineCount, lineCount) = exceedsLineCountExcludingComments(file,
+                                                                startLine, endLine, parameter.value)
+                    if exceedsLineCount {
+                        return [StyleViolation(ruleDescription: self.dynamicType.description,
+                            severity: parameter.severity,
+                            location: location,
+                            reason: "Function body should span \(parameter.value) lines or less " +
+                            "excluding comments and whitespace: currently spans \(lineCount) " +
+                            "lines")]
+                    }
+
                 }
             }
         }

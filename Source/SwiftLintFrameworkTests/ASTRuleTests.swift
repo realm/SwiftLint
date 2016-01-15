@@ -136,20 +136,6 @@ class ASTRuleTests: XCTestCase {
         }
     }
 
-    func testFunctionBodyLengths() {
-        let longFunctionBody = "func abc() {" +
-            Repeat(count: 40, repeatedValue: "\n").joinWithSeparator("") +
-            "}\n"
-        XCTAssertEqual(violations(longFunctionBody), [])
-        let longerFunctionBody = "func abc() {" +
-            Repeat(count: 41, repeatedValue: "\n").joinWithSeparator("") +
-            "}\n"
-        XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(
-            ruleDescription: FunctionBodyLengthRule.description,
-            location: Location(file: nil, line: 1, character: 1),
-            reason: "Function body should span 40 lines or less: currently spans 41 lines")])
-    }
-
     func testTypeBodyLengths() {
         for kind in ["class", "struct", "enum"] {
             let longTypeBody = "\(kind) Abc {" +

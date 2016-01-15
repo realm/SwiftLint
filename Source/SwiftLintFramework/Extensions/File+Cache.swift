@@ -13,6 +13,7 @@ import SwiftXPC
 private var responseCache = Cache({file in Request.EditorOpen(file).send()})
 private var structureCache = Cache({file in Structure(sourceKitResponse: responseCache.get(file))})
 private var syntaxMapCache = Cache({file in SyntaxMap(sourceKitResponse: responseCache.get(file))})
+private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
 
 private var _allDeclarationsByType = [String: [String]]()
 private var declarationMapNeedsRebuilding = true
@@ -54,11 +55,16 @@ public extension File {
         return syntaxMapCache.get(self)
     }
 
+    public var syntaxKindsByLines: [(Int, [SyntaxKind])] {
+        return syntaxKindsByLinesCache.get(self)
+    }
+
     public static func clearCaches() {
         declarationMapNeedsRebuilding = true
         _allDeclarationsByType = [:]
         structureCache.clear()
         syntaxMapCache.clear()
+        syntaxKindsByLinesCache.clear()
     }
 
     public static var allDeclarationsByType: [String: [String]] {

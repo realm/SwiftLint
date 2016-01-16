@@ -6,7 +6,9 @@
 
 ##### Enhancements
 
-* None.
+* FunctionBodyLengthRule now does not count comment lines.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#258](https://github.com/realm/SwiftLint/issues/258)
 
 ##### Bug Fixes
 
@@ -24,10 +26,6 @@
   [Scott Hoyt](https://github.com/scottrhoyt)
 
 ##### Enhancements
-
-* FunctionBodyLengthRule now does not count comment lines.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#258](https://github.com/realm/SwiftLint/issues/258)
 
 * `ConfigurableRule` protocol allows for improved rule configuration. See
   `CONTRIBUTING` for more details.  

@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* FunctionBodyLengthRule now does not count comment lines.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#258](https://github.com/realm/SwiftLint/issues/258)
+
+##### Bug Fixes
+
+* None.
+
 ## 0.6.0: Steam Cycle
 
 ##### Breaking
@@ -10,10 +26,6 @@
   [Scott Hoyt](https://github.com/scottrhoyt)
 
 ##### Enhancements
-
-* FunctionBodyLengthRule now does not count comment lines.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#258](https://github.com/realm/SwiftLint/issues/258)
 
 * `ConfigurableRule` protocol allows for improved rule configuration. See
   `CONTRIBUTING` for more details.  

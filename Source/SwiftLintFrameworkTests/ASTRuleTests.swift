@@ -138,17 +138,35 @@ class ASTRuleTests: XCTestCase {
 
     func testTypeBodyLengths() {
         for kind in ["class", "struct", "enum"] {
-            let longTypeBody = "\(kind) Abc {" +
-                Repeat(count: 200, repeatedValue: "\n").joinWithSeparator("") +
+            let longTypeBody = "\(kind) Abc {\n" +
+                Repeat(count: 199, repeatedValue: "let abc = 0\n").joinWithSeparator("") +
                 "}\n"
             XCTAssertEqual(violations(longTypeBody), [])
-            let longerTypeBody = "\(kind) Abc {" +
-                Repeat(count: 201, repeatedValue: "\n").joinWithSeparator("") +
+            let longerTypeBody = "\(kind) Abc {\n" +
+                Repeat(count: 201, repeatedValue: "let abc = 0\n").joinWithSeparator("") +
                 "}\n"
             XCTAssertEqual(violations(longerTypeBody), [StyleViolation(
                 ruleDescription: TypeBodyLengthRule.description,
                 location: Location(file: nil, line: 1, character: 1),
-                reason: "Type body should span 200 lines or less: currently spans 201 lines")])
+                reason: "Type body should span 200 lines or less excluding comments and " +
+                "whitespace: currently spans 201 lines")])
+
+            let longerTypeBodyWithWhitespaceLines = "\(kind) Abc {" +
+                Repeat(count: 201, repeatedValue: "\n").joinWithSeparator("") +
+            "}\n"
+            XCTAssertEqual(violations(longerTypeBodyWithWhitespaceLines), [])
+
+            let longerTypeBodyWithCommentedLines = "\(kind) Abc {\n" +
+                Repeat(count: 201, repeatedValue: "// this is a comment\n").joinWithSeparator("") +
+            "}\n"
+            XCTAssertEqual(violations(longerTypeBodyWithCommentedLines), [])
+
+            let longerTypeBodyWithMultilineComments = "\(kind) Abc {\n" +
+                Repeat(count: 199, repeatedValue: "let abc = 0\n").joinWithSeparator("") +
+                "/* this is\n" +
+                "a multiline comment\n*/" +
+            "}\n"
+            XCTAssertEqual(violations(longerTypeBodyWithMultilineComments), [])
         }
     }
 

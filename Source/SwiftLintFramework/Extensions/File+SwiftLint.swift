@@ -181,4 +181,31 @@ extension File {
         }
         return violatingRanges
     }
+
+    internal func numberOfCommentOnlyLines(startLine: Int, endLine: Int) -> Int {
+        let commentKinds = Set(SyntaxKind.commentKinds())
+
+        return syntaxKindsByLines.filter { line, kinds -> Bool in
+            guard line >= startLine && line <= endLine else {
+                return false
+            }
+
+            return kinds.filter { !commentKinds.contains($0) }.isEmpty
+        }.count
+    }
+
+    internal func lineCount(startLine: Int, endLine: Int) -> Int {
+        let commentedLines = numberOfCommentOnlyLines(startLine, endLine: endLine)
+        return endLine - startLine - commentedLines
+    }
+
+    internal func exceedsLineCountExcludingComments(start: Int, _ end: Int,
+                                                    _ limit: Int) -> (Bool, Int) {
+        if end - start <= limit {
+            return (false, end - start)
+        }
+
+        let count = lineCount(start, endLine: end)
+        return (count > limit, count)
+    }
 }

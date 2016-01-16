@@ -34,13 +34,20 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
             let location = Location(file: file, byteOffset: offset)
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
-            for parameter in [error, warning] {
-                if let startLine = startLine?.line, let endLine = endLine?.line
-                    where endLine - startLine > parameter.value {
+
+            if let startLine = startLine?.line, let endLine = endLine?.line {
+                for parameter in [error, warning] {
+                    let (exceedsLineCount, lineCount) = file.exceedsLineCountExcludingComments(
+                                                                startLine, endLine, parameter.value)
+                    if exceedsLineCount {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
-                            severity: parameter.severity, location: location,
-                            reason: "Type body should span \(warning.value) lines " +
-                            "or less: currently spans \(endLine - startLine) lines")]
+                            severity: parameter.severity,
+                            location: location,
+                            reason: "Type body should span \(parameter.value) lines or less " +
+                            "excluding comments and whitespace: currently spans \(lineCount) " +
+                            "lines")]
+                    }
+
                 }
             }
         }

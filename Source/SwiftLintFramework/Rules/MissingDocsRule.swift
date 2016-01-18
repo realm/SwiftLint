@@ -9,22 +9,21 @@
 import SourceKittenFramework
 import SwiftXPC
 
-private func dictArrayForDictionary(dictionary: XPCDictionary, key: String) -> [[String: String]]? {
-    return (dictionary[key] as? XPCArray)?.flatMap {
+private func mappedDictValues(dictionary: XPCDictionary, key: String, subKey: String) -> [String] {
+    return (dictionary[key] as? XPCArray)?.flatMap({
         ($0 as? XPCDictionary) as? [String: String]
-    }
+    }).flatMap({ $0[subKey] }) ?? []
 }
 
 private func declarationOverrides(dictionary: XPCDictionary) -> Bool {
-    return dictArrayForDictionary(dictionary, key: "key.attributes")?.flatMap {
-        $0["key.attribute"]
-    }.contains("source.decl.attribute.override") ?? false
+    return mappedDictValues(dictionary, key: "key.attributes", subKey: "key.attribute")
+        .contains("source.decl.attribute.override")
 }
 
 private func inheritedMembersForDictionary(dictionary: XPCDictionary) -> [String] {
-    return dictArrayForDictionary(dictionary, key: "key.inheritedtypes")?.flatMap {
-        $0["key.name"]
-    }.flatMap { File.allDeclarationsByType[$0] ?? [] } ?? []
+    return mappedDictValues(dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
+        File.allDeclarationsByType[$0] ?? []
+    }
 }
 
 extension File {

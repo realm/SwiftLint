@@ -65,6 +65,10 @@ class StringRuleTests: XCTestCase {
         verifyRule(ForceTryRule.description)
     }
 
+    func testForceUnwrapping() {
+        verifyRule(ForceUnwrappingRule.description)
+    }
+
     func testOperatorFunctionWhitespace() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }

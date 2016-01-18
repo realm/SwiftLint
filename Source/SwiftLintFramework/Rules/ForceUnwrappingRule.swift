@@ -21,10 +21,10 @@ public struct ForceUnwrappingRule: Rule, OptInRule {
             "navigationController?.pushViewController(viewController, animated: true)"
         ],
         triggeringExamples: [
-            "let url = ↓NSURL(string: query)!",
-            "↓navigationController!.pushViewController(viewController, animated: true)",
-            "let unwrapped = ↓optional!",
-            "return ↓cell!"
+            "let url = NSURL(string: query)↓!",
+            "navigationController↓!.pushViewController(viewController, animated: true)",
+            "let unwrapped = optional↓!",
+            "return cell↓!"
         ]
     )
 
@@ -37,12 +37,13 @@ public struct ForceUnwrappingRule: Rule, OptInRule {
             })
         // Check if there is any identifier followed by a '!'
         let violations = Set(identifiers).flatMap({
-                return file.matchPattern("\($0)(\\((?:[^\\r\\n]|\\r(?!\\n))+?\\))?\\!")
+            return file.matchPattern("\($0)(\\((?:[^\\r\\n]|\\r(?!\\n))*?\\))?\\!")
         }).filter({ $0.1.first == .Identifier }).map({ $0.0 })
 
         return violations.map({
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: .Warning, location: Location(file: file, characterOffset: $0.location))
+                severity: .Warning,
+                location: Location(file: file, characterOffset: $0.location + $0.length - 1))
         })
     }
 }

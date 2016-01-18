@@ -50,6 +50,10 @@ class RulesTests: XCTestCase {
         verifyRule(ForceTryRule.description)
     }
 
+    func testForceUnwrapping() {
+        verifyRule(ForceUnwrappingRule.description)
+    }
+
     func testFunctionBodyLength() {
         verifyRule(FunctionBodyLengthRule.description)
     }

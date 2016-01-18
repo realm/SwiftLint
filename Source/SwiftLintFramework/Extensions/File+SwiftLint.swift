@@ -182,7 +182,7 @@ extension File {
         return violatingRanges
     }
 
-    internal func numberOfCommentOnlyLines(startLine: Int, endLine: Int) -> Int {
+    internal func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = Set(SyntaxKind.commentKinds())
 
         return syntaxKindsByLines.filter { line, kinds -> Bool in
@@ -190,17 +190,18 @@ extension File {
                 return false
             }
 
+            // if the line has only whitespace, `kinds` will be an empty array
             return kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count
     }
 
     internal func lineCount(startLine: Int, endLine: Int) -> Int {
-        let commentedLines = numberOfCommentOnlyLines(startLine, endLine: endLine)
-        return endLine - startLine - commentedLines
+        let ignoredLines = numberOfCommentAndWhitespaceOnlyLines(startLine, endLine: endLine)
+        return endLine - startLine - ignoredLines
     }
 
-    internal func exceedsLineCountExcludingComments(start: Int, _ end: Int,
-                                                    _ limit: Int) -> (Bool, Int) {
+    internal func exceedsLineCountExcludingCommentsAndWhitespace(start: Int, _ end: Int,
+                                                                 _ limit: Int) -> (Bool, Int) {
         if end - start <= limit {
             return (false, end - start)
         }

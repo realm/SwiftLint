@@ -52,9 +52,9 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
                 for parameter in [error, warning] {
-                    let (exceedsLineCount, lineCount) = file.exceedsLineCountExcludingComments(
+                    let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                                                                 startLine, endLine, parameter.value)
-                    if exceedsLineCount {
+                    if exceeds {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: parameter.severity,
                             location: location,

@@ -9,43 +9,43 @@
 import SwiftLintFramework
 import XCTest
 
+private func funcWithBody(body: String) -> String {
+    return "func abc() {\nvar x = 0\n\(body)}\n"
+}
+
 class FunctionBodyLengthRuleTests: XCTestCase {
     func testFunctionBodyLengths() {
-        let longFunctionBody = "func abc() {\n" +
-            "var x = 0\n" +
-            Repeat(count: 39, repeatedValue: "x = 0\n").joinWithSeparator("") +
-        "}\n"
+        let longFunctionBody = funcWithBody(
+            Repeat(count: 39, repeatedValue: "x = 0\n").joinWithSeparator("")
+        )
         XCTAssertEqual(violations(longFunctionBody), [])
 
-        let longerFunctionBody = "func abc() {\n" +
-            "var x = 0\n" +
-            Repeat(count: 40, repeatedValue: "x = 0\n").joinWithSeparator("") +
-        "}\n"
+        let longerFunctionBody = funcWithBody(
+            Repeat(count: 40, repeatedValue: "x = 0\n").joinWithSeparator("")
+        )
         XCTAssertEqual(violations(longerFunctionBody), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
 
-        let longerFunctionBodyWithEmptyLines = "func abc() {" +
-            Repeat(count: 100, repeatedValue: "\n").joinWithSeparator("") +
-        "}\n"
+        let longerFunctionBodyWithEmptyLines = funcWithBody(
+            Repeat(count: 100, repeatedValue: "\n").joinWithSeparator("")
+        )
         XCTAssertEqual(violations(longerFunctionBodyWithEmptyLines), [])
     }
 
     func testFunctionBodyLengthsWithComments() {
-        let longFunctionBodyWithComments = "func abc() {\n" +
-            "var x = 0\n" +
+        let longFunctionBodyWithComments = funcWithBody(
             Repeat(count: 39, repeatedValue: "x = 0\n").joinWithSeparator("") +
-            "// comment only line should be ignored.\n" +
-        "}\n"
+            "// comment only line should be ignored.\n"
+        )
         XCTAssertEqual(violations(longFunctionBodyWithComments), [])
 
-        let longerFunctionBodyWithComments = "func abc() {\n" +
-            "var x = 0\n" +
+        let longerFunctionBodyWithComments = funcWithBody(
             Repeat(count: 40, repeatedValue: "x = 0\n").joinWithSeparator("") +
-            "// comment only line should be ignored.\n" +
-        "}\n"
+            "// comment only line should be ignored.\n"
+        )
         XCTAssertEqual(violations(longerFunctionBodyWithComments), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),
@@ -54,18 +54,16 @@ class FunctionBodyLengthRuleTests: XCTestCase {
     }
 
     func testFunctionBodyLengthsWithMultilineComments() {
-        let longFunctionBodyWithMultilineComments = "func abc() {\n" +
-            "var x = 0\n" +
+        let longFunctionBodyWithMultilineComments = funcWithBody(
             Repeat(count: 39, repeatedValue: "x = 0\n").joinWithSeparator("") +
-            "/* multi line comment only line should be ignored.\n*/\n" +
-        "}\n"
+            "/* multi line comment only line should be ignored.\n*/\n"
+        )
         XCTAssertEqual(violations(longFunctionBodyWithMultilineComments), [])
 
-        let longerFunctionBodyWithMultilineComments = "func abc() {\n" +
-            "var x = 0\n" +
+        let longerFunctionBodyWithMultilineComments = funcWithBody(
             Repeat(count: 40, repeatedValue: "x = 0\n").joinWithSeparator("") +
-            "/* multi line comment only line should be ignored.\n*/\n" +
-        "}\n"
+            "/* multi line comment only line should be ignored.\n*/\n"
+        )
         XCTAssertEqual(violations(longerFunctionBodyWithMultilineComments), [StyleViolation(
             ruleDescription: FunctionBodyLengthRule.description,
             location: Location(file: nil, line: 1, character: 1),

@@ -17,17 +17,15 @@ public struct CheckstyleReporter: Reporter {
     }
 
     public static func generateReport(violations: [StyleViolation]) -> String {
-        var report = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">"
-        report += violations.map { violation in
-            let fileName = violation.location.file ?? "<nopath>"
-            return "\n\t<file name=\"\(fileName)\">\n" +
-                "\t\t<error line=\"\(violation.location.line ?? 0)\" " +
-                "column=\"\(violation.location.character ?? 0)\" " +
-                "severity=\"\(violation.severity.rawValue.lowercaseString)\" " +
-                "message=\"\(violation.reason)\"/>\n" +
-                "\t</file>"
-        }.joinWithSeparator("")
-        report += "\n</checkstyle>"
-        return report
+        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">" +
+            violations.map({ violation in
+                let fileName = violation.location.file ?? "<nopath>"
+                return ["\n\t<file name=\"\(fileName)\">\n",
+                    "\t\t<error line=\"\(violation.location.line ?? 0)\" ",
+                    "column=\"\(violation.location.character ?? 0)\" ",
+                    "severity=\"\(violation.severity.rawValue.lowercaseString)\" ",
+                    "message=\"\(violation.reason)\"/>\n",
+                    "\t</file>"].joinWithSeparator("")
+            }).joinWithSeparator("") + "\n</checkstyle>"
     }
 }

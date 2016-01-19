@@ -69,3 +69,7 @@ archive:
 	carthage archive SwiftLintFramework
 
 release: package archive
+
+# http://irace.me/swift-profiling/
+display_compilation_time:
+	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build test | grep [1-9].[0-9]ms | sort -n

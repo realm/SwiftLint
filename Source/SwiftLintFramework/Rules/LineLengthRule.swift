@@ -8,8 +8,8 @@
 
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule {
-    public var configuration = SeverityLevelConfig(warning: 100, error: 200)
+public struct LineLengthRule: ConfigProviderRule {
+    public var config = SeverityLevelConfig(warning: 100, error: 200)
 
     public init() {}
 
@@ -22,11 +22,11 @@ public struct LineLengthRule: ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.lines.flatMap { line in
             let length = line.content.characters.count
-            for param in configuration.params where length > param.value {
+            for param in config.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.warning) characters or less: " +
+                    reason: "Line should be \(config.warning) characters or less: " +
                     "currently \(length) characters")
             }
             return nil

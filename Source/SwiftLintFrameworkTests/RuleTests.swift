@@ -10,8 +10,8 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
-struct RuleWithLevelsMock: ConfigurationProviderRule {
-    var configuration = SeverityLevelConfig(warning: 2, error: 3)
+struct RuleWithLevelsMock: ConfigProviderRule {
+    var config = SeverityLevelConfig(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "violation_level_mock",
         name: "",
@@ -37,8 +37,8 @@ class RuleTests: XCTestCase {
         }
     }
 
-    private struct RuleWithLevelsMock2: ConfigurationProviderRule {
-        var configuration = SeverityLevelConfig(warning: 2, error: 3)
+    private struct RuleWithLevelsMock2: ConfigProviderRule {
+        var config = SeverityLevelConfig(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
             name: "",
@@ -62,8 +62,8 @@ class RuleTests: XCTestCase {
         let config = ["warning": 17, "error": 7]
         let rule = try? RuleWithLevelsMock(config: config)
         var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = 7
+        comp.config.warning = 17
+        comp.config.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -71,8 +71,8 @@ class RuleTests: XCTestCase {
         let config = [17, 7] as AnyObject
         let rule = try? RuleWithLevelsMock(config: config)
         var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = 7
+        comp.config.warning = 17
+        comp.config.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -80,7 +80,7 @@ class RuleTests: XCTestCase {
         let config = 17 as AnyObject
         let rule = try? RuleWithLevelsMock(config: config)
         var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
+        comp.config.warning = 17
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 

@@ -9,12 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
+public struct TypeNameRule: ASTRule, ConfigProviderRule {
 
-    public var configuration = NameConfig(minLengthWarning: 3,
-                                          minLengthError: 0,
-                                          maxLengthWarning: 40,
-                                          maxLengthError: 1000)
+    public var config = NameConfig(minLengthWarning: 3,
+                                   minLengthError: 0,
+                                   maxLengthWarning: 40,
+                                   maxLengthError: 1000)
 
     public init() {}
 
@@ -62,12 +62,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
-            } else if let severity = configuration.violationSeverity(forLength: name.characters.count) {
+            } else if let severity = config.violationSeverity(forLength: name.characters.count) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                            "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
+                    reason: "Type name should be between \(config.minLengthThreshold) and " +
+                            "\(config.maxLengthThreshold) characters long: '\(name)'")]
             }
         }
         return []

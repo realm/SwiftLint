@@ -32,26 +32,26 @@ public protocol ConfigurableRule: Rule {
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
-public protocol ConfigurationProviderRule: ConfigurableRule {
-    typealias ConfigurationType: RuleConfiguration
-    var configuration: ConfigurationType { get set }
+public protocol ConfigProviderRule: ConfigurableRule {
+    typealias ConfigType: RuleConfiguration
+    var config: ConfigType { get set }
 }
 
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }
 
-// MARK: - ConfigurationProviderRule conformance to Configurable
+// MARK: - ConfigProviderRule conformance to Configurable
 
-public extension ConfigurationProviderRule {
+public extension ConfigProviderRule {
     public init(config: AnyObject) throws {
         self.init()
-        try configuration.setConfiguration(config)
+        try self.config.setConfiguration(config)
     }
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
         if let rule = rule as? Self {
-            return configuration.isEqualTo(rule.configuration)
+            return config.isEqualTo(rule.config)
         }
         return false
     }

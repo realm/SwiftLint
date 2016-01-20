@@ -8,8 +8,8 @@
 
 import SourceKittenFramework
 
-public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelConfig(warning: 200, error: 350)
+public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
+    public var config = SeverityLevelConfig(warning: 200, error: 350)
 
     public init() {}
 
@@ -33,7 +33,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in configuration.params {
+                for parameter in config.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                                                                 startLine, endLine, parameter.value)
                     if exceeds {

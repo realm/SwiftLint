@@ -9,12 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
+public struct VariableNameRule: ASTRule, ConfigProviderRule {
 
-    public var configuration = NameConfig(minLengthWarning: 3,
-                                          minLengthError: 2,
-                                          maxLengthWarning: 40,
-                                          maxLengthError: 60)
+    public var config = NameConfig(minLengthWarning: 3,
+                                   minLengthError: 2,
+                                   maxLengthWarning: 40,
+                                   maxLengthError: 60)
 
     public init() {}
 
@@ -54,7 +54,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
-            if !configuration.excluded.contains(name) {
+            if !config.excluded.contains(name) {
                 let nameCharacterSet = NSCharacterSet(charactersInString: name)
                 let description = self.dynamicType.description
                 let location = Location(file: file, byteOffset: offset)
@@ -69,12 +69,12 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                         severity: .Error,
                         location: location,
                         reason: "Variable name should start with a lowercase character: '\(name)'")]
-                } else if let severity = configuration.violationSeverity(forLength: name.characters.count) {
+                } else if let severity = config.violationSeverity(forLength: name.characters.count) {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,
-                        reason: "Variable name should be between \(configuration.minLengthThreshold) " +
-                                "and \(configuration.maxLengthThreshold) characters long: '\(name)'")]
+                        reason: "Variable name should be between \(config.minLengthThreshold) " +
+                                "and \(config.maxLengthThreshold) characters long: '\(name)'")]
                 }
             }
             return []

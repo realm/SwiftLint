@@ -308,13 +308,13 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */ = {
+		3BCC04CE1C4F56D3006073C3 /* RuleConfigs */ = {
 			isa = PBXGroup;
 			children = (
 				3BCC04CF1C4F56D3006073C3 /* SeverityLevelConfig.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfig.swift */,
 			);
-			path = RuleConfigurations;
+			path = RuleConfigs;
 			sourceTree = "<group>";
 		};
 		5499CA981A2394BD00783309 /* Supporting Files */ = {
@@ -510,7 +510,7 @@
 		E88DEA7A1B098D7300A66CB0 /* Rules */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */,
+				3BCC04CE1C4F56D3006073C3 /* RuleConfigs */,
 				1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
 				695BE9CE1BDFD92B0071E985 /* CommaRule.swift */,

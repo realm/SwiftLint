@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = RuleLevelsConfig(warning: 40, error: 100)
+    public var configuration = SeverityLevelConfig(warning: 40, error: 100)
 
     public init() {}
 

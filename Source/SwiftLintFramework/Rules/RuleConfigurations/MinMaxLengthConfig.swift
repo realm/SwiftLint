@@ -1,5 +1,5 @@
 //
-//  RuleMinMaxConfig.swift
+//  MinMaxLengthConfig.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/19/16.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-public struct RuleMinMaxConfig: RuleConfiguration, Equatable {
-    var min: RuleLevelsConfig
-    var max: RuleLevelsConfig
+public struct MinMaxLengthConfig: RuleConfiguration, Equatable {
+    var min: SeverityLevelConfig
+    var max: SeverityLevelConfig
 
     init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int) {
-        min = RuleLevelsConfig(warning: minWarning, error: minError)
-        max = RuleLevelsConfig(warning: maxWarning, error: maxError)
+        min = SeverityLevelConfig(warning: minWarning, error: minError)
+        max = SeverityLevelConfig(warning: maxWarning, error: maxError)
     }
 
     public mutating func setConfiguration(config: AnyObject) throws {
@@ -31,14 +31,14 @@ public struct RuleMinMaxConfig: RuleConfiguration, Equatable {
     }
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let ruleConfig = ruleConfiguration as? RuleMinMaxConfig {
+        if let ruleConfig = ruleConfiguration as? MinMaxLengthConfig {
             return self == ruleConfig
         }
         return false
     }
 }
 
-public func == (lhs: RuleMinMaxConfig, rhs: RuleMinMaxConfig) -> Bool {
+public func == (lhs: MinMaxLengthConfig, rhs: MinMaxLengthConfig) -> Bool {
     return lhs.min == rhs.min &&
         lhs.max == rhs.max
 }

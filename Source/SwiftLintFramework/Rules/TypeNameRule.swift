@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = RuleMinMaxConfig(minWarning: 3,
+    public var configuration = MinMaxLengthConfig(minWarning: 3,
                                                 minError: 0,
                                                 maxWarning: 40,
                                                 maxError: 1000)

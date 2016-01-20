@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FileLengthRule: ConfigurationProviderRule {
-    public var configuration = RuleLevelsConfig(warning: 400, error: 1000)
+    public var configuration = SeverityLevelConfig(warning: 400, error: 1000)
 
     public init() {}
 

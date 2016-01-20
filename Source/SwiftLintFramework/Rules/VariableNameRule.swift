@@ -10,11 +10,11 @@ import Foundation
 import SourceKittenFramework
 
 public struct VariableNameRuleConfig: RuleConfiguration {
-    var lengthConfig: RuleMinMaxConfig
+    var lengthConfig: MinMaxLengthConfig
     var excluded: [String]
 
     init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int, excluded: [String] = []) {
-        lengthConfig = RuleMinMaxConfig(minWarning: minWarning,
+        lengthConfig = MinMaxLengthConfig(minWarning: minWarning,
                                           minError: minError,
                                         maxWarning: maxWarning,
                                           maxError: maxError)

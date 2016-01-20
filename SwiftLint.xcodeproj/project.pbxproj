@@ -21,8 +21,8 @@
 		3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
 		3BCC04C61C4EFA52006073C3 /* RuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04C51C4EFA52006073C3 /* RuleConfiguration.swift */; };
 		3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */; };
-		3BCC04D11C4F56D3006073C3 /* RuleLevelsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* RuleLevelsConfig.swift */; };
-		3BCC04D21C4F56D3006073C3 /* RuleMinMaxConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* RuleMinMaxConfig.swift */; };
+		3BCC04D11C4F56D3006073C3 /* SeverityLevelConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* SeverityLevelConfig.swift */; };
+		3BCC04D21C4F56D3006073C3 /* MinMaxLengthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* MinMaxLengthConfig.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
@@ -164,8 +164,8 @@
 		3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BCC04C51C4EFA52006073C3 /* RuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfiguration.swift; sourceTree = "<group>"; };
 		3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationError.swift; sourceTree = "<group>"; };
-		3BCC04CF1C4F56D3006073C3 /* RuleLevelsConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleLevelsConfig.swift; sourceTree = "<group>"; };
-		3BCC04D01C4F56D3006073C3 /* RuleMinMaxConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleMinMaxConfig.swift; sourceTree = "<group>"; };
+		3BCC04CF1C4F56D3006073C3 /* SeverityLevelConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityLevelConfig.swift; sourceTree = "<group>"; };
+		3BCC04D01C4F56D3006073C3 /* MinMaxLengthConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinMaxLengthConfig.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -309,8 +309,8 @@
 		3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */ = {
 			isa = PBXGroup;
 			children = (
-				3BCC04CF1C4F56D3006073C3 /* RuleLevelsConfig.swift */,
-				3BCC04D01C4F56D3006073C3 /* RuleMinMaxConfig.swift */,
+				3BCC04CF1C4F56D3006073C3 /* SeverityLevelConfig.swift */,
+				3BCC04D01C4F56D3006073C3 /* MinMaxLengthConfig.swift */,
 			);
 			path = RuleConfigurations;
 			sourceTree = "<group>";
@@ -806,11 +806,11 @@
 				E80E018F1B92C1350078EB70 /* Region.swift in Sources */,
 				E88198581BEA956C00333A11 /* FunctionBodyLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,
-				3BCC04D11C4F56D3006073C3 /* RuleLevelsConfig.swift in Sources */,
+				3BCC04D11C4F56D3006073C3 /* SeverityLevelConfig.swift in Sources */,
 				E86396C51BADAC15002C9E88 /* XcodeReporter.swift in Sources */,
 				E86396C91BADB2B9002C9E88 /* JSONReporter.swift in Sources */,
 				E881985A1BEA96EA00333A11 /* OperatorFunctionWhitespaceRule.swift in Sources */,
-				3BCC04D21C4F56D3006073C3 /* RuleMinMaxConfig.swift in Sources */,
+				3BCC04D21C4F56D3006073C3 /* MinMaxLengthConfig.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,

@@ -63,7 +63,6 @@ public func == (lhs: VLConfig, rhs: VLConfig) -> Bool {
 }
 
 public struct MinMaxConfiguration: RuleConfiguration, Equatable {
-
     var min: VLConfig
     var max: VLConfig
 

@@ -20,6 +20,7 @@
 		3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B30C4A01C3785B300E04027 /* YamlParserTests.swift */; };
 		3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
 		3BBFAF8D1C38C32E00872A6B /* VariableNameMinLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBFAF8B1C38C30100872A6B /* VariableNameMinLengthRule.swift */; };
+		3BCC04C61C4EFA52006073C3 /* RuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04C51C4EFA52006073C3 /* RuleConfiguration.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
@@ -46,9 +47,9 @@
 		E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */; };
 		E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10C1B17E725003F265F /* IntegrationTests.swift */; };
 		E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A0B341A5D382B0041A60A /* VersionCommand.swift */; };
-		E84E07471C13F95300F11122 /* AutoCorrectCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */; };
 		E847F0A91BFBBABD00EA9363 /* EmptyCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */; };
 		E849FF281BF9481A009AE999 /* MissingDocsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E849FF271BF9481A009AE999 /* MissingDocsRule.swift */; };
+		E84E07471C13F95300F11122 /* AutoCorrectCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */; };
 		E861519B1B0573B900C54AC0 /* LintCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* LintCommand.swift */; };
 		E86396C21BADAAE5002C9E88 /* Reporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C11BADAAE5002C9E88 /* Reporter.swift */; };
 		E86396C51BADAC15002C9E88 /* XcodeReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C41BADAC15002C9E88 /* XcodeReporter.swift */; };
@@ -161,6 +162,7 @@
 		3B30C4A01C3785B300E04027 /* YamlParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParserTests.swift; sourceTree = "<group>"; };
 		3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BBFAF8B1C38C30100872A6B /* VariableNameMinLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameMinLengthRule.swift; sourceTree = "<group>"; };
+		3BCC04C51C4EFA52006073C3 /* RuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfiguration.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -213,9 +215,9 @@
 		E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+SwiftLint.swift"; sourceTree = "<group>"; };
 		E832F10C1B17E725003F265F /* IntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		E83A0B341A5D382B0041A60A /* VersionCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
-		E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCorrectCommand.swift; sourceTree = "<group>"; };
 		E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyCountRule.swift; sourceTree = "<group>"; };
 		E849FF271BF9481A009AE999 /* MissingDocsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissingDocsRule.swift; sourceTree = "<group>"; };
+		E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCorrectCommand.swift; sourceTree = "<group>"; };
 		E861519A1B0573B900C54AC0 /* LintCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LintCommand.swift; sourceTree = "<group>"; };
 		E86396C11BADAAE5002C9E88 /* Reporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reporter.swift; sourceTree = "<group>"; };
 		E86396C41BADAC15002C9E88 /* XcodeReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XcodeReporter.swift; sourceTree = "<group>"; };
@@ -534,6 +536,7 @@
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
 				E86396C11BADAAE5002C9E88 /* Reporter.swift */,
 				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
+				3BCC04C51C4EFA52006073C3 /* RuleConfiguration.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -805,6 +808,7 @@
 				3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */,
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
+				3BCC04C61C4EFA52006073C3 /* RuleConfiguration.swift in Sources */,
 				3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */,
 				3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */,
 				E881985D1BEA97EB00333A11 /* TrailingWhitespaceRule.swift in Sources */,

@@ -32,6 +32,11 @@ public protocol ConfigurableRule: Rule {
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
+public protocol ConfigurationProviderRule: ConfigurableRule {
+    typealias ConfigurationType: RuleConfiguration
+    var configuration: ConfigurationType { get set }
+}
+
 public protocol ViolationLevelRule: ConfigurableRule {
     var warning: RuleParameter<Int> { get set }
     var error: RuleParameter<Int> { get set }
@@ -39,6 +44,26 @@ public protocol ViolationLevelRule: ConfigurableRule {
 
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
+}
+
+// MARK: - ConfigurationProviderRule conformance to Configurable
+
+public extension ConfigurationProviderRule {
+    public init?(config: AnyObject) {
+        self.init()
+        if let config = ConfigurationType(config: config) {
+            configuration = config
+        } else {
+            return nil
+        }
+    }
+
+    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+        if let rule = rule as? Self {
+            return configuration.isEqualTo(rule.configuration)
+        }
+        return false
+    }
 }
 
 // MARK: - ViolationLevelRule conformance to ConfigurableRule

@@ -11,10 +11,10 @@ import SourceKittenFramework
 
 public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = MinMaxLengthConfig(minWarning: 3,
-                                                  minError: 2,
-                                                  maxWarning: 40,
-                                                  maxError: 60)
+    public var configuration = NameConfig(minWarning: 3,
+                                          minError: 2,
+                                          maxWarning: 40,
+                                          maxError: 60)
 
     public init() {}
 

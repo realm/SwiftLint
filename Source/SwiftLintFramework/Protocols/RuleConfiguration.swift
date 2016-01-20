@@ -17,11 +17,6 @@ public protocol RuleConfiguration {
     func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool
 }
 
-public protocol ViolationLevelConfiguration: RuleConfiguration {
-    var warning: RuleParameter<Int> { get set }
-    var error: RuleParameter<Int> { get set }
-}
-
 public struct VLConfig: RuleConfiguration, Equatable {
     var warning: RuleParameter<Int>
     var error: RuleParameter<Int>

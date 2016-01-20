@@ -22,7 +22,7 @@ public protocol ViolationLevelConfiguration: RuleConfiguration {
     var error: RuleParameter<Int> { get set }
 }
 
-public struct VLConfig: RuleConfiguration {
+public struct VLConfig: RuleConfiguration, Equatable {
     var warning: RuleParameter<Int>
     var error: RuleParameter<Int>
 
@@ -51,9 +51,49 @@ public struct VLConfig: RuleConfiguration {
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
         if let config = ruleConfiguration as? VLConfig {
-            return warning == config.warning &&
-                   error == config.error
+            self == config
         }
         return false
     }
+}
+
+public func == (lhs: VLConfig, rhs: VLConfig) -> Bool {
+    return lhs.warning == rhs.warning &&
+           lhs.error == rhs.error
+}
+
+public struct MinMaxConfiguration: RuleConfiguration, Equatable {
+
+    var min: VLConfig
+    var max: VLConfig
+
+    init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int) {
+        min = VLConfig(warning: minWarning, error: minError)
+        max = VLConfig(warning: maxWarning, error: maxError)
+    }
+
+    public mutating func setConfiguration(config: AnyObject) throws {
+        if let configDict = config as? [String: AnyObject] {
+            if let minConfig = configDict["min"] {
+                try min.setConfiguration(minConfig)
+            }
+            if let maxConfig = configDict["max"] {
+                try max.setConfiguration(maxConfig)
+            }
+        } else {
+            throw ConfigurationError.UnknownConfiguration
+        }
+    }
+
+    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
+        if let ruleConfig = ruleConfiguration as? MinMaxConfiguration {
+            return self == ruleConfig
+        }
+        return false
+    }
+}
+
+public func == (lhs: MinMaxConfiguration, rhs: MinMaxConfiguration) -> Bool {
+    return lhs.min == rhs.min &&
+        lhs.max == rhs.max
 }

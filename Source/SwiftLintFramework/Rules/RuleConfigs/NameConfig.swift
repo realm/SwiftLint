@@ -62,7 +62,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
                   length > maxLength.warning {
                 return .Warning
         } else {
-            return nil
+            return .None
         }
     }
 }

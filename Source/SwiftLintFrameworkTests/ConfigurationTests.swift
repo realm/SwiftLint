@@ -149,7 +149,8 @@ class ConfigurationTests: XCTestCase {
         let ruleConfig = [1, 2]
         let config = [ViolationLevelRuleMock.description.identifier: ruleConfig]
         let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
-        XCTAssertTrue(rules == [ViolationLevelRuleMock(config: ruleConfig)! as Rule])
+        // swiftlint:disable:next force_try
+        XCTAssertTrue(rules == [try! ViolationLevelRuleMock(config: ruleConfig) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {

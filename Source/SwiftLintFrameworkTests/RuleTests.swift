@@ -62,7 +62,7 @@ class RuleTests: XCTestCase {
 
     func testViolationLevelRuleInitsWithConfigDictionary() {
         let config = ["warning": 17, "error": 7]
-        let rule = ViolationLevelRuleMock(config: config)
+        let rule = try? ViolationLevelRuleMock(config: config)
         var comp = ViolationLevelRuleMock()
         comp.warning = RuleParameter(severity: .Warning, value: 17)
         comp.error = RuleParameter(severity: .Error, value: 7)
@@ -71,7 +71,7 @@ class RuleTests: XCTestCase {
 
     func testViolationLevelRuleInitsWithConfigArray() {
         let config = [17, 7] as AnyObject
-        let rule = ViolationLevelRuleMock(config: config)
+        let rule = try? ViolationLevelRuleMock(config: config)
         var comp = ViolationLevelRuleMock()
         comp.warning = RuleParameter(severity: .Warning, value: 17)
         comp.error = RuleParameter(severity: .Error, value: 7)
@@ -80,7 +80,7 @@ class RuleTests: XCTestCase {
 
     func testViolationLevelRuleInitsWithLiteral() {
         let config = 17 as AnyObject
-        let rule = ViolationLevelRuleMock(config: config)
+        let rule = try? ViolationLevelRuleMock(config: config)
         var comp = ViolationLevelRuleMock()
         comp.warning = RuleParameter(severity: .Warning, value: 17)
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -88,7 +88,7 @@ class RuleTests: XCTestCase {
 
     func testViolationLevelRuleNotEqual() {
         let config = 17 as AnyObject
-        let rule = ViolationLevelRuleMock(config: config)
+        let rule = try? ViolationLevelRuleMock(config: config)
         XCTAssertEqual(rule?.isEqualTo(ViolationLevelRuleMock()), false)
     }
 

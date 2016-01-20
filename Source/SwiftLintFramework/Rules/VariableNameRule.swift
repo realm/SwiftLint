@@ -9,7 +9,41 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VariableNameRule: ASTRule {
+public struct VariableNameRuleConfig: RuleConfiguration {
+    var lengthConfig: RuleMinMaxConfig
+    var excluded: [String]
+
+    init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int, excluded: [String] = []) {
+        lengthConfig = RuleMinMaxConfig(minWarning: minWarning,
+                                          minError: minError,
+                                        maxWarning: maxWarning,
+                                          maxError: maxError)
+        self.excluded = excluded
+    }
+
+    public mutating func setConfiguration(config: AnyObject) throws {
+        try lengthConfig.setConfiguration(config)
+        if let dict = config as? [String: AnyObject],
+           let excluded = dict["excluded"] as? [String] {
+                self.excluded = excluded
+        }
+    }
+
+    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
+        if let config = ruleConfiguration as? VariableNameRuleConfig {
+            return lengthConfig == config.lengthConfig &&
+                   zip(excluded, config.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
+        }
+        return false
+    }
+}
+
+public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
+
+    public var configuration = VariableNameRuleConfig(minWarning: 3,
+                                                        minError: 2,
+                                                      maxWarning: 40,
+                                                        maxError: 60)
 
     public init() {}
 
@@ -30,7 +64,13 @@ public struct VariableNameRule: ASTRule {
         triggeringExamples: [
             "↓let MyLet = 0",
             "↓let _myLet = 0",
-            "private ↓let myLet_ = 0"
+            "private ↓let myLet_ = 0",
+            "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
+            "↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
+            "private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
+            "↓let i = 0",
+            "↓var id = 0",
+            "private ↓let _i = 0"
         ]
     )
 
@@ -41,21 +81,44 @@ public struct VariableNameRule: ASTRule {
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        // swiftlint:disable line_length
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            let description = self.dynamicType.description
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                return [StyleViolation(ruleDescription: description,
-                    severity: .Error,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
-            } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
-                return [StyleViolation(ruleDescription: description,
-                    severity: .Error,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Variable name should start with a lowercase character: '\(name)'")]
+            if !configuration.excluded.contains(name) {
+                let nameCharacterSet = NSCharacterSet(charactersInString: name)
+                let description = self.dynamicType.description
+                let location = Location(file: file, byteOffset: offset)
+                if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+                    return [StyleViolation(ruleDescription: description,
+                        severity: .Error,
+                        location: location,
+                        reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
+                } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
+                    return [StyleViolation(ruleDescription: description,
+                        severity: .Error,
+                        location: location,
+                        reason: "Variable name should start with a lowercase character: '\(name)'")]
+                } else if let severity = violationSeverity(forLength: name.characters.count) {
+                    return [StyleViolation(ruleDescription: self.dynamicType.description,
+                        severity: severity,
+                        location: location,
+                        reason: "Variable name should be between \(configuration.lengthConfig.min.warning.value) and " +
+                        "\(configuration.lengthConfig.max.warning.value) characters in length: '\(name)'")]
+                }
             }
+            // swiftlint:enable line_length
             return []
         } ?? []
+    }
+
+    private func violationSeverity(forLength length: Int) -> ViolationSeverity? {
+        if length < configuration.lengthConfig.min.error.value ||
+           length > configuration.lengthConfig.max.error.value {
+                return .Error
+        } else if length < configuration.lengthConfig.min.warning.value ||
+                  length > configuration.lengthConfig.max.warning.value {
+                return .Warning
+        } else {
+            return nil
+        }
     }
 }

@@ -46,6 +46,4 @@ public let masterRuleList = RuleList( rules: ClosingBraceRule.self,
                                       TypeBodyLengthRule.self,
                                       TypeNameRule.self,
                                       ValidDocsRule.self,
-                                      VariableNameMaxLengthRule.self,
-                                      VariableNameMinLengthRule.self,
                                       VariableNameRule.self)

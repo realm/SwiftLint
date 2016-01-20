@@ -17,7 +17,7 @@ public protocol RuleConfiguration {
     func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool
 }
 
-public struct VLConfig: RuleConfiguration, Equatable {
+public struct RuleLevelsConfig: RuleConfiguration, Equatable {
     var warning: RuleParameter<Int>
     var error: RuleParameter<Int>
 
@@ -45,25 +45,25 @@ public struct VLConfig: RuleConfiguration, Equatable {
     }
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let config = ruleConfiguration as? VLConfig {
+        if let config = ruleConfiguration as? RuleLevelsConfig {
             self == config
         }
         return false
     }
 }
 
-public func == (lhs: VLConfig, rhs: VLConfig) -> Bool {
+public func == (lhs: RuleLevelsConfig, rhs: RuleLevelsConfig) -> Bool {
     return lhs.warning == rhs.warning &&
            lhs.error == rhs.error
 }
 
-public struct MinMaxConfiguration: RuleConfiguration, Equatable {
-    var min: VLConfig
-    var max: VLConfig
+public struct RuleMinMaxConfig: RuleConfiguration, Equatable {
+    var min: RuleLevelsConfig
+    var max: RuleLevelsConfig
 
     init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int) {
-        min = VLConfig(warning: minWarning, error: minError)
-        max = VLConfig(warning: maxWarning, error: maxError)
+        min = RuleLevelsConfig(warning: minWarning, error: minError)
+        max = RuleLevelsConfig(warning: maxWarning, error: maxError)
     }
 
     public mutating func setConfiguration(config: AnyObject) throws {
@@ -80,14 +80,14 @@ public struct MinMaxConfiguration: RuleConfiguration, Equatable {
     }
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let ruleConfig = ruleConfiguration as? MinMaxConfiguration {
+        if let ruleConfig = ruleConfiguration as? RuleMinMaxConfig {
             return self == ruleConfig
         }
         return false
     }
 }
 
-public func == (lhs: MinMaxConfiguration, rhs: MinMaxConfiguration) -> Bool {
+public func == (lhs: RuleMinMaxConfig, rhs: RuleMinMaxConfig) -> Bool {
     return lhs.min == rhs.min &&
         lhs.max == rhs.max
 }

@@ -21,11 +21,11 @@ public struct NameConfig: RuleConfiguration, Equatable {
         return Swift.min(maxLength.warning, maxLength.error)
     }
 
-    init(minLengthWarning: Int,
-         minLengthError: Int,
-         maxLengthWarning: Int,
-         maxLengthError: Int,
-         excluded: [String] = []) {
+    public init(minLengthWarning: Int,
+                minLengthError: Int,
+                maxLengthWarning: Int,
+                maxLengthError: Int,
+                excluded: [String] = []) {
         minLength = SeverityLevelConfig(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelConfig(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = excluded
@@ -39,7 +39,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
             if let maxLengthConfig = configDict["max_length"] {
                 try maxLength.setConfiguration(maxLengthConfig)
             }
-            if let excluded = configDict["excluded"] as? [String] {
+            if let excluded = [String].arrayOf(configDict["excluded"]) {
                     self.excluded = excluded
             }
         } else {

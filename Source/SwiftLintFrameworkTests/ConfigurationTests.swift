@@ -143,20 +143,20 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Rules from config dictionary
 
-    let testRuleList = RuleList(rules: ViolationLevelRuleMock.self)
+    let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDict() {
         let ruleConfig = [1, 2]
-        let config = [ViolationLevelRuleMock.description.identifier: ruleConfig]
+        let config = [RuleWithLevelsMock.description.identifier: ruleConfig]
         let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
         // swiftlint:disable:next force_try
-        XCTAssertTrue(rules == [try! ViolationLevelRuleMock(config: ruleConfig) as Rule])
+        XCTAssertTrue(rules == [try! RuleWithLevelsMock(config: ruleConfig) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {
-        let config = [ViolationLevelRuleMock.description.identifier: ["a", "b"]]
+        let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
         let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
-        XCTAssertTrue(rules == [ViolationLevelRuleMock() as Rule])
+        XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
 }
 

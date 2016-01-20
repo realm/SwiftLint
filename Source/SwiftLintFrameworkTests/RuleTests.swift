@@ -10,9 +10,8 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
-struct ViolationLevelRuleMock: ViolationLevelRule {
-    var warning = RuleParameter(severity: .Warning, value: 2)
-    var error = RuleParameter(severity: .Error, value: 3)
+struct RuleWithLevelsMock: ConfigurationProviderRule {
+    var configuration = RuleLevelsConfig(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "violation_level_mock",
         name: "",
@@ -38,9 +37,8 @@ class RuleTests: XCTestCase {
         }
     }
 
-    private struct ViolationLevelRuleMock2: ViolationLevelRule {
-        var warning = RuleParameter(severity: .Warning, value: 2)
-        var error = RuleParameter(severity: .Error, value: 3)
+    private struct RuleWithLevelsMock2: ConfigurationProviderRule {
+        var configuration = RuleLevelsConfig(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
             name: "",
@@ -62,37 +60,37 @@ class RuleTests: XCTestCase {
 
     func testViolationLevelRuleInitsWithConfigDictionary() {
         let config = ["warning": 17, "error": 7]
-        let rule = try? ViolationLevelRuleMock(config: config)
-        var comp = ViolationLevelRuleMock()
-        comp.warning = RuleParameter(severity: .Warning, value: 17)
-        comp.error = RuleParameter(severity: .Error, value: 7)
+        let rule = try? RuleWithLevelsMock(config: config)
+        var comp = RuleWithLevelsMock()
+        comp.configuration.warning = RuleParameter(severity: .Warning, value: 17)
+        comp.configuration.error = RuleParameter(severity: .Error, value: 7)
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
     func testViolationLevelRuleInitsWithConfigArray() {
         let config = [17, 7] as AnyObject
-        let rule = try? ViolationLevelRuleMock(config: config)
-        var comp = ViolationLevelRuleMock()
-        comp.warning = RuleParameter(severity: .Warning, value: 17)
-        comp.error = RuleParameter(severity: .Error, value: 7)
+        let rule = try? RuleWithLevelsMock(config: config)
+        var comp = RuleWithLevelsMock()
+        comp.configuration.warning = RuleParameter(severity: .Warning, value: 17)
+        comp.configuration.error = RuleParameter(severity: .Error, value: 7)
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
     func testViolationLevelRuleInitsWithLiteral() {
         let config = 17 as AnyObject
-        let rule = try? ViolationLevelRuleMock(config: config)
-        var comp = ViolationLevelRuleMock()
-        comp.warning = RuleParameter(severity: .Warning, value: 17)
+        let rule = try? RuleWithLevelsMock(config: config)
+        var comp = RuleWithLevelsMock()
+        comp.configuration.warning = RuleParameter(severity: .Warning, value: 17)
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
     func testViolationLevelRuleNotEqual() {
         let config = 17 as AnyObject
-        let rule = try? ViolationLevelRuleMock(config: config)
-        XCTAssertEqual(rule?.isEqualTo(ViolationLevelRuleMock()), false)
+        let rule = try? RuleWithLevelsMock(config: config)
+        XCTAssertEqual(rule?.isEqualTo(RuleWithLevelsMock()), false)
     }
 
     func testDifferentViolationLevelRulesNotEqual() {
-        XCTAssertFalse(ViolationLevelRuleMock().isEqualTo(ViolationLevelRuleMock2()))
+        XCTAssertFalse(RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
     }
 }

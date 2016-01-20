@@ -37,11 +37,6 @@ public protocol ConfigurationProviderRule: ConfigurableRule {
     var configuration: ConfigurationType { get set }
 }
 
-public protocol ViolationLevelRule: ConfigurableRule {
-    var warning: RuleParameter<Int> { get set }
-    var error: RuleParameter<Int> { get set }
-}
-
 public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }
@@ -57,37 +52,6 @@ public extension ConfigurationProviderRule {
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
         if let rule = rule as? Self {
             return configuration.isEqualTo(rule.configuration)
-        }
-        return false
-    }
-}
-
-// MARK: - ViolationLevelRule conformance to ConfigurableRule
-
-public extension ViolationLevelRule {
-    public init(config: AnyObject) throws {
-        self.init()
-        if let config = [Int].arrayOf(config) where !config.isEmpty {
-            warning = RuleParameter(severity: .Warning, value: config[0])
-            if config.count > 1 {
-                error = RuleParameter(severity: .Error, value: config[1])
-            }
-        } else if let config = config as? [String: AnyObject] {
-            if let warningNumber = config["warning"] as? Int {
-                warning = RuleParameter(severity: .Warning, value: warningNumber)
-            }
-            if let errorNumber = config["error"] as? Int {
-                error = RuleParameter(severity: .Error, value: errorNumber)
-            }
-        } else {
-            throw ConfigurationError.UnknownConfiguration
-        }
-    }
-
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
-        if let rule = rule as? Self {
-            return warning == rule.warning &&
-                   error == rule.error
         }
         return false
     }

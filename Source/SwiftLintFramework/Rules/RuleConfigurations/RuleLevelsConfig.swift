@@ -37,13 +37,12 @@ public struct RuleLevelsConfig: RuleConfiguration, Equatable {
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
         if let config = ruleConfiguration as? RuleLevelsConfig {
-            self == config
+            return self == config
         }
         return false
     }
 }
 
 public func == (lhs: RuleLevelsConfig, rhs: RuleLevelsConfig) -> Bool {
-    return lhs.warning == rhs.warning &&
-        lhs.error == rhs.error
+    return lhs.warning == rhs.warning && lhs.error == rhs.error
 }

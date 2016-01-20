@@ -8,9 +8,8 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ViolationLevelRule {
-    public var warning = RuleParameter(severity: .Warning, value: 400)
-    public var error = RuleParameter(severity: .Error, value: 1000)
+public struct FileLengthRule: ConfigurationProviderRule {
+    public var configuration = RuleLevelsConfig(warning: 400, error: 1000)
 
     public init() {}
 
@@ -22,11 +21,11 @@ public struct FileLengthRule: ViolationLevelRule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
-        for parameter in [error, warning] where lineCount > parameter.value {
+        for parameter in [configuration.error, configuration.warning] where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file.path, line: lineCount),
-                reason: "File should contain \(warning.value) lines or less: " +
+                reason: "File should contain \(configuration.warning.value) lines or less: " +
                         "currently contains \(lineCount)")]
         }
         return []

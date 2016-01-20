@@ -33,7 +33,7 @@ class ASTRuleTests: XCTestCase {
             XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(
                 ruleDescription: TypeNameRule.description,
                 location: Location(file: nil, line: 1, character: 1),
-                reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
+                reason: "Type name should be between 3 and 40 characters long: 'Ab'")])
 
             let longName = Repeat(count: 40, repeatedValue: "A").joinWithSeparator("")
             XCTAssertEqual(violations("\(kind) \(longName) {}\n"), [])
@@ -42,7 +42,7 @@ class ASTRuleTests: XCTestCase {
                 StyleViolation(
                     ruleDescription: TypeNameRule.description,
                     location: Location(file: nil, line: 1, character: 1),
-                    reason: "Type name should be between 3 and 40 characters in length: " +
+                    reason: "Type name should be between 3 and 40 characters long: " +
                     "'\(longerName)'")
                 ])
         }
@@ -97,7 +97,7 @@ class ASTRuleTests: XCTestCase {
                         severity: .Warning,
                         location: Location(file: nil, line: 1, character: characterOffset),
                         reason: "Variable name should be between 3 and " +
-                                "40 characters in length: '\(longerName)'")
+                                "40 characters long: '\(longerName)'")
                     ])
 
                 let longestName = Repeat(count: 60, repeatedValue: "d").joinWithSeparator("")
@@ -108,7 +108,7 @@ class ASTRuleTests: XCTestCase {
                         severity: .Error,
                         location: Location(file: nil, line: 1, character: characterOffset),
                         reason: "Variable name should be between 3 and " +
-                                "40 characters in length: '\(longestName)'")
+                                "40 characters long: '\(longestName)'")
                     ])
             }
         }
@@ -125,7 +125,7 @@ class ASTRuleTests: XCTestCase {
                         severity: .Error,
                         location: Location(file: nil, line: 1, character: characterOffset),
                         reason: "Variable name should be between 3 and " +
-                                "40 characters in length: 'd'")
+                                "40 characters long: 'd'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
@@ -134,7 +134,7 @@ class ASTRuleTests: XCTestCase {
                         severity: .Warning,
                         location: Location(file: nil, line: 1, character: characterOffset),
                         reason: "Variable name should be between 3 and " +
-                                "40 characters in length: 'de'")
+                                "40 characters long: 'de'")
                     ])
             }
         }

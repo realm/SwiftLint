@@ -9,41 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VariableNameRuleConfig: RuleConfiguration {
-    var lengthConfig: MinMaxLengthConfig
-    var excluded: [String]
-
-    init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int, excluded: [String] = []) {
-        lengthConfig = MinMaxLengthConfig(minWarning: minWarning,
-                                          minError: minError,
-                                        maxWarning: maxWarning,
-                                          maxError: maxError)
-        self.excluded = excluded
-    }
-
-    public mutating func setConfiguration(config: AnyObject) throws {
-        try lengthConfig.setConfiguration(config)
-        if let dict = config as? [String: AnyObject],
-           let excluded = dict["excluded"] as? [String] {
-                self.excluded = excluded
-        }
-    }
-
-    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let config = ruleConfiguration as? VariableNameRuleConfig {
-            return lengthConfig == config.lengthConfig &&
-                   zip(excluded, config.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
-        }
-        return false
-    }
-}
-
 public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = VariableNameRuleConfig(minWarning: 3,
-                                                        minError: 2,
-                                                      maxWarning: 40,
-                                                        maxError: 60)
+    public var configuration = MinMaxLengthConfig(minWarning: 3,
+                                                  minError: 2,
+                                                  maxWarning: 40,
+                                                  maxError: 60)
 
     public init() {}
 
@@ -82,7 +53,6 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        // swiftlint:disable line_length
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             if !configuration.excluded.contains(name) {
                 let nameCharacterSet = NSCharacterSet(charactersInString: name)
@@ -92,7 +62,8 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     return [StyleViolation(ruleDescription: description,
                         severity: .Error,
                         location: location,
-                        reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
+                        reason: "Variable name should only contain alphanumeric " +
+                                "characters: '\(name)'")]
                 } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
                     return [StyleViolation(ruleDescription: description,
                         severity: .Error,
@@ -102,21 +73,20 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,
-                        reason: "Variable name should be between \(configuration.lengthConfig.minThreshold) and " +
-                        "\(configuration.lengthConfig.maxThreshold) characters in length: '\(name)'")]
+                        reason: "Variable name should be between \(configuration.minThreshold) " +
+                                "and \(configuration.maxThreshold) characters long: '\(name)'")]
                 }
             }
-            // swiftlint:enable line_length
             return []
         } ?? []
     }
 
     private func violationSeverity(forLength length: Int) -> ViolationSeverity? {
-        if length < configuration.lengthConfig.min.error.value ||
-           length > configuration.lengthConfig.max.error.value {
+        if length < configuration.min.error.value ||
+           length > configuration.max.error.value {
                 return .Error
-        } else if length < configuration.lengthConfig.min.warning.value ||
-                  length > configuration.lengthConfig.max.warning.value {
+        } else if length < configuration.min.warning.value ||
+                  length > configuration.max.warning.value {
                 return .Warning
         } else {
             return nil

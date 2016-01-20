@@ -9,7 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeNameRule: ASTRule {
+public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
+
+    public var configuration = MinMaxConfiguration(minWarning: 3,
+                                                   minError: 2,
+                                                   maxWarning: 40,
+                                                   maxError: 100)
 
     public init() {}
 
@@ -57,12 +62,26 @@ public struct TypeNameRule: ASTRule {
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
-            } else if name.characters.count < 3 || name.characters.count > 40 {
+            } else if let severity = violationSeverity(forLength: name.characters.count) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
+                    severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should be between 3 and 40 characters in length: '\(name)'")]
+                    reason: "Type name should be between \(configuration.min.warning.value) and " +
+                            "\(configuration.max.warning.value) characters in length: '\(name)'")]
             }
         }
         return []
+    }
+
+    private func violationSeverity(forLength length: Int) -> ViolationSeverity? {
+        if length <= configuration.min.error.value ||
+           length >= configuration.max.error.value {
+            return .Error
+        } else if length <= configuration.min.warning.value ||
+                  length >= configuration.max.warning.value {
+            return .Warning
+        } else {
+            return nil
+        }
     }
 }

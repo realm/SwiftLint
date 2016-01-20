@@ -33,7 +33,7 @@ public struct VariableNameMaxLengthRule: ASTRule, ConfigurationProviderRule {
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let charCount = name.characters.count
-            for parameter in [configuration.error, configuration.warning] where charCount > parameter.value {
+            for parameter in configuration.params where charCount > parameter.value {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
                     location: Location(file: file, byteOffset: offset),

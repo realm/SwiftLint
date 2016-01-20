@@ -12,6 +12,10 @@ public struct RuleLevelsConfig: RuleConfiguration, Equatable {
     var warning: RuleParameter<Int>
     var error: RuleParameter<Int>
 
+    var params: [RuleParameter<Int>] {
+        return [error, warning]
+    }
+
     public init(warning warningLevel: Int, error errorLevel: Int) {
         warning = RuleParameter(severity: .Warning, value: warningLevel)
         error = RuleParameter(severity: .Error, value: errorLevel)

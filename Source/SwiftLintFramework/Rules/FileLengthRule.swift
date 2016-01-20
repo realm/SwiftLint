@@ -21,7 +21,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
 
     public func validateFile(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
-        for parameter in [configuration.error, configuration.warning] where lineCount > parameter.value {
+        for parameter in configuration.params where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file.path, line: lineCount),

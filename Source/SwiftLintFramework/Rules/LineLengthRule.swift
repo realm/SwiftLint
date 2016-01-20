@@ -22,7 +22,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.lines.flatMap { line in
             let length = line.content.characters.count
-            for param in [configuration.error, configuration.warning] where length > param.value {
+            for param in configuration.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),

@@ -50,10 +50,11 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "variable_name",
         name: "Variable Name",
-        description: "Variable name should only contain alphanumeric characters and " +
+        description: "Variable names should only contain alphanumeric characters and " +
           "start with a lowercase character or should only contain capital letters. " +
           "In an exception to the above, variable names may start with a capital letter " +
-          "when they are declared static and immutable.",
+          "when they are declared static and immutable. Variable names should not be too " +
+          "long or too short.",
         nonTriggeringExamples: [
             "let myLet = 0",
             "var myVar = 0",

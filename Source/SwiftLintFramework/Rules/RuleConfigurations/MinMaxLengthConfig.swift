@@ -12,6 +12,14 @@ public struct MinMaxLengthConfig: RuleConfiguration, Equatable {
     var min: SeverityLevelConfig
     var max: SeverityLevelConfig
 
+    var minThreshold: Int {
+        return Swift.max(min.warning.value, min.error.value)
+    }
+
+    var maxThreshold: Int {
+        return Swift.min(max.warning.value, max.error.value)
+    }
+
     init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int) {
         min = SeverityLevelConfig(warning: minWarning, error: minError)
         max = SeverityLevelConfig(warning: maxWarning, error: maxError)

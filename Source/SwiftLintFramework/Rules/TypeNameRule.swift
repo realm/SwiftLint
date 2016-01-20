@@ -66,8 +66,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should be between \(configuration.min.warning.value) and " +
-                            "\(configuration.max.warning.value) characters in length: '\(name)'")]
+                    reason: "Type name should be between \(configuration.minThreshold) and " +
+                            "\(configuration.maxThreshold) characters in length: '\(name)'")]
             }
         }
         return []

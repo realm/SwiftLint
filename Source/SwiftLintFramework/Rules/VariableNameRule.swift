@@ -102,8 +102,8 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,
-                        reason: "Variable name should be between \(configuration.lengthConfig.min.warning.value) and " +
-                        "\(configuration.lengthConfig.max.warning.value) characters in length: '\(name)'")]
+                        reason: "Variable name should be between \(configuration.lengthConfig.minThreshold) and " +
+                        "\(configuration.lengthConfig.maxThreshold) characters in length: '\(name)'")]
                 }
             }
             // swiftlint:enable line_length

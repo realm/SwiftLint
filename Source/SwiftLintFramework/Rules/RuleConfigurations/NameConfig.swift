@@ -53,6 +53,18 @@ public struct NameConfig: RuleConfiguration, Equatable {
         }
         return false
     }
+
+    public func violationSeverity(forLength length: Int) -> ViolationSeverity? {
+        if length < minLength.error.value ||
+           length > maxLength.error.value {
+                return .Error
+        } else if length < minLength.warning.value ||
+                  length > maxLength.warning.value {
+                return .Warning
+        } else {
+            return nil
+        }
+    }
 }
 
 public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {

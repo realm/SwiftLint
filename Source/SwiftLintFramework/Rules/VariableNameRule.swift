@@ -69,7 +69,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                         severity: .Error,
                         location: location,
                         reason: "Variable name should start with a lowercase character: '\(name)'")]
-                } else if let severity = violationSeverity(forLength: name.characters.count) {
+                } else if let severity = configuration.violationSeverity(forLength: name.characters.count) {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,
@@ -79,17 +79,5 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
             }
             return []
         } ?? []
-    }
-
-    private func violationSeverity(forLength length: Int) -> ViolationSeverity? {
-        if length < configuration.minLength.error.value ||
-           length > configuration.maxLength.error.value {
-                return .Error
-        } else if length < configuration.minLength.warning.value ||
-                  length > configuration.maxLength.warning.value {
-                return .Warning
-        } else {
-            return nil
-        }
     }
 }

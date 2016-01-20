@@ -14,11 +14,11 @@ public struct NameConfig: RuleConfiguration, Equatable {
     var excluded: [String]
 
     var minLengthThreshold: Int {
-        return Swift.max(minLength.warning.value, minLength.error.value)
+        return Swift.max(minLength.warning, minLength.error)
     }
 
     var maxLengthThreshold: Int {
-        return Swift.min(maxLength.warning.value, maxLength.error.value)
+        return Swift.min(maxLength.warning, maxLength.error)
     }
 
     init(minLengthWarning: Int,
@@ -55,11 +55,11 @@ public struct NameConfig: RuleConfiguration, Equatable {
     }
 
     public func violationSeverity(forLength length: Int) -> ViolationSeverity? {
-        if length < minLength.error.value ||
-           length > maxLength.error.value {
+        if length < minLength.error ||
+           length > maxLength.error {
                 return .Error
-        } else if length < minLength.warning.value ||
-                  length > maxLength.warning.value {
+        } else if length < minLength.warning ||
+                  length > maxLength.warning {
                 return .Warning
         } else {
             return nil

@@ -26,7 +26,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.warning.value) characters or less: " +
+                    reason: "Line should be \(configuration.warning) characters or less: " +
                     "currently \(length) characters")
             }
             return nil

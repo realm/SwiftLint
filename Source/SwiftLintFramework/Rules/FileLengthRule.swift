@@ -25,7 +25,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file.path, line: lineCount),
-                reason: "File should contain \(configuration.warning.value) lines or less: " +
+                reason: "File should contain \(configuration.warning) lines or less: " +
                         "currently contains \(lineCount)")]
         }
         return []

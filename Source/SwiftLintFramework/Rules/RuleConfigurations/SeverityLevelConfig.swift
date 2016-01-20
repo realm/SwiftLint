@@ -9,30 +9,26 @@
 import Foundation
 
 public struct SeverityLevelConfig: RuleConfiguration, Equatable {
-    var warning: RuleParameter<Int>
-    var error: RuleParameter<Int>
+    var warning: Int
+    var error: Int
 
     var params: [RuleParameter<Int>] {
-        return [error, warning]
-    }
-
-    public init(warning warningLevel: Int, error errorLevel: Int) {
-        warning = RuleParameter(severity: .Warning, value: warningLevel)
-        error = RuleParameter(severity: .Error, value: errorLevel)
+        return [RuleParameter(severity: .Error, value: error),
+                RuleParameter(severity: .Warning, value: warning)]
     }
 
     mutating public func setConfiguration(config: AnyObject) throws {
         if let config = [Int].arrayOf(config) where !config.isEmpty {
-            warning = RuleParameter(severity: .Warning, value: config[0])
+            warning = config[0]
             if config.count > 1 {
-                error = RuleParameter(severity: .Error, value: config[1])
+                error = config[1]
             }
         } else if let config = config as? [String: AnyObject] {
             if let warningNumber = config["warning"] as? Int {
-                warning = RuleParameter(severity: .Warning, value: warningNumber)
+                warning = warningNumber
             }
             if let errorNumber = config["error"] as? Int {
-                error = RuleParameter(severity: .Error, value: errorNumber)
+                error = errorNumber
             }
         } else {
             throw ConfigurationError.UnknownConfiguration

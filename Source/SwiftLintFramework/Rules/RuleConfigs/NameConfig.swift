@@ -54,7 +54,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
         return false
     }
 
-    public func violationSeverity(forLength length: Int) -> ViolationSeverity? {
+    public func severity(forLength length: Int) -> ViolationSeverity? {
         if length < minLength.error ||
            length > maxLength.error {
                 return .Error

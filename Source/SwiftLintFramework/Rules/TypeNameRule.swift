@@ -62,7 +62,7 @@ public struct TypeNameRule: ASTRule, ConfigProviderRule {
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
-            } else if let severity = config.violationSeverity(forLength: name.characters.count) {
+            } else if let severity = config.severity(forLength: name.characters.count) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),

@@ -8,9 +8,12 @@
 
 import Foundation
 
+public enum ConfigurationError: ErrorType {
+    case UnknownConfiguration
+}
+
 public protocol RuleConfiguration {
-    init()
-    init?(config: AnyObject)
+    mutating func setConfiguration(config: AnyObject) throws
     func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool
 }
 
@@ -19,9 +22,16 @@ public protocol ViolationLevelConfiguration: RuleConfiguration {
     var error: RuleParameter<Int> { get set }
 }
 
-extension ViolationLevelConfiguration {
-    public init?(config: AnyObject) {
-        self.init()
+public struct VLConfig: RuleConfiguration {
+    var warning: RuleParameter<Int>
+    var error: RuleParameter<Int>
+
+    public init(warning warningLevel: Int, error errorLevel: Int) {
+        warning = RuleParameter(severity: .Warning, value: warningLevel)
+        error = RuleParameter(severity: .Error, value: errorLevel)
+    }
+
+    mutating public func setConfiguration(config: AnyObject) throws {
         if let config = [Int].arrayOf(config) where !config.isEmpty {
             warning = RuleParameter(severity: .Warning, value: config[0])
             if config.count > 1 {
@@ -35,14 +45,14 @@ extension ViolationLevelConfiguration {
                 error = RuleParameter(severity: .Error, value: errorNumber)
             }
         } else {
-            return nil
+            throw ConfigurationError.UnknownConfiguration
         }
     }
 
-    public func isEqualTo(config: ViolationLevelConfiguration) -> Bool {
-        if let config = config as? Self {
+    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
+        if let config = ruleConfiguration as? VLConfig {
             return warning == config.warning &&
-                error == config.error
+                   error == config.error
         }
         return false
     }

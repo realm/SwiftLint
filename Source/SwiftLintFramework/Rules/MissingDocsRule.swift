@@ -68,9 +68,9 @@ public enum AccessControlLevel: String {
 }
 
 public struct MissingDocsRule: ConfigurableRule, OptInRule {
-    public init?(config: AnyObject) {
+    public init(config: AnyObject) throws {
         guard let array = [String].arrayOf(config) else {
-            return nil
+            throw ConfigurationError.UnknownConfiguration
         }
         let acl = array.flatMap(AccessControlLevel.init)
         parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)

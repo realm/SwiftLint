@@ -128,7 +128,7 @@ public struct Configuration: Equatable {
             let identifier = rule.description.identifier
             if let ConfigurableRuleType = rule as? ConfigurableRule.Type,
                ruleConfig = dict?[identifier] {
-                if let configuredRule = ConfigurableRuleType.init(config: ruleConfig) {
+                if let configuredRule = try? ConfigurableRuleType.init(config: ruleConfig) {
                     rules.append(configuredRule)
                 } else {
                     queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")

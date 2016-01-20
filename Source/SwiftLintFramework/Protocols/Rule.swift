@@ -28,13 +28,12 @@ extension Rule {
 }
 
 public protocol ConfigurableRule: Rule {
-    init?(config: AnyObject)
+    init(config: AnyObject) throws
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
 public protocol ConfigurationProviderRule: ConfigurableRule {
-    typealias ConfigurationType: RuleConfiguration
-    var configuration: ConfigurationType { get set }
+    var configuration: RuleConfiguration { get set }
 }
 
 public protocol ViolationLevelRule: ConfigurableRule {
@@ -49,13 +48,9 @@ public protocol CorrectableRule: Rule {
 // MARK: - ConfigurationProviderRule conformance to Configurable
 
 public extension ConfigurationProviderRule {
-    public init?(config: AnyObject) {
+    public init(config: AnyObject) throws {
         self.init()
-        if let config = ConfigurationType(config: config) {
-            configuration = config
-        } else {
-            return nil
-        }
+        try configuration.setConfiguration(config)
     }
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {
@@ -69,7 +64,7 @@ public extension ConfigurationProviderRule {
 // MARK: - ViolationLevelRule conformance to ConfigurableRule
 
 public extension ViolationLevelRule {
-    public init?(config: AnyObject) {
+    public init(config: AnyObject) throws {
         self.init()
         if let config = [Int].arrayOf(config) where !config.isEmpty {
             warning = RuleParameter(severity: .Warning, value: config[0])
@@ -84,7 +79,7 @@ public extension ViolationLevelRule {
                 error = RuleParameter(severity: .Error, value: errorNumber)
             }
         } else {
-            return nil
+            throw ConfigurationError.UnknownConfiguration
         }
     }
 

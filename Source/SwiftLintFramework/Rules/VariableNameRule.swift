@@ -11,10 +11,10 @@ import SourceKittenFramework
 
 public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = NameConfig(minWarning: 3,
-                                          minError: 2,
-                                          maxWarning: 40,
-                                          maxError: 60)
+    public var configuration = NameConfig(minLengthWarning: 3,
+                                          minLengthError: 2,
+                                          maxLengthWarning: 40,
+                                          maxLengthError: 60)
 
     public init() {}
 
@@ -73,8 +73,8 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,
-                        reason: "Variable name should be between \(configuration.minThreshold) " +
-                                "and \(configuration.maxThreshold) characters long: '\(name)'")]
+                        reason: "Variable name should be between \(configuration.minLengthThreshold) " +
+                                "and \(configuration.maxLengthThreshold) characters long: '\(name)'")]
                 }
             }
             return []
@@ -82,11 +82,11 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func violationSeverity(forLength length: Int) -> ViolationSeverity? {
-        if length < configuration.min.error.value ||
-           length > configuration.max.error.value {
+        if length < configuration.minLength.error.value ||
+           length > configuration.maxLength.error.value {
                 return .Error
-        } else if length < configuration.min.warning.value ||
-                  length > configuration.max.warning.value {
+        } else if length < configuration.minLength.warning.value ||
+                  length > configuration.maxLength.warning.value {
                 return .Warning
         } else {
             return nil

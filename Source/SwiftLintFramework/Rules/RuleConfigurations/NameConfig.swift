@@ -9,31 +9,35 @@
 import Foundation
 
 public struct NameConfig: RuleConfiguration, Equatable {
-    var min: SeverityLevelConfig
-    var max: SeverityLevelConfig
+    var minLength: SeverityLevelConfig
+    var maxLength: SeverityLevelConfig
     var excluded: [String]
 
-    var minThreshold: Int {
-        return Swift.max(min.warning.value, min.error.value)
+    var minLengthThreshold: Int {
+        return Swift.max(minLength.warning.value, minLength.error.value)
     }
 
-    var maxThreshold: Int {
-        return Swift.min(max.warning.value, max.error.value)
+    var maxLengthThreshold: Int {
+        return Swift.min(maxLength.warning.value, maxLength.error.value)
     }
 
-    init(minWarning: Int, minError: Int, maxWarning: Int, maxError: Int, excluded: [String] = []) {
-        min = SeverityLevelConfig(warning: minWarning, error: minError)
-        max = SeverityLevelConfig(warning: maxWarning, error: maxError)
+    init(minLengthWarning: Int,
+         minLengthError: Int,
+         maxLengthWarning: Int,
+         maxLengthError: Int,
+         excluded: [String] = []) {
+        minLength = SeverityLevelConfig(warning: minLengthWarning, error: minLengthError)
+        maxLength = SeverityLevelConfig(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = excluded
     }
 
     public mutating func setConfiguration(config: AnyObject) throws {
         if let configDict = config as? [String: AnyObject] {
-            if let minConfig = configDict["min_length"] {
-                try min.setConfiguration(minConfig)
+            if let minLengthConfig = configDict["min_length"] {
+                try minLength.setConfiguration(minLengthConfig)
             }
-            if let maxConfig = configDict["max_length"] {
-                try max.setConfiguration(maxConfig)
+            if let maxLengthConfig = configDict["max_length"] {
+                try maxLength.setConfiguration(maxLengthConfig)
             }
             if let excluded = configDict["excluded"] as? [String] {
                     self.excluded = excluded
@@ -52,7 +56,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
 }
 
 public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
-    return lhs.min == rhs.min &&
-           lhs.max == rhs.max &&
+    return lhs.minLength == rhs.minLength &&
+           lhs.maxLength == rhs.maxLength &&
            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
 }

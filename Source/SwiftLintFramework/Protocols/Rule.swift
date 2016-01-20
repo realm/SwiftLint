@@ -33,7 +33,8 @@ public protocol ConfigurableRule: Rule {
 }
 
 public protocol ConfigurationProviderRule: ConfigurableRule {
-    var configuration: RuleConfiguration { get set }
+    typealias ConfigurationType: RuleConfiguration
+    var configuration: ConfigurationType { get set }
 }
 
 public protocol ViolationLevelRule: ConfigurableRule {

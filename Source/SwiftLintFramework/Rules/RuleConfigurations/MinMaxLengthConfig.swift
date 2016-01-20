@@ -19,10 +19,10 @@ public struct MinMaxLengthConfig: RuleConfiguration, Equatable {
 
     public mutating func setConfiguration(config: AnyObject) throws {
         if let configDict = config as? [String: AnyObject] {
-            if let minConfig = configDict["min"] {
+            if let minConfig = configDict["min_length"] {
                 try min.setConfiguration(minConfig)
             }
-            if let maxConfig = configDict["max"] {
+            if let maxConfig = configDict["max_length"] {
                 try max.setConfiguration(maxConfig)
             }
         } else {

@@ -9,8 +9,8 @@
 import Foundation
 
 public struct NameConfig: RuleConfiguration, Equatable {
-    var minLength: SeverityLevelConfig
-    var maxLength: SeverityLevelConfig
+    var minLength: SeverityLevelsConfig
+    var maxLength: SeverityLevelsConfig
     var excluded: Set<String>
 
     var minLengthThreshold: Int {
@@ -26,8 +26,8 @@ public struct NameConfig: RuleConfiguration, Equatable {
                 maxLengthWarning: Int,
                 maxLengthError: Int,
                 excluded: [String] = []) {
-        minLength = SeverityLevelConfig(warning: minLengthWarning, error: minLengthError)
-        maxLength = SeverityLevelConfig(warning: maxLengthWarning, error: maxLengthError)
+        minLength = SeverityLevelsConfig(warning: minLengthWarning, error: minLengthError)
+        maxLength = SeverityLevelsConfig(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
     }
 

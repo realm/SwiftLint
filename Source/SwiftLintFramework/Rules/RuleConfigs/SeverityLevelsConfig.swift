@@ -1,5 +1,5 @@
 //
-//  SeverityLevelConfig.swift
+//  SeverityLevelsConfig.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/19/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityLevelConfig: RuleConfiguration, Equatable {
+public struct SeverityLevelsConfig: RuleConfiguration, Equatable {
     var warning: Int
     var error: Int
 
@@ -36,13 +36,13 @@ public struct SeverityLevelConfig: RuleConfiguration, Equatable {
     }
 
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let config = ruleConfiguration as? SeverityLevelConfig {
+        if let config = ruleConfiguration as? SeverityLevelsConfig {
             return self == config
         }
         return false
     }
 }
 
-public func == (lhs: SeverityLevelConfig, rhs: SeverityLevelConfig) -> Bool {
+public func == (lhs: SeverityLevelsConfig, rhs: SeverityLevelsConfig) -> Bool {
     return lhs.warning == rhs.warning && lhs.error == rhs.error
 }

@@ -11,7 +11,7 @@ import Foundation
 public struct NameConfig: RuleConfiguration, Equatable {
     var minLength: SeverityLevelConfig
     var maxLength: SeverityLevelConfig
-    var excluded: [String]
+    var excluded: Set<String>
 
     var minLengthThreshold: Int {
         return Swift.max(minLength.warning, minLength.error)
@@ -28,7 +28,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
                 excluded: [String] = []) {
         minLength = SeverityLevelConfig(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelConfig(warning: maxLengthWarning, error: maxLengthError)
-        self.excluded = excluded
+        self.excluded = Set(excluded)
     }
 
     public mutating func setConfiguration(config: AnyObject) throws {
@@ -40,7 +40,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
                 try maxLength.setConfiguration(maxLengthConfig)
             }
             if let excluded = [String].arrayOf(configDict["excluded"]) {
-                    self.excluded = excluded
+                    self.excluded = Set(excluded)
             }
         } else {
             throw ConfigurationError.UnknownConfiguration

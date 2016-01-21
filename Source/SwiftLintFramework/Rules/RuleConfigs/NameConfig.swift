@@ -32,18 +32,18 @@ public struct NameConfig: RuleConfig, Equatable {
     }
 
     public mutating func setConfig(config: AnyObject) throws {
-        if let configDict = config as? [String: AnyObject] {
-            if let minLengthConfig = configDict["min_length"] {
-                try minLength.setConfig(minLengthConfig)
-            }
-            if let maxLengthConfig = configDict["max_length"] {
-                try maxLength.setConfig(maxLengthConfig)
-            }
-            if let excluded = [String].arrayOf(configDict["excluded"]) {
-                    self.excluded = Set(excluded)
-            }
-        } else {
+        guard let configDict = config as? [String: AnyObject] else {
             throw ConfigurationError.UnknownConfiguration
+        }
+
+        if let minLengthConfig = configDict["min_length"] {
+            try minLength.setConfig(minLengthConfig)
+        }
+        if let maxLengthConfig = configDict["max_length"] {
+            try maxLength.setConfig(maxLengthConfig)
+        }
+        if let excluded = [String].arrayOf(configDict["excluded"]) {
+            self.excluded = Set(excluded)
         }
     }
 }

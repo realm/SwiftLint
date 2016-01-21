@@ -74,7 +74,7 @@ struct LintOptions: OptionsType {
                 defaultValue: false,
                 usage: "lint standard input")
             <*> mode <| Option(key: "config",
-                defaultValue: ".swiftlint.yml",
+                defaultValue: Configuration.fileName,
                 usage: "the path to SwiftLint's configuration file")
             <*> mode <| Option(key: "strict",
                 defaultValue: false,

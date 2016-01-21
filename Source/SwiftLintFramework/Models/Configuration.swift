@@ -12,6 +12,7 @@ import SourceKittenFramework
 private let fileManager = NSFileManager.defaultManager()
 
 public struct Configuration: Equatable {
+    public static let fileName = ".swiftlint.yml"
     public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
@@ -166,7 +167,7 @@ public struct Configuration: Equatable {
 public extension Configuration {
     func configForPath(path: String) -> Configuration {
         let path = path as NSString
-        let configSearchPath = path.stringByAppendingPathComponent(".swiftlint.yml")
+        let configSearchPath = path.stringByAppendingPathComponent(Configuration.fileName)
 
         // If a config exists and it isn't us, load and merge the configs
         if configSearchPath != configPath &&
@@ -175,7 +176,7 @@ public extension Configuration {
         }
 
         // If we are not at the root path, continue down the tree
-        if path != rootPath {
+        if path != rootPath && path != "/" {
             return configForPath(path.stringByDeletingLastPathComponent)
         }
 

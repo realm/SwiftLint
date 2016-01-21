@@ -19,7 +19,7 @@ class IntegrationTests: XCTestCase {
             .stringByDeletingLastPathComponent as NSString)
             .stringByDeletingLastPathComponent
         NSFileManager.defaultManager().changeCurrentDirectoryPath(directory)
-        let config = Configuration(path: ".swiftlint.yml")
+        let config = Configuration(path: Configuration.fileName)
         let swiftFiles = config.lintableFilesForPath("")
         XCTAssert(swiftFiles.map({$0.path!}).contains(__FILE__), "current file should be included")
         XCTAssertEqual(swiftFiles.flatMap({

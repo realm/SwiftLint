@@ -189,11 +189,11 @@ extension XCTestCase {
     }
 
     var projectMockYAML0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent(".swiftlint.yml")
+        return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
     }
 
     var projectMockYAML2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent(".swiftlint.yml")
+        return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
     }
 
     var projectMockSwift0: String {

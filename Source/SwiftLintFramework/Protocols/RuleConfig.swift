@@ -12,3 +12,12 @@ public protocol RuleConfig {
     mutating func setConfig(config: AnyObject) throws
     func isEqualTo(ruleConfig: RuleConfig) -> Bool
 }
+
+extension RuleConfig where Self: Equatable {
+    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
+        if let ruleConfig = ruleConfig as? Self {
+            return self == ruleConfig
+        }
+        return false
+    }
+}

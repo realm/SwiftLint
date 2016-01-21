@@ -23,13 +23,6 @@ public struct SeverityConfig: RuleConfig, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
     }
-
-    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
-        if let config = ruleConfig as? SeverityConfig {
-            return self == config
-        }
-        return false
-    }
 }
 
 public func == (lhs: SeverityConfig, rhs: SeverityConfig) -> Bool {

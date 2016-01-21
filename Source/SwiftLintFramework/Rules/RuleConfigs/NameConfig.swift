@@ -46,13 +46,6 @@ public struct NameConfig: RuleConfig, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
     }
-
-    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
-        if let ruleConfig = ruleConfig as? NameConfig {
-            return self == ruleConfig
-        }
-        return false
-    }
 }
 
 public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {

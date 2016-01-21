@@ -24,9 +24,10 @@ class RuleConfigurationsTests: XCTestCase {
                               maxLengthWarning: 170,
                               maxLengthError: 700,
                               excluded: ["id"])
-        if let _ = try? nameConfig.setConfiguration(config) {
+        do {
+            try nameConfig.setConfiguration(config)
             XCTAssertEqual(nameConfig, comp)
-        } else {
+        } catch {
             XCTFail("Did not configure correctly")
         }
     }
@@ -42,4 +43,35 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 
+    func testSeverityConfigFromString() {
+        let config = "Warning"
+        let comp = SeverityConfig(severity: .Warning)
+        var severityConfig = SeverityConfig(severity: .Error)
+        do {
+            try severityConfig.setConfiguration(config)
+            XCTAssertEqual(severityConfig, comp)
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testSeverityConfigFromDictionary() {
+        let config = ["severity": "warning"]
+        let comp = SeverityConfig(severity: .Warning)
+        var severityConfig = SeverityConfig(severity: .Error)
+        do {
+            try severityConfig.setConfiguration(config)
+            XCTAssertEqual(severityConfig, comp)
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testSeverityConfigThrowsOnBadConfig() {
+        let config = 17
+        var severityConfig = SeverityConfig(severity: .Warning)
+        checkError(ConfigurationError.UnknownConfiguration) {
+            try severityConfig.setConfiguration(config)
+        }
+    }
 }

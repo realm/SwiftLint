@@ -18,7 +18,8 @@ struct AutoCorrectCommand: CommandType {
     let function = "Automatically correct warnings and errors"
 
     func run(options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
-        let configuration = Configuration(commandLinePath: options.configurationFile)
+        var configuration = Configuration(commandLinePath: options.configurationFile)
+        configuration.rootPath = options.path.absolutePathStandardized()
         return configuration.visitLintableFiles(options.path, action: "Correcting",
             useScriptInputFiles: options.useScriptInputFiles) { linter in
             let corrections = linter.correct()
@@ -38,7 +39,7 @@ struct AutoCorrectOptions: OptionsType {
     let configurationFile: String
     let useScriptInputFiles: Bool
 
-    // swiftlint:disable line_length
+    // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         return curry(self.init)
             <*> mode <| Option(key: "path",
@@ -51,5 +52,4 @@ struct AutoCorrectOptions: OptionsType {
                 defaultValue: false,
                 usage: "read SCRIPT_INPUT_FILE* environment variables as files")
     }
-    // swiftlint:enable line_length
 }

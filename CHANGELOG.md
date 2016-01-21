@@ -12,7 +12,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix crash caused by infinite recursion when using nested config files.  
+  [JP Simard](https://github.com/jpsim)
+  [#368](https://github.com/realm/SwiftLint/issues/368)
 
 ## 0.6.0: Steam Cycle
 

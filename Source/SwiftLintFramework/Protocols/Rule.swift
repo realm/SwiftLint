@@ -33,7 +33,7 @@ public protocol ConfigurableRule: Rule {
 }
 
 public protocol ConfigProviderRule: ConfigurableRule {
-    typealias ConfigType: RuleConfiguration
+    typealias ConfigType: RuleConfig
     var config: ConfigType { get set }
 }
 
@@ -46,7 +46,7 @@ public protocol CorrectableRule: Rule {
 public extension ConfigProviderRule {
     public init(config: AnyObject) throws {
         self.init()
-        try self.config.setConfiguration(config)
+        try self.config.setConfig(config)
     }
 
     public func isEqualTo(rule: ConfigurableRule) -> Bool {

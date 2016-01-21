@@ -8,14 +8,14 @@
 
 import Foundation
 
-public struct SeverityConfig: RuleConfiguration, Equatable {
+public struct SeverityConfig: RuleConfig, Equatable {
     var severity: ViolationSeverity
 
     public init(_ severity: ViolationSeverity) {
         self.severity = severity
     }
 
-    public mutating func setConfiguration(config: AnyObject) throws {
+    public mutating func setConfig(config: AnyObject) throws {
         let value = config as? String ?? (config as? [String: AnyObject])?["severity"] as? String
         if let value = value, let severity = ViolationSeverity(rawValue: value.capitalizedString) {
             self.severity = severity
@@ -24,8 +24,8 @@ public struct SeverityConfig: RuleConfiguration, Equatable {
         }
     }
 
-    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let config = ruleConfiguration as? SeverityConfig {
+    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
+        if let config = ruleConfig as? SeverityConfig {
             return self == config
         }
         return false

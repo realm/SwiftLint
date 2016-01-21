@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityLevelsConfig: RuleConfiguration, Equatable {
+public struct SeverityLevelsConfig: RuleConfig, Equatable {
     var warning: Int
     var error: Int
 
@@ -17,7 +17,7 @@ public struct SeverityLevelsConfig: RuleConfiguration, Equatable {
                 RuleParameter(severity: .Warning, value: warning)]
     }
 
-    mutating public func setConfiguration(config: AnyObject) throws {
+    mutating public func setConfig(config: AnyObject) throws {
         if let config = [Int].arrayOf(config) where !config.isEmpty {
             warning = config[0]
             if config.count > 1 {
@@ -35,8 +35,8 @@ public struct SeverityLevelsConfig: RuleConfiguration, Equatable {
         }
     }
 
-    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let config = ruleConfiguration as? SeverityLevelsConfig {
+    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
+        if let config = ruleConfig as? SeverityLevelsConfig {
             return self == config
         }
         return false

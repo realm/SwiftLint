@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct NameConfig: RuleConfiguration, Equatable {
+public struct NameConfig: RuleConfig, Equatable {
     var minLength: SeverityLevelsConfig
     var maxLength: SeverityLevelsConfig
     var excluded: Set<String>
@@ -31,13 +31,13 @@ public struct NameConfig: RuleConfiguration, Equatable {
         self.excluded = Set(excluded)
     }
 
-    public mutating func setConfiguration(config: AnyObject) throws {
+    public mutating func setConfig(config: AnyObject) throws {
         if let configDict = config as? [String: AnyObject] {
             if let minLengthConfig = configDict["min_length"] {
-                try minLength.setConfiguration(minLengthConfig)
+                try minLength.setConfig(minLengthConfig)
             }
             if let maxLengthConfig = configDict["max_length"] {
-                try maxLength.setConfiguration(maxLengthConfig)
+                try maxLength.setConfig(maxLengthConfig)
             }
             if let excluded = [String].arrayOf(configDict["excluded"]) {
                     self.excluded = Set(excluded)
@@ -47,8 +47,8 @@ public struct NameConfig: RuleConfiguration, Equatable {
         }
     }
 
-    public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        if let ruleConfig = ruleConfiguration as? NameConfig {
+    public func isEqualTo(ruleConfig: RuleConfig) -> Bool {
+        if let ruleConfig = ruleConfig as? NameConfig {
             return self == ruleConfig
         }
         return false

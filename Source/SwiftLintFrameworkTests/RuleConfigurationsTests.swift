@@ -25,7 +25,7 @@ class RuleConfigurationsTests: XCTestCase {
                               maxLengthError: 700,
                               excluded: ["id"])
         do {
-            try nameConfig.setConfiguration(config)
+            try nameConfig.setConfig(config)
             XCTAssertEqual(nameConfig, comp)
         } catch {
             XCTFail("Did not configure correctly")
@@ -39,7 +39,7 @@ class RuleConfigurationsTests: XCTestCase {
                                     maxLengthWarning: 0,
                                     maxLengthError: 0)
         checkError(ConfigurationError.UnknownConfiguration) {
-            try nameConfig.setConfiguration(config)
+            try nameConfig.setConfig(config)
         }
     }
 
@@ -48,7 +48,7 @@ class RuleConfigurationsTests: XCTestCase {
         let comp = SeverityConfig(.Warning)
         var severityConfig = SeverityConfig(.Error)
         do {
-            try severityConfig.setConfiguration(config)
+            try severityConfig.setConfig(config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
             XCTFail()
@@ -60,7 +60,7 @@ class RuleConfigurationsTests: XCTestCase {
         let comp = SeverityConfig(.Warning)
         var severityConfig = SeverityConfig(.Error)
         do {
-            try severityConfig.setConfiguration(config)
+            try severityConfig.setConfig(config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
             XCTFail()
@@ -71,7 +71,7 @@ class RuleConfigurationsTests: XCTestCase {
         let config = 17
         var severityConfig = SeverityConfig(.Warning)
         checkError(ConfigurationError.UnknownConfiguration) {
-            try severityConfig.setConfiguration(config)
+            try severityConfig.setConfig(config)
         }
     }
 }

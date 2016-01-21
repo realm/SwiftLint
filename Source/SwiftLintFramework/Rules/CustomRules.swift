@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 import SwiftXPC
 
-public struct CustomRule: ASTRule {
+public struct CustomRules: ASTRule {
 
     public static let description = RuleDescription(
         identifier: "custom_rules",

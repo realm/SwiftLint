@@ -48,7 +48,7 @@ public struct TypeNameRule: ASTRule, ConfigProviderRule {
         if !typeKinds.contains(kind) {
             return []
         }
-        if let name = dictionary["key.name"] as? String,
+        if let name = dictionary["key.name"] as? String where !config.excluded.contains(name),
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)

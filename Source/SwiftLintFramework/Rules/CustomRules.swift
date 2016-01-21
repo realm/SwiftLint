@@ -52,13 +52,9 @@ public struct CustomRules: Rule, ConfigProviderRule {
             return []
         }
 
-        var violations = [StyleViolation]()
-        for customRule in config.customRuleConfigs {
-            // TODO: Flatmap
-            violations.appendContentsOf(validate(file, withConfig: customRule))
+        return config.customRuleConfigs.flatMap {
+            self.validate(file, withConfig: $0)
         }
-
-        return violations
     }
 
     private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {

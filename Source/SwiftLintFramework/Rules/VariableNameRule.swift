@@ -69,7 +69,7 @@ public struct VariableNameRule: ASTRule, ConfigProviderRule {
                         severity: .Error,
                         location: location,
                         reason: "Variable name should start with a lowercase character: '\(name)'")]
-                } else if let severity = config.severity(forLength: name.characters.count) {
+                } else if let severity = severity(forLength: name.characters.count) {
                     return [StyleViolation(ruleDescription: self.dynamicType.description,
                         severity: severity,
                         location: location,

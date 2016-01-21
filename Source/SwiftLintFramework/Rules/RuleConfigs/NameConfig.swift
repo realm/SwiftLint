@@ -53,22 +53,26 @@ public struct NameConfig: RuleConfig, Equatable {
         }
         return false
     }
-
-    public func severity(forLength length: Int) -> ViolationSeverity? {
-        if length < minLength.error ||
-           length > maxLength.error {
-                return .Error
-        } else if length < minLength.warning ||
-                  length > maxLength.warning {
-                return .Warning
-        } else {
-            return .None
-        }
-    }
 }
 
 public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
     return lhs.minLength == rhs.minLength &&
            lhs.maxLength == rhs.maxLength &&
            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
+}
+
+// MARK: - ConfigProviderRule extensions
+
+public extension ConfigProviderRule where ConfigType == NameConfig {
+    public func severity(forLength length: Int) -> ViolationSeverity? {
+        if length < config.minLength.error ||
+           length > config.maxLength.error {
+                return .Error
+        } else if length < config.minLength.warning ||
+                  length > config.maxLength.warning {
+                return .Warning
+        } else {
+            return .None
+        }
+    }
 }

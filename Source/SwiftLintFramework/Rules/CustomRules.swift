@@ -63,8 +63,7 @@ public struct CustomRules: Rule, ConfigProviderRule {
         let ranges = file.matchPattern(config.regex.pattern, withSyntaxKinds: config.matchTokens)
         let violations = ranges.map {
             StyleViolation(ruleDescription: config.description,
-                // TODO: Maybe rename severity to value?
-                severity: config.severity.severity,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: $0.location),
                 reason: config.message)
         }

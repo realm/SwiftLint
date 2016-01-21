@@ -20,7 +20,9 @@ extension File {
     }
 }
 
-public struct ClosingBraceRule: CorrectableRule {
+public struct ClosingBraceRule: CorrectableRule, ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -43,7 +45,8 @@ public struct ClosingBraceRule: CorrectableRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.violatingClosingBraceRanges().map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: config.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

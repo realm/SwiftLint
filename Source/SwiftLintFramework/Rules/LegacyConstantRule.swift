@@ -8,7 +8,10 @@
 
 import SourceKittenFramework
 
-public struct LegacyConstantRule: CorrectableRule {
+public struct LegacyConstantRule: CorrectableRule, ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
+
     public init() { }
 
     public static let description = RuleDescription(
@@ -46,6 +49,7 @@ public struct LegacyConstantRule: CorrectableRule {
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

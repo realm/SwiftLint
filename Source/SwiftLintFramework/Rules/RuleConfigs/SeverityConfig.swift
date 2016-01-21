@@ -11,7 +11,7 @@ import Foundation
 public struct SeverityConfig: RuleConfiguration, Equatable {
     var severity: ViolationSeverity
 
-    public init(severity: ViolationSeverity) {
+    public init(_ severity: ViolationSeverity) {
         self.severity = severity
     }
 

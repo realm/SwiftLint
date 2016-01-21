@@ -45,8 +45,8 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSeverityConfigFromString() {
         let config = "Warning"
-        let comp = SeverityConfig(severity: .Warning)
-        var severityConfig = SeverityConfig(severity: .Error)
+        let comp = SeverityConfig(.Warning)
+        var severityConfig = SeverityConfig(.Error)
         do {
             try severityConfig.setConfiguration(config)
             XCTAssertEqual(severityConfig, comp)
@@ -57,8 +57,8 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSeverityConfigFromDictionary() {
         let config = ["severity": "warning"]
-        let comp = SeverityConfig(severity: .Warning)
-        var severityConfig = SeverityConfig(severity: .Error)
+        let comp = SeverityConfig(.Warning)
+        var severityConfig = SeverityConfig(.Error)
         do {
             try severityConfig.setConfiguration(config)
             XCTAssertEqual(severityConfig, comp)
@@ -69,7 +69,7 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSeverityConfigThrowsOnBadConfig() {
         let config = 17
-        var severityConfig = SeverityConfig(severity: .Warning)
+        var severityConfig = SeverityConfig(.Warning)
         checkError(ConfigurationError.UnknownConfiguration) {
             try severityConfig.setConfiguration(config)
         }

@@ -8,7 +8,9 @@
 
 import SourceKittenFramework
 
-public struct ControlStatementRule: Rule {
+public struct ControlStatementRule: ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -65,6 +67,7 @@ public struct ControlStatementRule: Rule {
                     return nil
                 }
                 return StyleViolation(ruleDescription: self.dynamicType.description,
+                    severity: self.config.severity,
                     location: Location(file: file, characterOffset: match.location))
             }
         }

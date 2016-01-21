@@ -42,7 +42,7 @@ public struct RegexConfig: RuleConfig, Equatable {
             self.regex = try NSRegularExpression(pattern: regexString, options: [])
         }
         try [String].arrayOf(configDict["match_tokens"])?.forEach {
-            self.matchTokens.append(try SyntaxKind(nickname: $0))
+            self.matchTokens.append(try SyntaxKind(shortName: $0))
         }
         if let severityString = configDict["severity"] as? String {
             try severityConfig.setConfig(severityString)
@@ -61,8 +61,8 @@ public func == (lhs: RegexConfig, rhs: RegexConfig) -> Bool {
 
 public extension SyntaxKind {
     // swiftlint:disable:next function_body_length
-    init(nickname: Swift.String) throws {
-        switch nickname.lowercaseString {
+    init(shortName: Swift.String) throws {
+        switch shortName.lowercaseString {
         case "argument":
             self = .Argument
         case "attribute_builtin":

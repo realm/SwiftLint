@@ -10,6 +10,8 @@ import Foundation
 import SourceKittenFramework
 import SwiftXPC
 
+// MARK: - CustomRulesConfig
+
 public struct CustomRulesConfig: RuleConfig, Equatable {
     var customRuleConfigs = [RegexConfig]()
 
@@ -30,7 +32,9 @@ public func == (lhs: CustomRulesConfig, rhs: CustomRulesConfig) -> Bool {
     return lhs.customRuleConfigs == rhs.customRuleConfigs
 }
 
-public struct CustomRules: ASTRule, ConfigProviderRule {
+// MARK: - CustomRules
+
+public struct CustomRules: Rule, ConfigProviderRule {
 
     public static let description = RuleDescription(
         identifier: "custom_rules",
@@ -43,9 +47,31 @@ public struct CustomRules: ASTRule, ConfigProviderRule {
 
     public init() {}
 
-    public func validateFile(file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: XPCDictionary) -> [StyleViolation] {
-        return []
+    public func validateFile(file: File) -> [StyleViolation] {
+        guard !config.customRuleConfigs.isEmpty else {
+            return []
+        }
+
+        var violations = [StyleViolation]()
+        for customRule in config.customRuleConfigs {
+            // TODO: Flatmap
+            violations.appendContentsOf(validate(file, withConfig: customRule))
+        }
+
+        return violations
+    }
+
+    private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {
+        // We are not using the preconstucted regex due to the API available, but it is important
+        // to still construct it at configuration parsing time to catch errors.
+        let ranges = file.matchPattern(config.regex.pattern, withSyntaxKinds: config.matchTokens)
+        let violations = ranges.map {
+            StyleViolation(ruleDescription: config.description,
+                // TODO: Maybe rename severity to value?
+                severity: config.severity.severity,
+                location: Location(file: file, characterOffset: $0.location),
+                reason: config.message)
+        }
+        return violations
     }
 }

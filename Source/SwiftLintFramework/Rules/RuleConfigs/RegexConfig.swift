@@ -16,6 +16,12 @@ public struct RegexConfig: RuleConfig, Equatable {
     var matchTokens = [SyntaxKind]()
     var severity = SeverityConfig(.Warning)
 
+    public var description: RuleDescription {
+        return RuleDescription(identifier: identifier,
+            name: identifier,
+            description: "")
+    }
+
     public init(identifier: String) {
         self.identifier = identifier
     }

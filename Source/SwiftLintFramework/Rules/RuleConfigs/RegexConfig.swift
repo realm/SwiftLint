@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct RegexConfig: RuleConfig, Equatable {
     let identifier: String
+    var name: String?
     var message = "Regex matched."
     var regex = NSRegularExpression()
     var matchKinds = Set(SyntaxKind.allKinds())
@@ -22,7 +23,7 @@ public struct RegexConfig: RuleConfig, Equatable {
 
     public var description: RuleDescription {
         return RuleDescription(identifier: identifier,
-            name: identifier,
+            name: name ?? identifier,
             description: "")
     }
 
@@ -35,6 +36,9 @@ public struct RegexConfig: RuleConfig, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
 
+        if let name = configDict["name"] as? String {
+            self.name = name
+        }
         if let message = configDict["message"] as? String {
             self.message = message
         }

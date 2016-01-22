@@ -7,12 +7,11 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 extension File {
-    private func invalidDocOffsets(dictionary: XPCDictionary) -> [Int] {
-        let substructure = (dictionary["key.substructure"] as? XPCArray)?
-            .flatMap { $0 as? XPCDictionary } ?? []
+    private func invalidDocOffsets(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
+            .flatMap { $0 as? [String: SourceKitRepresentable] } ?? []
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
         guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
             where kind != .VarParameter,
@@ -71,7 +70,8 @@ func superfluousReturnDocumentation(declaration: String, comment: String,
     return !delcarationReturns(declaration, kind: kind) && commentReturns(comment)
 }
 
-func superfluousOrMissingParameterDocumentation(declaration: String, substructure: [XPCDictionary],
+func superfluousOrMissingParameterDocumentation(declaration: String,
+                                                substructure: [[String: SourceKitRepresentable]],
                                                 offset: Int64, bodyOffset: Int64,
                                                 comment: String) -> Bool {
     // This function doesn't handle batched parameters, so skip those.

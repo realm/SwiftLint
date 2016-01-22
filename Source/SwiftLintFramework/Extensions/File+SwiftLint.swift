@@ -8,7 +8,6 @@
 
 import Foundation
 import SourceKittenFramework
-import SwiftXPC
 
 internal func regex(pattern: String) -> NSRegularExpression {
     // all patterns used for regular expressions in SwiftLint are string literals which have been
@@ -134,8 +133,8 @@ extension File {
         }.map { $0.0 }
     }
 
-    public func validateVariableName(dictionary: XPCDictionary, kind: SwiftDeclarationKind) ->
-                                     (name: String, offset: Int)? {
+    public func validateVariableName(dictionary: [String: SourceKitRepresentable],
+                                     kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard let name = dictionary["key.name"] as? String,
             offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) where
             SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {

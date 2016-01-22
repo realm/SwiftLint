@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftXPC
 import SourceKittenFramework
 
 public struct Linter {

@@ -8,7 +8,6 @@
 
 import Foundation
 import SourceKittenFramework
-import SwiftXPC
 
 extension String {
     func hasTrailingWhitespace() -> Bool {
@@ -31,7 +30,8 @@ extension String {
         return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
     }
 
-    public func nameStrippingLeadingUnderscoreIfPrivate(dict: XPCDictionary) -> String {
+    public func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
+                                                        String {
         let privateACL = "source.lang.swift.accessibility.private"
         if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
             return self[startIndex.successor()..<endIndex]

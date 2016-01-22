@@ -7,28 +7,29 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
-private func mappedDictValues(dictionary: XPCDictionary, key: String, subKey: String) -> [String] {
-    return (dictionary[key] as? XPCArray)?.flatMap({
-        ($0 as? XPCDictionary) as? [String: String]
+private func mappedDictValues(dictionary: [String: SourceKitRepresentable], key: String,
+                              subKey: String) -> [String] {
+    return (dictionary[key] as? [SourceKitRepresentable])?.flatMap({
+        ($0 as? [String: SourceKitRepresentable]) as? [String: String]
     }).flatMap({ $0[subKey] }) ?? []
 }
 
-private func declarationOverrides(dictionary: XPCDictionary) -> Bool {
+private func declarationOverrides(dictionary: [String: SourceKitRepresentable]) -> Bool {
     return mappedDictValues(dictionary, key: "key.attributes", subKey: "key.attribute")
         .contains("source.decl.attribute.override")
 }
 
-private func inheritedMembersForDictionary(dictionary: XPCDictionary) -> [String] {
+private func inheritedMembersForDictionary(dictionary: [String: SourceKitRepresentable]) ->
+                                           [String] {
     return mappedDictValues(dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
         File.allDeclarationsByType[$0] ?? []
     }
 }
 
 extension File {
-    private func missingDocOffsets(dictionary: XPCDictionary, acl: [AccessControlLevel],
-                                   skipping: [String] = []) -> [Int] {
+    private func missingDocOffsets(dictionary: [String: SourceKitRepresentable],
+                                   acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
         if declarationOverrides(dictionary) {
             return []
         }
@@ -36,8 +37,8 @@ extension File {
             return []
         }
         let inheritedMembers = inheritedMembersForDictionary(dictionary)
-        let substructureOffsets = (dictionary["key.substructure"] as? XPCArray)?
-            .flatMap { $0 as? XPCDictionary }
+        let substructureOffsets = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
+            .flatMap { $0 as? [String: SourceKitRepresentable] }
             .flatMap({ self.missingDocOffsets($0, acl: acl, skipping: inheritedMembers) }) ?? []
         guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             offset = dictionary["key.offset"] as? Int64,

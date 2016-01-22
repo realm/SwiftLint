@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
     public var warning = RuleParameter(severity: .Warning, value: 40)
@@ -23,7 +22,7 @@ public struct FunctionBodyLengthRule: ASTRule, ViolationLevelRule {
 
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
+        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let functionKinds: [SwiftDeclarationKind] = [
             .FunctionAccessorAddress,
             .FunctionAccessorDidset,

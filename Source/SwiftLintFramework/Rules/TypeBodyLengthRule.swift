@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
     public var warning = RuleParameter(severity: .Warning, value: 200)
@@ -23,7 +22,7 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
 
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
+        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Enum]
         if !typeKinds.contains(kind) {
             return []

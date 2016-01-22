@@ -10,12 +10,12 @@ import Foundation
 import SourceKittenFramework
 
 public struct RegexConfig: RuleConfig, Equatable {
-    let identifier: String
-    var name: String?
-    var message = "Regex matched."
-    var regex = NSRegularExpression()
-    var matchKinds = Set(SyntaxKind.allKinds())
-    var severityConfig = SeverityConfig(.Warning)
+    public let identifier: String
+    public var name: String?
+    public var message = "Regex matched."
+    public var regex = NSRegularExpression()
+    public var matchKinds = Set(SyntaxKind.allKinds())
+    public var severityConfig = SeverityConfig(.Warning)
 
     public var severity: ViolationSeverity {
         return severityConfig.severity

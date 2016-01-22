@@ -8,6 +8,7 @@
 
 import XCTest
 import SwiftLintFramework
+import SourceKittenFramework
 
 class RuleConfigurationsTests: XCTestCase {
 
@@ -73,5 +74,24 @@ class RuleConfigurationsTests: XCTestCase {
         checkError(ConfigurationError.UnknownConfiguration) {
             try severityConfig.setConfig(config)
         }
+    }
+
+    func testRegexConfigThrows() {
+        let config = 17
+        var regexConfig = RegexConfig(identifier: "")
+        checkError(ConfigurationError.UnknownConfiguration) {
+            try regexConfig.setConfig(config)
+        }
+    }
+
+    func testRegexRuleDescription() {
+        var regexConfig = RegexConfig(identifier: "regex")
+        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
+                                                                name: "regex",
+                                                                description: ""))
+        regexConfig.name = "name"
+        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
+                                                                name: "name",
+                                                                description: ""))
     }
 }

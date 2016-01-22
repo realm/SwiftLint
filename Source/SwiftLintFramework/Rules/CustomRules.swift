@@ -12,7 +12,9 @@ import SourceKittenFramework
 // MARK: - CustomRulesConfig
 
 public struct CustomRulesConfig: RuleConfig, Equatable {
-    var customRuleConfigs = [RegexConfig]()
+    public var customRuleConfigs = [RegexConfig]()
+
+    public init() {}
 
     public mutating func setConfig(config: AnyObject) throws {
         guard let configDict = config as? [String: AnyObject] else {

@@ -8,7 +8,6 @@
 
 import Foundation
 import SourceKittenFramework
-import SwiftXPC
 
 // MARK: - CustomRulesConfig
 

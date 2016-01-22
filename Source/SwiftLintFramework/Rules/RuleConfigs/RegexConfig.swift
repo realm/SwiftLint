@@ -52,8 +52,8 @@ public struct RegexConfig: RuleConfig, Equatable {
 
 public func == (lhs: RegexConfig, rhs: RegexConfig) -> Bool {
     return lhs.identifier == rhs.identifier &&
-        lhs.message == rhs.message &&
-        lhs.regex == rhs.regex &&
-        lhs.matchTokens == rhs.matchTokens &&
-        lhs.severity == rhs.severity
+           lhs.message == rhs.message &&
+           lhs.regex == rhs.regex &&
+           lhs.matchTokens == rhs.matchTokens &&
+           lhs.severity == rhs.severity
 }

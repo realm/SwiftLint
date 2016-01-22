@@ -58,7 +58,7 @@ public struct CustomRules: Rule, ConfigProviderRule {
 
     private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {
         return file.matchPattern(config.regex).filter {
-                !config.matchTokens.intersect($0.1).isEmpty
+                !config.matchKinds.intersect($0.1).isEmpty
             }.map {
                 StyleViolation(ruleDescription: config.description,
                     severity: config.severity,

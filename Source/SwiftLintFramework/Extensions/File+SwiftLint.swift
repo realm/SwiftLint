@@ -75,10 +75,14 @@ extension File {
     }
 
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
+        return matchPattern(regex(pattern))
+    }
+
+    public func matchPattern(regex: NSRegularExpression) -> [(NSRange, [SyntaxKind])] {
         let contents = self.contents as NSString
         let range = NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
-        let matches = regex(pattern).matchesInString(self.contents, options: [], range: range)
+        let matches = regex.matchesInString(self.contents, options: [], range: range)
         return matches.map { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
                 length: match.range.length) ?? match.range

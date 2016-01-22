@@ -43,7 +43,7 @@ public struct RegexConfig: RuleConfig, Equatable {
             self.message = message
         }
         if let regexString = configDict["regex"] as? String {
-            self.regex = try NSRegularExpression(pattern: regexString, options: [])
+            self.regex = try NSRegularExpression(pattern: regexString)
         }
         if let matchKinds = [String].arrayOf(configDict["match_kinds"]) {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })

@@ -9,8 +9,12 @@
 import Foundation
 
 public extension NSRegularExpression {
+    public convenience init(pattern: String) throws {
+        try self.init(pattern: pattern,
+            options: [.AnchorsMatchLines, .DotMatchesLineSeparators])
+    }
     public static func forcePattern(pattern: String) -> NSRegularExpression {
         // swiftlint:disable:next force_try
-        return try! NSRegularExpression(pattern: pattern, options: [])
+        return try! NSRegularExpression(pattern: pattern)
     }
 }

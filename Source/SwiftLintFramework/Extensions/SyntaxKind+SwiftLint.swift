@@ -11,48 +11,11 @@ import SourceKittenFramework
 extension SyntaxKind {
     // swiftlint:disable:next function_body_length
     init(shortName: Swift.String) throws {
-        switch shortName.lowercaseString {
-        case "argument":
-            self = .Argument
-        case "attribute_builtin":
-            self = .AttributeBuiltin
-        case "attribute_id":
-            self = .AttributeID
-        case "buildconfig_id":
-            self = .BuildconfigID
-        case "buildconfig_keyword":
-            self = .BuildconfigKeyword
-        case "comment":
-            self = .Comment
-        case "comment_mark":
-            self = .CommentMark
-        case "comment_url":
-            self = .CommentURL
-        case "doccomment":
-            self = .DocComment
-        case "doccomment_field":
-            self = .DocCommentField
-        case "identifier":
-            self = .Identifier
-        case "keyword":
-            self = .Keyword
-        case "number":
-            self = .Number
-        case "objectliteral":
-            self = .ObjectLiteral
-        case "parameter":
-            self = .Parameter
-        case "placeholder":
-            self = .Placeholder
-        case "string":
-            self = .String
-        case "string_interpolation_anchor":
-            self = .StringInterpolationAnchor
-        case "typeidentifier":
-            self = .Typeidentifier
-        default:
+        let prefix = "source.lang.swift.syntaxtype."
+        guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercaseString) else {
             throw ConfigurationError.UnknownConfiguration
         }
+        self = kind
     }
 
     static func commentAndStringKinds() -> [SyntaxKind] {

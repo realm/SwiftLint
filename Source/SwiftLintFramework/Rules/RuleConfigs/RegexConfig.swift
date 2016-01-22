@@ -13,7 +13,7 @@ public struct RegexConfig: RuleConfig, Equatable {
     let identifier: String
     var message = "Regex matched."
     var regex = NSRegularExpression()
-    var matchTokens = SyntaxKind.allKinds()
+    var matchTokens = Set(SyntaxKind.allKinds())
     var severityConfig = SeverityConfig(.Warning)
 
     public var severity: ViolationSeverity {
@@ -42,7 +42,7 @@ public struct RegexConfig: RuleConfig, Equatable {
             self.regex = try NSRegularExpression(pattern: regexString, options: [])
         }
         try [String].arrayOf(configDict["match_tokens"])?.forEach {
-            self.matchTokens.append(try SyntaxKind(shortName: $0))
+            self.matchTokens.insert(try SyntaxKind(shortName: $0))
         }
         if let severityString = configDict["severity"] as? String {
             try severityConfig.setConfig(severityString)

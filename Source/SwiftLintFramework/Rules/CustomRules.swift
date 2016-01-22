@@ -58,15 +58,13 @@ public struct CustomRules: Rule, ConfigProviderRule {
     }
 
     private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {
-        // We are not using the preconstucted regex due to the API available, but it is important
-        // to still construct it at configuration parsing time to catch errors.
-        let ranges = file.matchPattern(config.regex.pattern, withSyntaxKinds: config.matchTokens)
-        let violations = ranges.map {
-            StyleViolation(ruleDescription: config.description,
-                severity: config.severity,
-                location: Location(file: file, characterOffset: $0.location),
-                reason: config.message)
-        }
-        return violations
+        return file.matchPattern(config.regex).filter {
+                !config.matchTokens.intersect($0.1).isEmpty
+            }.map {
+                StyleViolation(ruleDescription: config.description,
+                    severity: config.severity,
+                    location: Location(file: file, characterOffset: $0.0.location),
+                    reason: config.message)
+            }
     }
 }

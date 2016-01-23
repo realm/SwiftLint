@@ -4,9 +4,6 @@
 [submodule "Carthage/Checkouts/SWXMLHash"]
 	path = Carthage/Checkouts/SWXMLHash
 	url = https://github.com/drmohundro/SWXMLHash.git
-[submodule "Carthage/Checkouts/SwiftXPC"]
-	path = Carthage/Checkouts/SwiftXPC
-	url = https://github.com/jpsim/SwiftXPC.git
 [submodule "Carthage/Checkouts/YamlSwift"]
 	path = Carthage/Checkouts/YamlSwift
 	url = https://github.com/behrang/YamlSwift.git

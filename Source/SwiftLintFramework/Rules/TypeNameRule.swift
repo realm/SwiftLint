@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct TypeNameRule: ASTRule {
 
@@ -32,7 +31,7 @@ public struct TypeNameRule: ASTRule {
 
     public func validateFile(file: File,
         kind: SwiftDeclarationKind,
-        dictionary: XPCDictionary) -> [StyleViolation] {
+        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [
             .Class,
             .Struct,

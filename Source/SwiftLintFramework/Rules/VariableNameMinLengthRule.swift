@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
 
@@ -56,7 +55,7 @@ public struct VariableNameMinLengthRule: ASTRule, ConfigurableRule {
     )
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: XPCDictionary) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             if !excluded.contains(name) {
                 let charCount = name.characters.count

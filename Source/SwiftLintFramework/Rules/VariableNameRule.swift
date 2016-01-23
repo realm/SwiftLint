@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct VariableNameRule: ASTRule {
 
@@ -40,7 +39,7 @@ public struct VariableNameRule: ASTRule {
     }
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: XPCDictionary) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             let description = self.dynamicType.description

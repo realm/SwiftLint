@@ -14,9 +14,6 @@
       location = "group:Carthage/Checkouts/Commandant/Commandant.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/Curry/Curry.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Carthage/Checkouts/Commandant/Carthage/Checkouts/Result/Result.xcodeproj">
    </FileRef>
    <FileRef

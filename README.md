@@ -139,8 +139,9 @@ disabled_rules: # rule identifiers to exclude from running
   - colon
   - comma
   - control_statement
-  - force_cast
-  - ...
+enabled_rules: # some rules are only opt-in
+  - empty_count
+  - missing_docs
   # Find all the available rules by running:
   # swiftlint rules
 included: # paths to include during linting. `--path` is ignored if present.
@@ -150,12 +151,38 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
-# parameterized rules can be customized from this configuration file
+
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_cast: warning # implicitly
+force_try:
+  severity: warning # explicitly
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
 line_length: 110
-# parameterized rules are first parameterized as a warning level, then error level.
+# they can set both implicitly with an array
 type_body_length:
   - 300 # warning
   - 400 # error
+# or they can set both explicitly
+file_length:
+  warning: 500
+  error: 1200
+# naming rules can set warnings/errors for min_length and max_length
+# additionally they can set excluded names
+type_name:
+  min_length: 4 # only warning
+  max_length: # warning and error
+    warning: 40
+    error: 50
+  excluded: iPhone # excluded via string
+variable_name:
+  min_length: # only min_length
+    error: 4 # only error
+  excluded: # excluded via string array
+    - id
+    - URL
+    - GlobalAPIKey
 reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 ```
 

@@ -66,7 +66,8 @@ public struct Configuration: Equatable {
 
         // Validate that rule identifiers aren't listed multiple times
         if Set(validDisabledRules).count != validDisabledRules.count {
-            let duplicateRules = validDisabledRules.reduce([String: Int]()) { (var accu, element) in
+            let duplicateRules = validDisabledRules.reduce([String: Int]()) { accu, element in
+                var accu = accu
                 accu[element] = accu[element]?.successor() ?? 1
                 return accu
             }.filter { $0.1 > 1 }

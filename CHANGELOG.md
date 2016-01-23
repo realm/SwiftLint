@@ -2,7 +2,9 @@
 
 ##### Breaking
 
-* None.
+* Replaced all uses of `XPCDictionary` with
+  `[String: SourceKitRepresentable]`.  
+  [JP Simard](https://github.com/jpsim)
 
 ##### Enhancements
 
@@ -19,6 +21,10 @@
 * Fix crash caused by infinite recursion when using nested config files.  
   [JP Simard](https://github.com/jpsim)
   [#368](https://github.com/realm/SwiftLint/issues/368)
+
+* Fix crash when file contains NULL character.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#379](https://github.com/realm/SwiftLint/issues/379)
 
 ## 0.6.0: Steam Cycle
 

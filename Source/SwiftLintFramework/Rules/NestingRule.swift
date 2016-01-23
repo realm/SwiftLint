@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct NestingRule: ASTRule {
 
@@ -32,11 +31,12 @@ public struct NestingRule: ASTRule {
     )
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: XPCDictionary) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    func validateFile(file: File, kind: SwiftDeclarationKind, dictionary: XPCDictionary,
+    func validateFile(file: File, kind: SwiftDeclarationKind,
+                      dictionary: [String: SourceKitRepresentable],
                       level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
@@ -51,9 +51,9 @@ public struct NestingRule: ASTRule {
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }
-        let substructure = dictionary["key.substructure"] as? XPCArray ?? []
+        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         violations.appendContentsOf(substructure.flatMap { subItem in
-            if let subDict = subItem as? XPCDictionary,
+            if let subDict = subItem as? [String: SourceKitRepresentable],
                 kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }

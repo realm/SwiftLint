@@ -8,7 +8,6 @@
 
 import Foundation
 import SourceKittenFramework
-import SwiftXPC
 
 private var responseCache = Cache({file in Request.EditorOpen(file).send()})
 private var structureCache = Cache({file in Structure(sourceKitResponse: responseCache.get(file))})
@@ -83,8 +82,11 @@ private func dictFromKeyValuePairs<Key: Hashable, Value>(pairs: [(Key, Value)]) 
     return dict
 }
 
-private func substructureForDict(dict: XPCDictionary) -> [XPCDictionary]? {
-    return (dict["key.substructure"] as? XPCArray)?.flatMap { $0 as? XPCDictionary }
+private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
+                                 [[String: SourceKitRepresentable]]? {
+    return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
+        $0 as? [String: SourceKitRepresentable]
+    }
 }
 
 private func rebuildAllDeclarationsByType() {

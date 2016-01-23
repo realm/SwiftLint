@@ -5,7 +5,7 @@ git:
 branches:
   only:
     - master
-script: script/cibuild | xcpretty
+script: set -o pipefail && script/cibuild | xcpretty
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

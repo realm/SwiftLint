@@ -7,7 +7,6 @@
 //
 
 import SourceKittenFramework
-import SwiftXPC
 
 public struct VariableNameMaxLengthRule: ASTRule, ViolationLevelRule {
     public var warning = RuleParameter(severity: .Warning, value: 40)
@@ -32,7 +31,7 @@ public struct VariableNameMaxLengthRule: ASTRule, ViolationLevelRule {
     )
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: XPCDictionary) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let charCount = name.characters.count
             for parameter in [error, warning] where charCount > parameter.value {

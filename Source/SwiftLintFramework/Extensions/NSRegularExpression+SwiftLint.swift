@@ -8,13 +8,21 @@
 
 import Foundation
 
+private var regexCache = [String: NSRegularExpression]()
+
 public extension NSRegularExpression {
-    public convenience init(pattern: String) throws {
-        try self.init(pattern: pattern,
+    public static func cached(pattern pattern: String) throws -> NSRegularExpression {
+        if let result = regexCache[pattern] {
+            return result
+        }
+
+        let result = try NSRegularExpression(pattern: pattern,
             options: [.AnchorsMatchLines, .DotMatchesLineSeparators])
+        regexCache[pattern] = result
+        return result
     }
     public static func forcePattern(pattern: String) -> NSRegularExpression {
         // swiftlint:disable:next force_try
-        return try! NSRegularExpression(pattern: pattern)
+        return try! NSRegularExpression.cached(pattern: pattern)
     }
 }

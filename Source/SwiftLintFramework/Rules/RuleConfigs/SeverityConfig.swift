@@ -19,21 +19,17 @@ public struct SeverityConfig: RuleConfig, Equatable {
         guard
             // swiftlint:disable:next line_length
             let value = config as? String ?? (config as? [String: AnyObject])?["severity"] as? String,
-            let severity = ViolationSeverity(unnormalized: value) else {
+            let severity = severity(fromString: value) else {
                 throw ConfigurationError.UnknownConfiguration
         }
         self.severity = severity
+    }
+
+    private func severity(fromString string: String) -> ViolationSeverity? {
+        return ViolationSeverity(rawValue: string.lowercaseString.capitalizedString)
     }
 }
 
 public func == (lhs: SeverityConfig, rhs: SeverityConfig) -> Bool {
     return lhs.severity == rhs.severity
-}
-
-// MARK: - ViolationSeverity extensions
-
-public extension ViolationSeverity {
-    init?(unnormalized: String) {
-        self.init(rawValue: unnormalized.lowercaseString.capitalizedString)
-    }
 }

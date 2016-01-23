@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 
 extension String {
@@ -15,7 +16,7 @@ extension String {
             if !characterSet.characterIsMember(char) {
                 break
             }
-            count++
+            count += 1
         }
         return count
     }

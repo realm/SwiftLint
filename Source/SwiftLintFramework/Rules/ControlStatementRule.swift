@@ -87,11 +87,11 @@ public struct ControlStatementRule: Rule {
                 if index != lastClosingParenthesePosition && depth == 1 {
                     return true
                 }
-                depth--
+                depth -= 1
             } else if char == "(" {
-                depth++
+                depth += 1
             }
-            index++
+            index += 1
         }
         return false
     }

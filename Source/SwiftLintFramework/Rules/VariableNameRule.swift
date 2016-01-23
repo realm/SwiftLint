@@ -60,22 +60,21 @@ public struct VariableNameRule: ASTRule, ConfigProviderRule {
 
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             let description = self.dynamicType.description
-            let location = Location(file: file, byteOffset: offset)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric " +
                             "characters: '\(name)'")]
             } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should start with a lowercase character: '\(name)'")]
             } else if let severity = severity(forLength: name.characters.count) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: severity,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should be between \(config.minLengthThreshold) " +
                                 "and \(config.maxLengthThreshold) characters long: '\(name)'")]
             }

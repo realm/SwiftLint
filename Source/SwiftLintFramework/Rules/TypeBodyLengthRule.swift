@@ -31,7 +31,6 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-            let location = Location(file: file, byteOffset: offset)
             let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
@@ -42,7 +41,7 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
                     if exceeds {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: parameter.severity,
-                            location: location,
+                            location: Location(file: file, byteOffset: offset),
                             reason: "Type body should span \(parameter.value) lines or less " +
                             "excluding comments and whitespace: currently spans \(lineCount) " +
                             "lines")]

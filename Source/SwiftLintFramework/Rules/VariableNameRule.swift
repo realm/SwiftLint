@@ -44,16 +44,15 @@ public struct VariableNameRule: ASTRule {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             let description = self.dynamicType.description
-            let location = Location(file: file, byteOffset: offset)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric characters: '\(name)'")]
             } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should start with a lowercase character: '\(name)'")]
             }
             return []

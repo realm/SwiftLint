@@ -7,7 +7,6 @@
 //
 
 import Commandant
-import Curry
 import Foundation
 import Result
 import SourceKittenFramework
@@ -40,8 +39,16 @@ struct AutoCorrectOptions: OptionsType {
     let useScriptInputFiles: Bool
 
     // swiftlint:disable:next line_length
+    static func create(path: String) -> (configurationFile: String) -> (useScriptInputFiles: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in
+            self.init(path: path, configurationFile: configurationFile,
+                      useScriptInputFiles: useScriptInputFiles)
+        }}
+    }
+
+    // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
-        return curry(self.init)
+        return create
             <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to correct")

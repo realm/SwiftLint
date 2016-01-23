@@ -1,4 +1,3 @@
 github "Carthage/Commandant"
-github "thoughtbot/Curry"
 github "jspahrsummers/xcconfigs"
 github "behrang/YamlSwift"

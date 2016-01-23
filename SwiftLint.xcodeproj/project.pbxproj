@@ -43,8 +43,6 @@
 		E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E816194D1BFBFEAB00946723 /* ForceTryRule.swift */; };
 		E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81619521BFC162C00946723 /* QueuedPrint.swift */; };
 		E81CDE711C00FEAA00B430F6 /* ValidDocsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */; };
-		E82161421C138DA900E0CF4F /* Curry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E82161411C138DA900E0CF4F /* Curry.framework */; };
-		E82161431C138DB200E0CF4F /* Curry.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E82161411C138DA900E0CF4F /* Curry.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */; };
 		E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10C1B17E725003F265F /* IntegrationTests.swift */; };
 		E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A0B341A5D382B0041A60A /* VersionCommand.swift */; };
@@ -129,7 +127,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E82161431C138DB200E0CF4F /* Curry.framework in Copy Frameworks */,
 				E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */,
 				E8BA7E141B07A400003E02D0 /* Result.framework in Copy Frameworks */,
 				E8BA7E151B07A400003E02D0 /* Commandant.framework in Copy Frameworks */,
@@ -216,7 +213,6 @@
 		E816194D1BFBFEAB00946723 /* ForceTryRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceTryRule.swift; sourceTree = "<group>"; };
 		E81619521BFC162C00946723 /* QueuedPrint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueuedPrint.swift; sourceTree = "<group>"; };
 		E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidDocsRule.swift; sourceTree = "<group>"; };
-		E82161411C138DA900E0CF4F /* Curry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Curry.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+SwiftLint.swift"; sourceTree = "<group>"; };
 		E832F10C1B17E725003F265F /* IntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
 		E83A0B341A5D382B0041A60A /* VersionCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
@@ -272,7 +268,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E82161421C138DA900E0CF4F /* Curry.framework in Frameworks */,
 				E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */,
 				E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */,
 				E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */,

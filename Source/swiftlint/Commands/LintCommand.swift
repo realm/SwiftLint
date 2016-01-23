@@ -7,7 +7,6 @@
 //
 
 import Commandant
-import Curry
 import Foundation
 import Result
 import SourceKittenFramework
@@ -64,9 +63,16 @@ struct LintOptions: OptionsType {
     let useScriptInputFiles: Bool
 
     // swiftlint:disable:next line_length
+    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
+                      strict: strict, useScriptInputFiles: useScriptInputFiles)
+        }}}}
+    }
+
+    // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
-        let curriedInitializer = curry(self.init)
-        return curriedInitializer
+        return create
             <*> mode <| Option(key: "path",
                 defaultValue: "",
                 usage: "the path to the file or directory to lint")

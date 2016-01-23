@@ -45,22 +45,21 @@ public struct TypeNameRule: ASTRule {
         }
         if let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            let location = Location(file: file, byteOffset: offset)
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
             if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Type name should only contain alphanumeric characters: '\(name)'")]
             } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: .Error,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
             } else if name.characters.count < 3 || name.characters.count > 40 {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Type name should be between 3 and 40 characters in length: '\(name)'")]
             }
         }

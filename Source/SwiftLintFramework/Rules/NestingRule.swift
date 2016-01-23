@@ -41,13 +41,13 @@ public struct NestingRule: ASTRule {
         var violations = [StyleViolation]()
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            let location = Location(file: file, byteOffset: offset)
             if level > 1 && typeKinds.contains(kind) {
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: location, reason: "Types should be nested at most 1 level deep"))
+                    location: Location(file: file, byteOffset: offset),
+                    reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: location,
+                    location: Location(file: file, byteOffset: offset),
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }

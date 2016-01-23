@@ -6,6 +6,14 @@
   `[String: SourceKitRepresentable]`.  
   [JP Simard](https://github.com/jpsim)
 
+* `VariableNameMinLengthRule` and `VariableNameMaxLengthRule` have been
+  removed. `VariableNameRule` now has this functionality.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+
+* `ViolationLevelRule` has been removed. This functionality is now provided
+  by `ConfigProviderRule` and `SeverityLevelsConfig`.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+
 ##### Enhancements
 
 * TypeBodyLengthRule now does not count comment or whitespace lines.  
@@ -15,6 +23,20 @@
 * FunctionBodyLengthRule now does not count comment or whitespace lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#258](https://github.com/realm/SwiftLint/issues/258)
+
+* All `Rule`s are now configurable in at least their severity: `SeverityConfig`  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+  [#371](https://github.com/realm/SwiftLint/issues/371)
+  [#130](https://github.com/realm/SwiftLint/issues/130)
+  [#268](https://github.com/realm/SwiftLint/issues/268)
+
+* `TypeNameRule` and `VariableNameRule` conform to `ConfigProviderRule` using
+   `NameConfig` to support `min_length`, `max_length`, and `excluded` names.  
+   [Scott Hoyt](https://github.com/scottrhoyt)
+   [#388](https://github.com/realm/SwiftLint/issues/388)
+   [#259](https://github.com/realm/SwiftLint/issues/259)
+   [#191](https://github.com/realm/SwiftLint/issues/191)
+
 
 ##### Bug Fixes
 

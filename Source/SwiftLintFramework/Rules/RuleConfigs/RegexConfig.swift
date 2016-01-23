@@ -37,7 +37,7 @@ public struct RegexConfig: RuleConfig, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        regex = try NSRegularExpression(pattern: regexString)
+        regex = try NSRegularExpression.cached(pattern: regexString)
 
         if let name = configDict["name"] as? String {
             self.name = name

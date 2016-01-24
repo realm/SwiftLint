@@ -10,10 +10,6 @@ import SwiftLintFramework
 import XCTest
 
 class ASTRuleTests: XCTestCase {
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
-    }
-
     func testVariableNames() {
         for kind in ["class", "struct"] {
             for varType in ["var", "let"] {

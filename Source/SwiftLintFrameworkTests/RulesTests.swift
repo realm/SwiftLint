@@ -1,5 +1,5 @@
 //
-//  StringRuleTests.swift
+//  RulesTests.swift
 //  SwiftLint
 //
 //  Created by JP Simard on 5/28/15.
@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class StringRuleTests: XCTestCase {
+class RulesTests: XCTestCase {
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false,
             stringDoesntViolate: false)

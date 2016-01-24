@@ -19,18 +19,18 @@ public struct LegacyConstantRule: CorrectableRule, ConfigProviderRule {
         name: "Legacy Constant",
         description: "Struct-scoped constants are preferred over legacy global constants.",
         nonTriggeringExamples: [
-            "CGRect.infinite",
-            "CGPoint.zero",
-            "CGRect.zero",
-            "CGSize.zero",
-            "CGRect.null"
+            Trigger("CGRect.infinite"),
+            Trigger("CGPoint.zero"),
+            Trigger("CGRect.zero"),
+            Trigger("CGSize.zero"),
+            Trigger("CGRect.null")
         ],
         triggeringExamples: [
-            "↓CGRectInfinite",
-            "↓CGPointZero",
-            "↓CGRectZero",
-            "↓CGSizeZero",
-            "↓CGRectNull"
+            Trigger("↓CGRectInfinite"),
+            Trigger("↓CGPointZero"),
+            Trigger("↓CGRectZero"),
+            Trigger("↓CGSizeZero"),
+            Trigger("↓CGRectNull")
         ],
         corrections: [
             "CGRectInfinite\n": "CGRect.infinite\n",

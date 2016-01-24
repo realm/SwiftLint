@@ -37,11 +37,11 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigProviderRule {
         name: "Trailing Newline",
         description: "Files should have a single trailing newline.",
         nonTriggeringExamples: [
-            "let a = 0\n"
+            Trigger("let a = 0\n")
         ],
         triggeringExamples: [
-            "let a = 0",
-            "let a = 0\n\n"
+            Trigger("let a = 0"),
+            Trigger("let a = 0\n\n")
         ],
         corrections: [
             "let a = 0": "let a = 0\n",

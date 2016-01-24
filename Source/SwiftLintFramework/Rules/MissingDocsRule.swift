@@ -88,39 +88,39 @@ public struct MissingDocsRule: ConfigurableRule, OptInRule {
         description: "Public declarations should be documented.",
         nonTriggeringExamples: [
             // public, documented using /// docs
-            "/// docs\npublic func a() {}\n",
+            Trigger("/// docs\npublic func a() {}\n"),
             // public, documented using /** docs */
-            "/** docs */\npublic func a() {}\n",
+            Trigger("/** docs */\npublic func a() {}\n"),
             // internal (implicit), undocumented
-            "func a() {}\n",
+            Trigger("func a() {}\n"),
             // internal (explicit), undocumented
-            "internal func a() {}\n",
+            Trigger("internal func a() {}\n"),
             // private, undocumented
-            "private func a() {}\n",
+            Trigger("private func a() {}\n"),
             // internal (implicit), undocumented
-            "// regular comment\nfunc a() {}\n",
+            Trigger("// regular comment\nfunc a() {}\n"),
             // internal (implicit), undocumented
-            "/* regular comment */\nfunc a() {}\n",
+            Trigger("/* regular comment */\nfunc a() {}\n"),
             // protocol member is documented, but inherited member is not
-            "/// docs\npublic protocol A {\n/// docs\nvar b: Int { get } }\n" +
-                "/// docs\npublic struct C: A {\npublic let b: Int\n}",
+            Trigger("/// docs\npublic protocol A {\n/// docs\nvar b: Int { get } }\n" +
+                "/// docs\npublic struct C: A {\npublic let b: Int\n}"),
             // locally-defined superclass member is documented, but subclass member is not
-            "/// docs\npublic class A {\n/// docs\npublic func b() {}\n}\n" +
-                "/// docs\npublic class B: A { override public func b() {} }\n",
+            Trigger("/// docs\npublic class A {\n/// docs\npublic func b() {}\n}\n" +
+                "/// docs\npublic class B: A { override public func b() {} }\n"),
             // externally-defined superclass member is documented, but subclass member is not
-            "import Foundation\n/// docs\npublic class B: NSObject {\n" +
-                "// no docs\noverride public var description: String { fatalError() } }\n"
+            Trigger("import Foundation\n/// docs\npublic class B: NSObject {\n" +
+                "// no docs\noverride public var description: String { fatalError() } }\n")
         ],
         triggeringExamples: [
             // public, undocumented
-            "public func a() {}\n",
+            Trigger("public func a() {}\n"),
             // public, undocumented
-            "// regular comment\npublic func a() {}\n",
+            Trigger("// regular comment\npublic func a() {}\n"),
             // public, undocumented
-            "/* regular comment */\npublic func a() {}\n",
+            Trigger("/* regular comment */\npublic func a() {}\n"),
             // protocol member and inherited member are both undocumented
-            "/// docs\npublic protocol A {\n// no docs\nvar b: Int { get } }\n" +
-                "/// docs\npublic struct C: A {\n\npublic let b: Int\n}"
+            Trigger("/// docs\npublic protocol A {\n// no docs\nvar b: Int { get } }\n" +
+                "/// docs\npublic struct C: A {\n\npublic let b: Int\n}")
         ]
     )
 

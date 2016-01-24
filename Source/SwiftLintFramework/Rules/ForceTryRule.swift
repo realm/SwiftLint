@@ -19,10 +19,10 @@ public struct ForceTryRule: ConfigProviderRule {
         name: "Force Try",
         description: "Force tries should be avoided.",
         nonTriggeringExamples: [
-            "func a() throws {}; do { try a() } catch {}"
+            Trigger("func a() throws {}; do { try a() } catch {}")
         ],
         triggeringExamples: [
-            "func a() throws {}; ↓try! a()"
+            Trigger("func a() throws {}; ↓try! a()")
         ]
     )
 

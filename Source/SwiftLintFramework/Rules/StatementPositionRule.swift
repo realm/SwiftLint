@@ -21,18 +21,18 @@ public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
         description: "Else and catch should be on the same line, one space after the previous " +
                      "declaration.",
         nonTriggeringExamples: [
-            "} else if {",
-            "} else {",
-            "} catch {",
-            "\"}else{\"",
-            "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
+            Trigger("} else if {"),
+            Trigger("} else {"),
+            Trigger("} catch {"),
+            Trigger("\"}else{\""),
+            Trigger("struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)"),
+            Trigger("struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)")
         ],
         triggeringExamples: [
-            "↓}else if {",
-            "}↓  else {",
-            "}↓\ncatch {",
-            "}\n\t↓  catch {"
+            Trigger("↓}else if {"),
+            Trigger("}↓  else {"),
+            Trigger("}↓\ncatch {"),
+            Trigger("}\n\t↓  catch {")
         ],
         corrections: [
             "}\n else {\n": "} else {\n",

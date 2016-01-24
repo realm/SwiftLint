@@ -25,10 +25,12 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigProviderRule {
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons.",
-        nonTriggeringExamples: [ "let a = 0\n" ],
+        nonTriggeringExamples: [
+            Trigger("let a = 0\n")
+        ],
         triggeringExamples: [
-            "let a = 0↓;\n",
-            "let a = 0↓;\nlet b = 1\n"
+            Trigger("let a = 0↓;\n"),
+            Trigger("let a = 0↓;\nlet b = 1\n")
         ],
         corrections: [
             "let a = 0;\n": "let a = 0\n",

@@ -32,15 +32,15 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
         description: "Opening braces should be preceded by a single space and on the same line " +
                      "as the declaration.",
         nonTriggeringExamples: [
-            "func abc() {\n}",
-            "[].map() { $0 }",
-            "[].map({ })"
+            Trigger("func abc() {\n}"),
+            Trigger("[].map() { $0 }"),
+            Trigger("[].map({ })")
         ],
         triggeringExamples: [
-            "func abc(↓){\n}",
-            "func abc()↓\n\t{ }",
-            "[].map(↓){ $0 }",
-            "[].map↓( { } )"
+            Trigger("func abc(↓){\n}"),
+            Trigger("func abc()↓\n\t{ }"),
+            Trigger("[].map(↓){ $0 }"),
+            Trigger("[].map↓( { } )")
         ],
         corrections: [
             "struct Rule{}\n": "struct Rule {}\n",

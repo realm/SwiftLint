@@ -10,14 +10,14 @@ public struct RuleDescription: Equatable {
     public let identifier: String
     public let name: String
     public let description: String
-    public let nonTriggeringExamples: [String]
-    public let triggeringExamples: [String]
+    public let nonTriggeringExamples: [Trigger]
+    public let triggeringExamples: [Trigger]
     public let corrections: [String: String]
 
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
     public init(identifier: String, name: String, description: String,
-        nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
+        nonTriggeringExamples: [Trigger] = [], triggeringExamples: [Trigger] = [],
         corrections: [String: String] = [:]) {
         self.identifier = identifier
         self.name = name
@@ -32,4 +32,15 @@ public struct RuleDescription: Equatable {
 
 public func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
     return lhs.identifier == rhs.identifier
+}
+
+public struct Trigger {
+    public let string: String
+    public let file: String
+    public let line: UInt
+    public init(_ string: String, file: String = __FILE__, line: Int = __LINE__) {
+        self.string = string
+        self.file = file
+        self.line = UInt(line)
+    }
 }

@@ -121,48 +121,56 @@ public struct ValidDocsRule: ConfigProviderRule {
         name: "Valid Docs",
         description: "Documented declarations should be valid.",
         nonTriggeringExamples: [
-            "/// docs\npublic func a() {}\n",
-            "/// docs\n/// - parameter param: this is void\npublic func a(param: Void) {}\n",
-            "/// docs\n/// - parameter label: this is void\npublic func a(label param: Void) {}",
-            "/// docs\n/// - parameter param: this is void\npublic func a(label param: Void) {}",
-            "/// docs\n/// - returns: false\npublic func no() -> Bool { return false }",
-            "/// Returns false\npublic func no() -> Bool { return false }",
-            "/// Returns false\nvar no: Bool { return false }",
-            "/// docs\nvar no: Bool { return false }",
-            "/// docs\n/// - throws: NSError\nfunc a() throws {}",
-            "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
-            "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too\n/// - returns: false",
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
-            "/// docs\n/// - parameter param: this is void" +
-            "\npublic func no(param: (Void -> Void)?) {}",
-            "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
-            "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
-            "/// docs\n/// - returns: tuple\npublic func no() -> (Int, Int) {return (1, 2)}",
+            Trigger("/// docs\npublic func a() {}\n"),
+            Trigger("/// docs\n/// - parameter param: this is void\n" +
+                "public func a(param: Void) {}\n"),
+            Trigger("/// docs\n/// - parameter label: this is void\n" +
+                "public func a(label param: Void) {}"),
+            Trigger("/// docs\n/// - parameter param: this is void\n" +
+                "public func a(label param: Void) {}"),
+            Trigger("/// docs\n/// - returns: false\npublic func no() -> Bool { return false }"),
+            Trigger("/// Returns false\npublic func no() -> Bool { return false }"),
+            Trigger("/// Returns false\nvar no: Bool { return false }"),
+            Trigger("/// docs\nvar no: Bool { return false }"),
+            Trigger("/// docs\n/// - throws: NSError\nfunc a() throws {}"),
+            Trigger("/// docs\n/// - parameter param: this is void\n/// - returns: false" +
+                "\npublic func no(param: (Void -> Void)?) -> Bool { return false }"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\n///- parameter param2: this is void too\n/// - returns: false"),
+            Trigger("\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool" +
+                " {return false}"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\npublic func no(param: (Void -> Void)?) {}"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\n///- parameter param2: this is void too" +
+                "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}"),
+            Trigger("/// docs👨‍👩‍👧‍👧\n/// - returns: false\n" +
+                "public func no() -> Bool { return false }"),
+            Trigger("/// docs\n" +
+                "/// - returns: tuple\npublic func no() -> (Int, Int) {return (1, 2)}"),
         ],
         triggeringExamples: [
-            "/// docs\npublic ↓func a(param: Void) {}\n",
-            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a(label param: Void) {}",
-            "/// docs\n/// - parameter invalid: this is void\npublic ↓func a() {}",
-            "/// docs\npublic ↓func no() -> Bool { return false }",
-            "/// Returns false\npublic ↓func a() {}",
-            "/// docs\n/// - throws: NSError\n↓func a() {}",
-            "/// docs\n↓func a() throws {}",
-            "/// docs\n/// - parameter param: this is void" +
-            "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }",
-            "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too" +
-            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
-            "Bool {return false}",
-            "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic ↓func no(param: (Void -> Void)?) {}",
-            "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too\n/// - returns: false" +
-            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
+            Trigger("/// docs\npublic ↓func a(param: Void) {}\n"),
+            Trigger("/// docs\n/// - parameter invalid: this is void\n" +
+                "public ↓func a(param: Void) {}"),
+            Trigger("/// docs\n/// - parameter invalid: this is void\n" +
+                "public ↓func a(label param: Void) {}"),
+            Trigger("/// docs\n/// - parameter invalid: this is void\npublic ↓func a() {}"),
+            Trigger("/// docs\npublic ↓func no() -> Bool { return false }"),
+            Trigger("/// Returns false\npublic ↓func a() {}"),
+            Trigger("/// docs\n/// - throws: NSError\n↓func a() {}"),
+            Trigger("/// docs\n↓func a() throws {}"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\n///- parameter param2: this is void too" +
+                "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
+                "Bool {return false}"),
+            Trigger("/// docs\n/// - parameter param: this is void\n/// - returns: false" +
+                "\npublic ↓func no(param: (Void -> Void)?) {}"),
+            Trigger("/// docs\n/// - parameter param: this is void" +
+                "\n///- parameter param2: this is void too\n/// - returns: false" +
+                "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}"),
         ]
     )
 

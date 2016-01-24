@@ -23,33 +23,32 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
             "func f3() {while true {}}",
         ],
         triggeringExamples: [
-            "func f1() {\nif true { if true{ if false {} }}\nif false { }\nlet i = 0\n" +
-            "switch i {\ncase 1: break\ncase 2: break\ncase3: break\ndefault: break\n}\n" +
-            "for _ in 1...5 { guard true else { return } }}"
+            "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
+                "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
+                "  case 2: break\n  case 3: break\n  default: break\n  }\n\n" +
+                "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"
         ]
     )
 
-    public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
-            if !functionKinds.contains(kind) {
-                return []
-            }
-
-            let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-            let complexity = measureComplexity(substructure) + 1
-
-            for parameter in config.params where complexity > parameter.value {
-                let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: parameter.severity,
-                    location: Location(file: file, characterOffset: offset),
-                    reason: "Function should have complexity \(config.warning) or less: " +
-                    "currently complexity equals \(complexity)")]
-            }
-
+    public func validateFile(file: File, kind: SwiftDeclarationKind,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        if !functionKinds.contains(kind) {
             return []
+        }
+
+        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
+        let complexity = measureComplexity(substructure) + 1
+
+        for parameter in config.params where complexity > parameter.value {
+            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            return [StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: parameter.severity,
+                location: Location(file: file, characterOffset: offset),
+                reason: "Function should have complexity \(config.warning) or less: " +
+                        "currently complexity equals \(complexity)")]
+        }
+
+        return []
     }
 
     private func measureComplexity(substructure: [SourceKitRepresentable]) -> Int {
@@ -57,7 +56,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
 
         for s in substructure {
             guard let subItem = s as? [String: SourceKitRepresentable],
-            let key = subItem["key.kind"] as? String else {
+                      key = subItem["key.kind"] as? String else {
                 continue
             }
 

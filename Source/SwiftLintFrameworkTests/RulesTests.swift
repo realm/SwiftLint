@@ -10,121 +10,121 @@ import SwiftLintFramework
 import XCTest
 
 class RulesTests: XCTestCase {
-    func testClosingBraceRule() {
+    func testClosingBrace() {
         verifyRule(ClosingBraceRule.description)
     }
 
-    func testColonRule() {
+    func testColon() {
         verifyRule(ColonRule.description)
     }
 
-    func testCommaRule() {
+    func testComma() {
         verifyRule(CommaRule.description)
     }
 
-    func testConditionalBindingCascadeRule() {
+    func testConditionalBindingCascade() {
         verifyRule(ConditionalBindingCascadeRule.description)
     }
 
-    func testControlStatementRule() {
+    func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
 
-    func testCyclomaticComplexityRule() {
+    func testCyclomaticComplexity() {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
-    func testEmptyCountRule() {
+    func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }
 
-    func testFileLengthRule() {
+    func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false)
     }
 
-    func testForceCastRule() {
+    func testForceCast() {
         verifyRule(ForceCastRule.description)
     }
 
-    func testForceTryRule() {
+    func testForceTry() {
         verifyRule(ForceTryRule.description)
     }
 
-    func testFunctionBodyLengthRule() {
+    func testFunctionBodyLength() {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
-    func testLeadingWhitespaceRule() {
+    func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description)
     }
 
-    func testLegacyConstantRule() {
+    func testLegacyConstant() {
         verifyRule(LegacyConstantRule.description)
     }
 
-    func testLegacyConstructorRule() {
+    func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
     }
 
-    func testLineLengthRule() {
+    func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false,
             stringDoesntViolate: false)
     }
 
-    func testMissingDocsRule() {
+    func testMissingDocs() {
         verifyRule(MissingDocsRule.description)
     }
 
-    func testNestingRule() {
+    func testNesting() {
         verifyRule(NestingRule.description)
     }
 
-    func testOpeningBraceRule() {
+    func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }
 
-    func testOperatorFunctionWhitespaceRule() {
+    func testOperatorFunctionWhitespace() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 
-    func testReturnArrowWhitespaceRule() {
+    func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 
-    func testStatementPositionRule() {
+    func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
     }
 
-    func testTodoRule() {
+    func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
-    func testTrailingNewlineRule() {
+    func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
             stringDoesntViolate: false)
     }
 
-    func testTrailingSemicolonRule() {
+    func testTrailingSemicolon() {
         verifyRule(TrailingSemicolonRule.description)
     }
 
-    func testTrailingWhitespaceRule() {
+    func testTrailingWhitespace() {
         verifyRule(TrailingWhitespaceRule.description, commentDoesntViolate: false)
     }
 
-    func testTypeBodyLengthRule() {
+    func testTypeBodyLength() {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeNameRule() {
+    func testTypeName() {
         verifyRule(TypeNameRule.description)
     }
 
-    func testValidDocsRule() {
+    func testValidDocs() {
         verifyRule(ValidDocsRule.description)
     }
 
-    func testVariableNameRule() {
+    func testVariableName() {
         verifyRule(VariableNameRule.description)
     }
 }

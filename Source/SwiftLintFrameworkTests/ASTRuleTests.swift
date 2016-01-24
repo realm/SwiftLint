@@ -10,21 +10,8 @@ import SwiftLintFramework
 import XCTest
 
 class ASTRuleTests: XCTestCase {
-    func testTypeNames() {
+    func testTypeName() {
         verifyRule(TypeNameRule.description)
-    }
-
-    func testNestedTypeNames() {
-        XCTAssertEqual(violations("class Abc {\n    class Def {}\n}\n"), [])
-        XCTAssertEqual(violations("class Abc {\n    class def\n}\n"),
-            [
-                StyleViolation(
-                    ruleDescription: TypeNameRule.description,
-                    severity: .Error,
-                    location: Location(file: nil, line: 2, character: 5),
-                    reason: "Type name should start with an uppercase character: 'def'")
-            ]
-        )
     }
 
     func testVariableNames() {

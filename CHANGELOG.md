@@ -1,4 +1,4 @@
-## Master
+## 0.7.0: Automatic Permanent Press
 
 ##### Breaking
 

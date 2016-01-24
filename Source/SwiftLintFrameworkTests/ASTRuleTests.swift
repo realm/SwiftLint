@@ -141,31 +141,42 @@ class ASTRuleTests: XCTestCase {
     }
 
     func testTypeBodyLengths() {
+        let identifier = TypeBodyLengthRule.description.identifier
+        let disabledRules = allRuleIdentifiers.filter { $0 != identifier }
+        let enabledRules = allRuleIdentifiers.filter { $0 == identifier }
+        let config = Configuration(disabledRules: disabledRules, enabledRules: enabledRules)!
+
+        func typeBodyLengthViolations(string: String) -> [StyleViolation] {
+            return violations(string, config: config)
+        }
+
+        let expectedViolations = [StyleViolation(
+            ruleDescription: TypeBodyLengthRule.description,
+            location: Location(file: nil, line: 1, character: 1),
+            reason: "Type body should span 200 lines or less excluding comments and " +
+            "whitespace: currently spans 201 lines")]
+
         for kind in ["class", "struct", "enum"] {
             let longTypeBody = typeWithKind(kind, body:
                 Repeat(count: 199, repeatedValue: "let abc = 0\n").joinWithSeparator(""))
-            XCTAssertEqual(violations(longTypeBody), [])
+            XCTAssertEqual(typeBodyLengthViolations(longTypeBody), [])
             let longerTypeBody = typeWithKind(kind, body:
                 Repeat(count: 201, repeatedValue: "let abc = 0\n").joinWithSeparator(""))
-            XCTAssertEqual(violations(longerTypeBody), [StyleViolation(
-                ruleDescription: TypeBodyLengthRule.description,
-                location: Location(file: nil, line: 1, character: 1),
-                reason: "Type body should span 200 lines or less excluding comments and " +
-                "whitespace: currently spans 201 lines")])
+            XCTAssertEqual(typeBodyLengthViolations(longerTypeBody), expectedViolations)
 
             let longerTypeBodyWithWhitespaceLines = typeWithKind(kind, body:
                 Repeat(count: 201, repeatedValue: "\n").joinWithSeparator(""))
-            XCTAssertEqual(violations(longerTypeBodyWithWhitespaceLines), [])
+            XCTAssertEqual(typeBodyLengthViolations(longerTypeBodyWithWhitespaceLines), [])
 
             let longerTypeBodyWithCommentedLines = typeWithKind(kind, body:
                 Repeat(count: 201, repeatedValue: "// this is a comment\n").joinWithSeparator(""))
-            XCTAssertEqual(violations(longerTypeBodyWithCommentedLines), [])
+            XCTAssertEqual(typeBodyLengthViolations(longerTypeBodyWithCommentedLines), [])
 
             let longerTypeBodyWithMultilineComments = typeWithKind(kind, body:
                 Repeat(count: 199, repeatedValue: "let abc = 0\n").joinWithSeparator("") +
                 "/* this is\n" +
                 "a multiline comment\n*/")
-            XCTAssertEqual(violations(longerTypeBodyWithMultilineComments), [])
+            XCTAssertEqual(violations(longerTypeBodyWithMultilineComments, config: config), [])
         }
     }
 

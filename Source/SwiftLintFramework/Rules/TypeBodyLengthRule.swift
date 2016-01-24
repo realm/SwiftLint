@@ -8,6 +8,11 @@
 
 import SourceKittenFramework
 
+private func example(type: String, _ template: String, _ count: Int, _ add: String = "") -> String {
+    return "\(type) Abc {\n" +
+        Repeat(count: count, repeatedValue: template).joinWithSeparator("") + "\(add)}\n"
+}
+
 public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
     public var config = SeverityLevelsConfig(warning: 200, error: 350)
 
@@ -16,7 +21,18 @@ public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
     public static let description = RuleDescription(
         identifier: "type_body_length",
         name: "Type Body Length",
-        description: "Type bodies should not span too many lines."
+        description: "Type bodies should not span too many lines.",
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
+            [
+                example(type, "let abc = 0\n", 199),
+                example(type, "\n", 201),
+                example(type, "// this is a comment\n", 201),
+                example(type, "let abc = 0\n", 199, "\n/* this is\na multiline comment\n*/\n")
+            ]
+        }),
+        triggeringExamples: ["class", "struct", "enum"].map({ type in
+            example(type, "let abc = 0\n", 201)
+        })
     )
 
     public func validateFile(file: File,

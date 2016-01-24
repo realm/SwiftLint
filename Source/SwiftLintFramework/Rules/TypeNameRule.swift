@@ -23,16 +23,22 @@ public struct TypeNameRule: ASTRule, ConfigProviderRule {
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: [
-            "struct MyStruct {}",
-            "private struct _MyStruct {}"
-        ],
-        triggeringExamples: [
-            "↓struct myStruct {}",
-            "↓struct _MyStruct {}",
-            "private ↓struct MyStruct_ {}",
-            "↓struct My {}"
-        ]
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
+            [
+                "\(type) MyType {}",
+                "private \(type) _MyType {}",
+                "\(type) " + Repeat(count: 40, repeatedValue: "A").joinWithSeparator("") + " {}"
+            ]
+        }),
+        triggeringExamples: ["class", "struct", "enum"].flatMap({ type in
+            [
+                "↓\(type) myType {}",
+                "↓\(type) _MyType {}",
+                "private ↓\(type) MyType_ {}",
+                "↓\(type) My {}",
+                "↓\(type) " + Repeat(count: 41, repeatedValue: "A").joinWithSeparator("") + " {}"
+            ]
+        })
     )
 
     public func validateFile(file: File,

@@ -10,6 +10,30 @@ import SwiftLintFramework
 import XCTest
 
 class RulesTests: XCTestCase {
+    func testTypeBodyLength() {
+        verifyRule(TypeBodyLengthRule.description)
+    }
+
+    func testTypeName() {
+        verifyRule(TypeNameRule.description)
+    }
+
+    func testVariableName() {
+        verifyRule(VariableNameRule.description)
+    }
+
+    func testNesting() {
+        verifyRule(NestingRule.description)
+    }
+
+    func testControlStatement() {
+        verifyRule(ControlStatementRule.description)
+    }
+
+    func testCyclomaticComplexity() {
+        verifyRule(CyclomaticComplexityRule.description)
+    }
+
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false,
             stringDoesntViolate: false)

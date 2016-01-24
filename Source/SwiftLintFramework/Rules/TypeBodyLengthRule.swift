@@ -8,9 +8,8 @@
 
 import SourceKittenFramework
 
-public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
-    public var warning = RuleParameter(severity: .Warning, value: 200)
-    public var error = RuleParameter(severity: .Error, value: 350)
+public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
+    public var config = SeverityLevelsConfig(warning: 200, error: 350)
 
     public init() {}
 
@@ -34,7 +33,7 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in [error, warning] {
+                for parameter in config.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                                                                 startLine, endLine, parameter.value)
                     if exceeds {
@@ -45,7 +44,6 @@ public struct TypeBodyLengthRule: ASTRule, ViolationLevelRule {
                             "excluding comments and whitespace: currently spans \(lineCount) " +
                             "lines")]
                     }
-
                 }
             }
         }

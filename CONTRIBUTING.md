@@ -22,36 +22,55 @@ those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
 over time.
 
-### `ConfigurableRule`
+### `ConfigProviderRule`
 
 If your rule supports user-configurable options via `.swiftlint.yml`, you can
-accomplish this by conforming to `ConfigurableRule`:
+accomplish this by conforming to `ConfigProviderRule`. You must provide a
+configuration object via the `config` property:
 
-* `init?(config: AnyObject)` will be passed the result of parsing the value
-  from `.swiftlint.yml` associated with your rule's `identifier` as a key (if
-  present).
-* `config` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
-  `Dictionary`, etc.).
-* This initializer must fail if it does not understand the configuration, or
-  it cannot be fully initialized with the configuration.
-* If this initializer fails, your rule will be initialized with its default
-  values by calling `init()`.
+* The object provided must conform to `RuleConfig`.
+* There are several provided `RuleConfig`s that cover the common patterns like
+  configuring violation severity, violation severity levels, and evaluating
+  names.
+* If none of the provided `RuleConfig`s are applicable, you can create one
+  specifically for your rule.
 
-See [VariableNameMinLengthRule](https://github.com/realm/SwiftLint/blob/647371517e57de3499a77781e45f181605b21045/Source/SwiftLintFramework/Rules/VariableNameMinLengthRule.swift)
-for an example that supports the following configurations:
+See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
+for a rule that allows severity configuration,
+[`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/FileLengthRule.swift)
+for a rule that has multiple severity levels,
+[`VariableNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/VariableNameRule.swift)
+for a rule that allows name evaluation configuration:
 
 ``` yaml
-variable_name_min_length: 3
+force_cast: warning
 
-variable_name_min_length:
-  - 3
-  - 2
+file_length:
+  warning: 800
+  error: 1200
 
-variable_name_min_length:
-  warning: 3
-  error: 2
+variable_name:
+  min_length:
+    warning: 3
+    error: 2
+  max_length: 20
   excluded: id
 ```
+
+If your rule is configurable, but does not fit the pattern of
+`ConfigProviderRule`, you can conform directly to `ConfigurableRule`:
+
+* `init(config: AnyObject) throws` will be passed the result of parsing the
+  value from `.swiftlint.yml` associated with your rule's `identifier` as a key
+  (if present).
+* `config` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
+  `Dictionary`, etc.).
+* This initializer must throw if it does not understand the configuration, or
+  it cannot be fully initialized with the configuration and default values.
+* By convention, a failing initializer throws
+  `ConfigurationError.UnknownConfiguration`
+* If this initializer fails, your rule will be initialized with its default
+  values by calling `init()`.
 
 ## Tracking changes
 

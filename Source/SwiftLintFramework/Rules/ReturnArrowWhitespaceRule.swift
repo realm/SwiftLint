@@ -9,7 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ReturnArrowWhitespaceRule: Rule {
+public struct ReturnArrowWhitespaceRule: ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -47,6 +49,7 @@ public struct ReturnArrowWhitespaceRule: Rule {
         let pattern = "\\)(\(spaceRegex)\\->\\s*|\\s\\->\(spaceRegex))\\S+"
         return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

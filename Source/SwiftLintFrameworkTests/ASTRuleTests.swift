@@ -33,7 +33,7 @@ class ASTRuleTests: XCTestCase {
             XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(
                 ruleDescription: TypeNameRule.description,
                 location: Location(file: nil, line: 1, character: 1),
-                reason: "Type name should be between 3 and 40 characters in length: 'Ab'")])
+                reason: "Type name should be between 3 and 40 characters long: 'Ab'")])
 
             let longName = Repeat(count: 40, repeatedValue: "A").joinWithSeparator("")
             XCTAssertEqual(violations("\(kind) \(longName) {}\n"), [])
@@ -42,7 +42,7 @@ class ASTRuleTests: XCTestCase {
                 StyleViolation(
                     ruleDescription: TypeNameRule.description,
                     location: Location(file: nil, line: 1, character: 1),
-                    reason: "Type name should be between 3 and 40 characters in length: " +
+                    reason: "Type name should be between 3 and 40 characters long: " +
                     "'\(longerName)'")
                 ])
         }
@@ -93,22 +93,22 @@ class ASTRuleTests: XCTestCase {
                 let longerName = longName + "d"
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longerName): Void }\n"), [
                     StyleViolation(
-                        ruleDescription: VariableNameMaxLengthRule.description,
+                        ruleDescription: VariableNameRule.description,
                         severity: .Warning,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be 40 characters or less: currently " +
-                        "41 characters")
+                        reason: "Variable name should be between 3 and " +
+                                "40 characters long: '\(longerName)'")
                     ])
 
                 let longestName = Repeat(count: 60, repeatedValue: "d").joinWithSeparator("")
                     + "d"
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) \(longestName): Void }\n"), [
                     StyleViolation(
-                        ruleDescription: VariableNameMaxLengthRule.description,
+                        ruleDescription: VariableNameRule.description,
                         severity: .Error,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be 60 characters or less: currently " +
-                        "61 characters")
+                        reason: "Variable name should be between 3 and " +
+                                "40 characters long: '\(longestName)'")
                     ])
             }
         }
@@ -121,20 +121,20 @@ class ASTRuleTests: XCTestCase {
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) def: Void }\n"), [])
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) d: Void }\n"), [
                     StyleViolation(
-                        ruleDescription: VariableNameMinLengthRule.description,
+                        ruleDescription: VariableNameRule.description,
                         severity: .Error,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be 2 characters or more: currently " +
-                        "1 characters")
+                        reason: "Variable name should be between 3 and " +
+                                "40 characters long: 'd'")
                     ])
 
                 XCTAssertEqual(violations("\(kind) Abc { \(varType) de: Void }\n"), [
                     StyleViolation(
-                        ruleDescription: VariableNameMinLengthRule.description,
+                        ruleDescription: VariableNameRule.description,
                         severity: .Warning,
                         location: Location(file: nil, line: 1, character: characterOffset),
-                        reason: "Variable name should be 3 characters or more: currently " +
-                        "2 characters")
+                        reason: "Variable name should be between 3 and " +
+                                "40 characters long: 'de'")
                     ])
             }
         }
@@ -175,14 +175,6 @@ class ASTRuleTests: XCTestCase {
 
     func testVariableNamesVerifyRule() {
         verifyRule(VariableNameRule.description)
-    }
-
-    func testVariableNameMaxLengthsVerifyRule() {
-        verifyRule(VariableNameMaxLengthRule.description)
-    }
-
-    func testVariableNameMinLengthsVerifyRule() {
-        verifyRule(VariableNameMinLengthRule.description)
     }
 
     func testNesting() {

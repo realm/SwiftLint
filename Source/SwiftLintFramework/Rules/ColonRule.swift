@@ -9,7 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ColonRule: CorrectableRule {
+public struct ColonRule: CorrectableRule, ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -85,7 +87,8 @@ public struct ColonRule: CorrectableRule {
 
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, characterOffset: range.location))
+                                  severity: config.severity,
+                                  location: Location(file: file, characterOffset: range.location))
         }
     }
 

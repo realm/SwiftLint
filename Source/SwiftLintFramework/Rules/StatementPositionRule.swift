@@ -9,7 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StatementPositionRule: CorrectableRule {
+public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -44,6 +46,7 @@ public struct StatementPositionRule: CorrectableRule {
 
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: range.location))
         }
     }

@@ -9,7 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalBindingCascadeRule: Rule {
+public struct ConditionalBindingCascadeRule: ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -43,7 +45,8 @@ public struct ConditionalBindingCascadeRule: Rule {
                 !(file.contents as NSString).substringWithRange($0).containsString("where")
             }.map {
                 StyleViolation(ruleDescription: self.dynamicType.description,
-                    location: Location(file: file, characterOffset: $0.location))
+                               severity: config.severity,
+                               location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

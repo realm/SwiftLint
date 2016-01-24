@@ -9,7 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeNameRule: ASTRule {
+public struct TypeNameRule: ASTRule, ConfigProviderRule {
+
+    public var config = NameConfig(minLengthWarning: 3,
+                                   minLengthError: 0,
+                                   maxLengthWarning: 40,
+                                   maxLengthError: 1000)
 
     public init() {}
 
@@ -43,7 +48,7 @@ public struct TypeNameRule: ASTRule {
         if !typeKinds.contains(kind) {
             return []
         }
-        if let name = dictionary["key.name"] as? String,
+        if let name = dictionary["key.name"] as? String where !config.excluded.contains(name),
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
@@ -57,10 +62,12 @@ public struct TypeNameRule: ASTRule {
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
-            } else if name.characters.count < 3 || name.characters.count > 40 {
+            } else if let severity = severity(forLength: name.characters.count) {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
+                    severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should be between 3 and 40 characters in length: '\(name)'")]
+                    reason: "Type name should be between \(config.minLengthThreshold) and " +
+                            "\(config.maxLengthThreshold) characters long: '\(name)'")]
             }
         }
         return []

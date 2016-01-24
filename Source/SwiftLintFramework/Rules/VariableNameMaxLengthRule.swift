@@ -8,9 +8,8 @@
 
 import SourceKittenFramework
 
-public struct VariableNameMaxLengthRule: ASTRule, ViolationLevelRule {
-    public var warning = RuleParameter(severity: .Warning, value: 40)
-    public var error = RuleParameter(severity: .Error, value: 60)
+public struct VariableNameMaxLengthRule: ASTRule, ConfigurationProviderRule {
+    public var configuration = RuleLevelsConfig(warning: 40, error: 60)
 
     public init() {}
 
@@ -34,7 +33,7 @@ public struct VariableNameMaxLengthRule: ASTRule, ViolationLevelRule {
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             let charCount = name.characters.count
-            for parameter in [error, warning] where charCount > parameter.value {
+            for parameter in configuration.params where charCount > parameter.value {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
                     location: Location(file: file, byteOffset: offset),

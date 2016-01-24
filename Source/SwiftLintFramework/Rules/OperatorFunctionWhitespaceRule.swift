@@ -8,7 +8,9 @@
 
 import SourceKittenFramework
 
-public struct OperatorFunctionWhitespaceRule: Rule {
+public struct OperatorFunctionWhitespaceRule: ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -43,6 +45,7 @@ public struct OperatorFunctionWhitespaceRule: Rule {
             return syntaxKinds.first == .Keyword
         }.map { range, _ in
             return StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: range.location))
         }
     }

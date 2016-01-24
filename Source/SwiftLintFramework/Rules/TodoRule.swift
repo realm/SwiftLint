@@ -15,7 +15,9 @@ extension SyntaxKind {
     }
 }
 
-public struct TodoRule: Rule {
+public struct TodoRule: ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -45,6 +47,7 @@ public struct TodoRule: Rule {
                 return nil
             }
             return StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: range.location))
         }
     }

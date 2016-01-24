@@ -16,7 +16,13 @@ public struct FileLengthRule: ConfigProviderRule {
     public static let description = RuleDescription(
         identifier: "file_length",
         name: "File Line Length",
-        description: "Files should not span too many lines."
+        description: "Files should not span too many lines.",
+        nonTriggeringExamples: [
+            Repeat(count: 400, repeatedValue: "//\n").joinWithSeparator("")
+        ],
+        triggeringExamples: [
+            Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator("")
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

@@ -15,22 +15,8 @@ class StringRuleTests: XCTestCase {
             stringDoesntViolate: false)
     }
 
-    func testFileLengths() {
-        XCTAssertEqual(
-            violations(Repeat(count: 400, repeatedValue: "//\n").joinWithSeparator("")),
-            []
-        )
-        let testCases: [(String, Int, ViolationSeverity)] = [
-            (Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator(""), 401, .Warning),
-            (Repeat(count: 1001, repeatedValue: "//\n").joinWithSeparator(""), 1001, .Error)
-        ]
-        for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0), [StyleViolation(
-                ruleDescription: FileLengthRule.description,
-                severity: testCase.2,
-                location: Location(file: nil, line: testCase.1),
-                reason: "File should contain 400 lines or less: currently contains \(testCase.1)")])
-        }
+    func testFileLength() {
+        verifyRule(FileLengthRule.description, commentDoesntViolate: false)
     }
 
     func testFileShouldntStartWithWhitespace() {

@@ -1,5 +1,5 @@
 //
-//  RuleConfigurationsTests.swift
+//  RuleConfigTests.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/20/16.

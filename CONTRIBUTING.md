@@ -35,7 +35,7 @@ configuration object via the `config` property:
 * If none of the provided `RuleConfig`s are applicable, you can create one
   specifically for your rule.
 
-See [`ForceTryRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
+See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
 for a rule that allows severity configuration,
 [`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/FileLengthRule.swift)
 for a rule that has multiple severity levels,
@@ -43,7 +43,7 @@ for a rule that has multiple severity levels,
 for a rule that allows name evaluation configuration:
 
 ``` yaml
-force_try: warning
+force_cast: warning
 
 file_length:
   warning: 800
@@ -71,7 +71,7 @@ If your rule is configurable, but does not fit the pattern of
   `ConfigurationError.UnknownConfiguration`
 * If this initializer fails, your rule will be initialized with its default
   values by calling `init()`.
-  
+
 ## Tracking changes
 
 All changes should be made via pull requests on GitHub.

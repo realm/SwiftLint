@@ -16,11 +16,11 @@
 
 ##### Enhancements
 
-* TypeBodyLengthRule now does not count comment or whitespace lines.  
+* `TypeBodyLengthRule` now does not count comment or whitespace lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#369](https://github.com/realm/SwiftLint/issues/369)
 
-* FunctionBodyLengthRule now does not count comment or whitespace lines.  
+* `FunctionBodyLengthRule` now does not count comment or whitespace lines.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#258](https://github.com/realm/SwiftLint/issues/258)
 
@@ -36,6 +36,9 @@
   [#388](https://github.com/realm/SwiftLint/issues/388)
   [#259](https://github.com/realm/SwiftLint/issues/259)
   [#191](https://github.com/realm/SwiftLint/issues/191)
+
+* Add `CyclomaticComplexityRule`.  
+  [Denis Lebedev](https://github.com/garnett)
 
 ##### Bug Fixes
 

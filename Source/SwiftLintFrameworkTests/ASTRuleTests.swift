@@ -184,4 +184,8 @@ class ASTRuleTests: XCTestCase {
     func testControlStatements() {
         verifyRule(ControlStatementRule.description)
     }
+
+    func testCyclomaticComplexity() {
+        verifyRule(CyclomaticComplexityRule.description)
+    }
 }

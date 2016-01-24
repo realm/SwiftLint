@@ -19,7 +19,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
         name: "Cyclomatic Complexity",
         description: "Complexity of function bodies should be limited.",
         nonTriggeringExamples: [
-            "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}"
+            "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
+            "func f3() {while true {}}",
         ],
         triggeringExamples: [
             "func f1() {\nif true { if true{ if false {} }}\nif false { }\nlet i = 0\n" +
@@ -32,63 +33,72 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
         kind: SwiftDeclarationKind,
         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-            let functionKinds: [SwiftDeclarationKind] = [
-                .FunctionAccessorAddress,
-                .FunctionAccessorDidset,
-                .FunctionAccessorGetter,
-                .FunctionAccessorMutableaddress,
-                .FunctionAccessorSetter,
-                .FunctionAccessorWillset,
-                .FunctionConstructor,
-                .FunctionDestructor,
-                .FunctionFree,
-                .FunctionMethodClass,
-                .FunctionMethodInstance,
-                .FunctionMethodStatic,
-                .FunctionOperator,
-                .FunctionSubscript
-            ]
             if !functionKinds.contains(kind) {
                 return []
             }
 
             let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-            let complexity = measureComplexity(substructure)
+            let complexity = measureComplexity(substructure) + 1
 
-            for parameter in config.params where complexity >= parameter.value {
+            for parameter in config.params where complexity > parameter.value {
                 let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
                     location: Location(file: file, characterOffset: offset),
                     reason: "Function should have complexity \(config.warning) or less: " +
-                    "currently complexity equal \(complexity)")]
+                    "currently complexity equals \(complexity)")]
             }
 
             return []
     }
 
-    private func measureComplexity(substructure: [SourceKitRepresentable], count: Int = 0) -> Int {
+    private func measureComplexity(substructure: [SourceKitRepresentable]) -> Int {
+        var complexity = 0
 
-        let statements = [
-            "source.lang.swift.stmt.foreach",
-            "source.lang.swift.stmt.if",
-            "source.lang.swift.stmt.switch",
-            "source.lang.swift.stmt.case",
-            "source.lang.swift.stmt.guard"
-        ]
-
-        var counter = count
-
-        for e in substructure {
-            let v = e as? [String: SourceKitRepresentable] ?? [:]
-
-            if let key = v["key.kind"] as? String where statements.contains(key) {
-                counter++
+        for s in substructure {
+            guard let subItem = s as? [String: SourceKitRepresentable],
+            let key = subItem["key.kind"] as? String else {
+                continue
             }
-            counter += measureComplexity(v["key.substructure"] as? [SourceKitRepresentable] ?? [])
+
+            if complexityStatements.contains(key) {
+                complexity++
+            }
+
+            if let subSubItem = subItem["key.substructure"] as? [SourceKitRepresentable] {
+                complexity += measureComplexity(subSubItem)
+            }
         }
 
-        return counter
+        return complexity
     }
+
+    private let complexityStatements = [
+        "source.lang.swift.stmt.foreach",
+        "source.lang.swift.stmt.if",
+        "source.lang.swift.stmt.switch",
+        "source.lang.swift.stmt.case",
+        "source.lang.swift.stmt.guard",
+        "source.lang.swift.stmt.for",
+        "source.lang.swift.stmt.repeatwhile",
+        "source.lang.swift.stmt.while"
+    ]
+
+    private let functionKinds: [SwiftDeclarationKind] = [
+        .FunctionAccessorAddress,
+        .FunctionAccessorDidset,
+        .FunctionAccessorGetter,
+        .FunctionAccessorMutableaddress,
+        .FunctionAccessorSetter,
+        .FunctionAccessorWillset,
+        .FunctionConstructor,
+        .FunctionDestructor,
+        .FunctionFree,
+        .FunctionMethodClass,
+        .FunctionMethodInstance,
+        .FunctionMethodStatic,
+        .FunctionOperator,
+        .FunctionSubscript
+    ]
 
 }

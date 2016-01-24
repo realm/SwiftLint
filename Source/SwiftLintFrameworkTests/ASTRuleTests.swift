@@ -121,11 +121,11 @@ class ASTRuleTests: XCTestCase {
         }
     }
 
-    func testTypeNamesVerifyRule() {
+    func testTypeName() {
         verifyRule(TypeNameRule.description)
     }
 
-    func testVariableNamesVerifyRule() {
+    func testVariableName() {
         verifyRule(VariableNameRule.description)
     }
 
@@ -133,7 +133,7 @@ class ASTRuleTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
-    func testControlStatements() {
+    func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
 

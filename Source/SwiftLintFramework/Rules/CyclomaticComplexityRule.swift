@@ -52,24 +52,18 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
     }
 
     private func measureComplexity(substructure: [SourceKitRepresentable]) -> Int {
-        var complexity = 0
-
-        for s in substructure {
-            guard let subItem = s as? [String: SourceKitRepresentable],
-                      key = subItem["key.kind"] as? String else {
-                continue
+        return substructure.reduce(0) { complexity, subItem in
+            guard let subDict = subItem as? [String: SourceKitRepresentable],
+                      key = subDict["key.kind"] as? String else {
+                return complexity
             }
-
-            if complexityStatements.contains(key) {
-                complexity++
+            if let subSubItem = subDict["key.substructure"] as? [SourceKitRepresentable] {
+                return complexity +
+                    Int(complexityStatements.contains(key)) +
+                    measureComplexity(subSubItem)
             }
-
-            if let subSubItem = subItem["key.substructure"] as? [SourceKitRepresentable] {
-                complexity += measureComplexity(subSubItem)
-            }
+            return complexity + Int(complexityStatements.contains(key))
         }
-
-        return complexity
     }
 
     private let complexityStatements = [

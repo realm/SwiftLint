@@ -24,14 +24,14 @@ public struct TypeNameRule: ASTRule, ConfigProviderRule {
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
-            return [
+            [
                 "\(type) MyType {}",
                 "private \(type) _MyType {}",
                 "\(type) " + Repeat(count: 40, repeatedValue: "A").joinWithSeparator("") + " {}"
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].flatMap({ type in
-            return [
+            [
                 "↓\(type) myType {}",
                 "↓\(type) _MyType {}",
                 "private ↓\(type) MyType_ {}",

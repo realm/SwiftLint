@@ -9,43 +9,9 @@
 import SwiftLintFramework
 import XCTest
 
-private func typeWithKind(kind: String, body: String) -> String {
-    return "\(kind) Abc {\n\(body)}\n"
-}
-
 class ASTRuleTests: XCTestCase {
     func testTypeNames() {
-        for kind in ["class", "struct", "enum"] {
-            XCTAssertEqual(violations("\(kind) Abc {}\n"), [])
-
-            XCTAssertEqual(violations("\(kind) Ab_ {}\n"), [StyleViolation(
-                ruleDescription: TypeNameRule.description,
-                severity: .Error,
-                location: Location(file: nil, line: 1, character: 1),
-                reason: "Type name should only contain alphanumeric characters: 'Ab_'")])
-
-            XCTAssertEqual(violations("\(kind) abc {}\n"), [StyleViolation(
-                ruleDescription: TypeNameRule.description,
-                severity: .Error,
-                location: Location(file: nil, line: 1, character: 1),
-                reason: "Type name should start with an uppercase character: 'abc'")])
-
-            XCTAssertEqual(violations("\(kind) Ab {}\n"), [StyleViolation(
-                ruleDescription: TypeNameRule.description,
-                location: Location(file: nil, line: 1, character: 1),
-                reason: "Type name should be between 3 and 40 characters long: 'Ab'")])
-
-            let longName = Repeat(count: 40, repeatedValue: "A").joinWithSeparator("")
-            XCTAssertEqual(violations("\(kind) \(longName) {}\n"), [])
-            let longerName = longName + "A"
-            XCTAssertEqual(violations("\(kind) \(longerName) {}\n"), [
-                StyleViolation(
-                    ruleDescription: TypeNameRule.description,
-                    location: Location(file: nil, line: 1, character: 1),
-                    reason: "Type name should be between 3 and 40 characters long: " +
-                    "'\(longerName)'")
-                ])
-        }
+        verifyRule(TypeNameRule.description)
     }
 
     func testNestedTypeNames() {
@@ -141,6 +107,9 @@ class ASTRuleTests: XCTestCase {
     }
 
     func testTypeBodyLengths() {
+        func typeWithKind(kind: String, body: String) -> String {
+            return "\(kind) Abc {\n\(body)}\n"
+        }
         for kind in ["class", "struct", "enum"] {
             let longTypeBody = typeWithKind(kind, body:
                 Repeat(count: 199, repeatedValue: "let abc = 0\n").joinWithSeparator(""))

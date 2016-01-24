@@ -19,11 +19,13 @@ public struct NestingRule: ASTRule, ConfigProviderRule {
         name: "Nesting",
         description: "Types should be nested at most 1 level deep, " +
         "and statements should be nested at most 5 levels deep.",
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in [
-            Trigger("\(kind) Class0 { \(kind) Class1 {} }\n"),
+        nonTriggeringExamples: ["class", "struct", "enum"].map { kind in
+            Trigger("\(kind) Class0 { \(kind) Class1 {} }\n")
+        } + [
             Trigger("func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\n" +
-                "func func4() { func func5() {\n}\n}\n}\n}\n}\n}\n")]
-        } + [Trigger("enum Enum0 { enum Enum1 { case Case } }")],
+                "func func4() { func func5() {\n}\n}\n}\n}\n}\n}\n"),
+            Trigger("enum Enum0 { enum Enum1 { case Case } }")
+        ],
         triggeringExamples: ["class", "struct", "enum"].map { kind in
             Trigger("\(kind) A { \(kind) B { ↓\(kind) C {} } }\n")
         } + [

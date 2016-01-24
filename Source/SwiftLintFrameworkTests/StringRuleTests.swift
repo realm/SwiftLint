@@ -10,21 +10,9 @@ import SwiftLintFramework
 import XCTest
 
 class StringRuleTests: XCTestCase {
-    func testLineLengths() {
-        let longLine = Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n"
-        XCTAssertEqual(violations(longLine), [])
-        let testCases: [(String, Int, ViolationSeverity)] = [
-            ("/", 101, .Warning),
-            (Repeat(count: 101, repeatedValue: "/").joinWithSeparator(""), 201, .Error)
-        ]
-        for testCase in testCases {
-            XCTAssertEqual(violations(testCase.0 + longLine), [StyleViolation(
-                ruleDescription: LineLengthRule.description,
-                severity: testCase.2,
-                location: Location(file: nil, line: 1),
-                reason: "Line should be 100 characters or less: currently \(testCase.1) " +
-                        "characters")])
-        }
+    func testLineLength() {
+        verifyRule(LineLengthRule.description, commentDoesntViolate: false,
+            stringDoesntViolate: false)
     }
 
     func testFileLengths() {

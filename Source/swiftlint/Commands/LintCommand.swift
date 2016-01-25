@@ -49,15 +49,8 @@ struct LintCommand: CommandType {
                 queuedPrint(reporter.generateReport(violations))
             }
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
-            let violationSuffix = (violations.count != 1 ? "s" : "")
-            let fileCount = files.count
-            let filesSuffix = (fileCount != 1 ? "s." : ".")
-            queuedPrintError(
-                "Done linting!" +
-                " Found \(violations.count) violation\(violationSuffix)," +
-                " \(numberOfSeriousViolations) serious" +
-                " in \(fileCount) file\(filesSuffix)"
-            )
+            LintCommand.printStatus(violations: violations, files: files,
+                numberOfSeriousViolations: numberOfSeriousViolations)
             if options.benchmark {
                 saveBenchmark("files", times: fileTimes)
                 saveBenchmark("rules", times: ruleTimes)
@@ -67,6 +60,16 @@ struct LintCommand: CommandType {
             }
             return .Success()
         }
+    }
+
+    static func printStatus(violations violations: [StyleViolation], files: [File],
+        numberOfSeriousViolations: Int) {
+        let violationSuffix = (violations.count != 1 ? "s" : "")
+        let fileCount = files.count
+        let filesSuffix = (fileCount != 1 ? "s." : ".")
+        let message = "Done linting! Found \(violations.count) violation\(violationSuffix), " +
+            "\(numberOfSeriousViolations) serious in \(fileCount) file\(filesSuffix)"
+        queuedPrintError(message)
     }
 }
 

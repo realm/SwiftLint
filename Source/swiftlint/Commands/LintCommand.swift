@@ -15,21 +15,23 @@ import SwiftLintFramework
 private let numberFormatter: NSNumberFormatter = {
     let formatter = NSNumberFormatter()
     formatter.numberStyle = .DecimalStyle
+    formatter.minimumFractionDigits = 3
     return formatter
 }()
 
-private func saveBenchmark(fileTimes: [(file: String, time: Double)]) {
-    let string = fileTimes
-        .sort({ $0.0.time < $0.1.time })
-        .map({ timeAndFile in
-            let time = numberFormatter.stringFromNumber(timeAndFile.time)!
-            let file = (timeAndFile.file as NSString).lastPathComponent
-            return "\(time): \(file)"
+private func saveBenchmark(name: String, times: [(id: String, time: Double)]) {
+    let string = times
+        .reduce([String: Double](), combine: { accu, idAndTime in
+            var accu = accu
+            accu[idAndTime.id] = (accu[idAndTime.id] ?? 0) + idAndTime.time
+            return accu
         })
+        .sort({ $0.1 < $1.1 })
+        .map({ "\(numberFormatter.stringFromNumber($0.1)!): \($0.0)" })
         .joinWithSeparator("\n")
         + "\n"
     let data = string.dataUsingEncoding(NSUTF8StringEncoding)
-    data?.writeToFile("benchmark_files.txt", atomically: true)
+    data?.writeToFile("benchmark_\(name).txt", atomically: true)
 }
 
 struct LintCommand: CommandType {
@@ -37,7 +39,8 @@ struct LintCommand: CommandType {
     let function = "Print lint warnings and errors (default command)"
 
     func run(options: LintOptions) -> Result<(), CommandantError<()>> {
-        var fileTimes = [(file: String, time: Double)]()
+        var fileTimes = [(id: String, time: Double)]()
+        var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
         var reporter: Reporter.Type!
         var configuration = Configuration(commandLinePath: options.configurationFile)
@@ -46,12 +49,17 @@ struct LintCommand: CommandType {
             useSTDIN: options.useSTDIN,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
             let start: NSDate! = options.benchmark ? NSDate() : nil
-            let currentViolations = linter.styleViolations
+            let currentViolations: [StyleViolation]
+            if options.benchmark {
+                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                currentViolations = _currentViolations
+                fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
+                ruleTimes.appendContentsOf(currentRuleTimes)
+            } else {
+                currentViolations = linter.styleViolations
+            }
             violations += currentViolations
             if reporter == nil { reporter = linter.reporter }
-            if options.benchmark {
-                fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
-            }
             if reporter.isRealtime {
                 let report = reporter.generateReport(currentViolations)
                 if !report.isEmpty {
@@ -73,7 +81,8 @@ struct LintCommand: CommandType {
                 " in \(fileCount) file\(filesSuffix)"
             )
             if options.benchmark {
-                saveBenchmark(fileTimes)
+                saveBenchmark("files", times: fileTimes)
+                saveBenchmark("rules", times: ruleTimes)
             }
             if (options.strict && !violations.isEmpty) || numberOfSeriousViolations > 0 {
                 return .Failure(CommandantError<()>.CommandError())

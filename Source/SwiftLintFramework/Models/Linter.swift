@@ -15,16 +15,33 @@ public struct Linter {
     public let reporter: Reporter.Type
 
     public var styleViolations: [StyleViolation] {
+        return getStyleViolations().0
+    }
+
+    public var styleViolationsAndRuleTimes: ([StyleViolation], [(rule: String, time: Double)]) {
+        return getStyleViolations(true)
+    }
+
+    private func getStyleViolations(benchmark: Bool = false) ->
+        ([StyleViolation], [(rule: String, time: Double)]) {
         let regions = file.regions()
-        return rules.flatMap { rule in
-            return rule.validateFile(self.file).filter { violation in
+        var ruleTimes = [(rule: String, time: Double)]()
+        let violations = rules.flatMap { rule -> [StyleViolation] in
+            let start: NSDate! = benchmark ? NSDate() : nil
+            let violations = rule.validateFile(self.file)
+            if benchmark {
+                let id = rule.dynamicType.description.identifier
+                ruleTimes.append((id, -start.timeIntervalSinceNow))
+            }
+            return violations.filter { violation in
                 guard let violationRegion = regions.filter({ $0.contains(violation.location) })
-                                                   .first else {
-                    return true
+                    .first else {
+                        return true
                 }
                 return violationRegion.isRuleEnabled(rule)
             }
         }
+        return (violations, ruleTimes)
     }
 
     public init(file: File, configuration: Configuration = Configuration()!) {

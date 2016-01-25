@@ -32,18 +32,18 @@ public struct RegexConfig: RuleConfig, Equatable {
     }
 
     public mutating func setConfig(config: AnyObject) throws {
-        guard let configDict = config as? [String: AnyObject] else {
+        guard let configDict = config as? [String: AnyObject],
+              let regexString = configDict["regex"] as? String else {
             throw ConfigurationError.UnknownConfiguration
         }
+
+        regex = try NSRegularExpression(pattern: regexString)
 
         if let name = configDict["name"] as? String {
             self.name = name
         }
         if let message = configDict["message"] as? String {
             self.message = message
-        }
-        if let regexString = configDict["regex"] as? String {
-            self.regex = try NSRegularExpression(pattern: regexString)
         }
         if let matchKinds = [String].arrayOf(configDict["match_kinds"]) {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })

@@ -9,6 +9,10 @@
 * Improve performance of `MissingDocsRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Added `CustomRules`
+  [Scott Hoyt](https://github.com/scottrhoyt)  
+  [#123](https://github.com/realm/SwiftLint/issues/123)
+
 ##### Bug Fixes
 
 * None.

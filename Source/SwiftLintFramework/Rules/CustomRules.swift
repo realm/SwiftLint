@@ -49,7 +49,7 @@ public struct CustomRules: Rule, ConfigProviderRule {
     public init() {}
 
     public func validateFile(file: File) -> [StyleViolation] {
-        guard !config.customRuleConfigs.isEmpty else {
+        if config.customRuleConfigs.isEmpty {
             return []
         }
 

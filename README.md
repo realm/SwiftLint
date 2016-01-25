@@ -210,7 +210,27 @@ This is what the output would look like:
 
 ![](custom-rule.png)
 
-You can define as many `custom_rules`
+By default, custom rules will match against all syntax kinds. You can filter
+the matches by providing one or more `match_kinds`:
+
+* argument
+* attribute.builtin
+* attribute.id
+* buildconfig.id
+* buildconfig.keyword
+* comment
+* comment.mark
+* comment.url
+* doccomment
+* doccomment.field
+* identifier
+* keyword
+* number
+* objectliteral
+* parameter
+* placeholder
+* string_interpolation_anchor
+* typeidentifier
 
 #### Nested Configurations
 

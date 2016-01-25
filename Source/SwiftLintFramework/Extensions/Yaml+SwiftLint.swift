@@ -55,10 +55,10 @@ extension Yaml {
             return myDouble.description
         case .String(let myString):
             return myString
-        case .Array(let myArray):
-            return myArray.description
-        case .Dictionary(let myDictionary):
-            return myDictionary.description
+        case .Array:
+            return self.flatArray!.description
+        case .Dictionary:
+            return self.flatDictionary!.description
         case .Null:
             return "Null"
         }

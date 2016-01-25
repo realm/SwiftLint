@@ -1,4 +1,5 @@
 dictionary1:
+  null:
   bool: true
   int: 1
   double: 1.0
@@ -14,6 +15,7 @@ dictionary1:
       string: string
 
 dictionary2:
+  null:
   bool: true
   int: 1
   double: 1.0

@@ -186,6 +186,32 @@ variable_name:
 reporter: "csv" # reporter type (xcode, json, csv, checkstyle)
 ```
 
+#### Defining Custom Rules
+
+You can define custom regex-based rules in you configuration file using the
+following syntax:
+
+```yaml
+custom_rules:
+  pirate_beat_ninjas: # rule identifier
+    name: "Pirates Beat Ninjas" # rule name. optional.
+    regex: "([n,N]inja)" # matching pattern
+    match_kinds: # SyntaxKinds to match. optional.
+      - comment
+      - identifier
+    message: "Pirates are better than ninjas." # violation message. optional.
+    severity: error # violation severity. optional.
+  no_hiding_in_strings:
+    regex: "([n,N]inja)"
+    match_kinds: string
+```
+
+This is what the output would look like:
+
+![](custom-rule.png)
+
+You can define as many `custom_rules`
+
 #### Nested Configurations
 
 SwiftLint supports nesting configuration files for more granular control over

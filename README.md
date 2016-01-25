@@ -193,7 +193,7 @@ following syntax:
 
 ```yaml
 custom_rules:
-  pirate_beat_ninjas: # rule identifier
+  pirates_beat_ninjas: # rule identifier
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([n,N]inja)" # matching pattern
     match_kinds: # SyntaxKinds to match. optional.

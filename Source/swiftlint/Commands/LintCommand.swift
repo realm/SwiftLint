@@ -19,6 +19,12 @@ private let numberFormatter: NSNumberFormatter = {
     return formatter
 }()
 
+private let timestamp: String = {
+    let formatter = NSDateFormatter()
+    formatter.dateFormat = "yyyy_MM_dd_HH_mm_ss"
+    return formatter.stringFromDate(NSDate())
+}()
+
 private func saveBenchmark(name: String, times: [(id: String, time: Double)]) {
     let string = times
         .reduce([String: Double](), combine: { accu, idAndTime in
@@ -31,7 +37,7 @@ private func saveBenchmark(name: String, times: [(id: String, time: Double)]) {
         .joinWithSeparator("\n")
         + "\n"
     let data = string.dataUsingEncoding(NSUTF8StringEncoding)
-    data?.writeToFile("benchmark_\(name).txt", atomically: true)
+    data?.writeToFile("benchmark_\(name)_\(timestamp).txt", atomically: true)
 }
 
 struct LintCommand: CommandType {

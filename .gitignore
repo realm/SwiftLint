@@ -46,3 +46,4 @@ Carthage/Build
 
 SwiftLint.pkg
 SwiftLintFramework.framework.zip
+benchmark_*

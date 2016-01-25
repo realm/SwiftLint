@@ -229,6 +229,7 @@ the matches by providing one or more `match_kinds`:
 * objectliteral
 * parameter
 * placeholder
+* string
 * string_interpolation_anchor
 * typeidentifier
 

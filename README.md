@@ -210,8 +210,9 @@ This is what the output would look like:
 
 ![](custom-rule.png)
 
-By default, custom rules will match against all syntax kinds. You can filter
-the matches by providing one or more `match_kinds`:
+You can filter the matches by providing one or more `match_kinds`, which will
+reject matches that include syntax kinds that are not present in this list. Here
+are all the possible syntax kinds:
 
 * argument
 * attribute.builtin

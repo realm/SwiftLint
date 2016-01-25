@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct Linter {
-    private let file: File
+    public let file: File
     private let rules: [Rule]
     public let reporter: Reporter.Type
 

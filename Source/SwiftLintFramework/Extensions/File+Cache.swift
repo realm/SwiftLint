@@ -15,7 +15,7 @@ private var syntaxMapCache = Cache({file in SyntaxMap(sourceKitResponse: respons
 private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
 
 private var _allDeclarationsByType = [String: [String]]()
-private var declarationMapNeedsRebuilding = true
+private var queueForRebuild = [Structure]()
 
 private struct Cache<T> {
 
@@ -33,8 +33,8 @@ private struct Cache<T> {
         }
         let value = factory(file)
         values[key] = value
-        if value is Structure {
-            declarationMapNeedsRebuilding = true
+        if let structure = value as? Structure {
+            queueForRebuild.append(structure)
         }
         return value
     }
@@ -59,7 +59,7 @@ public extension File {
     }
 
     public static func clearCaches() {
-        declarationMapNeedsRebuilding = true
+        queueForRebuild = []
         _allDeclarationsByType = [:]
         structureCache.clear()
         syntaxMapCache.clear()
@@ -67,7 +67,7 @@ public extension File {
     }
 
     public static var allDeclarationsByType: [String: [String]] {
-        if declarationMapNeedsRebuilding {
+        if !queueForRebuild.isEmpty {
             rebuildAllDeclarationsByType()
         }
         return _allDeclarationsByType
@@ -90,8 +90,7 @@ private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
 }
 
 private func rebuildAllDeclarationsByType() {
-    let structures = structureCache.values.map { $0.1 }
-    let allDeclarationsByType = structures.flatMap { structure -> (String, [String])? in
+    let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
         guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
             name = firstSubstructureDict["key.name"] as? String,
             kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
@@ -101,6 +100,6 @@ private func rebuildAllDeclarationsByType() {
         }
         return (name, substructure.flatMap({ $0["key.name"] as? String }))
     }
-    _allDeclarationsByType = dictFromKeyValuePairs(allDeclarationsByType)
-    declarationMapNeedsRebuilding = false
+    allDeclarationsByType.forEach { _allDeclarationsByType[$0.0] = $0.1 }
+    queueForRebuild = []
 }

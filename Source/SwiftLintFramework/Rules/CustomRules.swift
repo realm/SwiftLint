@@ -42,7 +42,7 @@ public struct CustomRules: Rule, ConfigProviderRule {
         name: "Custom Rules",
         description: "Create custom rules by providing a regex string. " +
           "Optionally specify what syntax kinds to match against, the severity " +
-          "level, and what message to display")
+          "level, and what message to display.")
 
     public var config = CustomRulesConfig()
 

@@ -31,21 +31,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        // Get all identifiers from syntax map
-        let identifiers = file.syntaxMap.tokens.filter({
-            $0.type == SyntaxKind.Identifier.rawValue
-        }).flatMap({
-            file.contents.substringWithByteRange(start: $0.offset, length: $0.length)
-        })
-        // Check if there is any identifier followed by a '!'
-        let violations = Set(identifiers).flatMap({
-            return file.matchPattern("\($0)(\\((?:[^\\r\\n]|\\r(?!\\n))*?\\))?\\!")
-        }).filter({ $0.1.first == .Identifier }).map({ $0.0 })
-
-        return violations.map {
+        return file.matchPattern("[\\w)]+!", withSyntaxKinds: [.Identifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: config.severity,
-                location: Location(file: file, characterOffset: $0.location + $0.length - 1))
+                location: Location(file: file, characterOffset: NSMaxRange($0) - 1))
         }
     }
 }

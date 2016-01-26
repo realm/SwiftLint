@@ -21,22 +21,22 @@ public struct ReturnArrowWhitespaceRule: ConfigProviderRule {
         description: "Return arrow and return type should be separated by a single space or on a " +
                      "separate line.",
         nonTriggeringExamples: [
-            "func abc() -> Int {}\n",
-            "func abc() -> [Int] {}\n",
-            "func abc() -> (Int, Int) {}\n",
-            "var abc = {(param: Int) -> Void in }\n",
-            "func abc() ->\n    Int {}\n",
-            "func abc()\n    -> Int {}\n"
+            Trigger("func abc() -> Int {}\n"),
+            Trigger("func abc() -> [Int] {}\n"),
+            Trigger("func abc() -> (Int, Int) {}\n"),
+            Trigger("var abc = {(param: Int) -> Void in }\n"),
+            Trigger("func abc() ->\n    Int {}\n"),
+            Trigger("func abc()\n    -> Int {}\n")
         ],
         triggeringExamples: [
-            "func abc(↓)->Int {}\n",
-            "func abc(↓)->[Int] {}\n",
-            "func abc(↓)->(Int, Int) {}\n",
-            "func abc(↓)-> Int {}\n",
-            "func abc(↓) ->Int {}\n",
-            "func abc(↓)  ->  Int {}\n",
-            "var abc = {(param: Int↓) ->Bool in }\n",
-            "var abc = {(param: Int↓)->Bool in }\n"
+            Trigger("func abc(↓)->Int {}\n"),
+            Trigger("func abc(↓)->[Int] {}\n"),
+            Trigger("func abc(↓)->(Int, Int) {}\n"),
+            Trigger("func abc(↓)-> Int {}\n"),
+            Trigger("func abc(↓) ->Int {}\n"),
+            Trigger("func abc(↓)  ->  Int {}\n"),
+            Trigger("var abc = {(param: Int↓) ->Bool in }\n"),
+            Trigger("var abc = {(param: Int↓)->Bool in }\n")
         ]
     )
 

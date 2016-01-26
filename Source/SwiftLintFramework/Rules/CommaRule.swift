@@ -20,14 +20,14 @@ public struct CommaRule: CorrectableRule, ConfigProviderRule {
         name: "Comma Spacing",
         description: "There should be no space before and one after any comma.",
         nonTriggeringExamples: [
-            "func abc(a: String, b: String) { }",
-            "abc(a: \"string\", b: \"string\"",
-            "enum a { case a, b, c }"
+            Trigger("func abc(a: String, b: String) { }"),
+            Trigger("abc(a: \"string\", b: \"string\""),
+            Trigger("enum a { case a, b, c }")
         ],
         triggeringExamples: [
-            "func abc(a: String↓ ,b: String) { }",
-            "abc(a: \"string\"↓,b: \"string\"",
-            "enum a { case a↓ ,b }"
+            Trigger("func abc(a: String↓ ,b: String) { }"),
+            Trigger("abc(a: \"string\"↓,b: \"string\""),
+            Trigger("enum a { case a↓ ,b }")
         ],
         corrections: [
             "func abc(a: String,b: String) {}\n": "func abc(a: String, b: String) {}\n",

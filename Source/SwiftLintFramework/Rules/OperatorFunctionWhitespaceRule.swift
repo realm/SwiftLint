@@ -19,17 +19,17 @@ public struct OperatorFunctionWhitespaceRule: ConfigProviderRule {
         name: "Operator Function Whitespace",
         description: "Operators should be surrounded by a single whitespace when defining them.",
         nonTriggeringExamples: [
-            "func <| (lhs: Int, rhs: Int) -> Int {}\n",
-            "func <|< <A>(lhs: A, rhs: A) -> A {}\n",
-            "func abc(lhs: Int, rhs: Int) -> Int {}\n"
+            Trigger("func <| (lhs: Int, rhs: Int) -> Int {}\n"),
+            Trigger("func <|< <A>(lhs: A, rhs: A) -> A {}\n"),
+            Trigger("func abc(lhs: Int, rhs: Int) -> Int {}\n")
         ],
         triggeringExamples: [
-            "↓func <|(lhs: Int, rhs: Int) -> Int {}\n",   // no spaces after
-            "↓func <|<<A>(lhs: A, rhs: A) -> A {}\n",     // no spaces after
-            "↓func <|  (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces after
-            "↓func <|<  <A>(lhs: A, rhs: A) -> A {}\n",   // 2 spaces after
-            "↓func  <| (lhs: Int, rhs: Int) -> Int {}\n", // 2 spaces before
-            "↓func  <|< <A>(lhs: A, rhs: A) -> A {}\n"    // 2 spaces before
+            Trigger("↓func <|(lhs: Int, rhs: Int) -> Int {}\n"),   // no spaces after
+            Trigger("↓func <|<<A>(lhs: A, rhs: A) -> A {}\n"),     // no spaces after
+            Trigger("↓func <|  (lhs: Int, rhs: Int) -> Int {}\n"), // 2 spaces after
+            Trigger("↓func <|<  <A>(lhs: A, rhs: A) -> A {}\n"),   // 2 spaces after
+            Trigger("↓func  <| (lhs: Int, rhs: Int) -> Int {}\n"), // 2 spaces before
+            Trigger("↓func  <|< <A>(lhs: A, rhs: A) -> A {}\n")    // 2 spaces before
         ]
     )
 

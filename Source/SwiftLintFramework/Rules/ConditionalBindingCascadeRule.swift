@@ -20,22 +20,22 @@ public struct ConditionalBindingCascadeRule: ConfigProviderRule {
         name: "Conditional Binding Cascade",
         description: "Repeated `let` statements in conditional binding cascade should be avoided.",
         nonTriggeringExamples: [
-            "if let a = b, c = d {",
-            "if let a = b, \n c = d {",
-            "if let a = b, \n c = d \n {",
-            "if let a = b { if let c = d {",
-            "if let a = b { let c = d({ foo in ... })",
-            "guard let a = b, c = d else {",
-            "guard let a = b where a, let c = d else {"
+            Trigger("if let a = b, c = d {"),
+            Trigger("if let a = b, \n c = d {"),
+            Trigger("if let a = b, \n c = d \n {"),
+            Trigger("if let a = b { if let c = d {"),
+            Trigger("if let a = b { let c = d({ foo in ... })"),
+            Trigger("guard let a = b, c = d else {"),
+            Trigger("guard let a = b where a, let c = d else {")
         ],
         triggeringExamples: [
-            "if let a = b, let c = d {",
-            "if let a = b, \n let c = d {",
-            "if let a = b, c = d, let e = f {",
-            "if let a = b, let c = d \n {",
-            "if \n let a = b, let c = d {",
-            "if let a = b, c = d.indexOf({$0 == e}), let f = g {",
-            "guard let a = b, let c = d else {"
+            Trigger("if let a = b, let c = d {"),
+            Trigger("if let a = b, \n let c = d {"),
+            Trigger("if let a = b, c = d, let e = f {"),
+            Trigger("if let a = b, let c = d \n {"),
+            Trigger("if \n let a = b, let c = d {"),
+            Trigger("if let a = b, c = d.indexOf({$0 == e}), let f = g {"),
+            Trigger("guard let a = b, let c = d else {")
         ]
     )
 

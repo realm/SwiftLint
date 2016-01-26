@@ -27,22 +27,22 @@ public struct VariableNameRule: ASTRule, ConfigProviderRule {
           "when they are declared static and immutable. Variable names should not be too " +
           "long or too short.",
         nonTriggeringExamples: [
-            "let myLet = 0",
-            "var myVar = 0",
-            "private let _myLet = 0",
-            "class Abc { static let MyLet = 0 }",
-            "let URL: NSURL? = nil"
+            Trigger("let myLet = 0"),
+            Trigger("var myVar = 0"),
+            Trigger("private let _myLet = 0"),
+            Trigger("class Abc { static let MyLet = 0 }"),
+            Trigger("let URL: NSURL? = nil")
         ],
         triggeringExamples: [
-            "↓let MyLet = 0",
-            "↓let _myLet = 0",
-            "private ↓let myLet_ = 0",
-            "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-            "↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
-            "private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-            "↓let i = 0",
-            "↓var id = 0",
-            "private ↓let _i = 0"
+            Trigger("↓let MyLet = 0"),
+            Trigger("↓let _myLet = 0"),
+            Trigger("private ↓let myLet_ = 0"),
+            Trigger("↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+            Trigger("↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0"),
+            Trigger("private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0"),
+            Trigger("↓let i = 0"),
+            Trigger("↓var id = 0"),
+            Trigger("private ↓let _i = 0")
         ]
     )
 

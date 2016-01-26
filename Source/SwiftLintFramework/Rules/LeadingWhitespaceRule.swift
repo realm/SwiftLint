@@ -19,8 +19,13 @@ public struct LeadingWhitespaceRule: ConfigProviderRule {
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ]
+        nonTriggeringExamples: [
+            Trigger("//\n")
+        ],
+        triggeringExamples: [
+            Trigger("\n"),
+            Trigger(" //\n")
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

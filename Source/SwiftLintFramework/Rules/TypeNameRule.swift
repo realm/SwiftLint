@@ -25,18 +25,18 @@ public struct TypeNameRule: ASTRule, ConfigProviderRule {
                      "uppercase character and span between 3 and 40 characters in length.",
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
-                "\(type) MyType {}",
-                "private \(type) _MyType {}",
-                "\(type) " + Repeat(count: 40, repeatedValue: "A").joinWithSeparator("") + " {}"
+                Trigger("\(type) MyType {}"),
+                Trigger("private \(type) _MyType {}"),
+                Trigger("\(type) " + String(count: 40, repeatedValue: Character("A")) + " {}")
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
-                "↓\(type) myType {}",
-                "↓\(type) _MyType {}",
-                "private ↓\(type) MyType_ {}",
-                "↓\(type) My {}",
-                "↓\(type) " + Repeat(count: 41, repeatedValue: "A").joinWithSeparator("") + " {}"
+                Trigger("↓\(type) myType {}"),
+                Trigger("↓\(type) _MyType {}"),
+                Trigger("private ↓\(type) MyType_ {}"),
+                Trigger("↓\(type) My {}"),
+                Trigger("↓\(type) " + String(count: 41, repeatedValue: Character("A")) + " {}")
             ]
         })
     )

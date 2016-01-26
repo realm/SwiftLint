@@ -18,10 +18,10 @@ public struct FileLengthRule: ConfigProviderRule {
         name: "File Line Length",
         description: "Files should not span too many lines.",
         nonTriggeringExamples: [
-            Repeat(count: 400, repeatedValue: "//\n").joinWithSeparator("")
+            Trigger(Repeat(count: 400, repeatedValue: "//\n").joinWithSeparator(""))
         ],
         triggeringExamples: [
-            Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator("")
+            Trigger(Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator(""))
         ]
     )
 

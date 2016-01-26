@@ -24,14 +24,15 @@ public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
         description: "Type bodies should not span too many lines.",
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
-                example(type, "let abc = 0\n", 199),
-                example(type, "\n", 201),
-                example(type, "// this is a comment\n", 201),
-                example(type, "let abc = 0\n", 199, "\n/* this is\na multiline comment\n*/\n")
+                Trigger(example(type, "let abc = 0\n", 199)),
+                Trigger(example(type, "\n", 201)),
+                Trigger(example(type, "// this is a comment\n", 201)),
+                Trigger(example(type, "let abc = 0\n", 199, "\n" +
+                    "/* this is\na multiline comment\n*/\n"))
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].map({ type in
-            example(type, "let abc = 0\n", 201)
+            Trigger(example(type, "let abc = 0\n", 201))
         })
     )
 

@@ -19,8 +19,12 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigProviderRule {
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
         description: "Lines should not have trailing whitespace.",
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "// \n" ],
+        nonTriggeringExamples: [
+            Trigger("//\n")
+        ],
+        triggeringExamples: [
+            Trigger("// \n")
+        ],
         corrections: [ "// \n": "//\n" ]
     )
 

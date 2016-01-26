@@ -67,38 +67,47 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
 
         // Non-triggering examples don't violate
-        XCTAssert(nonTriggers.flatMap({ violations($0, ruleDescription) }).isEmpty)
+        for nonTrigger in nonTriggers {
+            XCTAssertTrue(violations(nonTrigger.string, ruleDescription).isEmpty,
+                "Non triggering example violated.",
+                file: nonTrigger.file, line: nonTrigger.line)
+        }
 
-        var violationsCount = 0
+        // Triggering examples violate
         for trigger in triggers {
-            let triggerViolations = violations(trigger, ruleDescription)
-            violationsCount += triggerViolations.count
+            let string = trigger.string
+            let triggerViolations = violations(string, ruleDescription)
+            XCTAssertFalse(triggerViolations.isEmpty,
+                "Triggering example did not violate.",
+                file: trigger.file, line: trigger.line)
             // Triggering examples with violation markers violate at the marker's location
-            let markerLocation = (trigger as NSString).rangeOfString(violationMarker).location
-            if markerLocation == NSNotFound { continue }
-            let cleanTrigger = trigger.stringByReplacingOccurrencesOfString(violationMarker,
+            let markerLocation = (string as NSString).rangeOfString(violationMarker).location
+            if markerLocation == NSNotFound {
+                continue
+            }
+            let cleanTrigger = string.stringByReplacingOccurrencesOfString(violationMarker,
                 withString: "")
             XCTAssertEqual(triggerViolations.first!.location,
-                Location(file: File(contents: cleanTrigger), characterOffset: markerLocation))
+                Location(file: File(contents: cleanTrigger), characterOffset: markerLocation),
+                "Location of violation was incorrect.",
+                file: trigger.file, line: trigger.line)
         }
-        // Triggering examples violate
-        XCTAssertEqual(violationsCount, triggers.count)
 
         // Comment doesn't violate
         XCTAssertEqual(
-            triggers.flatMap({ violations("/*\n  " + $0 + "\n */", ruleDescription) }).count,
+            triggers.flatMap({ violations("/*\n  " + $0.string + "\n */", ruleDescription) }).count,
             commentDoesntViolate ? 0 : triggers.count
         )
 
         // String doesn't violate
         XCTAssertEqual(
-            triggers.flatMap({ violations($0.toStringLiteral(), ruleDescription) }).count,
+            triggers.flatMap({ violations($0.string.toStringLiteral(), ruleDescription) }).count,
             stringDoesntViolate ? 0 : triggers.count
         )
 
         // "disable" command doesn't violate
         let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssert(triggers.flatMap({ violations(command + $0, ruleDescription) }).isEmpty)
+        XCTAssert(triggers.flatMap({ violations(command + $0.string, ruleDescription) }).isEmpty)
 
         // corrections
         ruleDescription.corrections.forEach(assertCorrection)

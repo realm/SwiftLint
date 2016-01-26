@@ -18,15 +18,15 @@ public struct EmptyCountRule: ConfigProviderRule, OptInRule {
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero.",
         nonTriggeringExamples: [
-            "var count = 0\n",
-            "[Int]().isEmpty\n",
-            "[Int]().count > 1\n",
-            "[Int]().count == 1\n"
+            Trigger("var count = 0\n"),
+            Trigger("[Int]().isEmpty\n"),
+            Trigger("[Int]().count > 1\n"),
+            Trigger("[Int]().count == 1\n")
         ],
         triggeringExamples: [
-            "[Int]().count == 0\n",
-            "[Int]().count > 0\n",
-            "[Int]().count != 0\n"
+            Trigger("[Int]().count == 0\n"),
+            Trigger("[Int]().count > 0\n"),
+            Trigger("[Int]().count != 0\n")
         ]
     )
 

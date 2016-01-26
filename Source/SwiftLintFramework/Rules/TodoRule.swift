@@ -26,18 +26,18 @@ public struct TodoRule: ConfigProviderRule {
         name: "Todo",
         description: "TODOs and FIXMEs should be avoided.",
         nonTriggeringExamples: [
-            "// notaTODO:\n",
-            "// notaFIXME:\n"
+            Trigger("// notaTODO:\n"),
+            Trigger("// notaFIXME:\n")
         ],
         triggeringExamples: [
-            "// ↓TODO:\n",
-            "// ↓FIXME:\n",
-            "// ↓TODO(note)\n",
-            "// ↓FIXME(note)\n",
-            "/* ↓FIXME: */\n",
-            "/* ↓TODO: */\n",
-            "/** ↓FIXME: */\n",
-            "/** ↓TODO: */\n"
+            Trigger("// ↓TODO:\n"),
+            Trigger("// ↓FIXME:\n"),
+            Trigger("// ↓TODO(note)\n"),
+            Trigger("// ↓FIXME(note)\n"),
+            Trigger("/* ↓FIXME: */\n"),
+            Trigger("/* ↓TODO: */\n"),
+            Trigger("/** ↓FIXME: */\n"),
+            Trigger("/** ↓TODO: */\n")
         ]
     )
 

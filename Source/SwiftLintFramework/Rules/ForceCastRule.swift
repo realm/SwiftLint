@@ -19,9 +19,11 @@ public struct ForceCastRule: ConfigProviderRule {
         name: "Force Cast",
         description: "Force casts should be avoided.",
         nonTriggeringExamples: [
-            "NSNumber() as? Int\n"
+            Trigger("NSNumber() as? Int\n")
         ],
-        triggeringExamples: [ "NSNumber() ↓as! Int\n" ]
+        triggeringExamples: [
+            Trigger("NSNumber() ↓as! Int\n")
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

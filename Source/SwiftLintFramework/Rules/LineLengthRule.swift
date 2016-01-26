@@ -18,10 +18,10 @@ public struct LineLengthRule: ConfigProviderRule {
         name: "Line Length",
         description: "Lines should not span too many characters.",
         nonTriggeringExamples: [
-            Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n"
+            Trigger(String(count: 100, repeatedValue: Character("/")) + "\n")
         ],
         triggeringExamples: [
-            Repeat(count: 101, repeatedValue: "/").joinWithSeparator("") + "\n"
+            Trigger(String(count: 101, repeatedValue: Character("/")) + "\n")
         ]
     )
 

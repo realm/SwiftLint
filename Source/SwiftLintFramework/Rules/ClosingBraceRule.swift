@@ -32,10 +32,10 @@ public struct ClosingBraceRule: CorrectableRule, ConfigProviderRule {
         description: "Closing brace with closing parenthesis " +
                      "should not have any whitespaces in the middle.",
         nonTriggeringExamples: [
-            "[].map({ })"
+            Trigger("[].map({ })")
         ],
         triggeringExamples: [
-            "[].map({ ↓} )"
+            Trigger("[].map({ ↓} )")
         ],
         corrections: [
             "[].map({ } )\n": "[].map({ })\n"

@@ -17,6 +17,8 @@ struct LintCommand: CommandType {
     let function = "Print lint warnings and errors (default command)"
 
     func run(options: LintOptions) -> Result<(), CommandantError<()>> {
+        var fileTimes = [(id: String, time: Double)]()
+        var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
         var reporter: Reporter.Type!
         var configuration = Configuration(commandLinePath: options.configurationFile)
@@ -24,7 +26,16 @@ struct LintCommand: CommandType {
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
-            let currentViolations = linter.styleViolations
+            let start: NSDate! = options.benchmark ? NSDate() : nil
+            let currentViolations: [StyleViolation]
+            if options.benchmark {
+                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                currentViolations = _currentViolations
+                fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
+                ruleTimes.appendContentsOf(currentRuleTimes)
+            } else {
+                currentViolations = linter.styleViolations
+            }
             violations += currentViolations
             if reporter == nil { reporter = linter.reporter }
             if reporter.isRealtime {
@@ -38,20 +49,27 @@ struct LintCommand: CommandType {
                 queuedPrint(reporter.generateReport(violations))
             }
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
-            let violationSuffix = (violations.count != 1 ? "s" : "")
-            let fileCount = files.count
-            let filesSuffix = (fileCount != 1 ? "s." : ".")
-            queuedPrintError(
-                "Done linting!" +
-                " Found \(violations.count) violation\(violationSuffix)," +
-                " \(numberOfSeriousViolations) serious" +
-                " in \(fileCount) file\(filesSuffix)"
-            )
+            LintCommand.printStatus(violations: violations, files: files,
+                numberOfSeriousViolations: numberOfSeriousViolations)
+            if options.benchmark {
+                saveBenchmark("files", times: fileTimes)
+                saveBenchmark("rules", times: ruleTimes)
+            }
             if (options.strict && !violations.isEmpty) || numberOfSeriousViolations > 0 {
                 return .Failure(CommandantError<()>.CommandError())
             }
             return .Success()
         }
+    }
+
+    static func printStatus(violations violations: [StyleViolation], files: [File],
+        numberOfSeriousViolations: Int) {
+        let violationSuffix = (violations.count != 1 ? "s" : "")
+        let fileCount = files.count
+        let filesSuffix = (fileCount != 1 ? "s." : ".")
+        let message = "Done linting! Found \(violations.count) violation\(violationSuffix), " +
+            "\(numberOfSeriousViolations) serious in \(fileCount) file\(filesSuffix)"
+        queuedPrintError(message)
     }
 }
 
@@ -61,13 +79,15 @@ struct LintOptions: OptionsType {
     let configurationFile: String
     let strict: Bool
     let useScriptInputFiles: Bool
+    let benchmark: Bool
 
     // swiftlint:disable:next line_length
-    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in
+    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> LintOptions {
+        // swiftlint:disable:next line_length
+        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in
             self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
-                      strict: strict, useScriptInputFiles: useScriptInputFiles)
-        }}}}
+                strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark)
+        }}}}}
     }
 
     // swiftlint:disable:next line_length
@@ -88,5 +108,8 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "use-script-input-files",
                 defaultValue: false,
                 usage: "read SCRIPT_INPUT_FILE* environment variables as files")
+            <*> mode <| Option(key: "benchmark",
+                defaultValue: false,
+                usage: "save benchmarks to benchmark_files.txt and benchmark_rules.txt")
     }
 }

@@ -8,7 +8,9 @@
 
 import SourceKittenFramework
 
-public struct ForceUnwrappingRule: Rule, OptInRule {
+public struct ForceUnwrappingRule: OptInRule, ConfigProviderRule {
+
+    public var config = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -40,10 +42,10 @@ public struct ForceUnwrappingRule: Rule, OptInRule {
             return file.matchPattern("\($0)(\\((?:[^\\r\\n]|\\r(?!\\n))*?\\))?\\!")
         }).filter({ $0.1.first == .Identifier }).map({ $0.0 })
 
-        return violations.map({
+        return violations.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: .Warning,
+                severity: config.severity,
                 location: Location(file: file, characterOffset: $0.location + $0.length - 1))
-        })
+        }
     }
 }

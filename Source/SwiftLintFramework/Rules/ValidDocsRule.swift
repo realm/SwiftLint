@@ -39,9 +39,10 @@ func superfluousOrMissingThrowsDocumentation(declaration: String, comment: Strin
     return declaration.containsString(" throws ") == !comment.containsString("- throws:")
 }
 
-func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool {
-    if SwiftDeclarationKind.variableKinds().contains(kind) { return true }
-
+func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
+    if let kind = kind where SwiftDeclarationKind.variableKinds().contains(kind) {
+        return true
+    }
     guard let outsideBracesMatch = regex("(?:\\)(\\s*->\\s*)?[^()->]*(\\(.*\\))*\\s*\\{)")
         .matchesInString(declaration, options: [],
             range: NSRange(location: 0, length: declaration.characters.count)).first else {
@@ -62,14 +63,7 @@ func commentReturns(comment: String) -> Bool {
 }
 
 func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
-    guard let outsideBracesMatch = regex("(?:\\)(\\s*->\\s*)?[^()->]*(\\(.*\\))*\\s*\\{)")
-        .matchesInString(declaration, options: [],
-            range: NSRange(location: 0, length: declaration.characters.count)).first else {
-                return false && !commentReturns(comment)
-    }
-
-    return NSString(string: declaration).substringWithRange(outsideBracesMatch.range)
-        .containsString("->") && !commentReturns(comment)
+    return delcarationReturns(declaration) && !commentReturns(comment)
 }
 
 func superfluousReturnDocumentation(declaration: String, comment: String,

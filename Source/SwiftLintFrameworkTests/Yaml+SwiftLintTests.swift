@@ -22,6 +22,8 @@ class YamlSwiftLintTests: XCTestCase {
 
             let dict1 = (yamlDict["dictionary1"] as? [Swift.String : AnyObject])!
             let dict2 = (yamlDict["dictionary2"] as? [Swift.String : AnyObject])!
+            XCTAssertTrue(dict1["nothing"] as? NSNull == NSNull() &&
+                          dict2["nothing"] as? NSNull == NSNull())
             XCTAssertTrue(dict1["bool"] as? Bool == true && dict2["bool"] as? Bool == true)
             XCTAssertTrue(dict1["int"] as? Int == 1 && dict2["int"] as? Int == 1)
             XCTAssertTrue(dict1["double"] as? Double == 1.0 && dict2["double"] as? Double == 1.0)
@@ -45,6 +47,19 @@ class YamlSwiftLintTests: XCTestCase {
                           dict2_2["string"] as? String == "string")
         }
     }
+
+    func testStringValues() {
+        XCTAssertEqual(Yaml.Bool(true).stringValue, "true")
+        XCTAssertEqual(Yaml.Int(4).stringValue, "4")
+        XCTAssertEqual(Yaml.Double(4.4).stringValue, "4.4")
+        XCTAssertEqual(Yaml.String("string").stringValue, "string")
+        XCTAssertEqual(Yaml.Array([Yaml.Int(4), Yaml.String("string")]).stringValue, "[4, string]")
+        XCTAssertEqual(Yaml.Dictionary([Yaml.Int(4): Yaml.String("string")]).stringValue,
+                       "[\"4\": string]")
+        XCTAssertEqual(Yaml.Null.stringValue, "Null")
+    }
+
+    // MARK: - Utilities
 
     func getTestYaml() -> String {
         let testBundle = NSBundle(forClass: self.dynamicType)

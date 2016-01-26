@@ -42,11 +42,14 @@ func superfluousOrMissingThrowsDocumentation(declaration: String, comment: Strin
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind) -> Bool {
     if SwiftDeclarationKind.variableKinds().contains(kind) { return true }
 
-    let outsideBraces = NSMutableString(string: declaration)
-    regex("(\\s*->\\s*)[^(]*\\)").replaceMatchesInString(outsideBraces, options: [],
-        range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
+    guard let outsideBracesMatch = regex("(?:\\)(\\s*->\\s*)?[^()->]*(\\(.*\\))*\\s*\\{)")
+        .matchesInString(declaration, options: [],
+            range: NSRange(location: 0, length: declaration.characters.count)).first else {
+                return false
+    }
 
-    return outsideBraces.containsString("->")
+    return NSString(string: declaration).substringWithRange(outsideBracesMatch.range)
+        .containsString("->")
 }
 
 func commentHasBatchedParameters(comment: String) -> Bool {
@@ -59,11 +62,14 @@ func commentReturns(comment: String) -> Bool {
 }
 
 func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
-    let outsideBraces = NSMutableString(string: declaration)
-    regex("(\\s*->\\s*)[^(]*\\)").replaceMatchesInString(outsideBraces, options: [],
-        range: NSRange(location: 0, length: outsideBraces.length), withTemplate: "")
+    guard let outsideBracesMatch = regex("(?:\\)(\\s*->\\s*)?[^()->]*(\\(.*\\))*\\s*\\{)")
+        .matchesInString(declaration, options: [],
+            range: NSRange(location: 0, length: declaration.characters.count)).first else {
+                return false && !commentReturns(comment)
+    }
 
-    return outsideBraces.containsString("->") && !commentReturns(comment)
+    return NSString(string: declaration).substringWithRange(outsideBracesMatch.range)
+        .containsString("->") && !commentReturns(comment)
 }
 
 func superfluousReturnDocumentation(declaration: String, comment: String,
@@ -142,6 +148,15 @@ public struct ValidDocsRule: ConfigProviderRule {
             "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
             "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
             "/// docs\n/// - returns: tuple\npublic func no() -> (Int, Int) {return (1, 2)}",
+            "/// docs\n/// - returns: closure\npublic func no() -> (Void->Void) {}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n/// - parameter param2: this is void too" +
+            "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+            "\n/// - parameter param2: this is a void closure too" +
+            "\n/// - parameter param3: this is a void closure too" +
+            "\nfunc a(param: () -> Void, param2: (parameter: Int) -> Void, " +
+            "param3: (parameter: Int) -> Void) {}",
         ],
         triggeringExamples: [
             "/// docs\npublic ↓func a(param: Void) {}\n",
@@ -163,6 +178,10 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\n/// - parameter param: this is void" +
             "\n///- parameter param2: this is void too\n/// - returns: false" +
             "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
+            "/// docs\npublic func no() -> (Int, Int) {return (1, 2)}",
+            "/// docs\n/// - parameter param: this is void" +
+            "\n///- parameter param2: this is void too\n///- returns: closure" +
+            "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
         ]
     )
 

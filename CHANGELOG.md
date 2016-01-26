@@ -13,6 +13,11 @@
   [Scott Hoyt](https://github.com/scottrhoyt)  
   [#123](https://github.com/realm/SwiftLint/issues/123)
 
+* Added opt-in `ForceUnwrappingRule` to issue warnings for all forced
+  unwrappings.  
+  [Benjamin Otto](https://github.com/Argent)
+  [#55](https://github.com/realm/SwiftLint/issues/55)
+
 ##### Bug Fixes
 
 * Fix several false positives in `ValidDocsRule`.  

@@ -43,7 +43,8 @@ func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) 
     if let kind = kind where SwiftDeclarationKind.variableKinds().contains(kind) {
         return true
     }
-    guard let outsideBracesMatch = regex("(?:\\)(\\s*->\\s*)?[^()->]*(\\(.*\\))*\\s*\\{)")
+    guard let outsideBracesMatch =
+        regex("(?:\\)((\\s*->\\s*)(\\(.*\\))*(?!.*->)[^()]*(\\(.*\\))*)?\\s*\\{)")
         .matchesInString(declaration, options: [],
             range: NSRange(location: 0, length: declaration.characters.count)).first else {
                 return false
@@ -131,26 +132,33 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\nvar no: Bool { return false }",
             "/// docs\n/// - throws: NSError\nfunc a() throws {}",
             "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
+                "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too\n/// - returns: false",
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool {return false}",
+                "\n///- parameter param2: this is void too\n/// - returns: false",
+                "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool " +
+                "{return false}",
             "/// docs\n/// - parameter param: this is void" +
-            "\npublic func no(param: (Void -> Void)?) {}",
+                "\npublic func no(param: (Void -> Void)?) {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too" +
-            "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
+                "\n///- parameter param2: this is void too" +
+                "\npublic func no(param: (Void -> Void)?, param2: String->Void) {}",
             "/// docs👨‍👩‍👧‍👧\n/// - returns: false\npublic func no() -> Bool { return false }",
             "/// docs\n/// - returns: tuple\npublic func no() -> (Int, Int) {return (1, 2)}",
             "/// docs\n/// - returns: closure\npublic func no() -> (Void->Void) {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\n/// - parameter param2: this is void too" +
-            "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
+                "\n/// - parameter param2: this is void too" +
+                "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
             "/// docs\n/// - parameter param: this is a void closure" +
-            "\n/// - parameter param2: this is a void closure too" +
-            "\n/// - parameter param3: this is a void closure too" +
-            "\nfunc a(param: () -> Void, param2: (parameter: Int) -> Void, " +
-            "param3: (parameter: Int) -> Void) {}",
+                "\n/// - parameter param2: this is a void closure too" +
+                "\n/// - parameter param3: this is a void closure too" +
+                "\nfunc a(param: () -> Void, param2: (parameter: Int) -> Void, " +
+                "param3: (parameter: Int) -> Void) {}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+                "\n/// - returns: Foo<Void>" +
+                "\nfunc a(param: () -> Void) -> Foo<Void> {return Foo<Void>}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+                "\n/// - returns: Foo<Void>" +
+                "\nfunc a(param: () -> Void) -> Foo<[Int]> {return Foo<[Int]>}",
         ],
         triggeringExamples: [
             "/// docs\npublic ↓func a(param: Void) {}\n",
@@ -162,20 +170,24 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\n/// - throws: NSError\n↓func a() {}",
             "/// docs\n↓func a() throws {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }",
+                "\npublic ↓func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too" +
-            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
-            "Bool {return false}",
+                "\n///- parameter param2: this is void too" +
+                "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) -> " +
+                "Bool {return false}",
             "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
-            "\npublic ↓func no(param: (Void -> Void)?) {}",
+                "\npublic ↓func no(param: (Void -> Void)?) {}",
             "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too\n/// - returns: false" +
-            "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
+                "\n///- parameter param2: this is void too\n/// - returns: false" +
+                "\npublic ↓func no(param: (Void -> Void)?, param2: String->Void) {}",
             "/// docs\npublic func no() -> (Int, Int) {return (1, 2)}",
             "/// docs\n/// - parameter param: this is void" +
-            "\n///- parameter param2: this is void too\n///- returns: closure" +
-            "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
+                "\n///- parameter param2: this is void too\n///- returns: closure" +
+                "\nfunc no(param: (Void) -> Void, onError param2: ((NSError) -> Void)? = nil) {}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+                "\nfunc a(param: () -> Void) -> Foo<Void> {return Foo<Void>}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+                "\nfunc a(param: () -> Void) -> Foo<[Int]> {return Foo<[Int]>}",
         ]
     )
 

@@ -1016,6 +1016,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1030,6 +1031,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1086,6 +1088,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1142,6 +1145,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};

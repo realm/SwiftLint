@@ -24,13 +24,10 @@ public struct SeverityLevelsConfig: RuleConfig, Equatable {
         if let config = [Int].arrayOf(config) where !config.isEmpty {
             warning = config[0]
             error = (config.count > 1) ? config[1] : nil
-        } else if let config = config as? [String: AnyObject] {
-            if let warningNumber = config["warning"] as? Int {
-                warning = warningNumber
-                error = config["error"] as? Int
-            } else if let errorNumber = config["error"] as? Int {
-                error = errorNumber
-            }
+        } else if let config = config as? [String: Int]
+                where !config.isEmpty && Set(config.keys).isSubsetOf(["warning", "error"]) {
+            warning = config["warning"] ?? warning
+            error = config["error"]
         } else {
             throw ConfigurationError.UnknownConfiguration
         }

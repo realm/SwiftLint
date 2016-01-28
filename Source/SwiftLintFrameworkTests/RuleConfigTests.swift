@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import SourceKittenFramework
 
 class RuleConfigurationsTests: XCTestCase {
@@ -44,6 +44,30 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 
+    func testNameConfigMinLengthThreshold() {
+        var nameConfig = NameConfig(minLengthWarning: 7,
+                                    minLengthError: 17,
+                                    maxLengthWarning: 0,
+                                    maxLengthError: 0,
+                                    excluded: [])
+        XCTAssertEqual(nameConfig.minLengthThreshold, 17)
+
+        nameConfig.minLength.error = nil
+        XCTAssertEqual(nameConfig.minLengthThreshold, 7)
+    }
+
+    func testNameConfigMaxLengthThreshold() {
+        var nameConfig = NameConfig(minLengthWarning: 0,
+                                    minLengthError: 0,
+                                    maxLengthWarning: 17,
+                                    maxLengthError: 7,
+                                    excluded: [])
+        XCTAssertEqual(nameConfig.maxLengthThreshold, 7)
+
+        nameConfig.maxLength.error = nil
+        XCTAssertEqual(nameConfig.maxLengthThreshold, 17)
+    }
+
     func testSeverityConfigFromString() {
         let config = "Warning"
         let comp = SeverityConfig(.Warning)
@@ -74,6 +98,17 @@ class RuleConfigurationsTests: XCTestCase {
         checkError(ConfigurationError.UnknownConfiguration) {
             try severityConfig.setConfig(config)
         }
+    }
+
+    func testSeverityLevelConfigParams() {
+        let severityConfig = SeverityLevelsConfig(warning: 17, error: 7)
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .Error, value: 7),
+            RuleParameter(severity: .Warning, value: 17)])
+    }
+
+    func testSeverityLevelConfigPartialParams() {
+        let severityConfig = SeverityLevelsConfig(warning: 17, error: nil)
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .Warning, value: 17)])
     }
 
     func testRegexConfigThrows() {

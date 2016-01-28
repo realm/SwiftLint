@@ -2,8 +2,8 @@
 
 ##### Breaking
 
-* Setting only warning on `SeverityLevelsConfig` now
-  disables error ruleParameter.  
+* Setting only warning on `SeverityLevelsConfig` rules now disables the error
+  value.  
   [Robin Kunde](https://github.com/robinkunde)
   [#409](https://github.com/realm/SwiftLint/issues/409)
 

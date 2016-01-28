@@ -14,11 +14,11 @@ public struct NameConfig: RuleConfig, Equatable {
     var excluded: Set<String>
 
     var minLengthThreshold: Int {
-        return max(minLength.warning, minLength.error)
+        return max(minLength.warning, minLength.error ?? minLength.warning)
     }
 
     var maxLengthThreshold: Int {
-        return min(maxLength.warning, maxLength.error)
+        return min(maxLength.warning, maxLength.error ?? maxLength.warning)
     }
 
     public init(minLengthWarning: Int,

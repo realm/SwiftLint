@@ -9,7 +9,9 @@
 
 ##### Enhancements
 
-* None.
+* Add `whitelist_rules` rule whitelists in config files  
+  [Daniel Beard](https://github.com/daniel-beard)
+  [#256](https://github.com/realm/SwiftLint/issues/256)
 
 ##### Bug Fixes
 

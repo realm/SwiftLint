@@ -134,12 +134,18 @@ identifiers.
 Configure SwiftLint by adding a `.swiftlint.yml` file from the directory you'll
 run SwiftLint from. The following parameters can be configured:
 
+Rule inclusion:
+- `disabled_rules`: Disable rules from the default enabled set.
+- `opt_in_rules`: Some rules are opt-in.
+- `whitelist_rules`: Can not be specified alongside `disabled_rules` or
+`opt_in_rules`. Acts as a whitelist, only the rules specified in this list will be enabled.
+
 ```yaml
 disabled_rules: # rule identifiers to exclude from running
   - colon
   - comma
   - control_statement
-enabled_rules: # some rules are only opt-in
+opt_in_rules: # some rules are only opt-in
   - empty_count
   - missing_docs
   # Find all the available rules by running:

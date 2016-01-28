@@ -1,4 +1,4 @@
 included:
   - Source
-enabled_rules:
+opt_in_rules:
   - empty_count

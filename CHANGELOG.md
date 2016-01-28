@@ -10,7 +10,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix several false positives in `ValidDocsRule`.  
+  [diogoguimaraes](https://github.com/diogoguimaraes)
+  [#375](https://github.com/realm/SwiftLint/issues/375)
 
 ## 0.7.1: Delicate Cycle
 

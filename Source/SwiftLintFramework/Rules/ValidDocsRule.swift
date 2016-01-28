@@ -135,7 +135,7 @@ public struct ValidDocsRule: ConfigProviderRule {
                 "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
                 "\n///- parameter param2: this is void too\n/// - returns: false",
-                "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool " +
+            "\npublic func no(param: (Void -> Void)?, param2: String->Void) -> Bool " +
                 "{return false}",
             "/// docs\n/// - parameter param: this is void" +
                 "\npublic func no(param: (Void -> Void)?) {}",

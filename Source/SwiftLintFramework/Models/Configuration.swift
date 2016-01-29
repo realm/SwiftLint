@@ -38,7 +38,8 @@ public struct Configuration: Equatable {
     }
 
     public init?(disabledRules: [String] = [],
-                 enabledRules: [String] = [],
+                 optInRules: [String] = [],
+                 whitelistRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
@@ -78,17 +79,44 @@ public struct Configuration: Equatable {
         }
         self.disabledRules = validDisabledRules
 
-        self.rules = rules.filter { rule in
-            let id = rule.dynamicType.description.identifier
-            if validDisabledRules.contains(id) { return false }
-            return enabledRules.contains(id) || !(rule is OptInRule)
+        // white_list rules take precendence over all else.
+        if !whitelistRules.isEmpty {
+
+            if !disabledRules.isEmpty || !optInRules.isEmpty {
+                queuedPrintError("'disabled_rules' or 'opt_in_rules' cannot be used in " +
+                    "combination with 'whitelist_rules'")
+                return nil
+            }
+
+            self.rules = rules.filter { rule in
+                let id = rule.dynamicType.description.identifier
+                return whitelistRules.contains(id)
+            }
+        } else {
+            self.rules = rules.filter { rule in
+                let id = rule.dynamicType.description.identifier
+                if validDisabledRules.contains(id) { return false }
+                return optInRules.contains(id) || !(rule is OptInRule)
+            }
         }
     }
 
     public init?(dict: [String: AnyObject]) {
+
+        // Deprecation warning for "enabled_rules"
+        if dict["enabled_rules"] != nil {
+            queuedPrint("'enabled_rules' has been renamed to 'opt_in_rules' " +
+                "and will be completely removed in a future release.")
+        }
+
+        // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
+        let optInRules = dict["opt_in_rules"] as? [String] ??
+            dict["enabled_rules"] as? [String] ?? []
+
         self.init(
             disabledRules: dict["disabled_rules"] as? [String] ?? [],
-            enabledRules: dict["enabled_rules"] as? [String] ?? [],
+            optInRules: optInRules,
+            whitelistRules: dict["whitelist_rules"] as? [String] ?? [],
             included: dict["included"] as? [String] ?? [],
             excluded: dict["excluded"] as? [String] ?? [],
             reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,

@@ -32,6 +32,36 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.reporterFromString.identifier, "xcode")
     }
 
+    func testWhitelistRules() {
+        let whitelist = ["nesting", "todo"]
+        let config = Configuration(dict: ["whitelist_rules":  whitelist])!
+        let configuredIdentifiers = config.rules.map {
+            $0.dynamicType.description.identifier
+        }
+        XCTAssertEqual(whitelist, configuredIdentifiers)
+    }
+
+    func testOtherRuleConfigurationsAlongsideWhitelistRules() {
+        let whitelist = ["nesting", "todo"]
+        let enabledRulesConfigDict = [
+            "opt_in_rules": ["line_length"],
+            "whitelist_rules": whitelist
+        ]
+        let disabledRulesConfigDict = [
+            "disabled_rules": ["variable_name"],
+            "whitelist_rules": whitelist
+        ]
+        let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {
+            var d = $0; d[$1.0] = $1.1; return d
+        }
+        var config = Configuration(dict: enabledRulesConfigDict)
+        XCTAssertNil(config)
+        config = Configuration(dict: disabledRulesConfigDict)
+        XCTAssertNil(config)
+        config = Configuration(dict: combinedRulesConfigDict)
+        XCTAssertNil(config)
+    }
+
     func testDisabledRules() {
         let disabledConfig = Configuration(dict: ["disabled_rules":  ["nesting", "todo"]])!
         XCTAssertEqual(disabledConfig.disabledRules,

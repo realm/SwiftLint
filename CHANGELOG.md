@@ -7,9 +7,12 @@
   [Robin Kunde](https://github.com/robinkunde)
   [#409](https://github.com/realm/SwiftLint/issues/409)
 
+* `enabled_rules` has been renamed to `opt_in_rules`.  
+  [Daniel Beard](https://github.com/daniel-beard)
+
 ##### Enhancements
 
-* Add `whitelist_rules` rule whitelists in config files  
+* Add `whitelist_rules` rule whitelists in config files.  
   [Daniel Beard](https://github.com/daniel-beard)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 

@@ -30,24 +30,29 @@ private struct TextTableColumn {
     }
 }
 
+private func fence(strings: [String], separator: String) -> String {
+    return separator + strings.joinWithSeparator(separator) + separator
+}
+
 private struct TextTable {
     let columns: [TextTableColumn]
 
     func render() -> String {
-        let widths = columns.map({ $0.width })
-        let separator = "+" + widths.map({ width in
-            return Repeat(count: width + 2, repeatedValue: "-").joinWithSeparator("")
-        }).joinWithSeparator("+") + "+"
-        let header = "|" + columns.map({
-            " \($0.header.withPadding($0.width)) "
-        }).joinWithSeparator("|") + "|"
-        let result = separator + "\n\(header)\n" + separator + "\n"
+        let joint = "+"
+        let verticalSeparator = "|"
+        let horizontalSeparator = "-"
+        let separator = fence(columns.map({ column in
+            Repeat(count: column.width + 2, repeatedValue: horizontalSeparator)
+                .joinWithSeparator("")
+        }), separator: joint)
+        let header = fence(columns.map({ " \($0.header.withPadding($0.width)) " }),
+            separator: verticalSeparator)
         let values = (0..<columns.first!.values.count).map({ rowIndex in
-            return "|" + columns.map({ column in
-                return " \(column.values[rowIndex].withPadding(column.width)) "
-            }).joinWithSeparator("|") + "|"
+            fence(columns.map({ column in
+                " \(column.values[rowIndex].withPadding(column.width)) "
+            }), separator: verticalSeparator)
         }).joinWithSeparator("\n")
-        return result + values + "\n" + separator
+        return [separator, header, separator, values, separator].joinWithSeparator("\n")
     }
 }
 

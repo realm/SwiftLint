@@ -91,6 +91,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 
+    func testParametersListLength() {
+        verifyRule(ParametersListLengthRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

@@ -1,4 +1,4 @@
-## 0.7.2: Appliance Manual
+## Master
 
 ##### Breaking
 
@@ -6,6 +6,20 @@
   value.  
   [Robin Kunde](https://github.com/robinkunde)
   [#409](https://github.com/realm/SwiftLint/issues/409)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.7.2: Appliance Manual
+
+##### Breaking
+
+* None.
 
 ##### Enhancements
 

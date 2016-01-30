@@ -74,6 +74,7 @@ public extension File {
     public static func clearCaches() {
         queueForRebuild = []
         _allDeclarationsByType = [:]
+        responseCache.clear()
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxKindsByLinesCache.clear()

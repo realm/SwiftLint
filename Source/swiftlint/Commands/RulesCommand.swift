@@ -24,18 +24,9 @@ extension String {
 private struct TextTableColumn {
     let header: String
     let values: [String]
-    let maxWidth: Int?
-
-    init(header: String, values: [String], maxWidth: Int? = nil) {
-        self.header = header
-        self.values = values
-        self.maxWidth = maxWidth
-    }
 
     var width: Int {
-        let maxValuesWidth = values.reduce(0) { max($0, $1.characters.count) }
-        let maxContentWidth = max(header.characters.count, maxValuesWidth)
-        return min(maxWidth ?? maxContentWidth, maxContentWidth)
+        return max(header.characters.count, values.reduce(0) { max($0, $1.characters.count) })
     }
 }
 
@@ -43,68 +34,19 @@ private func fence(strings: [String], separator: String) -> String {
     return separator + strings.joinWithSeparator(separator) + separator
 }
 
-// HELP! This function is extremely brittle.
-// It only works with 3 columns, and only allows maxWidth to be set on the last column.
-private func transformColumns(columns: [TextTableColumn]) -> [[String]] {
-    return (0..<columns.first!.values.count).flatMap({ rowIndex -> [[String]] in
-        var rowsOfValues = [[String]]()
-        for column in columns {
-            func setOrAppendToFirst(values: [String]) {
-                let first = (rowsOfValues.first ?? []) + values
-                if rowsOfValues.isEmpty {
-                    rowsOfValues.append(first)
-                } else {
-                    rowsOfValues[0] = first
-                }
-            }
-            func pad(string: String) -> String {
-                return string.withPadding(column.width)
-            }
-            let value = column.values[rowIndex]
-            guard let maxWidth = column.maxWidth where value.characters.count > maxWidth else {
-                setOrAppendToFirst([pad(value)])
-                continue
-            }
-            func split(string: String) -> (before: String, after: String) {
-                let splitPoint = string.startIndex.advancedBy(string.substringToIndex(
-                    string.startIndex.advancedBy(maxWidth)
-                ).lastIndexOf(" ")! + 1)
-                return (string.substringToIndex(splitPoint), string.substringFromIndex(splitPoint))
-            }
-            var (before, after) = split(value)
-            setOrAppendToFirst([pad(before)])
-            func append(string: String) {
-                if string.isEmpty { return }
-                rowsOfValues.append([
-                    "".withPadding(columns[0].width),
-                    "".withPadding(columns[1].width),
-                    pad(string)
-                ])
-            }
-            while after.characters.count > maxWidth {
-                (before, after) = split(after)
-                append(before)
-            }
-            append(after)
-        }
-        return rowsOfValues
-    })
-}
-
 private struct TextTable {
     let columns: [TextTableColumn]
 
     func render() -> String {
-        let joint = "+", verticalSeparator = "|", horizontalSeparator = "-"
         let separator = fence(columns.map({ column in
-            Repeat(count: column.width + 2, repeatedValue: horizontalSeparator)
-                .joinWithSeparator("")
-        }), separator: joint)
+            Repeat(count: column.width + 2, repeatedValue: "-").joinWithSeparator("")
+        }), separator: "+")
         let header = fence(columns.map({ " \($0.header.withPadding($0.width)) " }),
-            separator: verticalSeparator)
-        let values = transformColumns(columns).flatMap({ values in
-            if values.isEmpty { return nil }
-            return fence(values.map({ " \($0) " }), separator: verticalSeparator)
+            separator: "|")
+        let values = (0..<columns.first!.values.count).map({ rowIndex in
+            fence(columns.map({ column in
+                " \(column.values[rowIndex].withPadding(column.width)) "
+            }), separator: "|")
         }).joinWithSeparator("\n")
         return [separator, header, separator, values, separator].joinWithSeparator("\n")
     }
@@ -131,8 +73,14 @@ struct RulesCommand: CommandType {
             TextTableColumn(header: "identifier", values: sortedRules.map({ $0.0 })),
             TextTableColumn(header: "opt-in",
                 values: sortedRules.map({ ($0.1.init() is OptInRule) ? "yes" : "no" })),
-            TextTableColumn(header: "description",
-                values: sortedRules.map({ $0.1.description.description }), maxWidth: 100)
+            TextTableColumn(header: "correctable",
+                values: sortedRules.map({ ($0.1.init() is CorrectableRule) ? "yes" : "no" })),
+            TextTableColumn(header: "enabled in your config",
+                values: sortedRules.map({
+                    Configuration().rules.map({
+                        $0.dynamicType.description.identifier
+                    }).contains($0.0) ? "yes" : "no"
+                }))
         ])
         print(table.render())
         return .Success()

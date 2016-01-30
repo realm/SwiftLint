@@ -11,11 +11,11 @@ import Result
 import SwiftLintFramework
 
 extension String {
-    private func withPadding(count: Int, character: String = " ") -> String {
+    private func withPadding(count: Int) -> String {
         let length = characters.count
         if length < count {
             return self +
-                Repeat(count: count - length, repeatedValue: character).joinWithSeparator("")
+                Repeat(count: count - length, repeatedValue: " ").joinWithSeparator("")
         }
         return self
     }

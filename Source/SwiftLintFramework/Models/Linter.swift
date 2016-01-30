@@ -53,7 +53,11 @@ public struct Linter {
     public func correct() -> [Correction] {
         var corrections = [Correction]()
         for rule in rules.flatMap({ $0 as? CorrectableRule }) {
-            corrections += rule.correctFile(file)
+            let newCorrections = rule.correctFile(file)
+            corrections += newCorrections
+            if !newCorrections.isEmpty {
+                file.invalidateCache()
+            }
         }
         return corrections
     }

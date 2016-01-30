@@ -93,28 +93,30 @@ extension File {
         }
     }
 
-    internal func syntaxKindsByLine(startLine: Int? = nil,
-                                    endLine: Int? = nil) -> [(Int, [SyntaxKind])] {
-        let contents = self.contents as NSString
-        let kindsWithLines = syntaxMap.tokens.map { token -> (Int, SyntaxToken) in
-            let tokenLine = contents.lineAndCharacterForByteOffset(token.offset)
-            return (tokenLine!.line, token)
-        }.filter { line, token in
-            return line >= (startLine ?? 0) && line <= (endLine ?? Int.max)
-        }.map { (line, token) -> (Int, SyntaxKind) in
-            return (line, SyntaxKind(rawValue: token.type)!)
+    internal func syntaxKindsByLine() -> [[SyntaxKind]] {
+        var results = [[SyntaxKind]](count: lines.count + 1, repeatedValue: [])
+        var tokenGenerator = syntaxMap.tokens.generate()
+        var lineGenerator = lines.generate()
+        var maybeLine = lineGenerator.next()
+        var maybeToken = tokenGenerator.next()
+        while let line = maybeLine, token = maybeToken {
+            let tokenRange = NSRange(location: token.offset, length: token.length)
+            if NSLocationInRange(token.offset, line.byteRange) ||
+                NSLocationInRange(line.byteRange.location, tokenRange) {
+                    results[line.index].append(SyntaxKind(rawValue: token.type)!)
+            }
+            let tokenEnd = NSMaxRange(tokenRange)
+            let lineEnd = NSMaxRange(line.byteRange)
+            if tokenEnd < lineEnd {
+                maybeToken = tokenGenerator.next()
+            } else if tokenEnd > lineEnd {
+                maybeLine = lineGenerator.next()
+            } else {
+                maybeLine = lineGenerator.next()
+                maybeToken = tokenGenerator.next()
+            }
         }
-        var results = [Int: [SyntaxKind]]()
-        for kindAndLine in kindsWithLines {
-            results[kindAndLine.0] = (results[kindAndLine.0] ?? []) + [kindAndLine.1]
-        }
-
-        for line in lines
-            where line.index >= (startLine ?? 0) && line.index <= (endLine ?? Int.max) {
-            results[line.index] = results[line.index] ?? []
-        }
-
-        return Array(zip(results.keys, results.values))
+        return results
     }
 
     //Added by S2dent
@@ -186,14 +188,8 @@ extension File {
 
     private func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = Set(SyntaxKind.commentKinds())
-
-        return syntaxKindsByLines.filter { line, kinds -> Bool in
-            guard line >= startLine && line <= endLine else {
-                return false
-            }
-
-            // if the line has only whitespace, `kinds` will be an empty array
-            return kinds.filter { !commentKinds.contains($0) }.isEmpty
+        return syntaxKindsByLines[startLine...endLine].filter { kinds in
+            kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count
     }
 

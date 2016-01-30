@@ -34,7 +34,8 @@
 
 ##### Enhancements
 
-* None.
+* Improve performance of `syntaxKindsByLine`.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
 

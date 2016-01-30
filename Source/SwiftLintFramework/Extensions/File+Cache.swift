@@ -60,7 +60,7 @@ public extension File {
         return syntaxMapCache.get(self)
     }
 
-    public var syntaxKindsByLines: [(Int, [SyntaxKind])] {
+    public var syntaxKindsByLines: [[SyntaxKind]] {
         return syntaxKindsByLinesCache.get(self)
     }
 

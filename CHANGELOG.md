@@ -16,6 +16,9 @@
   [Daniel Beard](https://github.com/daniel-beard)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 
+* Improve performance of `ColonRule`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * None.

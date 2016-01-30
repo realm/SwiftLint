@@ -39,6 +39,12 @@ private struct Cache<T> {
         return value
     }
 
+    private mutating func invalidate(file: File) {
+        if let key = file.path {
+            values.removeValueForKey(key)
+        }
+    }
+
     private mutating func clear() {
         values.removeAll(keepCapacity: false)
     }
@@ -58,9 +64,17 @@ public extension File {
         return syntaxKindsByLinesCache.get(self)
     }
 
+    public func invalidateCache() {
+        responseCache.invalidate(self)
+        structureCache.invalidate(self)
+        syntaxMapCache.invalidate(self)
+        syntaxKindsByLinesCache.invalidate(self)
+    }
+
     public static func clearCaches() {
         queueForRebuild = []
         _allDeclarationsByType = [:]
+        responseCache.clear()
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxKindsByLinesCache.clear()

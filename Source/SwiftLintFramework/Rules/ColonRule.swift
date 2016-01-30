@@ -83,8 +83,6 @@ public struct ColonRule: CorrectableRule, ConfigProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = patterns().joinWithSeparator("|")
-
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
                                   severity: config.severity,
@@ -93,56 +91,6 @@ public struct ColonRule: CorrectableRule, ConfigProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        // Do not join the patterns when correcting, we need 2 explicit capture groups.
-        return patterns().reduce([Correction]()) { corrections, pattern in
-            return corrections + correctFile(file, withPattern: pattern)
-        }
-    }
-
-    // MARK: - Private Methods
-
-    private func patterns() -> [String] {
-        let spacingLeftOfColonPattern = "" +
-            // Capture an identifier
-            "(\\w+)" +
-            // followed by whitespace
-            "\\s+" +
-            // to the left of a colon
-            ":" +
-            // followed by any amount of whitespace.
-            "\\s*" +
-            // Capture a type identifier
-            "(" +
-            // which may begin with a series of nested parenthesis or brackets
-            "(?:\\[|\\()*" +
-            // lazily to the first non-whitespace character.
-            "\\S+?)"
-        let spacingRightOfColonPattern = "" +
-            // Capture an identifier
-            "(\\w+)" +
-            // immediately followed by a colon
-            ":" +
-            // followed by 0 or 2+ whitespace characters.
-            "(?:\\s{0}|\\s{2,})" +
-            // Capture a type identifier
-            "(" +
-            // which may begin with a series of nested parenthesis or brackets
-            "(?:\\[|\\()*" +
-            // lazily to the first non-whitespace character.
-            "\\S+?)"
-        return [spacingLeftOfColonPattern, spacingRightOfColonPattern]
-    }
-
-    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
-        return file.matchPattern(pattern).filter { range, syntaxKinds in
-            if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
-                return false
-            }
-            return Set(syntaxKinds).intersect(Set(SyntaxKind.commentAndStringKinds())).isEmpty
-        }.flatMap { $0.0 }
-    }
-
-    private func correctFile(file: File, withPattern pattern: String) -> [Correction] {
         let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
 
@@ -158,5 +106,30 @@ public struct ColonRule: CorrectableRule, ConfigProviderRule {
         }
         file.write(contents)
         return corrections
+    }
+
+    // MARK: - Private
+
+    private let pattern =
+        "(\\w+)" + // Capture an identifier
+        "(?:" +    // start group
+        "\\s+" +   // followed by whitespace
+        ":" +      // to the left of a colon
+        "\\s*" +   // followed by any amount of whitespace.
+        "|" +      // or
+        ":" +      // immediately followed by a colon
+        "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
+        ")" +      // end group
+        "(" +      // Capture a type identifier
+        "(?:\\[|\\()*" + // which may begin with a series of nested parenthesis or brackets
+        "\\S+?)"   // lazily to the first non-whitespace character.
+
+    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
+        return file.matchPattern(pattern).filter { range, syntaxKinds in
+            if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
+                return false
+            }
+            return Set(syntaxKinds).intersect(Set(SyntaxKind.commentAndStringKinds())).isEmpty
+        }.flatMap { $0.0 }
     }
 }

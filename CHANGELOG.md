@@ -19,6 +19,9 @@
 * Improve performance of `ColonRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Add command to display rule description.
+  [Tony Li](https://github.com/crazytonyli)
+
 ##### Bug Fixes
 
 * None.

@@ -26,7 +26,14 @@ public struct LineLengthRule: ConfigProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
+        let minValue = config.params.map({$0.value}).minElement(<)
         return file.lines.flatMap { line in
+            // `line.content.characters.count` <= `line.range.length` is true.
+            // So, `check line.range.length` is larger than minimum parameter value.
+            // for avoiding using heavy `line.content.characters.count`.
+            if line.range.length < minValue {
+                return nil
+            }
             let length = line.content.characters.count
             for param in config.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,

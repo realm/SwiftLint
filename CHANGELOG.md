@@ -16,7 +16,7 @@
   [Daniel Beard](https://github.com/daniel-beard)
   [#256](https://github.com/realm/SwiftLint/issues/256)
 
-* Improve performance of `ColonRule` & `syntaxKindsByLine`.  
+* Improve performance of `ColonRule`, `LineLengthRule` & `syntaxKindsByLine`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
 * Add command to display rule description:

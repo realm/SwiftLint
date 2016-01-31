@@ -24,6 +24,10 @@
   [Tony Li](https://github.com/crazytonyli)
   [#392](https://github.com/realm/SwiftLint/issues/392)
 
+* Add `FunctionParameterCountRule`.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#415](https://github.com/realm/SwiftLint/issues/415)
+
 ##### Bug Fixes
 
 * None.

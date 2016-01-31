@@ -1,5 +1,5 @@
 //
-//  ParemeterListLengthRule.swift
+//  FunctionParameterCountRule.swift
 //  SwiftLint
 //
 //  Created by Denis Lebedev on 26/01/2016.
@@ -9,15 +9,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
+public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
     public var config = SeverityLevelsConfig(warning: 5, error: 8)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "parameters_list_length",
-        name: "Parameter List Length",
-        description: "Length of parameter list should be short.",
+        identifier: "function_parameter_count",
+        name: "Function Paramete rCount",
+        description: "Count of function parameters should be low.",
         nonTriggeringExamples: [
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
@@ -50,7 +50,7 @@ public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "{Parameters list should have \(config.warning) or less parameters: " +
+                    reason: "Function should have \(config.warning) or less parameters: " +
                     "currently it has \(parametersCount)")]
             }
 

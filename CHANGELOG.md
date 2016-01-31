@@ -24,7 +24,7 @@
   [Tony Li](https://github.com/crazytonyli)
   [#392](https://github.com/realm/SwiftLint/issues/392)
 
-* Add `ParametersListLengthRule`.  
+* Add `FunctionParameterCountRule`.  
   [Denis Lebedev](https://github.com/garnett)
 
 ##### Bug Fixes

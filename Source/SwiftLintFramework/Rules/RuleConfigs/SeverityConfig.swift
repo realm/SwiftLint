@@ -9,6 +9,10 @@
 import Foundation
 
 public struct SeverityConfig: RuleConfig, Equatable {
+    public var consoleDescription: String {
+        return severity.rawValue.lowercaseString
+    }
+
     var severity: ViolationSeverity
 
     public init(_ severity: ViolationSeverity) {

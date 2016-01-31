@@ -11,6 +11,7 @@ import Foundation
 public protocol RuleConfig {
     mutating func setConfig(config: AnyObject) throws
     func isEqualTo(ruleConfig: RuleConfig) -> Bool
+    var consoleDescription: String { get }
 }
 
 extension RuleConfig where Self: Equatable {

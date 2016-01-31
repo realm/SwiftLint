@@ -9,6 +9,23 @@
 import Foundation
 
 public struct SeverityLevelsConfig: RuleConfig, Equatable {
+    public var consoleDescription: String {
+        let errorString: String
+        if let errorValue = error {
+            errorString = ", error: \(errorValue)"
+        } else {
+            errorString = ""
+        }
+        return "warning: \(warning)" + errorString
+    }
+
+    public var shortConsoleDescription: String {
+        if let errorValue = error {
+            return "w/e: \(warning)/\(errorValue)"
+        }
+        return "w: \(warning)"
+    }
+
     var warning: Int
     var error: Int?
 

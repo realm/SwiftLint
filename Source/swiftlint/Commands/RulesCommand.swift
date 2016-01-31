@@ -80,6 +80,10 @@ struct RulesCommand: CommandType {
                     Configuration().rules.map({
                         $0.dynamicType.description.identifier
                     }).contains($0.0) ? "yes" : "no"
+                })),
+            TextTableColumn(header: "configuration",
+                values: sortedRules.map({ _, ruleType in
+                    return (ruleType.init() as? _ConfigProviderRule)?.configDescription ?? "N/A"
                 }))
         ])
         print(table.render())

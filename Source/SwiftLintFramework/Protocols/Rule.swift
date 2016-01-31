@@ -32,7 +32,11 @@ public protocol ConfigurableRule: Rule {
     func isEqualTo(rule: ConfigurableRule) -> Bool
 }
 
-public protocol ConfigProviderRule: ConfigurableRule {
+public protocol _ConfigProviderRule: ConfigurableRule {
+    var configDescription: String { get }
+}
+
+public protocol ConfigProviderRule: _ConfigProviderRule {
     typealias ConfigType: RuleConfig
     var config: ConfigType { get set }
 }
@@ -54,6 +58,10 @@ public extension ConfigProviderRule {
             return config.isEqualTo(rule.config)
         }
         return false
+    }
+
+    public var configDescription: String {
+        return config.consoleDescription
     }
 }
 

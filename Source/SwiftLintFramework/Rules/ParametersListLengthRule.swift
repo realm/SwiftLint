@@ -51,7 +51,7 @@ public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
                 let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: parameter.severity,
-                    location: Location(file: file, characterOffset: offset),
+                    location: Location(file: file, byteOffset: offset),
                     reason: "{Parameters list should have \(config.warning) or less parameters: " +
                     "currently it has \(parametersCount)")]
             }

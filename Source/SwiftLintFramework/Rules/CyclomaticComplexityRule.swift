@@ -43,7 +43,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
             let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
-                location: Location(file: file, characterOffset: offset),
+                location: Location(file: file, byteOffset: offset),
                 reason: "Function should have complexity \(config.warning) or less: " +
                         "currently complexity equals \(complexity)")]
         }

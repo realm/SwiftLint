@@ -16,13 +16,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
 
     public static let description = RuleDescription(
         identifier: "function_parameter_count",
-        name: "Function Paramete rCount",
-        description: "Count of function parameters should be low.",
+        name: "Function Parameter Count",
+        description: "Number of function parameters should be low.",
         nonTriggeringExamples: [
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
-            "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
+                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
         ],
         triggeringExamples: [
             "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
@@ -31,55 +31,53 @@ public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
     )
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-            if !functionKinds.contains(kind) {
-                return []
-            }
-
-            let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
-            let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
-            let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-
-            let allParams = allFuncParameters(substructure, offset: nameOffset, length: length)
-            let defaultParams = defaultFuncParameters(file, offset: nameOffset, length: length)
-
-            let parametersCount = allParams - defaultParams
-
-            for parameter in config.params where parametersCount > parameter.value {
-                let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: parameter.severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Function should have \(config.warning) or less parameters: " +
-                    "currently it has \(parametersCount)")]
-            }
-
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        if !functionKinds.contains(kind) {
             return []
+        }
+
+        let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
+        let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
+        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
+
+        let parameterCount =
+            allFunctionParameterCount(substructure, offset: nameOffset, length: length) -
+            defaultFunctionParameterCount(file, offset: nameOffset, length: length)
+
+        for parameter in config.params where parameterCount > parameter.value {
+            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            return [StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: parameter.severity,
+                location: Location(file: file, byteOffset: offset),
+                reason: "Function should have \(config.warning) or less parameters: " +
+                    "currently it has \(parameterCount)")]
+        }
+
+        return []
     }
 
-    private func allFuncParameters(structure: [SourceKitRepresentable],
-        offset: Int, length: Int) -> Int {
-
-            var count = 0
-            for e in structure {
-                guard let subDict = e as? [String: SourceKitRepresentable],
-                    key = subDict["key.kind"] as? String,
-                    paramOffset = subDict["key.offset"] as? Int64 else {
-                        continue
-                }
-
-                guard offset..<offset+length ~= Int(paramOffset) else {
-                    return count
-                }
-
-                if SwiftDeclarationKind(rawValue: key) == .VarParameter {
-                    count += 1
-                }
+    private func allFunctionParameterCount(structure: [SourceKitRepresentable],
+                                           offset: Int, length: Int) -> Int {
+        var parameterCount = 0
+        for substructure in structure {
+            guard let subDict = substructure as? [String: SourceKitRepresentable],
+                key = subDict["key.kind"] as? String,
+                parameterOffset = subDict["key.offset"] as? Int64 else {
+                    continue
             }
-            return count
+
+            guard offset..<offset+length ~= Int(parameterOffset) else {
+                return parameterCount
+            }
+
+            if SwiftDeclarationKind(rawValue: key) == .VarParameter {
+                parameterCount += 1
+            }
+        }
+        return parameterCount
     }
 
-    private func defaultFuncParameters(file: File, offset: Int, length: Int) -> Int {
+    private func defaultFunctionParameterCount(file: File, offset: Int, length: Int) -> Int {
         return (file.contents as NSString)
             .substringWithByteRange(start: offset, length: length)?
             .characters.filter { $0 == "=" }.count ?? 0

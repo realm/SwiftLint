@@ -40,12 +40,10 @@ public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
             let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
             let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
 
-            let funcDeclarationRange = Range(start: nameOffset, end: nameOffset + length)
+            let allParams = allFuncParameters(substructure, offset: nameOffset, length: length)
+            let defaultParams = defaultFuncParameters(file, offset: nameOffset, length: length)
 
-            let allParameters = allFunctionParameters(substructure, range: funcDeclarationRange)
-            let defaultParameters = defaultFunctionParameters(file, range: funcDeclarationRange)
-
-            let parametersCount = allParameters - defaultParameters
+            let parametersCount = allParams - defaultParams
 
             for parameter in config.params where parametersCount > parameter.value {
                 let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
@@ -59,18 +57,18 @@ public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
             return []
     }
 
-    private func allFunctionParameters(structure: [SourceKitRepresentable],
-        range: Range<Int>) -> Int {
+    private func allFuncParameters(structure: [SourceKitRepresentable],
+        offset: Int, length: Int) -> Int {
 
             var count = 0
             for e in structure {
                 guard let subDict = e as? [String: SourceKitRepresentable],
                     key = subDict["key.kind"] as? String,
-                    offset = subDict["key.offset"] as? Int64 else {
+                    paramOffset = subDict["key.offset"] as? Int64 else {
                         continue
                 }
 
-                guard range ~= Int(offset) else {
+                guard offset..<offset+length ~= Int(paramOffset) else {
                     return count
                 }
 
@@ -81,9 +79,10 @@ public struct ParametersListLengthRule: ASTRule, ConfigProviderRule {
             return count
     }
 
-    private func defaultFunctionParameters(file: File, range: Range<Int>) -> Int {
-        let funcDeclaration = file.contents[range]
-        return funcDeclaration.characters.filter { $0 == "=" }.count
+    private func defaultFuncParameters(file: File, offset: Int, length: Int) -> Int {
+        return (file.contents as NSString)
+            .substringWithByteRange(start: offset, length: length)?
+            .characters.filter { $0 == "=" }.count ?? 0
     }
 
     private let functionKinds: [SwiftDeclarationKind] = [

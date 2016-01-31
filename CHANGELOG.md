@@ -19,8 +19,10 @@
 * Improve performance of `ColonRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-* Add command to display rule description.
+* Add command to display rule description:
+  `swiftlint rules <rule identifier>`.  
   [Tony Li](https://github.com/crazytonyli)
+  [#392](https://github.com/realm/SwiftLint/issues/392)
 
 ##### Bug Fixes
 

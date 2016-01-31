@@ -19,8 +19,7 @@ struct RulesCommand: CommandType {
     func run(options: RulesOptions) -> Result<(), CommandantError<()>> {
         if let ruleID = options.ruleID {
             guard let rule = masterRuleList.list[ruleID] else {
-                return .Failure(CommandantError<()>
-                    .UsageError(description: "No rule with identifier: \(ruleID)"))
+                return .Failure(.UsageError(description: "No rule with identifier: \(ruleID)"))
             }
 
             printRuleDescript(rule.description)
@@ -34,28 +33,25 @@ struct RulesCommand: CommandType {
     private func printRuleDescript(desc: RuleDescription) {
         print("\(desc.consoleDescription)")
 
-        func indent(string: String) -> String {
-            return string.componentsSeparatedByString("\n")
-                .map { "    \($0)" }
-                .joinWithSeparator("\n")
-        }
-
         if !desc.triggeringExamples.isEmpty {
+            func indent(string: String) -> String {
+                return string.componentsSeparatedByString("\n")
+                    .map { "    \($0)" }
+                    .joinWithSeparator("\n")
+            }
             print("\nTriggering Examples (violation is marked with '\(violationMarker)'):")
-            for idx in 0..<desc.triggeringExamples.count {
-                print("\nExample #\(idx + 1)\n")
-                print("\(indent(desc.triggeringExamples[idx]))")
+            for (index, example) in desc.triggeringExamples.enumerate() {
+                print("\nExample #\(index + 1)\n\n\(indent(example))")
             }
         }
     }
 }
 
 struct RulesOptions: OptionsType {
-
     private let ruleID: String?
 
     private init(ruleID: String) {
-        self.ruleID = ruleID == "" ? nil : ruleID
+        self.ruleID = ruleID.isEmpty ? nil : ruleID
     }
 
     // swiftlint:disable:next line_length
@@ -64,5 +60,4 @@ struct RulesOptions: OptionsType {
             <*> mode <| Argument(defaultValue: "",
                 usage: "the rule identifier to display description for")
     }
-
 }

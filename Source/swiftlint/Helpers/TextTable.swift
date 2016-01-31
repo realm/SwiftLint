@@ -23,7 +23,7 @@ private func fence(strings: [String], separator: String) -> String {
     return separator + strings.joinWithSeparator(separator) + separator
 }
 
-struct TextTableColumn {
+private struct TextTableColumn {
     let header: String
     let values: [String]
 

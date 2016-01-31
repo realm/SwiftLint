@@ -24,6 +24,9 @@
   [Tony Li](https://github.com/crazytonyli)
   [#392](https://github.com/realm/SwiftLint/issues/392)
 
+* Add `ParametersListLengthRule`.  
+  [Denis Lebedev](https://github.com/garnett)
+
 ##### Bug Fixes
 
 * None.

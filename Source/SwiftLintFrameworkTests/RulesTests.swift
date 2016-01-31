@@ -58,6 +58,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
+    func testFunctionParameterCountRule() {
+        verifyRule(FunctionParameterCountRule.description)
+    }
+
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description)
     }
@@ -89,10 +93,6 @@ class RulesTests: XCTestCase {
 
     func testOperatorFunctionWhitespace() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
-    }
-
-    func testFunctionParameterCountRule() {
-        verifyRule(FunctionParameterCountRule.description)
     }
 
     func testReturnArrowWhitespace() {

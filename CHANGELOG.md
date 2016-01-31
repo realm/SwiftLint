@@ -19,7 +19,7 @@
 * Improve performance of `ColonRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
-* Add `ParametersListLengthRule`.  
+* Add `FunctionParameterCountRule`.  
   [Denis Lebedev](https://github.com/garnett)
 
 ##### Bug Fixes

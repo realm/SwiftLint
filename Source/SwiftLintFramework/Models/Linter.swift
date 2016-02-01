@@ -18,14 +18,14 @@ public struct Linter {
         return getStyleViolations().0
     }
 
-    public var styleViolationsAndRuleTimes: ([StyleViolation], [(rule: String, time: Double)]) {
+    public var styleViolationsAndRuleTimes: ([StyleViolation], [(id: String, time: Double)]) {
         return getStyleViolations(true)
     }
 
     private func getStyleViolations(benchmark: Bool = false) ->
-        ([StyleViolation], [(rule: String, time: Double)]) {
+        ([StyleViolation], [(id: String, time: Double)]) {
         let regions = file.regions()
-        var ruleTimes = [(rule: String, time: Double)]()
+        var ruleTimes = [(id: String, time: Double)]()
         let violations = rules.flatMap { rule -> [StyleViolation] in
             let start: NSDate! = benchmark ? NSDate() : nil
             let violations = rule.validateFile(self.file)

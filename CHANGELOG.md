@@ -39,6 +39,10 @@
   [Daniel Beard](https://github.com/daniel-beard)
   [#465](https://github.com/realm/SwiftLint/issues/465)
 
+* Fix complexity measurement for switch statements in `CyclomaticComplexityRule`.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#461](https://github.com/realm/SwiftLint/issues/461)
+
 ## 0.7.2: Appliance Manual
 
 ##### Breaking

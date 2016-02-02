@@ -1,0 +1,5 @@
+module Clang_C [system] {
+  header "/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/local/include/clang-c/Documentation.h"
+  link "clang"
+  export *
+}

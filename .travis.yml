@@ -5,7 +5,18 @@ git:
 branches:
   only:
     - master
-script: set -o pipefail && script/cibuild | xcpretty
+script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
+matrix:
+  include:
+    - script: set -o pipefail && script/cibuild | xcpretty
+      env: JOB=Xcode
+    - script: make spm
+      env: JOB=SPM
+      before_install:
+        - make swift_snapshot_install
+  exclude:
+    - script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
+
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

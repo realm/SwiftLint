@@ -28,6 +28,11 @@
   [Denis Lebedev](https://github.com/garnett)
   [#415](https://github.com/realm/SwiftLint/issues/415)
 
+* Measure complexity of nested functions separately in
+  `CyclomaticComplexityRule`.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#424](https://github.com/realm/SwiftLint/issues/424)
+
 ##### Bug Fixes
 
 * Fix more false positives in `ValidDocsRule`.  

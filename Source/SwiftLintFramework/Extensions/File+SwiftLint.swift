@@ -138,7 +138,7 @@ extension File {
         }.map { $0.0 }
     }
 
-    public func matchPattern(pattern: String,
+    internal func matchPattern(pattern: String,
                              excludingSyntaxKinds: [SyntaxKind],
                              excludingPattern: String) -> [NSRange] {
         let contents = self.contents as NSString

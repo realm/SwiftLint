@@ -147,11 +147,11 @@ extension File {
         if matches.isEmpty {
             return []
         }
-        let exclusions = regex(excludingPattern).matchesInString(self.contents,
-                                                                 options: [],
-                                                                   range: range)
-        let excludedRanges = exclusions.ranges()
-        return matches.filter { !$0.intersectsRanges(excludedRanges) }
+        let exclusionRanges = regex(excludingPattern).matchesInString(self.contents,
+                                                                      options: [],
+                                                                      range: range)
+                                                                            .ranges()
+        return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 
     public func validateVariableName(dictionary: [String: SourceKitRepresentable],

@@ -36,22 +36,34 @@ extension File {
 }
 
 func superfluousOrMissingThrowsDocumentation(declaration: String, comment: String) -> Bool {
-    return declaration.containsString(" throws ") == !comment.containsString("- throws:")
+    guard let outsideBracesMatch = matchOutsideBraces(declaration) else {
+        return false == !comment.containsString("- throws:")
+    }
+
+    return outsideBracesMatch.containsString(" throws ") == !comment.containsString("- throws:")
 }
 
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
     if let kind = kind where SwiftDeclarationKind.variableKinds().contains(kind) {
         return true
     }
+
+    guard let outsideBracesMatch = matchOutsideBraces(declaration) else {
+        return false
+    }
+
+    return outsideBracesMatch.containsString("->")
+}
+
+func matchOutsideBraces(declaration: String) -> NSString? {
     guard let outsideBracesMatch =
-        regex("(?:\\)((\\s*->\\s*)(\\(.*\\))*(?!.*->)[^()]*(\\(.*\\))*)?\\s*\\{)")
+        regex("(?:\\)(\\s*\\w*\\s*)*((\\s*->\\s*)(\\(.*\\))*(?!.*->)[^()]*(\\(.*\\))*)?\\s*\\{)")
         .matchesInString(declaration, options: [],
             range: NSRange(location: 0, length: declaration.characters.count)).first else {
-                return false
+                return nil
     }
 
     return NSString(string: declaration).substringWithRange(outsideBracesMatch.range)
-        .containsString("->")
 }
 
 func commentHasBatchedParameters(comment: String) -> Bool {
@@ -159,6 +171,10 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\n/// - parameter param: this is a void closure" +
                 "\n/// - returns: Foo<Void>" +
                 "\nfunc a(param: () -> Void) -> Foo<[Int]> {return Foo<[Int]>}",
+            "/// docs\n/// - throws: NSError\n/// - returns: false" +
+                "\nfunc a() throws -> Bool { return true }",
+            "/// docs\n/// - parameter param: this is a closure\n/// - returns: Bool" +
+                "\nfunc a(param: (Void throws -> Bool)) -> Bool { return true }",
         ],
         triggeringExamples: [
             "/// docs\npublic ↓func a(param: Void) {}\n",
@@ -188,6 +204,7 @@ public struct ValidDocsRule: ConfigProviderRule {
                 "\nfunc a(param: () -> Void) -> Foo<Void> {return Foo<Void>}",
             "/// docs\n/// - parameter param: this is a void closure" +
                 "\nfunc a(param: () -> Void) -> Foo<[Int]> {return Foo<[Int]>}",
+            "/// docs\nfunc a() throws -> Bool { return true }",
         ]
     )
 

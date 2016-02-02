@@ -28,9 +28,15 @@
   [Denis Lebedev](https://github.com/garnett)
   [#415](https://github.com/realm/SwiftLint/issues/415)
 
+* Measure complexity of nested functions separately in `CyclomaticComplexityRule`.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#424](https://github.com/realm/SwiftLint/issues/424)
+
 ##### Bug Fixes
 
-* None.
+* Fix complexity measurement for switch statements in `CyclomaticComplexityRule`.  
+    [Denis Lebedev](https://github.com/garnett)
+    [#461](https://github.com/realm/SwiftLint/issues/461)
 
 ## 0.7.2: Appliance Manual
 

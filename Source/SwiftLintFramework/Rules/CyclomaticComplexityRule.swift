@@ -22,15 +22,15 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
         nonTriggeringExamples: [
             "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
             "func f(code: Int) -> Int {" +
-            "switch code {\n case 0: fallthrough\ncase 0: return 1\ncase 0: return 1\n" +
-            "case 0: return 1\ncase 0: return 1\ncase 0: return 1\ncase 0: return 1\n" +
-            "case 0: return 1\ncase 0: return 1\ndefault: return 1}}"
+                "switch code {\n case 0: fallthrough\ncase 0: return 1\ncase 0: return 1\n" +
+                "case 0: return 1\ncase 0: return 1\ncase 0: return 1\ncase 0: return 1\n" +
+                "case 0: return 1\ncase 0: return 1\ndefault: return 1}}"
         ],
         triggeringExamples: [
             "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
-            "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
-            "  case 2: break\n  case 3: break\n  default: break\n  }\n\n" +
-            "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"
+                "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
+                "  case 2: break\n  case 3: break\n  case 4: break\n default: break\n  }\n" +
+                "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"
         ]
     )
 
@@ -40,7 +40,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
             return []
         }
 
-        let complexity = measureComplexity(file, dictionary: dictionary) + 1
+        let complexity = measureComplexity(file, dictionary: dictionary)
 
         for parameter in config.params where complexity > parameter.value {
             let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)

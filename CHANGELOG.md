@@ -36,7 +36,7 @@
 
 * Fix `trailing_newline` autocorrect to handle more than one violation per
   line.  
-  [daniel-beard](https://github.com/daniel-beard)
+  [Daniel Beard](https://github.com/daniel-beard)
   [#465](https://github.com/realm/SwiftLint/issues/465)
 
 ## 0.7.2: Appliance Manual

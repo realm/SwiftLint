@@ -10,8 +10,7 @@ let package = Package(
       ])
   ],
   dependencies: [
-    .Package(url: "https://github.com/norio-nomura/SourceKitten.git", majorVersion: 0, minor: 8),
-    .Package(url: "https://github.com/norio-nomura/Commandant.git", majorVersion: 0, minor: 8),
+    .Package(url: "https://github.com/jpsim/SourceKitten.git", majorVersion: 0, minor: 9),
     .Package(url: "https://github.com/norio-nomura/YamlSwift.git", majorVersion: 1),
   ],
   exclude: ["Source/SwiftLintFrameworkTests"]

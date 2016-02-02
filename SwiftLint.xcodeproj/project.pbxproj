@@ -24,6 +24,7 @@
 		3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B30C4A01C3785B300E04027 /* YamlParserTests.swift */; };
 		3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
 		3B828E531C546468000D180E /* RuleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B828E521C546468000D180E /* RuleConfig.swift */; };
+		3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */; };
 		3BB47D831C514E8100AE6A10 /* RegexConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D821C514E8100AE6A10 /* RegexConfig.swift */; };
 		3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */; };
 		3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */; };
@@ -31,7 +32,6 @@
 		3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfig.swift */; };
 		3BCC04D21C4F56D3006073C3 /* NameConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* NameConfig.swift */; };
 		3BCC04D41C502BAB006073C3 /* RuleConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D31C502BAB006073C3 /* RuleConfigTests.swift */; };
-		3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
@@ -177,6 +177,7 @@
 		3B30C4A01C3785B300E04027 /* YamlParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParserTests.swift; sourceTree = "<group>"; };
 		3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
 		3B828E521C546468000D180E /* RuleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfig.swift; sourceTree = "<group>"; };
+		3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BB47D821C514E8100AE6A10 /* RegexConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexConfig.swift; sourceTree = "<group>"; };
 		3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomRulesTests.swift; sourceTree = "<group>"; };
@@ -184,7 +185,6 @@
 		3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityLevelsConfig.swift; sourceTree = "<group>"; };
 		3BCC04D01C4F56D3006073C3 /* NameConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameConfig.swift; sourceTree = "<group>"; };
 		3BCC04D31C502BAB006073C3 /* RuleConfigTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfigTests.swift; sourceTree = "<group>"; };
-		3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };

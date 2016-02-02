@@ -30,7 +30,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix more false positives in `ValidDocsRule`.
+  [diogoguimaraes](https://github.com/diogoguimaraes)
+  [#451](https://github.com/realm/SwiftLint/issues/451)
 
 ## 0.7.2: Appliance Manual
 

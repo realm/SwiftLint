@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 extension File {
     private func violatingTrailingSemicolonRanges() -> [NSRange] {
-        return matchPattern(";*([^\\S\\n]?)*;+$",
+        return matchPattern("(;+([^\\S\\n]?)*)+;?$",
                             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
@@ -31,13 +31,15 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigProviderRule {
             "let a = 0↓;\n",
             "let a = 0↓;\nlet b = 1\n",
             "let a = 0↓;;\n",
-            "let a = 0↓;    ;;\n"
+            "let a = 0↓;    ;;\n",
+            "let a = 0↓; ; ;\n"
         ],
         corrections: [
             "let a = 0;\n": "let a = 0\n",
             "let a = 0;\nlet b = 1\n": "let a = 0\nlet b = 1\n",
             "let a = 0;;\n": "let a = 0\n",
-            "let a = 0;    ;;\n": "let a = 0\n"
+            "let a = 0;    ;;\n": "let a = 0\n",
+            "let a = 0; ; ;\n": "let a = 0\n"
         ]
     )
 

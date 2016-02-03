@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
@@ -13,6 +14,29 @@ import XCTest
 let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 class ConfigurationTests: XCTestCase {
+
+    // protocol XCTestCaseProvider
+    lazy var allTests: [(String, () throws -> Void)] = [
+        ("testInit", self.testInit),
+        ("testEmptyConfiguration", self.testEmptyConfiguration),
+        ("testWhitelistRules", self.testWhitelistRules),
+        ("testOtherRuleConfigurationsAlongsideWhitelistRules",
+            self.testOtherRuleConfigurationsAlongsideWhitelistRules),
+        ("testDisabledRules", self.testDisabledRules),
+        ("testDisabledRulesWithUnknownRule", self.testDisabledRulesWithUnknownRule),
+        ("testExcludedPaths", self.testExcludedPaths),
+        ("testIsEqualTo", self.testIsEqualTo),
+        ("testIsNotEqualTo", self.testIsNotEqualTo),
+        ("testMerge", self.testMerge),
+        ("testLevel0", self.testLevel0),
+        ("testLevel1", self.testLevel1),
+        ("testLevel2", self.testLevel2),
+        ("testLevel3", self.testLevel3),
+        ("testDoNotUseNestedConfigs", self.testDoNotUseNestedConfigs),
+        ("testConfiguresCorrectlyFromDict", self.testConfiguresCorrectlyFromDict),
+        ("testConfigureFallsBackCorrectly", self.testConfigureFallsBackCorrectly),
+    ]
+
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
             "initializing Configuration with empty Dictionary should succeed")
@@ -200,7 +224,11 @@ extension String {
 
 extension XCTestCase {
     var bundlePath: String {
-        return NSBundle(forClass: self.dynamicType).resourcePath!
+        #if SWIFT_PACKAGE
+            return "Source/SwiftLintFrameworkTests/Resources".absolutePathRepresentation()
+        #else
+            return NSBundle(forClass: self.dynamicType).resourcePath!
+        #endif
     }
 
     var projectMockPathLevel0: String {

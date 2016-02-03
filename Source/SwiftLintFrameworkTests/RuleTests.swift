@@ -21,6 +21,27 @@ struct RuleWithLevelsMock: ConfigProviderRule {
 
 class RuleTests: XCTestCase {
 
+    // protocol XCTestCaseProvider
+    lazy var allTests: [(String, () throws -> Void)] = [
+        ("testRuleIsEqualTo", self.testRuleIsEqualTo),
+        ("testRuleIsNotEqualTo", self.testRuleIsNotEqualTo),
+        ("testRuleArraysWithDifferentCountsNotEqual",
+            self.testRuleArraysWithDifferentCountsNotEqual),
+        ("testSeverityLevelRuleInitsWithConfigDictionary",
+            self.testSeverityLevelRuleInitsWithConfigDictionary),
+        ("testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary",
+            self.testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary),
+        ("testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary",
+            self.testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary),
+        ("testSeverityLevelRuleInitsWithConfigArray",
+            self.testSeverityLevelRuleInitsWithConfigArray),
+        ("testSeverityLevelRuleInitsWithSingleValueConfigArray",
+            self.testSeverityLevelRuleInitsWithSingleValueConfigArray),
+        ("testSeverityLevelRuleInitsWithLiteral", self.testSeverityLevelRuleInitsWithLiteral),
+        ("testSeverityLevelRuleNotEqual", self.testSeverityLevelRuleNotEqual),
+        ("testDifferentSeverityLevelRulesNotEqual", self.testDifferentSeverityLevelRulesNotEqual),
+    ]
+
     private struct RuleMock1: Rule {
         init() {}
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")

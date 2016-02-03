@@ -6,11 +6,19 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
+import Foundation
 import XCTest
 import SwiftLintFramework
 import SourceKittenFramework
 
 class CustomRulesTests: XCTestCase {
+
+    // protocol XCTestCaseProvider
+    lazy var allTests: [(String, () throws -> Void)] = [
+        ("testCustomRuleConfigSetsCorrectly", self.testCustomRuleConfigSetsCorrectly),
+        ("testCustomRuleConfigThrows", self.testCustomRuleConfigThrows),
+        ("testCustomRules", self.testCustomRules),
+    ]
 
     func testCustomRuleConfigSetsCorrectly() {
         let configDict = ["my_custom_rule": ["name": "MyCustomRule",

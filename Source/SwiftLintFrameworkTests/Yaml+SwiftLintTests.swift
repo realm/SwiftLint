@@ -6,11 +6,17 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import XCTest
 import Yaml
 @testable import SwiftLintFramework
 
 class YamlSwiftLintTests: XCTestCase {
+
+    // protocol XCTestCaseProvider
+    lazy var allTests: [(String, () throws -> Void)] = [
+        ("testFlattenYaml", self.testFlattenYaml),
+    ]
 
     func testFlattenYaml() {
         let yamlResult = Yaml.load(getTestYaml())

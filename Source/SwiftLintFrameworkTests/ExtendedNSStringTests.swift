@@ -9,6 +9,13 @@
 import XCTest
 
 class ExtendedNSStringTests: XCTestCase {
+
+    // protocol XCTestCaseProvider
+    lazy var allTests: [(String, () throws -> Void)] = [
+        ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters",
+            self.testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
+    ]
+
     func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
         let contents = "" +
         "import Foundation\n" +                               // 18 characters

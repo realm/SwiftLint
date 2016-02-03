@@ -38,6 +38,11 @@
   [Scott Hoyt](https://github.com/scottrhoyt)
   [#355](https://github.com/realm/SwiftLint/issues/355)
 
+* The `rules` command now prints a table containing values for: `identifier`,
+  `opt-in`, `correctable`, `enabled in your config` & `configuration`.  
+  [JP Simard](https://github.com/jpsim)
+  [#392](https://github.com/realm/SwiftLint/issues/392)
+
 ##### Bug Fixes
 
 * Fix more false positives in `ValidDocsRule`.  

@@ -63,6 +63,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
                 "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
             "[].map(){ $0 }\n": "[].map() { $0 }\n",
             "[].map( { })\n": "[].map({ })\n",
+            "if a == b{ }\n": "if a == b { }\n",
+            "if\n\tlet a = b,\n\tlet c = d{ }\n": "if\n\tlet a = b,\n\tlet c = d { }\n"
         ]
     )
 

@@ -7,11 +7,15 @@ let package = Package(
     Target(name: "swiftlint",
       dependencies: [
         .Target(name: "SwiftLintFramework")
-      ])
+      ]),
+    Target(name: "SwiftLintFrameworkTests",
+      dependencies: [
+        .Target(name: "SwiftLintFramework")
+      ]),
   ],
   dependencies: [
     .Package(url: "https://github.com/jpsim/SourceKitten.git", majorVersion: 0, minor: 9),
     .Package(url: "https://github.com/norio-nomura/YamlSwift.git", majorVersion: 1),
-  ],
-  exclude: ["Source/SwiftLintFrameworkTests"]
+    .Package(url: "https://github.com/norio-nomura/swift-corelibs-xctest.git", majorVersion: 0),
+  ]
 )

@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
@@ -223,7 +224,11 @@ extension String {
 
 extension XCTestCase {
     var bundlePath: String {
-        return NSBundle(forClass: self.dynamicType).resourcePath!
+        #if SWIFT_PACKAGE
+            return "Source/SwiftLintFrameworkTests/Resources".absolutePathRepresentation()
+        #else
+            return NSBundle(forClass: self.dynamicType).resourcePath!
+        #endif
     }
 
     var projectMockPathLevel0: String {

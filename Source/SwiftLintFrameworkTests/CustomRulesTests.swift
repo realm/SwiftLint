@@ -6,6 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
+import Foundation
 import XCTest
 import SwiftLintFramework
 import SourceKittenFramework

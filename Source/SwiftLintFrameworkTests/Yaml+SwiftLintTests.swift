@@ -53,11 +53,19 @@ class YamlSwiftLintTests: XCTestCase {
     }
 
     func getTestYaml() -> String {
-        let testBundle = NSBundle(forClass: self.dynamicType)
-        if let path = testBundle.pathForResource("test", ofType: "yml"),
-           let ymlString = try? String(contentsOfFile: path) {
-            return ymlString
-        }
+        #if SWIFT_PACKAGE
+            let path = "Source/SwiftLintFrameworkTests/Resources/test.yml"
+                .absolutePathRepresentation()
+            if let ymlString = try? String(contentsOfFile: path) {
+                return ymlString
+            }
+        #else
+            let testBundle = NSBundle(forClass: self.dynamicType)
+            if let path = testBundle.pathForResource("test", ofType: "yml"),
+                let ymlString = try? String(contentsOfFile: path) {
+                    return ymlString
+            }
+        #endif
         fatalError("Could not load test.yml")
     }
 

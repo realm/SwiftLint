@@ -29,7 +29,7 @@ class IntegrationTests: XCTestCase {
         let swiftFiles = config.lintableFilesForPath("")
         XCTAssert(swiftFiles.map({$0.path!}).contains(__FILE__), "current file should be included")
 
-        #if SWIFTLINT_XCODE_VERSION_0730
+        #if SWIFTLINT_XCODE_VERSION_0730 || SWIFT_PACKAGE
             XCTAssertEqual(swiftFiles.flatMap({
                 Linter(file: $0, configuration: config).styleViolations
             }), [])

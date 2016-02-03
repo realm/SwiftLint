@@ -18,3 +18,9 @@ extension Array {
         return nil
     }
 }
+
+extension Array where Element: NSTextCheckingResult {
+    func ranges() -> [NSRange] {
+        return map { $0.range }
+    }
+}

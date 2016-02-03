@@ -138,6 +138,22 @@ extension File {
         }.map { $0.0 }
     }
 
+    internal func matchPattern(pattern: String,
+                             excludingSyntaxKinds: [SyntaxKind],
+                             excludingPattern: String) -> [NSRange] {
+        let contents = self.contents as NSString
+        let range = NSRange(location: 0, length: contents.length)
+        let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
+        if matches.isEmpty {
+            return []
+        }
+        let exclusionRanges = regex(excludingPattern).matchesInString(self.contents,
+                                                                      options: [],
+                                                                      range: range)
+                                                                            .ranges()
+        return matches.filter { !$0.intersectsRanges(exclusionRanges) }
+    }
+
     public func validateVariableName(dictionary: [String: SourceKitRepresentable],
                                      kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard let name = dictionary["key.name"] as? String,

@@ -33,6 +33,11 @@
   [Denis Lebedev](https://github.com/garnett)
   [#424](https://github.com/realm/SwiftLint/issues/424)
 
+* Added exception for multi-line `if`/`guard`/`while` conditions to allow
+  opening brace to be on a new line in `OpeningBraceRule`.  
+  [Scott Hoyt](https://github.com/scottrhoyt)
+  [#355](https://github.com/realm/SwiftLint/issues/355)
+
 ##### Bug Fixes
 
 * Fix more false positives in `ValidDocsRule`.  

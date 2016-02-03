@@ -15,7 +15,8 @@ extension File {
     private func violatingOpeningBraceRanges() -> [NSRange] {
         return matchPattern(
             "((?:[^( ]|[\\s(][\\s]+)\\{)",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
+            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+            excludingPattern: "((?:if|guard|while)\\n((?:[^\\{]+)\\n)+\\s*\\{)"
         )
     }
 }
@@ -34,13 +35,25 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
         nonTriggeringExamples: [
             "func abc() {\n}",
             "[].map() { $0 }",
-            "[].map({ })"
+            "[].map({ })",
+            "if let a = b { }",
+            "while a == b { }",
+            "guard let a = b else { }",
+            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
+            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
+            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"
         ],
         triggeringExamples: [
             "func abc(↓){\n}",
             "func abc()↓\n\t{ }",
             "[].map(↓){ $0 }",
-            "[].map↓( { } )"
+            "[].map↓( { } )",
+            "if let a = b{ }",
+            "while a == b{ }",
+            "guard let a = b else{ }",
+            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c{ }",
+            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c{ }",
+            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else{ }"
         ],
         corrections: [
             "struct Rule{}\n": "struct Rule {}\n",
@@ -50,6 +63,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
                 "struct Parent {\n\tstruct Child {\n\t\tlet foo: Int\n\t}\n}\n",
             "[].map(){ $0 }\n": "[].map() { $0 }\n",
             "[].map( { })\n": "[].map({ })\n",
+            "if a == b{ }\n": "if a == b { }\n",
+            "if\n\tlet a = b,\n\tlet c = d{ }\n": "if\n\tlet a = b,\n\tlet c = d { }\n"
         ]
     )
 

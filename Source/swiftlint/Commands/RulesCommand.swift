@@ -26,7 +26,7 @@ struct RulesCommand: CommandType {
             return .Success()
         }
 
-        print(masterRuleList.list.keys.joinWithSeparator("\n"))
+        print(TextTable(ruleList: masterRuleList).render())
         return .Success()
     }
 

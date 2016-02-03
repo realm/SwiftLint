@@ -9,6 +9,11 @@
 import Foundation
 
 public struct NameConfig: RuleConfig, Equatable {
+    public var consoleDescription: String {
+        return "(min_length) \(minLength.shortConsoleDescription), " +
+            "(max_length) \(maxLength.shortConsoleDescription)"
+    }
+
     var minLength: SeverityLevelsConfig
     var maxLength: SeverityLevelsConfig
     var excluded: Set<String>

@@ -21,6 +21,10 @@ public struct RegexConfig: RuleConfig, Equatable {
         return severityConfig.severity
     }
 
+    public var consoleDescription: String {
+        return "\(severity.rawValue.lowercaseString): \(regex.pattern)"
+    }
+
     public var description: RuleDescription {
         return RuleDescription(identifier: identifier,
             name: name ?? identifier,

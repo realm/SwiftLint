@@ -23,7 +23,12 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
             "func f(code: Int) -> Int {" +
                 "switch code {\n case 0: fallthrough\ncase 0: return 1\ncase 0: return 1\n" +
                 "case 0: return 1\ncase 0: return 1\ncase 0: return 1\ncase 0: return 1\n" +
-                "case 0: return 1\ncase 0: return 1\ndefault: return 1}}"
+                "case 0: return 1\ncase 0: return 1\ndefault: return 1}}",
+            "func f1() {" +
+            "if true {}; if true {}; if true {}; if true {}; if true {}; if true {}\n" +
+                "func f2() {\n" +
+                    "if true {}; if true {}; if true {}; if true {}; if true {}\n" +
+                "}}",
         ],
         triggeringExamples: [
             "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
@@ -61,15 +66,21 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
 
         let complexity = substructure.reduce(0) { complexity, subItem in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                      key = subDict["key.kind"] as? String else {
+                      kind = subDict["key.kind"] as? String else {
                 return complexity
             }
-            if key == "source.lang.swift.stmt.switch" {
+
+            if let declarationKid = SwiftDeclarationKind(rawValue: kind)
+                where functionKinds.contains(declarationKid) {
+                return complexity
+            }
+
+            if kind == "source.lang.swift.stmt.switch" {
                 hasSwitchStatements = true
             }
 
             return complexity +
-                    Int(complexityStatements.contains(key)) +
+                    Int(complexityStatements.contains(kind)) +
                     measureComplexity(file, dictionary: subDict)
         }
 

@@ -47,3 +47,7 @@ Carthage/Build
 SwiftLint.pkg
 SwiftLintFramework.framework.zip
 benchmark_*
+
+# SPM
+.build
+Packages

@@ -11,7 +11,7 @@ of your source files for more accurate results.
 ![Test Status](https://travis-ci.org/realm/SwiftLint.svg?branch=master)
 [![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
 
-![](screenshot.png)
+![](assets/screenshot.png)
 
 ## Installation
 
@@ -43,7 +43,7 @@ else
 fi
 ```
 
-![](runscript.png)
+![](assets/runscript.png)
 
 ### Atom
 
@@ -216,7 +216,7 @@ custom_rules:
 
 This is what the output would look like:
 
-![](custom-rule.png)
+![](assets/custom-rule.png)
 
 You can filter the matches by providing one or more `match_kinds`, which will
 reject matches that include syntax kinds that are not present in this list. Here

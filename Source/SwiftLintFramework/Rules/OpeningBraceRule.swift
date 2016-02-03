@@ -36,13 +36,24 @@ public struct OpeningBraceRule: CorrectableRule, ConfigProviderRule {
             "func abc() {\n}",
             "[].map() { $0 }",
             "[].map({ })",
-            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{\n}"
+            "if let a = b { }",
+            "while a == b { }",
+            "guard let a = b else { }",
+            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
+            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c\n{ }",
+            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else\n{ }"
         ],
         triggeringExamples: [
             "func abc(↓){\n}",
             "func abc()↓\n\t{ }",
             "[].map(↓){ $0 }",
-            "[].map↓( { } )"
+            "[].map↓( { } )",
+            "if let a = b{ }",
+            "while a == b{ }",
+            "guard let a = b else{ }",
+            "if\n\tlet a = b,\n\tlet c = d\n\twhere a == c{ }",
+            "while\n\tlet a = b,\n\tlet c = d\n\twhere a == c{ }",
+            "guard\n\tlet a = b,\n\tlet c = d\n\twhere a == c else{ }"
         ],
         corrections: [
             "struct Rule{}\n": "struct Rule {}\n",

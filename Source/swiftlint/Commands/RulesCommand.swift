@@ -9,6 +9,7 @@
 import Commandant
 import Result
 import SwiftLintFramework
+import SwiftyTextTable
 
 private let violationMarker = "↓"
 

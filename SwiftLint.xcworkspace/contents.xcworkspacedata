@@ -17,6 +17,9 @@
       location = "group:Carthage/Checkouts/SWXMLHash/SWXMLHash.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Carthage/Checkouts/SwiftyTextTable/SwiftyTextTable.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Carthage/Checkouts/YamlSwift/Yaml.xcodeproj">
    </FileRef>
 </Workspace>

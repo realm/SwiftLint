@@ -35,9 +35,8 @@ private struct TextTableColumn {
 struct TextTable {
     private let columns: [TextTableColumn]
 
-    init(ruleList: RuleList) {
-        let sortedRules = masterRuleList.list.sort { $0.0 < $1.0 }
-        let configuration: Configuration = Configuration()
+    init(ruleList: RuleList, configuration: Configuration) {
+        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
         columns = [
             TextTableColumn(header: "identifier", values: sortedRules.map({ $0.0 })),
             TextTableColumn(header: "opt-in",

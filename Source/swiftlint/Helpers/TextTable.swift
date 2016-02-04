@@ -35,8 +35,8 @@ private struct TextTableColumn {
 struct TextTable {
     private let columns: [TextTableColumn]
 
-    init(ruleList: RuleList) {
-        let sortedRules = masterRuleList.list.sort { $0.0 < $1.0 }
+    init(ruleList: RuleList, configuration: Configuration) {
+        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
         columns = [
             TextTableColumn(header: "identifier", values: sortedRules.map({ $0.0 })),
             TextTableColumn(header: "opt-in",
@@ -45,7 +45,7 @@ struct TextTable {
                 values: sortedRules.map({ ($0.1.init() is CorrectableRule) ? "yes" : "no" })),
             TextTableColumn(header: "enabled in your config",
                 values: sortedRules.map({
-                    Configuration().rules.map({
+                    configuration.rules.map({
                         $0.dynamicType.description.identifier
                     }).contains($0.0) ? "yes" : "no"
                 })),

@@ -26,7 +26,8 @@ struct RulesCommand: CommandType {
             return .Success()
         }
 
-        print(TextTable(ruleList: masterRuleList).render())
+        let configuration = Configuration(commandLinePath: options.configurationFile)
+        print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
         return .Success()
     }
 
@@ -49,14 +50,20 @@ struct RulesCommand: CommandType {
 
 struct RulesOptions: OptionsType {
     private let ruleID: String?
+    private let configurationFile: String
 
-    private init(ruleID: String) {
-        self.ruleID = ruleID.isEmpty ? nil : ruleID
+    static func create(configurationFile: String) -> (ruleID: String) -> RulesOptions {
+        return { ruleID in
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile)
+        }
     }
 
     // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
-        return self.init
+        return create
+            <*> mode <| Option(key: "config",
+                defaultValue: Configuration.fileName,
+                usage: "the path to SwiftLint's configuration file")
             <*> mode <| Argument(defaultValue: "",
                 usage: "the rule identifier to display description for")
     }

@@ -85,12 +85,14 @@ extension TextTable {
         let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
         for (ruleId, ruleType) in sortedRules {
             let rule = ruleType.init()
+            let configuredRule = configuration.rules.indexOf({
+                $0.dynamicType.description.identifier == ruleId
+            }).map { configuration.rules[$0] }
             addRow(ruleId,
                    (rule is OptInRule) ? "yes" : "no",
                    (rule is CorrectableRule) ? "yes" : "no",
-                   configuration.rules.map({ $0.dynamicType.description.identifier })
-                       .contains(ruleId) ? "yes" : "no",
-                   (rule as? _ConfigProviderRule)?.configDescription ?? "N/A")
+                   configuredRule != nil ? "yes" : "no",
+                   (configuredRule as? _ConfigProviderRule)?.configDescription ?? "N/A")
         }
     }
 }

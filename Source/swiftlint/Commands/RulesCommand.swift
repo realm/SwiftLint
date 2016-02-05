@@ -69,3 +69,28 @@ struct RulesOptions: OptionsType {
                 usage: "the rule identifier to display description for")
     }
 }
+
+// MARK: - SwiftyTextTable
+
+extension TextTable {
+    init(ruleList: RuleList, configuration: Configuration) {
+        let columns = [
+            TextTableColumn(header: "identifier"),
+            TextTableColumn(header: "opt-in"),
+            TextTableColumn(header: "correctable"),
+            TextTableColumn(header: "enabled in your config"),
+            TextTableColumn(header: "configuration")
+        ]
+        self.init(columns: columns)
+        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
+        for (ruleId, ruleType) in sortedRules {
+            let rule = ruleType.init()
+            addRow(ruleId,
+                   (rule is OptInRule) ? "yes" : "no",
+                   (rule is CorrectableRule) ? "yes" : "no",
+                   configuration.rules.map({ $0.dynamicType.description.identifier })
+                       .contains(ruleId) ? "yes" : "no",
+                   (rule as? _ConfigProviderRule)?.configDescription ?? "N/A")
+        }
+    }
+}

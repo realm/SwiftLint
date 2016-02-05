@@ -16,7 +16,7 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
 
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-01-25-a
+SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-03-a
 
 SPM=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift build
 SPM_INCLUDE=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/local/include

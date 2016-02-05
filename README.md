@@ -39,7 +39,7 @@ in the IDE. Just add a new "Run Script Phase" with:
 if which swiftlint >/dev/null; then
   swiftlint
 else
-  echo "SwiftLint does not exist, download from https://github.com/realm/SwiftLint"
+  echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi
 ```
 

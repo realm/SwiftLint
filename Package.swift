@@ -15,7 +15,7 @@ let package = Package(
   ],
   dependencies: [
     .Package(url: "https://github.com/jpsim/SourceKitten.git", majorVersion: 0, minor: 9),
-    .Package(url: "https://github.com/norio-nomura/YamlSwift.git", majorVersion: 1),
+    .Package(url: "https://github.com/behrang/YamlSwift.git", majorVersion: 1),
     .Package(url: "https://github.com/norio-nomura/swift-corelibs-xctest.git", majorVersion: 0),
   ]
 )

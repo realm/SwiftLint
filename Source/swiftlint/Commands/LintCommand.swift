@@ -27,14 +27,17 @@ struct LintCommand: CommandType {
             useSTDIN: options.useSTDIN,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
             let start: NSDate! = options.benchmark ? NSDate() : nil
-            let currentViolations: [StyleViolation]
-            if options.benchmark {
-                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = _currentViolations
-                fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
-                ruleTimes.appendContentsOf(currentRuleTimes)
-            } else {
-                currentViolations = linter.styleViolations
+            var currentViolations: [StyleViolation] = []
+            autoreleasepool {
+                if options.benchmark {
+                    let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                    currentViolations = _currentViolations
+                    fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
+                    ruleTimes.appendContentsOf(currentRuleTimes)
+                } else {
+                    currentViolations = linter.styleViolations
+                }
+                linter.file.invalidateCache()
             }
             violations += currentViolations
             if reporter == nil { reporter = linter.reporter }

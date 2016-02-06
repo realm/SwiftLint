@@ -16,7 +16,7 @@ extension File {
         return matchPattern(
             "((?:[^( ]|[\\s(][\\s]+)\\{)",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
-            excludingPattern: "((?:if|guard|while)\\n((?:[^\\{]+)\\n)+\\s*\\{)"
+            excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"
         )
     }
 }

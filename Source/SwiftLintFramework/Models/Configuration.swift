@@ -27,7 +27,7 @@ public struct Configuration: Equatable {
                  whitelistRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
-                 reporter: String = "xcode",
+                 reporter: String = XcodeReporter.identifier,
                  configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
                  useNestedConfigs: Bool = false) {
         self.included = included
@@ -108,8 +108,8 @@ public struct Configuration: Equatable {
         )
     }
 
-    public init(path: String = ".swiftlint.yml", rootPath: String? = nil, optional: Bool = true,
-                quiet: Bool = false) {
+    public init(path: String = Configuration.fileName, rootPath: String? = nil,
+                optional: Bool = true, quiet: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let fail = { fatalError("Could not read configuration file at path '\(fullPath)'") }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {

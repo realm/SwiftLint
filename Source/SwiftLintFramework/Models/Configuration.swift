@@ -11,6 +11,17 @@ import SourceKittenFramework
 
 private let fileManager = NSFileManager.defaultManager()
 
+private enum ConfigurationKey: String {
+    case DisabledRules = "disabled_rules"
+    case EnabledRules = "enabled_rules" // deprecated in favor of OptInRules
+    case Excluded = "excluded"
+    case Included = "included"
+    case OptInRules = "opt_in_rules"
+    case Reporter = "reporter"
+    case UseNestedConfigs = "use_nested_configs"
+    case WhitelistRules = "whitelist_rules"
+}
+
 public struct Configuration: Equatable {
     public static let fileName = ".swiftlint.yml"
     public let disabledRules: [String] // disabled_rules
@@ -67,8 +78,9 @@ public struct Configuration: Equatable {
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
             if !disabledRules.isEmpty || !optInRules.isEmpty {
-                queuedPrintError("'disabled_rules' or 'opt_in_rules' cannot be used in " +
-                    "combination with 'whitelist_rules'")
+                queuedPrintError("'\(ConfigurationKey.DisabledRules.rawValue)' or " +
+                    "'\(ConfigurationKey.OptInRules.rawValue)' cannot be used in combination " +
+                    "with '\(ConfigurationKey.WhitelistRules.rawValue)'")
                 return nil
             }
 
@@ -85,25 +97,26 @@ public struct Configuration: Equatable {
     }
 
     public init?(dict: [String: AnyObject]) {
-
         // Deprecation warning for "enabled_rules"
-        if dict["enabled_rules"] != nil {
-            queuedPrint("'enabled_rules' has been renamed to 'opt_in_rules' " +
-                "and will be completely removed in a future release.")
+        if dict[ConfigurationKey.EnabledRules.rawValue] != nil {
+            queuedPrint("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
+                "'\(ConfigurationKey.OptInRules.rawValue)' and will be completely removed in a " +
+                "future release.")
         }
 
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
-        let optInRules = dict["opt_in_rules"] as? [String] ??
-            dict["enabled_rules"] as? [String] ?? []
+        let optInRules = dict[ConfigurationKey.OptInRules.rawValue] as? [String] ??
+            dict[ConfigurationKey.EnabledRules.rawValue] as? [String] ?? []
 
         self.init(
-            disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            disabledRules: dict[ConfigurationKey.DisabledRules.rawValue] as? [String] ?? [],
             optInRules: optInRules,
-            whitelistRules: dict["whitelist_rules"] as? [String] ?? [],
-            included: dict["included"] as? [String] ?? [],
-            excluded: dict["excluded"] as? [String] ?? [],
-            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
-            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
+            whitelistRules: dict[ConfigurationKey.WhitelistRules.rawValue] as? [String] ?? [],
+            included: dict[ConfigurationKey.Included.rawValue] as? [String] ?? [],
+            excluded: dict[ConfigurationKey.Excluded.rawValue] as? [String] ?? [],
+            reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
+                XcodeReporter.identifier,
+            useNestedConfigs: dict[ConfigurationKey.UseNestedConfigs.rawValue] as? Bool ?? false,
             configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
         )
     }

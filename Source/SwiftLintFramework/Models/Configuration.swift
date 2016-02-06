@@ -99,7 +99,7 @@ public struct Configuration: Equatable {
     public init?(dict: [String: AnyObject]) {
         // Deprecation warning for "enabled_rules"
         if dict[ConfigurationKey.EnabledRules.rawValue] != nil {
-            queuedPrint("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
+            queuedPrintError("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
                 "'\(ConfigurationKey.OptInRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }

@@ -2,6 +2,14 @@
 
 ##### Breaking
 
+##### Enhancements
+
+##### Bug Fixes
+
+## 0.8.0: High Heat
+
+##### Breaking
+
 * Setting only warning on `SeverityLevelsConfig` rules now disables the error
   value.  
   [Robin Kunde](https://github.com/robinkunde)

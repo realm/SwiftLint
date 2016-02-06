@@ -108,6 +108,23 @@ public struct Configuration: Equatable {
         let optInRules = dict[ConfigurationKey.OptInRules.rawValue] as? [String] ??
             dict[ConfigurationKey.EnabledRules.rawValue] as? [String] ?? []
 
+        // Log an error when supplying invalid keys in the configuration dictionary
+        let validKeys = [
+            ConfigurationKey.DisabledRules,
+            .EnabledRules,
+            .Excluded,
+            .Included,
+            .OptInRules,
+            .Reporter,
+            .UseNestedConfigs,
+            .WhitelistRules,
+        ].map({ $0.rawValue }) + masterRuleList.list.keys
+
+        let invalidKeys = Set(dict.keys).subtract(validKeys)
+        if !invalidKeys.isEmpty {
+            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        }
+
         self.init(
             disabledRules: dict[ConfigurationKey.DisabledRules.rawValue] as? [String] ?? [],
             optInRules: optInRules,

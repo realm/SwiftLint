@@ -145,13 +145,12 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Configuration Equality
 
     private var projectMockConfig0: Configuration {
-        var config = Configuration(path: projectMockYAML0, optional: false, silent: true)
-        config.rootPath = projectMockPathLevel0
-        return config
+        return Configuration(path: projectMockYAML0, optional: false, quiet: true,
+            rootPath: projectMockPathLevel0)
     }
 
     private var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, silent: true)
+        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
     }
 
     func testIsEqualTo() {

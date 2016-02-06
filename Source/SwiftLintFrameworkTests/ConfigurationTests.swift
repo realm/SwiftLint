@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 
@@ -135,9 +135,8 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testExcludedPaths() {
-        let configuration = Configuration(disabledRules: [], included: ["directory"],
-            excluded: ["directory/excluded",  "directory/ExcludedFile.swift"],
-            reporter: "json", rules: [])!
+        let configuration = Configuration(included: ["directory"],
+            excluded: ["directory/excluded",  "directory/ExcludedFile.swift"])!
         let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
@@ -202,14 +201,14 @@ class ConfigurationTests: XCTestCase {
     func testConfiguresCorrectlyFromDict() {
         let ruleConfig = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfig]
-        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        let rules = testRuleList.configuredRulesWithDictionary(config)
         // swiftlint:disable:next force_try
         XCTAssertTrue(rules == [try! RuleWithLevelsMock(config: ruleConfig) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = Configuration.rulesFromDict(config, ruleList: testRuleList)
+        let rules = testRuleList.configuredRulesWithDictionary(config)
         XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
 }

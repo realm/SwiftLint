@@ -17,37 +17,59 @@ public struct RuleList {
         }
         list = tmpList
     }
+
+    internal func configuredRulesWithDictionary(dictionary: [String: AnyObject]) -> [Rule] {
+        var rules = [Rule]()
+        for rule in list.values {
+            let identifier = rule.description.identifier
+            if let ConfigurableRuleType = rule as? ConfigurableRule.Type,
+                ruleConfig = dictionary[identifier] {
+                do {
+                    let configuredRule = try ConfigurableRuleType.init(config: ruleConfig)
+                    rules.append(configuredRule)
+                } catch {
+                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
+                    rules.append(rule.init())
+                }
+            } else {
+                rules.append(rule.init())
+            }
+        }
+        return rules
+    }
 }
 
-public let masterRuleList = RuleList( rules: ClosingBraceRule.self,
-                                      ColonRule.self,
-                                      CommaRule.self,
-                                      ConditionalBindingCascadeRule.self,
-                                      ControlStatementRule.self,
-                                      CustomRules.self,
-                                      CyclomaticComplexityRule.self,
-                                      EmptyCountRule.self,
-                                      FileLengthRule.self,
-                                      ForceCastRule.self,
-                                      ForceTryRule.self,
-                                      ForceUnwrappingRule.self,
-                                      FunctionBodyLengthRule.self,
-                                      FunctionParameterCountRule.self,
-                                      LeadingWhitespaceRule.self,
-                                      LegacyConstantRule.self,
-                                      LegacyConstructorRule.self,
-                                      LineLengthRule.self,
-                                      MissingDocsRule.self,
-                                      NestingRule.self,
-                                      OpeningBraceRule.self,
-                                      OperatorFunctionWhitespaceRule.self,
-                                      ReturnArrowWhitespaceRule.self,
-                                      StatementPositionRule.self,
-                                      TodoRule.self,
-                                      TrailingNewlineRule.self,
-                                      TrailingSemicolonRule.self,
-                                      TrailingWhitespaceRule.self,
-                                      TypeBodyLengthRule.self,
-                                      TypeNameRule.self,
-                                      ValidDocsRule.self,
-                                      VariableNameRule.self)
+public let masterRuleList = RuleList(rules:
+    ClosingBraceRule.self,
+    ColonRule.self,
+    CommaRule.self,
+    ConditionalBindingCascadeRule.self,
+    ControlStatementRule.self,
+    CustomRules.self,
+    CyclomaticComplexityRule.self,
+    EmptyCountRule.self,
+    FileLengthRule.self,
+    ForceCastRule.self,
+    ForceTryRule.self,
+    ForceUnwrappingRule.self,
+    FunctionBodyLengthRule.self,
+    FunctionParameterCountRule.self,
+    LeadingWhitespaceRule.self,
+    LegacyConstantRule.self,
+    LegacyConstructorRule.self,
+    LineLengthRule.self,
+    MissingDocsRule.self,
+    NestingRule.self,
+    OpeningBraceRule.self,
+    OperatorFunctionWhitespaceRule.self,
+    ReturnArrowWhitespaceRule.self,
+    StatementPositionRule.self,
+    TodoRule.self,
+    TrailingNewlineRule.self,
+    TrailingSemicolonRule.self,
+    TrailingWhitespaceRule.self,
+    TypeBodyLengthRule.self,
+    TypeNameRule.self,
+    ValidDocsRule.self,
+    VariableNameRule.self
+)

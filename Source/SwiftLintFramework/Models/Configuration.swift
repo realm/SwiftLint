@@ -28,7 +28,7 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromDict(),
+                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
                  useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
@@ -36,7 +36,7 @@ public struct Configuration: Equatable {
         self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
-        let validRuleIdentifiers = Configuration.rulesFromDict().map {
+        let validRuleIdentifiers = configuredRules.map {
             $0.dynamicType.description.identifier
         }
 
@@ -66,19 +66,17 @@ public struct Configuration: Equatable {
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
-
             if !disabledRules.isEmpty || !optInRules.isEmpty {
                 queuedPrintError("'disabled_rules' or 'opt_in_rules' cannot be used in " +
                     "combination with 'whitelist_rules'")
                 return nil
             }
 
-            self.rules = rules.filter { rule in
-                let id = rule.dynamicType.description.identifier
-                return whitelistRules.contains(id)
+            rules = configuredRules.filter { rule in
+                return whitelistRules.contains(rule.dynamicType.description.identifier)
             }
         } else {
-            self.rules = rules.filter { rule in
+            rules = configuredRules.filter { rule in
                 let id = rule.dynamicType.description.identifier
                 if validDisabledRules.contains(id) { return false }
                 return optInRules.contains(id) || !(rule is OptInRule)
@@ -106,7 +104,7 @@ public struct Configuration: Equatable {
             excluded: dict["excluded"] as? [String] ?? [],
             reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
             useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
-            rules: Configuration.rulesFromDict(dict)
+            configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
         )
     }
 
@@ -133,27 +131,6 @@ public struct Configuration: Equatable {
             fail()
         }
         self.init()!
-    }
-
-    public static func rulesFromDict(dict: [String: AnyObject]? = nil,
-                                     ruleList: RuleList = masterRuleList) -> [Rule] {
-        var rules = [Rule]()
-        for ruleType in ruleList.list.values {
-            let identifier = ruleType.description.identifier
-            if let ruleConfig = dict?[identifier] {
-                do {
-                    let configuredRule = try ruleType.init(config: ruleConfig)
-                    rules.append(configuredRule)
-                } catch {
-                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
-                    rules.append(ruleType.init())
-                }
-            } else {
-                rules.append(ruleType.init())
-            }
-        }
-
-        return rules
     }
 
     public func lintablePathsForPath(path: String,

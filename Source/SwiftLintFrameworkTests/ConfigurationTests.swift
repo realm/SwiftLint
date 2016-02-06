@@ -145,8 +145,9 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Configuration Equality
 
     private var projectMockConfig0: Configuration {
-        return Configuration(path: projectMockYAML0, optional: false, quiet: true,
-            rootPath: projectMockPathLevel0)
+        var config = Configuration(path: projectMockYAML0, optional: false, quiet: true)
+        config.rootPath = projectMockPathLevel0
+        return config
     }
 
     private var projectMockConfig2: Configuration {

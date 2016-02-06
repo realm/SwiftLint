@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct Linter {
     public let file: File
     private let rules: [Rule]
-    public let reporter: Reporter.Type
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -47,7 +46,6 @@ public struct Linter {
     public init(file: File, configuration: Configuration = Configuration()!) {
         self.file = file
         rules = configuration.rules
-        reporter = configuration.reporterFromString
     }
 
     public func correct() -> [Correction] {

@@ -22,21 +22,6 @@ public struct Configuration: Equatable {
     public var rootPath: String?       // the root path of the lint to search for nested configs
     private var configPath: String?    // if successfully load from a path
 
-    public var reporterFromString: Reporter.Type {
-        switch reporter {
-        case XcodeReporter.identifier:
-            return XcodeReporter.self
-        case JSONReporter.identifier:
-            return JSONReporter.self
-        case CSVReporter.identifier:
-            return CSVReporter.self
-        case CheckstyleReporter.identifier:
-            return CheckstyleReporter.self
-        default:
-            fatalError("no reporter with identifier '\(reporter)' available.")
-        }
-    }
-
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
                  whitelistRules: [String] = [],

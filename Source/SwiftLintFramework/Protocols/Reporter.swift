@@ -11,3 +11,18 @@ public protocol Reporter: CustomStringConvertible {
     static func generateReport(violations: [StyleViolation]) -> String
     static var isRealtime: Bool { get }
 }
+
+public func reporterFromString(string: String) -> Reporter.Type {
+    switch string {
+    case XcodeReporter.identifier:
+        return XcodeReporter.self
+    case JSONReporter.identifier:
+        return JSONReporter.self
+    case CSVReporter.identifier:
+        return CSVReporter.self
+    case CheckstyleReporter.identifier:
+        return CheckstyleReporter.self
+    default:
+        fatalError("no reporter with identifier '\(string)' available.")
+    }
+}

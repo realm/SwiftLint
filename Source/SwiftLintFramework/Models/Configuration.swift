@@ -110,7 +110,8 @@ public struct Configuration: Equatable {
         )
     }
 
-    public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
+    public init(path: String = ".swiftlint.yml", rootPath: String? = nil, optional: Bool = true,
+                quiet: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let fail = { fatalError("Could not read configuration file at path '\(fullPath)'") }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
@@ -122,7 +123,7 @@ public struct Configuration: Equatable {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
             let dict = try YamlParser.parse(yamlContents)
-            if !silent {
+            if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
             self.init(dict: dict)!
@@ -186,7 +187,7 @@ public extension Configuration {
         // If a config exists and it isn't us, load and merge the configs
         if configSearchPath != configPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
-            return merge(Configuration(path: configSearchPath, optional: false, silent: true))
+            return merge(Configuration(path: configSearchPath, optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree

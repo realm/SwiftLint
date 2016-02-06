@@ -58,35 +58,36 @@ extension File {
 }
 
 extension Configuration {
-    init(commandLinePath: String) {
-        self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"))
+    init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
+        self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"),
+            rootPath: rootPath?.absolutePathStandardized(), quiet: quiet)
     }
 
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
-                            useScriptInputFiles: Bool, visitorBlock: (Linter) -> ()) ->
-                            Result<[File], CommandantError<()>> {
-        return getFiles(path, action: action, useSTDIN: useSTDIN,
-                        useScriptInputFiles: useScriptInputFiles)
-            .flatMap { files -> Result<[File], CommandantError<()>> in
-                if files.isEmpty {
-                    let errorMessage = "No lintable files found at path '\(path)'"
-                    return .Failure(CommandantError<()>.UsageError(description: errorMessage))
+                            quiet: Bool = false, useScriptInputFiles: Bool,
+                            visitorBlock: (Linter) -> ()) -> Result<[File], CommandantError<()>> {
+        return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
+                    useScriptInputFiles: useScriptInputFiles)
+        .flatMap { files -> Result<[File], CommandantError<()>> in
+            if files.isEmpty {
+                let errorMessage = "No lintable files found at path '\(path)'"
+                return .Failure(CommandantError<()>.UsageError(description: errorMessage))
+            }
+            return .Success(files)
+        }.flatMap { files in
+            let fileCount = files.count
+            for (index, file) in files.enumerate() {
+                if !quiet, let path = file.path {
+                    let filename = (path as NSString).lastPathComponent
+                    queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
                 }
-                return .Success(files)
-            }.flatMap { files in
-                let fileCount = files.count
-                for (index, file) in files.enumerate() {
-                    if let path = file.path {
-                        let filename = (path as NSString).lastPathComponent
-                        queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
-                    }
-                    visitorBlock(Linter(file: file, configuration: configForFile(file)))
-                }
-                return .Success(files)
+                visitorBlock(Linter(file: file, configuration: configForFile(file)))
+            }
+            return .Success(files)
         }
     }
 
-    private func getFiles(path: String, action: String, useSTDIN: Bool,
+    private func getFiles(path: String, action: String, useSTDIN: Bool, quiet: Bool,
                           useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
             let standardInput = NSFileHandle.fileHandleWithStandardInput()
@@ -99,10 +100,12 @@ extension Configuration {
         } else if useScriptInputFiles {
             return scriptInputFiles().map { $0.flatMap(File.maybeSwiftFile) }
         }
-        queuedPrintError(
-            "\(action) Swift files " +
-            (path.isEmpty ? "in current working directory" : "at path \(path)")
-        )
+        if !quiet {
+            queuedPrintError(
+                "\(action) Swift files " +
+                    (path.isEmpty ? "in current working directory" : "at path \(path)")
+            )
+        }
         return .Success(lintableFilesForPath(path))
     }
 }

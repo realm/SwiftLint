@@ -20,13 +20,13 @@ struct LintCommand: CommandType {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
-        var configuration = Configuration(commandLinePath: options.configurationFile)
-        configuration.rootPath = options.path.absolutePathStandardized()
+        let configuration = Configuration(commandLinePath: options.configurationFile,
+            rootPath: options.path, quiet: options.quiet)
         let reporter = reporterFromString(
             options.reporter.isEmpty ? configuration.reporter : options.reporter
         )
         return configuration.visitLintableFiles(options.path, action: "Linting",
-            useSTDIN: options.useSTDIN,
+            useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
             let start: NSDate! = options.benchmark ? NSDate() : nil
             var currentViolations: [StyleViolation] = []
@@ -53,8 +53,10 @@ struct LintCommand: CommandType {
                 queuedPrint(reporter.generateReport(violations))
             }
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
-            LintCommand.printStatus(violations: violations, files: files,
-                numberOfSeriousViolations: numberOfSeriousViolations)
+            if !options.quiet {
+                LintCommand.printStatus(violations: violations, files: files,
+                    serious: numberOfSeriousViolations)
+            }
             if options.benchmark {
                 saveBenchmark("files", times: fileTimes)
                 saveBenchmark("rules", times: ruleTimes)
@@ -66,13 +68,12 @@ struct LintCommand: CommandType {
         }
     }
 
-    static func printStatus(violations violations: [StyleViolation], files: [File],
-        numberOfSeriousViolations: Int) {
+    static func printStatus(violations violations: [StyleViolation], files: [File], serious: Int) {
         let violationSuffix = (violations.count != 1 ? "s" : "")
         let fileCount = files.count
         let filesSuffix = (fileCount != 1 ? "s." : ".")
         let message = "Done linting! Found \(violations.count) violation\(violationSuffix), " +
-            "\(numberOfSeriousViolations) serious in \(fileCount) file\(filesSuffix)"
+            "\(serious) serious in \(fileCount) file\(filesSuffix)"
         queuedPrintError(message)
     }
 }
@@ -85,12 +86,13 @@ struct LintOptions: OptionsType {
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
+    let quiet: Bool
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter)
-        }}}}}}
+    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> (quiet: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet)
+        }}}}}}}
     }
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -117,5 +119,8 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "reporter",
                 defaultValue: "",
                 usage: "the reporter used to log errors and warnings")
+            <*> mode <| Option(key: "quiet",
+                defaultValue: false,
+                usage: "don't print status logs like 'Linting <file>' & 'Done linting'")
     }
 }

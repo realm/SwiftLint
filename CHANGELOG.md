@@ -10,6 +10,10 @@
   requirements have been moved to `Rule`.  
   [JP Simard](https://github.com/jpsim)
 
+* `Configuration(path:optional:silent)` has been changed to
+  `Configuration(path:rootPath:optional:quiet:)`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which
@@ -20,6 +24,11 @@
 
 * `swiftlint rules` now shows a configuration description for all rules.  
   [JP Simard](https://github.com/jpsim)
+
+* `lint` and `autocorrect` commands now accept a `--quiet` flag that prevents
+  status messages like 'Linting <file>' & 'Done linting' from being logged.  
+  [JP Simard](https://github.com/jpsim)
+  [#386](https://github.com/realm/SwiftLint/issues/386)
 
 ##### Bug Fixes
 

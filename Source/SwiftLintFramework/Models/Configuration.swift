@@ -104,9 +104,15 @@ public struct Configuration: Equatable {
                 "future release.")
         }
 
+        func defaultStringArray(object: AnyObject?) -> [String] {
+            return [String].arrayOf(object) ?? []
+        }
+
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
-        let optInRules = dict[ConfigurationKey.OptInRules.rawValue] as? [String] ??
-            dict[ConfigurationKey.EnabledRules.rawValue] as? [String] ?? []
+        let optInRules = defaultStringArray(
+            dict[ConfigurationKey.OptInRules.rawValue] ??
+                dict[ConfigurationKey.EnabledRules.rawValue]
+        )
 
         // Log an error when supplying invalid keys in the configuration dictionary
         let validKeys = [
@@ -126,11 +132,11 @@ public struct Configuration: Equatable {
         }
 
         self.init(
-            disabledRules: dict[ConfigurationKey.DisabledRules.rawValue] as? [String] ?? [],
+            disabledRules: defaultStringArray(dict[ConfigurationKey.DisabledRules.rawValue]),
             optInRules: optInRules,
-            whitelistRules: dict[ConfigurationKey.WhitelistRules.rawValue] as? [String] ?? [],
-            included: dict[ConfigurationKey.Included.rawValue] as? [String] ?? [],
-            excluded: dict[ConfigurationKey.Excluded.rawValue] as? [String] ?? [],
+            whitelistRules: defaultStringArray(dict[ConfigurationKey.WhitelistRules.rawValue]),
+            included: defaultStringArray(dict[ConfigurationKey.Included.rawValue]),
+            excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
             useNestedConfigs: dict[ConfigurationKey.UseNestedConfigs.rawValue] as? Bool ?? false,

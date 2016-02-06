@@ -38,6 +38,12 @@
   [JP Simard](https://github.com/jpsim)
   [#386](https://github.com/realm/SwiftLint/issues/386)
 
+* All top-level keys in a configuration file that accept an array now also
+  accept a single value.  
+  e.g. `included: Source` is equivalent to `included:\n  - Source`.  
+  [JP Simard](https://github.com/jpsim)
+  [#120](https://github.com/realm/SwiftLint/issues/120)
+
 ##### Bug Fixes
 
 * Fix case sensitivity of keywords for `valid_docs`.  

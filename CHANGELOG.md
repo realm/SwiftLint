@@ -43,6 +43,9 @@
   [JP Simard](https://github.com/jpsim)
   [#392](https://github.com/realm/SwiftLint/issues/392)
 
+* Reduce maximum memory usage.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * Fix more false positives in `ValidDocsRule`.  

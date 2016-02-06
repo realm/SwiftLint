@@ -9,6 +9,7 @@
 import Commandant
 import Result
 import SwiftLintFramework
+import SwiftyTextTable
 
 private let violationMarker = "↓"
 
@@ -66,5 +67,32 @@ struct RulesOptions: OptionsType {
                 usage: "the path to SwiftLint's configuration file")
             <*> mode <| Argument(defaultValue: "",
                 usage: "the rule identifier to display description for")
+    }
+}
+
+// MARK: - SwiftyTextTable
+
+extension TextTable {
+    init(ruleList: RuleList, configuration: Configuration) {
+        let columns = [
+            TextTableColumn(header: "identifier"),
+            TextTableColumn(header: "opt-in"),
+            TextTableColumn(header: "correctable"),
+            TextTableColumn(header: "enabled in your config"),
+            TextTableColumn(header: "configuration")
+        ]
+        self.init(columns: columns)
+        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
+        for (ruleId, ruleType) in sortedRules {
+            let rule = ruleType.init()
+            let configuredRule = configuration.rules.indexOf({
+                $0.dynamicType.description.identifier == ruleId
+            }).map { configuration.rules[$0] }
+            addRow(ruleId,
+                   (rule is OptInRule) ? "yes" : "no",
+                   (rule is CorrectableRule) ? "yes" : "no",
+                   configuredRule != nil ? "yes" : "no",
+                   (configuredRule as? _ConfigProviderRule)?.configDescription ?? "N/A")
+        }
     }
 }

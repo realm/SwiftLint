@@ -20,9 +20,11 @@ struct LintCommand: CommandType {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
-        var reporter: Reporter.Type!
         var configuration = Configuration(commandLinePath: options.configurationFile)
         configuration.rootPath = options.path.absolutePathStandardized()
+        let reporter = reporterFromString(
+            options.reporter.isEmpty ? configuration.reporter : options.reporter
+        )
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
@@ -40,7 +42,6 @@ struct LintCommand: CommandType {
                 linter.file.invalidateCache()
             }
             violations += currentViolations
-            if reporter == nil { reporter = linter.reporter }
             if reporter.isRealtime {
                 let report = reporter.generateReport(currentViolations)
                 if !report.isEmpty {
@@ -83,18 +84,17 @@ struct LintOptions: OptionsType {
     let strict: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
+    let reporter: String
 
-    // swiftlint:disable:next line_length
-    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> LintOptions {
-        // swiftlint:disable:next line_length
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile,
-                strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark)
-        }}}}}
+    // swiftlint:disable line_length
+    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter)
+        }}}}}}
     }
 
-    // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
+        // swiftlint:enable line_length
         return create
             <*> mode <| Option(key: "path",
                 defaultValue: "",
@@ -114,5 +114,8 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "benchmark",
                 defaultValue: false,
                 usage: "save benchmarks to benchmark_files.txt and benchmark_rules.txt")
+            <*> mode <| Option(key: "reporter",
+                defaultValue: "",
+                usage: "the reporter used to log errors and warnings")
     }
 }

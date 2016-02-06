@@ -2,7 +2,17 @@
 
 ##### Breaking
 
+* `Linter.reporter` has been removed and `Configuration.reporterFromString(_:)`
+  has been renamed to a free function: `reporterFromString(_:)`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
+
+* `swiftlint lint` now accepts an optional `--reporter` parameter which
+  overrides existing `reporter` values in the configuration file. Choose between
+  `xcode` (default), `json`, `csv` or `checkstyle`.  
+  [JP Simard](https://github.com/jpsim)
+  [#440](https://github.com/realm/SwiftLint/issues/440)
 
 ##### Bug Fixes
 

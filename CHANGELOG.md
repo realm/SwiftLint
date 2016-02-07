@@ -6,6 +6,10 @@
   has been renamed to a free function: `reporterFromString(_:)`.  
   [JP Simard](https://github.com/jpsim)
 
+* `_ConfigProviderRule` has been removed and its `configDescription` requirement
+  has been moved to `ConfigurableRule`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which
@@ -13,6 +17,9 @@
   `xcode` (default), `json`, `csv` or `checkstyle`.  
   [JP Simard](https://github.com/jpsim)
   [#440](https://github.com/realm/SwiftLint/issues/440)
+
+* `swiftlint rules` now shows a configuration description for all rules.  
+  [JP Simard](https://github.com/jpsim)
 
 ##### Bug Fixes
 

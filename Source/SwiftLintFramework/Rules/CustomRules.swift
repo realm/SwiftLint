@@ -12,7 +12,7 @@ import SourceKittenFramework
 // MARK: - CustomRulesConfig
 
 public struct CustomRulesConfig: RuleConfig, Equatable {
-    public var consoleDescription: String { return "N/A" }
+    public var consoleDescription: String { return "user-defined" }
     public var customRuleConfigs = [RegexConfig]()
 
     public init() {}

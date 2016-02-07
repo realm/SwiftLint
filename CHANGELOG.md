@@ -20,6 +20,11 @@
   [Ankit Aggarwal](https://github.com/aciidb0mb3r)
   [#298](https://github.com/realm/SwiftLint/issues/298)
 
+* Fixed inconsistencies between violations & corrections in
+  `StatementPositionRule`.  
+  [JP Simard](https://github.com/jpsim)
+  [#466](https://github.com/realm/SwiftLint/issues/466)
+
 ## 0.8.0: High Heat
 
 ##### Breaking

@@ -30,9 +30,9 @@ public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
         ],
         triggeringExamples: [
             "↓}else if {",
-            "}↓  else {",
-            "}↓\ncatch {",
-            "}\n\t↓  catch {"
+            "↓}  else {",
+            "↓}\ncatch {",
+            "↓}\n\t  catch {"
         ],
         corrections: [
             "}\n else {\n": "} else {\n",
@@ -42,8 +42,6 @@ public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(?:\\}|[\\s] |[\\n\\t\\r])\\b(?:else|catch)\\b"
-
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: config.severity,
@@ -52,8 +50,6 @@ public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        let pattern = "\\}\\s+((?:else|catch))\\b"
-
         let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
 
@@ -71,7 +67,12 @@ public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
         return corrections
     }
 
-    // MARK: - Private Methods
+    // MARK: - Private
+
+    // match literal '}'
+    // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
+    // followed by 'else' or 'catch' literals
+    private let pattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
     private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
         return file.matchPattern(pattern).filter { range, syntaxKinds in

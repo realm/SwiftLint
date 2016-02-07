@@ -137,19 +137,18 @@ public struct Configuration: Equatable {
     public static func rulesFromDict(dict: [String: AnyObject]? = nil,
                                      ruleList: RuleList = masterRuleList) -> [Rule] {
         var rules = [Rule]()
-        for rule in ruleList.list.values {
-            let identifier = rule.description.identifier
-            if let ConfigurableRuleType = rule as? ConfigurableRule.Type,
-               ruleConfig = dict?[identifier] {
+        for ruleType in ruleList.list.values {
+            let identifier = ruleType.description.identifier
+            if let ruleConfig = dict?[identifier] {
                 do {
-                    let configuredRule = try ConfigurableRuleType.init(config: ruleConfig)
+                    let configuredRule = try ruleType.init(config: ruleConfig)
                     rules.append(configuredRule)
                 } catch {
                     queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
-                    rules.append(rule.init())
+                    rules.append(ruleType.init())
                 }
             } else {
-                rules.append(rule.init())
+                rules.append(ruleType.init())
             }
         }
 

@@ -83,16 +83,21 @@ extension TextTable {
         ]
         self.init(columns: columns)
         let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
-        for (ruleId, ruleType) in sortedRules {
+        for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule = configuration.rules.indexOf({
-                $0.dynamicType.description.identifier == ruleId
-            }).map { configuration.rules[$0] }
-            addRow(ruleId,
-                   (rule is OptInRule) ? "yes" : "no",
-                   (rule is CorrectableRule) ? "yes" : "no",
-                   configuredRule != nil ? "yes" : "no",
-                   ((configuredRule ?? rule)  as? ConfigurableRule)?.configDescription ?? "N/A")
+            let configuredRule: Rule? = {
+                for rule in configuration.rules
+                    where rule.dynamicType.description.identifier == ruleID {
+                        return rule
+                }
+                return nil
+            }()
+            addRow(ruleID,
+                (rule is OptInRule) ? "yes" : "no",
+                (rule is CorrectableRule) ? "yes" : "no",
+                configuredRule != nil ? "yes" : "no",
+                (configuredRule ?? rule).configDescription
+            )
         }
     }
 }

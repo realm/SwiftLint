@@ -49,8 +49,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: "Function should have \(config.warning) or less parameters: " +
-                    "currently it has \(parameterCount)")]
+                reason: "Function should have \(config.warning) parameters or less: " +
+                    "it currently has \(parameterCount)")]
         }
 
         return []

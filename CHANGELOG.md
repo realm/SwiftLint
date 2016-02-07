@@ -16,6 +16,10 @@
 
 ##### Bug Fixes
 
+* Fix case sensitivity of keywords for `valid_docs`.  
+  [Ankit Aggarwal](https://github.com/aciidb0mb3r)
+  [#298](https://github.com/realm/SwiftLint/issues/298)
+
 ## 0.8.0: High Heat
 
 ##### Breaking

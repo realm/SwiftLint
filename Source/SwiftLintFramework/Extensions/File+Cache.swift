@@ -50,17 +50,17 @@ private struct Cache<T> {
     }
 }
 
-public extension File {
+extension File {
 
-    public var structure: Structure {
+    internal var structure: Structure {
         return structureCache.get(self)
     }
 
-    public var syntaxMap: SyntaxMap {
+    internal var syntaxMap: SyntaxMap {
         return syntaxMapCache.get(self)
     }
 
-    public var syntaxKindsByLines: [[SyntaxKind]] {
+    internal var syntaxKindsByLines: [[SyntaxKind]] {
         return syntaxKindsByLinesCache.get(self)
     }
 
@@ -71,7 +71,7 @@ public extension File {
         syntaxKindsByLinesCache.invalidate(self)
     }
 
-    public static func clearCaches() {
+    internal static func clearCaches() {
         queueForRebuild = []
         _allDeclarationsByType = [:]
         responseCache.clear()
@@ -80,7 +80,7 @@ public extension File {
         syntaxKindsByLinesCache.clear()
     }
 
-    public static var allDeclarationsByType: [String: [String]] {
+    internal static var allDeclarationsByType: [String: [String]] {
         if !queueForRebuild.isEmpty {
             rebuildAllDeclarationsByType()
         }

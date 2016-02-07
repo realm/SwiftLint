@@ -10,8 +10,8 @@ import Foundation
 
 private var regexCache = [String: NSRegularExpression]()
 
-public extension NSRegularExpression {
-    public static func cached(pattern pattern: String) throws -> NSRegularExpression {
+extension NSRegularExpression {
+    internal static func cached(pattern pattern: String) throws -> NSRegularExpression {
         if let result = regexCache[pattern] {
             return result
         }
@@ -21,7 +21,7 @@ public extension NSRegularExpression {
         regexCache[pattern] = result
         return result
     }
-    public static func forcePattern(pattern: String) -> NSRegularExpression {
+    internal static func forcePattern(pattern: String) -> NSRegularExpression {
         // swiftlint:disable:next force_try
         return try! NSRegularExpression.cached(pattern: pattern)
     }

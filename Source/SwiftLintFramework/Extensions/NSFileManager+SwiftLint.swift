@@ -9,12 +9,7 @@
 import Foundation
 
 extension NSFileManager {
-    public func allFilesRecursively(directory directory: String) throws -> [String] {
-        return try subpathsOfDirectoryAtPath(directory)
-            .map((directory as NSString).stringByAppendingPathComponent)
-    }
-
-    public func filesToLintAtPath(path: String) -> [String] {
+    internal func filesToLintAtPath(path: String) -> [String] {
         let absolutePath = path.absolutePathStandardized()
         var isDirectory: ObjCBool = false
         guard fileExistsAtPath(absolutePath, isDirectory: &isDirectory) else {
@@ -22,8 +17,9 @@ extension NSFileManager {
         }
         if isDirectory {
             do {
-                return try allFilesRecursively(directory: absolutePath).filter {
-                    $0.isSwiftFile()
+                return try subpathsOfDirectoryAtPath(absolutePath)
+                    .map((absolutePath as NSString).stringByAppendingPathComponent).filter {
+                        $0.isSwiftFile()
                 }
             } catch {
                 fatalError("Couldn't find files in \(absolutePath): \(error)")

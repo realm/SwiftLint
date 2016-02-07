@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
-    func hasTrailingWhitespace() -> Bool {
+    internal func hasTrailingWhitespace() -> Bool {
         if isEmpty {
             return false
         }
@@ -22,15 +22,11 @@ extension String {
         return false
     }
 
-    func isUppercase() -> Bool {
+    internal func isUppercase() -> Bool {
         return self == uppercaseString
     }
 
-    public var chomped: String {
-        return stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet())
-    }
-
-    public func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
+    internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
                                                         String {
         let privateACL = "source.lang.swift.accessibility.private"
         if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
@@ -47,14 +43,14 @@ extension String {
         fatalError("invalid range")
     }
 
-    func substring(from: Int, length: Int? = nil) -> String {
+    internal func substring(from: Int, length: Int? = nil) -> String {
         if let length = length {
             return self[from..<from + length]
         }
         return substringFromIndex(startIndex.advancedBy(from, limit: endIndex))
     }
 
-    public func lastIndexOf(search: String) -> Int? {
+    internal func lastIndexOf(search: String) -> Int? {
         if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
             return startIndex.distanceTo(range.startIndex)
         }

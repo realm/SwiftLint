@@ -37,10 +37,10 @@ extension File {
 
 func superfluousOrMissingThrowsDocumentation(declaration: String, comment: String) -> Bool {
     guard let outsideBracesMatch = matchOutsideBraces(declaration) else {
-        return false == !comment.containsString("- throws:")
+        return false == !comment.lowercaseString.containsString("- throws:")
     }
-
-    return outsideBracesMatch.containsString(" throws ") == !comment.containsString("- throws:")
+    return outsideBracesMatch.containsString(" throws ") ==
+            !comment.lowercaseString.containsString("- throws:")
 }
 
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
@@ -71,7 +71,7 @@ func commentHasBatchedParameters(comment: String) -> Bool {
 }
 
 func commentReturns(comment: String) -> Bool {
-    return comment.containsString("- returns:") ||
+    return comment.lowercaseString.containsString("- returns:") ||
         comment.rangeOfString("Returns")?.startIndex == comment.startIndex
 }
 
@@ -109,7 +109,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String,
     }
     let optionallyDocumentedParameterCount = labelsAndParams.filter({ $0.0 == "_" }).count
     let commentRange = NSRange(location: 0, length: comment.utf16.count)
-    let commentParameterMatches = regex("- parameter ([^:]+)")
+    let commentParameterMatches = regex("- [p|P]arameter ([^:]+)")
         .matchesInString(comment, options: [], range: commentRange)
     let commentParameters = commentParameterMatches.map { match in
         return (comment as NSString).substringWithRange(match.rangeAtIndex(1))
@@ -138,11 +138,14 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\n/// - parameter param: this is void\npublic func a(param: Void) {}\n",
             "/// docs\n/// - parameter label: this is void\npublic func a(label param: Void) {}",
             "/// docs\n/// - parameter param: this is void\npublic func a(label param: Void) {}",
+            "/// docs\n/// - Parameter param: this is void\npublic func a(label param: Void) {}",
             "/// docs\n/// - returns: false\npublic func no() -> Bool { return false }",
+            "/// docs\n/// - Returns: false\npublic func no() -> Bool { return false }",
             "/// Returns false\npublic func no() -> Bool { return false }",
             "/// Returns false\nvar no: Bool { return false }",
             "/// docs\nvar no: Bool { return false }",
             "/// docs\n/// - throws: NSError\nfunc a() throws {}",
+            "/// docs\n/// - Throws: NSError\nfunc a() throws {}",
             "/// docs\n/// - parameter param: this is void\n/// - returns: false" +
                 "\npublic func no(param: (Void -> Void)?) -> Bool { return false }",
             "/// docs\n/// - parameter param: this is void" +
@@ -163,6 +166,11 @@ public struct ValidDocsRule: ConfigProviderRule {
             "/// docs\n/// - parameter param: this is a void closure" +
                 "\n/// - parameter param2: this is a void closure too" +
                 "\n/// - parameter param3: this is a void closure too" +
+                "\nfunc a(param: () -> Void, param2: (parameter: Int) -> Void, " +
+                "param3: (parameter: Int) -> Void) {}",
+            "/// docs\n/// - parameter param: this is a void closure" +
+                "\n/// - Parameter param2: this is a void closure too" +
+                "\n/// - Parameter param3: this is a void closure too" +
                 "\nfunc a(param: () -> Void, param2: (parameter: Int) -> Void, " +
                 "param3: (parameter: Int) -> Void) {}",
             "/// docs\n/// - parameter param: this is a void closure" +

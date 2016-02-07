@@ -12,7 +12,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigProviderRule {
 
     public var config = SeverityConfig(.Warning)
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "legacy_constant",

@@ -11,7 +11,7 @@ import SourceKittenFramework
 public struct EmptyCountRule: ConfigProviderRule, OptInRule {
     public var config = SeverityConfig(.Error)
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "empty_count",

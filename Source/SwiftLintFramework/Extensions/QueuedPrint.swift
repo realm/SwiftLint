@@ -37,6 +37,7 @@ A thread-safe, newline-terminated version of fputs(..., stderr).
 */
 public func queuedPrintError(string: String) {
     dispatch_async(outputQueue) {
+        fflush(stdout)
         fputs(string + "\n", stderr)
     }
 }

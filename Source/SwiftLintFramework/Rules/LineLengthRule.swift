@@ -22,7 +22,8 @@ public struct LineLengthRule: ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Repeat(count: 101, repeatedValue: "/").joinWithSeparator("") + "\n"
-        ]
+        ],
+        needsSourceKit: false
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

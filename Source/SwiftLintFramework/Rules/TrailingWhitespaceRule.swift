@@ -21,7 +21,8 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         description: "Lines should not have trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "// \n" ],
-        corrections: [ "// \n": "//\n" ]
+        corrections: [ "// \n": "//\n" ],
+        needsSourceKit: false
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

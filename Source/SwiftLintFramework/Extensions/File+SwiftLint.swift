@@ -100,7 +100,7 @@ extension File {
         }
     }
 
-    internal func syntaxKindsByLine() -> [[SyntaxKind]] {
+    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
         var results = [[SyntaxKind]](count: lines.count + 1, repeatedValue: [])
         var tokenGenerator = syntaxMap.tokens.generate()
         var lineGenerator = lines.generate()

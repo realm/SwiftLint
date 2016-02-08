@@ -9,9 +9,18 @@
 import Foundation
 import SourceKittenFramework
 
-private var responseCache = Cache({file in Request.EditorOpen(file).send()})
-private var structureCache = Cache({file in Structure(sourceKitResponse: responseCache.get(file))})
-private var syntaxMapCache = Cache({file in SyntaxMap(sourceKitResponse: responseCache.get(file))})
+private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
+    do {
+        return try Request.EditorOpen(file).sendMayThrow()
+    } catch let error as Request.Error {
+        queuedPrintError(error.description)
+        return nil
+    } catch {
+        return nil
+    }
+})
+private var structureCache = Cache({file in responseCache.get(file).map(Structure.init)})
+private var syntaxMapCache = Cache({file in responseCache.get(file).map(SyntaxMap.init)})
 private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
 
 private var _allDeclarationsByType = [String: [String]]()
@@ -52,16 +61,29 @@ private struct Cache<T> {
 
 extension File {
 
+    public var sourcekitdFailed: Bool {
+        return responseCache.get(self) == nil
+    }
+
     internal var structure: Structure {
-        return structureCache.get(self)
+        guard let structure = structureCache.get(self) else {
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return structure
     }
 
     internal var syntaxMap: SyntaxMap {
-        return syntaxMapCache.get(self)
+        guard let syntaxMap = syntaxMapCache.get(self) else {
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxMap
     }
 
     internal var syntaxKindsByLines: [[SyntaxKind]] {
-        return syntaxKindsByLinesCache.get(self)
+        guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxKindsByLines
     }
 
     public func invalidateCache() {

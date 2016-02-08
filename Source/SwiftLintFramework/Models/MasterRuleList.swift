@@ -20,19 +20,18 @@ public struct RuleList {
 
     internal func configuredRulesWithDictionary(dictionary: [String: AnyObject]) -> [Rule] {
         var rules = [Rule]()
-        for rule in list.values {
-            let identifier = rule.description.identifier
-            if let ConfigurableRuleType = rule as? ConfigurableRule.Type,
-                ruleConfig = dictionary[identifier] {
+        for ruleType in list.values {
+            let identifier = ruleType.description.identifier
+            if let ruleConfig = dictionary[identifier] {
                 do {
-                    let configuredRule = try ConfigurableRuleType.init(config: ruleConfig)
+                    let configuredRule = try ruleType.init(config: ruleConfig)
                     rules.append(configuredRule)
                 } catch {
                     queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
-                    rules.append(rule.init())
+                    rules.append(ruleType.init())
                 }
             } else {
-                rules.append(rule.init())
+                rules.append(ruleType.init())
             }
         }
         return rules

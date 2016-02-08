@@ -8,32 +8,24 @@
 
 import SourceKittenFramework
 
-public protocol OptInRule {}
-
 public protocol Rule {
     init() // Rules need to be able to be initialized with default values
+    init(config: AnyObject) throws
     static var description: RuleDescription { get }
     func validateFile(file: File) -> [StyleViolation]
+    func isEqualTo(rule: Rule) -> Bool
+    var configDescription: String { get }
 }
 
 extension Rule {
     func isEqualTo(rule: Rule) -> Bool {
-        switch (self, rule) {
-        case (let rule1 as ConfigurableRule, let rule2 as ConfigurableRule):
-            return rule1.isEqualTo(rule2)
-        default:
-            return self.dynamicType.description == rule.dynamicType.description
-        }
+        return self.dynamicType.description == rule.dynamicType.description
     }
 }
 
-public protocol ConfigurableRule: Rule {
-    init(config: AnyObject) throws
-    func isEqualTo(rule: ConfigurableRule) -> Bool
-    var configDescription: String { get }
-}
+public protocol OptInRule: Rule {}
 
-public protocol ConfigProviderRule: ConfigurableRule {
+public protocol ConfigProviderRule: Rule {
     typealias ConfigType: RuleConfig
     var config: ConfigType { get set }
 }
@@ -50,7 +42,7 @@ public extension ConfigProviderRule {
         try self.config.setConfig(config)
     }
 
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+    public func isEqualTo(rule: Rule) -> Bool {
         if let rule = rule as? Self {
             return config.isEqualTo(rule.config)
         }

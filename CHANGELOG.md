@@ -6,8 +6,8 @@
   has been renamed to a free function: `reporterFromString(_:)`.  
   [JP Simard](https://github.com/jpsim)
 
-* `_ConfigProviderRule` has been removed and its `configDescription` requirement
-  has been moved to `ConfigurableRule`.  
+* `_ConfigProviderRule` & `ConfigurableRule` have been removed and their
+  requirements have been moved to `Rule`.  
   [JP Simard](https://github.com/jpsim)
 
 ##### Enhancements

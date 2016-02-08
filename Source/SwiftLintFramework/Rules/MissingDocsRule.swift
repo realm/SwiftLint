@@ -67,7 +67,7 @@ public enum AccessControlLevel: String {
     }
 }
 
-public struct MissingDocsRule: ConfigurableRule, OptInRule {
+public struct MissingDocsRule: OptInRule {
     public init(config: AnyObject) throws {
         guard let array = [String].arrayOf(config) else {
             throw ConfigurationError.UnknownConfiguration
@@ -138,7 +138,7 @@ public struct MissingDocsRule: ConfigurableRule, OptInRule {
         }
     }
 
-    public func isEqualTo(rule: ConfigurableRule) -> Bool {
+    public func isEqualTo(rule: Rule) -> Bool {
         if let rule = rule as? MissingDocsRule {
             return rule.parameters == self.parameters
         }

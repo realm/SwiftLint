@@ -30,13 +30,10 @@ extension Rule {
 public protocol ConfigurableRule: Rule {
     init(config: AnyObject) throws
     func isEqualTo(rule: ConfigurableRule) -> Bool
-}
-
-public protocol _ConfigProviderRule: ConfigurableRule {
     var configDescription: String { get }
 }
 
-public protocol ConfigProviderRule: _ConfigProviderRule {
+public protocol ConfigProviderRule: ConfigurableRule {
     typealias ConfigType: RuleConfig
     var config: ConfigType { get set }
 }

@@ -19,7 +19,13 @@ private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
         return nil
     }
 })
-private var structureCache = Cache({file in responseCache.get(file).map(Structure.init)})
+private var structureCache = Cache({file -> Structure? in
+    if let structure = responseCache.get(file).map(Structure.init) {
+        queueForRebuild.append(structure)
+        return structure
+    }
+    return nil
+})
 private var syntaxMapCache = Cache({file in responseCache.get(file).map(SyntaxMap.init)})
 private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
 
@@ -42,9 +48,6 @@ private struct Cache<T> {
         }
         let value = factory(file)
         values[key] = value
-        if let structure = value as? Structure {
-            queueForRebuild.append(structure)
-        }
         return value
     }
 

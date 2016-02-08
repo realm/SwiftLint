@@ -10,6 +10,18 @@
   requirements have been moved to `Rule`.  
   [JP Simard](https://github.com/jpsim)
 
+* `Configuration(path:optional:silent)` has been changed to
+  `Configuration(path:rootPath:optional:quiet:)`.  
+  [JP Simard](https://github.com/jpsim)
+
+* The static function `Configuration.rulesFromDict(_:ruleList:)` has been moved
+  to an instance method: `RuleList.configuredRulesWithDictionary(_:)`.  
+  [JP Simard](https://github.com/jpsim)
+
+* The `rules` parameter in the `Configuration` initializer has been renamed to
+  `configuredRules`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which
@@ -21,6 +33,17 @@
 * `swiftlint rules` now shows a configuration description for all rules.  
   [JP Simard](https://github.com/jpsim)
 
+* `lint` and `autocorrect` commands now accept a `--quiet` flag that prevents
+  status messages like 'Linting <file>' & 'Done linting' from being logged.  
+  [JP Simard](https://github.com/jpsim)
+  [#386](https://github.com/realm/SwiftLint/issues/386)
+
+* All top-level keys in a configuration file that accept an array now also
+  accept a single value.  
+  e.g. `included: Source` is equivalent to `included:\n  - Source`.  
+  [JP Simard](https://github.com/jpsim)
+  [#120](https://github.com/realm/SwiftLint/issues/120)
+
 ##### Bug Fixes
 
 * Fix case sensitivity of keywords for `valid_docs`.  
@@ -31,6 +54,11 @@
   `StatementPositionRule`.  
   [JP Simard](https://github.com/jpsim)
   [#466](https://github.com/realm/SwiftLint/issues/466)
+
+* A warning will now be logged when invalid top-level keys are included in the
+  configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#120](https://github.com/realm/SwiftLint/issues/120)
 
 ## 0.8.0: High Heat
 

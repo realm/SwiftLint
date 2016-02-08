@@ -11,6 +11,17 @@ import SourceKittenFramework
 
 private let fileManager = NSFileManager.defaultManager()
 
+private enum ConfigurationKey: String {
+    case DisabledRules = "disabled_rules"
+    case EnabledRules = "enabled_rules" // deprecated in favor of OptInRules
+    case Excluded = "excluded"
+    case Included = "included"
+    case OptInRules = "opt_in_rules"
+    case Reporter = "reporter"
+    case UseNestedConfigs = "use_nested_configs"
+    case WhitelistRules = "whitelist_rules"
+}
+
 public struct Configuration: Equatable {
     public static let fileName = ".swiftlint.yml"
     public let disabledRules: [String] // disabled_rules
@@ -27,8 +38,8 @@ public struct Configuration: Equatable {
                  whitelistRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
-                 reporter: String = "xcode",
-                 rules: [Rule] = Configuration.rulesFromDict(),
+                 reporter: String = XcodeReporter.identifier,
+                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
                  useNestedConfigs: Bool = false) {
         self.included = included
         self.excluded = excluded
@@ -36,7 +47,7 @@ public struct Configuration: Equatable {
         self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
-        let validRuleIdentifiers = Configuration.rulesFromDict().map {
+        let validRuleIdentifiers = configuredRules.map {
             $0.dynamicType.description.identifier
         }
 
@@ -66,19 +77,18 @@ public struct Configuration: Equatable {
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
-
             if !disabledRules.isEmpty || !optInRules.isEmpty {
-                queuedPrintError("'disabled_rules' or 'opt_in_rules' cannot be used in " +
-                    "combination with 'whitelist_rules'")
+                queuedPrintError("'\(ConfigurationKey.DisabledRules.rawValue)' or " +
+                    "'\(ConfigurationKey.OptInRules.rawValue)' cannot be used in combination " +
+                    "with '\(ConfigurationKey.WhitelistRules.rawValue)'")
                 return nil
             }
 
-            self.rules = rules.filter { rule in
-                let id = rule.dynamicType.description.identifier
-                return whitelistRules.contains(id)
+            rules = configuredRules.filter { rule in
+                return whitelistRules.contains(rule.dynamicType.description.identifier)
             }
         } else {
-            self.rules = rules.filter { rule in
+            rules = configuredRules.filter { rule in
                 let id = rule.dynamicType.description.identifier
                 if validDisabledRules.contains(id) { return false }
                 return optInRules.contains(id) || !(rule is OptInRule)
@@ -87,30 +97,55 @@ public struct Configuration: Equatable {
     }
 
     public init?(dict: [String: AnyObject]) {
-
         // Deprecation warning for "enabled_rules"
-        if dict["enabled_rules"] != nil {
-            queuedPrint("'enabled_rules' has been renamed to 'opt_in_rules' " +
-                "and will be completely removed in a future release.")
+        if dict[ConfigurationKey.EnabledRules.rawValue] != nil {
+            queuedPrintError("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
+                "'\(ConfigurationKey.OptInRules.rawValue)' and will be completely removed in a " +
+                "future release.")
+        }
+
+        func defaultStringArray(object: AnyObject?) -> [String] {
+            return [String].arrayOf(object) ?? []
         }
 
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
-        let optInRules = dict["opt_in_rules"] as? [String] ??
-            dict["enabled_rules"] as? [String] ?? []
+        let optInRules = defaultStringArray(
+            dict[ConfigurationKey.OptInRules.rawValue] ??
+                dict[ConfigurationKey.EnabledRules.rawValue]
+        )
+
+        // Log an error when supplying invalid keys in the configuration dictionary
+        let validKeys = [
+            ConfigurationKey.DisabledRules,
+            .EnabledRules,
+            .Excluded,
+            .Included,
+            .OptInRules,
+            .Reporter,
+            .UseNestedConfigs,
+            .WhitelistRules,
+        ].map({ $0.rawValue }) + masterRuleList.list.keys
+
+        let invalidKeys = Set(dict.keys).subtract(validKeys)
+        if !invalidKeys.isEmpty {
+            queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
+        }
 
         self.init(
-            disabledRules: dict["disabled_rules"] as? [String] ?? [],
+            disabledRules: defaultStringArray(dict[ConfigurationKey.DisabledRules.rawValue]),
             optInRules: optInRules,
-            whitelistRules: dict["whitelist_rules"] as? [String] ?? [],
-            included: dict["included"] as? [String] ?? [],
-            excluded: dict["excluded"] as? [String] ?? [],
-            reporter: dict["reporter"] as? String ?? XcodeReporter.identifier,
-            useNestedConfigs: dict["use_nested_configs"] as? Bool ?? false,
-            rules: Configuration.rulesFromDict(dict)
+            whitelistRules: defaultStringArray(dict[ConfigurationKey.WhitelistRules.rawValue]),
+            included: defaultStringArray(dict[ConfigurationKey.Included.rawValue]),
+            excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
+            reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
+                XcodeReporter.identifier,
+            useNestedConfigs: dict[ConfigurationKey.UseNestedConfigs.rawValue] as? Bool ?? false,
+            configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
         )
     }
 
-    public init(path: String = ".swiftlint.yml", optional: Bool = true, silent: Bool = false) {
+    public init(path: String = Configuration.fileName, rootPath: String? = nil,
+                optional: Bool = true, quiet: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let fail = { fatalError("Could not read configuration file at path '\(fullPath)'") }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
@@ -122,7 +157,7 @@ public struct Configuration: Equatable {
             let yamlContents = try NSString(contentsOfFile: fullPath,
                 encoding: NSUTF8StringEncoding) as String
             let dict = try YamlParser.parse(yamlContents)
-            if !silent {
+            if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
             self.init(dict: dict)!
@@ -132,27 +167,6 @@ public struct Configuration: Equatable {
             fail()
         }
         self.init()!
-    }
-
-    public static func rulesFromDict(dict: [String: AnyObject]? = nil,
-                                     ruleList: RuleList = masterRuleList) -> [Rule] {
-        var rules = [Rule]()
-        for ruleType in ruleList.list.values {
-            let identifier = ruleType.description.identifier
-            if let ruleConfig = dict?[identifier] {
-                do {
-                    let configuredRule = try ruleType.init(config: ruleConfig)
-                    rules.append(configuredRule)
-                } catch {
-                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
-                    rules.append(ruleType.init())
-                }
-            } else {
-                rules.append(ruleType.init())
-            }
-        }
-
-        return rules
     }
 
     public func lintablePathsForPath(path: String,
@@ -186,7 +200,7 @@ public extension Configuration {
         // If a config exists and it isn't us, load and merge the configs
         if configSearchPath != configPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
-            return merge(Configuration(path: configSearchPath, optional: false, silent: true))
+            return merge(Configuration(path: configSearchPath, optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree

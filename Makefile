@@ -82,16 +82,10 @@ swift_snapshot_install:
 	sudo installer -pkg swift.pkg -target /
 
 spm_bootstrap: spm_teardown
-	cp -r /Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/local/include/clang-c /usr/local/include/clang-c
-	cp Source/Clang_C/module.modulemap /usr/local/include/clang-c/module.modulemap
-	ln -s /Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/lib/libclang.dylib /usr/local/lib/libclang.dylib
-	mkdir -p /usr/local/include/sourcekitdInProc
-	ln -s /Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/lib/sourcekitd.framework/Headers/sourcekitd.h /usr/local/include/sourcekitdInProc/sourcekitd.h
-	curl https://static.realm.io/libsourcekitdInProc/$(SWIFT_SNAPSHOT)/libsourcekitdInProc.dylib -o /usr/local/lib/libsourcekitdInProc.dylib
+	curl https://raw.githubusercontent.com/jpsim/SourceKitten/master/script/spm_bootstrap | bash -s $(SWIFT_SNAPSHOT)
 
 spm_teardown:
-	rm -rf /usr/local/include/clang-c /usr/local/lib/libclang.dylib
-	rm -rf /usr/local/include/sourcekitdInProc /usr/local/lib/libsourcekitdInProc.dylib
+	curl https://raw.githubusercontent.com/jpsim/SourceKitten/master/script/spm_teardown | bash
 
 spm:
 	$(SWIFT_BUILD_COMMAND)

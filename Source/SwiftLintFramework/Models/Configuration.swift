@@ -30,7 +30,7 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public let useNestedConfigs: Bool  // process nested configs, will default to false
     public var rootPath: String?       // the root path of the lint to search for nested configs
-    private var configPath: String?    // if successfully loaded from a path
+    public var configPath: String?     // if successfully loaded from a path
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],

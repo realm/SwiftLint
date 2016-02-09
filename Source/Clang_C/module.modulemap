@@ -1,5 +1,0 @@
-module Clang_C {
-  umbrella "."
-  link "clang"
-  module * { export * }
-}

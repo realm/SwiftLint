@@ -24,7 +24,6 @@ private enum ConfigurationKey: String {
 
 public struct Configuration: Equatable {
     public static let fileName = ".swiftlint.yml"
-    public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
     public let reporter: String        // reporter (xcode, json, csv, checkstyle)
@@ -73,7 +72,6 @@ public struct Configuration: Equatable {
             }.joinWithSeparator("\n"))
             return nil
         }
-        self.disabledRules = validDisabledRules
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
@@ -223,8 +221,7 @@ extension Configuration {
 // Mark - == Implementation
 
 public func == (lhs: Configuration, rhs: Configuration) -> Bool {
-    return (lhs.disabledRules == rhs.disabledRules) &&
-           (lhs.excluded == rhs.excluded) &&
+    return (lhs.excluded == rhs.excluded) &&
            (lhs.included == rhs.included) &&
            (lhs.reporter == rhs.reporter) &&
            (lhs.useNestedConfigs == rhs.useNestedConfigs) &&

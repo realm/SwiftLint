@@ -13,6 +13,16 @@ import XCTest
 
 let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
+extension Configuration {
+    var disabledRules: [String] {
+        let configuredRuleIDs = rules.map({ $0.dynamicType.description.identifier })
+        let defaultRuleIDs = Set(masterRuleList.list.values.filter({
+            !($0.init() is OptInRule)
+        }).map({ $0.description.identifier }))
+        return defaultRuleIDs.subtract(configuredRuleIDs).sort(<)
+    }
+}
+
 class ConfigurationTests: XCTestCase {
 
     // protocol XCTestCaseProvider

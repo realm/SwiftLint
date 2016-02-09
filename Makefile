@@ -17,18 +17,7 @@ VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
 
 SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-03-a
-
-SPM=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift build
-SPM_INCLUDE=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/local/include
-SPM_LIB=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/lib
-
-SPMFLAGS=--configuration debug
-# for including "clang-c"
-SPMFLAGS+=-Xcc -ISource/Clang_C -Xcc -I$(SPM_INCLUDE)
-# for linking sourcekitd and clang-c
-SPMFLAGS+= -Xcc -F$(SPM_LIB) -Xlinker -F$(SPM_LIB) -Xlinker -L$(SPM_LIB)
-# for loading sourcekitd and clang-c
-SPMFLAGS+= -Xlinker -rpath -Xlinker $(SPM_LIB)
+SWIFT_BUILD_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift build
 
 .PHONY: all bootstrap clean install package test uninstall
 
@@ -92,21 +81,20 @@ swift_snapshot_install:
 	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg
 	sudo installer -pkg swift.pkg -target /
 
+spm_bootstrap: spm_teardown
+	curl https://raw.githubusercontent.com/jpsim/SourceKitten/master/script/spm_bootstrap | bash -s $(SWIFT_SNAPSHOT)
+
+spm_teardown:
+	curl https://raw.githubusercontent.com/jpsim/SourceKitten/master/script/spm_teardown | bash
+
 spm:
-	sed -i "" "s/swift-latest/$(SWIFT_SNAPSHOT)/" Source/Clang_C/module.modulemap
-	$(SPM) $(SPMFLAGS) || (\
-		echo "SPM does not use Package.swift. So now removing unnecesory directories in 'Packages/*' that cause build error.";\
-		rm -rf Packages/SourceKitten-*/Source/sourcekitten;\
-		rm -rf Packages/SourceKitten-*/Source/SourceKittenFrameworkTests;\
-		echo "Runs SPM again.";\
-	) && $(SPM) $(SPMFLAGS)
-	sed -i "" "s/$(SWIFT_SNAPSHOT)/swift-latest/" Source/Clang_C/module.modulemap
+	$(SWIFT_BUILD_COMMAND)
 
 spm_test: spm
 	.build/Debug/SwiftLintFrameworkTests
 
 spm_clean:
-	$(SPM) --clean
+	$(SWIFT_BUILD_COMMAND) --clean
 
 spm_clean_dist:
-	$(SPM) --clean=dist
+	$(SWIFT_BUILD_COMMAND) --clean=dist

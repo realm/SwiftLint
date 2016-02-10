@@ -73,23 +73,33 @@ extension File {
         }.map { $0.0 }
     }
 
+    internal func rangesAndTokensMatching(pattern: String) -> [(NSRange, [SyntaxToken])] {
+        return rangesAndTokensMatching(regex(pattern))
+    }
+
+    internal func rangesAndTokensMatching(regex: NSRegularExpression) ->
+        [(NSRange, [SyntaxToken])] {
+        let contents = self.contents as NSString
+        let range = NSRange(location: 0, length: contents.length)
+        let syntax = syntaxMap
+        return regex.matchesInString(self.contents, options: [], range: range).map { match in
+            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
+                length: match.range.length) ?? match.range
+            let tokensInRange = syntax.tokens.filter { token in
+                let tokenByteRange = NSRange(location: token.offset, length: token.length)
+                return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
+            }.map({ $0 })
+            return (match.range, tokensInRange)
+        }
+    }
+
     public func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
         return matchPattern(regex(pattern))
     }
 
     public func matchPattern(regex: NSRegularExpression) -> [(NSRange, [SyntaxKind])] {
-        let contents = self.contents as NSString
-        let range = NSRange(location: 0, length: contents.length)
-        let syntax = syntaxMap
-        let matches = regex.matchesInString(self.contents, options: [], range: range)
-        return matches.map { match in
-            let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
-                length: match.range.length) ?? match.range
-            let kindsInRange = syntax.tokens.filter { token in
-                let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
-            }.map({ $0.type }).flatMap(SyntaxKind.init)
-            return (match.range, kindsInRange)
+        return rangesAndTokensMatching(regex).map { range, tokens in
+            (range, tokens.map({ $0.type }).flatMap(SyntaxKind.init))
         }
     }
 

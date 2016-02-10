@@ -111,25 +111,32 @@ public struct ColonRule: CorrectableRule, ConfigProviderRule {
     // MARK: - Private
 
     private let pattern =
-        "(\\w+)" + // Capture an identifier
-        "(?:" +    // start group
-        "\\s+" +   // followed by whitespace
-        ":" +      // to the left of a colon
-        "\\s*" +   // followed by any amount of whitespace.
-        "|" +      // or
-        ":" +      // immediately followed by a colon
+        "(\\w)" +              // Capture an identifier
+        "(?:" +                // start group
+        "\\s+" +               // followed by whitespace
+        ":" +                  // to the left of a colon
+        "\\s*" +               // followed by any amount of whitespace.
+        "|" +                  // or
+        ":" +                  // immediately followed by a colon
         "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
-        ")" +      // end group
-        "(" +      // Capture a type identifier
-        "(?:\\[|\\()*" + // which may begin with a series of nested parenthesis or brackets
-        "\\S+?)"   // lazily to the first non-whitespace character.
+        ")" +                  // end group
+        "(" +                  // Capture a type identifier
+        "[\\[|\\(]*" +         // which may begin with a series of nested parenthesis or brackets
+        "\\S)"                 // lazily to the first non-whitespace character.
 
     private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
-        return file.matchPattern(pattern).filter { range, syntaxKinds in
+        let nsstring = file.contents as NSString
+        let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
+        return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
+            let syntaxKinds = syntaxTokens.map({ $0.type }).flatMap(SyntaxKind.init)
             if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
                 return false
             }
-            return Set(syntaxKinds).intersect(Set(SyntaxKind.commentAndStringKinds())).isEmpty
-        }.flatMap { $0.0 }
+            return Set(syntaxKinds).intersect(commentAndStringKindsSet).isEmpty
+        }.flatMap { range, syntaxTokens in
+            let identifierRange = nsstring // swiftlint:disable:next force_unwrapping
+                .byteRangeToNSRange(start: syntaxTokens.first!.offset, length: 0)
+            return identifierRange.map { NSUnionRange($0, range) }
+        }
     }
 }

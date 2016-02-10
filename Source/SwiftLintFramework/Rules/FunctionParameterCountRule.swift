@@ -40,8 +40,15 @@ public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
         let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
 
-        let parameterCount =
-            allFunctionParameterCount(substructure, offset: nameOffset, length: length) -
+        let minThreshold = config.params.map({ $0.value }).minElement(<)
+
+        let allParameterCount =
+            allFunctionParameterCount(substructure, offset: nameOffset, length: length)
+        if allParameterCount < minThreshold {
+            return []
+        }
+
+        let parameterCount = allParameterCount -
             defaultFunctionParameterCount(file, offset: nameOffset, length: length)
 
         for parameter in config.params where parameterCount > parameter.value {
@@ -78,9 +85,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigProviderRule {
     }
 
     private func defaultFunctionParameterCount(file: File, offset: Int, length: Int) -> Int {
+        let equalCharacter = Character("=")
         return (file.contents as NSString)
             .substringWithByteRange(start: offset, length: length)?
-            .characters.filter { $0 == "=" }.count ?? 0
+            .characters.filter { $0 == equalCharacter }.count ?? 0
     }
 
     private let functionKinds: [SwiftDeclarationKind] = [

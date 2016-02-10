@@ -44,6 +44,9 @@
   [Erik Aigner](https://github.com/eaigner)
   [#566](https://github.com/realm/SwiftLint/issues/566)
 
+* `LintCommand` does not stop when SourceKitService crashes.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * Avoid overwriting files whose contents have not changed.  

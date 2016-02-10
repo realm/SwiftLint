@@ -42,7 +42,7 @@ private struct Cache<T> {
     }
 
     private mutating func get(file: File) -> T {
-        let key = file.path ?? NSUUID().UUIDString
+        let key = file.cacheKey
         if let value = values[key] {
             return value
         }
@@ -63,6 +63,10 @@ private struct Cache<T> {
 }
 
 extension File {
+
+    private var cacheKey: String {
+        return path ?? "\(ObjectIdentifier(self).hashValue)"
+    }
 
     public var sourcekitdFailed: Bool {
         return responseCache.get(self) == nil

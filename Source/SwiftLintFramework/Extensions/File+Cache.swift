@@ -29,6 +29,9 @@ private var structureCache = Cache({file -> Structure? in
 private var syntaxMapCache = Cache({file in responseCache.get(file).map(SyntaxMap.init)})
 private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
 
+private typealias AssertHandler = () -> ()
+private var assertHandlers = [String: AssertHandler?]()
+
 private var _allDeclarationsByType = [String: [String]]()
 private var queueForRebuild = [Structure]()
 
@@ -81,8 +84,21 @@ extension File {
         }
     }
 
+    internal var assertHandler: (() -> ())? {
+        get {
+            return assertHandlers[cacheKey] ?? nil
+        }
+        set {
+            assertHandlers[cacheKey] = newValue
+        }
+    }
+
     internal var structure: Structure {
         guard let structure = structureCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return Structure(sourceKitResponse: [:])
+            }
             fatalError("Never call this for file that sourcekitd fails.")
         }
         return structure
@@ -90,6 +106,10 @@ extension File {
 
     internal var syntaxMap: SyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SyntaxMap(data: [])
+            }
             fatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxMap
@@ -97,6 +117,10 @@ extension File {
 
     internal var syntaxKindsByLines: [[SyntaxKind]] {
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return []
+            }
             fatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxKindsByLines
@@ -104,6 +128,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
+        assertHandlers.removeValueForKey(cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -113,6 +138,7 @@ extension File {
         queueForRebuild = []
         _allDeclarationsByType = [:]
         responseCache.clear()
+        assertHandlers = [:]
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxKindsByLinesCache.clear()

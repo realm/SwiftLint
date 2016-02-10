@@ -68,8 +68,17 @@ extension File {
         return path ?? "\(ObjectIdentifier(self).hashValue)"
     }
 
-    public var sourcekitdFailed: Bool {
-        return responseCache.get(self) == nil
+    internal var sourcekitdFailed: Bool {
+        get {
+            return responseCache.get(self) == nil
+        }
+        set {
+            if newValue {
+                responseCache.values[cacheKey] = Optional<[String: SourceKitRepresentable]>.None
+            } else {
+                responseCache.values.removeValueForKey(cacheKey)
+            }
+        }
     }
 
     internal var structure: Structure {

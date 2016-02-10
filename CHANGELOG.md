@@ -47,6 +47,9 @@
 * Improve performance of `FunctionParameterCountRule`.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Improve performance of `ColonRule`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * Fix case sensitivity of keywords for `valid_docs`.  

@@ -15,10 +15,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
-    public var severityConfig = SeverityConfiguration(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.Warning)
 
     public var severity: ViolationSeverity {
-        return severityConfig.severity
+        return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
@@ -53,7 +53,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
         }
         if let severityString = configurationDict["severity"] as? String {
-            try severityConfig.applyConfiguration(severityString)
+            try severityConfiguration.applyConfiguration(severityString)
         }
     }
 }

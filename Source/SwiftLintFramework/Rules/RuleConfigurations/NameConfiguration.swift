@@ -37,17 +37,17 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configDict = configuration as? [String: AnyObject] else {
+        guard let configurationDict = configuration as? [String: AnyObject] else {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        if let minLengthConfig = configDict["min_length"] {
-            try minLength.applyConfiguration(minLengthConfig)
+        if let minLengthConfiguration = configurationDict["min_length"] {
+            try minLength.applyConfiguration(minLengthConfiguration)
         }
-        if let maxLengthConfig = configDict["max_length"] {
-            try maxLength.applyConfiguration(maxLengthConfig)
+        if let maxLengthConfiguration = configurationDict["max_length"] {
+            try maxLength.applyConfiguration(maxLengthConfiguration)
         }
-        if let excluded = [String].arrayOf(configDict["excluded"]) {
+        if let excluded = [String].arrayOf(configurationDict["excluded"]) {
             self.excluded = Set(excluded)
         }
     }

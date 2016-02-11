@@ -26,11 +26,11 @@ class CustomRulesTests: XCTestCase {
             "regex": "regex",
             "match_kinds": "comment",
             "severity": "error"]]
-        var comp = RegexConfig(identifier: "my_custom_rule")
+        var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
         comp.regex = NSRegularExpression.forcePattern("regex")
-        comp.severityConfig = SeverityConfig(.Error)
+        comp.severityConfig = SeverityConfiguration(.Error)
         comp.matchKinds = Set([SyntaxKind.Comment])
         var compRules = CustomRulesConfig()
         compRules.customRuleConfigurations = [comp]
@@ -52,7 +52,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testCustomRules() {
-        var regexConfig = RegexConfig(identifier: "custom")
+        var regexConfig = RegexConfiguration(identifier: "custom")
         regexConfig.regex = NSRegularExpression.forcePattern("pattern")
         regexConfig.matchKinds = Set([SyntaxKind.Comment])
         var customRuleConfiguration = CustomRulesConfig()

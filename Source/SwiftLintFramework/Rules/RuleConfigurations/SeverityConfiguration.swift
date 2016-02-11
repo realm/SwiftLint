@@ -1,5 +1,5 @@
 //
-//  SeverityConfig.swift
+//  SeverityConfiguration.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/20/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityConfig: RuleConfiguration, Equatable {
+public struct SeverityConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severity.rawValue.lowercaseString
     }
@@ -33,6 +33,6 @@ public struct SeverityConfig: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: SeverityConfig, rhs: SeverityConfig) -> Bool {
+public func == (lhs: SeverityConfiguration, rhs: SeverityConfiguration) -> Bool {
     return lhs.severity == rhs.severity
 }

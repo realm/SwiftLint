@@ -30,8 +30,8 @@ class ConfigurationTests: XCTestCase {
         ("testInit", self.testInit),
         ("testEmptyConfiguration", self.testEmptyConfiguration),
         ("testWhitelistRules", self.testWhitelistRules),
-        ("testOtherRuleConfigurationurationsAlongsideWhitelistRules",
-            self.testOtherRuleConfigurationurationsAlongsideWhitelistRules),
+        ("testOtherRuleConfigurationsAlongsideWhitelistRules",
+            self.testOtherRuleConfigurationsAlongsideWhitelistRules),
         ("testDisabledRules", self.testDisabledRules),
         ("testDisabledRulesWithUnknownRule", self.testDisabledRulesWithUnknownRule),
         ("testExcludedPaths", self.testExcludedPaths),
@@ -75,7 +75,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(whitelist, configuredIdentifiers)
     }
 
-    func testOtherRuleConfigurationurationsAlongsideWhitelistRules() {
+    func testOtherRuleConfigurationsAlongsideWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let enabledRulesConfigDict = [
             "opt_in_rules": ["line_length"],

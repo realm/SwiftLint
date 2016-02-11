@@ -10,32 +10,33 @@ import XCTest
 @testable import SwiftLintFramework
 import SourceKittenFramework
 
-class RuleConfigurationurationsTests: XCTestCase {
+class RuleConfigurationsTests: XCTestCase {
 
     // protocol XCTestCaseProvider
     lazy var allTests: [(String, () throws -> Void)] = [
-        ("testNameConfigSetsCorrectly", self.testNameConfigSetsCorrectly),
-        ("testNameConfigThrowsOnBadConfig", self.testNameConfigThrowsOnBadConfig),
-        ("testNameConfigMinLengthThreshold", self.testNameConfigMinLengthThreshold),
-        ("testNameConfigMaxLengthThreshold", self.testNameConfigMaxLengthThreshold),
-        ("testSeverityConfigFromString", self.testSeverityConfigFromString),
-        ("testSeverityConfigFromDictionary", self.testSeverityConfigFromDictionary),
-        ("testSeverityConfigThrowsOnBadConfig", self.testSeverityConfigThrowsOnBadConfig),
+        ("testNameConfigurationSetsCorrectly", self.testNameConfigurationSetsCorrectly),
+        ("testNameConfigurationThrowsOnBadConfig", self.testNameConfigurationThrowsOnBadConfig),
+        ("testNameConfigurationMinLengthThreshold", self.testNameConfigurationMinLengthThreshold),
+        ("testNameConfigurationMaxLengthThreshold", self.testNameConfigurationMaxLengthThreshold),
+        ("testSeverityConfigurationFromString", self.testSeverityConfigurationFromString),
+        ("testSeverityConfigurationFromDictionary", self.testSeverityConfigurationFromDictionary),
+        ("testSeverityConfigurationThrowsOnBadConfig",
+            self.testSeverityConfigurationThrowsOnBadConfig),
         ("testSeverityLevelConfigParams", self.testSeverityLevelConfigParams),
         ("testSeverityLevelConfigPartialParams", self.testSeverityLevelConfigPartialParams),
-        ("testRegexConfigThrows", self.testRegexConfigThrows),
+        ("testRegexConfigurationThrows", self.testRegexConfigurationThrows),
         ("testRegexRuleDescription", self.testRegexRuleDescription),
     ]
 
-    func testNameConfigSetsCorrectly() {
+    func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id"]
-        var nameConfig = NameConfig(minLengthWarning: 0,
+        var nameConfig = NameConfiguration(minLengthWarning: 0,
                                     minLengthError: 0,
                                     maxLengthWarning: 0,
                                     maxLengthError: 0)
-        let comp = NameConfig(minLengthWarning: 17,
+        let comp = NameConfiguration(minLengthWarning: 17,
                               minLengthError: 7,
                               maxLengthWarning: 170,
                               maxLengthError: 700,
@@ -48,9 +49,9 @@ class RuleConfigurationurationsTests: XCTestCase {
         }
     }
 
-    func testNameConfigThrowsOnBadConfig() {
+    func testNameConfigurationThrowsOnBadConfig() {
         let config = 17
-        var nameConfig = NameConfig(minLengthWarning: 0,
+        var nameConfig = NameConfiguration(minLengthWarning: 0,
                                     minLengthError: 0,
                                     maxLengthWarning: 0,
                                     maxLengthError: 0)
@@ -59,8 +60,8 @@ class RuleConfigurationurationsTests: XCTestCase {
         }
     }
 
-    func testNameConfigMinLengthThreshold() {
-        var nameConfig = NameConfig(minLengthWarning: 7,
+    func testNameConfigurationMinLengthThreshold() {
+        var nameConfig = NameConfiguration(minLengthWarning: 7,
                                     minLengthError: 17,
                                     maxLengthWarning: 0,
                                     maxLengthError: 0,
@@ -71,8 +72,8 @@ class RuleConfigurationurationsTests: XCTestCase {
         XCTAssertEqual(nameConfig.minLengthThreshold, 7)
     }
 
-    func testNameConfigMaxLengthThreshold() {
-        var nameConfig = NameConfig(minLengthWarning: 0,
+    func testNameConfigurationMaxLengthThreshold() {
+        var nameConfig = NameConfiguration(minLengthWarning: 0,
                                     minLengthError: 0,
                                     maxLengthWarning: 17,
                                     maxLengthError: 7,
@@ -83,10 +84,10 @@ class RuleConfigurationurationsTests: XCTestCase {
         XCTAssertEqual(nameConfig.maxLengthThreshold, 17)
     }
 
-    func testSeverityConfigFromString() {
+    func testSeverityConfigurationFromString() {
         let config = "Warning"
-        let comp = SeverityConfig(.Warning)
-        var severityConfig = SeverityConfig(.Error)
+        let comp = SeverityConfiguration(.Warning)
+        var severityConfig = SeverityConfiguration(.Error)
         do {
             try severityConfig.applyConfiguration(config)
             XCTAssertEqual(severityConfig, comp)
@@ -95,10 +96,10 @@ class RuleConfigurationurationsTests: XCTestCase {
         }
     }
 
-    func testSeverityConfigFromDictionary() {
+    func testSeverityConfigurationFromDictionary() {
         let config = ["severity": "warning"]
-        let comp = SeverityConfig(.Warning)
-        var severityConfig = SeverityConfig(.Error)
+        let comp = SeverityConfiguration(.Warning)
+        var severityConfig = SeverityConfiguration(.Error)
         do {
             try severityConfig.applyConfiguration(config)
             XCTAssertEqual(severityConfig, comp)
@@ -107,35 +108,35 @@ class RuleConfigurationurationsTests: XCTestCase {
         }
     }
 
-    func testSeverityConfigThrowsOnBadConfig() {
+    func testSeverityConfigurationThrowsOnBadConfig() {
         let config = 17
-        var severityConfig = SeverityConfig(.Warning)
+        var severityConfig = SeverityConfiguration(.Warning)
         checkError(ConfigurationError.UnknownConfiguration) {
             try severityConfig.applyConfiguration(config)
         }
     }
 
     func testSeverityLevelConfigParams() {
-        let severityConfig = SeverityLevelsConfig(warning: 17, error: 7)
+        let severityConfig = SeverityLevelsConfiguration(warning: 17, error: 7)
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .Error, value: 7),
             RuleParameter(severity: .Warning, value: 17)])
     }
 
     func testSeverityLevelConfigPartialParams() {
-        let severityConfig = SeverityLevelsConfig(warning: 17, error: nil)
+        let severityConfig = SeverityLevelsConfiguration(warning: 17, error: nil)
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .Warning, value: 17)])
     }
 
-    func testRegexConfigThrows() {
+    func testRegexConfigurationThrows() {
         let config = 17
-        var regexConfig = RegexConfig(identifier: "")
+        var regexConfig = RegexConfiguration(identifier: "")
         checkError(ConfigurationError.UnknownConfiguration) {
             try regexConfig.applyConfiguration(config)
         }
     }
 
     func testRegexRuleDescription() {
-        var regexConfig = RegexConfig(identifier: "regex")
+        var regexConfig = RegexConfiguration(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
                                                                 description: ""))

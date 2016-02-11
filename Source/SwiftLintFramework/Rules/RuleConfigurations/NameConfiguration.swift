@@ -1,5 +1,5 @@
 //
-//  NameConfig.swift
+//  NameConfiguration.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/19/16.
@@ -8,14 +8,14 @@
 
 import Foundation
 
-public struct NameConfig: RuleConfiguration, Equatable {
+public struct NameConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription)"
     }
 
-    var minLength: SeverityLevelsConfig
-    var maxLength: SeverityLevelsConfig
+    var minLength: SeverityLevelsConfiguration
+    var maxLength: SeverityLevelsConfiguration
     var excluded: Set<String>
 
     var minLengthThreshold: Int {
@@ -31,8 +31,8 @@ public struct NameConfig: RuleConfiguration, Equatable {
                 maxLengthWarning: Int,
                 maxLengthError: Int,
                 excluded: [String] = []) {
-        minLength = SeverityLevelsConfig(warning: minLengthWarning, error: minLengthError)
-        maxLength = SeverityLevelsConfig(warning: maxLengthWarning, error: maxLengthError)
+        minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
+        maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
     }
 
@@ -53,7 +53,7 @@ public struct NameConfig: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
+public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
     return lhs.minLength == rhs.minLength &&
            lhs.maxLength == rhs.maxLength &&
            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
@@ -61,7 +61,7 @@ public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
 
 // MARK: - ConfigurationProviderRule extensions
 
-public extension ConfigurationProviderRule where ConfigurationType == NameConfig {
+public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     public func severity(forLength length: Int) -> ViolationSeverity? {
         if let minError = configuration.minLength.error where length < minError {
             return .Error

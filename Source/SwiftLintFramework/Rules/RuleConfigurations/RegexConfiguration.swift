@@ -1,5 +1,5 @@
 //
-//  RegexConfig.swift
+//  RegexConfiguration.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/21/16.
@@ -9,13 +9,13 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfig: RuleConfiguration, Equatable {
+public struct RegexConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
-    public var severityConfig = SeverityConfig(.Warning)
+    public var severityConfig = SeverityConfiguration(.Warning)
 
     public var severity: ViolationSeverity {
         return severityConfig.severity
@@ -58,7 +58,7 @@ public struct RegexConfig: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: RegexConfig, rhs: RegexConfig) -> Bool {
+public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
     return lhs.identifier == rhs.identifier &&
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&

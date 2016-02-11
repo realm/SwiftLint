@@ -23,7 +23,7 @@ extension File {
 
 public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfig(.Warning)
+    public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}
 

@@ -14,7 +14,7 @@ private func example(type: String, _ template: String, _ count: Int, _ add: Stri
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfig(warning: 200, error: 350)
+    public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
 
     public init() {}
 

@@ -15,7 +15,7 @@ XCTMain([
     FunctionBodyLengthRuleTests(),
     IntegrationTests(),
     ReporterTests(),
-    RuleConfigurationurationsTests(),
+    RuleConfigurationsTests(),
     RulesTests(),
     RuleTests(),
     YamlSwiftLintTests(),

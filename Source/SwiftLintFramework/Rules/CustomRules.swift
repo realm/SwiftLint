@@ -13,7 +13,7 @@ import SourceKittenFramework
 
 public struct CustomRulesConfig: RuleConfiguration, Equatable {
     public var consoleDescription: String { return "user-defined" }
-    public var customRuleConfigurations = [RegexConfig]()
+    public var customRuleConfigurations = [RegexConfiguration]()
 
     public init() {}
 
@@ -23,7 +23,7 @@ public struct CustomRulesConfig: RuleConfiguration, Equatable {
         }
 
         for (key, value) in configurationDict {
-            var ruleConfiguration = RegexConfig(identifier: key)
+            var ruleConfiguration = RegexConfiguration(identifier: key)
             try ruleConfiguration.applyConfiguration(value)
             customRuleConfigurations.append(ruleConfiguration)
         }
@@ -59,7 +59,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(file: File, configuration: RegexConfig) -> [StyleViolation] {
+    private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
         return file.matchPattern(configuration.regex).filter {
             !configuration.matchKinds.intersect($0.1).isEmpty
         }.map {

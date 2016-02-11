@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct LeadingWhitespaceRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfig(.Warning)
+    public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}
 

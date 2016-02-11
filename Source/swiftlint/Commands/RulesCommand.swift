@@ -62,9 +62,7 @@ struct RulesOptions: OptionsType {
     // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
-            <*> mode <| Option(key: "config",
-                defaultValue: Configuration.fileName,
-                usage: "the path to SwiftLint's configuration file")
+            <*> mode <| configOption
             <*> mode <| Argument(defaultValue: "",
                 usage: "the rule identifier to display description for")
     }

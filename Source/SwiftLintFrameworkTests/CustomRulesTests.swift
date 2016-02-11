@@ -36,7 +36,7 @@ class CustomRulesTests: XCTestCase {
         compRules.customRuleConfigs = [comp]
         do {
             var config = CustomRulesConfig()
-            try config.setConfig(configDict)
+            try config.applyConfiguration(configDict)
             XCTAssertEqual(config, compRules)
         } catch {
             XCTFail("Did not configure correctly")
@@ -47,7 +47,7 @@ class CustomRulesTests: XCTestCase {
         let config = 17
         var customRulesConfig = CustomRulesConfig()
         checkError(ConfigurationError.UnknownConfiguration) {
-            try customRulesConfig.setConfig(config)
+            try customRulesConfig.applyConfiguration(config)
         }
     }
 

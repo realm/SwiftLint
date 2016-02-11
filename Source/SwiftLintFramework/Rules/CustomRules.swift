@@ -17,14 +17,14 @@ public struct CustomRulesConfig: RuleConfig, Equatable {
 
     public init() {}
 
-    public mutating func setConfig(config: AnyObject) throws {
-        guard let configDict = config as? [String: AnyObject] else {
+    public mutating func applyConfiguration(configuration: AnyObject) throws {
+        guard let configurationDict = configuration as? [String: AnyObject] else {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        for (key, value) in configDict {
+        for (key, value) in configurationDict {
             var ruleConfig = RegexConfig(identifier: key)
-            try ruleConfig.setConfig(value)
+            try ruleConfig.applyConfiguration(value)
             customRuleConfigs.append(ruleConfig)
         }
     }

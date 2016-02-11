@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol RuleConfig {
-    mutating func setConfig(config: AnyObject) throws
+    mutating func applyConfiguration(configuration: AnyObject) throws
     func isEqualTo(ruleConfig: RuleConfig) -> Bool
     var consoleDescription: String { get }
 }

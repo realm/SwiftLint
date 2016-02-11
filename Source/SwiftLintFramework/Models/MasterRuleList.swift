@@ -24,7 +24,7 @@ public struct RuleList {
             let identifier = ruleType.description.identifier
             if let ruleConfig = dictionary[identifier] {
                 do {
-                    let configuredRule = try ruleType.init(config: ruleConfig)
+                    let configuredRule = try ruleType.init(configuration: ruleConfig)
                     rules.append(configuredRule)
                 } catch {
                     queuedPrintError(

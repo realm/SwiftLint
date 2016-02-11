@@ -44,7 +44,7 @@ class RuleTests: XCTestCase {
 
     private struct RuleMock1: Rule {
         init() {}
-        init(config: AnyObject) throws { self.init() }
+        init(configuration: AnyObject) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
@@ -54,7 +54,7 @@ class RuleTests: XCTestCase {
 
     private struct RuleMock2: Rule {
         init() {}
-        init(config: AnyObject) throws { self.init() }
+        init(configuration: AnyObject) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
@@ -85,7 +85,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithConfigDictionary() {
         let config = ["warning": 17, "error": 7]
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.warning = 17
         comp.config.error = 7
@@ -94,7 +94,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary() {
         let config = ["warning": 17]
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.warning = 17
         comp.config.error = nil
@@ -103,7 +103,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary() {
         let config = ["error": 17]
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.error = 17
         XCTAssertEqual(rule?.isEqualTo(comp), true)
@@ -111,7 +111,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithConfigArray() {
         let config = [17, 7] as AnyObject
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.warning = 17
         comp.config.error = 7
@@ -120,7 +120,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithSingleValueConfigArray() {
         let config = [17] as AnyObject
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.warning = 17
         comp.config.error = nil
@@ -129,7 +129,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleInitsWithLiteral() {
         let config = 17 as AnyObject
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
         comp.config.warning = 17
         comp.config.error = nil
@@ -138,7 +138,7 @@ class RuleTests: XCTestCase {
 
     func testSeverityLevelRuleNotEqual() {
         let config = 17 as AnyObject
-        let rule = try? RuleWithLevelsMock(config: config)
+        let rule = try? RuleWithLevelsMock(configuration: config)
         XCTAssertEqual(rule?.isEqualTo(RuleWithLevelsMock()), false)
     }
 

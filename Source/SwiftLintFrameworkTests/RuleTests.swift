@@ -10,7 +10,7 @@ import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
 
-struct RuleWithLevelsMock: ConfigProviderRule {
+struct RuleWithLevelsMock: ConfigurationProviderRule {
     var config = SeverityLevelsConfig(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "severity_level_mock",
@@ -62,7 +62,7 @@ class RuleTests: XCTestCase {
         }
     }
 
-    private struct RuleWithLevelsMock2: ConfigProviderRule {
+    private struct RuleWithLevelsMock2: ConfigurationProviderRule {
         var config = SeverityLevelsConfig(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",

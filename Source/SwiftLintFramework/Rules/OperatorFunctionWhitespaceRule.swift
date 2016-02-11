@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct OperatorFunctionWhitespaceRule: ConfigProviderRule {
+public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

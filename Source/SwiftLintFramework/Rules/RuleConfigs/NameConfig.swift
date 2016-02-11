@@ -59,9 +59,9 @@ public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
 }
 
-// MARK: - ConfigProviderRule extensions
+// MARK: - ConfigurationProviderRule extensions
 
-public extension ConfigProviderRule where ConfigType == NameConfig {
+public extension ConfigurationProviderRule where ConfigType == NameConfig {
     public func severity(forLength length: Int) -> ViolationSeverity? {
         if let minError = config.minLength.error where length < minError {
             return .Error

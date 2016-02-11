@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct LegacyConstructorRule: CorrectableRule, ConfigProviderRule {
+public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

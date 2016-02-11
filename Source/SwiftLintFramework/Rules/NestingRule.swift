@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct NestingRule: ASTRule, ConfigProviderRule {
+public struct NestingRule: ASTRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

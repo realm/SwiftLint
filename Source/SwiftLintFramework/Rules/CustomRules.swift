@@ -36,7 +36,7 @@ public func == (lhs: CustomRulesConfig, rhs: CustomRulesConfig) -> Bool {
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigProviderRule {
+public struct CustomRules: Rule, ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "custom_rules",

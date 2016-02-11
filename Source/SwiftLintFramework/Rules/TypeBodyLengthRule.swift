@@ -13,7 +13,7 @@ private func example(type: String, _ template: String, _ count: Int, _ add: Stri
         Repeat(count: count, repeatedValue: template).joinWithSeparator("") + "\(add)}\n"
 }
 
-public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
+public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public var config = SeverityLevelsConfig(warning: 200, error: 350)
 
     public init() {}

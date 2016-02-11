@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct ControlStatementRule: ConfigProviderRule {
+public struct ControlStatementRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

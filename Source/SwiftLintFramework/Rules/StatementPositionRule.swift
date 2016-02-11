@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct StatementPositionRule: CorrectableRule, ConfigProviderRule {
+public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

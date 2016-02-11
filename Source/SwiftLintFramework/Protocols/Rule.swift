@@ -25,7 +25,7 @@ extension Rule {
 
 public protocol OptInRule: Rule {}
 
-public protocol ConfigProviderRule: Rule {
+public protocol ConfigurationProviderRule: Rule {
     typealias ConfigType: RuleConfig
     var config: ConfigType { get set }
 }
@@ -34,9 +34,9 @@ public protocol CorrectableRule: Rule {
     func correctFile(file: File) -> [Correction]
 }
 
-// MARK: - ConfigProviderRule conformance to Configurable
+// MARK: - ConfigurationProviderRule conformance to Configurable
 
-public extension ConfigProviderRule {
+public extension ConfigurationProviderRule {
     public init(config: AnyObject) throws {
         self.init()
         try self.config.setConfig(config)

@@ -15,7 +15,7 @@ extension SyntaxKind {
     }
 }
 
-public struct TodoRule: ConfigProviderRule {
+public struct TodoRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

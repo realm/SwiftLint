@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeNameRule: ASTRule, ConfigProviderRule {
+public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public var config = NameConfig(minLengthWarning: 3,
                                    minLengthError: 0,

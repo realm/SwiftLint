@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ReturnArrowWhitespaceRule: ConfigProviderRule {
+public struct ReturnArrowWhitespaceRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

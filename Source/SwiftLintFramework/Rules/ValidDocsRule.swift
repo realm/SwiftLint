@@ -123,7 +123,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String,
     }.isEmpty
 }
 
-public struct ValidDocsRule: ConfigProviderRule {
+public struct ValidDocsRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

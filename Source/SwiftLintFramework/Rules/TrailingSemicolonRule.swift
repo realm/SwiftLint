@@ -16,7 +16,7 @@ extension File {
     }
 }
 
-public struct TrailingSemicolonRule: CorrectableRule, ConfigProviderRule {
+public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ForceUnwrappingRule: OptInRule, ConfigProviderRule {
+public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingWhitespaceRule: CorrectableRule, ConfigProviderRule {
+public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

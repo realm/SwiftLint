@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct EmptyCountRule: ConfigProviderRule, OptInRule {
+public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
     public var config = SeverityConfig(.Error)
 
     public init() {}

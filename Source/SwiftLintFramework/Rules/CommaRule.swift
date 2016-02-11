@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommaRule: CorrectableRule, ConfigProviderRule {
+public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

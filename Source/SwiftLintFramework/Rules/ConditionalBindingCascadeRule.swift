@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalBindingCascadeRule: ConfigProviderRule {
+public struct ConditionalBindingCascadeRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

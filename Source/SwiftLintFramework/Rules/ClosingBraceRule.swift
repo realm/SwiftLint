@@ -20,7 +20,7 @@ extension File {
     }
 }
 
-public struct ClosingBraceRule: CorrectableRule, ConfigProviderRule {
+public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Warning)
 

@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct ForceCastRule: ConfigProviderRule {
+public struct ForceCastRule: ConfigurationProviderRule {
 
     public var config = SeverityConfig(.Error)
 

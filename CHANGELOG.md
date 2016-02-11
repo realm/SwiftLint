@@ -71,6 +71,12 @@
   [JP Simard](https://github.com/jpsim)
   [#466](https://github.com/realm/SwiftLint/issues/466)
 
+* Fixed an issue where `variable_name` or `type_name` would always report a
+  violation when configured with only a `warning` value on either `min_length`
+  or `max_length`.  
+  [JP Simard](https://github.com/jpsim)
+  [#522](https://github.com/realm/SwiftLint/issues/522)
+
 ## 0.8.0: High Heat
 
 ##### Breaking

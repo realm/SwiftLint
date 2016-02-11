@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ForceTryRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Error)
+    public var configuration = SeverityConfig(.Error)
 
     public init() {}
 
@@ -29,7 +29,7 @@ public struct ForceTryRule: ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("try!", withSyntaxKinds: [.Keyword]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

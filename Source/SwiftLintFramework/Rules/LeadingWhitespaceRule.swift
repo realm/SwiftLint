@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct LeadingWhitespaceRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -31,7 +31,7 @@ public struct LeadingWhitespaceRule: ConfigurationProviderRule {
             return []
         }
         return [StyleViolation(ruleDescription: self.dynamicType.description,
-            severity: config.severity,
+            severity: configuration.severity,
             location: Location(file: file.path, line: 1),
             reason: "File shouldn't start with whitespace: " +
             "currently starts with \(countOfLeadingWhitespace) whitespace characters")]

@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ReturnArrowWhitespaceRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -49,7 +49,7 @@ public struct ReturnArrowWhitespaceRule: ConfigurationProviderRule {
         let pattern = "\\)(\(spaceRegex)\\->\\s*|\\s\\->\(spaceRegex))\\S+"
         return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

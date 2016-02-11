@@ -63,11 +63,12 @@ public func == (lhs: NameConfig, rhs: NameConfig) -> Bool {
 
 public extension ConfigurationProviderRule where ConfigType == NameConfig {
     public func severity(forLength length: Int) -> ViolationSeverity? {
-        if let minError = config.minLength.error where length < minError {
+        if let minError = configuration.minLength.error where length < minError {
             return .Error
-        } else if let maxError = config.maxLength.error where length > maxError {
+        } else if let maxError = configuration.maxLength.error where length > maxError {
             return .Error
-        } else if length < config.minLength.warning || length > config.maxLength.warning {
+        } else if length < configuration.minLength.warning ||
+                  length > configuration.maxLength.warning {
             return .Warning
         }
         return nil

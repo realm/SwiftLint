@@ -27,7 +27,7 @@ public protocol OptInRule: Rule {}
 
 public protocol ConfigurationProviderRule: Rule {
     typealias ConfigType: RuleConfig
-    var config: ConfigType { get set }
+    var configuration: ConfigType { get set }
 }
 
 public protocol CorrectableRule: Rule {
@@ -39,18 +39,18 @@ public protocol CorrectableRule: Rule {
 public extension ConfigurationProviderRule {
     public init(configuration: AnyObject) throws {
         self.init()
-        try self.config.applyConfiguration(configuration)
+        try self.configuration.applyConfiguration(configuration)
     }
 
     public func isEqualTo(rule: Rule) -> Bool {
         if let rule = rule as? Self {
-            return config.isEqualTo(rule.config)
+            return configuration.isEqualTo(rule.configuration)
         }
         return false
     }
 
     public var configurationDescription: String {
-        return config.consoleDescription
+        return configuration.consoleDescription
     }
 }
 

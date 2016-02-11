@@ -18,7 +18,7 @@ extension File {
 
 public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -46,7 +46,7 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
     public func validateFile(file: File) -> [StyleViolation] {
         return file.violatingTrailingSemicolonRanges().map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

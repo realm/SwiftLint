@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ForceCastRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Error)
+    public var configuration = SeverityConfig(.Error)
 
     public init() {}
 
@@ -27,7 +27,7 @@ public struct ForceCastRule: ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("as!", withSyntaxKinds: [.Keyword]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

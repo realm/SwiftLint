@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -34,7 +34,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.matchPattern("[\\w)]+!", withSyntaxKinds: [.Identifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: NSMaxRange($0) - 1))
         }
     }

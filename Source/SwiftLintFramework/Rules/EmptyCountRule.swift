@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
-    public var config = SeverityConfig(.Error)
+    public var configuration = SeverityConfig(.Error)
 
     public init() {}
 
@@ -35,7 +35,8 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity, location: Location(file: file, byteOffset: $0.location))
+                severity: configuration.severity,
+                location: Location(file: file, byteOffset: $0.location))
         }
     }
 }

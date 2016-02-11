@@ -14,7 +14,7 @@ private func example(type: String, _ template: String, _ count: Int, _ add: Stri
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var config = SeverityLevelsConfig(warning: 200, error: 350)
+    public var configuration = SeverityLevelsConfig(warning: 200, error: 350)
 
     public init() {}
 
@@ -49,7 +49,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in config.params {
+                for parameter in configuration.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                                                                 startLine, endLine, parameter.value)
                     if exceeds {

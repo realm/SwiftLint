@@ -45,28 +45,28 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
           "Optionally specify what syntax kinds to match against, the severity " +
           "level, and what message to display.")
 
-    public var config = CustomRulesConfig()
+    public var configuration = CustomRulesConfig()
 
     public init() {}
 
     public func validateFile(file: File) -> [StyleViolation] {
-        if config.customRuleConfigs.isEmpty {
+        if configuration.customRuleConfigs.isEmpty {
             return []
         }
 
-        return config.customRuleConfigs.flatMap {
-            self.validate(file, withConfig: $0)
+        return configuration.customRuleConfigs.flatMap {
+            self.validate(file, configuration: $0)
         }
     }
 
-    private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {
-        return file.matchPattern(config.regex).filter {
-                !config.matchKinds.intersect($0.1).isEmpty
-            }.map {
-                StyleViolation(ruleDescription: config.description,
-                    severity: config.severity,
-                    location: Location(file: file, characterOffset: $0.0.location),
-                    reason: config.message)
-            }
+    private func validate(file: File, configuration: RegexConfig) -> [StyleViolation] {
+        return file.matchPattern(configuration.regex).filter {
+            !configuration.matchKinds.intersect($0.1).isEmpty
+        }.map {
+            StyleViolation(ruleDescription: configuration.description,
+                severity: configuration.severity,
+                location: Location(file: file, characterOffset: $0.0.location),
+                reason: configuration.message)
+        }
     }
 }

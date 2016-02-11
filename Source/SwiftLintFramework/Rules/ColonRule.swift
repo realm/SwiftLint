@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -85,7 +85,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,
-                                  severity: config.severity,
+                                  severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }

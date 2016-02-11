@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -67,7 +67,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
                     return nil
                 }
                 return StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: self.config.severity,
+                    severity: self.configuration.severity,
                     location: Location(file: file, characterOffset: match.location))
             }
         }

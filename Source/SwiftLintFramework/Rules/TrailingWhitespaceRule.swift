@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -29,7 +29,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             $0.content.hasTrailingWhitespace()
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file.path, line: $0.index))
         }
     }

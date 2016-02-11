@@ -35,9 +35,9 @@ class CustomRulesTests: XCTestCase {
         var compRules = CustomRulesConfig()
         compRules.customRuleConfigs = [comp]
         do {
-            var config = CustomRulesConfig()
-            try config.applyConfiguration(configDict)
-            XCTAssertEqual(config, compRules)
+            var configuration = CustomRulesConfig()
+            try configuration.applyConfiguration(configDict)
+            XCTAssertEqual(configuration, compRules)
         } catch {
             XCTFail("Did not configure correctly")
         }
@@ -58,7 +58,7 @@ class CustomRulesTests: XCTestCase {
         var customRuleConfig = CustomRulesConfig()
         customRuleConfig.customRuleConfigs = [regexConfig]
         var customRules = CustomRules()
-        customRules.config = customRuleConfig
+        customRules.configuration = customRuleConfig
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validateFile(file),
             [StyleViolation(ruleDescription: regexConfig.description,

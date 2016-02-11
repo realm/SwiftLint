@@ -125,7 +125,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String,
 
 public struct ValidDocsRule: ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfig(.Warning)
 
     public init() {}
 
@@ -219,7 +219,7 @@ public struct ValidDocsRule: ConfigurationProviderRule {
     public func validateFile(file: File) -> [StyleViolation] {
         return file.invalidDocOffsets(file.structure.dictionary).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: config.severity,
+                severity: configuration.severity,
                 location: Location(file: file, byteOffset: $0))
         }
     }

@@ -11,7 +11,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 
 struct RuleWithLevelsMock: ConfigurationProviderRule {
-    var config = SeverityLevelsConfig(warning: 2, error: 3)
+    var configuration = SeverityLevelsConfig(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "severity_level_mock",
         name: "",
@@ -63,7 +63,7 @@ class RuleTests: XCTestCase {
     }
 
     private struct RuleWithLevelsMock2: ConfigurationProviderRule {
-        var config = SeverityLevelsConfig(warning: 2, error: 3)
+        var configuration = SeverityLevelsConfig(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
             name: "",
@@ -87,8 +87,8 @@ class RuleTests: XCTestCase {
         let config = ["warning": 17, "error": 7]
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.warning = 17
-        comp.config.error = 7
+        comp.configuration.warning = 17
+        comp.configuration.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -96,8 +96,8 @@ class RuleTests: XCTestCase {
         let config = ["warning": 17]
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.warning = 17
-        comp.config.error = nil
+        comp.configuration.warning = 17
+        comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -105,7 +105,7 @@ class RuleTests: XCTestCase {
         let config = ["error": 17]
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.error = 17
+        comp.configuration.error = 17
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -113,8 +113,8 @@ class RuleTests: XCTestCase {
         let config = [17, 7] as AnyObject
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.warning = 17
-        comp.config.error = 7
+        comp.configuration.warning = 17
+        comp.configuration.error = 7
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -122,8 +122,8 @@ class RuleTests: XCTestCase {
         let config = [17] as AnyObject
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.warning = 17
-        comp.config.error = nil
+        comp.configuration.warning = 17
+        comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 
@@ -131,8 +131,8 @@ class RuleTests: XCTestCase {
         let config = 17 as AnyObject
         let rule = try? RuleWithLevelsMock(configuration: config)
         var comp = RuleWithLevelsMock()
-        comp.config.warning = 17
-        comp.config.error = nil
+        comp.configuration.warning = 17
+        comp.configuration.error = nil
         XCTAssertEqual(rule?.isEqualTo(comp), true)
     }
 

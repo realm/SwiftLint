@@ -178,29 +178,29 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift0)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift0)!),
                        projectMockConfig0)
     }
 
     func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift1)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift1)!),
                        projectMockConfig0)
     }
 
     func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift2)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift2)!),
                        projectMockConfig0.merge(projectMockConfig2))
     }
 
     func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift3)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift3)!),
                        projectMockConfig0.merge(projectMockConfig2))
     }
 
     func testDoNotUseNestedConfigs() {
         var config = Configuration(dict: ["use_nested_configs": false])!
         config.rootPath = projectMockPathLevel0
-        XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
+        XCTAssertEqual(config.configurationForFile(File(path: projectMockSwift3)!),
                        config)
     }
 

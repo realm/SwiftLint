@@ -27,7 +27,9 @@ public struct RuleList {
                     let configuredRule = try ruleType.init(config: ruleConfig)
                     rules.append(configuredRule)
                 } catch {
-                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
+                    queuedPrintError(
+                        "Invalid configuration for '\(identifier)'. Falling back to default."
+                    )
                     rules.append(ruleType.init())
                 }
             } else {

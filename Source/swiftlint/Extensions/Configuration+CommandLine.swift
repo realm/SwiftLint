@@ -81,7 +81,7 @@ extension Configuration {
                     let filename = (path as NSString).lastPathComponent
                     queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
                 }
-                visitorBlock(Linter(file: file, configuration: configForFile(file)))
+                visitorBlock(Linter(file: file, configuration: configurationForFile(file)))
             }
             return .Success(files)
         }

@@ -42,7 +42,6 @@ class ConfigurationTests: XCTestCase {
         ("testLevel1", self.testLevel1),
         ("testLevel2", self.testLevel2),
         ("testLevel3", self.testLevel3),
-        ("testDoNotUseNestedConfigs", self.testDoNotUseNestedConfigs),
         ("testConfiguresCorrectlyFromDict", self.testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", self.testConfigureFallsBackCorrectly),
     ]
@@ -195,13 +194,6 @@ class ConfigurationTests: XCTestCase {
     func testLevel3() {
         XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift3)!),
                        projectMockConfig0.merge(projectMockConfig2))
-    }
-
-    func testDoNotUseNestedConfigs() {
-        var configuration = Configuration(dict: ["use_nested_configs": false])!
-        configuration.rootPath = projectMockPathLevel0
-        XCTAssertEqual(configuration.configurationForFile(File(path: projectMockSwift3)!),
-                       configuration)
     }
 
     // MARK: - Testing Rules from config dictionary

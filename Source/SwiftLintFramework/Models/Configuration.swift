@@ -18,7 +18,7 @@ private enum ConfigurationKey: String {
     case Included = "included"
     case OptInRules = "opt_in_rules"
     case Reporter = "reporter"
-    case UseNestedConfigs = "use_nested_configs"
+    case UseNestedConfigs = "use_nested_configs" // deprecated
     case WhitelistRules = "whitelist_rules"
 }
 
@@ -28,7 +28,6 @@ public struct Configuration: Equatable {
     public let excluded: [String]             // excluded
     public let reporter: String               // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
-    public let useNestedConfigurations: Bool  // process nested configurations, defaults to false
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
 
@@ -38,12 +37,10 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
-                 useNestedConfigurations: Bool = false) {
+                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:])) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
-        self.useNestedConfigurations = useNestedConfigurations
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -104,6 +101,13 @@ public struct Configuration: Equatable {
                 "future release.")
         }
 
+        // Deprecation warning for "use_nested_configs"
+        if dict[ConfigurationKey.UseNestedConfigs.rawValue] != nil {
+            queuedPrintError("Support for '\(ConfigurationKey.UseNestedConfigs.rawValue)' has " +
+                "been deprecated and its value is now ignored. Nested configuration files are " +
+                "now always considered.")
+        }
+
         func defaultStringArray(object: AnyObject?) -> [String] {
             return [String].arrayOf(object) ?? []
         }
@@ -139,8 +143,6 @@ public struct Configuration: Equatable {
             excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
-            useNestedConfigurations: dict[ConfigurationKey.UseNestedConfigs.rawValue] as? Bool ??
-                false,
             configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
         )
     }
@@ -183,8 +185,7 @@ public struct Configuration: Equatable {
     }
 
     public func configurationForFile(file: File) -> Configuration {
-        if useNestedConfigurations,
-            let containingDir = (file.path as NSString?)?.stringByDeletingLastPathComponent {
+        if let containingDir = (file.path as NSString?)?.stringByDeletingLastPathComponent {
             return configurationForPath(containingDir)
         }
         return self
@@ -227,7 +228,6 @@ public func == (lhs: Configuration, rhs: Configuration) -> Bool {
     return (lhs.excluded == rhs.excluded) &&
            (lhs.included == rhs.included) &&
            (lhs.reporter == rhs.reporter) &&
-           (lhs.useNestedConfigurations == rhs.useNestedConfigurations) &&
            (lhs.configurationPath == rhs.configurationPath) &&
            (lhs.rootPath == lhs.rootPath) &&
            (lhs.rules == rhs.rules)

@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-// MARK: - CustomRulesConfig
+// MARK: - CustomRulesConfiguration
 
-public struct CustomRulesConfig: RuleConfiguration, Equatable {
+public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String { return "user-defined" }
     public var customRuleConfigurations = [RegexConfiguration]()
 
@@ -30,7 +30,7 @@ public struct CustomRulesConfig: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: CustomRulesConfig, rhs: CustomRulesConfig) -> Bool {
+public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
     return lhs.customRuleConfigurations == rhs.customRuleConfigurations
 }
 
@@ -45,7 +45,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
           "Optionally specify what syntax kinds to match against, the severity " +
           "level, and what message to display.")
 
-    public var configuration = CustomRulesConfig()
+    public var configuration = CustomRulesConfiguration()
 
     public init() {}
 

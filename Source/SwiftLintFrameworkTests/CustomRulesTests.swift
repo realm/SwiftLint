@@ -32,10 +32,10 @@ class CustomRulesTests: XCTestCase {
         comp.regex = NSRegularExpression.forcePattern("regex")
         comp.severityConfig = SeverityConfiguration(.Error)
         comp.matchKinds = Set([SyntaxKind.Comment])
-        var compRules = CustomRulesConfig()
+        var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {
-            var configuration = CustomRulesConfig()
+            var configuration = CustomRulesConfiguration()
             try configuration.applyConfiguration(configDict)
             XCTAssertEqual(configuration, compRules)
         } catch {
@@ -45,7 +45,7 @@ class CustomRulesTests: XCTestCase {
 
     func testCustomRuleConfigurationThrows() {
         let config = 17
-        var customRulesConfig = CustomRulesConfig()
+        var customRulesConfig = CustomRulesConfiguration()
         checkError(ConfigurationError.UnknownConfiguration) {
             try customRulesConfig.applyConfiguration(config)
         }
@@ -55,7 +55,7 @@ class CustomRulesTests: XCTestCase {
         var regexConfig = RegexConfiguration(identifier: "custom")
         regexConfig.regex = NSRegularExpression.forcePattern("pattern")
         regexConfig.matchKinds = Set([SyntaxKind.Comment])
-        var customRuleConfiguration = CustomRulesConfig()
+        var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         var customRules = CustomRules()
         customRules.configuration = customRuleConfiguration

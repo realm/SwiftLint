@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfig: RuleConfig, Equatable {
+public struct RegexConfig: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."

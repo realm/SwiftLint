@@ -11,9 +11,9 @@ import SourceKittenFramework
 
 // MARK: - CustomRulesConfig
 
-public struct CustomRulesConfig: RuleConfig, Equatable {
+public struct CustomRulesConfig: RuleConfiguration, Equatable {
     public var consoleDescription: String { return "user-defined" }
-    public var customRuleConfigs = [RegexConfig]()
+    public var customRuleConfigurations = [RegexConfig]()
 
     public init() {}
 
@@ -23,15 +23,15 @@ public struct CustomRulesConfig: RuleConfig, Equatable {
         }
 
         for (key, value) in configurationDict {
-            var ruleConfig = RegexConfig(identifier: key)
-            try ruleConfig.applyConfiguration(value)
-            customRuleConfigs.append(ruleConfig)
+            var ruleConfiguration = RegexConfig(identifier: key)
+            try ruleConfiguration.applyConfiguration(value)
+            customRuleConfigurations.append(ruleConfiguration)
         }
     }
 }
 
 public func == (lhs: CustomRulesConfig, rhs: CustomRulesConfig) -> Bool {
-    return lhs.customRuleConfigs == rhs.customRuleConfigs
+    return lhs.customRuleConfigurations == rhs.customRuleConfigurations
 }
 
 // MARK: - CustomRules
@@ -50,11 +50,11 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
     public init() {}
 
     public func validateFile(file: File) -> [StyleViolation] {
-        if configuration.customRuleConfigs.isEmpty {
+        if configuration.customRuleConfigurations.isEmpty {
             return []
         }
 
-        return configuration.customRuleConfigs.flatMap {
+        return configuration.customRuleConfigurations.flatMap {
             self.validate(file, configuration: $0)
         }
     }

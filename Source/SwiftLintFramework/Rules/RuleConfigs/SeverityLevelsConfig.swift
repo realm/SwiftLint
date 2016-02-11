@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityLevelsConfig: RuleConfig, Equatable {
+public struct SeverityLevelsConfig: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         let errorString: String
         if let errorValue = error {

@@ -15,12 +15,12 @@ class CustomRulesTests: XCTestCase {
 
     // protocol XCTestCaseProvider
     lazy var allTests: [(String, () throws -> Void)] = [
-        ("testCustomRuleConfigSetsCorrectly", self.testCustomRuleConfigSetsCorrectly),
-        ("testCustomRuleConfigThrows", self.testCustomRuleConfigThrows),
+        ("testCustomRuleConfigurationSetsCorrectly", self.testCustomRuleConfigurationSetsCorrectly),
+        ("testCustomRuleConfigurationThrows", self.testCustomRuleConfigurationThrows),
         ("testCustomRules", self.testCustomRules),
     ]
 
-    func testCustomRuleConfigSetsCorrectly() {
+    func testCustomRuleConfigurationSetsCorrectly() {
         let configDict = ["my_custom_rule": ["name": "MyCustomRule",
             "message": "Message",
             "regex": "regex",
@@ -33,7 +33,7 @@ class CustomRulesTests: XCTestCase {
         comp.severityConfig = SeverityConfig(.Error)
         comp.matchKinds = Set([SyntaxKind.Comment])
         var compRules = CustomRulesConfig()
-        compRules.customRuleConfigs = [comp]
+        compRules.customRuleConfigurations = [comp]
         do {
             var configuration = CustomRulesConfig()
             try configuration.applyConfiguration(configDict)
@@ -43,7 +43,7 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    func testCustomRuleConfigThrows() {
+    func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfig()
         checkError(ConfigurationError.UnknownConfiguration) {
@@ -55,10 +55,10 @@ class CustomRulesTests: XCTestCase {
         var regexConfig = RegexConfig(identifier: "custom")
         regexConfig.regex = NSRegularExpression.forcePattern("pattern")
         regexConfig.matchKinds = Set([SyntaxKind.Comment])
-        var customRuleConfig = CustomRulesConfig()
-        customRuleConfig.customRuleConfigs = [regexConfig]
+        var customRuleConfiguration = CustomRulesConfig()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
         var customRules = CustomRules()
-        customRules.configuration = customRuleConfig
+        customRules.configuration = customRuleConfiguration
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validateFile(file),
             [StyleViolation(ruleDescription: regexConfig.description,

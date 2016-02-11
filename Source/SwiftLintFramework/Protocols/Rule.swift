@@ -26,7 +26,7 @@ extension Rule {
 public protocol OptInRule: Rule {}
 
 public protocol ConfigurationProviderRule: Rule {
-    typealias ConfigType: RuleConfig
+    typealias ConfigType: RuleConfiguration
     var configuration: ConfigType { get set }
 }
 

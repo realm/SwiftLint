@@ -1,5 +1,5 @@
 //
-//  RuleConfigTests.swift
+//  RuleConfigurationTests.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/20/16.
@@ -10,7 +10,7 @@ import XCTest
 @testable import SwiftLintFramework
 import SourceKittenFramework
 
-class RuleConfigurationsTests: XCTestCase {
+class RuleConfigurationurationsTests: XCTestCase {
 
     // protocol XCTestCaseProvider
     lazy var allTests: [(String, () throws -> Void)] = [

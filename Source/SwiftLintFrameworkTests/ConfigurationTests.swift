@@ -30,8 +30,8 @@ class ConfigurationTests: XCTestCase {
         ("testInit", self.testInit),
         ("testEmptyConfiguration", self.testEmptyConfiguration),
         ("testWhitelistRules", self.testWhitelistRules),
-        ("testOtherRuleConfigurationsAlongsideWhitelistRules",
-            self.testOtherRuleConfigurationsAlongsideWhitelistRules),
+        ("testOtherRuleConfigurationurationsAlongsideWhitelistRules",
+            self.testOtherRuleConfigurationurationsAlongsideWhitelistRules),
         ("testDisabledRules", self.testDisabledRules),
         ("testDisabledRulesWithUnknownRule", self.testDisabledRulesWithUnknownRule),
         ("testExcludedPaths", self.testExcludedPaths),
@@ -75,7 +75,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(whitelist, configuredIdentifiers)
     }
 
-    func testOtherRuleConfigurationsAlongsideWhitelistRules() {
+    func testOtherRuleConfigurationurationsAlongsideWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let enabledRulesConfigDict = [
             "opt_in_rules": ["line_length"],
@@ -209,11 +209,11 @@ class ConfigurationTests: XCTestCase {
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDict() {
-        let ruleConfig = [1, 2]
-        let config = [RuleWithLevelsMock.description.identifier: ruleConfig]
+        let ruleConfiguration = [1, 2]
+        let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
         let rules = testRuleList.configuredRulesWithDictionary(config)
         // swiftlint:disable:next force_try
-        XCTAssertTrue(rules == [try! RuleWithLevelsMock(configuration: ruleConfig) as Rule])
+        XCTAssertTrue(rules == [try! RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {

@@ -23,7 +23,7 @@
 		3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DF0111C5148140011BCED /* CustomRules.swift */; };
 		3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B30C4A01C3785B300E04027 /* YamlParserTests.swift */; };
 		3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
-		3B828E531C546468000D180E /* RuleConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B828E521C546468000D180E /* RuleConfig.swift */; };
+		3B828E531C546468000D180E /* RuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B828E521C546468000D180E /* RuleConfiguration.swift */; };
 		3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */; };
 		3BB47D831C514E8100AE6A10 /* RegexConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D821C514E8100AE6A10 /* RegexConfig.swift */; };
 		3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */; };
@@ -180,7 +180,7 @@
 		3B1DF0111C5148140011BCED /* CustomRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomRules.swift; sourceTree = "<group>"; };
 		3B30C4A01C3785B300E04027 /* YamlParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParserTests.swift; sourceTree = "<group>"; };
 		3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
-		3B828E521C546468000D180E /* RuleConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfig.swift; sourceTree = "<group>"; };
+		3B828E521C546468000D180E /* RuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfiguration.swift; sourceTree = "<group>"; };
 		3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRange+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BB47D821C514E8100AE6A10 /* RegexConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexConfig.swift; sourceTree = "<group>"; };
 		3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -593,7 +593,7 @@
 				E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */,
 				E86396C11BADAAE5002C9E88 /* Reporter.swift */,
 				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
-				3B828E521C546468000D180E /* RuleConfig.swift */,
+				3B828E521C546468000D180E /* RuleConfiguration.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -886,7 +886,7 @@
 				E86396C21BADAAE5002C9E88 /* Reporter.swift in Sources */,
 				E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */,
 				E88198521BEA941300333A11 /* TodoRule.swift in Sources */,
-				3B828E531C546468000D180E /* RuleConfig.swift in Sources */,
+				3B828E531C546468000D180E /* RuleConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

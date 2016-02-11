@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityConfig: RuleConfig, Equatable {
+public struct SeverityConfig: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severity.rawValue.lowercaseString
     }

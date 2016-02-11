@@ -76,7 +76,7 @@ public struct MissingDocsRule: OptInRule {
         parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 
-    public var configDescription: String {
+    public var configurationDescription: String {
         return parameters.map({
             "\($0.severity.rawValue.lowercaseString): \($0.value.rawValue)"
         }).joinWithSeparator(", ")

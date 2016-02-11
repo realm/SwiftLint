@@ -14,7 +14,7 @@ public protocol Rule {
     static var description: RuleDescription { get }
     func validateFile(file: File) -> [StyleViolation]
     func isEqualTo(rule: Rule) -> Bool
-    var configDescription: String { get }
+    var configurationDescription: String { get }
 }
 
 extension Rule {
@@ -49,7 +49,7 @@ public extension ConfigurationProviderRule {
         return false
     }
 
-    public var configDescription: String {
+    public var configurationDescription: String {
         return config.consoleDescription
     }
 }

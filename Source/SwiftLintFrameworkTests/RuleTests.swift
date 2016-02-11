@@ -45,7 +45,7 @@ class RuleTests: XCTestCase {
     private struct RuleMock1: Rule {
         init() {}
         init(config: AnyObject) throws { self.init() }
-        var configDescription: String { return "N/A" }
+        var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
             return []
@@ -55,7 +55,7 @@ class RuleTests: XCTestCase {
     private struct RuleMock2: Rule {
         init() {}
         init(config: AnyObject) throws { self.init() }
-        var configDescription: String { return "N/A" }
+        var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
         func validateFile(file: File) -> [StyleViolation] {
             return []

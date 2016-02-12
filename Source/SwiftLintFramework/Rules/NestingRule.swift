@@ -8,9 +8,9 @@
 
 import SourceKittenFramework
 
-public struct NestingRule: ASTRule, ConfigProviderRule {
+public struct NestingRule: ASTRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}
 
@@ -45,12 +45,12 @@ public struct NestingRule: ASTRule, ConfigProviderRule {
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             if level > 1 && typeKinds.contains(kind) {
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: config.severity,
+                    severity: configuration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: config.severity,
+                    severity: configuration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Statements should be nested at most 5 levels deep"))
             }

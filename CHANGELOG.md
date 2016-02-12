@@ -29,6 +29,15 @@
   [JP Simard](https://github.com/jpsim)
   [#479](https://github.com/realm/SwiftLint/issues/479)
 
+* All instances of the abbreviation "config" in the API have been expanded to
+  "configuration". The `--config` command line parameter and
+  `use_nested_configs` configuration key are unaffected.  
+  [JP Simard](https://github.com/jpsim)
+
+* The `use_nested_configs` configuration key has been deprecated and its value
+  is now ignored. Nested configuration files are now always considered.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which

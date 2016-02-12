@@ -94,7 +94,7 @@ extension TextTable {
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
-                (configuredRule ?? rule).configDescription
+                (configuredRule ?? rule).configurationDescription
             )
         }
     }

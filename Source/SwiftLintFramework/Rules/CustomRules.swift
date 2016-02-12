@@ -9,34 +9,34 @@
 import Foundation
 import SourceKittenFramework
 
-// MARK: - CustomRulesConfig
+// MARK: - CustomRulesConfiguration
 
-public struct CustomRulesConfig: RuleConfig, Equatable {
+public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String { return "user-defined" }
-    public var customRuleConfigs = [RegexConfig]()
+    public var customRuleConfigurations = [RegexConfiguration]()
 
     public init() {}
 
-    public mutating func setConfig(config: AnyObject) throws {
-        guard let configDict = config as? [String: AnyObject] else {
+    public mutating func applyConfiguration(configuration: AnyObject) throws {
+        guard let configurationDict = configuration as? [String: AnyObject] else {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        for (key, value) in configDict {
-            var ruleConfig = RegexConfig(identifier: key)
-            try ruleConfig.setConfig(value)
-            customRuleConfigs.append(ruleConfig)
+        for (key, value) in configurationDict {
+            var ruleConfiguration = RegexConfiguration(identifier: key)
+            try ruleConfiguration.applyConfiguration(value)
+            customRuleConfigurations.append(ruleConfiguration)
         }
     }
 }
 
-public func == (lhs: CustomRulesConfig, rhs: CustomRulesConfig) -> Bool {
-    return lhs.customRuleConfigs == rhs.customRuleConfigs
+public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
+    return lhs.customRuleConfigurations == rhs.customRuleConfigurations
 }
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigProviderRule {
+public struct CustomRules: Rule, ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "custom_rules",
@@ -45,28 +45,28 @@ public struct CustomRules: Rule, ConfigProviderRule {
           "Optionally specify what syntax kinds to match against, the severity " +
           "level, and what message to display.")
 
-    public var config = CustomRulesConfig()
+    public var configuration = CustomRulesConfiguration()
 
     public init() {}
 
     public func validateFile(file: File) -> [StyleViolation] {
-        if config.customRuleConfigs.isEmpty {
+        if configuration.customRuleConfigurations.isEmpty {
             return []
         }
 
-        return config.customRuleConfigs.flatMap {
-            self.validate(file, withConfig: $0)
+        return configuration.customRuleConfigurations.flatMap {
+            self.validate(file, configuration: $0)
         }
     }
 
-    private func validate(file: File, withConfig config: RegexConfig) -> [StyleViolation] {
-        return file.matchPattern(config.regex).filter {
-                !config.matchKinds.intersect($0.1).isEmpty
-            }.map {
-                StyleViolation(ruleDescription: config.description,
-                    severity: config.severity,
-                    location: Location(file: file, characterOffset: $0.0.location),
-                    reason: config.message)
-            }
+    private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
+        return file.matchPattern(configuration.regex).filter {
+            !configuration.matchKinds.intersect($0.1).isEmpty
+        }.map {
+            StyleViolation(ruleDescription: configuration.description,
+                severity: configuration.severity,
+                location: Location(file: file, characterOffset: $0.0.location),
+                reason: configuration.message)
+        }
     }
 }

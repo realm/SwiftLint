@@ -9,8 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
-    public var config = SeverityLevelsConfig(warning: 10, error: 20)
+public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
+    public var configuration = SeverityLevelsConfiguration(warning: 10, error: 20)
 
     public init() {}
 
@@ -46,12 +46,12 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigProviderRule {
 
         let complexity = measureComplexity(file, dictionary: dictionary)
 
-        for parameter in config.params where complexity > parameter.value {
+        for parameter in configuration.params where complexity > parameter.value {
             let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
             return [StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: "Function should have complexity \(config.warning) or less: " +
+                reason: "Function should have complexity \(configuration.warning) or less: " +
                         "currently complexity equals \(complexity)")]
         }
 

@@ -8,8 +8,8 @@
 
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigProviderRule {
-    public var config = SeverityLevelsConfig(warning: 100, error: 200)
+public struct LineLengthRule: ConfigurationProviderRule {
+    public var configuration = SeverityLevelsConfiguration(warning: 100, error: 200)
 
     public init() {}
 
@@ -26,7 +26,7 @@ public struct LineLengthRule: ConfigProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let minValue = config.params.map({$0.value}).minElement(<)
+        let minValue = configuration.params.map({$0.value}).minElement(<)
         return file.lines.flatMap { line in
             // `line.content.characters.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
@@ -35,11 +35,11 @@ public struct LineLengthRule: ConfigProviderRule {
                 return nil
             }
             let length = line.content.characters.count
-            for param in config.params where length > param.value {
+            for param in configuration.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(config.warning) characters or less: " +
+                    reason: "Line should be \(configuration.warning) characters or less: " +
                     "currently \(length) characters")
             }
             return nil

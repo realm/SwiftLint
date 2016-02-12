@@ -18,19 +18,18 @@ private enum ConfigurationKey: String {
     case Included = "included"
     case OptInRules = "opt_in_rules"
     case Reporter = "reporter"
-    case UseNestedConfigs = "use_nested_configs"
+    case UseNestedConfigs = "use_nested_configs" // deprecated
     case WhitelistRules = "whitelist_rules"
 }
 
 public struct Configuration: Equatable {
     public static let fileName = ".swiftlint.yml"
-    public let included: [String]      // included
-    public let excluded: [String]      // excluded
-    public let reporter: String        // reporter (xcode, json, csv, checkstyle)
+    public let included: [String]             // included
+    public let excluded: [String]             // excluded
+    public let reporter: String               // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
-    public let useNestedConfigs: Bool  // process nested configs, will default to false
-    public var rootPath: String?       // the root path of the lint to search for nested configs
-    public var configPath: String?     // if successfully loaded from a path
+    public var rootPath: String?              // the root path to search for nested configurations
+    public var configurationPath: String?     // if successfully loaded from a path
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -38,12 +37,10 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
-                 useNestedConfigs: Bool = false) {
+                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:])) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
-        self.useNestedConfigs = useNestedConfigs
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -54,7 +51,9 @@ public struct Configuration: Equatable {
         let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
         if !invalidRules.isEmpty {
             for invalidRule in invalidRules {
-                queuedPrintError("config error: '\(invalidRule)' is not a valid rule identifier")
+                queuedPrintError(
+                    "configuration error: '\(invalidRule)' is not a valid rule identifier"
+                )
             }
             let listOfValidRuleIdentifiers = validRuleIdentifiers.joinWithSeparator("\n")
             queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
@@ -68,7 +67,7 @@ public struct Configuration: Equatable {
                 return accu
             }.filter { $0.1 > 1 }
             queuedPrintError(duplicateRules.map { rule in
-                "config error: '\(rule.0)' is listed \(rule.1) times"
+                "configuration error: '\(rule.0)' is listed \(rule.1) times"
             }.joinWithSeparator("\n"))
             return nil
         }
@@ -100,6 +99,13 @@ public struct Configuration: Equatable {
             queuedPrintError("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
                 "'\(ConfigurationKey.OptInRules.rawValue)' and will be completely removed in a " +
                 "future release.")
+        }
+
+        // Deprecation warning for "use_nested_configs"
+        if dict[ConfigurationKey.UseNestedConfigs.rawValue] != nil {
+            queuedPrintError("Support for '\(ConfigurationKey.UseNestedConfigs.rawValue)' has " +
+                "been deprecated and its value is now ignored. Nested configuration files are " +
+                "now always considered.")
         }
 
         func defaultStringArray(object: AnyObject?) -> [String] {
@@ -137,7 +143,6 @@ public struct Configuration: Equatable {
             excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
-            useNestedConfigs: dict[ConfigurationKey.UseNestedConfigs.rawValue] as? Bool ?? false,
             configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
         )
     }
@@ -159,7 +164,7 @@ public struct Configuration: Equatable {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
             self.init(dict: dict)!
-            configPath = fullPath
+            configurationPath = fullPath
             return
         } catch {
             fail()
@@ -179,10 +184,9 @@ public struct Configuration: Equatable {
         return lintablePathsForPath(path).flatMap { File(path: $0) }
     }
 
-    public func configForFile(file: File) -> Configuration {
-        if useNestedConfigs,
-            let containingDir = (file.path as NSString?)?.stringByDeletingLastPathComponent {
-            return configForPath(containingDir)
+    public func configurationForFile(file: File) -> Configuration {
+        if let containingDir = (file.path as NSString?)?.stringByDeletingLastPathComponent {
+            return configurationForPath(containingDir)
         }
         return self
     }
@@ -191,19 +195,19 @@ public struct Configuration: Equatable {
 // MARK: - Nested Configurations Extension
 
 extension Configuration {
-    private func configForPath(path: String) -> Configuration {
+    private func configurationForPath(path: String) -> Configuration {
         let path = path as NSString
-        let configSearchPath = path.stringByAppendingPathComponent(Configuration.fileName)
+        let configurationSearchPath = path.stringByAppendingPathComponent(Configuration.fileName)
 
-        // If a config exists and it isn't us, load and merge the configs
-        if configSearchPath != configPath &&
-            NSFileManager.defaultManager().fileExistsAtPath(configSearchPath) {
-            return merge(Configuration(path: configSearchPath, optional: false, quiet: true))
+        // If a configuration exists and it isn't us, load and merge the gurations
+        if configurationSearchPath != configurationPath &&
+            NSFileManager.defaultManager().fileExistsAtPath(configurationSearchPath) {
+            return merge(Configuration(path: configurationSearchPath, optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree
         if path != rootPath && path != "/" {
-            return configForPath(path.stringByDeletingLastPathComponent)
+            return configurationForPath(path.stringByDeletingLastPathComponent)
         }
 
         // If nothing else, return self
@@ -211,10 +215,10 @@ extension Configuration {
     }
 
     // Currently merge simply overrides the current configuration with the new configuration.
-    // This requires that all config files be fully specified. In the future this will be changed
-    // to do a more intelligent merge allowing for partial nested configs.
-    internal func merge(config: Configuration) -> Configuration {
-        return config
+    // This requires that all configuration files be fully specified. In the future this should be
+    // improved to do a more intelligent merge allowing for partial nested configurations.
+    internal func merge(configuration: Configuration) -> Configuration {
+        return configuration
     }
 }
 
@@ -224,8 +228,7 @@ public func == (lhs: Configuration, rhs: Configuration) -> Bool {
     return (lhs.excluded == rhs.excluded) &&
            (lhs.included == rhs.included) &&
            (lhs.reporter == rhs.reporter) &&
-           (lhs.useNestedConfigs == rhs.useNestedConfigs) &&
-           (lhs.configPath == rhs.configPath) &&
+           (lhs.configurationPath == rhs.configurationPath) &&
            (lhs.rootPath == lhs.rootPath) &&
            (lhs.rules == rhs.rules)
 }

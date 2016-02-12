@@ -22,12 +22,14 @@ public struct RuleList {
         var rules = [Rule]()
         for ruleType in list.values {
             let identifier = ruleType.description.identifier
-            if let ruleConfig = dictionary[identifier] {
+            if let ruleConfiguration = dictionary[identifier] {
                 do {
-                    let configuredRule = try ruleType.init(config: ruleConfig)
+                    let configuredRule = try ruleType.init(configuration: ruleConfiguration)
                     rules.append(configuredRule)
                 } catch {
-                    queuedPrintError("Invalid config for '\(identifier)'. Falling back to default.")
+                    queuedPrintError(
+                        "Invalid configuration for '\(identifier)'. Falling back to default."
+                    )
                     rules.append(ruleType.init())
                 }
             } else {

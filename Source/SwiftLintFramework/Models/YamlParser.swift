@@ -10,12 +10,12 @@ import Yaml
 
 // MARK: - YamlParsingError
 
-public enum YamlParserError: ErrorType, Equatable {
+internal enum YamlParserError: ErrorType, Equatable {
     case YamlParsing(String)
     case YamlFlattening
 }
 
-public func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
+internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
     switch (lhs, rhs) {
     case (.YamlFlattening, .YamlFlattening):
         return true

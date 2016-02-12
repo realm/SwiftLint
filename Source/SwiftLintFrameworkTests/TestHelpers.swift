@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import SourceKittenFramework
 import XCTest
 

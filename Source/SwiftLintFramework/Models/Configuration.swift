@@ -24,14 +24,13 @@ private enum ConfigurationKey: String {
 
 public struct Configuration: Equatable {
     public static let fileName = ".swiftlint.yml"
-    public let disabledRules: [String] // disabled_rules
     public let included: [String]      // included
     public let excluded: [String]      // excluded
     public let reporter: String        // reporter (xcode, json, csv, checkstyle)
     public let rules: [Rule]
     public let useNestedConfigs: Bool  // process nested configs, will default to false
     public var rootPath: String?       // the root path of the lint to search for nested configs
-    private var configPath: String?    // if successfully load from a path
+    public var configPath: String?     // if successfully loaded from a path
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -73,7 +72,6 @@ public struct Configuration: Equatable {
             }.joinWithSeparator("\n"))
             return nil
         }
-        self.disabledRules = validDisabledRules
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
@@ -192,8 +190,8 @@ public struct Configuration: Equatable {
 
 // MARK: - Nested Configurations Extension
 
-public extension Configuration {
-    func configForPath(path: String) -> Configuration {
+extension Configuration {
+    private func configForPath(path: String) -> Configuration {
         let path = path as NSString
         let configSearchPath = path.stringByAppendingPathComponent(Configuration.fileName)
 
@@ -215,7 +213,7 @@ public extension Configuration {
     // Currently merge simply overrides the current configuration with the new configuration.
     // This requires that all config files be fully specified. In the future this will be changed
     // to do a more intelligent merge allowing for partial nested configs.
-    func merge(config: Configuration) -> Configuration {
+    internal func merge(config: Configuration) -> Configuration {
         return config
     }
 }
@@ -223,8 +221,7 @@ public extension Configuration {
 // Mark - == Implementation
 
 public func == (lhs: Configuration, rhs: Configuration) -> Bool {
-    return (lhs.disabledRules == rhs.disabledRules) &&
-           (lhs.excluded == rhs.excluded) &&
+    return (lhs.excluded == rhs.excluded) &&
            (lhs.included == rhs.included) &&
            (lhs.reporter == rhs.reporter) &&
            (lhs.useNestedConfigs == rhs.useNestedConfigs) &&

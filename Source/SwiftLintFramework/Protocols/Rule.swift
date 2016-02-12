@@ -18,7 +18,7 @@ public protocol Rule {
 }
 
 extension Rule {
-    func isEqualTo(rule: Rule) -> Bool {
+    public func isEqualTo(rule: Rule) -> Bool {
         return self.dynamicType.description == rule.dynamicType.description
     }
 }

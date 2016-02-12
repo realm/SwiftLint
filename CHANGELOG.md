@@ -22,6 +22,13 @@
   `configuredRules`.  
   [JP Simard](https://github.com/jpsim)
 
+* Removed a large number of declarations from the public SwiftLintFramework API.
+  This is being done to minimize the API surface area in preparation of a 1.0
+  release. See [#507](https://github.com/realm/SwiftLint/pull/507) for a
+  complete record of this change.  
+  [JP Simard](https://github.com/jpsim)
+  [#479](https://github.com/realm/SwiftLint/issues/479)
+
 ##### Enhancements
 
 * `swiftlint lint` now accepts an optional `--reporter` parameter which

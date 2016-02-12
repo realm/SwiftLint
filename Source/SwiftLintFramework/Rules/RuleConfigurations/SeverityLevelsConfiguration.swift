@@ -1,5 +1,5 @@
 //
-//  SeverityLevelsConfig.swift
+//  SeverityLevelsConfiguration.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/19/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SeverityLevelsConfig: RuleConfig, Equatable {
+public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         let errorString: String
         if let errorValue = error {
@@ -37,20 +37,20 @@ public struct SeverityLevelsConfig: RuleConfig, Equatable {
         return [RuleParameter(severity: .Warning, value: warning)]
     }
 
-    mutating public func setConfig(config: AnyObject) throws {
-        if let config = [Int].arrayOf(config) where !config.isEmpty {
-            warning = config[0]
-            error = (config.count > 1) ? config[1] : nil
-        } else if let config = config as? [String: Int]
-                where !config.isEmpty && Set(config.keys).isSubsetOf(["warning", "error"]) {
-            warning = config["warning"] ?? warning
-            error = config["error"]
+    mutating public func applyConfiguration(configuration: AnyObject) throws {
+        if let configurationArray = [Int].arrayOf(configuration) where !configurationArray.isEmpty {
+            warning = configurationArray[0]
+            error = (configurationArray.count > 1) ? configurationArray[1] : nil
+        } else if let configDict = configuration as? [String: Int]
+                where !configDict.isEmpty && Set(configDict.keys).isSubsetOf(["warning", "error"]) {
+            warning = configDict["warning"] ?? warning
+            error = configDict["error"]
         } else {
             throw ConfigurationError.UnknownConfiguration
         }
     }
 }
 
-public func == (lhs: SeverityLevelsConfig, rhs: SeverityLevelsConfig) -> Bool {
+public func == (lhs: SeverityLevelsConfiguration, rhs: SeverityLevelsConfiguration) -> Bool {
     return lhs.warning == rhs.warning && lhs.error == rhs.error
 }

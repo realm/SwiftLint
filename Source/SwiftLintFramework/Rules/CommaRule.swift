@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommaRule: CorrectableRule, ConfigProviderRule {
+public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var config = SeverityConfig(.Warning)
+    public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}
 
@@ -43,7 +43,7 @@ public struct CommaRule: CorrectableRule, ConfigProviderRule {
 
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                           severity: config.severity,
+                           severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }

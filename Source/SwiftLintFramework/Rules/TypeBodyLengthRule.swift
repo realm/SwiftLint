@@ -13,8 +13,8 @@ private func example(type: String, _ template: String, _ count: Int, _ add: Stri
         Repeat(count: count, repeatedValue: template).joinWithSeparator("") + "\(add)}\n"
 }
 
-public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
-    public var config = SeverityLevelsConfig(warning: 200, error: 350)
+public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
+    public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
 
     public init() {}
 
@@ -49,7 +49,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigProviderRule {
             let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in config.params {
+                for parameter in configuration.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                                                                 startLine, endLine, parameter.value)
                     if exceeds {

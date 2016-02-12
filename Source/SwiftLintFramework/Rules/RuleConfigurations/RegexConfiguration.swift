@@ -1,5 +1,5 @@
 //
-//  RegexConfig.swift
+//  RegexConfiguration.swift
 //  SwiftLint
 //
 //  Created by Scott Hoyt on 1/21/16.
@@ -9,16 +9,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfig: RuleConfig, Equatable {
+public struct RegexConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
-    public var severityConfig = SeverityConfig(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.Warning)
 
     public var severity: ViolationSeverity {
-        return severityConfig.severity
+        return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
@@ -35,30 +35,30 @@ public struct RegexConfig: RuleConfig, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func setConfig(config: AnyObject) throws {
-        guard let configDict = config as? [String: AnyObject],
-              let regexString = configDict["regex"] as? String else {
+    public mutating func applyConfiguration(configuration: AnyObject) throws {
+        guard let configurationDict = configuration as? [String: AnyObject],
+              let regexString = configurationDict["regex"] as? String else {
             throw ConfigurationError.UnknownConfiguration
         }
 
         regex = try NSRegularExpression.cached(pattern: regexString)
 
-        if let name = configDict["name"] as? String {
+        if let name = configurationDict["name"] as? String {
             self.name = name
         }
-        if let message = configDict["message"] as? String {
+        if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let matchKinds = [String].arrayOf(configDict["match_kinds"]) {
+        if let matchKinds = [String].arrayOf(configurationDict["match_kinds"]) {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
         }
-        if let severityString = configDict["severity"] as? String {
-            try severityConfig.setConfig(severityString)
+        if let severityString = configurationDict["severity"] as? String {
+            try severityConfiguration.applyConfiguration(severityString)
         }
     }
 }
 
-public func == (lhs: RegexConfig, rhs: RegexConfig) -> Bool {
+public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
     return lhs.identifier == rhs.identifier &&
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&

@@ -88,12 +88,12 @@ class ConfigurationTests: XCTestCase {
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {
             var d = $0; d[$1.0] = $1.1; return d
         }
-        var config = Configuration(dict: enabledRulesConfigDict)
-        XCTAssertNil(config)
-        config = Configuration(dict: disabledRulesConfigDict)
-        XCTAssertNil(config)
-        config = Configuration(dict: combinedRulesConfigDict)
-        XCTAssertNil(config)
+        var configuration = Configuration(dict: enabledRulesConfigDict)
+        XCTAssertNil(configuration)
+        configuration = Configuration(dict: disabledRulesConfigDict)
+        XCTAssertNil(configuration)
+        configuration = Configuration(dict: combinedRulesConfigDict)
+        XCTAssertNil(configuration)
     }
 
     func testDisabledRules() {
@@ -154,9 +154,9 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Configuration Equality
 
     private var projectMockConfig0: Configuration {
-        var config = Configuration(path: projectMockYAML0, optional: false, quiet: true)
-        config.rootPath = projectMockPathLevel0
-        return config
+        var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
+        configuration.rootPath = projectMockPathLevel0
+        return configuration
     }
 
     private var projectMockConfig2: Configuration {
@@ -178,30 +178,30 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift0)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift0)!),
                        projectMockConfig0)
     }
 
     func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift1)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift1)!),
                        projectMockConfig0)
     }
 
     func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift2)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift2)!),
                        projectMockConfig0.merge(projectMockConfig2))
     }
 
     func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configForFile(File(path: projectMockSwift3)!),
+        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift3)!),
                        projectMockConfig0.merge(projectMockConfig2))
     }
 
     func testDoNotUseNestedConfigs() {
-        var config = Configuration(dict: ["use_nested_configs": false])!
-        config.rootPath = projectMockPathLevel0
-        XCTAssertEqual(config.configForFile(File(path: projectMockSwift3)!),
-                       config)
+        var configuration = Configuration(dict: ["use_nested_configs": false])!
+        configuration.rootPath = projectMockPathLevel0
+        XCTAssertEqual(configuration.configurationForFile(File(path: projectMockSwift3)!),
+                       configuration)
     }
 
     // MARK: - Testing Rules from config dictionary
@@ -209,11 +209,11 @@ class ConfigurationTests: XCTestCase {
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDict() {
-        let ruleConfig = [1, 2]
-        let config = [RuleWithLevelsMock.description.identifier: ruleConfig]
+        let ruleConfiguration = [1, 2]
+        let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
         let rules = testRuleList.configuredRulesWithDictionary(config)
         // swiftlint:disable:next force_try
-        XCTAssertTrue(rules == [try! RuleWithLevelsMock(config: ruleConfig) as Rule])
+        XCTAssertTrue(rules == [try! RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {

@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VariableNameRule: ASTRule, ConfigProviderRule {
+public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
-    public var config = NameConfig(minLengthWarning: 3,
+    public var configuration = NameConfiguration(minLengthWarning: 3,
                                    minLengthError: 2,
                                    maxLengthWarning: 40,
                                    maxLengthError: 60)
@@ -54,7 +54,7 @@ public struct VariableNameRule: ASTRule, ConfigProviderRule {
     public func validateFile(file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
-            if config.excluded.contains(name) {
+            if configuration.excluded.contains(name) {
                 return []
             }
 
@@ -75,8 +75,8 @@ public struct VariableNameRule: ASTRule, ConfigProviderRule {
                 return [StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Variable name should be between \(config.minLengthThreshold) " +
-                            "and \(config.maxLengthThreshold) characters long: '\(name)'")]
+                    reason: "Variable name should be between \(configuration.minLengthThreshold) " +
+                            "and \(configuration.maxLengthThreshold) characters long: '\(name)'")]
             }
 
             return []

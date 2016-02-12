@@ -50,6 +50,18 @@ installables: clean bootstrap
 	mv -f "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint"
 	rm -rf "$(BUILT_BUNDLE)"
 	install_name_tool -delete_rpath "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint"
+	# remove rpathes that set by xcodebuild.
+	# SourceKittenFramework has dynamic loading mechanism for CLI.
+	install_name_tool -delete_rpath \
+		`xcode-select -p`/Toolchains/XcodeDefault.xctoolchain/usr/lib \
+	  "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/A/SourceKittenFramework"
+	install_name_tool -delete_rpath \
+		/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib \
+	  "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/A/SourceKittenFramework"
+	install_name_tool -delete_rpath \
+		/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib \
+	  "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework/Versions/Current/Frameworks/SourceKittenFramework.framework/Versions/A/SourceKittenFramework"
+
 
 prefix_install: installables
 	mkdir -p "$(PREFIX)/Frameworks" "$(PREFIX)/bin"

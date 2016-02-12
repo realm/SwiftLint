@@ -51,17 +51,9 @@ struct AutoCorrectOptions: OptionsType {
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
-            <*> mode <| Option(key: "path",
-                defaultValue: "",
-                usage: "the path to the file or directory to correct")
-            <*> mode <| Option(key: "config",
-                defaultValue: ".swiftlint.yml",
-                usage: "the path to SwiftLint's configuration file")
-            <*> mode <| Option(key: "use-script-input-files",
-                defaultValue: false,
-                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
-            <*> mode <| Option(key: "quiet",
-                defaultValue: false,
-                usage: "don't print status logs like 'Correcting <file>' & 'Done correcting'")
+            <*> mode <| pathOption(action: "correct")
+            <*> mode <| configOption
+            <*> mode <| useScriptInputFilesOption
+            <*> mode <| quietOption(action: "correcting")
     }
 }

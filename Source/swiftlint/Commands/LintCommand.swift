@@ -98,29 +98,21 @@ struct LintOptions: OptionsType {
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
-            <*> mode <| Option(key: "path",
-                defaultValue: "",
-                usage: "the path to the file or directory to lint")
+            <*> mode <| pathOption(action: "lint")
             <*> mode <| Option(key: "use-stdin",
                 defaultValue: false,
                 usage: "lint standard input")
-            <*> mode <| Option(key: "config",
-                defaultValue: Configuration.fileName,
-                usage: "the path to SwiftLint's configuration file")
+            <*> mode <| configOption
             <*> mode <| Option(key: "strict",
                 defaultValue: false,
                 usage: "fail on warnings")
-            <*> mode <| Option(key: "use-script-input-files",
-                defaultValue: false,
-                usage: "read SCRIPT_INPUT_FILE* environment variables as files")
+            <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark",
                 defaultValue: false,
                 usage: "save benchmarks to benchmark_files.txt and benchmark_rules.txt")
             <*> mode <| Option(key: "reporter",
                 defaultValue: "",
                 usage: "the reporter used to log errors and warnings")
-            <*> mode <| Option(key: "quiet",
-                defaultValue: false,
-                usage: "don't print status logs like 'Linting <file>' & 'Done linting'")
+            <*> mode <| quietOption(action: "linting")
     }
 }

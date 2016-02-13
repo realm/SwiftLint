@@ -154,6 +154,7 @@ public struct Configuration: Equatable {
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
             if !optional { fail() }
             self.init()!
+            self.rootPath = rootPath
             return
         }
         do {
@@ -165,6 +166,7 @@ public struct Configuration: Equatable {
             }
             self.init(dict: dict)!
             configurationPath = fullPath
+            self.rootPath = rootPath
             return
         } catch {
             fail()
@@ -202,7 +204,7 @@ extension Configuration {
         // If a configuration exists and it isn't us, load and merge the gurations
         if configurationSearchPath != configurationPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configurationSearchPath) {
-            return merge(Configuration(path: configurationSearchPath, optional: false, quiet: true))
+            return merge(Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree

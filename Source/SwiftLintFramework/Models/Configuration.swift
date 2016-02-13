@@ -204,7 +204,8 @@ extension Configuration {
         // If a configuration exists and it isn't us, load and merge the gurations
         if configurationSearchPath != configurationPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configurationSearchPath) {
-            return merge(Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true))
+            return merge(Configuration(path: configurationSearchPath, rootPath: rootPath,
+                optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree

@@ -36,7 +36,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("[\\w)]+!", withSyntaxKinds: [.Identifier]).map {
+        return file.matchPattern("\\S!",
+            excludingSyntaxKinds: SyntaxKind.commentKeywordStringAndTypeidentifierKinds()).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: NSMaxRange($0) - 1))

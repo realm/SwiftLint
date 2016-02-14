@@ -76,7 +76,7 @@ extension XCTestCase {
             if markerLocation == NSNotFound { continue }
             let cleanTrigger = trigger.stringByReplacingOccurrencesOfString(violationMarker,
                 withString: "")
-            XCTAssertEqual(triggerViolations.first!.location,
+            XCTAssertEqual(triggerViolations.first?.location,
                 Location(file: File(contents: cleanTrigger), characterOffset: markerLocation))
         }
         // Triggering examples violate

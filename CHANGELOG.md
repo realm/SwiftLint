@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix force unwrap rule missed cases with quotes.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#535](https://github.com/realm/SwiftLint/issues/535)
+
 ## 0.9.0: Appliance Maintenance
 
 ##### Breaking

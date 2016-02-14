@@ -21,7 +21,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         description: "Force unwrapping should be avoided.",
         nonTriggeringExamples: [
             "if let url = NSURL(string: query)",
-            "navigationController?.pushViewController(viewController, animated: true)"
+            "navigationController?.pushViewController(viewController, animated: true)",
+            "let s as! Test",
+            "try! canThrowErrors()",
+            "let object: AnyObject!",
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",

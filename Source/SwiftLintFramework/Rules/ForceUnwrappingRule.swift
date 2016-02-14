@@ -27,7 +27,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let url = NSURL(string: query)↓!",
             "navigationController↓!.pushViewController(viewController, animated: true)",
             "let unwrapped = optional↓!",
-            "return cell↓!"
+            "return cell↓!",
+            "let url = NSURL(string: \"http://www.google.com\")↓!"
         ]
     )
 

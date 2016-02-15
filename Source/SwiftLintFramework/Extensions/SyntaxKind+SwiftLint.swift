@@ -17,6 +17,10 @@ extension SyntaxKind {
         self = kind
     }
 
+    static func commentKeywordStringAndTypeidentifierKinds() -> [SyntaxKind] {
+        return commentAndStringKinds() + [.Keyword, .Typeidentifier]
+    }
+
     static func commentAndStringKinds() -> [SyntaxKind] {
         return commentKinds() + [.String]
     }

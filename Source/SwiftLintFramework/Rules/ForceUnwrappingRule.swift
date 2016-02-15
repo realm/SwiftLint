@@ -21,18 +21,23 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         description: "Force unwrapping should be avoided.",
         nonTriggeringExamples: [
             "if let url = NSURL(string: query)",
-            "navigationController?.pushViewController(viewController, animated: true)"
+            "navigationController?.pushViewController(viewController, animated: true)",
+            "let s as! Test",
+            "try! canThrowErrors()",
+            "let object: AnyObject!",
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
             "navigationController↓!.pushViewController(viewController, animated: true)",
             "let unwrapped = optional↓!",
-            "return cell↓!"
+            "return cell↓!",
+            "let url = NSURL(string: \"http://www.google.com\")↓!"
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("[\\w)]+!", withSyntaxKinds: [.Identifier]).map {
+        return file.matchPattern("\\S!",
+            excludingSyntaxKinds: SyntaxKind.commentKeywordStringAndTypeidentifierKinds()).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: NSMaxRange($0) - 1))

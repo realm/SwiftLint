@@ -25,6 +25,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
+            "let url = NSURL(string: \"http://www.google.com\")↓!",
             "navigationController↓!.pushViewController(viewController, animated: true)",
             "let unwrapped = optional↓!",
             "return cell↓!"
@@ -32,7 +33,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("[\\w)]+!", withSyntaxKinds: [.Identifier]).map {
+        return file.matchPattern("([\\w)]+!)|(\"\\)!)", withSyntaxKinds: [.Identifier, .String]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: NSMaxRange($0) - 1))

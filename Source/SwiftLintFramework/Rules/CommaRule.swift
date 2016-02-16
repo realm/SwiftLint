@@ -33,7 +33,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
             "func abc(a: String,b: String) {}\n": "func abc(a: String, b: String) {}\n",
             "abc(a: \"string\",b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
             "abc(a: \"string\"  ,  b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
-            "enum a { case a  ,b }\n": "enum a { case a, b }\n"
+            "enum a { case a  ,b }\n": "enum a { case a, b }\n",
+            "let a = [1,1]\nlet b = 1\nf(1, b)\n": "let a = [1, 1]\nlet b = 1\nf(1, b)\n",
         ]
     )
 

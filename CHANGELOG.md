@@ -18,6 +18,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#543](https://github.com/realm/SwiftLint/issues/543)
 
+* Fix `CommaRule` did not match between violations and corrections.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#466](https://github.com/realm/SwiftLint/issues/466)
+
 ## 0.9.0: Appliance Maintenance
 
 ##### Breaking

@@ -39,7 +39,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(\\,[^\\s])|(\\s\\,)"
+        let pattern = ",\\S|\\s,"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
 
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {

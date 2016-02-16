@@ -88,7 +88,7 @@ extension File {
             let tokensInRange = syntax.tokens.filter { token in
                 let tokenByteRange = NSRange(location: token.offset, length: token.length)
                 return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
-            }.map({ $0 })
+            }
             return (match.range, tokensInRange)
         }
     }

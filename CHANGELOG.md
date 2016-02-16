@@ -14,6 +14,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#535](https://github.com/realm/SwiftLint/issues/535)
 
+* Fix issues with nested `.swiftlint.yml` file resolution.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#543](https://github.com/realm/SwiftLint/issues/543)
+
 ## 0.9.0: Appliance Maintenance
 
 ##### Breaking

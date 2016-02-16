@@ -51,23 +51,60 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     public func correctFile(file: File) -> [Correction] {
         if validateFile(file).isEmpty { return [] }
-        let pattern = "\\s*\\,\\s*([^\\s])"
+
+        // captures spaces and comma only
+        let pattern =
+            "\\S" +                // not whitespace
+            "(" +                  // start capure
+            "\\s+" +               // followed by whitespace
+            "," +                  // to the left of a comma
+            "\\s*" +               // followed by any amount of whitespace.
+            "|" +                  // or
+            "," +                  // immediately followed by a comma
+            "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
+            ")" +                  // end capture
+            "\\S"                  // not whitespace
+
+        var contents = file.contents as NSString
+
+        let excludingSyntaxKinds = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
+        let tokens = file.syntaxMap.tokens
+        let regularExpression = regex(pattern)
+        let range = NSRange(location: 0, length: contents.length)
+        let matches = regularExpression
+            .matchesInString(contents as String, options: [], range: range)
+            .flatMap { match -> NSRange? in
+                if match.numberOfRanges != 2 { return nil }
+
+                // use captured range
+                let range1 = match.rangeAtIndex(1)
+                guard let matchByteRange = contents
+                    .NSRangeToByteRange(start: range1.location, length: range1.length)
+                    else { return nil }
+
+                // captured range won't match tokens if it is not comment neither string.
+                let tokensInRange = tokens.filter { token in
+                        let tokenByteRange = NSRange(location: token.offset, length: token.length)
+                        return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
+                    }.filter { excludingSyntaxKinds.contains($0.type) }
+
+                // If not empty, captured range is comment or string
+                if !tokensInRange.isEmpty {
+                    return nil
+                }
+                // return captured range
+                return range1
+        }
 
         let description = self.dynamicType.description
         var corrections = [Correction]()
-        var contents = file.contents
-
-        let matches = file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
-
-        let regularExpression = regex(pattern)
         for range in matches.reverse() {
-            contents = regularExpression.stringByReplacingMatchesInString(contents,
-                options: [], range: range, withTemplate: ", $1")
+            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 
-        file.write(contents)
+        file.write(contents as String)
         return corrections
     }
 }

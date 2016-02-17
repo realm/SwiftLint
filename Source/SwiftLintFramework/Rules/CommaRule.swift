@@ -66,15 +66,17 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     // captures spaces and comma only
+    // http://userguide.icu-project.org/strings/regexp
     private static let pattern =
         "\\S" +                // not whitespace
         "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
         "," +                  // to the left of a comma
-        "\\s*" +               // followed by any amount of whitespace.
+        "[\\t\\p{Z}]*" +       // followed by any amount of tab or space.
         "|" +                  // or
         "," +                  // immediately followed by a comma
-        "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
+        "(?:[\\t\\p{Z}]{0}|" + // followed by 0
+        "[\\t\\p{Z}]{2,})" +   // or 2+ tab or space characters.
         ")" +                  // end capture
         "(\\S)"                // second capture is not whitespace.
 

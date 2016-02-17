@@ -39,10 +39,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = ",\\S|\\s,"
-        let excludingKinds = SyntaxKind.commentAndStringKinds()
-
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+        return violationRangesInFile(file).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -50,29 +47,45 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        if validateFile(file).isEmpty { return [] }
-
-        // captures spaces and comma only
-        let pattern =
-            "\\S" +                // not whitespace
-            "(" +                  // start capure
-            "\\s+" +               // followed by whitespace
-            "," +                  // to the left of a comma
-            "\\s*" +               // followed by any amount of whitespace.
-            "|" +                  // or
-            "," +                  // immediately followed by a comma
-            "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
-            ")" +                  // end capture
-            "\\S"                  // not whitespace
+        let matches = violationRangesInFile(file)
+        if matches.isEmpty { return [] }
 
         var contents = file.contents as NSString
+        let description = self.dynamicType.description
+        var corrections = [Correction]()
+        for range in matches.reverse() {
+            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
 
-        let excludingSyntaxKinds = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
+        file.write(contents as String)
+        return corrections
+    }
+
+    // captures spaces and comma only
+    private static let pattern =
+        "\\S" +                // not whitespace
+        "(" +                  // start capure
+        "\\s+" +               // followed by whitespace
+        "," +                  // to the left of a comma
+        "\\s*" +               // followed by any amount of whitespace.
+        "|" +                  // or
+        "," +                  // immediately followed by a comma
+        "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
+        ")" +                  // end capture
+        "\\S"                  // not whitespace
+
+    // swiftlint:disable:next force_try
+    private static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
+    private static let excludingSyntaxKinds = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
+
+    private func violationRangesInFile(file: File) -> [NSRange] {
+        let contents = file.contents
+        let range = NSRange(location: 0, length: contents.utf16.count)
         let tokens = file.syntaxMap.tokens
-        let regularExpression = regex(pattern)
-        let range = NSRange(location: 0, length: contents.length)
-        let matches = regularExpression
-            .matchesInString(contents as String, options: [], range: range)
+        return CommaRule.regularExpression
+            .matchesInString(contents, options: [], range: range)
             .flatMap { match -> NSRange? in
                 if match.numberOfRanges != 2 { return nil }
 
@@ -84,9 +97,9 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // captured range won't match tokens if it is not comment neither string.
                 let tokensInRange = tokens.filter { token in
-                        let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                        return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
-                    }.filter { excludingSyntaxKinds.contains($0.type) }
+                    let tokenByteRange = NSRange(location: token.offset, length: token.length)
+                    return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
+                    }.filter { CommaRule.excludingSyntaxKinds.contains($0.type) }
 
                 // If not empty, captured range is comment or string
                 if !tokensInRange.isEmpty {
@@ -95,16 +108,5 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                 // return captured range
                 return range1
         }
-
-        let description = self.dynamicType.description
-        var corrections = [Correction]()
-        for range in matches.reverse() {
-            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents as String)
-        return corrections
     }
 }

@@ -22,7 +22,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "func abc(a: String, b: String) { }",
             "abc(a: \"string\", b: \"string\"",
-            "enum a { case a, b, c }"
+            "enum a { case a, b, c }",
+            "func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n",
         ],
         triggeringExamples: [
             "func abc(a: String↓ ,b: String) { }",

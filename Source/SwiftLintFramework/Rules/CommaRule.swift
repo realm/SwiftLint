@@ -67,7 +67,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     // captures spaces and comma only
     private static let pattern =
         "\\S" +                // not whitespace
-        "(" +                  // start capure
+        "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
         "," +                  // to the left of a comma
         "\\s*" +               // followed by any amount of whitespace.
@@ -75,11 +75,14 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         "," +                  // immediately followed by a comma
         "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
         ")" +                  // end capture
-        "\\S"                  // not whitespace
+        "(\\S)"                // second capture is not whitespace.
 
     // swiftlint:disable:next force_try
     private static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
-    private static let excludingSyntaxKinds = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
+        .map { $0.rawValue }
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+        .map { $0.rawValue }
 
     private func violationRangesInFile(file: File) -> [NSRange] {
         let contents = file.contents
@@ -88,26 +91,44 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         return CommaRule.regularExpression
             .matchesInString(contents, options: [], range: range)
             .flatMap { match -> NSRange? in
-                if match.numberOfRanges != 2 { return nil }
+                if match.numberOfRanges != 3 { return nil }
 
-                // use captured range
-                let range1 = match.rangeAtIndex(1)
-                guard let matchByteRange = contents
-                    .NSRangeToByteRange(start: range1.location, length: range1.length)
+                // check first captured range
+                let firstRange = match.rangeAtIndex(1)
+                guard let matchByteFirstRange = contents
+                    .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
 
-                // captured range won't match tokens if it is not comment neither string.
-                let tokensInRange = tokens.filter { token in
+                // first captured range won't match tokens if it is not comment neither string
+                let tokensInFirstRange = tokens.filter { token in
                     let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                    return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
-                    }.filter { CommaRule.excludingSyntaxKinds.contains($0.type) }
+                    return NSIntersectionRange(matchByteFirstRange, tokenByteRange).length > 0
+                    }.filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
 
-                // If not empty, captured range is comment or string
-                if !tokensInRange.isEmpty {
+                // If not empty, first captured range is comment or string
+                if !tokensInFirstRange.isEmpty {
                     return nil
                 }
-                // return captured range
-                return range1
+
+                // check second captured range
+                let secondRange = match.rangeAtIndex(2)
+                guard let matchByteSecondRange = contents
+                    .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
+                    else { return nil }
+
+                // second captured range won't match tokens if it is not comment
+                let tokensInSecondRange = tokens.filter { token in
+                    let tokenByteRange = NSRange(location: token.offset, length: token.length)
+                    return NSIntersectionRange(matchByteSecondRange, tokenByteRange).length > 0
+                    }.filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
+
+                // If not empty, second captured range is comment
+                if !tokensInSecondRange.isEmpty {
+                    return nil
+                }
+
+                // return first captured range
+                return firstRange
         }
     }
 }

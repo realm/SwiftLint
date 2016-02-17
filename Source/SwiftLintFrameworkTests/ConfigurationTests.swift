@@ -133,7 +133,7 @@ class ConfigurationTests: XCTestCase {
         private override func filesToLintAtPath(path: String) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
-                "directory/excluded/Excluded.swift",  "directory/ExcludedFile.swift"]
+                "directory/excluded/Excluded.swift", "directory/ExcludedFile.swift"]
             case "directory/excluded" : return ["directory/excluded/Excluded.swift"]
             case "directory/ExcludedFile.swift" : return ["directory/ExcludedFile.swift"]
             default: break
@@ -145,7 +145,7 @@ class ConfigurationTests: XCTestCase {
 
     func testExcludedPaths() {
         let configuration = Configuration(included: ["directory"],
-            excluded: ["directory/excluded",  "directory/ExcludedFile.swift"])!
+            excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
         let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }

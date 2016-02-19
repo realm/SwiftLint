@@ -25,6 +25,12 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let s as! Test",
             "try! canThrowErrors()",
             "let object: AnyObject!",
+            "@IBOutlet var constraints: [NSLayoutConstraint]!",
+            "setEditing(!editing, animated: true)",
+            "navigationController.setNavigationBarHidden(!navigationController." +
+                "navigationBarHidden, animated: true)",
+            "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
+                "self.searchBar?.text?.isEmpty == false) {}",
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",

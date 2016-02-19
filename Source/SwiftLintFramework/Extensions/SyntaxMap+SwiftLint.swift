@@ -14,9 +14,22 @@ extension SyntaxMap {
     ///
     /// - Parameter byteRange: byte based NSRange
     internal func tokensIn(byteRange: NSRange) -> [SyntaxToken] {
-        return tokens.filter { token in
-            let tokenByteRange = NSRange(location: token.offset, length: token.length)
-            return NSIntersectionRange(byteRange, tokenByteRange).length > 0
+        func intersect(token: SyntaxToken) -> Bool {
+            return NSRange(location: token.offset, length: token.length)
+                .intersectsRange(byteRange)
         }
+
+        func notIntersect(token: SyntaxToken) -> Bool {
+            return !intersect(token)
+        }
+
+        guard let startIndex = tokens.indexOf(intersect) else {
+            return []
+        }
+        let tokensBeginningIntersect = tokens.lazy.suffixFrom(startIndex)
+        if let endIndex = tokensBeginningIntersect.indexOf(notIntersect) {
+            return Array(tokensBeginningIntersect.prefixUpTo(endIndex))
+        }
+        return Array(tokensBeginningIntersect)
     }
 }

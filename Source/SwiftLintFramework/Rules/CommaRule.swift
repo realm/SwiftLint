@@ -90,7 +90,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     private func violationRangesInFile(file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
-        let tokens = file.syntaxMap.tokens
+        let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
             .matchesInString(contents, options: [], range: range)
             .flatMap { match -> NSRange? in
@@ -103,10 +103,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // first captured range won't match tokens if it is not comment neither string
-                let tokensInFirstRange = tokens.filter { token in
-                    let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                    return NSIntersectionRange(matchByteFirstRange, tokenByteRange).length > 0
-                    }.filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
+                let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
+                    .filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
 
                 // If not empty, first captured range is comment or string
                 if !tokensInFirstRange.isEmpty {
@@ -120,10 +118,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // second captured range won't match tokens if it is not comment
-                let tokensInSecondRange = tokens.filter { token in
-                    let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                    return NSIntersectionRange(matchByteSecondRange, tokenByteRange).length > 0
-                    }.filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
+                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
+                    .filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
 
                 // If not empty, second captured range is comment
                 if !tokensInSecondRange.isEmpty {

@@ -85,10 +85,7 @@ extension File {
         return regex.matchesInString(self.contents, options: [], range: range).map { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
                 length: match.range.length) ?? match.range
-            let tokensInRange = syntax.tokens.filter { token in
-                let tokenByteRange = NSRange(location: token.offset, length: token.length)
-                return NSIntersectionRange(matchByteRange, tokenByteRange).length > 0
-            }
+            let tokensInRange = syntax.tokensIn(matchByteRange)
             return (match.range, tokensInRange)
         }
     }

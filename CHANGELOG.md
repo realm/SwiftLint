@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix `CommaRule` mismatch between violations and corrections.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#466](https://github.com/realm/SwiftLint/issues/466)
+
 ## 0.9.1: Air Duct Cleaning
 
 ##### Breaking

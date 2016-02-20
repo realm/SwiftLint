@@ -8,6 +8,9 @@
 
 import Commandant
 import SwiftLintFramework
+import SourceKittenFramework
+
+checkDepndenciesOfSourceKittenFramework()
 
 let registry = CommandRegistry<CommandantError<()>>()
 registry.register(LintCommand())

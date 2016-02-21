@@ -14,7 +14,6 @@ matrix:
       env: JOB=SPM
       before_install:
         - make swift_snapshot_install
-        - make spm_bootstrap
   exclude:
     - script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
 

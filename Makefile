@@ -16,7 +16,7 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
 
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-02-03-a
+SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a
 SWIFT_BUILD_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift build
 
 .PHONY: all bootstrap clean install package test uninstall

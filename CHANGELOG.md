@@ -10,7 +10,7 @@
 
 ##### Bug Fixes
 
-* Avoid overwriting files whose contents have not changed.
+* Avoid overwriting files whose contents have not changed.  
   [Neil Gall](https://github.com/neilgall)
   [#574](https://github.com/realm/SwiftLint/issues/574)
 

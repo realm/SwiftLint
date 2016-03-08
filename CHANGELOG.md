@@ -10,6 +10,10 @@
 
 ##### Bug Fixes
 
+* Avoid overwriting files whose contents have not changed.
+  [Neil Gall](https://github.com/neilgall)
+  [#574](https://github.com/realm/SwiftLint/issues/574)
+
 * Fix `CommaRule` mismatch between violations and corrections.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#466](https://github.com/realm/SwiftLint/issues/466)

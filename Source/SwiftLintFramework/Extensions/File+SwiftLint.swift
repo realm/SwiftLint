@@ -186,6 +186,9 @@ extension File {
     }
 
     internal func write(string: String) {
+        guard string != contents else {
+            return
+        }
         guard let path = path else {
             fatalError("file needs a path to call write(_:)")
         }

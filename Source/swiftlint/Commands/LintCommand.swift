@@ -12,6 +12,17 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
+extension Reporter {
+    static func reportViolations(violations: [StyleViolation], realtimeCondition: Bool) {
+        if isRealtime == realtimeCondition {
+            let report = generateReport(violations)
+            if !report.isEmpty {
+                queuedPrint(report)
+            }
+        }
+    }
+}
+
 struct LintCommand: CommandType {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
@@ -42,16 +53,9 @@ struct LintCommand: CommandType {
                 linter.file.invalidateCache()
             }
             violations += currentViolations
-            if reporter.isRealtime {
-                let report = reporter.generateReport(currentViolations)
-                if !report.isEmpty {
-                    queuedPrint(report)
-                }
-            }
+            reporter.reportViolations(violations, realtimeCondition: true)
         }.flatMap { files in
-            if !reporter.isRealtime {
-                queuedPrint(reporter.generateReport(violations))
-            }
+            reporter.reportViolations(violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,

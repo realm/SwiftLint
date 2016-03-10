@@ -6,7 +6,14 @@
 
 ##### Enhancements
 
-* None.
+* Return different exit codes to distinguish between types of errors:
+  * 0: No errors, maybe warnings in non-strict mode
+  * 1: Usage or system error
+  * 2: Style violations of severity "Error"
+  * 3: No style violations of severity "Error", but violations of severity
+       "warning" with `--strict`  
+  [JP Simard](https://github.com/jpsim)
+  [#166](https://github.com/realm/SwiftLint/issues/166)
 
 ##### Bug Fixes
 

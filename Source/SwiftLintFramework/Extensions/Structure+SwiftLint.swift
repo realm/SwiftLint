@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 extension Structure {
 
-    /// Returns array of tupple containing "key.kind" and "byteRange" from Structure
-    /// that containing byte offset.
+    /// Returns array of tuples containing "key.kind" and "byteRange" from Structure
+    /// that contains the byte offset.
     ///
     /// - Parameter byteOffset: Int
     // swiftlint:disable:next valid_docs

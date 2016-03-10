@@ -18,6 +18,11 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#466](https://github.com/realm/SwiftLint/issues/466)
 
+* Fix more false positives in `ForceUnwrappingRule`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#546](https://github.com/realm/SwiftLint/issues/546)
+  [#547](https://github.com/realm/SwiftLint/issues/547)
+
 ## 0.9.1: Air Duct Cleaning
 
 ##### Breaking

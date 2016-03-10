@@ -61,8 +61,10 @@ struct LintCommand: CommandType {
                 saveBenchmark("files", times: fileTimes)
                 saveBenchmark("rules", times: ruleTimes)
             }
-            if (options.strict && !violations.isEmpty) || numberOfSeriousViolations > 0 {
-                return .Failure(CommandantError<()>.CommandError())
+            if numberOfSeriousViolations > 0 {
+                exit(2)
+            } else if options.strict && !violations.isEmpty {
+                exit(3)
             }
             return .Success()
         }

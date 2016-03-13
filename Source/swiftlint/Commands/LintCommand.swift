@@ -53,7 +53,7 @@ struct LintCommand: CommandType {
                 linter.file.invalidateCache()
             }
             violations += currentViolations
-            reporter.reportViolations(violations, realtimeCondition: true)
+            reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
             reporter.reportViolations(violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count

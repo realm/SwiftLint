@@ -26,6 +26,10 @@ extension String {
         return self == uppercaseString
     }
 
+    internal func isLowercase() -> Bool {
+        return self == lowercaseString
+    }
+
     internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
                                                         String {
         let privateACL = "source.lang.swift.accessibility.private"

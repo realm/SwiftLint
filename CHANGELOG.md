@@ -15,6 +15,12 @@
   [JP Simard](https://github.com/jpsim)
   [#166](https://github.com/realm/SwiftLint/issues/166)
 
+
+* `VariableNameRule` now accepts symbols starting with more than one uppercase
+  letter to allow for names like XMLString or MIMEType.  
+  [Erik Aigner](https://github.com/eaigner)
+  [#566](https://github.com/realm/SwiftLint/issues/566)
+
 ##### Bug Fixes
 
 * Avoid overwriting files whose contents have not changed.  

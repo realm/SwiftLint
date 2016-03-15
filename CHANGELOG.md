@@ -1,4 +1,4 @@
-## Master
+## 0.9.2: Multiple Exhaust Codes
 
 ##### Breaking
 
@@ -14,7 +14,6 @@
        "warning" with `--strict`  
   [JP Simard](https://github.com/jpsim)
   [#166](https://github.com/realm/SwiftLint/issues/166)
-
 
 * `VariableNameRule` now accepts symbols starting with more than one uppercase
   letter to allow for names like XMLString or MIMEType.  

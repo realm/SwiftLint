@@ -200,7 +200,6 @@
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
 		6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Structure+SwiftLint.swift"; sourceTree = "<group>"; };
 		6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxMap+SwiftLint.swift"; sourceTree = "<group>"; };
-		6CDD62CE1C6193300094A198 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
 		B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUnwrappingRule.swift; sourceTree = "<group>"; };
@@ -490,7 +489,6 @@
 				D0D1212219E878CC005E4BAA /* Configuration */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
 				3B12C9BE1C3209AC000B423F /* Resources */,
-				6CDD62CE1C6193300094A198 /* main.swift */,
 				E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */,
 				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
 				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
@@ -505,7 +503,7 @@
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
-			path = Source/SwiftLintFrameworkTests;
+			path = Tests/SwiftLintFramework;
 			sourceTree = "<group>";
 		};
 		D0D1217C19E87B05005E4BAA /* Supporting Files */ = {
@@ -1018,7 +1016,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
 				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
@@ -1029,7 +1027,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
 				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
@@ -1074,7 +1072,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
 				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
@@ -1119,7 +1117,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				INFOPLIST_FILE = "Source/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
 				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;

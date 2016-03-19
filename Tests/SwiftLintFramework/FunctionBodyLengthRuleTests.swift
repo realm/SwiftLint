@@ -15,14 +15,6 @@ private func funcWithBody(body: String) -> String {
 
 class FunctionBodyLengthRuleTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testFunctionBodyLengths", self.testFunctionBodyLengths),
-        ("testFunctionBodyLengthsWithComments", self.testFunctionBodyLengthsWithComments),
-        ("testFunctionBodyLengthsWithMultilineComments",
-            self.testFunctionBodyLengthsWithMultilineComments),
-    ]
-
     func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(
             Repeat(count: 39, repeatedValue: "x = 0\n").joinWithSeparator("")

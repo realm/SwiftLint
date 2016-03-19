@@ -22,11 +22,6 @@ let config: Configuration = {
 
 class IntegrationTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testSwiftLintLints", self.testSwiftLintLints),
-    ]
-
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFilesForPath("")

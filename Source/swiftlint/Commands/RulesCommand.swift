@@ -90,12 +90,13 @@ extension TextTable {
                 }
                 return nil
             }()
-            addRow(ruleID,
+            addRow([
+                ruleID,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 (configuredRule ?? rule).configurationDescription
-            )
+            ])
         }
     }
 }

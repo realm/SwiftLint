@@ -1,6 +1,6 @@
 github "antitypical/Result" "1.0.2"
 github "drmohundro/SWXMLHash" "2.1.0"
-github "scottrhoyt/SwiftyTextTable" "0.2.1"
+github "scottrhoyt/SwiftyTextTable" "0.3.0"
 github "behrang/YamlSwift" "1.4.2"
 github "jspahrsummers/xcconfigs" "0.9"
 github "Carthage/Commandant" "0.8.3"

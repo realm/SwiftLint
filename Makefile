@@ -17,7 +17,9 @@ VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
 
 SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a
-SWIFT_BUILD_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift build
+SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
+SWIFT_BUILD_COMMAND=$(SWIFT_COMMAND) build
+SWIFT_TEST_COMMAND=$(SWIFT_COMMAND) test
 
 .PHONY: all bootstrap clean install package test uninstall
 
@@ -84,8 +86,9 @@ swift_snapshot_install:
 spm:
 	$(SWIFT_BUILD_COMMAND)
 
+spm_test: PATH:=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/:$(PATH)
 spm_test: spm
-	.build/Debug/SwiftLintFrameworkTests
+	$(SWIFT_TEST_COMMAND)
 
 spm_clean:
 	$(SWIFT_BUILD_COMMAND) --clean

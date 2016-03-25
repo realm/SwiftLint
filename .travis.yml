@@ -10,7 +10,7 @@ matrix:
   include:
     - script: set -o pipefail && script/cibuild | xcpretty
       env: JOB=Xcode
-    - script: make spm_test
+    - script: make spm
       env: JOB=SPM
       before_install:
         - make swift_snapshot_install

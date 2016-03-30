@@ -35,7 +35,9 @@ test: clean bootstrap
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	$(BUILD_TOOL) $(XCODEFLAGS) clean
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
 install: uninstall package
 	sudo installer -pkg SwiftLint.pkg -target /

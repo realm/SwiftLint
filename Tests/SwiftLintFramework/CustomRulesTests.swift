@@ -13,13 +13,6 @@ import SourceKittenFramework
 
 class CustomRulesTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testCustomRuleConfigurationSetsCorrectly", self.testCustomRuleConfigurationSetsCorrectly),
-        ("testCustomRuleConfigurationThrows", self.testCustomRuleConfigurationThrows),
-        ("testCustomRules", self.testCustomRules),
-    ]
-
     func testCustomRuleConfigurationSetsCorrectly() {
         let configDict = ["my_custom_rule": ["name": "MyCustomRule",
             "message": "Message",

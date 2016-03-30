@@ -11,14 +11,6 @@ import XCTest
 
 class ReporterTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testXcodeReporter", self.testXcodeReporter),
-        ("testJSONReporter", self.testJSONReporter),
-        ("testCSVReporter", self.testCSVReporter),
-        ("testCheckstyleReporter", self.testCheckstyleReporter),
-    ]
-
     func generateViolations() -> [StyleViolation] {
         let location = Location(file: "filename", line: 1, character: 2)
         return [

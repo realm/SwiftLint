@@ -1,4 +1,5 @@
 included:
   - Source
+  - Tests
 opt_in_rules:
   - empty_count

@@ -1,3 +1,23 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Now `libclang.dylib` and `sourcekitd.framework` are dynamically loaded at
+  runtime by SourceKittenFramework to use the versions included in the Xcode
+  version specified by `xcode-select -p` or custom toolchains.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#167](https://github.com/jpsim/SourceKitten/issues/167)
+
+##### Bug Fixes
+
+* Failed to launch swiftlint when Xcode.app was placed at non standard path.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#593](https://github.com/realm/SwiftLint/issues/593)
+
 ## 0.9.2: Multiple Exhaust Codes
 
 ##### Breaking

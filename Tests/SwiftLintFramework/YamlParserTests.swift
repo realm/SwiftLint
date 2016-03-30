@@ -11,13 +11,6 @@ import XCTest
 
 class YamlParserTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testParseEmptyString", self.testParseEmptyString),
-        ("testParseValidString", self.testParseValidString),
-        ("testParseInvalidStringThrows", self.testParseInvalidStringThrows),
-    ]
-
     // swiftlint:disable force_try
     func testParseEmptyString() {
         XCTAssertEqual((try! YamlParser.parse("")).count, 0,

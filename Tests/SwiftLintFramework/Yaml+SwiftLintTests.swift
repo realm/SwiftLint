@@ -13,11 +13,6 @@ import Yaml
 
 class YamlSwiftLintTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testFlattenYaml", self.testFlattenYaml),
-    ]
-
     func testFlattenYaml() {
         let yamlResult = Yaml.load(getTestYaml())
         if let error = yamlResult.error {

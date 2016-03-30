@@ -11,41 +11,6 @@ import XCTest
 
 class RulesTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testClosingBrace", self.testClosingBrace),
-        ("testColon", self.testColon),
-        ("testComma", self.testComma),
-        ("testConditionalBindingCascade", self.testConditionalBindingCascade),
-        ("testControlStatement", self.testControlStatement),
-        ("testCyclomaticComplexity", self.testCyclomaticComplexity),
-        ("testEmptyCount", self.testEmptyCount),
-        ("testFileLength", self.testFileLength),
-        ("testForceCast", self.testForceCast),
-        ("testForceTry", self.testForceTry),
-        ("testForceUnwrapping", self.testForceUnwrapping),
-        ("testFunctionBodyLength", self.testFunctionBodyLength),
-        ("testFunctionParameterCountRule", self.testFunctionParameterCountRule),
-        ("testLeadingWhitespace", self.testLeadingWhitespace),
-        ("testLegacyConstant", self.testLegacyConstant),
-        ("testLegacyConstructor", self.testLegacyConstructor),
-        ("testLineLength", self.testLineLength),
-        ("testMissingDocs", self.testMissingDocs),
-        ("testNesting", self.testNesting),
-        ("testOpeningBrace", self.testOpeningBrace),
-        ("testOperatorFunctionWhitespace", self.testOperatorFunctionWhitespace),
-        ("testReturnArrowWhitespace", self.testReturnArrowWhitespace),
-        ("testStatementPosition", self.testStatementPosition),
-        ("testTodo", self.testTodo),
-        ("testTrailingNewline", self.testTrailingNewline),
-        ("testTrailingSemicolon", self.testTrailingSemicolon),
-        ("testTrailingWhitespace", self.testTrailingWhitespace),
-        ("testTypeBodyLength", self.testTypeBodyLength),
-        ("testTypeName", self.testTypeName),
-        ("testValidDocs", self.testValidDocs),
-        ("testVariableName", self.testVariableName),
-    ]
-
     func testClosingBrace() {
         verifyRule(ClosingBraceRule.description)
     }

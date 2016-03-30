@@ -12,22 +12,6 @@ import SourceKittenFramework
 
 class RuleConfigurationsTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testNameConfigurationSetsCorrectly", self.testNameConfigurationSetsCorrectly),
-        ("testNameConfigurationThrowsOnBadConfig", self.testNameConfigurationThrowsOnBadConfig),
-        ("testNameConfigurationMinLengthThreshold", self.testNameConfigurationMinLengthThreshold),
-        ("testNameConfigurationMaxLengthThreshold", self.testNameConfigurationMaxLengthThreshold),
-        ("testSeverityConfigurationFromString", self.testSeverityConfigurationFromString),
-        ("testSeverityConfigurationFromDictionary", self.testSeverityConfigurationFromDictionary),
-        ("testSeverityConfigurationThrowsOnBadConfig",
-            self.testSeverityConfigurationThrowsOnBadConfig),
-        ("testSeverityLevelConfigParams", self.testSeverityLevelConfigParams),
-        ("testSeverityLevelConfigPartialParams", self.testSeverityLevelConfigPartialParams),
-        ("testRegexConfigurationThrows", self.testRegexConfigurationThrows),
-        ("testRegexRuleDescription", self.testRegexRuleDescription),
-    ]
-
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],

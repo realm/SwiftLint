@@ -87,7 +87,20 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return []
+        let functions = ["CGRectGetWidth", "CGRectGetHeight", "CGRectGetMinX", "CGRectGetMidX",
+                         "CGRectGetMaxX", "CGRectGetMinY", "CGRectGetMidY", "CGRectGetMaxY",
+                         "CGRectIsNull", "CGRectIsEmpty", "CGRectIsInfinite", "CGRectStandardize",
+                         "CGRectIntegral", "CGRectInset", "CGRectOffset", "CGRectUnion",
+                         "CGRectIntersection", "CGRectContainsRect", "CGRectContainsPoint",
+                         "CGRectIntersectsRect"]
+
+        let pattern = "\\b(" + functions.joinWithSeparator("|") + ")\\b"
+
+        return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
+            StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: configuration.severity,
+                location: Location(file: file, characterOffset: $0.location))
+        }
     }
 
     public func correctFile(file: File) -> [Correction] {

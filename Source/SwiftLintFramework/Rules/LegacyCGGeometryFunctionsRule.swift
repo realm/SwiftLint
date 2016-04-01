@@ -104,6 +104,52 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
     }
 
     public func correctFile(file: File) -> [Correction] {
-        return []
+        let varName = RegexHelpers.varNameGroup
+        let twoVars = RegexHelpers.twoVars
+        let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
+
+        let patterns = [
+            "CGRectGetWidth\\(\(varName)\\)": "$1.width",
+            "CGRectGetHeight\\(\(varName)\\)": "$1.height",
+            "CGRectGetMinX\\(\(varName)\\)": "$1.minX",
+            "CGRectGetMidX\\(\(varName)\\)": "$1.midX",
+            "CGRectGetMaxX\\(\(varName)\\)": "$1.maxX",
+            "CGRectGetMinY\\(\(varName)\\)": "$1.minY",
+            "CGRectGetMidY\\(\(varName)\\)": "$1.midY",
+            "CGRectGetMaxY\\(\(varName)\\)": "$1.maxY",
+            "CGRectIsNull\\(\(varName)\\)": "$1.isNull",
+            "CGRectIsEmpty\\(\(varName)\\)": "$1.isEmpty",
+            "CGRectIsInfinite\\(\(varName)\\)": "$1.isInfinite",
+            "CGRectStandardize\\(\(varName)\\)": "$1.standardized",
+            "CGRectIntegral\\(\(varName)\\)": "$1.integral",
+            "CGRectInset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
+            "CGRectOffset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
+            "CGRectUnion\\(\(twoVars)\\)": "$1.union(rect: $2)",
+            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect(rect: $2)",
+            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains(rect: $2)",
+            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains(point: $2)",
+            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects(rect: $2)"
+            ]
+
+        let description = self.dynamicType.description
+        var corrections = [Correction]()
+        var contents = file.contents
+
+        for (pattern, template) in patterns {
+            let matches = file.matchPattern(pattern)
+                .filter({ $0.1.first == .Identifier })
+                .map({ $0.0 })
+
+            let regularExpression = regex(pattern)
+            for range in matches.reverse() {
+                contents = regularExpression.stringByReplacingMatchesInString(contents,
+                                options: [], range: range, withTemplate: template)
+                let location = Location(file: file, characterOffset: range.location)
+                corrections.append(Correction(ruleDescription: description, location: location))
+            }
+        }
+
+        file.write(contents)
+        return corrections
     }
 }

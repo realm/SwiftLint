@@ -18,6 +18,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#593](https://github.com/realm/SwiftLint/issues/593)
 
+* `ClosingBraceRule` no longer triggers across line breaks.  
+  [Josh Friend](https://github.com/joshfriend)
+  [#592](https://github.com/realm/SwiftLint/issues/592)
+
 ## 0.9.2: Multiple Exhaust Codes
 
 ##### Breaking

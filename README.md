@@ -45,6 +45,10 @@ fi
 
 ![](assets/runscript.png)
 
+#### Format on Save
+
+To run `swift autocorrect` on save install the [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
+
 ### Atom
 
 To integrate SwiftLint with [Atom](https://atom.io/) install the

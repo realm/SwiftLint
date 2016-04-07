@@ -52,7 +52,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
         let firstCharacter = name.substringToIndex(secondIndex)
         if firstCharacter.isUppercase() {
             if name.characters.count > 1 {
-                let range = Range(start: secondIndex, end: secondIndex.successor())
+                let range = secondIndex..<secondIndex.successor()
                 let secondCharacter = name.substringWithRange(range)
                 return secondCharacter.isLowercase()
             }

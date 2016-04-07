@@ -12,7 +12,7 @@ import SwiftLintFramework
 import XCTest
 
 let config: Configuration = {
-    let directory = (((__FILE__ as NSString)
+    let directory = (((#file as NSString)
         .stringByDeletingLastPathComponent as NSString)
         .stringByDeletingLastPathComponent as NSString)
         .stringByDeletingLastPathComponent
@@ -25,7 +25,7 @@ class IntegrationTests: XCTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFilesForPath("")
-        XCTAssert(swiftFiles.map({$0.path!}).contains(__FILE__), "current file should be included")
+        XCTAssert(swiftFiles.map({$0.path!}).contains(#file), "current file should be included")
 
         #if SWIFTLINT_XCODE_VERSION_0730 || SWIFT_PACKAGE
             XCTAssertEqual(swiftFiles.flatMap({

@@ -1017,7 +1017,6 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
-				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1028,7 +1027,6 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
-				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1073,7 +1071,6 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
-				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};
@@ -1118,7 +1115,6 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFramework/Supporting Files/Info.plist";
-				OTHER_SWIFT_FLAGS = "-D SWIFTLINT_XCODE_VERSION_$(XCODE_VERSION_MINOR)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFrameworkTests;
 			};

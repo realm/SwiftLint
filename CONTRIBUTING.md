@@ -10,9 +10,8 @@ the exception, not the norm.
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
-Rules should conform to either the `Rule`, `ASTRule` or `ConfigurableRule`
-protocols. To activate a rule, add the rule to `masterRuleList` in
-`RuleList.swift`.
+Rules should conform to either the `Rule` or `ASTRule` protocols. 
+To activate a rule, add the rule to `masterRuleList` in `MasterRuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
 
@@ -22,17 +21,17 @@ those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
 over time.
 
-### `ConfigProviderRule`
+### `ConfigurationProviderRule`
 
 If your rule supports user-configurable options via `.swiftlint.yml`, you can
-accomplish this by conforming to `ConfigProviderRule`. You must provide a
-configuration object via the `config` property:
+accomplish this by conforming to `ConfigurationProviderRule`. You must provide a
+configuration object via the `configuration` property:
 
-* The object provided must conform to `RuleConfig`.
-* There are several provided `RuleConfig`s that cover the common patterns like
+* The object provided must conform to `RuleConfiguration`.
+* There are several provided `RuleConfiguration`s that cover the common patterns like
   configuring violation severity, violation severity levels, and evaluating
   names.
-* If none of the provided `RuleConfig`s are applicable, you can create one
+* If none of the provided `RuleConfiguration`s are applicable, you can create one
   specifically for your rule.
 
 See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/ForceCastRule.swift)
@@ -58,12 +57,12 @@ variable_name:
 ```
 
 If your rule is configurable, but does not fit the pattern of
-`ConfigProviderRule`, you can conform directly to `ConfigurableRule`:
+`ConfigurationProviderRule`, you can conform directly to `Rule`:
 
-* `init(config: AnyObject) throws` will be passed the result of parsing the
+* `init(configuration: AnyObject) throws` will be passed the result of parsing the
   value from `.swiftlint.yml` associated with your rule's `identifier` as a key
   (if present).
-* `config` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
+* `configuration` may be of any type supported by YAML (e.g. `Int`, `String`, `Array`,
   `Dictionary`, etc.).
 * This initializer must throw if it does not understand the configuration, or
   it cannot be fully initialized with the configuration and default values.

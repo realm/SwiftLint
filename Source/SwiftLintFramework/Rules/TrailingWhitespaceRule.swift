@@ -10,8 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
 
     public init() {}
 
@@ -25,11 +24,22 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        return file.lines.filter {
-            $0.content.hasTrailingWhitespace()
-        }.map {
+        var filteredLines: [Line]
+        if configuration.ignoresEmptyLines {
+            filteredLines = file.lines.filter {
+                // Ignores lines that contain nothing but whitespace = empty lines
+                $0.content.hasTrailingWhitespace() && !$0.content.stringByTrimmingCharactersInSet(
+                    NSCharacterSet.whitespaceCharacterSet()).isEmpty
+            }
+        } else {
+            filteredLines = file.lines.filter {
+                $0.content.hasTrailingWhitespace()
+            }
+        }
+
+        return filteredLines.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: configuration.severity,
+                severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: $0.index))
         }
     }
@@ -42,6 +52,12 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         for line in file.lines {
             let correctedLine = (line.content as NSString)
                 .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
+
+            if configuration.ignoresEmptyLines && correctedLine.characters.isEmpty {
+                correctedLines.append(line.content)
+                continue
+            }
+
             let region = fileRegions.filter {
                 $0.contains(Location(file: file.path, line: line.index, character: 0))
             }.first
@@ -49,6 +65,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 correctedLines.append(line.content)
                 continue
             }
+
             if line.content != correctedLine {
                 let description = self.dynamicType.description
                 let location = Location(file: file.path, line: line.index)

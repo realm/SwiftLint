@@ -29,7 +29,8 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         if configuration.ignoresEmptyLines {
             filteredLines = file.lines.filter {
                 // Ignores lines that contain nothing but whitespace = empty lines
-                $0.content.hasTrailingWhitespace() && !$0.content.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()).isEmpty
+                $0.content.hasTrailingWhitespace() && !$0.content.stringByTrimmingCharactersInSet(
+                    NSCharacterSet.whitespaceCharacterSet()).isEmpty
             }
         } else {
             filteredLines = file.lines.filter {

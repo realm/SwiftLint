@@ -12,6 +12,12 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#167](https://github.com/jpsim/SourceKitten/issues/167)
 
+* Added the user-configurable option `ignores_empty_lines` to the
+  `trailing_whitespace` rule. It can be used to control whether the
+  `TrailingWhitespaceRule` should report and correct whitespace-indented empty
+  lines. Defaults to `false`. Added unit tests.  
+  [Reimar Twelker](https://github.com/raginmari)
+
 ##### Bug Fixes
 
 * Failed to launch swiftlint when Xcode.app was placed at non standard path.  

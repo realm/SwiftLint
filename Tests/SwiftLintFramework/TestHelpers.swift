@@ -82,9 +82,25 @@ extension String {
 }
 
 extension XCTestCase {
-    func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true,
+    func verifyRule(ruleDescription: RuleDescription,
+                    ruleConfiguration: AnyObject? = nil,
+                    commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true) {
-        let config = Configuration(whitelistRules: [ruleDescription.identifier])!
+        var config: Configuration
+        if let ruleConfiguration = ruleConfiguration,
+            ruleType = masterRuleList.list[ruleDescription.identifier] {
+            // The caller has provided a custom configuration for the rule under test
+            do {
+                let configuredRule = try ruleType.init(configuration: ruleConfiguration)
+                config = Configuration(configuredRules: [configuredRule])!
+            } catch {
+                XCTFail()
+                return
+            }
+        } else {
+            config = Configuration(whitelistRules: [ruleDescription.identifier])!
+        }
+
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
 

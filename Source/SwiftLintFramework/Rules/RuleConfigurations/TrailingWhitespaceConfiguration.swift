@@ -11,7 +11,7 @@ import Foundation
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.Warning)
     var ignoresEmptyLines = false
-    
+
     public var consoleDescription: String {
         return "ignores empty lines: \(ignoresEmptyLines ? "true" : "false")"
     }
@@ -34,13 +34,14 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
         } else {
             ignoresEmptyLines = false
         }
-        
+
         if let severityString = configuration["severity"] as? String {
             try severityConfiguration.applyConfiguration(severityString)
         }
     }
 }
 
-public func == (lhs: TrailingWhitespaceConfiguration, rhs: TrailingWhitespaceConfiguration) -> Bool {
+public func == (lhs: TrailingWhitespaceConfiguration,
+                rhs: TrailingWhitespaceConfiguration) -> Bool {
     return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines
 }

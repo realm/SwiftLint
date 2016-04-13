@@ -130,7 +130,7 @@ class RulesTests: XCTestCase {
                                nonTriggeringExamples: nonTriggeringExamples,
                                   triggeringExamples: baseDescription.triggeringExamples,
                                          corrections: baseDescription.corrections)
-        verifyRule(description, ruleConfiguration: ["ignores_empty_lines": "true"],
+        verifyRule(description, ruleConfiguration: ["ignores_empty_lines": true],
                    commentDoesntViolate: false)
     }
 

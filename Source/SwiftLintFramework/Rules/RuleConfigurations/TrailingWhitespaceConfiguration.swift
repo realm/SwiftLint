@@ -25,10 +25,8 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        if let ignoresEmptyLinesString = configuration["ignores_empty_lines"] as? String {
-            ignoresEmptyLines = (ignoresEmptyLinesString == "true")
-        } else {
-            ignoresEmptyLines = false
+        if let ignoresEmptyLinesString = configuration["ignores_empty_lines"] as? Bool {
+            ignoresEmptyLines = ignoresEmptyLinesString
         }
 
         if let severityString = configuration["severity"] as? String {

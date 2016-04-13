@@ -13,11 +13,7 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
     var ignoresEmptyLines = false
 
     public var consoleDescription: String {
-        return "ignores empty lines: \(ignoresEmptyLines ? "true" : "false")"
-    }
-
-    public init() {
-        self.init(ignoresEmptyLines: false)
+        return "ignores_empty_lines: \(ignoresEmptyLines ? "true" : "false")"
     }
 
     public init(ignoresEmptyLines: Bool) {

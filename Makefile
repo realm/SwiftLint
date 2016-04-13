@@ -16,7 +16,7 @@ OUTPUT_PACKAGE=SwiftLint.pkg
 VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
 
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-03-01-a
+SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a
 SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
 SWIFT_BUILD_COMMAND=$(SWIFT_COMMAND) build
 SWIFT_TEST_COMMAND=$(SWIFT_COMMAND) test
@@ -85,10 +85,13 @@ swift_snapshot_install:
 	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg
 	sudo installer -pkg swift.pkg -target /
 
+# Use Xcode's swiftc
+spm: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
 spm:
 	$(SWIFT_BUILD_COMMAND)
 
-spm_test: PATH:=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/:$(PATH)
+# Use Xcode's swiftc
+spm_test: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
 spm_test: spm
 	$(SWIFT_TEST_COMMAND)
 

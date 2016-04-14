@@ -12,6 +12,9 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#167](https://github.com/jpsim/SourceKitten/issues/167)
 
+* SwiftLint no longer crashes when SourceKitService crashes.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Bug Fixes
 
 * Failed to launch swiftlint when Xcode.app was placed at non standard path.  
@@ -43,9 +46,6 @@
   letter to allow for names like XMLString or MIMEType.  
   [Erik Aigner](https://github.com/eaigner)
   [#566](https://github.com/realm/SwiftLint/issues/566)
-
-* `LintCommand` does not stop when SourceKitService crashes.  
-  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
 

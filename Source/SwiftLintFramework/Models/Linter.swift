@@ -23,9 +23,16 @@ public struct Linter {
 
     private func getStyleViolations(benchmark: Bool = false) ->
         ([StyleViolation], [(id: String, time: Double)]) {
+        if file.sourcekitdFailed {
+            queuedPrintError("Most of rules are skipped because sourcekitd fails.")
+        }
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
         let violations = rules.flatMap { rule -> [StyleViolation] in
+            if (rule.dynamicType.description.needsSourceKit || rule is ASTRule) &&
+                self.file.sourcekitdFailed {
+                return []
+            }
             let start: NSDate! = benchmark ? NSDate() : nil
             let violations = rule.validateFile(self.file)
             if benchmark {

@@ -9,10 +9,28 @@
 import Foundation
 import SourceKittenFramework
 
-private var responseCache = Cache({file in Request.EditorOpen(file).send()})
-private var structureCache = Cache({file in Structure(sourceKitResponse: responseCache.get(file))})
-private var syntaxMapCache = Cache({file in SyntaxMap(sourceKitResponse: responseCache.get(file))})
+private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
+    do {
+        return try Request.EditorOpen(file).failableSend()
+    } catch let error as Request.Error {
+        queuedPrintError(error.description)
+        return nil
+    } catch {
+        return nil
+    }
+})
+private var structureCache = Cache({file -> Structure? in
+    if let structure = responseCache.get(file).map(Structure.init) {
+        queueForRebuild.append(structure)
+        return structure
+    }
+    return nil
+})
+private var syntaxMapCache = Cache({file in responseCache.get(file).map(SyntaxMap.init)})
 private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
+
+private typealias AssertHandler = () -> ()
+private var assertHandlers = [String: AssertHandler?]()
 
 private var _allDeclarationsByType = [String: [String]]()
 private var queueForRebuild = [Structure]()
@@ -27,15 +45,12 @@ private struct Cache<T> {
     }
 
     private mutating func get(file: File) -> T {
-        let key = file.path ?? NSUUID().UUIDString
+        let key = file.cacheKey
         if let value = values[key] {
             return value
         }
         let value = factory(file)
         values[key] = value
-        if let structure = value as? Structure {
-            queueForRebuild.append(structure)
-        }
         return value
     }
 
@@ -52,20 +67,68 @@ private struct Cache<T> {
 
 extension File {
 
+    private var cacheKey: String {
+        return path ?? "\(ObjectIdentifier(self).hashValue)"
+    }
+
+    internal var sourcekitdFailed: Bool {
+        get {
+            return responseCache.get(self) == nil
+        }
+        set {
+            if newValue {
+                responseCache.values[cacheKey] = Optional<[String: SourceKitRepresentable]>.None
+            } else {
+                responseCache.values.removeValueForKey(cacheKey)
+            }
+        }
+    }
+
+    internal var assertHandler: (() -> ())? {
+        get {
+            return assertHandlers[cacheKey] ?? nil
+        }
+        set {
+            assertHandlers[cacheKey] = newValue
+        }
+    }
+
     internal var structure: Structure {
-        return structureCache.get(self)
+        guard let structure = structureCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return Structure(sourceKitResponse: [:])
+            }
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return structure
     }
 
     internal var syntaxMap: SyntaxMap {
-        return syntaxMapCache.get(self)
+        guard let syntaxMap = syntaxMapCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SyntaxMap(data: [])
+            }
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxMap
     }
 
     internal var syntaxKindsByLines: [[SyntaxKind]] {
-        return syntaxKindsByLinesCache.get(self)
+        guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return []
+            }
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxKindsByLines
     }
 
     public func invalidateCache() {
         responseCache.invalidate(self)
+        assertHandlers.removeValueForKey(cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -75,6 +138,7 @@ extension File {
         queueForRebuild = []
         _allDeclarationsByType = [:]
         responseCache.clear()
+        assertHandlers = [:]
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxKindsByLinesCache.clear()

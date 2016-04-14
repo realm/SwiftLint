@@ -47,7 +47,8 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule {
             "let a = 0": "let a = 0\n",
             "let b = 0\n\n": "let b = 0\n",
             "let c = 0\n\n\n\n": "let c = 0\n"
-        ]
+        ],
+        needsSourceKit: false
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

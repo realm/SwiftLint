@@ -22,7 +22,8 @@ public struct FileLengthRule: ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator("")
-        ]
+        ],
+        needsSourceKit: false
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

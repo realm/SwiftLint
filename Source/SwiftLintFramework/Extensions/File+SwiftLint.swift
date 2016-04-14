@@ -36,6 +36,9 @@ extension File {
     }
 
     private func commands() -> [Command] {
+        if sourcekitdFailed {
+            return []
+        }
         let contents = self.contents as NSString
         return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
             withSyntaxKinds: [.Comment]).flatMap { range in
@@ -100,7 +103,10 @@ extension File {
         }
     }
 
-    internal func syntaxKindsByLine() -> [[SyntaxKind]] {
+    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+        if sourcekitdFailed {
+            return nil
+        }
         var results = [[SyntaxKind]](count: lines.count + 1, repeatedValue: [])
         var tokenGenerator = syntaxMap.tokens.generate()
         var lineGenerator = lines.generate()

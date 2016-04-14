@@ -25,7 +25,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        var filteredLines: [Line]
+        let filteredLines: [Line]
         if configuration.ignoresEmptyLines {
             filteredLines = file.lines.filter {
                 // Ignores lines that contain nothing but whitespace = empty lines

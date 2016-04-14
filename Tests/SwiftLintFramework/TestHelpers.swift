@@ -62,7 +62,7 @@ extension XCTestCase {
                     ruleConfiguration: AnyObject? = nil,
                     commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true) {
-        var config: Configuration
+        let config: Configuration
         if let ruleConfiguration = ruleConfiguration,
             ruleType = masterRuleList.list[ruleDescription.identifier] {
             // The caller has provided a custom configuration for the rule under test

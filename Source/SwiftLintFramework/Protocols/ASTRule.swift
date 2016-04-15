@@ -23,7 +23,7 @@ extension ASTBaseRule {
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.flatMap { subItem -> [StyleViolation] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String else {
+                kindString = subDict["key.kind"] as? String else {
                     return []
             }
             return self.validateFile(file, dictionary: subDict) +

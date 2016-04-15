@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalBindingCascadeRule: ConfigurationProviderRule {
+public struct ConditionalBindingCascadeRule: ASTBaseRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 
@@ -40,14 +40,77 @@ public struct ConditionalBindingCascadeRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        return file.matchPattern("^(if|guard)(.*?)let(.*?),(.*?)let(.*?)\\{",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).filter {
-                !(file.contents as NSString).substringWithRange($0).containsString("where")
-            }.map {
-                StyleViolation(ruleDescription: self.dynamicType.description,
-                               severity: configuration.severity,
-                               location: Location(file: file, characterOffset: $0.location))
+    private static let kinds = [StatementKind.Guard, .If].map { $0.rawValue }
+    public func validateFile(file: File, kind: String,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard self.dynamicType.kinds.contains(kind),
+            let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
+            return []
         }
+        let conditionByteRanges = elements
+            .filter { $0.kind == "source.lang.swift.structure.elem.condition_expr" }
+            .flatMap { return $0.byteRange }
+        let contents = file.contents as NSString
+        let resultsArray: [[StyleViolation]] = conditionByteRanges.map { conditionByteRange in
+            let substructureRanges = dictionary.substructure?.flatMap { $0.byteRange }
+                .filter { NSLocationInRange($0.location, conditionByteRange) } ?? []
+            let keywordTokensInRange = file.syntaxMap.tokensIn(conditionByteRange)
+                .filter { token in
+                    // exclude tokens in sub structures
+                    substructureRanges.indexOf { NSLocationInRange(token.offset, $0) } == nil
+                }
+                .filter { $0.type == SyntaxKind.Keyword.rawValue }
+            let byteOffsetAndKeywords = keywordTokensInRange.map {
+                ($0.offset, contents.substringWithByteRange(start: $0.offset, length: $0.length)!)
+            }
+
+            var results = [StyleViolation]()
+            var inBinding = false
+            for (byteOffset, keyword) in byteOffsetAndKeywords {
+                switch keyword {
+                case "let": fallthrough
+                case "var":
+                    if inBinding {
+                        results.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                            severity: configuration.severity,
+                            location: Location(file: file, byteOffset: byteOffset)))
+                    } else {
+                        inBinding = true
+                    }
+                case "where":
+                    inBinding = false
+                default:
+                    break
+                }
+            }
+            return results
+        }
+
+        return Array(resultsArray.flatten())
+    }
+}
+
+extension SourceKitRepresentable {
+    var dictionary: [String: SourceKitRepresentable]? {
+        return self as? [String: SourceKitRepresentable]
+    }
+
+    var substructure: [SourceKitRepresentable]? {
+        return dictionary?["key.substructure"] as? [SourceKitRepresentable]
+    }
+
+    var int: Int? {
+        guard let int64 = self as? Int64 else { return nil }
+        return Int(int64)
+    }
+
+    var kind: String? {
+        return dictionary?["key.kind"] as? String
+    }
+
+    var byteRange: NSRange? {
+        guard let byteOffset = dictionary?["key.offset"]?.int,
+            byteLength = dictionary?["key.length"]?.int else { return nil }
+        return NSRange(location: byteOffset, length: byteLength)
     }
 }

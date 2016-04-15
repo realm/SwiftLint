@@ -15,6 +15,10 @@
 * SwiftLint no longer crashes when SourceKitService crashes.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Rewrite `conditional_binding_cascade` rule.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#617](https://github.com/jpsim/SwiftLint/issues/617)
+
 ##### Bug Fixes
 
 * Failed to launch swiftlint when Xcode.app was placed at non standard path.  

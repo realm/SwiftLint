@@ -35,7 +35,8 @@ public struct ConditionalBindingCascadeRule: ConfigurationProviderRule {
             "if let a = b, let c = d \n {",
             "if \n let a = b, let c = d {",
             "if let a = b, c = d.indexOf({$0 == e}), let f = g {",
-            "guard let a = b, let c = d else {"
+            "guard let a = b, let c = d else {",
+            "if let a = a, b = b {\ndebugPrint(\"\")\n}\nif let c = a, let d = b {\n}",
         ]
     )
 

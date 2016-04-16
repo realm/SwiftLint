@@ -37,7 +37,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
     public mutating func applyConfiguration(configuration: AnyObject) throws {
         guard let configurationDict = configuration as? [String: AnyObject],
-              let regexString = configurationDict["regex"] as? String else {
+            regexString = configurationDict["regex"] as? String else {
             throw ConfigurationError.UnknownConfiguration
         }
 

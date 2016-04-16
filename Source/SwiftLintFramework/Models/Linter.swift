@@ -29,7 +29,7 @@ public struct Linter {
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
         let violations = rules.flatMap { rule -> [StyleViolation] in
-            if (rule.dynamicType.description.needsSourceKit || rule is ASTRule) &&
+            if (rule.dynamicType.description.needsSourceKit || rule is ASTBaseRule) &&
                 self.file.sourcekitdFailed {
                 return []
             }

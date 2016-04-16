@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ConfigurationProviderRule {
+public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     public var configuration = SeverityLevelsConfiguration(warning: 400, error: 1000)
 
     public init() {}
@@ -22,8 +22,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         ],
         triggeringExamples: [
             Repeat(count: 401, repeatedValue: "//\n").joinWithSeparator("")
-        ],
-        needsSourceKit: false
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

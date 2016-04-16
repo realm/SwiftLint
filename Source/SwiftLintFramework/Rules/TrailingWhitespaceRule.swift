@@ -9,7 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
+SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 
@@ -21,8 +22,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         description: "Lines should not have trailing whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "// \n" ],
-        corrections: [ "// \n": "//\n" ],
-        needsSourceKit: false
+        corrections: [ "// \n": "//\n" ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

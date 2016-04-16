@@ -78,7 +78,7 @@ class SourceKitCrashTests: XCTestCase {
         let file = File(path: #file)!
         file.sourcekitdFailed = true
         file.assertHandler = {
-            XCTFail("If this called, rule's description.needsSourceKit is not properly configured.")
+            XCTFail("If this called, rule's SourceKitFreeRule is not properly configured.")
         }
         let allRuleIdentifiers = Array(masterRuleList.list.keys)
         // swiftlint:disable:next force_unwrapping

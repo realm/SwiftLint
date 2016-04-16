@@ -17,7 +17,7 @@
 
 * Rewrite `conditional_binding_cascade` rule.  
   [Norio Nomura](https://github.com/norio-nomura)
-  [#617](https://github.com/jpsim/SwiftLint/issues/617)
+  [#617](https://github.com/realm/SwiftLint/issues/617)
 
 ##### Bug Fixes
 

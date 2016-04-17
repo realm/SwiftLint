@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 
 public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule {
@@ -33,11 +34,13 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓NSMakeRange(10, 1)",
         ],
         corrections: [
-            "CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
-            "CGSizeMake(10, 10)\n": "CGSize(width: 10, height: 10)\n",
-            "CGRectMake(0, 0, 10, 10)\n": "CGRect(x: 0, y: 0, width: 10, height: 10)\n",
-            "CGVectorMake(10, 10)\n": "CGVector(dx: 10, dy: 10)\n",
-            "NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
+            "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
+            "↓CGSizeMake(10, 10)\n": "CGSize(width: 10, height: 10)\n",
+            "↓CGRectMake(0, 0, 10, 10)\n": "CGRect(x: 0, y: 0, width: 10, height: 10)\n",
+            "↓CGVectorMake(10, 10)\n": "CGVector(dx: 10, dy: 10)\n",
+            "↓NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
+            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n": "CGVector(dx: 10, dy: 10)\n" +
+                "NSRange(location: 10, length: 1)\n",
         ]
     )
 
@@ -70,18 +73,21 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         var corrections = [Correction]()
         var contents = file.contents
 
-        for (pattern, template) in patterns {
-            let matches = file.matchPattern(pattern)
-                .filter({ $0.1.first == .Identifier })
-                .map({ $0.0 })
-
-            let regularExpression = regex(pattern)
-            for range in matches.reverse() {
-                contents = regularExpression.stringByReplacingMatchesInString(contents,
-                    options: [], range: range, withTemplate: template)
-                let location = Location(file: file, characterOffset: range.location)
-                corrections.append(Correction(ruleDescription: description, location: location))
+        let matches = patterns.map {
+                (pattern, template) -> [(NSRange, String, String)] in
+                let matches = file.matchPattern(pattern)
+                    .filter { $0.1.first == .Identifier }
+                    .map { ($0.0, pattern, template) }
+                return matches
             }
+            .flatten()
+            .sort { $0.0.location > $1.0.location } // reversed
+
+        for (range, pattern, template) in matches {
+            contents = regex(pattern).stringByReplacingMatchesInString(contents,
+                options: [], range: range, withTemplate: template)
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
         }
 
         file.write(contents)

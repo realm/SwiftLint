@@ -29,6 +29,10 @@
   [Josh Friend](https://github.com/joshfriend)
   [#592](https://github.com/realm/SwiftLint/issues/592)
 
+* `LegacyConstantRule` and `LegacyConstructorRule` failed to `autocorrect`.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#623](https://github.com/realm/SwiftLint/issues/623)
+
 ## 0.9.2: Multiple Exhaust Codes
 
 ##### Breaking

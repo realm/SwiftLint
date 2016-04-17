@@ -33,11 +33,11 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "↓CGRectNull"
         ],
         corrections: [
-            "CGRectInfinite\n": "CGRect.infinite\n",
-            "CGPointZero\n": "CGPoint.zero\n",
-            "CGRectZero\n": "CGRect.zero\n",
-            "CGSizeZero\n": "CGSize.zero\n",
-            "CGRectNull\n": "CGRect.null\n"
+            "↓CGRectInfinite\n": "CGRect.infinite\n",
+            "↓CGPointZero\n": "CGPoint.zero\n",
+            "↓CGRectZero\n": "CGRect.zero\n",
+            "↓CGSizeZero\n": "CGSize.zero\n",
+            "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n"
         ]
     )
 

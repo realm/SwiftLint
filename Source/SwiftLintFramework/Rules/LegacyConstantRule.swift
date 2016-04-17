@@ -67,16 +67,19 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         var corrections = [Correction]()
         var contents = file.contents
 
-        for (pattern, template) in patterns {
-            let matches = file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
-
-            let regularExpression = regex(pattern)
-            for range in matches.reverse() {
-                contents = regularExpression.stringByReplacingMatchesInString(contents,
-                    options: [], range: range, withTemplate: template)
-                let location = Location(file: file, characterOffset: range.location)
-                corrections.append(Correction(ruleDescription: description, location: location))
+        let matches = patterns.map {
+                (pattern, template) -> [(NSRange, String, String)] in
+                let matches = file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
+                return matches.map { ($0, pattern, template) }
             }
+            .flatten()
+            .sort { $0.0.location > $1.0.location } // reversed
+
+        for (range, pattern, template) in matches {
+            contents = regex(pattern).stringByReplacingMatchesInString(contents,
+                options: [], range: range, withTemplate: template)
+            let location = Location(file: file, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
         }
 
         file.write(contents)

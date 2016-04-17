@@ -33,11 +33,13 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓NSMakeRange(10, 1)",
         ],
         corrections: [
-            "CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
-            "CGSizeMake(10, 10)\n": "CGSize(width: 10, height: 10)\n",
-            "CGRectMake(0, 0, 10, 10)\n": "CGRect(x: 0, y: 0, width: 10, height: 10)\n",
-            "CGVectorMake(10, 10)\n": "CGVector(dx: 10, dy: 10)\n",
-            "NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
+            "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
+            "↓CGSizeMake(10, 10)\n": "CGSize(width: 10, height: 10)\n",
+            "↓CGRectMake(0, 0, 10, 10)\n": "CGRect(x: 0, y: 0, width: 10, height: 10)\n",
+            "↓CGVectorMake(10, 10)\n": "CGVector(dx: 10, dy: 10)\n",
+            "↓NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
+            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n": "CGVector(dx: 10, dy: 10)\n" +
+                "NSRange(location: 10, length: 1)\n",
         ]
     )
 

@@ -63,26 +63,28 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "↓CGRectIntersectsRect(rect1, rect2)"
         ],
         corrections: [
-            "CGRectGetWidth( rect  )\n": "rect.width\n",
-            "CGRectGetHeight(rect )\n": "rect.height\n",
-            "CGRectGetMinX( rect)\n": "rect.minX\n",
-            "CGRectGetMidX(  rect)\n": "rect.midX\n",
-            "CGRectGetMaxX( rect)\n": "rect.maxX\n",
-            "CGRectGetMinY(rect   )\n": "rect.minY\n",
-            "CGRectGetMidY(rect )\n": "rect.midY\n",
-            "CGRectGetMaxY( rect     )\n": "rect.maxY\n",
-            "CGRectIsNull(  rect    )\n": "rect.isNull\n",
-            "CGRectIsEmpty( rect )\n": "rect.isEmpty\n",
-            "CGRectIsInfinite( rect )\n": "rect.isInfinite\n",
-            "CGRectStandardize( rect)\n": "rect.standardized\n",
-            "CGRectIntegral(rect )\n": "rect.integral\n",
-            "CGRectInset(rect, 5.0, -7.0)\n": "rect.insetBy(dx: 5.0, dy: -7.0)\n",
-            "CGRectOffset(rect, -2, 8.3)\n": "rect.offsetBy(dx: -2, dy: 8.3)\n",
-            "CGRectUnion(rect1, rect2)\n": "rect1.union(rect: rect2)\n",
-            "CGRectIntersection( rect1 ,rect2)\n": "rect1.intersect(rect: rect2)\n",
-            "CGRectContainsRect( rect1,rect2     )\n": "rect1.contains(rect: rect2)\n",
-            "CGRectContainsPoint(rect  ,point)\n": "rect.contains(point: point)\n",
-            "CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect: rect2)\n"
+            "↓CGRectGetWidth( rect  )\n": "rect.width\n",
+            "↓CGRectGetHeight(rect )\n": "rect.height\n",
+            "↓CGRectGetMinX( rect)\n": "rect.minX\n",
+            "↓CGRectGetMidX(  rect)\n": "rect.midX\n",
+            "↓CGRectGetMaxX( rect)\n": "rect.maxX\n",
+            "↓CGRectGetMinY(rect   )\n": "rect.minY\n",
+            "↓CGRectGetMidY(rect )\n": "rect.midY\n",
+            "↓CGRectGetMaxY( rect     )\n": "rect.maxY\n",
+            "↓CGRectIsNull(  rect    )\n": "rect.isNull\n",
+            "↓CGRectIsEmpty( rect )\n": "rect.isEmpty\n",
+            "↓CGRectIsInfinite( rect )\n": "rect.isInfinite\n",
+            "↓CGRectStandardize( rect)\n": "rect.standardized\n",
+            "↓CGRectIntegral(rect )\n": "rect.integral\n",
+            "↓CGRectInset(rect, 5.0, -7.0)\n": "rect.insetBy(dx: 5.0, dy: -7.0)\n",
+            "↓CGRectOffset(rect, -2, 8.3)\n": "rect.offsetBy(dx: -2, dy: 8.3)\n",
+            "↓CGRectUnion(rect1, rect2)\n": "rect1.union(rect: rect2)\n",
+            "↓CGRectIntersection( rect1 ,rect2)\n": "rect1.intersect(rect: rect2)\n",
+            "↓CGRectContainsRect( rect1,rect2     )\n": "rect1.contains(rect: rect2)\n",
+            "↓CGRectContainsPoint(rect  ,point)\n": "rect.contains(point: point)\n",
+            "↓CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect: rect2)\n",
+            "↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )\n":
+            "rect1.intersects(rect: rect2)\nrect.width\n"
         ]
     )
 

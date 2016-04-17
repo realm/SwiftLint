@@ -7,6 +7,7 @@
 //
 
 import SourceKittenFramework
+import Foundation
 
 public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Warning)

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalBindingCascadeRule: ASTBaseRule, ConfigurationProviderRule {
+public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 

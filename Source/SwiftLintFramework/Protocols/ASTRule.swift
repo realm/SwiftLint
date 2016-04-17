@@ -8,12 +8,13 @@
 
 import SourceKittenFramework
 
-public protocol ASTBaseRule: Rule {
-    func validateFile(file: File, kind: String,
+public protocol ASTRule: Rule {
+    associatedtype KindType: RawRepresentable
+    func validateFile(file: File, kind: KindType,
                       dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
 }
 
-extension ASTBaseRule {
+extension ASTRule where KindType.RawValue == String {
     public func validateFile(file: File) -> [StyleViolation] {
         return validateFile(file, dictionary: file.structure.dictionary)
     }
@@ -23,27 +24,22 @@ extension ASTBaseRule {
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.flatMap { subItem -> [StyleViolation] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                kindString = subDict["key.kind"] as? String else {
+                kindString = subDict["key.kind"] as? String,
+                kind = KindType(rawValue: kindString) else {
                     return []
             }
             return self.validateFile(file, dictionary: subDict) +
-                self.validateFile(file, kind: kindString, dictionary: subDict)
+                self.validateFile(file, kind: kind, dictionary: subDict)
         }
     }
 }
 
-public protocol ASTRule: ASTBaseRule {
-    func validateFile(file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
-}
-
-extension ASTRule {
-    public func validateFile(file: File, kind: String,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let kind = SwiftDeclarationKind(rawValue: kind) else {
-            return []
-        }
-        return self.validateFile(file, kind: kind, dictionary: dictionary)
+extension String: RawRepresentable {
+    public init?(rawValue: String) {
+        self.init(rawValue)
     }
 
+    public var rawValue: String {
+        return self
+    }
 }

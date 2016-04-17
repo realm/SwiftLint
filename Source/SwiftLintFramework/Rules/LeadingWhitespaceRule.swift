@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LeadingWhitespaceRule: ConfigurationProviderRule {
+public struct LeadingWhitespaceRule: ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 
@@ -20,8 +20,7 @@ public struct LeadingWhitespaceRule: ConfigurationProviderRule {
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
         nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ],
-        needsSourceKit: false
+        triggeringExamples: [ "\n", " //\n" ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {

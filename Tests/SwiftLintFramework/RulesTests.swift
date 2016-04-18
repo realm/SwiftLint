@@ -67,6 +67,10 @@ class RulesTests: XCTestCase {
         verifyRule(LeadingWhitespaceRule.description)
     }
 
+    func testLegacyCGGeometryFunctions() {
+        verifyRule(LegacyCGGeometryFunctionsRule.description)
+    }
+
     func testLegacyConstant() {
         verifyRule(LegacyConstantRule.description)
     }

@@ -23,6 +23,9 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#617](https://github.com/realm/SwiftLint/issues/617)
 
+* Add autocorrect for `ReturnArrowWhitespaceRule`.  
+  [Craig Siemens](https://github.com/CraigSiemens)
+
 ##### Bug Fixes
 
 * Failed to launch swiftlint when Xcode.app was placed at non standard path.  

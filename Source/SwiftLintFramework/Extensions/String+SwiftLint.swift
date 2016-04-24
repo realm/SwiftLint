@@ -62,6 +62,9 @@ extension String {
     }
 
     internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index>? {
+        guard nsrange.location != NSNotFound else {
+            return nil
+        }
         let from16 = utf16.startIndex.advancedBy(nsrange.location, limit: utf16.endIndex)
         let to16 = from16.advancedBy(nsrange.length, limit: utf16.endIndex)
         if let from = Index(from16, within: self), to = Index(to16, within: self) {

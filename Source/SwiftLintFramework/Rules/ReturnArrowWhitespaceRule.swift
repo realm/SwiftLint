@@ -71,10 +71,11 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             return regularExpression.firstMatchInString(contents, options: [], range: range)
         }
 
-        for result in results {
-            guard result.numberOfRanges == 8 else { break }
+        let replacementsByIndex = [2: " -> ", 4: " -> ", 6: " ", 7: " "]
 
-            let replacementsByIndex = [2: " -> ", 4: " -> ", 6: " ", 7: " "]
+        for result in results {
+            guard result.numberOfRanges > replacementsByIndex.keys.maxElement() else { break }
+
             for (index, string) in replacementsByIndex {
                 if let range = contents.nsrangeToIndexRange(result.rangeAtIndex(index)) {
                     contents.replaceRange(range, with: string)

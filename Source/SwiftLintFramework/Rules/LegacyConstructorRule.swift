@@ -25,6 +25,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "CGRect(x: 0, y: 0, width: 10, height: 10)",
             "CGVector(dx: 10, dy: 10)",
             "NSRange(location: 10, length: 1)",
+            "UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)",
         ],
         triggeringExamples: [
             "↓CGPointMake(10, 10)",
@@ -32,6 +33,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓CGRectMake(0, 0, 10, 10)",
             "↓CGVectorMake(10, 10)",
             "↓NSMakeRange(10, 1)",
+            "↓UIEdgeInsetsMake(0, 0, 10, 10)",
         ],
         corrections: [
             "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
@@ -41,12 +43,14 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓NSMakeRange(10, 1)\n": "NSRange(location: 10, length: 1)\n",
             "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)\n": "CGVector(dx: 10, dy: 10)\n" +
                 "NSRange(location: 10, length: 1)\n",
+            "↓UIEdgeInsetsMake(0, 0, 10, 10)\n":
+            "UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)\n",
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
-            "NSMakeRange"]
+            "NSMakeRange", "UIEdgeInsetsMake"]
 
         let pattern = "\\b(" + constructors.joinWithSeparator("|") + ")\\b"
 
@@ -67,6 +71,8 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "CGRect(x: $1, y: $2, width: $3, height: $4)",
             "CGVectorMake\\(\\s*\(twoNumbers)\\s*\\)": "CGVector(dx: $1, dy: $2)",
             "NSMakeRange\\(\\s*\(twoNumbers)\\s*\\)": "NSRange(location: $1, length: $2)",
+            "UIEdgeInsetsMake\\(\\s*\(twoNumbers)\\s*,\\s*\(twoNumbers)\\s*\\)":
+            "UIEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)",
         ]
 
         let description = self.dynamicType.description

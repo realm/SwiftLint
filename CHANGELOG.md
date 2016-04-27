@@ -1,4 +1,4 @@
-## Master
+## 0.10.0: `laundry-select` edition
 
 ##### Breaking
 
@@ -6,15 +6,15 @@
 
 ##### Enhancements
 
-* Add `LegacyCGGeometryFunctionsRule` rule.  
-  [Sarr Blaise](https://github.com/bsarr007)
-  [#625](https://github.com/realm/SwiftLint/issues/625)
-
 * Now `libclang.dylib` and `sourcekitd.framework` are dynamically loaded at
   runtime by SourceKittenFramework to use the versions included in the Xcode
   version specified by `xcode-select -p` or custom toolchains.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#167](https://github.com/jpsim/SourceKitten/issues/167)
+
+* Add `LegacyCGGeometryFunctionsRule` rule.  
+  [Sarr Blaise](https://github.com/bsarr007)
+  [#625](https://github.com/realm/SwiftLint/issues/625)
 
 * SwiftLint no longer crashes when SourceKitService crashes.  
   [Norio Nomura](https://github.com/norio-nomura)

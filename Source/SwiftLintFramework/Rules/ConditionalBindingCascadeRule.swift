@@ -66,20 +66,20 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
             }
 
             var results = [StyleViolation]()
-            var inBinding = false
+            var previousBindingKeyword = ""
             for (byteOffset, keyword) in byteOffsetAndKeywords {
                 switch keyword {
                 case "let": fallthrough
                 case "var":
-                    if inBinding {
+                    if previousBindingKeyword == keyword {
                         results.append(StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: configuration.severity,
                             location: Location(file: file, byteOffset: byteOffset)))
                     } else {
-                        inBinding = true
+                        previousBindingKeyword = keyword
                     }
                 case "where":
-                    inBinding = false
+                    previousBindingKeyword = ""
                 default:
                     break
                 }

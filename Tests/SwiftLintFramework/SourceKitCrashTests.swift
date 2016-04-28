@@ -13,22 +13,6 @@ import SourceKittenFramework
 
 class SourceKitCrashTests: XCTestCase {
 
-    // protocol XCTestCaseProvider
-    lazy var allTests: [(String, () throws -> Void)] = [
-        ("testAssertHandlerIsNotCalledOnNormalFile", self.testAssertHandlerIsNotCalledOnNormalFile),
-        ("testAssertHandlerIsCalledOnFileThatCrashedSourceKitService",
-            self.testAssertHandlerIsCalledOnFileThatCrashedSourceKitService),
-        ("testRulesWithFileThatCrashedSourceKitService",
-            self.testRulesWithFileThatCrashedSourceKitService),
-    ]
-
-
-    let sourcekitFailedFile = { () -> File in
-        let file = File(contents: "trigger")
-        file.sourcekitdFailed = true
-        return file
-    }()
-
     func testAssertHandlerIsNotCalledOnNormalFile() {
         let file = File(contents: "A file didn't crash SourceKitService.")
         file.sourcekitdFailed = false

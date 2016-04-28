@@ -26,7 +26,8 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
             "if let a = b { if let c = d {",
             "if let a = b { let c = d({ foo in ... })",
             "guard let a = b, c = d else {",
-            "guard let a = b where a, let c = d else {"
+            "guard let a = b where a, let c = d else {",
+            "guard let foo = someOptional(), var bar = someMutableOptional(foo) else { return }",
         ],
         triggeringExamples: [
             "if let a = b, let c = d {",

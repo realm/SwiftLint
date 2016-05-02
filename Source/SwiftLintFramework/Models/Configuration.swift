@@ -150,9 +150,11 @@ public struct Configuration: Equatable {
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
-        let fail = { fatalError("Could not read configuration file at path '\(fullPath)'") }
+        let fail = { (msg: String) in
+            fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
+        }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
-            if !optional { fail() }
+            if !optional { fail("File not found.") }
             self.init()!
             self.rootPath = rootPath
             return
@@ -168,8 +170,10 @@ public struct Configuration: Equatable {
             configurationPath = fullPath
             self.rootPath = rootPath
             return
+        } catch YamlParserError.YamlParsing(let message) {
+            fail("Error parsing YAML: \(message)")
         } catch {
-            fail()
+            fail("\(error)")
         }
         self.init()!
     }

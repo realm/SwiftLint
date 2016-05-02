@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Improve error messages for invalid configuration files.
+  [Brian Hardy](https://github.com/lyricsboy)
 
 ##### Bug Fixes
 

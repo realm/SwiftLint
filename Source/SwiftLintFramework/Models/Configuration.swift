@@ -150,7 +150,9 @@ public struct Configuration: Equatable {
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false) {
         let fullPath = (path as NSString).absolutePathRepresentation()
-        let fail = { (msg: String) in fatalError("Could not read configuration file at path '\(fullPath)': \(msg)") }
+        let fail = { (msg: String) in
+            fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
+        }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
             if !optional { fail("File not found.") }
             self.init()!

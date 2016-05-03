@@ -47,6 +47,7 @@ public let masterRuleList = RuleList(rules:
     ConditionalBindingCascadeRule.self,
     ControlStatementRule.self,
     CustomRules.self,
+    CuddledElseRule.self,
     CyclomaticComplexityRule.self,
     EmptyCountRule.self,
     FileLengthRule.self,

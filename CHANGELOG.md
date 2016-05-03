@@ -8,6 +8,10 @@
 
 * Improve error messages for invalid configuration files.
   [Brian Hardy](https://github.com/lyricsboy)
+  
+* Add Runpath Search Paths so that `swiftlint` can find
+  `SwiftLintFramework.framework` in more places.  
+  [Isaac Greenspan](https://github.com/vokal-isaac)
 
 ##### Bug Fixes
 

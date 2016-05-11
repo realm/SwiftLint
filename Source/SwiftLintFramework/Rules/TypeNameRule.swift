@@ -27,6 +27,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             [
                 "\(type) MyType {}",
                 "private \(type) _MyType {}",
+                "enum MyType {\ncase value\n}",
                 "\(type) " + Repeat(count: 40, repeatedValue: "A").joinWithSeparator("") + " {}"
             ]
         }),
@@ -48,8 +49,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             .Class,
             .Struct,
             .Typealias,
-            .Enum,
-            .Enumelement
+            .Enum
         ]
         if !typeKinds.contains(kind) {
             return []

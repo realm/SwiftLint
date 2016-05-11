@@ -2,7 +2,10 @@
 
 ##### Breaking
 
-* None.
+* Now `type_name` allows lowercase enum values to match the Swift API Design
+  Guidelines.
+  [Jorge Bernal](https://github.com/koke)
+  [#654](https://github.com/realm/SwiftLint/issues/654)
 
 ##### Enhancements
 

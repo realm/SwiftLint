@@ -7,7 +7,7 @@ SwiftLint Hook 了 [Clang](http://clang.llvm.org) 和 [SourceKit](http://www.jps
 ![Test Status](https://travis-ci.org/realm/SwiftLint.svg?branch=master)
 [![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
 
-![1.png](http://upload-images.jianshu.io/upload_images/1018190-4d0ff83614f523a4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](assets/screenshot.png)
 
 ## 安装
 
@@ -35,7 +35,7 @@ else
 fi
 ```
 
-![2.png](http://upload-images.jianshu.io/upload_images/1018190-2700178bccd39d7d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](assets/runscript.png)
 
 ### Atom
 

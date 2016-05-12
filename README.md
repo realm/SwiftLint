@@ -252,13 +252,12 @@ are all the possible syntax kinds:
 SwiftLint supports nesting configuration files for more granular control over
 the linting process.
 
-* Set the `use_nested_configs: true` value in your root `.swiftlint.yml` file
 * Include additional `.swiftlint.yml` files where necessary in your directory
   structure.
 * Each file will be linted using the configuration file that is in its
   directory or at the deepest level of its parent directories. Otherwise the
   root configuration will be used.
-* `excluded`, `included`, and `use_nested_configs` are ignored for nested
+* `excluded` and `included` are ignored for nested
   configurations.
 
 ### Auto-correct

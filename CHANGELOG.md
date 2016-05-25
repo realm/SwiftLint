@@ -17,6 +17,9 @@
 * Fix false positive in conditional binding cascade violation  
   [Norio Nomura](https://github.com/norio-nomura)
   [#642](https://github.com/realm/SwiftLint/issues/642)
+* Another conditional binding fix, this time for enum that has two parameters
+   or an if statement with two case tests.
+  [Andrew Rahn](https://github.com/paddlefish)
 
 ## 0.10.0: `laundry-select` edition
 

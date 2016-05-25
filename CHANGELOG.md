@@ -3,23 +3,24 @@
 ##### Breaking
 
 * Now `type_name` allows lowercase enum values to match the Swift API Design
-  Guidelines.
+  Guidelines.  
   [Jorge Bernal](https://github.com/koke)
   [#654](https://github.com/realm/SwiftLint/issues/654)
 
 ##### Enhancements
 
-* Improve error messages for invalid configuration files.
+* Improve error messages for invalid configuration files.  
   [Brian Hardy](https://github.com/lyricsboy)
 
 ##### Bug Fixes
 
-* Fix false positive in conditional binding cascade violation  
+* Fix false positive in conditional binding cascade violation.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#642](https://github.com/realm/SwiftLint/issues/642)
 * Another conditional binding fix, this time for enum that has two parameters
-   or an if statement with two case tests.
+  or an if statement with two case tests.  
   [Andrew Rahn](https://github.com/paddlefish)
+  [#667](https://github.com/realm/SwiftLint/issues/667)
 
 ## 0.10.0: `laundry-select` edition
 

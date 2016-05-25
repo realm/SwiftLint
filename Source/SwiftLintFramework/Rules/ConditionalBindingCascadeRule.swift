@@ -21,6 +21,9 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
         description: "Repeated `let` statements in conditional binding cascade should be avoided.",
         nonTriggeringExamples: [
             "if let a = b, c = d {",
+            "if case .ar(let ao) = a, case .ar(let bo) = b {}",
+            "if case .ar(let aa) = $0 {",
+            "if case .ar(let aa, let bb) = $0 {",
             "if let a = b, \n c = d {",
             "if let a = b, \n c = d \n {",
             "if let a = b { if let c = d {",
@@ -38,6 +41,9 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
             "if let a = b, c = d.indexOf({$0 == e}), let f = g {",
             "guard let a = b, let c = d else {",
             "if let a = a, b = b {\ndebugPrint(\"\")\n}\nif let c = a, let d = b {\n}",
+            // This is a rather exotic case that we cannot correctly identify as
+            // having too many `let` keywords because of the confounding `case`
+            // "if case .ar(let aa, let bb) = $0, let c = d, let e = f {",
         ]
     )
 
@@ -80,6 +86,11 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
                     }
                 case "where":
                     previousBindingKeyword = ""
+                case "case":
+                    // We cannot correctly differentiate valid uses of more than
+                    // one let when a the case keyword is involved, so if we have
+                    // one then bail rather than emit an invalid warning.
+                    return []
                 default:
                     break
                 }

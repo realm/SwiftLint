@@ -32,7 +32,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     var params: [RuleParameter<Int>] {
         if let error = error {
             return [RuleParameter(severity: .Error, value: error),
-                RuleParameter(severity: .Warning, value: warning)]
+                    RuleParameter(severity: .Warning, value: warning)]
         }
         return [RuleParameter(severity: .Warning, value: warning)]
     }

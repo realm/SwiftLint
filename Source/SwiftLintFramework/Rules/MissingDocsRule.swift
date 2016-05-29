@@ -60,9 +60,9 @@ public enum AccessControlLevel: String {
 
     private func sourcekitValue() -> String {
         switch self {
-            case Private: return "source.lang.swift.accessibility.private"
-            case Internal: return "source.lang.swift.accessibility.internal"
-            case Public: return "source.lang.swift.accessibility.public"
+        case Private: return "source.lang.swift.accessibility.private"
+        case Internal: return "source.lang.swift.accessibility.internal"
+        case Public: return "source.lang.swift.accessibility.public"
         }
     }
 }

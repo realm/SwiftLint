@@ -17,8 +17,8 @@ public struct RuleDescription: Equatable {
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
     public init(identifier: String, name: String, description: String,
-        nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
-        corrections: [String: String] = [:]) {
+                nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
+                corrections: [String: String] = [:]) {
         self.identifier = identifier
         self.name = name
         self.description = description

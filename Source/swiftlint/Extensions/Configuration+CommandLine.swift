@@ -60,14 +60,14 @@ extension File {
 extension Configuration {
     init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
         self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"),
-            rootPath: rootPath?.absolutePathStandardized(), quiet: quiet)
+                  rootPath: rootPath?.absolutePathStandardized(), quiet: quiet)
     }
 
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool,
                             visitorBlock: (Linter) -> ()) -> Result<[File], CommandantError<()>> {
         return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
-                    useScriptInputFiles: useScriptInputFiles)
+                        useScriptInputFiles: useScriptInputFiles)
         .flatMap { files -> Result<[File], CommandantError<()>> in
             if files.isEmpty {
                 let errorMessage = "No lintable files found at path '\(path)'"

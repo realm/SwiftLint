@@ -12,9 +12,9 @@ import SourceKittenFramework
 public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = NameConfiguration(minLengthWarning: 3,
-                                   minLengthError: 0,
-                                   maxLengthWarning: 40,
-                                   maxLengthError: 1000)
+                                                 minLengthError: 0,
+                                                 maxLengthWarning: 40,
+                                                 maxLengthError: 1000)
 
     public init() {}
 
@@ -43,8 +43,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                             kind: SwiftDeclarationKind,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [
             .Class,
             .Struct,
@@ -55,7 +55,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
         if let name = dictionary["key.name"] as? String where
-                !configuration.excluded.contains(name),
+            !configuration.excluded.contains(name),
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
             let nameCharacterSet = NSCharacterSet(charactersInString: name)
@@ -74,7 +74,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                            "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
+                        "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
             }
         }
         return []

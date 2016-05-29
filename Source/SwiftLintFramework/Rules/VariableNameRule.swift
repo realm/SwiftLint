@@ -12,9 +12,9 @@ import SourceKittenFramework
 public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = NameConfiguration(minLengthWarning: 3,
-                                   minLengthError: 2,
-                                   maxLengthWarning: 40,
-                                   maxLengthError: 60)
+                                                 minLengthError: 2,
+                                                 maxLengthWarning: 40,
+                                                 maxLengthError: 60)
 
     public init() {}
 
@@ -22,10 +22,10 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
         identifier: "variable_name",
         name: "Variable Name",
         description: "Variable names should only contain alphanumeric characters and " +
-          "start with a lowercase character or should only contain capital letters. " +
-          "In an exception to the above, variable names may start with a capital letter " +
-          "when they are declared static and immutable. Variable names should not be too " +
-          "long or too short.",
+            "start with a lowercase character or should only contain capital letters. " +
+            "In an exception to the above, variable names may start with a capital letter " +
+            "when they are declared static and immutable. Variable names should not be too " +
+            "long or too short.",
         nonTriggeringExamples: [
             "let myLet = 0",
             "var myVar = 0",
@@ -75,7 +75,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric " +
-                            "characters: '\(name)'")]
+                        "characters: '\(name)'")]
             } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
@@ -86,7 +86,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should be between \(configuration.minLengthThreshold) " +
-                            "and \(configuration.maxLengthThreshold) characters long: '\(name)'")]
+                        "and \(configuration.maxLengthThreshold) characters long: '\(name)'")]
             }
 
             return []

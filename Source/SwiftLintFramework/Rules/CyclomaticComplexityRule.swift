@@ -80,8 +80,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             }
 
             return complexity +
-                    Int(complexityStatements.contains(kind)) +
-                    measureComplexity(file, dictionary: subDict)
+                Int(complexityStatements.contains(kind)) +
+                measureComplexity(file, dictionary: subDict)
         }
 
         if hasSwitchStatements {

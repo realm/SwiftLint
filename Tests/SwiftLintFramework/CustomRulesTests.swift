@@ -54,9 +54,9 @@ class CustomRulesTests: XCTestCase {
         customRules.configuration = customRuleConfiguration
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validateFile(file),
-            [StyleViolation(ruleDescription: regexConfig.description,
-                severity: .Warning,
-                location: Location(file: nil, line: 2, character: 6),
-                reason: regexConfig.message)])
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                        severity: .Warning,
+                        location: Location(file: nil, line: 2, character: 6),
+                        reason: regexConfig.message)])
     }
 }

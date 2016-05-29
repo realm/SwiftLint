@@ -27,8 +27,8 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
     public var description: RuleDescription {
         return RuleDescription(identifier: identifier,
-            name: name ?? identifier,
-            description: "")
+                               name: name ?? identifier,
+                               description: "")
     }
 
     public init(identifier: String) {
@@ -38,7 +38,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public mutating func applyConfiguration(configuration: AnyObject) throws {
         guard let configurationDict = configuration as? [String: AnyObject],
             regexString = configurationDict["regex"] as? String else {
-            throw ConfigurationError.UnknownConfiguration
+                throw ConfigurationError.UnknownConfiguration
         }
 
         regex = try NSRegularExpression.cached(pattern: regexString)

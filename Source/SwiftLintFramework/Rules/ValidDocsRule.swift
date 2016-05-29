@@ -40,7 +40,7 @@ func superfluousOrMissingThrowsDocumentation(declaration: String, comment: Strin
         return false == !comment.lowercaseString.containsString("- throws:")
     }
     return outsideBracesMatch.containsString(" throws ") ==
-            !comment.lowercaseString.containsString("- throws:")
+        !comment.lowercaseString.containsString("- throws:")
 }
 
 func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {

@@ -27,9 +27,9 @@ class ConfigurationTests: XCTestCase {
 
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
-            "initializing Configuration with empty Dictionary should succeed")
+                  "initializing Configuration with empty Dictionary should succeed")
         XCTAssert(Configuration(dict: ["a": 1, "b": 2]) != nil,
-            "initializing Configuration with valid Dictionary should succeed")
+                  "initializing Configuration with valid Dictionary should succeed")
     }
 
     func testEmptyConfiguration() {
@@ -77,8 +77,8 @@ class ConfigurationTests: XCTestCase {
     func testDisabledRules() {
         let disabledConfig = Configuration(dict: ["disabled_rules":  ["nesting", "todo"]])!
         XCTAssertEqual(disabledConfig.disabledRules,
-            ["nesting", "todo"],
-            "initializing Configuration with valid rules in Dictionary should succeed")
+                       ["nesting", "todo"],
+                       "initializing Configuration with valid rules in Dictionary should succeed")
         let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) })
         let configuredIdentifiers = disabledConfig.rules.map {
@@ -98,8 +98,8 @@ class ConfigurationTests: XCTestCase {
         let configuration = Configuration(dict: ["disabled_rules": [validRule, bogusRule]])!
 
         XCTAssertEqual(configuration.disabledRules,
-            [validRule],
-            "initializing Configuration with valid rules in YAML string should succeed")
+                       [validRule],
+                       "initializing Configuration with valid rules in YAML string should succeed")
         let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ !([validRule] + optInRules).contains($0) })
         let configuredIdentifiers = configuration.rules.map {
@@ -112,7 +112,8 @@ class ConfigurationTests: XCTestCase {
         private override func filesToLintAtPath(path: String) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
-                "directory/excluded/Excluded.swift", "directory/ExcludedFile.swift"]
+                                      "directory/excluded/Excluded.swift",
+                                      "directory/ExcludedFile.swift"]
             case "directory/excluded" : return ["directory/excluded/Excluded.swift"]
             case "directory/ExcludedFile.swift" : return ["directory/ExcludedFile.swift"]
             default: break
@@ -124,7 +125,8 @@ class ConfigurationTests: XCTestCase {
 
     func testExcludedPaths() {
         let configuration = Configuration(included: ["directory"],
-            excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+                                          excluded: ["directory/excluded",
+                                                     "directory/ExcludedFile.swift"])!
         let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }

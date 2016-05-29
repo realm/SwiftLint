@@ -14,7 +14,7 @@ import SourceKittenFramework
 class SourceKitCrashTests: XCTestCase {
 
     func testAssertHandlerIsNotCalledOnNormalFile() {
-        let file = File(contents: "A file didn't crash SourceKitService.")
+        let file = File(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false
 
         var assertHandlerCalled = false
@@ -22,21 +22,21 @@ class SourceKitCrashTests: XCTestCase {
 
         _ = file.structure
         XCTAssertFalse(assertHandlerCalled,
-            "Expects assert handler was not called on accessing File.structure.")
+                       "Expects assert handler was not called on accessing File.structure")
 
         assertHandlerCalled = false
         _ = file.syntaxMap
         XCTAssertFalse(assertHandlerCalled,
-            "Expects assert handler was not called on accessing File.syntaxMap.")
+                       "Expects assert handler was not called on accessing File.syntaxMap")
 
         assertHandlerCalled = false
         _ = file.syntaxKindsByLines
         XCTAssertFalse(assertHandlerCalled,
-            "Expects assert handler was not called on accessing File.syntaxKindsByLines.")
+                       "Expects assert handler was not called on accessing File.syntaxKindsByLines")
     }
 
     func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
-        let file = File(contents: "A file crashed SourceKitService.")
+        let file = File(contents: "A file crashed SourceKitService")
         file.sourcekitdFailed = true
 
         var assertHandlerCalled = false
@@ -44,17 +44,17 @@ class SourceKitCrashTests: XCTestCase {
 
         _ = file.structure
         XCTAssertTrue(assertHandlerCalled,
-            "Expects assert handler was called on accessing File.structure.")
+                      "Expects assert handler was called on accessing File.structure")
 
         assertHandlerCalled = false
         _ = file.syntaxMap
         XCTAssertTrue(assertHandlerCalled,
-            "Expects assert handler was called on accessing File.syntaxMap.")
+                      "Expects assert handler was called on accessing File.syntaxMap")
 
         assertHandlerCalled = false
         _ = file.syntaxKindsByLines
         XCTAssertTrue(assertHandlerCalled,
-            "Expects assert handler was called on accessing File.syntaxKindsByLines.")
+                      "Expects assert handler was called on accessing File.syntaxKindsByLines")
     }
 
     func testRulesWithFileThatCrashedSourceKitService() {
@@ -62,7 +62,7 @@ class SourceKitCrashTests: XCTestCase {
         let file = File(path: #file)!
         file.sourcekitdFailed = true
         file.assertHandler = {
-            XCTFail("If this called, rule's SourceKitFreeRule is not properly configured.")
+            XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
         }
         let allRuleIdentifiers = Array(masterRuleList.list.keys)
         // swiftlint:disable:next force_unwrapping

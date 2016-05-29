@@ -31,8 +31,8 @@ extension SyntaxKind {
 
     static func allKinds() -> [SyntaxKind] {
         return [.Argument, .AttributeBuiltin, .AttributeID, .BuildconfigID, .BuildconfigKeyword,
-            .Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField, .Identifier,
-            .Keyword, .Number, .ObjectLiteral, .Parameter, .Placeholder, .String,
-            .StringInterpolationAnchor, .Typeidentifier]
+                .Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField, .Identifier,
+                .Keyword, .Number, .ObjectLiteral, .Parameter, .Placeholder, .String,
+                .StringInterpolationAnchor, .Typeidentifier]
     }
 }

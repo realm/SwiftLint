@@ -161,7 +161,7 @@ public struct Configuration: Equatable {
         }
         do {
             let yamlContents = try NSString(contentsOfFile: fullPath,
-                encoding: NSUTF8StringEncoding) as String
+                                            encoding: NSUTF8StringEncoding) as String
             let dict = try YamlParser.parse(yamlContents)
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")

@@ -64,7 +64,7 @@ struct RulesOptions: OptionsType {
         return create
             <*> mode <| configOption
             <*> mode <| Argument(defaultValue: "",
-                usage: "the rule identifier to display description for")
+                                 usage: "the rule identifier to display description for")
     }
 }
 

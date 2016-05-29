@@ -18,7 +18,7 @@ let allRuleIdentifiers = Array(masterRuleList.list.keys)
 func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
     File.clearCaches()
     let stringStrippingMarkers = string.stringByReplacingOccurrencesOfString(violationMarker,
-        withString: "")
+                                                                             withString: "")
     let file = File(contents: stringStrippingMarkers)
     return Linter(file: file, configuration: config).styleViolations
 }

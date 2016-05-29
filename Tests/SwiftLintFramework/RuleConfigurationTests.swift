@@ -17,14 +17,14 @@ class RuleConfigurationsTests: XCTestCase {
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id"]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
-                                    minLengthError: 0,
-                                    maxLengthWarning: 0,
-                                    maxLengthError: 0)
+                                           minLengthError: 0,
+                                           maxLengthWarning: 0,
+                                           maxLengthError: 0)
         let comp = NameConfiguration(minLengthWarning: 17,
-                              minLengthError: 7,
-                              maxLengthWarning: 170,
-                              maxLengthError: 700,
-                              excluded: ["id"])
+                                     minLengthError: 7,
+                                     maxLengthWarning: 170,
+                                     maxLengthError: 700,
+                                     excluded: ["id"])
         do {
             try nameConfig.applyConfiguration(config)
             XCTAssertEqual(nameConfig, comp)
@@ -36,9 +36,9 @@ class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationThrowsOnBadConfig() {
         let config = 17
         var nameConfig = NameConfiguration(minLengthWarning: 0,
-                                    minLengthError: 0,
-                                    maxLengthWarning: 0,
-                                    maxLengthError: 0)
+                                           minLengthError: 0,
+                                           maxLengthWarning: 0,
+                                           maxLengthError: 0)
         checkError(ConfigurationError.UnknownConfiguration) {
             try nameConfig.applyConfiguration(config)
         }
@@ -46,10 +46,10 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testNameConfigurationMinLengthThreshold() {
         var nameConfig = NameConfiguration(minLengthWarning: 7,
-                                    minLengthError: 17,
-                                    maxLengthWarning: 0,
-                                    maxLengthError: 0,
-                                    excluded: [])
+                                           minLengthError: 17,
+                                           maxLengthWarning: 0,
+                                           maxLengthError: 0,
+                                           excluded: [])
         XCTAssertEqual(nameConfig.minLengthThreshold, 17)
 
         nameConfig.minLength.error = nil
@@ -58,10 +58,10 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testNameConfigurationMaxLengthThreshold() {
         var nameConfig = NameConfiguration(minLengthWarning: 0,
-                                    minLengthError: 0,
-                                    maxLengthWarning: 17,
-                                    maxLengthError: 7,
-                                    excluded: [])
+                                           minLengthError: 0,
+                                           maxLengthWarning: 17,
+                                           maxLengthError: 7,
+                                           excluded: [])
         XCTAssertEqual(nameConfig.maxLengthThreshold, 7)
 
         nameConfig.maxLength.error = nil

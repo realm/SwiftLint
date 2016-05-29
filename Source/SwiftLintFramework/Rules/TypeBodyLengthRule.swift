@@ -36,8 +36,8 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validateFile(file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                             kind: SwiftDeclarationKind,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Enum]
         if !typeKinds.contains(kind) {
             return []
@@ -51,14 +51,15 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             if let startLine = startLine?.line, endLine = endLine?.line {
                 for parameter in configuration.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                                                                startLine, endLine, parameter.value)
+                        startLine, endLine, parameter.value
+                    )
                     if exceeds {
                         return [StyleViolation(ruleDescription: self.dynamicType.description,
                             severity: parameter.severity,
                             location: Location(file: file, byteOffset: offset),
                             reason: "Type body should span \(parameter.value) lines or less " +
-                            "excluding comments and whitespace: currently spans \(lineCount) " +
-                            "lines")]
+                                "excluding comments and whitespace: currently spans \(lineCount) " +
+                                "lines")]
                     }
                 }
             }

@@ -40,7 +40,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
                     reason: "Line should be \(configuration.warning) characters or less: " +
-                    "currently \(length) characters")
+                        "currently \(length) characters")
             }
             return nil
         }

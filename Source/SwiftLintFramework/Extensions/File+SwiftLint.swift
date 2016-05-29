@@ -69,7 +69,7 @@ extension File {
     }
 
     internal func matchPattern(pattern: String,
-                             withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
+                               withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter { _, kindsInRange in
             return kindsInRange.count == syntaxKinds.count &&
                 zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).isEmpty
@@ -134,26 +134,26 @@ extension File {
 
     //Added by S2dent
     /**
-    This function returns only matches that are not contained in a syntax kind
-    specified.
+     This function returns only matches that are not contained in a syntax kind
+     specified.
 
-    - parameter pattern: regex pattern to be matched inside file.
-    - parameter excludingSyntaxKinds: syntax kinds the matches to be filtered
-    when inside them.
+     - parameter pattern: regex pattern to be matched inside file.
+     - parameter excludingSyntaxKinds: syntax kinds the matches to be filtered
+     when inside them.
 
-    - returns: An array of [NSRange] objects consisting of regex matches inside
-    file contents.
-    */
+     - returns: An array of [NSRange] objects consisting of regex matches inside
+     file contents.
+     */
     internal func matchPattern(pattern: String,
-                             excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
+                               excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
         return matchPattern(pattern).filter {
             $0.1.filter(syntaxKinds.contains).isEmpty
         }.map { $0.0 }
     }
 
     internal func matchPattern(pattern: String,
-                             excludingSyntaxKinds: [SyntaxKind],
-                             excludingPattern: String) -> [NSRange] {
+                               excludingSyntaxKinds: [SyntaxKind],
+                               excludingPattern: String) -> [NSRange] {
         let contents = self.contents as NSString
         let range = NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
@@ -163,12 +163,12 @@ extension File {
         let exclusionRanges = regex(excludingPattern).matchesInString(self.contents,
                                                                       options: [],
                                                                       range: range)
-                                                                            .ranges()
+            .ranges()
         return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 
     internal func validateVariableName(dictionary: [String: SourceKitRepresentable],
-                                     kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
+                                       kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard let name = dictionary["key.name"] as? String,
             offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) where
             SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
@@ -206,8 +206,8 @@ extension File {
         lines = contents.lines()
     }
 
-    internal func ruleEnabledViolatingRanges(violatingRanges: [NSRange], forRule rule: Rule)
-        -> [NSRange] {
+    internal func ruleEnabledViolatingRanges(violatingRanges: [NSRange],
+                                             forRule rule: Rule) -> [NSRange] {
         let fileRegions = regions()
         let violatingRanges = violatingRanges.filter { range in
             let region = fileRegions.filter {

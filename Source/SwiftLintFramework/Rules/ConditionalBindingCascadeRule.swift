@@ -52,7 +52,7 @@ public struct ConditionalBindingCascadeRule: ASTRule, ConfigurationProviderRule 
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard self.dynamicType.kinds.contains(kind),
             let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
-            return []
+                return []
         }
         let conditionByteRanges = elements
             .filter { $0.kind == "source.lang.swift.structure.elem.condition_expr" }

@@ -90,7 +90,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         for violatingRange in violatingRanges.reverse() {
             let (contents, adjustedRange) =
-            correctContents(correctedContents, violatingRange: violatingRange)
+                correctContents(correctedContents, violatingRange: violatingRange)
 
             correctedContents = contents
             if let adjustedRange = adjustedRange {

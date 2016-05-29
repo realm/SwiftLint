@@ -52,8 +52,7 @@ public struct Command {
         }
         let actionAndModifierScanner = NSScanner(string: actionAndModifierString)
         var actionNSString: NSString? = nil
-        actionAndModifierScanner.scanUpToString(":",
-            intoString: &actionNSString)
+        actionAndModifierScanner.scanUpToString(":", intoString: &actionNSString)
         guard let actionString = actionNSString as String?,
             action = CommandAction(rawValue: actionString),
             lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {

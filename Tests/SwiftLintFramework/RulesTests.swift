@@ -81,7 +81,7 @@ class RulesTests: XCTestCase {
 
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false,
-            stringDoesntViolate: false)
+                   stringDoesntViolate: false)
     }
 
     func testMissingDocs() {
@@ -114,7 +114,7 @@ class RulesTests: XCTestCase {
 
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
-            stringDoesntViolate: false)
+                   stringDoesntViolate: false)
     }
 
     func testTrailingSemicolon() {

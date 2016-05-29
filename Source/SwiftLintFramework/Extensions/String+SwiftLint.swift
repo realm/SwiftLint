@@ -31,7 +31,7 @@ extension String {
     }
 
     internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
-                                                        String {
+                                                          String {
         let privateACL = "source.lang.swift.accessibility.private"
         if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
             return self[startIndex.successor()..<endIndex]

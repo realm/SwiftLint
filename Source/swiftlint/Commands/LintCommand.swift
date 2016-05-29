@@ -32,7 +32,7 @@ struct LintCommand: CommandType {
         var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
         let configuration = Configuration(commandLinePath: options.configurationFile,
-            rootPath: options.path, quiet: options.quiet)
+                                          rootPath: options.path, quiet: options.quiet)
         let reporter = reporterFromString(
             options.reporter.isEmpty ? configuration.reporter : options.reporter
         )
@@ -105,20 +105,17 @@ struct LintOptions: OptionsType {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "lint")
-            <*> mode <| Option(key: "use-stdin",
-                defaultValue: false,
-                usage: "lint standard input")
+            <*> mode <| Option(key: "use-stdin", defaultValue: false,
+                               usage: "lint standard input")
             <*> mode <| configOption
-            <*> mode <| Option(key: "strict",
-                defaultValue: false,
-                usage: "fail on warnings")
+            <*> mode <| Option(key: "strict", defaultValue: false,
+                               usage: "fail on warnings")
             <*> mode <| useScriptInputFilesOption
-            <*> mode <| Option(key: "benchmark",
-                defaultValue: false,
-                usage: "save benchmarks to benchmark_files.txt and benchmark_rules.txt")
-            <*> mode <| Option(key: "reporter",
-                defaultValue: "",
-                usage: "the reporter used to log errors and warnings")
+            <*> mode <| Option(key: "benchmark", defaultValue: false,
+                               usage: "save benchmarks to benchmark_files.txt " +
+                                      "and benchmark_rules.txt")
+            <*> mode <| Option(key: "reporter", defaultValue: "",
+                               usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
     }
 }

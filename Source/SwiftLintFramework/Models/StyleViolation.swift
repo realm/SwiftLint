@@ -16,11 +16,11 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
     }
 
     public init(ruleDescription: RuleDescription, severity: ViolationSeverity = .Warning,
-        location: Location, reason: String? = nil) {
-            self.ruleDescription = ruleDescription
-            self.severity = severity
-            self.location = location
-            self.reason = reason ?? ruleDescription.description
+                location: Location, reason: String? = nil) {
+        self.ruleDescription = ruleDescription
+        self.severity = severity
+        self.location = location
+        self.reason = reason ?? ruleDescription.description
     }
 }
 

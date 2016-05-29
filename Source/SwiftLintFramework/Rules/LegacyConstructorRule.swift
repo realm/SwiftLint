@@ -50,7 +50,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
 
     public func validateFile(file: File) -> [StyleViolation] {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
-            "NSMakeRange", "UIEdgeInsetsMake"]
+                            "NSMakeRange", "UIEdgeInsetsMake"]
 
         let pattern = "\\b(" + constructors.joinWithSeparator("|") + ")\\b"
 
@@ -79,19 +79,17 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         var corrections = [Correction]()
         var contents = file.contents
 
-        let matches = patterns.map {
-                (pattern, template) -> [(NSRange, String, String)] in
-                let matches = file.matchPattern(pattern)
-                    .filter { $0.1.first == .Identifier }
-                    .map { ($0.0, pattern, template) }
-                return matches
-            }
-            .flatten()
-            .sort { $0.0.location > $1.0.location } // reversed
+        let matches = patterns.map({ pattern, template in
+            file.matchPattern(pattern)
+                .filter { $0.1.first == .Identifier }
+                .map { ($0.0, pattern, template) }
+        }).flatten().sort { $0.0.location > $1.0.location } // reversed
 
         for (range, pattern, template) in matches {
             contents = regex(pattern).stringByReplacingMatchesInString(contents,
-                options: [], range: range, withTemplate: template)
+                                                                       options: [],
+                                                                       range: range,
+                                                                       withTemplate: template)
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }

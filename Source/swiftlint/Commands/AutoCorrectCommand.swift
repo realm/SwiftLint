@@ -26,6 +26,13 @@ struct AutoCorrectCommand: CommandType {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
                 queuedPrint(correctionLogs.joinWithSeparator("\n"))
             }
+            if options.format {
+                let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
+                    useTabs: false,
+                    indentWidth: 4)
+                _ = try? formattedContents.dataUsingEncoding(NSUTF8StringEncoding)?
+                    .writeToFile(linter.file.path!, options: [])
+            }
         }.flatMap { files in
             if !options.quiet {
                 queuedPrintError("Done correcting \(files.count) files!")
@@ -40,12 +47,13 @@ struct AutoCorrectOptions: OptionsType {
     let configurationFile: String
     let useScriptInputFiles: Bool
     let quiet: Bool
+    let format: Bool
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (configurationFile: String) -> (useScriptInputFiles: Bool) -> (quiet: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet)
-        }}}
+    static func create(path: String) -> (configurationFile: String) -> (useScriptInputFiles: Bool) -> (quiet: Bool) -> (format: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { format in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format)
+        }}}}
     }
 
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -55,5 +63,8 @@ struct AutoCorrectOptions: OptionsType {
             <*> mode <| configOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")
+            <*> mode <| Option(key: "format",
+                               defaultValue: false,
+                               usage: "should reformat the Swift files")
     }
 }

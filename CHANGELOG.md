@@ -12,11 +12,17 @@
 * Improve error messages for invalid configuration files.  
   [Brian Hardy](https://github.com/lyricsboy)
 
+* Add `--format` option to `autocorrect` command which re-indents Swift files
+  much like pasting into Xcode would. This option isn't currently configurable,
+  but that can change if users request it.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Fix false positive in conditional binding cascade violation.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#642](https://github.com/realm/SwiftLint/issues/642)
+
 * Another conditional binding fix, this time for enum that has two parameters
   or an if statement with two case tests.  
   [Andrew Rahn](https://github.com/paddlefish)

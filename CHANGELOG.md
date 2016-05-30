@@ -7,6 +7,12 @@
   [Jorge Bernal](https://github.com/koke)
   [#654](https://github.com/realm/SwiftLint/issues/654)
 
+* Embedding frameworks depended by `swiftlint` is moved from
+  SwiftLintFramework target to swiftlint target in Xcode project.
+  `SwiftLintFramework.framework` built by SwiftLintFramework target does
+  not contain Swift libraries and those frameworks any more.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 ##### Enhancements
 
 * Improve error messages for invalid configuration files.  

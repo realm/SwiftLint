@@ -31,6 +31,10 @@ class RulesTests: XCTestCase {
         verifyRule(ControlStatementRule.description)
     }
 
+    func testCuddledElse() {
+        verifyRule(CuddledElseRule.description)
+    }
+
     func testCyclomaticComplexity() {
         verifyRule(CyclomaticComplexityRule.description)
     }

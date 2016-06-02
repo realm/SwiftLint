@@ -2,7 +2,10 @@ TEMPORARY_FOLDER?=/tmp/SwiftLint.dst
 PREFIX?=/usr/local
 BUILD_TOOL?=xcodebuild
 
-XCODEFLAGS=-xcconfig settings-for-all-projects.xcconfig -workspace 'SwiftLint.xcworkspace' -scheme 'swiftlint' DSTROOT=$(TEMPORARY_FOLDER)
+XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
+	-scheme 'swiftlint' \
+	DSTROOT=$(TEMPORARY_FOLDER) \
+	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework

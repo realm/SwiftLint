@@ -29,7 +29,6 @@
 		3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */; };
 		3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */; };
 		3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; };
-		3BBF2F9E1C640A3B006CD775 /* SwiftyTextTable.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */; };
 		3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */; };
 		3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */; };
@@ -39,9 +38,15 @@
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
+		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
 		6CC4259B1C77046200AEA885 /* SyntaxMap+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */; };
-		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
+		6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6CCFCF301CFEF742003239EB /* Yaml.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
 		B58AEED61C492C7B00E901FD /* ForceUnwrappingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */; };
@@ -77,7 +82,6 @@
 		E86396C91BADB2B9002C9E88 /* JSONReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C81BADB2B9002C9E88 /* JSONReporter.swift */; };
 		E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396CA1BADB519002C9E88 /* CSVReporter.swift */; };
 		E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; };
-		E876BFBF1B0782AA00114ED5 /* SourceKittenFramework.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */; };
 		E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */; };
 		E88198421BEA929F00333A11 /* NestingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA951B099CF200A66CB0 /* NestingRule.swift */; };
@@ -107,15 +111,11 @@
 		E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA781B098D4400A66CB0 /* RuleParameter.swift */; };
 		E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */; };
 		E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; };
-		E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8B067811C13E49600E9E13F /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
 		E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
 		E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
 		E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
-		E8BA7E141B07A400003E02D0 /* Result.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E8BA7E151B07A400003E02D0 /* Commandant.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
-		E8C0DFCE1AD349E5007EE3D4 /* SWXMLHash.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
 /* End PBXBuildFile section */
 
@@ -137,20 +137,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		D039935519E9A9F500D13E71 /* Copy Frameworks */ = {
+		6CCFCF291CFEF6D3003239EB /* Embed Frameworks into SwiftLintFramework.framework */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "";
+			dstPath = SwiftLintFramework.framework/Versions/Current/Frameworks;
 			dstSubfolderSpec = 10;
 			files = (
-				3BBF2F9E1C640A3B006CD775 /* SwiftyTextTable.framework in Copy Frameworks */,
-				E89376AE1B8A70400025708E /* Yaml.framework in Copy Frameworks */,
-				E8BA7E141B07A400003E02D0 /* Result.framework in Copy Frameworks */,
-				E8BA7E151B07A400003E02D0 /* Commandant.framework in Copy Frameworks */,
-				E876BFBF1B0782AA00114ED5 /* SourceKittenFramework.framework in Copy Frameworks */,
-				E8C0DFCE1AD349E5007EE3D4 /* SWXMLHash.framework in Copy Frameworks */,
+				6CCFCF301CFEF742003239EB /* Yaml.framework in Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */,
 			);
-			name = "Copy Frameworks";
+			name = "Embed Frameworks into SwiftLintFramework.framework";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D0AAAB5319FB0960007B24B3 /* Embed Frameworks */ = {
@@ -203,9 +203,9 @@
 		692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpeningBraceRule.swift; sourceTree = "<group>"; };
 		692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementPositionRule.swift; sourceTree = "<group>"; };
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
+		6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceKitCrashTests.swift; sourceTree = "<group>"; };
 		6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Structure+SwiftLint.swift"; sourceTree = "<group>"; };
 		6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxMap+SwiftLint.swift"; sourceTree = "<group>"; };
-		6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceKitCrashTests.swift; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
 		B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUnwrappingRule.swift; sourceTree = "<group>"; };
@@ -681,7 +681,6 @@
 				D0D1216819E87B05005E4BAA /* Sources */,
 				D0D1216919E87B05005E4BAA /* Frameworks */,
 				D0D1216A19E87B05005E4BAA /* Headers */,
-				D039935519E9A9F500D13E71 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -719,6 +718,8 @@
 				D0E7B62F19E9C64500EDBA4D /* Frameworks */,
 				D0E7B65719E9C7C700EDBA4D /* Extract CLI Tool */,
 				D0AAAB5319FB0960007B24B3 /* Embed Frameworks */,
+				6CCFCF291CFEF6D3003239EB /* Embed Frameworks into SwiftLintFramework.framework */,
+				6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */,
 				E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */,
 			);
 			buildRules = (
@@ -785,6 +786,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Swift libraries into SwiftLintFramework.framework";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$TARGET_BUILD_DIR\"\nSWIFTLINTFRAMEWORK_BUNDLE=\"$FRAMEWORKS_FOLDER_PATH/SwiftLintFramework.framework\"\n\nxcrun swift-stdlib-tool --copy --verbose --Xcodesign --timestamp=none \\\n--scan-executable \"$EXECUTABLE_PATH\" \\\n--scan-folder \"$FRAMEWORKS_FOLDER_PATH\" \\\n--platform macosx --destination \"$SWIFTLINTFRAMEWORK_BUNDLE/Versions/Current/Frameworks\" \\\n--strip-bitcode\n";
+			showEnvVarsInLog = 0;
+		};
 		C2265FAB1A4B86AC00158358 /* Check Xcode Version */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -992,7 +1008,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
@@ -1016,7 +1031,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
@@ -1070,7 +1084,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
@@ -1114,7 +1127,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";

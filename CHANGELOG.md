@@ -7,10 +7,11 @@
   [Jorge Bernal](https://github.com/koke)
   [#654](https://github.com/realm/SwiftLint/issues/654)
 
-* Embedding frameworks depended by `swiftlint` is moved from
-  SwiftLintFramework target to swiftlint target in Xcode project.
-  `SwiftLintFramework.framework` built by SwiftLintFramework target does
-  not contain Swift libraries and those frameworks any more.  
+* Embedding frameworks needed by `swiftlint` was moved from
+  SwiftLintFramework Xcode target to the swiftlint target.
+  The `SwiftLintFramework.framework` product built by the
+  SwiftLintFramework target no longer contains unnecessary frameworks or
+  multiple copies of the Swift libraries.  
   [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements

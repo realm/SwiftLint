@@ -282,7 +282,7 @@ MIT licensed.
 
 ## About
 
-<img src="assets/realm.png" width="46" />
+![realm](assets/realm.png)
 
 SwiftLint is maintained and funded by Realm Inc. The names and logos for
 Realm are trademarks of Realm Inc.

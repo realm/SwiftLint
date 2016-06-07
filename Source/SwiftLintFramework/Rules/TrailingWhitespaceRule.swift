@@ -9,7 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
+public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
+                                      SourceKitFreeRule {
 
     public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
 

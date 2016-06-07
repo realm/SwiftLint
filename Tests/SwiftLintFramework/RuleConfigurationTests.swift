@@ -129,4 +129,56 @@ class RuleConfigurationsTests: XCTestCase {
                                                                 name: "name",
                                                                 description: ""))
     }
+
+    func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
+        let config = "unknown"
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        checkError(ConfigurationError.UnknownConfiguration) {
+            try configuration.applyConfiguration(config)
+        }
+    }
+
+    func testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines() {
+        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        XCTAssertFalse(configuration1.ignoresEmptyLines)
+
+        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        XCTAssertTrue(configuration2.ignoresEmptyLines)
+    }
+
+    func testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines() {
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        do {
+            let config1 = ["ignores_empty_lines": true]
+            try configuration.applyConfiguration(config1)
+            XCTAssertTrue(configuration.ignoresEmptyLines)
+
+            let config2 = ["ignores_empty_lines": false]
+            try configuration.applyConfiguration(config2)
+            XCTAssertFalse(configuration.ignoresEmptyLines)
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testTrailingWhitespaceConfigurationCompares() {
+        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        XCTAssertFalse(configuration1 == configuration2)
+
+        let configuration3 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        XCTAssertTrue(configuration2 == configuration3)
+    }
+
+    func testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration() {
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        configuration.severityConfiguration.severity = .Warning
+
+        do {
+            try configuration.applyConfiguration(["severity": "error"])
+            XCTAssert(configuration.severityConfiguration.severity == .Error)
+        } catch {
+            XCTFail()
+        }
+    }
 }

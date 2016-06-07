@@ -123,6 +123,19 @@ class RulesTests: XCTestCase {
 
     func testTrailingWhitespace() {
         verifyRule(TrailingWhitespaceRule.description, commentDoesntViolate: false)
+
+        // Perform additional tests with the ignores_empty_lines setting enabled.
+        // The set of non-triggering examples is extended by a whitespace-indented empty line
+        let baseDescription = TrailingWhitespaceRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                                name: baseDescription.name,
+                                         description: baseDescription.description,
+                               nonTriggeringExamples: nonTriggeringExamples,
+                                  triggeringExamples: baseDescription.triggeringExamples,
+                                         corrections: baseDescription.corrections)
+        verifyRule(description, ruleConfiguration: ["ignores_empty_lines": true],
+                   commentDoesntViolate: false)
     }
 
     func testTypeBodyLength() {

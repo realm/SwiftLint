@@ -81,10 +81,26 @@ extension String {
     }
 }
 
+func makeConfig(ruleConfiguration: AnyObject?, _ identifier: String) -> Configuration? {
+    if let ruleConfiguration = ruleConfiguration, ruleType = masterRuleList.list[identifier] {
+        // The caller has provided a custom configuration for the rule under test
+        return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
+            return Configuration(configuredRules: [configuredRule])
+        }
+    }
+    return Configuration(whitelistRules: [identifier])
+}
+
 extension XCTestCase {
-    func verifyRule(ruleDescription: RuleDescription, commentDoesntViolate: Bool = true,
+    func verifyRule(ruleDescription: RuleDescription,
+                    ruleConfiguration: AnyObject? = nil,
+                    commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true) {
-        let config = Configuration(whitelistRules: [ruleDescription.identifier])!
+        guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
+            XCTFail()
+            return
+        }
+
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
 

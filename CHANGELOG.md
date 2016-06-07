@@ -24,6 +24,12 @@
   but that can change if users request it.  
   [JP Simard](https://github.com/jpsim)
 
+* Added the user-configurable option `ignores_empty_lines` to the
+  `trailing_whitespace` rule. It can be used to control whether the
+  `TrailingWhitespaceRule` should report and correct whitespace-indented empty
+  lines. Defaults to `false`. Added unit tests.  
+  [Reimar Twelker](https://github.com/raginmari)
+
 ##### Bug Fixes
 
 * Fix false positive in conditional binding cascade violation.  

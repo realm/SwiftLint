@@ -26,17 +26,11 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let filteredLines: [Line]
-        if configuration.ignoresEmptyLines {
-            filteredLines = file.lines.filter {
-                // Ignores lines that contain nothing but whitespace = empty lines
-                $0.content.hasTrailingWhitespace() && !$0.content.stringByTrimmingCharactersInSet(
-                    NSCharacterSet.whitespaceCharacterSet()).isEmpty
-            }
-        } else {
-            filteredLines = file.lines.filter {
-                $0.content.hasTrailingWhitespace()
-            }
+        let filteredLines = file.lines.filter {
+            $0.content.hasTrailingWhitespace() &&
+                (!configuration.ignoresEmptyLines ||
+                    // If configured, ignore lines that contain nothing but whitespace (empty lines)
+                    !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty)
         }
 
         return filteredLines.map {

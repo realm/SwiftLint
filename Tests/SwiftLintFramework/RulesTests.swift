@@ -31,8 +31,9 @@ class RulesTests: XCTestCase {
         verifyRule(ControlStatementRule.description)
     }
 
-    func testCuddledElse() {
-        verifyRule(CuddledElseRule.description)
+    func testUncuddledElse() {
+        let configuration = ["statementMode": "uncuddledelse"]
+        verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
     func testCyclomaticComplexity() {

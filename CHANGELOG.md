@@ -1,4 +1,4 @@
-## Master
+## 0.11.0: Laundromat Format
 
 ##### Breaking
 
@@ -16,13 +16,13 @@
 
 ##### Enhancements
 
-* Improve error messages for invalid configuration files.  
-  [Brian Hardy](https://github.com/lyricsboy)
-
 * Add `--format` option to `autocorrect` command which re-indents Swift files
   much like pasting into Xcode would. This option isn't currently configurable,
   but that can change if users request it.  
   [JP Simard](https://github.com/jpsim)
+
+* Improve error messages for invalid configuration files.  
+  [Brian Hardy](https://github.com/lyricsboy)
 
 * Added the user-configurable option `ignores_empty_lines` to the
   `trailing_whitespace` rule. It can be used to control whether the

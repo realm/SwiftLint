@@ -41,7 +41,8 @@
   [Andrew Rahn](https://github.com/paddlefish)
   [#667](https://github.com/realm/SwiftLint/issues/667)
 
-* Fix `CommaRule` ignored some violations when trailing comment exists.  
+* Fix regression in CommaRule ignoring violations when the comma is followed
+  by a comment.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#683](https://github.com/realm/SwiftLint/issues/683)
 

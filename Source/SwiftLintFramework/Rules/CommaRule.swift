@@ -113,7 +113,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                 }
 
                 // If the first range does not start with comma, it already violates this rule
-                // whatever is contained in the second range.
+                // no matter what is contained in the second range.
                 if !(contents as NSString).substringWithRange(firstRange).hasPrefix(",") {
                     return firstRange
                 }

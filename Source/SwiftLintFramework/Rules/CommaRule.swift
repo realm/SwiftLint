@@ -29,7 +29,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         triggeringExamples: [
             "func abc(a: String↓ ,b: String) { }",
             "abc(a: \"string\"↓,b: \"string\"",
-            "enum a { case a↓ ,b }"
+            "enum a { case a↓ ,b }",
+            "let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n",
         ],
         corrections: [
             "func abc(a: String,b: String) {}\n": "func abc(a: String, b: String) {}\n",
@@ -109,6 +110,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                 // If not empty, first captured range is comment or string
                 if !tokensInFirstRange.isEmpty {
                     return nil
+                }
+
+                // If the first range does not start with comma, it already violates this rule
+                // no matter what is contained in the second range.
+                if !(contents as NSString).substringWithRange(firstRange).hasPrefix(",") {
+                    return firstRange
                 }
 
                 // check second captured range

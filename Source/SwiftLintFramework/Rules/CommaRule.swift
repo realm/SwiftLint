@@ -112,6 +112,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     return nil
                 }
 
+                // If the first range does not start with comma, it already violates this rule
+                // whatever is contained in the second range.
+                if !(contents as NSString).substringWithRange(firstRange).hasPrefix(",") {
+                    return firstRange
+                }
+
                 // check second captured range
                 let secondRange = match.rangeAtIndex(2)
                 guard let matchByteSecondRange = contents

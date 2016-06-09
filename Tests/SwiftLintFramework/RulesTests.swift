@@ -31,11 +31,6 @@ class RulesTests: XCTestCase {
         verifyRule(ControlStatementRule.description)
     }
 
-    func testUncuddledElse() {
-        let configuration = ["statementMode": "uncuddledelse"]
-        verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
-    }
-
     func testCyclomaticComplexity() {
         verifyRule(CyclomaticComplexityRule.description)
     }
@@ -111,6 +106,11 @@ class RulesTests: XCTestCase {
 
     func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
+    }
+
+    func testStatementPositionUncuddled() {
+        let configuration = ["statement_mode": "uncuddled_else"]
+        verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
     func testTodo() {

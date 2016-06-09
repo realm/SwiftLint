@@ -9,7 +9,7 @@
 import Foundation
 
 public enum StatmentModeConfiguration: String {
-    case Standard, UncuddledElse
+    case Standard = "standard", UncuddledElse = "uncuddled_else"
 
     init(value: AnyObject) throws {
         guard let string = (value as? String)?.lowercaseString else {
@@ -28,7 +28,7 @@ public enum StatmentModeConfiguration: String {
 
 public struct StatmentConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return "(statement mode) \(statementMode.rawValue), " +
+        return "(statement_mode) \(statementMode.rawValue), " +
             "(severity) \(severity.consoleDescription)"
     }
 
@@ -45,7 +45,7 @@ public struct StatmentConfiguration: RuleConfiguration, Equatable {
         guard let configurationDict = configuration as? [String: AnyObject] else {
             throw ConfigurationError.UnknownConfiguration
         }
-        if let statementModeConfiguration = configurationDict["statementMode"] {
+        if let statementModeConfiguration = configurationDict["statement_mode"] {
             try statementMode = StatmentModeConfiguration(value: statementModeConfiguration)
         }
         if let severityConfiguration = configurationDict["severity"] {

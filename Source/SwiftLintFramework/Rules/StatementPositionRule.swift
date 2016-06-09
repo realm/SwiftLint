@@ -55,7 +55,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "\n\n  }\n  catch {",
             "\"}\nelse{\"",
             "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)",
         ],
         triggeringExamples: [
             "↓  }else if {",
@@ -63,7 +63,12 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓  }\ncatch {",
             "↓}\n\t  catch {"
         ],
-        corrections: [:]
+        corrections: [
+            "  }else if {":"  }\n  else if {",
+            "}\n  else {":"}\nelse {",
+            "  }\ncatch {":"  }\n  catch {",
+            "}\n\t  catch {":"}\ncatch {"
+        ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -153,19 +158,14 @@ extension StatementPositionRule {
     static let uncuddledRegularExpression = (try? NSRegularExpression(pattern: uncuddledPattern,
         options: [])) ?? NSRegularExpression()
 
-    func uncuddledViolationRangesInFile(file: File) -> [NSRange] {
-        let contents = file.contents
-        let range = NSRange(location: 0, length: contents.utf16.count)
-        let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegularExpression.matchesInString(contents,
-                                                                                 options: [],
-                                                                                 range: range)
-        let validMatches = matches.flatMap { match -> NSRange? in
+    static func uncuddledMatchValidator(contents: String) ->
+        ((NSTextCheckingResult) -> NSTextCheckingResult?) {
+        return { match in
             if match.numberOfRanges != 5 {
-                return match.range
+                return match
             }
             if match.rangeAtIndex(2).length == 0 {
-                return match.range
+                return match
             }
             let range1 = match.rangeAtIndex(1)
             let range2 = match.rangeAtIndex(3)
@@ -174,21 +174,78 @@ extension StatementPositionRule {
             if whitespace1 == whitespace2 {
                 return nil
             }
-            return match.range
+            return match
         }
-        let rangesWithValidTokens = validMatches.filter { range in
+    }
+
+    static func uncuddledMatchFilter(contents contents: String, syntaxMap: SyntaxMap) ->
+        ((NSTextCheckingResult) -> Bool) {
+        return { match in
+            let range = match.range
             guard let matchRange = contents.NSRangeToByteRange(start: range.location,
-                length: range.length) else {
-                    return false
+                                                               length: range.length) else {
+                                                                return false
             }
             let tokens = syntaxMap.tokensIn(matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
             return tokens == [.Keyword]
         }
+    }
 
-        return rangesWithValidTokens
+    func uncuddledViolationRangesInFile(file: File) -> [NSRange] {
+        let contents = file.contents
+        let range = NSRange(location: 0, length: contents.utf16.count)
+        let syntaxMap = file.syntaxMap
+        let matches = StatementPositionRule.uncuddledRegularExpression.matchesInString(contents,
+                                                                                 options: [],
+                                                                                 range: range)
+        let validator = self.dynamicType.uncuddledMatchValidator(contents)
+        let filterMatches = self.dynamicType.uncuddledMatchFilter(contents: contents,
+                                                                  syntaxMap: syntaxMap)
+
+        let validMatches = matches.flatMap(validator).filter(filterMatches).map({ $0.range })
+
+        return validMatches
     }
 
     func uncuddledCorrectFile(file: File) -> [Correction] {
-        return []
+        var contents = file.contents
+        let range = NSRange(location: 0, length: contents.utf16.count)
+        let syntaxMap = file.syntaxMap
+        let matches = StatementPositionRule.uncuddledRegularExpression.matchesInString(contents,
+                                                                                       options: [],
+                                                                                       range: range)
+        let validator = self.dynamicType.uncuddledMatchValidator(contents)
+        let filterRanges = self.dynamicType.uncuddledMatchFilter(contents: contents,
+                                                                 syntaxMap: syntaxMap)
+
+        let validMatches = matches.flatMap(validator).filter(filterRanges)
+
+        let description = self.dynamicType.uncuddledDescription
+        var corrections = [Correction]()
+
+        for match in validMatches.reverse() {
+            let range1 = match.rangeAtIndex(1)
+            let nsRange2 = match.rangeAtIndex(3)
+            let newlineRange = match.rangeAtIndex(2)
+            let start = contents.startIndex.advancedBy(nsRange2.location)
+            let end = start.advancedBy(nsRange2.length)
+            let range2 = start..<end
+            var whitespace = contents.substring(range1.location, length: range1.length)
+            let newLines: String
+            if newlineRange.location != NSNotFound {
+               newLines = contents.substring(newlineRange.location, length: newlineRange.length)
+            } else {
+                newLines = ""
+            }
+            if !whitespace.hasPrefix("\n") &&  newLines != "\n" {
+                whitespace.insert("\n", atIndex: whitespace.startIndex)
+            }
+            contents.replaceRange(range2, with: whitespace)
+            let location = Location(file: file, characterOffset: match.range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+
+        file.write(contents)
+        return corrections
     }
 }

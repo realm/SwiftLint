@@ -39,7 +39,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             "rect1.contains(rect2)",
             "rect.contains(point)",
-            "rect1.intersects(rect: rect2)",
+            "rect1.intersects(rect2)",
         ],
         triggeringExamples: [
             "↓CGRectGetWidth(rect)",
@@ -83,9 +83,9 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "↓CGRectIntersection( rect1 ,rect2)\n": "rect1.intersect(rect2)\n",
             "↓CGRectContainsRect( rect1,rect2     )\n": "rect1.contains(rect2)\n",
             "↓CGRectContainsPoint(rect  ,point)\n": "rect.contains(point)\n",
-            "↓CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect: rect2)\n",
+            "↓CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect2)\n",
             "↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )\n":
-            "rect1.intersects(rect: rect2)\nrect.width\n"
+            "rect1.intersects(rect2)\nrect.width\n"
         ]
     )
 
@@ -131,7 +131,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect($2)",
             "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
             "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
-            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects(rect: $2)"
+            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
 
         let description = self.dynamicType.description

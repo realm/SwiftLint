@@ -51,7 +51,7 @@ fi
 
 #### Format on Save Xcode Plugin
 
-To run `swift autocorrect` on save in Xcode, install the
+To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
 ### Atom

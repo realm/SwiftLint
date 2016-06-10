@@ -34,12 +34,12 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "rect.integral",
             "rect.insetBy(dx: 5.0, dy: -7.0)",
             "rect.offsetBy(dx: 5.0, dy: -7.0)",
-            "rect1.union(rect: rect2)",
-            "rect1.intersect(rect: rect2)",
+            "rect1.union(rect2)",
+            "rect1.intersect(rect2)",
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
-            "rect1.contains(rect: rect2)",
-            "rect.contains(point: point)",
-            "rect1.intersects(rect: rect2)",
+            "rect1.contains(rect2)",
+            "rect.contains(point)",
+            "rect1.intersects(rect2)",
         ],
         triggeringExamples: [
             "↓CGRectGetWidth(rect)",
@@ -79,13 +79,13 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "↓CGRectIntegral(rect )\n": "rect.integral\n",
             "↓CGRectInset(rect, 5.0, -7.0)\n": "rect.insetBy(dx: 5.0, dy: -7.0)\n",
             "↓CGRectOffset(rect, -2, 8.3)\n": "rect.offsetBy(dx: -2, dy: 8.3)\n",
-            "↓CGRectUnion(rect1, rect2)\n": "rect1.union(rect: rect2)\n",
-            "↓CGRectIntersection( rect1 ,rect2)\n": "rect1.intersect(rect: rect2)\n",
-            "↓CGRectContainsRect( rect1,rect2     )\n": "rect1.contains(rect: rect2)\n",
-            "↓CGRectContainsPoint(rect  ,point)\n": "rect.contains(point: point)\n",
-            "↓CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect: rect2)\n",
+            "↓CGRectUnion(rect1, rect2)\n": "rect1.union(rect2)\n",
+            "↓CGRectIntersection( rect1 ,rect2)\n": "rect1.intersect(rect2)\n",
+            "↓CGRectContainsRect( rect1,rect2     )\n": "rect1.contains(rect2)\n",
+            "↓CGRectContainsPoint(rect  ,point)\n": "rect.contains(point)\n",
+            "↓CGRectIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect2)\n",
             "↓CGRectIntersectsRect(rect1, rect2 )\n↓CGRectGetWidth(rect  )\n":
-            "rect1.intersects(rect: rect2)\nrect.width\n"
+            "rect1.intersects(rect2)\nrect.width\n"
         ]
     )
 
@@ -127,11 +127,11 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "CGRectIntegral\\(\(varName)\\)": "$1.integral",
             "CGRectInset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.insetBy(dx: $2, dy: $3)",
             "CGRectOffset\\(\(varName),\(twoVariableOrNumber)\\)": "$1.offsetBy(dx: $2, dy: $3)",
-            "CGRectUnion\\(\(twoVars)\\)": "$1.union(rect: $2)",
-            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect(rect: $2)",
-            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains(rect: $2)",
-            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains(point: $2)",
-            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects(rect: $2)"
+            "CGRectUnion\\(\(twoVars)\\)": "$1.union($2)",
+            "CGRectIntersection\\(\(twoVars)\\)": "$1.intersect($2)",
+            "CGRectContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
+            "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
+            "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
 
         let description = self.dynamicType.description

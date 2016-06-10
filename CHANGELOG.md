@@ -16,7 +16,11 @@
 
 ##### Bug Fixes
 
-* None.
+* Remove extraneous argument label added in LegacyCGGeometryFunctionsRule
+  autocorrect. 
+  [Sarr Blaise](https://github.com/bsarr007)
+  [643](https://github.com/realm/SwiftLint/issues/643)
+
 
 ## 0.11.0: Laundromat Format
 

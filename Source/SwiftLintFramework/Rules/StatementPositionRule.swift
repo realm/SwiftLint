@@ -110,14 +110,14 @@ private extension StatementPositionRule {
     }
 
     func defaultViolationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
-        return file.matchPattern(pattern).filter { range, syntaxKinds in
+        return file.matchPattern(pattern).filter { _, syntaxKinds in
             return syntaxKinds.startsWith([.Keyword])
         }.flatMap { $0.0 }
     }
 
     func defaultCorrectFile(file: File) -> [Correction] {
         let matches = defaultViolationRangesInFile(file,
-                                                    withPattern: self.dynamicType.defaultPattern)
+                                                   withPattern: self.dynamicType.defaultPattern)
         guard !matches.isEmpty else { return [] }
 
         let regularExpression = regex(self.dynamicType.defaultPattern)
@@ -137,7 +137,7 @@ private extension StatementPositionRule {
     }
 }
 
-//Uncuddled Behaviors
+// Uncuddled Behaviors
 private extension StatementPositionRule {
     func uncuddledValidateFile(file: File) -> [StyleViolation] {
         return uncuddledViolationRangesInFile(file).flatMap { range in
@@ -235,7 +235,7 @@ private extension StatementPositionRule {
             } else {
                 newLines = ""
             }
-            if !whitespace.hasPrefix("\n") &&  newLines != "\n" {
+            if !whitespace.hasPrefix("\n") && newLines != "\n" {
                 whitespace.insert("\n", atIndex: whitespace.startIndex)
             }
             contents.replaceRange(range2, with: whitespace)

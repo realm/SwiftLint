@@ -9,16 +9,12 @@
 import Foundation
 
 public enum StatmentModeConfiguration: String {
-    case Standard = "standard", UncuddledElse = "uncuddled_else"
+    case Default = "default", UncuddledElse = "uncuddled_else"
 
     init(value: AnyObject) throws {
-        guard let string = (value as? String)?.lowercaseString else {
-            throw ConfigurationError.UnknownConfiguration
-        }
-        if string == StatmentModeConfiguration.Standard.rawValue.lowercaseString {
-            self = .Standard
-        } else if string == StatmentModeConfiguration.UncuddledElse.rawValue.lowercaseString {
-            self = .UncuddledElse
+        if let string = (value as? String)?.lowercaseString,
+            value = StatmentModeConfiguration(rawValue: string) {
+            self = value
         } else {
             throw ConfigurationError.UnknownConfiguration
         }

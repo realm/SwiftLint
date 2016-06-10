@@ -1,3 +1,19 @@
+## 0.12.0
+
+##### Breaking
+
+##### Enhancements
+
+* Added `statement_mode` configuration to  the `statement_position` rule. The   
+  `default` mode keeps the current SwiftLint behavior of keeping `else` and
+  `catch` statements on the same line as the closing brace before them. The
+  `uncuddled_else`configuration requires the `else` and `catch` to be on a new
+  line with the same leading whitespace as the brace.
+  [Mike Skiba](https://github.com/ateliercw)
+  [#651](https://github.com/realm/SwiftLint/issues/651)
+
+##### Bug Fixes
+
 ## 0.11.0: Laundromat Format
 
 ##### Breaking

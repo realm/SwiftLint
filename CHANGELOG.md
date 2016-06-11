@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix LegacyConstructorRule when using variables instead of numbers.  
+  [Sarr Blaise](https://github.com/bsarr007) 
+  [#646](https://github.com/realm/SwiftLint/issues/646) 
+
 ## 0.11.1: Cuddles... Or Else!
 
 ##### Breaking

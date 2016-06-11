@@ -1,4 +1,4 @@
-## Master
+## 0.11.1: Cuddles... Or Else!
 
 ##### Breaking
 
@@ -20,7 +20,6 @@
   autocorrect. 
   [Sarr Blaise](https://github.com/bsarr007)
   [643](https://github.com/realm/SwiftLint/issues/643)
-
 
 ## 0.11.0: Laundromat Format
 

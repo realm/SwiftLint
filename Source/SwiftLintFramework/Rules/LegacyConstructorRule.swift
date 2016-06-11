@@ -62,16 +62,16 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
     }
 
     public func correctFile(file: File) -> [Correction] {
-        let number = "([\\-0-9\\.]+)"
-        let twoNumbers = "\(number)\\s*,\\s*\(number)"
+        let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
+
         let patterns = [
-            "CGPointMake\\(\\s*\(twoNumbers)\\s*\\)": "CGPoint(x: $1, y: $2)",
-            "CGSizeMake\\(\\s*\(twoNumbers)\\s*\\)": "CGSize(width: $1, height: $2)",
-            "CGRectMake\\(\\s*\(twoNumbers)\\s*,\\s*\(twoNumbers)\\s*\\)":
+            "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",
+            "CGSizeMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGSize(width: $1, height: $2)",
+            "CGRectMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "CGRect(x: $1, y: $2, width: $3, height: $4)",
-            "CGVectorMake\\(\\s*\(twoNumbers)\\s*\\)": "CGVector(dx: $1, dy: $2)",
-            "NSMakeRange\\(\\s*\(twoNumbers)\\s*\\)": "NSRange(location: $1, length: $2)",
-            "UIEdgeInsetsMake\\(\\s*\(twoNumbers)\\s*,\\s*\(twoNumbers)\\s*\\)":
+            "CGVectorMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGVector(dx: $1, dy: $2)",
+            "NSMakeRange\\(\\s*\(twoVarsOrNum)\\s*\\)": "NSRange(location: $1, length: $2)",
+            "UIEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "UIEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)",
         ]
 

@@ -50,11 +50,25 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
     public init() {}
 
     public func validateFile(file: File) -> [StyleViolation] {
-        if configuration.customRuleConfigurations.isEmpty {
+        var configurations = configuration.customRuleConfigurations
+
+        if configurations.isEmpty {
             return []
         }
 
-        return configuration.customRuleConfigurations.flatMap {
+        if let path = file.path {
+            configurations = configurations.filter { config in
+                let pattern = config.included.pattern
+                if pattern.isEmpty { return true }
+
+                let pathMatch = config.included.matchesInString(path, options: [],
+                    range: NSRange(location: 0, length: (path as NSString).length))
+
+                return !pathMatch.isEmpty
+            }
+        }
+
+        return configurations.flatMap {
             self.validate(file, configuration: $0)
         }
     }

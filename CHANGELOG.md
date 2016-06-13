@@ -6,7 +6,9 @@
 
 ##### Enhancements
 
-* None.
+* Add included regex for custom rules to control what files are processed.  
+  [bootstraponline](https://github.com/bootstraponline)
+  [#689](https://github.com/realm/SwiftLint/issues/689)
 
 ##### Bug Fixes
 

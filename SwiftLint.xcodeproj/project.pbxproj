@@ -40,6 +40,8 @@
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
+		6CB8A80C1D11A7E10052816E /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
+		6CB8A80D1D11A7E10052816E /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
 		6CC4259B1C77046200AEA885 /* SyntaxMap+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */; };
 		6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -115,8 +117,6 @@
 		E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E89376AC1B8A701E0025708E /* Yaml.framework */; };
 		E8B067811C13E49600E9E13F /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
 		E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
-		E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
-		E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
 /* End PBXBuildFile section */
@@ -307,8 +307,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E89376AD1B8A701E0025708E /* Yaml.framework in Frameworks */,
-				E8BA7E131B07A3F3003E02D0 /* Result.framework in Frameworks */,
-				E8BA7E111B07A3EC003E02D0 /* Commandant.framework in Frameworks */,
 				E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */,
 				E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */,
 				3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */,
@@ -327,6 +325,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CB8A80C1D11A7E10052816E /* Commandant.framework in Frameworks */,
+				6CB8A80D1D11A7E10052816E /* Result.framework in Frameworks */,
 				D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,6 +367,8 @@
 		5499CA981A2394BD00783309 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E8BA7E101B07A3EC003E02D0 /* Commandant.framework */,
+				E8BA7E121B07A3F3003E02D0 /* Result.framework */,
 				5499CA961A2394B700783309 /* Components.plist */,
 				5499CA971A2394B700783309 /* Info.plist */,
 			);
@@ -492,9 +494,7 @@
 			isa = PBXGroup;
 			children = (
 				3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */,
-				E8BA7E101B07A3EC003E02D0 /* Commandant.framework */,
 				D0D1217019E87B05005E4BAA /* Info.plist */,
-				E8BA7E121B07A3F3003E02D0 /* Result.framework */,
 				E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */,
 				E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */,
 				E89376AC1B8A701E0025708E /* Yaml.framework */,

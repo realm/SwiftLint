@@ -41,7 +41,6 @@
 		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
 		6CC4259B1C77046200AEA885 /* SyntaxMap+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */; };
-		72B761331CD9193500B846D5 /* CuddledElseRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B761311CD917DB00B846D5 /* CuddledElseRule.swift */; };
 		6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };

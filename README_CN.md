@@ -214,10 +214,10 @@ custom_rules:
 
 SwiftLint 支持通过嵌套配置文件的方式来对代码分析过程进行更加细致的控制。
 
-* 在你的根 `.swiftlint.yml` 文件里设置 `use_nested_configs: true` 值。
+* 在你需要的目录引入 `.swiftlint.yml`。
 * 在目录结构必要的地方引入额外的 `.swiftlint.yml` 文件。
 * 每个文件被检查时会使用在文件所在目录下的或者父目录的更深层目录下的配置文件。否则根配置文件将会生效。
-* `excluded`， `included`，和 `use_nested_configs` 在嵌套结构中会被忽略。
+* `excluded` 和 `included` 在嵌套结构中会被忽略。
 
 ### 自动更正
 

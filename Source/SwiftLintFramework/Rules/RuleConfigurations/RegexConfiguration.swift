@@ -14,6 +14,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var name: String?
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
+    public var included = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
     public var severityConfiguration = SeverityConfiguration(.Warning)
 
@@ -43,6 +44,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
         regex = try NSRegularExpression.cached(pattern: regexString)
 
+        if let includedString = configurationDict["included"] as? String {
+            included = try NSRegularExpression.cached(pattern: includedString)
+        }
+
         if let name = configurationDict["name"] as? String {
             self.name = name
         }
@@ -62,6 +67,7 @@ public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
     return lhs.identifier == rhs.identifier &&
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&
+           lhs.included.pattern == rhs.included.pattern &&
            lhs.matchKinds == rhs.matchKinds &&
            lhs.severity == rhs.severity
 }

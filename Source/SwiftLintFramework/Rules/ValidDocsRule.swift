@@ -43,7 +43,7 @@ func superfluousOrMissingThrowsDocumentation(declaration: String, comment: Strin
         !comment.lowercaseString.containsString("- throws:")
 }
 
-func delcarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
+func declarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
     if let kind = kind where SwiftDeclarationKind.variableKinds().contains(kind) {
         return true
     }
@@ -76,12 +76,12 @@ func commentReturns(comment: String) -> Bool {
 }
 
 func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
-    return delcarationReturns(declaration) && !commentReturns(comment)
+    return declarationReturns(declaration) && !commentReturns(comment)
 }
 
 func superfluousReturnDocumentation(declaration: String, comment: String,
                                     kind: SwiftDeclarationKind) -> Bool {
-    return !delcarationReturns(declaration, kind: kind) && commentReturns(comment)
+    return !declarationReturns(declaration, kind: kind) && commentReturns(comment)
 }
 
 func superfluousOrMissingParameterDocumentation(declaration: String,

@@ -1,3 +1,10 @@
+##### Enhancements
+
+* Add support for external plugins. Following commands now support
+`--plugins` flag: `lint`, `autocorrect` and `rules`. Plugin is an external
+rule that can be loaded when you run swiftlint and configured through usual
+means of `.swiftlint.yml`.
+
 ## Master
 
 ##### Breaking

@@ -66,7 +66,6 @@ APM.
 $ swiftlint help
 Available commands:
 
-   autocorrect  Automatically correct warnings and errors
    help         Display general or command-specific help
    lint         Print lint warnings and errors for the Swift files in the current directory (default command)
    rules        Display the list of rules and their identifiers

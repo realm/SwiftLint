@@ -58,9 +58,11 @@ extension File {
 }
 
 extension Configuration {
-    init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
+    init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false,
+         ruleList: RuleList = .master) {
         self.init(path: commandLinePath, optional: !Process.arguments.contains("--config"),
-                  rootPath: rootPath?.absolutePathStandardized(), quiet: quiet)
+                  rootPath: rootPath?.absolutePathStandardized(), quiet: quiet, ruleList: ruleList,
+                  rulesConfiguration: [:])
     }
 
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,

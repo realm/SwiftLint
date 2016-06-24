@@ -39,6 +39,16 @@
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5CD636FC1D1ADE9B0017BD6E"
+               BuildableName = "swiftlintTests.xctest"
+               BlueprintName = "swiftlintTests"
+               ReferencedContainer = "container:SwiftLint.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

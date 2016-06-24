@@ -11,12 +11,10 @@ import Foundation
 import SourceKittenFramework
 import XCTest
 
-let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
-
 extension Configuration {
     var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ $0.dynamicType.description.identifier })
-        let defaultRuleIDs = Set(masterRuleList.list.values.filter({
+        let defaultRuleIDs = Set(ruleList.list.values.filter({
             !($0.init() is OptInRule)
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtract(configuredRuleIDs).sort(<)
@@ -24,6 +22,8 @@ extension Configuration {
 }
 
 class ConfigurationTests: XCTestCase {
+
+    let ruleList = RuleList.master
 
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
@@ -79,7 +79,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
+        let expectedIdentifiers = Array(ruleList.list.keys)
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) })
         let configuredIdentifiers = disabledConfig.rules.map {
             $0.dynamicType.description.identifier
@@ -100,7 +100,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
+        let expectedIdentifiers = Array(ruleList.list.keys)
             .filter({ !([validRule] + optInRules).contains($0) })
         let configuredIdentifiers = configuration.rules.map {
             $0.dynamicType.description.identifier
@@ -179,7 +179,7 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Rules from config dictionary
 
-    let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
+    let testRuleList = RuleList(rules: [RuleWithLevelsMock.self])
 
     func testConfiguresCorrectlyFromDict() {
         let ruleConfiguration = [1, 2]

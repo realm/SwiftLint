@@ -37,8 +37,17 @@
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
+		5C11D8421D1D897A0044F844 /* puppet_config_failing.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */; };
+		5C11D8441D1D89990044F844 /* valid_swift in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8411D1D897A0044F844 /* valid_swift */; };
+		5C11D8461D1D90400044F844 /* TestBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C11D8451D1D90400044F844 /* TestBundle.swift */; };
+		5C11D8481D1D90B90044F844 /* puppet_config_passing.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */; };
 		5C6322FF1D1C357A00CCE1DA /* PluginOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */; };
 		5C6323011D1C35D200CCE1DA /* RuleList+Plugins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */; };
+		5CD26FA21D1DCAA600947C58 /* PuppetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */; };
+		5CDCADB21D1AE2D1004B9D69 /* HelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */; };
+		5CDCADB71D1AE4E9004B9D69 /* SwiftLintExecutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADB31D1AE330004B9D69 /* SwiftLintExecutable.swift */; };
+		5CDCADBE1D1AE817004B9D69 /* Result+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADBC1D1AE7DD004B9D69 /* Result+Assertions.swift */; };
+		5CDCADC31D1AE9DA004B9D69 /* RulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADC21D1AE9DA004B9D69 /* RulesTests.swift */; };
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
@@ -125,6 +134,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		5C11D8391D1D0C6A0044F844 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C5F183E1D1B765000A988E6;
+			remoteInfo = PuppetPlugin;
+		};
+		5C5F18471D1B766200A988E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C5F183E1D1B765000A988E6;
+			remoteInfo = PuppetPlugin;
+		};
+		5C5F184B1D1B772000A988E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0D1216C19E87B05005E4BAA;
+			remoteInfo = SwiftLintFramework;
+		};
+		5CD637021D1ADE9B0017BD6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0E7B63119E9C64500EDBA4D;
+			remoteInfo = swiftlint;
+		};
 		D0AAAB5119FB0960007B24B3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -204,8 +241,21 @@
 		4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexHelpers.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_failing.yml; sourceTree = "<group>"; };
+		5C11D8411D1D897A0044F844 /* valid_swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = valid_swift; sourceTree = "<group>"; };
+		5C11D8451D1D90400044F844 /* TestBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBundle.swift; sourceTree = "<group>"; };
+		5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_passing.yml; sourceTree = "<group>"; };
+		5C11D84A1D1DC69D0044F844 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuppetRule.swift; sourceTree = "<group>"; };
+		5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuppetPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginOptions.swift; sourceTree = "<group>"; };
 		5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Plugins.swift"; sourceTree = "<group>"; };
+		5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = swiftlintTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5CDCADAF1D1AE2C3004B9D69 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpTests.swift; sourceTree = "<group>"; };
+		5CDCADB31D1AE330004B9D69 /* SwiftLintExecutable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftLintExecutable.swift; sourceTree = "<group>"; };
+		5CDCADBC1D1AE7DD004B9D69 /* Result+Assertions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Assertions.swift"; sourceTree = "<group>"; };
+		5CDCADC21D1AE9DA004B9D69 /* RulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesTests.swift; sourceTree = "<group>"; };
 		65454F451B14D73800319A6C /* ControlStatementRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlStatementRule.swift; sourceTree = "<group>"; };
 		692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpeningBraceRule.swift; sourceTree = "<group>"; };
 		692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementPositionRule.swift; sourceTree = "<group>"; };
@@ -308,6 +358,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5C5F183C1D1B765000A988E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5CD636FA1D1ADE9B0017BD6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0D1216919E87B05005E4BAA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -382,11 +446,72 @@
 			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		5C11D83F1D1D897A0044F844 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */,
+				5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */,
+				5C11D8411D1D897A0044F844 /* valid_swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		5C11D8491D1DC69D0044F844 /* PuppetPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				5C11D84A1D1DC69D0044F844 /* Info.plist */,
+				5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */,
+			);
+			name = PuppetPlugin;
+			path = Tests/PuppetPlugin;
+			sourceTree = SOURCE_ROOT;
+		};
+		5CDCADAC1D1AE2C3004B9D69 /* swiftlintTests */ = {
+			isa = PBXGroup;
+			children = (
+				5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */,
+				5CDCADC21D1AE9DA004B9D69 /* RulesTests.swift */,
+				5CDCADBB1D1AE7DD004B9D69 /* Extensions */,
+				5CDCADAD1D1AE2C3004B9D69 /* Helpers */,
+				5C11D8491D1DC69D0044F844 /* PuppetPlugin */,
+				5C11D83F1D1D897A0044F844 /* Resources */,
+				5CDCADAE1D1AE2C3004B9D69 /* Supporting Files */,
+			);
+			name = swiftlintTests;
+			path = Tests/swiftlintTests;
+			sourceTree = "<group>";
+		};
+		5CDCADAD1D1AE2C3004B9D69 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				5CDCADB31D1AE330004B9D69 /* SwiftLintExecutable.swift */,
+				5C11D8451D1D90400044F844 /* TestBundle.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		5CDCADAE1D1AE2C3004B9D69 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5CDCADAF1D1AE2C3004B9D69 /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5CDCADBB1D1AE7DD004B9D69 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5CDCADBC1D1AE7DD004B9D69 /* Result+Assertions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		D0D1210F19E87861005E4BAA = {
 			isa = PBXGroup;
 			children = (
 				D0D1211919E87861005E4BAA /* Products */,
 				D0D1211A19E87861005E4BAA /* swiftlint */,
+				5CDCADAC1D1AE2C3004B9D69 /* swiftlintTests */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
 			);
@@ -399,6 +524,8 @@
 				D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */,
 				D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */,
 				D0E7B63219E9C64500EDBA4D /* swiftlint.app */,
+				5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */,
+				5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -689,6 +816,43 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		5C5F183E1D1B765000A988E6 /* PuppetPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetPlugin" */;
+			buildPhases = (
+				5C5F183B1D1B765000A988E6 /* Sources */,
+				5C5F183C1D1B765000A988E6 /* Frameworks */,
+				5C5F183D1D1B765000A988E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5C5F184C1D1B772000A988E6 /* PBXTargetDependency */,
+			);
+			name = PuppetPlugin;
+			productName = PuppetPlugin;
+			productReference = 5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+		5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5CD637081D1ADE9B0017BD6E /* Build configuration list for PBXNativeTarget "swiftlintTests" */;
+			buildPhases = (
+				5CD636F91D1ADE9B0017BD6E /* Sources */,
+				5CD636FA1D1ADE9B0017BD6E /* Frameworks */,
+				5CD636FB1D1ADE9B0017BD6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5C5F18481D1B766200A988E6 /* PBXTargetDependency */,
+				5CD637031D1ADE9B0017BD6E /* PBXTargetDependency */,
+			);
+			name = swiftlintTests;
+			productName = swiftlintTests;
+			productReference = 5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D0D1216C19E87B05005E4BAA /* SwiftLintFramework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0D1218419E87B05005E4BAA /* Build configuration list for PBXNativeTarget "SwiftLintFramework" */;
@@ -740,6 +904,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5C11D83A1D1D0C6A0044F844 /* PBXTargetDependency */,
 				D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */,
 			);
 			name = swiftlint;
@@ -757,6 +922,12 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Realm;
 				TargetAttributes = {
+					5C5F183E1D1B765000A988E6 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					5CD636FC1D1ADE9B0017BD6E = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
 					D0D1216C19E87B05005E4BAA = {
 						CreatedOnToolsVersion = 6.1;
 					};
@@ -784,6 +955,8 @@
 				D0E7B63119E9C64500EDBA4D /* swiftlint */,
 				D0D1216C19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217619E87B05005E4BAA /* SwiftLintFrameworkTests */,
+				5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */,
+				5C5F183E1D1B765000A988E6 /* PuppetPlugin */,
 			);
 		};
 /* End PBXProject section */
@@ -796,6 +969,23 @@
 				3B12C9C11C3209CB000B423F /* test.yml in Resources */,
 				F9D73F031D0CF15E00222FC4 /* test.txt in Resources */,
 				3BDB224B1C345B4900473680 /* ProjectMock in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C5F183D1D1B765000A988E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5CD636FB1D1ADE9B0017BD6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C11D8441D1D89990044F844 /* valid_swift in Resources */,
+				5C11D8481D1D90B90044F844 /* puppet_config_passing.yml in Resources */,
+				5C11D8421D1D897A0044F844 /* puppet_config_failing.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -864,6 +1054,26 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5C5F183B1D1B765000A988E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CD26FA21D1DCAA600947C58 /* PuppetRule.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5CD636F91D1ADE9B0017BD6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5CDCADB71D1AE4E9004B9D69 /* SwiftLintExecutable.swift in Sources */,
+				5CDCADB21D1AE2D1004B9D69 /* HelpTests.swift in Sources */,
+				5CDCADC31D1AE9DA004B9D69 /* RulesTests.swift in Sources */,
+				5CDCADBE1D1AE817004B9D69 /* Result+Assertions.swift in Sources */,
+				5C11D8461D1D90400044F844 /* TestBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0D1216819E87B05005E4BAA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -985,6 +1195,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5C11D83A1D1D0C6A0044F844 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C5F183E1D1B765000A988E6 /* PuppetPlugin */;
+			targetProxy = 5C11D8391D1D0C6A0044F844 /* PBXContainerItemProxy */;
+		};
+		5C5F18481D1B766200A988E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C5F183E1D1B765000A988E6 /* PuppetPlugin */;
+			targetProxy = 5C5F18471D1B766200A988E6 /* PBXContainerItemProxy */;
+		};
+		5C5F184C1D1B772000A988E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
+			targetProxy = 5C5F184B1D1B772000A988E6 /* PBXContainerItemProxy */;
+		};
+		5CD637031D1ADE9B0017BD6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0E7B63119E9C64500EDBA4D /* swiftlint */;
+			targetProxy = 5CD637021D1ADE9B0017BD6E /* PBXContainerItemProxy */;
+		};
 		D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
@@ -998,6 +1228,357 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		5C5F18431D1B765000A988E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlint.PuppetPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		5C5F18441D1B765000A988E6 /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlint.PuppetPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Test;
+		};
+		5C5F18451D1B765000A988E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlint.PuppetPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		5C5F18461D1B765000A988E6 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlint.PuppetPlugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Profile;
+		};
+		5CD637041D1ADE9B0017BD6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlintTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5CD637051D1ADE9B0017BD6E /* Test */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlintTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Test;
+		};
+		5CD637061D1ADE9B0017BD6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlintTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		5CD637071D1ADE9B0017BD6E /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.realm.swiftlintTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Profile;
+		};
 		D0D1211D19E87861005E4BAA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212619E878CC005E4BAA /* Debug.xcconfig */;
@@ -1219,6 +1800,28 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C5F18431D1B765000A988E6 /* Debug */,
+				5C5F18441D1B765000A988E6 /* Test */,
+				5C5F18451D1B765000A988E6 /* Release */,
+				5C5F18461D1B765000A988E6 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5CD637081D1ADE9B0017BD6E /* Build configuration list for PBXNativeTarget "swiftlintTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5CD637041D1ADE9B0017BD6E /* Debug */,
+				5CD637051D1ADE9B0017BD6E /* Test */,
+				5CD637061D1ADE9B0017BD6E /* Release */,
+				5CD637071D1ADE9B0017BD6E /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D0D1211319E87861005E4BAA /* Build configuration list for PBXProject "SwiftLint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

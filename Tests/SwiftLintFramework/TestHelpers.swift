@@ -13,7 +13,9 @@ import XCTest
 
 private let violationMarker = "↓"
 
-let allRuleIdentifiers = Array(masterRuleList.list.keys)
+let allRuleIdentifiers = Array(RuleList.master.list.keys)
+
+let optInRules = RuleList.master.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 func violations(string: String, config: Configuration = Configuration()) -> [StyleViolation] {
     File.clearCaches()
@@ -82,11 +84,10 @@ extension String {
 }
 
 func makeConfig(ruleConfiguration: AnyObject?, _ identifier: String) -> Configuration? {
-    if let ruleConfiguration = ruleConfiguration, ruleType = masterRuleList.list[identifier] {
-        // The caller has provided a custom configuration for the rule under test
-        return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
-            return Configuration(configuredRules: [configuredRule])
-        }
+    if let ruleConfiguration = ruleConfiguration, ruleType = RuleList.master.list[identifier] {
+        let ruleList = RuleList(rules: [ruleType])
+        return Configuration(ruleList: ruleList,
+                             rulesConfiguration: [identifier: ruleConfiguration])
     }
     return Configuration(whitelistRules: [identifier])
 }

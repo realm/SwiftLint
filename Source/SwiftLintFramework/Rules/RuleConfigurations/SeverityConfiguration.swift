@@ -13,7 +13,7 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
         return severity.rawValue.lowercaseString
     }
 
-    var severity: ViolationSeverity
+    public var severity: ViolationSeverity
 
     public init(_ severity: ViolationSeverity) {
         self.severity = severity

@@ -1,0 +1,5 @@
+whitelist_rules:
+  - puppet
+
+puppet:
+  should_fail: false

@@ -18,8 +18,11 @@ struct RulesCommand: CommandType {
     let function = "Display the list of rules and their identifiers"
 
     func run(options: RulesOptions) -> Result<(), CommandantError<()>> {
+        let ruleList = RuleList(pluginPaths: options.pluginPaths)
+        let configuration = Configuration(commandLinePath: options.configurationFile,
+                                          ruleList: ruleList)
         if let ruleID = options.ruleID {
-            guard let rule = masterRuleList.list[ruleID] else {
+            guard let rule = configuration.ruleList.list[ruleID] else {
                 return .Failure(.UsageError(description: "No rule with identifier: \(ruleID)"))
             }
 
@@ -27,8 +30,7 @@ struct RulesCommand: CommandType {
             return .Success()
         }
 
-        let configuration = Configuration(commandLinePath: options.configurationFile)
-        print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
+        print(TextTable(configuration: configuration).render())
         return .Success()
     }
 
@@ -49,20 +51,24 @@ struct RulesCommand: CommandType {
     }
 }
 
-struct RulesOptions: OptionsType {
-    private let ruleID: String?
-    private let configurationFile: String
+struct RulesOptions: OptionsType, PluginsOptionsType {
+    let ruleID: String?
+    let configurationFile: String
+    let plugins: String?
 
-    static func create(configurationFile: String) -> (ruleID: String) -> RulesOptions {
-        return { ruleID in
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile)
-        }
+    // swiftlint:disable:next line_length
+    static func create(configurationFile: String) -> (plugins: String) -> (ruleID: String) -> RulesOptions {
+        return { plugins in { ruleID in
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile,
+                      plugins: (plugins.isEmpty ? nil : plugins))
+        }}
     }
 
     // swiftlint:disable:next line_length
     static func evaluate(mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| configOption
+            <*> mode <| pluginOption
             <*> mode <| Argument(defaultValue: "",
                                  usage: "the rule identifier to display description for")
     }
@@ -71,7 +77,7 @@ struct RulesOptions: OptionsType {
 // MARK: - SwiftyTextTable
 
 extension TextTable {
-    init(ruleList: RuleList, configuration: Configuration) {
+    init(configuration: Configuration) {
         let columns = [
             TextTableColumn(header: "identifier"),
             TextTableColumn(header: "opt-in"),
@@ -80,7 +86,7 @@ extension TextTable {
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
-        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
+        let sortedRules = configuration.ruleList.list.sort { $0.0 < $1.0 }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule: Rule? = {

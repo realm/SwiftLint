@@ -17,8 +17,10 @@ struct AutoCorrectCommand: CommandType {
     let function = "Automatically correct warnings and errors"
 
     func run(options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
+        let ruleList: RuleList = RuleList(pluginPaths: options.pluginPaths)
         let configuration = Configuration(commandLinePath: options.configurationFile,
-            rootPath: options.path, quiet: options.quiet)
+                                          rootPath: options.path, quiet: options.quiet,
+                                          ruleList: ruleList)
         return configuration.visitLintableFiles(options.path, action: "Correcting",
             quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles) { linter in
             let corrections = linter.correct()
@@ -42,18 +44,19 @@ struct AutoCorrectCommand: CommandType {
     }
 }
 
-struct AutoCorrectOptions: OptionsType {
+struct AutoCorrectOptions: OptionsType, PluginsOptionsType {
     let path: String
     let configurationFile: String
     let useScriptInputFiles: Bool
     let quiet: Bool
     let format: Bool
+    let plugins: String?
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (configurationFile: String) -> (useScriptInputFiles: Bool) -> (quiet: Bool) -> (format: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { format in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format)
-        }}}}
+    static func create(path: String) -> (configurationFile: String) -> (plugins: String) -> (useScriptInputFiles: Bool) -> (quiet: Bool) -> (format: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { plugins in { useScriptInputFiles in { quiet in { format in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, plugins: (plugins.isEmpty ? nil : plugins))
+        }}}}}
     }
 
     static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -61,6 +64,7 @@ struct AutoCorrectOptions: OptionsType {
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
+            <*> mode <| pluginOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")
             <*> mode <| Option(key: "format",

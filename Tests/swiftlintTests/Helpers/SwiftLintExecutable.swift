@@ -21,7 +21,8 @@ struct SwiftLintExecutable {
 
     init() {
         let products = testBundle.bundleURL.URLByDeletingLastPathComponent!
-        let executable = products.URLByAppendingPathComponent("swiftlint")
+        let executable = products
+            .URLByAppendingPathComponent("swiftlint.app/Contents/MacOS/swiftlint")
         self.path = executable.relativePath!
     }
 

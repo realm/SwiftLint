@@ -15,6 +15,10 @@ func pathOption(action action: String) -> Option<String> {
                   usage: "the path to the file or directory to \(action)")
 }
 
+let pluginOption = Option(key: "plugins",
+                          defaultValue: "",
+                          usage: "the comma separated list of paths to plugins")
+
 let configOption = Option(key: "config",
                           defaultValue: Configuration.fileName,
                           usage: "the path to SwiftLint's configuration file")

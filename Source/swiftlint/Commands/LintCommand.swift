@@ -31,8 +31,10 @@ struct LintCommand: CommandType {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
+        let ruleList = RuleList(pluginPaths: options.pluginPaths)
         let configuration = Configuration(commandLinePath: options.configurationFile,
-                                          rootPath: options.path, quiet: options.quiet)
+                                          rootPath: options.path, quiet: options.quiet,
+                                          ruleList: ruleList)
         let reporter = reporterFromString(
             options.reporter.isEmpty ? configuration.reporter : options.reporter
         )
@@ -84,7 +86,7 @@ struct LintCommand: CommandType {
     }
 }
 
-struct LintOptions: OptionsType {
+struct LintOptions: OptionsType, PluginsOptionsType {
     let path: String
     let useSTDIN: Bool
     let configurationFile: String
@@ -93,12 +95,13 @@ struct LintOptions: OptionsType {
     let benchmark: Bool
     let reporter: String
     let quiet: Bool
+    let plugins: String?
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> (quiet: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet)
-        }}}}}}}
+    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (plugins: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> (quiet: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { plugins in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, plugins: (plugins.isEmpty ? nil : plugins))
+        }}}}}}}}
     }
 
     static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -108,6 +111,7 @@ struct LintOptions: OptionsType {
             <*> mode <| Option(key: "use-stdin", defaultValue: false,
                                usage: "lint standard input")
             <*> mode <| configOption
+            <*> mode <| pluginOption
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
             <*> mode <| useScriptInputFilesOption

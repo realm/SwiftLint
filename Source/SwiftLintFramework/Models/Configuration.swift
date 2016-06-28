@@ -30,6 +30,8 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
+    public let ruleList: RuleList
+    public let rulesConfiguration: [String: AnyObject]
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -37,10 +39,15 @@ public struct Configuration: Equatable {
                  included: [String] = [],
                  excluded: [String] = [],
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:])) {
+                 ruleList: RuleList = .master,
+                 rulesConfiguration: [String: AnyObject] = [:]) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.ruleList = ruleList
+        self.rulesConfiguration = rulesConfiguration
+
+        let configuredRules = ruleList.configuredRulesWithDictionary(rulesConfiguration)
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -93,7 +100,7 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: AnyObject]) {
+    public init?(dict: [String: AnyObject], ruleList: RuleList = .master) {
         // Deprecation warning for "enabled_rules"
         if dict[ConfigurationKey.EnabledRules.rawValue] != nil {
             queuedPrintError("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
@@ -128,7 +135,7 @@ public struct Configuration: Equatable {
             .Reporter,
             .UseNestedConfigs,
             .WhitelistRules,
-        ].map({ $0.rawValue }) + masterRuleList.list.keys
+        ].map({ $0.rawValue }) + ruleList.list.keys
 
         let invalidKeys = Set(dict.keys).subtract(validKeys)
         if !invalidKeys.isEmpty {
@@ -143,19 +150,21 @@ public struct Configuration: Equatable {
             excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
-            configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
+            ruleList: ruleList,
+            rulesConfiguration: dict
         )
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false) {
+                optional: Bool = true, quiet: Bool = false, ruleList: RuleList = .master,
+                rulesConfiguration: [String: AnyObject] = [:]) {
         let fullPath = (path as NSString).absolutePathRepresentation()
         let fail = { (msg: String) in
             fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
         }
         if path.isEmpty || !NSFileManager.defaultManager().fileExistsAtPath(fullPath) {
             if !optional { fail("File not found.") }
-            self.init()!
+            self.init(ruleList: ruleList)!
             self.rootPath = rootPath
             return
         }
@@ -166,7 +175,7 @@ public struct Configuration: Equatable {
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
-            self.init(dict: dict)!
+            self.init(dict: dict, ruleList: ruleList)!
             configurationPath = fullPath
             self.rootPath = rootPath
             return
@@ -175,7 +184,7 @@ public struct Configuration: Equatable {
         } catch {
             fail("\(error)")
         }
-        self.init()!
+        self.init(ruleList: ruleList)!
     }
 
     public func lintablePathsForPath(path: String,
@@ -209,7 +218,8 @@ extension Configuration {
         if configurationSearchPath != configurationPath &&
             NSFileManager.defaultManager().fileExistsAtPath(configurationSearchPath) {
             return merge(Configuration(path: configurationSearchPath, rootPath: rootPath,
-                optional: false, quiet: true))
+                optional: false, quiet: true, ruleList: ruleList,
+                rulesConfiguration: rulesConfiguration))
         }
 
         // If we are not at the root path, continue down the tree

@@ -8,7 +8,7 @@
 
 import Foundation
 import XCTest
-
+import SwiftLintFramework
 
 class RulesTests: XCTestCase {
 
@@ -23,7 +23,8 @@ class RulesTests: XCTestCase {
     let destination: NSURL = {
         // Copy the source file to inspect and give it .swift extension
         // to avoid compiler processing it as a source file
-        let swiftFile = testBundle.URLForResource("valid_swift", withExtension: nil)!
+        print(testBundle)
+        let swiftFile = resource(named: "valid_swift", withExtension: nil)
         let url = swiftFile.URLByAppendingPathExtension("swift")
         let fileManager = NSFileManager.defaultManager()
         do {
@@ -31,8 +32,10 @@ class RulesTests: XCTestCase {
                 try fileManager.removeItemAtURL(url)
             }
             try fileManager.copyItemAtURL(swiftFile, toURL: url)
+        } catch let e as NSError {
+            fatalError("Failed to move valid_swift file to \(url.relativePath!) \(e)")
         } catch {
-            fatalError("Failed to move swift file to \(url.relativePath!)")
+            fatalError("Failed to move valid_swift file to \(url.relativePath!)")
         }
         return url
     }()
@@ -60,7 +63,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLintLoadingPuppetPluginWithPassingConfiguration() {
-        let passingYml = testBundle.URLForResource("puppet_config_passing", withExtension: "yml")!
+        let passingYml = resource(named: "puppet_config_passing", withExtension: "yml")
         let result = swiftlint.execute([
             "lint",
             "--config", passingYml.relativePath!,
@@ -72,7 +75,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLintLoadingPuppetPluginWithFailingConfiguration() {
-        let failingYml = testBundle.URLForResource("puppet_config_failing", withExtension: "yml")!
+        let failingYml = resource(named: "puppet_config_failing", withExtension: "yml")
         let result = swiftlint.execute([
             "lint",
             "--config", failingYml.relativePath!,
@@ -85,4 +88,19 @@ class RulesTests: XCTestCase {
         assertResultSuccess(result, expected)
 
     }
+}
+
+private func resource(named name: String, withExtension ext: String? = nil) -> NSURL {
+    #if SWIFT_PACKAGE
+        let fileName: String
+        if let ext = ext {
+            fileName = "\(name).\(ext)"
+        } else {
+            fileName = name
+        }
+        let path = "Tests/swiftlint/Resources/\(fileName)"
+        return NSURL(fileURLWithPath: path.absolutePathRepresentation())
+    #else
+        return testBundle.URLForResource(name, withExtension: ext)!
+    #endif
 }

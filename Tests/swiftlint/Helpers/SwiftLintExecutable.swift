@@ -21,8 +21,14 @@ struct SwiftLintExecutable {
 
     init() {
         let products = testBundle.bundleURL.URLByDeletingLastPathComponent!
-        let executable = products
-            .URLByAppendingPathComponent("swiftlint.app/Contents/MacOS/swiftlint")
+        let executable: NSURL
+        #if SWIFT_PACKAGE
+            executable = products
+                .URLByAppendingPathComponent("swiftlint")
+        #else
+            executable = products
+                .URLByAppendingPathComponent("swiftlint.app/Contents/MacOS/swiftlint")
+        #endif
         self.path = executable.relativePath!
     }
 
@@ -34,7 +40,6 @@ struct SwiftLintExecutable {
 
         let successPipe = NSPipe()
         task.standardOutput = successPipe
-
         let failurePipe = NSPipe()
         task.standardError = failurePipe
 

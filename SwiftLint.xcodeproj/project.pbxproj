@@ -41,9 +41,9 @@
 		5C11D8441D1D89990044F844 /* valid_swift in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8411D1D897A0044F844 /* valid_swift */; };
 		5C11D8461D1D90400044F844 /* TestBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C11D8451D1D90400044F844 /* TestBundle.swift */; };
 		5C11D8481D1D90B90044F844 /* puppet_config_passing.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */; };
+		5C4248D51D2387AE00CEFF88 /* PuppetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */; };
 		5C6322FF1D1C357A00CCE1DA /* PluginOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */; };
 		5C6323011D1C35D200CCE1DA /* RuleList+Plugins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */; };
-		5CD26FA21D1DCAA600947C58 /* PuppetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */; };
 		5CDCADB21D1AE2D1004B9D69 /* HelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */; };
 		5CDCADB71D1AE4E9004B9D69 /* SwiftLintExecutable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADB31D1AE330004B9D69 /* SwiftLintExecutable.swift */; };
 		5CDCADBE1D1AE817004B9D69 /* Result+Assertions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADBC1D1AE7DD004B9D69 /* Result+Assertions.swift */; };
@@ -238,8 +238,8 @@
 		5C11D8411D1D897A0044F844 /* valid_swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = valid_swift; sourceTree = "<group>"; };
 		5C11D8451D1D90400044F844 /* TestBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBundle.swift; sourceTree = "<group>"; };
 		5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_passing.yml; sourceTree = "<group>"; };
-		5C11D84A1D1DC69D0044F844 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuppetRule.swift; sourceTree = "<group>"; };
+		5C4248D21D237DBA00CEFF88 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuppetRule.swift; sourceTree = "<group>"; };
 		5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuppetPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginOptions.swift; sourceTree = "<group>"; };
 		5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Plugins.swift"; sourceTree = "<group>"; };
@@ -449,29 +449,29 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		5C11D8491D1DC69D0044F844 /* PuppetPlugin */ = {
+		5C4248D11D237DBA00CEFF88 /* PuppetPlugin */ = {
 			isa = PBXGroup;
 			children = (
-				5C11D84A1D1DC69D0044F844 /* Info.plist */,
-				5C11D84B1D1DC69D0044F844 /* PuppetRule.swift */,
+				5C4248D21D237DBA00CEFF88 /* Info.plist */,
+				5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */,
 			);
 			name = PuppetPlugin;
-			path = Tests/PuppetPlugin;
-			sourceTree = SOURCE_ROOT;
+			path = Resources/PuppetPlugin;
+			sourceTree = "<group>";
 		};
 		5CDCADAC1D1AE2C3004B9D69 /* swiftlintTests */ = {
 			isa = PBXGroup;
 			children = (
+				5C4248D11D237DBA00CEFF88 /* PuppetPlugin */,
 				5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */,
 				5CDCADC21D1AE9DA004B9D69 /* RulesTests.swift */,
 				5CDCADBB1D1AE7DD004B9D69 /* Extensions */,
 				5CDCADAD1D1AE2C3004B9D69 /* Helpers */,
-				5C11D8491D1DC69D0044F844 /* PuppetPlugin */,
 				5C11D83F1D1D897A0044F844 /* Resources */,
 				5CDCADAE1D1AE2C3004B9D69 /* Supporting Files */,
 			);
 			name = swiftlintTests;
-			path = Tests/swiftlintTests;
+			path = Tests/swiftlint;
 			sourceTree = "<group>";
 		};
 		5CDCADAD1D1AE2C3004B9D69 /* Helpers */ = {
@@ -1050,7 +1050,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CD26FA21D1DCAA600947C58 /* PuppetRule.swift in Sources */,
+				5C4248D51D2387AE00CEFF88 /* PuppetRule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1251,7 +1251,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INFOPLIST_FILE = Tests/swiftlint/Resources/PuppetPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1294,7 +1294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INFOPLIST_FILE = Tests/swiftlint/Resources/PuppetPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1337,7 +1337,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INFOPLIST_FILE = Tests/swiftlint/Resources/PuppetPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1380,7 +1380,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = Tests/PuppetPlugin/Info.plist;
+				INFOPLIST_FILE = Tests/swiftlint/Resources/PuppetPlugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1428,7 +1428,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1470,7 +1470,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1511,7 +1511,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -1552,7 +1552,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "Tests/swiftlintTests/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "Tests/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;

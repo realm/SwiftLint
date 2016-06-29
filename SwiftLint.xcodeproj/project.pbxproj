@@ -134,13 +134,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		5C11D8391D1D0C6A0044F844 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5C5F183E1D1B765000A988E6;
-			remoteInfo = PuppetPlugin;
-		};
 		5C5F18471D1B766200A988E6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -904,7 +897,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				5C11D83A1D1D0C6A0044F844 /* PBXTargetDependency */,
 				D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */,
 			);
 			name = swiftlint;
@@ -1195,11 +1187,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		5C11D83A1D1D0C6A0044F844 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5C5F183E1D1B765000A988E6 /* PuppetPlugin */;
-			targetProxy = 5C11D8391D1D0C6A0044F844 /* PBXContainerItemProxy */;
-		};
 		5C5F18481D1B766200A988E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5C5F183E1D1B765000A988E6 /* PuppetPlugin */;
@@ -1250,7 +1237,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1299,7 +1285,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1343,7 +1328,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1387,7 +1371,6 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;

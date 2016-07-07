@@ -38,7 +38,7 @@ public struct WarningThresholdRule: ConfigurationProviderRule, SourceKitFreeRule
     }
 
     func createError(value: Int) -> [StyleViolation] {
-        let location = Location(file: "filename", line: 1, character: 2)
+        let location = Location(file: "", line: 0, character: 0)
         return [StyleViolation(
             ruleDescription: self.dynamicType.description,
             severity: ViolationSeverity.Error,

@@ -35,6 +35,16 @@ class WarningThresholdTests: XCTestCase {
             XCTFail()
         }
     }
+    
+    func testWarningThresholdNoViolations() {
+        let violations: [StyleViolation] = []
+        do {
+            let warningThreshold = try WarningThresholdRule(configuration: ["warning": 1])
+            XCTAssertEqual(warningThreshold.validate(violations).count, 0)
+        } catch {
+            XCTFail()
+        }
+    }
 
     func testWarningThresholdDefaultThreshold() {
         let violations = generateViolations()

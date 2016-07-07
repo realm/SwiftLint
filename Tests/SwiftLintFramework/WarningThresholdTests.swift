@@ -35,7 +35,7 @@ class WarningThresholdTests: XCTestCase {
             XCTFail()
         }
     }
-    
+
     func testWarningThresholdNoViolations() {
         let violations: [StyleViolation] = []
         do {

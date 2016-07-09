@@ -12,20 +12,15 @@ import SwiftLintFramework
 extension RuleList {
     init(pluginPaths: [String]) {
         let rules = pluginPaths.reduce(RuleList.defaultRuleTypes) { ruleTypes, pluginPath in
-            guard let bundle = NSBundle(path: pluginPath) else {
-                queuedPrintError("Failed to load the plugin at \(pluginPath)")
-                return ruleTypes
-            }
-            if !bundle.loaded {
-                bundle.load()
-            }
-            guard let principalClass = bundle.principalClass as? Rule.Type else {
-                queuedPrintError("Plugin \"\(pluginPath)\" principal class " +
-                    "\(bundle.principalClass) is not of type Rule")
+            let flags = RTLD_NOW | RTLD_GLOBAL
+            let _ = dlopen(pluginPath, flags)
+            let name = (pluginPath as NSString).lastPathComponent
+            let fullName = "\(name).\(name)"
+            guard let ruleType = NSClassFromString(fullName) as? Rule.Type else {
                 return ruleTypes
             }
             var ruleTypes = ruleTypes
-            ruleTypes.append(principalClass)
+            ruleTypes.append(ruleType)
             return ruleTypes
         }
         self.init(rules: rules)

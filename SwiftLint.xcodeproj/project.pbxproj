@@ -148,6 +148,13 @@
 			remoteGlobalIDString = D0D1216C19E87B05005E4BAA;
 			remoteInfo = SwiftLintFramework;
 		};
+		5C662F791D30892400F26B98 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5C5F183E1D1B765000A988E6;
+			remoteInfo = PuppetPlugin;
+		};
 		5CD637021D1ADE9B0017BD6E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -240,7 +247,7 @@
 		5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_passing.yml; sourceTree = "<group>"; };
 		5C4248D21D237DBA00CEFF88 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuppetRule.swift; sourceTree = "<group>"; };
-		5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuppetPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuppetRule.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginOptions.swift; sourceTree = "<group>"; };
 		5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Plugins.swift"; sourceTree = "<group>"; };
 		5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = swiftlintTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -518,7 +525,7 @@
 				D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */,
 				D0E7B63219E9C64500EDBA4D /* swiftlint.app */,
 				5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */,
-				5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */,
+				5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -809,9 +816,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		5C5F183E1D1B765000A988E6 /* PuppetPlugin */ = {
+		5C5F183E1D1B765000A988E6 /* PuppetRule */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetPlugin" */;
+			buildConfigurationList = 5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetRule" */;
 			buildPhases = (
 				5C5F183B1D1B765000A988E6 /* Sources */,
 				5C5F183C1D1B765000A988E6 /* Frameworks */,
@@ -822,9 +829,9 @@
 			dependencies = (
 				5C5F184C1D1B772000A988E6 /* PBXTargetDependency */,
 			);
-			name = PuppetPlugin;
+			name = PuppetRule;
 			productName = PuppetPlugin;
-			productReference = 5C5F183F1D1B765000A988E6 /* PuppetPlugin.plugin */;
+			productReference = 5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 		5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */ = {
@@ -897,6 +904,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5C662F7A1D30892400F26B98 /* PBXTargetDependency */,
 				D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */,
 			);
 			name = swiftlint;
@@ -948,7 +956,7 @@
 				D0D1216C19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217619E87B05005E4BAA /* SwiftLintFrameworkTests */,
 				5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */,
-				5C5F183E1D1B765000A988E6 /* PuppetPlugin */,
+				5C5F183E1D1B765000A988E6 /* PuppetRule */,
 			);
 		};
 /* End PBXProject section */
@@ -1189,13 +1197,18 @@
 /* Begin PBXTargetDependency section */
 		5C5F18481D1B766200A988E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5C5F183E1D1B765000A988E6 /* PuppetPlugin */;
+			target = 5C5F183E1D1B765000A988E6 /* PuppetRule */;
 			targetProxy = 5C5F18471D1B766200A988E6 /* PBXContainerItemProxy */;
 		};
 		5C5F184C1D1B772000A988E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
 			targetProxy = 5C5F184B1D1B772000A988E6 /* PBXContainerItemProxy */;
+		};
+		5C662F7A1D30892400F26B98 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5C5F183E1D1B765000A988E6 /* PuppetRule */;
+			targetProxy = 5C662F791D30892400F26B98 /* PBXContainerItemProxy */;
 		};
 		5CD637031D1ADE9B0017BD6E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1783,7 +1796,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetPlugin" */ = {
+		5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetRule" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5C5F18431D1B765000A988E6 /* Debug */,

@@ -17,7 +17,7 @@ class RulesTests: XCTestCase {
     lazy var pluginURL: NSURL = { [unowned self] in
         return testBundle.bundleURL
             .URLByDeletingLastPathComponent!
-            .URLByAppendingPathComponent("PuppetPlugin.plugin")
+            .URLByAppendingPathComponent("PuppetRule.plugin/Contents/MacOS/PuppetRule")
     }()
 
     let destination: NSURL = {

@@ -20,8 +20,8 @@ extension String {
         }
         return count
     }
-    private func leadingNewlineCount() -> Int? {
-        return countOfLeadingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    private func leadingNewlineAndWhiteSpaceCount() -> Int? {
+        return countOfLeadingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
     }
 }
 
@@ -36,7 +36,8 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
         nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ]
+        triggeringExamples: [ "\n", " //\n" ],
+        corrections: ["\n": ""]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -54,7 +55,8 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
     }
 
     public func correctFile(file: File) -> [Correction] {
-        guard let newLineCount = file.contents.leadingNewlineCount() where newLineCount != 0  else {
+        guard let spaceCount = file.contents.leadingNewlineAndWhiteSpaceCount()
+            where spaceCount != 0  else {
             return []
         }
         let region = file.regions().filter {
@@ -64,7 +66,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
             return []
         }
         file.write(file.contents.substringFromIndex(
-                file.contents.startIndex.advancedBy(newLineCount)))
+                file.contents.startIndex.advancedBy(spaceCount)))
 
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: self.dynamicType.description, location: location)]

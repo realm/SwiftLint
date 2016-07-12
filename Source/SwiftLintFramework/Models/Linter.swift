@@ -28,9 +28,13 @@ public struct Linter {
         }
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
+        var warningRule: WarningThresholdRule?
         let violations = rules.flatMap { rule -> [StyleViolation] in
             if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
                 return []
+            }
+            if rule is WarningThresholdRule {
+                warningRule = rule as? WarningThresholdRule
             }
             let start: NSDate! = benchmark ? NSDate() : nil
             let violations = rule.validateFile(self.file)
@@ -45,6 +49,9 @@ public struct Linter {
                 }
                 return violationRegion.isRuleEnabled(rule)
             }
+        }
+        if let warningRule = warningRule {
+            return (warningRule.validate(violations), ruleTimes)
         }
         return (violations, ruleTimes)
     }

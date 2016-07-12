@@ -63,7 +63,7 @@ Available commands:
 
 ## 规则
 
-现在只有很少的规则被实现了，但是我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 Pull Requests。
+现在只有很少的规则被实现了，但是我们希望 Swift 社区（就是你！）会在以后有更多的贡献，我们鼓励提交 [Pull Requests](CONTRIBUTING.md)。
 
 当前*正在*被实施的规则大多数只是作为一个基础，仅供参考。
 

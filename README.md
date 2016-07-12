@@ -90,7 +90,7 @@ These are same environment variables set for input files to
 ## Rules
 
 There are only a small number of rules currently implemented, but we hope the
-Swift community (that's you!) will contribute more over time. Pull requests are
+Swift community (that's you!) will contribute more over time. [Pull requests](CONTRIBUTING.md) are
 encouraged.
 
 The rules that *are* currently implemented are mostly there as a starting point

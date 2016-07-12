@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* LeadingWhitespaceRule is now auto correctable.
+* LeadingWhitespaceRule is now auto correctable.  
   [masters3d](https://github.com/masters3d)
 
 * Add included regex for custom rules to control what files are processed.  

@@ -9,22 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-extension String {
-    private func countOfLeadingCharactersInSet(characterSet: NSCharacterSet) -> Int {
-        var count = 0
-        for char in utf16 {
-            if !characterSet.characterIsMember(char) {
-                break
-            }
-            count += 1
-        }
-        return count
-    }
-    private func leadingNewlineAndWhiteSpaceCount() -> Int? {
-        return countOfLeadingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-    }
-}
-
 public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.Warning)
@@ -55,19 +39,19 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
     }
 
     public func correctFile(file: File) -> [Correction] {
-        guard let spaceCount = file.contents.leadingNewlineAndWhiteSpaceCount()
-            where spaceCount != 0  else {
+        let whitespaceAndNewline = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        let spaceCount = file.contents.countOfLeadingCharactersInSet(whitespaceAndNewline)
+        if spaceCount == 0 {
             return []
         }
         let region = file.regions().filter {
             $0.contains(Location(file: file.path, line: max(file.lines.count, 1)))
-            }.first
+        }.first
         if region?.isRuleDisabled(self) == true {
             return []
         }
-        file.write(file.contents.substringFromIndex(
-                file.contents.startIndex.advancedBy(spaceCount)))
-
+        let indexEnd = file.contents.startIndex.advancedBy(spaceCount)
+        file.write(file.contents.substringFromIndex(indexEnd))
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: self.dynamicType.description, location: location)]
     }

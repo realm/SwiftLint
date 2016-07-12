@@ -31,6 +31,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 "navigationBarHidden, animated: true)",
             "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
                 "self.searchBar?.text?.isEmpty == false) {}",
+            "print(\"\\(xVar)!\")"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -51,15 +52,18 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // capture previous and next of "!"
     // http://userguide.icu-project.org/strings/regexp
-    private static let pattern = "(\\S)!(.?)"
+    private static let pattern = "(\\S)(!)(.?)"
 
     // swiftlint:disable:next force_try
     private static let regularExpression = try! NSRegularExpression(pattern: pattern,
         options: [.DotMatchesLineSeparators])
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind
         .commentKeywordStringAndTypeidentifierKinds().map { $0.rawValue }
-    private static let excludingSyntaxKindsForSecondCapture = [SyntaxKind.Identifier.rawValue]
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind
+        .commentAndStringKinds().map { $0.rawValue }
+    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.Identifier.rawValue]
 
+    // swiftlint:disable:next function_body_length
     private func violationRangesInFile(file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents as NSString
@@ -68,49 +72,59 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         return ForceUnwrappingRule.regularExpression
             .matchesInString(contents, options: [], range: range)
             .flatMap { match -> NSRange? in
-                if match.numberOfRanges < 2 { return nil }
+                if match.numberOfRanges < 3 { return nil }
 
-                // check first captured range
                 let firstRange = match.rangeAtIndex(1)
+                let secondRange = match.rangeAtIndex(2)
+
                 let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
 
                 guard let matchByteFirstRange = contents
-                    .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
+                    .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
+                    matchByteSecondRange = contents
+                        .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
                 let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
+                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
 
+                // check first captured range
                 // If not empty, first captured range is comment, string, keyword or typeidentifier.
                 // We checks "not empty" because tokens may empty without filtering.
-                let tokensInFirstRangeExcludingSyntaxKindsOnly = tokensInFirstRange.filter({
+                guard tokensInFirstRange.filter({
                     ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains($0.type)
-                })
-                if !tokensInFirstRangeExcludingSyntaxKindsOnly.isEmpty { return nil }
+                }).isEmpty else { return nil }
 
                 // if first captured range is identifier, generate violation
                 if tokensInFirstRange.map({ $0.type }).contains(SyntaxKind.Identifier.rawValue) {
                     return violationRange
                 }
 
-                // check firstCapturedString is ")"
-                let firstCapturedString = nsstring.substringWithRange(firstRange)
-                if firstCapturedString == ")" { return violationRange }
+                // check second capture '!'
+                let forceUnwrapNotInCommentOrString = tokensInSecondRange.filter({
+                    ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains($0.type)
+                }).isEmpty
 
-                // check second capture
+                // check firstCapturedString is ")" and '!' is not within comment or string
+                let firstCapturedString = nsstring.substringWithRange(firstRange)
+                if firstCapturedString == ")" &&
+                    forceUnwrapNotInCommentOrString { return violationRange }
+
+                // check third capture
                 if match.numberOfRanges == 3 {
 
-                    // check second captured range
-                    let secondRange = match.rangeAtIndex(2)
-                    guard let matchByteSecondRange = contents
+                    // check third captured range
+                    let secondRange = match.rangeAtIndex(3)
+                    guard let matchByteThirdRange = contents
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                         else { return nil }
 
-                    let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange).filter {
-                        ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains($0.type)
+                    let tokensInThirdRange = syntaxMap.tokensIn(matchByteThirdRange).filter {
+                        ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains($0.type)
                     }
-                    // If not empty, second captured range is identifier.
+                    // If not empty, third captured range is identifier.
                     // "!" is "operator prefix !".
-                    if !tokensInSecondRange.isEmpty { return nil }
+                    if !tokensInThirdRange.isEmpty { return nil }
                 }
 
                 // check structure

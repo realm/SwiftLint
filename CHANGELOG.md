@@ -19,6 +19,10 @@
   [Sarr Blaise](https://github.com/bsarr007) 
   [#646](https://github.com/realm/SwiftLint/issues/646) 
 
+* Fix force_unwrapping false positive inside strings.
+  [Daniel Beard](https://github.com/daniel-beard)
+  [#721](https://github.com/realm/SwiftLint/issues/721)
+
 ## 0.11.1: Cuddles... Or Else!
 
 ##### Breaking

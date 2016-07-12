@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LeadingWhitespaceRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 
@@ -20,7 +20,8 @@ public struct LeadingWhitespaceRule: ConfigurationProviderRule, SourceKitFreeRul
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
         nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "\n", " //\n" ]
+        triggeringExamples: [ "\n", " //\n" ],
+        corrections: ["\n": ""]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -35,5 +36,23 @@ public struct LeadingWhitespaceRule: ConfigurationProviderRule, SourceKitFreeRul
             location: Location(file: file.path, line: 1),
             reason: "File shouldn't start with whitespace: " +
             "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
+    }
+
+    public func correctFile(file: File) -> [Correction] {
+        let whitespaceAndNewline = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+        let spaceCount = file.contents.countOfLeadingCharactersInSet(whitespaceAndNewline)
+        if spaceCount == 0 {
+            return []
+        }
+        let region = file.regions().filter {
+            $0.contains(Location(file: file.path, line: max(file.lines.count, 1)))
+        }.first
+        if region?.isRuleDisabled(self) == true {
+            return []
+        }
+        let indexEnd = file.contents.startIndex.advancedBy(spaceCount)
+        file.write(file.contents.substringFromIndex(indexEnd))
+        let location = Location(file: file.path, line: max(file.lines.count, 1))
+        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
     }
 }

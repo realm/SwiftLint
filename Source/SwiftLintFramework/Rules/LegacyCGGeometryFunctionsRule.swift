@@ -105,9 +105,11 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
-
+// swiftlint:disable function_body_length
     public func correctFile(file: File) -> [Correction] {
-        if isRuleDisabled(file) { return [] }
+        if isRuleDisabled(file) {
+            return []
+        }
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber

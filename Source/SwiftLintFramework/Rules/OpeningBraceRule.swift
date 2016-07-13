@@ -77,6 +77,9 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let violatingRanges = file.ruleEnabledViolatingRanges(
             file.violatingOpeningBraceRanges(),
             forRule: self

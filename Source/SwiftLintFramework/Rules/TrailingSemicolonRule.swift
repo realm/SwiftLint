@@ -64,6 +64,9 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         if adjustedRanges.isEmpty {
             return []
         }
+        if isRuleDisabled(file) {
+            return []
+        }
         var correctedContents = file.contents
         for range in adjustedRanges {
             if let indexRange = correctedContents.nsrangeToIndexRange(range) {

@@ -54,6 +54,9 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let violatingRanges = file.ruleEnabledViolatingRanges(
             file.violatingClosingBraceRanges(),
             forRule: self

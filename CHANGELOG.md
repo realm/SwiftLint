@@ -7,7 +7,7 @@
 ##### Enhancements
 
 * LeadingWhitespaceRule is now auto correctable.  
-  [masters3d](https://github.com/masters3d)
+  [J. Cheyo Jimenez](https://github.com/masters3d)
 
 * Add included regex for custom rules to control what files are processed.  
   [bootstraponline](https://github.com/bootstraponline)
@@ -15,6 +15,10 @@
 
 ##### Bug Fixes
 
+* Fix locally disabled comma rule autocorrect.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)  
+  [#601](https://github.com/realm/SwiftLint/issues/601)  
+  
 * Fix LegacyConstructorRule when using variables instead of numbers.  
   [Sarr Blaise](https://github.com/bsarr007) 
   [#646](https://github.com/realm/SwiftLint/issues/646) 

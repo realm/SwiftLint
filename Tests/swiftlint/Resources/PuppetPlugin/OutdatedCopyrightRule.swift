@@ -5,6 +5,7 @@
 //  Created by Sash Zats on 6/22/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
+import Foundation
 import SwiftLintFramework
 import SourceKittenFramework
 

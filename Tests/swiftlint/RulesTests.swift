@@ -6,6 +6,9 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
+#if SWIFT_PACKAGE
+    // This test is not possible yet with spm
+#else
 import Foundation
 import XCTest
 import SwiftLintFramework
@@ -15,35 +18,14 @@ class RulesTests: XCTestCase {
     var swiftlint: SwiftLintExecutable!
 
     lazy var pluginURL: NSURL = { [unowned self] in
+        // swiftlint:disable line_length
         return testBundle.bundleURL
             .URLByDeletingLastPathComponent!
-            .URLByAppendingPathComponent("PuppetRule.plugin/Contents/MacOS/PuppetRule")
-    }()
-
-    let destination: NSURL = {
-        // Copy the source file to inspect and give it .swift extension
-        // to avoid compiler processing it as a source file
-        print(testBundle)
-        let swiftFile = resource(named: "valid_swift", withExtension: nil)
-        let url = swiftFile.URLByAppendingPathExtension("swift")
-        let fileManager = NSFileManager.defaultManager()
-        do {
-            if fileManager.fileExistsAtPath(url.relativePath!) {
-                try fileManager.removeItemAtURL(url)
-            }
-            try fileManager.copyItemAtURL(swiftFile, toURL: url)
-        } catch let e as NSError {
-            fatalError("Failed to move valid_swift file to \(url.relativePath!) \(e)")
-        } catch {
-            fatalError("Failed to move valid_swift file to \(url.relativePath!)")
-        }
-        return url
+            .URLByAppendingPathComponent("OutdatedCopyrightRule.plugin/Contents/MacOS/OutdatedCopyrightRule")
     }()
 
     override func setUp() {
         super.setUp()
-
-        // executable
         swiftlint = SwiftLintExecutable()
     }
 
@@ -56,51 +38,76 @@ class RulesTests: XCTestCase {
         let result = swiftlint.execute([
             "rules",
             "--plugins", pluginURL.relativePath!,
-            "puppet"
+            "outdated_copyright"
         ])
-        assertResultSuccess(result, "Puppet (puppet): Puppet rule, " +
-            "set should_fail to true to trigger violation\n")
+        assertResultSuccess(result, { string in
+            string.containsString("OutdatedCopyright (outdated_copyright): Warn about outdated copyrights")
+        })
     }
 
-    func testLintLoadingPuppetPluginWithPassingConfiguration() {
-        let passingYml = resource(named: "puppet_config_passing", withExtension: "yml")
+    func testLintLoadingOutdatedCopyrightWithPassingFile() {
+        let testSwift = testUrl(passing: true)
+        let passingYml = resource(named: "outdated_copyright", withExtension: "yml")
         let result = swiftlint.execute([
             "lint",
             "--config", passingYml.relativePath!,
-            "--path", destination.relativePath!,
+            "--path", testSwift.relativePath!,
+            "--plugins", pluginURL.relativePath!,
+            "--quiet"
+        ])
+        assertResultSuccess(result, "")
+    }
+
+    func testLintLoadingOutdatedCopyrightWithFailingFile() {
+        let testSwift = testUrl(passing: false)
+        let passingYml = resource(named: "outdated_copyright", withExtension: "yml")
+        let result = swiftlint.execute([
+            "lint",
+            "--config", passingYml.relativePath!,
+            "--path", testSwift.relativePath!,
             "--plugins", pluginURL.relativePath!,
             "--quiet"
             ])
         assertResultSuccess(result, "")
     }
 
-    func testLintLoadingPuppetPluginWithFailingConfiguration() {
-        let failingYml = resource(named: "puppet_config_failing", withExtension: "yml")
-        let result = swiftlint.execute([
-            "lint",
-            "--config", failingYml.relativePath!,
-            "--path", destination.relativePath!,
-            "--plugins", pluginURL.relativePath!,
-            "--quiet"
-            ])
-        let expected = destination.relativePath! +
-        ":0: warning: Puppet Violation: PuppetRule was told to fail (puppet)\n"
-        assertResultSuccess(result, expected)
+    private func testUrl(passing passing: Bool) -> NSURL {
+        let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)!
+        let currentYear = calendar.component(.Year, fromDate: NSDate())
+        let year = passing ? currentYear : currentYear - 1
+        let contents = swiftContentCopyrighted(at: year)
+        let url = writeTestFile(with: contents)
+        return url
+    }
 
+    private func writeTestFile(with contents: String) -> NSURL {
+        let yml = resource(named: "outdated_copyright", withExtension: "yml")
+        let swiftFile = yml.URLByDeletingLastPathComponent!.URLByAppendingPathComponent("outdated_copyright_test.swift")
+        let url = swiftFile.URLByAppendingPathExtension("swift")
+        let fileManager = NSFileManager.defaultManager()
+
+        do {
+            if url.checkResourceIsReachableAndReturnError(nil) {
+                try fileManager.removeItemAtURL(url)
+            }
+            try contents.writeToURL(url, atomically: true, encoding: NSUTF8StringEncoding)
+        } catch {
+            fatalError("Failed to write test swift file to \(url.relativePath!)")
+        }
+        return url
+    }
+
+    private func swiftContentCopyrighted(at year: Int) -> String {
+        return "//" +
+                "//  Test.swift" +
+                "//  SwiftLint" +
+                "//" +
+                "//  Copyright © \(year) Realm. All rights reserved." +
+                "//"
     }
 }
 
 private func resource(named name: String, withExtension ext: String? = nil) -> NSURL {
-    #if SWIFT_PACKAGE
-        let fileName: String
-        if let ext = ext {
-            fileName = "\(name).\(ext)"
-        } else {
-            fileName = name
-        }
-        let path = "Tests/swiftlint/Resources/\(fileName)"
-        return NSURL(fileURLWithPath: path.absolutePathRepresentation())
-    #else
         return testBundle.URLForResource(name, withExtension: ext)!
-    #endif
 }
+#endif

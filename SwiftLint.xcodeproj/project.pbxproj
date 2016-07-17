@@ -37,11 +37,9 @@
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
-		5C11D8421D1D897A0044F844 /* puppet_config_failing.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */; };
-		5C11D8441D1D89990044F844 /* valid_swift in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8411D1D897A0044F844 /* valid_swift */; };
 		5C11D8461D1D90400044F844 /* TestBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C11D8451D1D90400044F844 /* TestBundle.swift */; };
-		5C11D8481D1D90B90044F844 /* puppet_config_passing.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */; };
-		5C4248D51D2387AE00CEFF88 /* PuppetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */; };
+		5C11D8481D1D90B90044F844 /* outdated_copyright.yml in Resources */ = {isa = PBXBuildFile; fileRef = 5C11D8471D1D90B90044F844 /* outdated_copyright.yml */; };
+		5C4248D51D2387AE00CEFF88 /* OutdatedCopyrightRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4248D31D237DBA00CEFF88 /* OutdatedCopyrightRule.swift */; };
 		5C6322FF1D1C357A00CCE1DA /* PluginOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */; };
 		5C6323011D1C35D200CCE1DA /* RuleList+Plugins.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */; };
 		5CDCADB21D1AE2D1004B9D69 /* HelpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */; };
@@ -148,13 +146,6 @@
 			remoteGlobalIDString = D0D1216C19E87B05005E4BAA;
 			remoteInfo = SwiftLintFramework;
 		};
-		5C662F791D30892400F26B98 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5C5F183E1D1B765000A988E6;
-			remoteInfo = PuppetPlugin;
-		};
 		5CD637021D1ADE9B0017BD6E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -241,13 +232,11 @@
 		4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexHelpers.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_failing.yml; sourceTree = "<group>"; };
-		5C11D8411D1D897A0044F844 /* valid_swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = valid_swift; sourceTree = "<group>"; };
 		5C11D8451D1D90400044F844 /* TestBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestBundle.swift; sourceTree = "<group>"; };
-		5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = puppet_config_passing.yml; sourceTree = "<group>"; };
+		5C11D8471D1D90B90044F844 /* outdated_copyright.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = outdated_copyright.yml; sourceTree = "<group>"; };
 		5C4248D21D237DBA00CEFF88 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PuppetRule.swift; sourceTree = "<group>"; };
-		5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PuppetRule.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C4248D31D237DBA00CEFF88 /* OutdatedCopyrightRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutdatedCopyrightRule.swift; sourceTree = "<group>"; };
+		5C5F183F1D1B765000A988E6 /* OutdatedCopyrightRule.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OutdatedCopyrightRule.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C6322FE1D1C357A00CCE1DA /* PluginOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PluginOptions.swift; sourceTree = "<group>"; };
 		5C6323001D1C35D200CCE1DA /* RuleList+Plugins.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Plugins.swift"; sourceTree = "<group>"; };
 		5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = swiftlintTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -449,27 +438,25 @@
 		5C11D83F1D1D897A0044F844 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				5C11D8401D1D897A0044F844 /* puppet_config_failing.yml */,
-				5C11D8471D1D90B90044F844 /* puppet_config_passing.yml */,
-				5C11D8411D1D897A0044F844 /* valid_swift */,
+				5C11D8471D1D90B90044F844 /* outdated_copyright.yml */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		5C4248D11D237DBA00CEFF88 /* PuppetPlugin */ = {
+		5C4248D11D237DBA00CEFF88 /* SpellChecker */ = {
 			isa = PBXGroup;
 			children = (
 				5C4248D21D237DBA00CEFF88 /* Info.plist */,
-				5C4248D31D237DBA00CEFF88 /* PuppetRule.swift */,
+				5C4248D31D237DBA00CEFF88 /* OutdatedCopyrightRule.swift */,
 			);
-			name = PuppetPlugin;
+			name = SpellChecker;
 			path = Resources/PuppetPlugin;
 			sourceTree = "<group>";
 		};
 		5CDCADAC1D1AE2C3004B9D69 /* swiftlintTests */ = {
 			isa = PBXGroup;
 			children = (
-				5C4248D11D237DBA00CEFF88 /* PuppetPlugin */,
+				5C4248D11D237DBA00CEFF88 /* SpellChecker */,
 				5CDCADB01D1AE2C3004B9D69 /* HelpTests.swift */,
 				5CDCADC21D1AE9DA004B9D69 /* RulesTests.swift */,
 				5CDCADBB1D1AE7DD004B9D69 /* Extensions */,
@@ -525,7 +512,7 @@
 				D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */,
 				D0E7B63219E9C64500EDBA4D /* swiftlint.app */,
 				5CD636FD1D1ADE9B0017BD6E /* swiftlintTests.xctest */,
-				5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */,
+				5C5F183F1D1B765000A988E6 /* OutdatedCopyrightRule.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -816,9 +803,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		5C5F183E1D1B765000A988E6 /* PuppetRule */ = {
+		5C5F183E1D1B765000A988E6 /* OutdatedCopyrightRule */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetRule" */;
+			buildConfigurationList = 5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "OutdatedCopyrightRule" */;
 			buildPhases = (
 				5C5F183B1D1B765000A988E6 /* Sources */,
 				5C5F183C1D1B765000A988E6 /* Frameworks */,
@@ -829,9 +816,9 @@
 			dependencies = (
 				5C5F184C1D1B772000A988E6 /* PBXTargetDependency */,
 			);
-			name = PuppetRule;
+			name = OutdatedCopyrightRule;
 			productName = PuppetPlugin;
-			productReference = 5C5F183F1D1B765000A988E6 /* PuppetRule.plugin */;
+			productReference = 5C5F183F1D1B765000A988E6 /* OutdatedCopyrightRule.plugin */;
 			productType = "com.apple.product-type.bundle";
 		};
 		5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */ = {
@@ -904,7 +891,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				5C662F7A1D30892400F26B98 /* PBXTargetDependency */,
 				D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */,
 			);
 			name = swiftlint;
@@ -956,7 +942,7 @@
 				D0D1216C19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217619E87B05005E4BAA /* SwiftLintFrameworkTests */,
 				5CD636FC1D1ADE9B0017BD6E /* swiftlintTests */,
-				5C5F183E1D1B765000A988E6 /* PuppetRule */,
+				5C5F183E1D1B765000A988E6 /* OutdatedCopyrightRule */,
 			);
 		};
 /* End PBXProject section */
@@ -983,9 +969,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C11D8441D1D89990044F844 /* valid_swift in Resources */,
-				5C11D8481D1D90B90044F844 /* puppet_config_passing.yml in Resources */,
-				5C11D8421D1D897A0044F844 /* puppet_config_failing.yml in Resources */,
+				5C11D8481D1D90B90044F844 /* outdated_copyright.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1058,7 +1042,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C4248D51D2387AE00CEFF88 /* PuppetRule.swift in Sources */,
+				5C4248D51D2387AE00CEFF88 /* OutdatedCopyrightRule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1197,18 +1181,13 @@
 /* Begin PBXTargetDependency section */
 		5C5F18481D1B766200A988E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5C5F183E1D1B765000A988E6 /* PuppetRule */;
+			target = 5C5F183E1D1B765000A988E6 /* OutdatedCopyrightRule */;
 			targetProxy = 5C5F18471D1B766200A988E6 /* PBXContainerItemProxy */;
 		};
 		5C5F184C1D1B772000A988E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
 			targetProxy = 5C5F184B1D1B772000A988E6 /* PBXContainerItemProxy */;
-		};
-		5C662F7A1D30892400F26B98 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5C5F183E1D1B765000A988E6 /* PuppetRule */;
-			targetProxy = 5C662F791D30892400F26B98 /* PBXContainerItemProxy */;
 		};
 		5CD637031D1ADE9B0017BD6E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1796,7 +1775,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "PuppetRule" */ = {
+		5C5F18421D1B765000A988E6 /* Build configuration list for PBXNativeTarget "OutdatedCopyrightRule" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5C5F18431D1B765000A988E6 /* Debug */,

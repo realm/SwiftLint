@@ -13,7 +13,10 @@ extension RuleList {
     init(pluginPaths: [String]) {
         let rules = pluginPaths.reduce(RuleList.defaultRuleTypes) { ruleTypes, pluginPath in
             let flags = RTLD_NOW | RTLD_GLOBAL
-            let _ = dlopen(pluginPath, flags)
+            let handler = dlopen(pluginPath, flags)
+            guard handler != nil else {
+                return ruleTypes
+            }
             let name = (pluginPath as NSString).lastPathComponent
             let fullName = "\(name).\(name)"
             guard let ruleType = NSClassFromString(fullName) as? Rule.Type else {

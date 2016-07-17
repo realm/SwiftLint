@@ -16,6 +16,8 @@ class HelpTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        print("HALO")
+        print(testBundle.bundlePath)
         swiftlint = SwiftLintExecutable()
     }
 

@@ -93,7 +93,7 @@ extension File {
         }
     }
 
-    internal var structure: Structure {
+    public var structure: Structure {
         guard let structure = structureCache.get(self) else {
             if let handler = assertHandler {
                 handler()
@@ -104,7 +104,7 @@ extension File {
         return structure
     }
 
-    internal var syntaxMap: SyntaxMap {
+    public var syntaxMap: SyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
                 handler()

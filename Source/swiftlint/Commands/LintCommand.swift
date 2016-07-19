@@ -56,6 +56,12 @@ struct LintCommand: CommandType {
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
             reporter.reportViolations(violations, realtimeCondition: false)
+            let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
+            if let warningThreshold = configuration.warningThreshold {
+                if numberOfWarningViolations >= warningThreshold {
+                    exit(2)
+                }
+            }
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,

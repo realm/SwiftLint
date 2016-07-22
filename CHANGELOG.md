@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* Add Junit reporter.
+* Add Junit reporter.  
   [Matthew Ellis](https://github.com/matthewellis)
 
 * LeadingWhitespaceRule is now auto correctable.  

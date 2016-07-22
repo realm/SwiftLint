@@ -78,4 +78,17 @@ class ReporterTests: XCTestCase {
             "</checkstyle>"
         )
     }
+
+    func testJunitReporter() {
+        XCTAssertEqual(
+            JUnitReporter.generateReport(generateViolations()),
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>\n" +
+                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
+                    "<failure message=\'Violation Reason.\'>warning:\nLine:1 </failure>" +
+                "\t</testcase>\n" +
+                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
+                    "<failure message=\'Violation Reason.\'>error:\nLine:1 </failure>" +
+                "\t</testcase>\n</testsuite></testsuites>"
+        )
+    }
 }

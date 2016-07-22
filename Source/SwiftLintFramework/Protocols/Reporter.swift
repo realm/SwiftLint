@@ -22,6 +22,8 @@ public func reporterFromString(string: String) -> Reporter.Type {
         return CSVReporter.self
     case CheckstyleReporter.identifier:
         return CheckstyleReporter.self
+    case JUnitReporter.identifier:
+        return JUnitReporter.self
     default:
         fatalError("no reporter with identifier '\(string)' available.")
     }

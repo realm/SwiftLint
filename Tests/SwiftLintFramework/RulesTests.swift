@@ -85,7 +85,7 @@ class RulesTests: XCTestCase {
             ]
         )
 
-        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": 1])
+        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
     // swiftlint:enable function_body_length
 

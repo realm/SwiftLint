@@ -18,7 +18,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public var flexibleRightSpacing = false
 
     public init(configuration: AnyObject) throws {
-        flexibleRightSpacing = configuration["flexible_right_spacing"] as? Int == 1
+        flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true
     }
 
     public var configurationDescription: String {

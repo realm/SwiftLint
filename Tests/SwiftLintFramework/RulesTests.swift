@@ -15,9 +15,79 @@ class RulesTests: XCTestCase {
         verifyRule(ClosingBraceRule.description)
     }
 
+    // swiftlint:disable function_body_length
     func testColon() {
+        // Verify Colon rule with test values for when flexible_right_spacing
+        // is false (default).
         verifyRule(ColonRule.description)
+
+        // Verify Colon rule with test values for when flexible_right_spacing
+        // is true.
+        let description = RuleDescription(
+            identifier: "colon",
+            name: "Colon",
+            description: "Colons should be next to the identifier when specifying a type.",
+            nonTriggeringExamples: [
+                "let abc: Void\n",
+                "let abc: [Void: Void]\n",
+                "let abc: (Void, Void)\n",
+                "let abc: ([Void], String, Int)\n",
+                "let abc: [([Void], String, Int)]\n",
+                "let abc: String=\"def\"\n",
+                "let abc: Int=0\n",
+                "let abc: Enum=Enum.Value\n",
+                "func abc(def: Void) {}\n",
+                "func abc(def: Void, ghi: Void) {}\n",
+                "// 周斌佳年周斌佳\nlet abc: String = \"abc:\"",
+                "let abc:  Void\n",
+                "let abc:  (Void, String, Int)\n",
+                "let abc:  ([Void], String, Int)\n",
+                "let abc:  [([Void], String, Int)]\n",
+                "func abc(def:  Void) {}\n"
+            ],
+            triggeringExamples: [
+                "let ↓abc:Void\n",
+                "let ↓abc :Void\n",
+                "let ↓abc : Void\n",
+                "let ↓abc : [Void: Void]\n",
+                "let ↓abc : (Void, String, Int)\n",
+                "let ↓abc : ([Void], String, Int)\n",
+                "let ↓abc : [([Void], String, Int)]\n",
+                "let ↓abc :String=\"def\"\n",
+                "let ↓abc :Int=0\n",
+                "let ↓abc :Int = 0\n",
+                "let ↓abc:Int=0\n",
+                "let ↓abc:Int = 0\n",
+                "let ↓abc:Enum=Enum.Value\n",
+                "func abc(↓def:Void) {}\n",
+                "func abc(↓def :Void) {}\n",
+                "func abc(↓def : Void) {}\n",
+                "func abc(def: Void, ↓ghi :Void) {}\n"
+            ],
+            corrections: [
+                "let abc:Void\n": "let abc: Void\n",
+                "let abc :Void\n": "let abc: Void\n",
+                "let abc : Void\n": "let abc: Void\n",
+                "let abc : [Void: Void]\n": "let abc: [Void: Void]\n",
+                "let abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
+                "let abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
+                "let abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
+                "let abc :String=\"def\"\n": "let abc: String=\"def\"\n",
+                "let abc :Int=0\n": "let abc: Int=0\n",
+                "let abc :Int = 0\n": "let abc: Int = 0\n",
+                "let abc:Int=0\n": "let abc: Int=0\n",
+                "let abc:Int = 0\n": "let abc: Int = 0\n",
+                "let abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
+                "func abc(def:Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def :Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def : Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def: Void, ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
+            ]
+        )
+
+        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
+    // swiftlint:enable function_body_length
 
     func testComma() {
         verifyRule(CommaRule.description)

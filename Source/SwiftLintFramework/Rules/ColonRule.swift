@@ -15,6 +15,16 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     public init() {}
 
+    public var flexibleRightSpacing = false
+
+    public init(configuration: AnyObject) throws {
+        flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true
+    }
+
+    public var configurationDescription: String {
+        return "flexible_right_spacing: \(flexibleRightSpacing)"
+    }
+
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",
@@ -110,19 +120,24 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     // MARK: - Private
 
-    private let pattern =
-        "(\\w)" +              // Capture an identifier
-        "(?:" +                // start group
-        "\\s+" +               // followed by whitespace
-        ":" +                  // to the left of a colon
-        "\\s*" +               // followed by any amount of whitespace.
-        "|" +                  // or
-        ":" +                  // immediately followed by a colon
-        "(?:\\s{0}|\\s{2,})" + // followed by 0 or 2+ whitespace characters.
-        ")" +                  // end group
-        "(" +                  // Capture a type identifier
-        "[\\[|\\(]*" +         // which may begin with a series of nested parenthesis or brackets
-        "\\S)"                 // lazily to the first non-whitespace character.
+    private var pattern: String {
+        // If flexible_right_spacing is true, match only 0 whitespaces.
+        // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
+        let spacingRegex = flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
+
+        return  "(\\w)" +       // Capture an identifier
+                "(?:" +         // start group
+                "\\s+" +        // followed by whitespace
+                ":" +           // to the left of a colon
+                "\\s*" +        // followed by any amount of whitespace.
+                "|" +           // or
+                ":" +           // immediately followed by a colon
+                spacingRegex +  // followed by right spacing regex
+                ")" +           // end group
+                "(" +           // Capture a type identifier
+                "[\\[|\\(]*" +  // which may begin with a series of nested parenthesis or brackets
+                "\\S)"          // lazily to the first non-whitespace character.
+    }
 
     private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents as NSString

@@ -57,6 +57,7 @@ public let masterRuleList = RuleList(rules:
     FunctionParameterCountRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
+    LegacyNSGeometryFunctionsRule.self,
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
     LineLengthRule.self,

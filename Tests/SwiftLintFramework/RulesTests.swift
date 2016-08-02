@@ -140,6 +140,10 @@ class RulesTests: XCTestCase {
     func testLegacyCGGeometryFunctions() {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
+    
+    func testLegacyNSGeometryFunctions() {
+        verifyRule(LegacyNSGeometryFunctionsRule.description)
+    }
 
     func testLegacyConstant() {
         verifyRule(LegacyConstantRule.description)

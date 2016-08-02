@@ -50,6 +50,10 @@
 
 * Adds 'ConditionalReturnsOnNewLineRule' rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
+  
+* Made `- returns:` doc optional for initializers.  
+  [Mohpor](https://github.com/mohpor)
+  [#557](https://github.com/realm/SwiftLint/issues/557)
 
 ##### Bug Fixes
 

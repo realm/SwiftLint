@@ -7,8 +7,12 @@
 ##### Enhancements
 
 * Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
-  `NSRect` constants and constructors to existing rules.
+  `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)
+
+* Removed ConditionalBindingCascadeRule.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#701](https://github.com/realm/SwiftLint/issues/701)
 
 * Allow setting `flexible_right_spacing` configuration for the `colon` rule.  
   [Shai Mishali](https://github.com/freak4pc)

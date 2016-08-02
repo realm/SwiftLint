@@ -11,9 +11,9 @@ import Foundation
 
 public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Warning)
-    
+
     public init() {}
-    
+
     public static let description = RuleDescription(
         identifier: "legacy_nsgeometry_functions",
         name: "Legacy NSGeometry Functions",
@@ -81,34 +81,35 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "↓NSUnionRect(rect1, rect2)\n": "rect1.union(rect2)\n",
             "↓NSIntersectionRect( rect1 ,rect2)\n": "rect1.intersect(rect2)\n",
             "↓NSContainsRect( rect1,rect2     )\n": "rect1.contains(rect2)\n",
-            "↓NSPointInRect(point  ,rect)\n": "rect.contains(point)\n", // note that the arguments change order
+            "↓NSPointInRect(point  ,rect)\n": "rect.contains(point)\n", // note order of arguments
             "↓NSIntersectsRect(  rect1,rect2 )\n": "rect1.intersects(rect2)\n",
             "↓NSIntersectsRect(rect1, rect2 )\n↓NSWidth(rect  )\n":
             "rect1.intersects(rect2)\nrect.width\n"
         ]
     )
-    
+
     public func validateFile(file: File) -> [StyleViolation] {
         let functions = ["NSWidth", "NSHeight", "NSMinX", "NSMidX",
                          "NSMaxX", "NSMinY", "NSMidY", "NSMaxY",
                          "NSIsEmptyRect", "NSIntegralRect", "NSInsetRect",
                          "NSOffsetRect", "NSUnionRect", "NSIntersectionRect",
                          "NSContainsRect", "NSPointInRect", "NSIntersectsRect"]
-        
+
         let pattern = "\\b(" + functions.joinWithSeparator("|") + ")\\b"
-        
+
         return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
-    
+
+    // swiftlint:disable function_body_length
     public func correctFile(file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        
+
         let patterns = [
             "NSWidth\\(\(varName)\\)": "$1.width",
             "NSHeight\\(\(varName)\\)": "$1.height",
@@ -129,20 +130,20 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "NSUnionRect\\(\(twoVars)\\)": "$1.union($2)",
             "NSIntersectionRect\\(\(twoVars)\\)": "$1.intersect($2)",
             "NSContainsRect\\(\(twoVars)\\)": "$1.contains($2)",
-            "NSPointInRect\\(\(twoVars)\\)": "$2.contains($1)", // note that the arguments change order
+            "NSPointInRect\\(\(twoVars)\\)": "$2.contains($1)", // note order of arguments
             "NSIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
-        
+
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
-        
+
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern)
                 .filter { $0.1.first == .Identifier }
                 .map { ($0.0, pattern, template) }
         }).flatten().sort { $0.0.location > $1.0.location } // reversed
-        
+
         for (range, pattern, template) in matches {
             contents = regex(pattern).stringByReplacingMatchesInString(contents, options: [],
                                                                        range: range,
@@ -150,8 +151,9 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        
+
         file.write(contents)
         return corrections
     }
+    // swiftlint:enable function_body_length
 }

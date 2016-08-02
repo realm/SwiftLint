@@ -112,6 +112,9 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
 
         let patterns = [

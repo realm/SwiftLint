@@ -105,12 +105,14 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
-
+// swiftlint:disable function_body_length
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-
         let patterns = [
             "CGRectGetWidth\\(\(varName)\\)": "$1.width",
             "CGRectGetHeight\\(\(varName)\\)": "$1.height",
@@ -133,7 +135,6 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
             "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
-
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents

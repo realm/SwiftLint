@@ -59,6 +59,9 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let matches = violationRangesInFile(file)
         guard !matches.isEmpty else { return [] }
 

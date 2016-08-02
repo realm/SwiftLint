@@ -65,6 +65,9 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let patterns = [
             "CGRectInfinite": "CGRect.infinite",
             "CGPointZero": "CGPoint.zero",

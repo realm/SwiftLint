@@ -52,7 +52,9 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     public func correctFile(file: File) -> [Correction] {
         let matches = violationRangesInFile(file)
         if matches.isEmpty { return [] }
-
+        if isRuleDisabled(file) {
+            return []
+        }
         var contents = file.contents as NSString
         let description = self.dynamicType.description
         var corrections = [Correction]()

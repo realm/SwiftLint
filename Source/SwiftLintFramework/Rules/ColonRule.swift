@@ -101,6 +101,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
 

@@ -81,6 +81,9 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
     }
 
     public func correctFile(file: File) -> [Correction] {
+        if isRuleDisabled(file) {
+            return []
+        }
         switch configuration.statementMode {
         case .Default:
             return defaultCorrectFile(file)

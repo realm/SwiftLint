@@ -24,6 +24,9 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "CGPoint.zero",
             "CGRect.zero",
             "CGSize.zero",
+            "NSPoint.zero",
+            "NSRect.zero",
+            "NSSize.zero",
             "CGRect.null"
         ],
         triggeringExamples: [
@@ -31,6 +34,9 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "↓CGPointZero",
             "↓CGRectZero",
             "↓CGSizeZero",
+            "↓NSZeroPoint",
+            "↓NSZeroRect",
+            "↓NSZeroSize",
             "↓CGRectNull"
         ],
         corrections: [
@@ -38,13 +44,16 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "↓CGPointZero\n": "CGPoint.zero\n",
             "↓CGRectZero\n": "CGRect.zero\n",
             "↓CGSizeZero\n": "CGSize.zero\n",
+            "↓NSZeroPoint\n": "NSPoint.zero\n",
+            "↓NSZeroRect\n": "NSRect.zero\n",
+            "↓NSZeroSize\n": "NSSize.zero\n",
             "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n"
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let constants = ["CGRectInfinite", "CGPointZero", "CGRectZero", "CGSizeZero",
-                         "CGRectNull"]
+                         "NSZeroPoint", "NSZeroRect", "NSZeroSize", "CGRectNull"]
 
         let pattern = "\\b(" + constants.joinWithSeparator("|") + ")\\b"
 
@@ -61,6 +70,9 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "CGPointZero": "CGPoint.zero",
             "CGRectZero": "CGRect.zero",
             "CGSizeZero": "CGSize.zero",
+            "NSZeroPoint": "NSPoint.zero",
+            "NSZeroRect": "NSRect.zero",
+            "NSZeroSize": "NSSize.zero",
             "CGRectNull": "CGRect.null"
         ]
 

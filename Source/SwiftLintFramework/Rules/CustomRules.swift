@@ -74,12 +74,12 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
     }
 
     private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
-        return file.matchPattern(configuration.regex).filter {
-            !configuration.matchKinds.intersect($0.1).isEmpty
-        }.map {
+        let pattern = configuration.regex.pattern
+        let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtract(configuration.matchKinds))
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.0.location),
+                location: Location(file: file, characterOffset: $0.location),
                 reason: configuration.message)
         }
     }

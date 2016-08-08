@@ -9,6 +9,13 @@
 import Foundation
 import SourceKittenFramework
 
+private extension Region {
+
+    func isRuleDisabled(customRuleIdentifier customRuleIdentifier: String) -> Bool {
+        return disabledRuleIdentifiers.contains(customRuleIdentifier)
+    }
+}
+
 // MARK: - CustomRulesConfiguration
 
 public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
@@ -69,7 +76,19 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         }
 
         return configurations.flatMap {
-            self.validate(file, configuration: $0)
+            self.validate(file, configuration: $0).filter { eachViolation in
+               let regions = file.regions().filter {
+                             $0.contains(eachViolation.location)
+                }
+                guard let region = regions.first else {return true}
+
+                for eachConfig in configurations {
+                    if region.isRuleDisabled(customRuleIdentifier: eachConfig.identifier) {
+                        return false
+                    }
+                }
+            return true
+            }
         }
     }
 

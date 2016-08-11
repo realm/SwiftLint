@@ -29,7 +29,9 @@ Whenever possible, prefer adding tests via the `triggeringExamples` and
 `nonTriggeringExamples` properties of a rule's `description` rather than adding
 those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
-over time.
+over time. This way adding a unit test for your new Rule is just a matter of
+adding a test case in `RulesTests.swift` which simply calls
+`verifyRule(YourNewRule.description)`.
 
 ### `ConfigurationProviderRule`
 

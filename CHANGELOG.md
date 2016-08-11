@@ -10,6 +10,10 @@
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 
+* Add `WeakDelegateRule` Opt-In rule to enforce delegate instance
+  variables to be `weak`.  
+  [Olivier Halligon](https://github.com/AliSoftware)
+
 * Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)

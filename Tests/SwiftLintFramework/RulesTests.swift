@@ -307,4 +307,8 @@ class RulesTests: XCTestCase {
         verifyRule(OverriddenSuperCallRule.description)
     }
 
+    func testWeakDelegate() {
+        verifyRule(WeakDelegateRule.description)
+    }
+
 }

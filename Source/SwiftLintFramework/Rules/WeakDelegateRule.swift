@@ -22,7 +22,9 @@ public struct WeakDelegateRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "class Foo {\n  weak var delegate: SomeProtocol?\n}\n",
             "class Foo {\n  weak var someDelegate: SomeDelegateProtocol?\n}\n",
             "class Foo {\n  weak var delegateScroll: ScrollDelegate?\n}\n",
+            // We only consider properties to be a delegate if it has "delegate" in its name
             "class Foo {\n  var scrollHandler: ScrollDelegate?\n}\n",
+            // Only trigger on instance variables, not local variables
             "func foo() {\n  var delegate: SomeDelegate\n}\n"
         ],
         triggeringExamples: [

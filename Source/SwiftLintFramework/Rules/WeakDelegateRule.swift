@@ -42,9 +42,10 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if name contains "delegate"
-        let name = (dictionary["key.name"] as? String) ?? ""
-        let isDelegate = name.lowercaseString.rangeOfString("delegate") != nil
-        guard isDelegate else { return [] }
+        guard let name = (dictionary["key.name"] as? String) where
+            name.lowercaseString.containsString("delegate") else {
+                return []
+        }
 
         // Check if non-weak
         let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?

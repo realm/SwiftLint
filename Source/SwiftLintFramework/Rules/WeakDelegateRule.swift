@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct WeakDelegateRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}

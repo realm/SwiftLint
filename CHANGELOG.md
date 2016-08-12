@@ -10,7 +10,7 @@
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 
-* Add `WeakDelegateRule` Opt-In rule to enforce delegate instance
+* Add `WeakDelegateRule` rule to enforce delegate instance
   variables to be `weak`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 

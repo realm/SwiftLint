@@ -74,7 +74,7 @@ public struct Configuration: Equatable {
             }.joinWithSeparator("\n"))
             return nil
         }
-        
+
         // set the config threshold to the threshold provided in the config file
         if let warningThreshold = warningThreshold {
             self.warningThreshold = warningThreshold

@@ -59,7 +59,7 @@ struct LintCommand: CommandType {
             let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
             if let warningThreshold = configuration.warningThreshold {
                 if numberOfWarningViolations >= warningThreshold {
-                    exit(2)
+                    violations.append(createThresholdViolation(warningThreshold))
                 }
             }
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
@@ -124,4 +124,18 @@ struct LintOptions: OptionsType {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
     }
+}
+
+func createThresholdViolation(threshold: Int) -> StyleViolation {
+    let description = RuleDescription(
+        identifier: "warning_threshold",
+        name: "Warning Threshold",
+        description: "Number of warnings thrown is above the threshold."
+    )
+    let location = Location(file: "", line: 0, character: 0)
+    return StyleViolation(
+        ruleDescription: description,
+        severity: ViolationSeverity.Error,
+        location: location,
+        reason: "Number of warnings exceeded threshold of \(threshold)")
 }

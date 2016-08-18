@@ -26,7 +26,7 @@ extension Reporter {
 struct LintCommand: CommandType {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
-
+    
     func run(options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()
@@ -55,13 +55,10 @@ struct LintCommand: CommandType {
             violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            reporter.reportViolations(violations, realtimeCondition: false)
-            let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
-            if let warningThreshold = configuration.warningThreshold {
-                if numberOfWarningViolations >= warningThreshold {
-                    violations.append(createThresholdViolation(warningThreshold))
-                }
+            if isWarningThresholdBroken(configuration, violations: violations) {
+                violations.append(createThresholdViolation(configuration.warningThreshold!))
             }
+            reporter.reportViolations(violations, realtimeCondition: true)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,
@@ -126,7 +123,17 @@ struct LintOptions: OptionsType {
     }
 }
 
-func createThresholdViolation(threshold: Int) -> StyleViolation {
+private func isWarningThresholdBroken(configuration: Configuration,
+                                      violations: [StyleViolation]) -> Bool {
+    guard let warningThreshold = configuration.warningThreshold else { return false }
+    let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
+    if numberOfWarningViolations >= warningThreshold {
+        return true
+    }
+    return false
+}
+
+private func createThresholdViolation(threshold: Int) -> StyleViolation {
     let description = RuleDescription(
         identifier: "warning_threshold",
         name: "Warning Threshold",

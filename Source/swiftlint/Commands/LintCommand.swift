@@ -26,7 +26,7 @@ extension Reporter {
 struct LintCommand: CommandType {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
-    
+
     func run(options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()

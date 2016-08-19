@@ -43,12 +43,12 @@ public struct RuleList {
 public let masterRuleList = RuleList(rules:
     ClosingBraceRule.self,
     ColonRule.self,
+    ConditionalReturnsOnNewline.self,
     CommaRule.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
     EmptyCountRule.self,
-    GuardReturnsOnNewline.self,
     FileLengthRule.self,
     ForceCastRule.self,
     ForceTryRule.self,

@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testConditionalReturnsOnNewline() {
+        verifyRule(ConditionalReturnsOnNewline.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
@@ -103,10 +107,6 @@ class RulesTests: XCTestCase {
 
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
-    }
-
-    func testGuardReturnsOnNewLines() {
-        verifyRule(GuardReturnsOnNewline.description)
     }
 
     func testFileLength() {

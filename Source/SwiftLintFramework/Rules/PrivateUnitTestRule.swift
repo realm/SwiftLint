@@ -52,15 +52,47 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped.",
         nonTriggeringExamples: [
-            "class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }",
-            "internal class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }",
-            "public class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }"
+            "class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+            "}",
+            "internal class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+            "}",
+            "public class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+            "}"
         ],
         triggeringExamples: [
-            "private ↓class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private func test4() {}; }",
-            "class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
-            "internal class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
-            "public class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
+            "private ↓class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+                "private func test4() {}; " +
+            "}",
+            "class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+                "private ↓func test4() {}; " +
+            "}",
+            "internal class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+                "private ↓func test4() {}; " +
+            "}",
+            "public class FooTest: XCTestCase { " +
+                "func test1() {}; " +
+                "internal func test2() {}; " +
+                "public func test3() {}; " +
+                "private ↓func test4() {}; " +
+            "}",
         ]
     )
 

@@ -105,6 +105,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testGuardReturnsOnNewLines() {
+        verifyRule(GuardReturnsOnNewline.description)
+    }
+
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false)
     }

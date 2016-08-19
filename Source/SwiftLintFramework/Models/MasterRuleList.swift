@@ -48,6 +48,7 @@ public let masterRuleList = RuleList(rules:
     CustomRules.self,
     CyclomaticComplexityRule.self,
     EmptyCountRule.self,
+    GuardReturnsOnNewline.self,
     FileLengthRule.self,
     ForceCastRule.self,
     ForceTryRule.self,

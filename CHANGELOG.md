@@ -36,6 +36,9 @@
   [woodhamgh](https://github.com/woodhamgh)
   [696](https://github.com/realm/SwiftLint/issues/696)
 
+* Adds 'GuardReturnsOnNewLineRule' rule.
+  [Rohan Dhaimade](https://github.com/HaloZero)
+
 ##### Bug Fixes
 
 * Fixed CustomRule Regex.  

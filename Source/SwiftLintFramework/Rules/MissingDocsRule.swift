@@ -43,7 +43,7 @@ extension File {
         guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             offset = dictionary["key.offset"] as? Int64,
             accessibility = dictionary["key.accessibility"] as? String
-            where acl.map({ $0.sourcekitValue() }).contains(accessibility) else {
+            where acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
         if getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
@@ -54,17 +54,9 @@ extension File {
 }
 
 public enum AccessControlLevel: String {
-    case Private = "private"
-    case Internal = "internal"
-    case Public = "public"
-
-    private func sourcekitValue() -> String {
-        switch self {
-        case Private: return "source.lang.swift.accessibility.private"
-        case Internal: return "source.lang.swift.accessibility.internal"
-        case Public: return "source.lang.swift.accessibility.public"
-        }
-    }
+    case Private = "source.lang.swift.accessibility.private"
+    case Internal = "source.lang.swift.accessibility.internal"
+    case Public = "source.lang.swift.accessibility.public"
 }
 
 public struct MissingDocsRule: OptInRule {

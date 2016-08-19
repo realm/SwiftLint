@@ -170,6 +170,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 
+    func testPrivateUnitTest() {
+        verifyRule(PrivateUnitTestRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

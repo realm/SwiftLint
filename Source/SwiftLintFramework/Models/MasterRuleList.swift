@@ -64,6 +64,7 @@ public let masterRuleList = RuleList(rules:
     NestingRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
+    PrivateUnitTestRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
     TodoRule.self,

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public extension AccessControlLevel {
+extension AccessControlLevel {
     init?(_ dictionary: [String: SourceKitRepresentable]) {
         guard let
             accessibility = dictionary["key.accessibility"] as? String,
@@ -19,7 +19,7 @@ public extension AccessControlLevel {
     }
 }
 
-public func superclass(dictionary: [String: SourceKitRepresentable]) -> String? {
+func superclass(dictionary: [String: SourceKitRepresentable]) -> String? {
     typealias SKArray = [SourceKitRepresentable]
     typealias SKDict = [String: SourceKitRepresentable]
     guard let
@@ -33,6 +33,8 @@ public func superclass(dictionary: [String: SourceKitRepresentable]) -> String? 
         else { return nil }
     return className
 }
+
+public class FooTest: NSObject {  }
 
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
 
@@ -50,16 +52,15 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped.",
         nonTriggeringExamples: [
-            "func testFoo() {}",
-            "internal func testFoo() {}",
-            "public func testFoo() {}",
-            "class FooTest: XCTestCase {}",
-            "internal class FooTest: XCTestCase {}",
-            "public class FooTest: XCTestCase {}"
+            "class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }",
+            "internal class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }",
+            "public class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; }"
         ],
         triggeringExamples: [
-            "private func testFoo() {}",
-            "private class FooTest: XCTestCase {}",
+            "private ↓class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private func test4() {}; }",
+            "class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
+            "internal class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
+            "public class FooTest: XCTestCase { func test1() {}; internal func test2() {}; public func test3() {}; private ↓func test4() {}; }",
         ]
     )
 
@@ -135,11 +136,11 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
             guard let acl = AccessControlLevel(dictionary) else { return [] }
             switch acl {
             case .Private:
-                let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
+                let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
                 return [StyleViolation(
                     ruleDescription: self.dynamicType.description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, byteOffset: nameOffset),
+                    location: Location(file: file, byteOffset: offset),
                     reason: configuration.message)]
             default: return []
             }

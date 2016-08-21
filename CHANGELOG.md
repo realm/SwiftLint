@@ -30,6 +30,15 @@
 
 ##### Bug Fixes
 
+* Fixed CustomRule Regex.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#717](https://github.com/realm/SwiftLint/issues/717)
+  [#726](https://github.com/realm/SwiftLint/issues/726)
+
+* Allow disabling custom rules in code.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#515](https://github.com/realm/SwiftLint/issues/515)
+
 * Fix LegacyConstructorRule when using variables instead of numbers.  
   [Sarr Blaise](https://github.com/bsarr007) 
   [#646](https://github.com/realm/SwiftLint/issues/646) 

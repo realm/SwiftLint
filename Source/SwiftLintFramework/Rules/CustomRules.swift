@@ -91,8 +91,9 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
     }
 
     private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
+        let pattern = configuration.regex.pattern
         let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtract(configuration.matchKinds))
-        return file.matchPattern(configuration.regex.pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location),

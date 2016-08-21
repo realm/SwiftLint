@@ -32,6 +32,10 @@
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
 
+* Add configuration for setting a warning threshold.  
+  [woodhamgh](https://github.com/woodhamgh)
+  [696](https://github.com/realm/SwiftLint/issues/696)
+
 ##### Bug Fixes
 
 * Fixed CustomRule Regex.  

@@ -6,6 +6,11 @@
 
 ##### Enhancements
 
+* Add `PrivateOutletRule` Opt-In rule to enforce `@IBOutlet`
+  instance variables to be `private`.  
+  [Olivier Halligon](https://github.com/AliSoftware)
+  [#754](https://github.com/realm/SwiftLint/pull/754)
+
 * Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)

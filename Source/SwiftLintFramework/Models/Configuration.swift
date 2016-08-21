@@ -133,8 +133,8 @@ public struct Configuration: Equatable {
             .OptInRules,
             .Reporter,
             .UseNestedConfigs,
-            .WhitelistRules,
-            .WarningThreshold
+            .WarningThreshold,
+            .WhitelistRules
         ].map({ $0.rawValue }) + masterRuleList.list.keys
 
         let invalidKeys = Set(dict.keys).subtract(validKeys)

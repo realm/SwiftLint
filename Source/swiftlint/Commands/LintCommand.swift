@@ -127,7 +127,7 @@ struct LintOptions: OptionsType {
 private func isWarningThresholdBroken(configuration: Configuration,
                                       violations: [StyleViolation]) -> Bool {
     guard let warningThreshold = configuration.warningThreshold else { return false }
-    let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
+    let numberOfWarningViolations = violations.filter({ $0.severity == .Warning }).count
     return numberOfWarningViolations >= warningThreshold
 }
 
@@ -137,10 +137,9 @@ private func createThresholdViolation(threshold: Int) -> StyleViolation {
         name: "Warning Threshold",
         description: "Number of warnings thrown is above the threshold."
     )
-    let location = Location(file: "", line: 0, character: 0)
     return StyleViolation(
         ruleDescription: description,
         severity: .Error,
-        location: location,
+        location: Location(file: "", line: 0, character: 0),
         reason: "Number of warnings exceeded threshold of \(threshold).")
 }

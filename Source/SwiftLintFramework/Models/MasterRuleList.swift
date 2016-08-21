@@ -56,14 +56,15 @@ public let masterRuleList = RuleList(rules:
     FunctionParameterCountRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
-    LegacyNSGeometryFunctionsRule.self,
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
+    LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
     MissingDocsRule.self,
     NestingRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
+    PrivateOutletRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
     TodoRule.self,
@@ -73,6 +74,5 @@ public let masterRuleList = RuleList(rules:
     TypeBodyLengthRule.self,
     TypeNameRule.self,
     ValidDocsRule.self,
-    VariableNameRule.self,
-    PrivateOutletRule.self
+    VariableNameRule.self
 )

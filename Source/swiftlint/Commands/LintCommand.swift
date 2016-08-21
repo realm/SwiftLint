@@ -57,8 +57,9 @@ struct LintCommand: CommandType {
         }.flatMap { files in
             if isWarningThresholdBroken(configuration, violations: violations) {
                 violations.append(createThresholdViolation(configuration.warningThreshold!))
+                reporter.reportViolations([violations.last!], realtimeCondition: true)
             }
-            reporter.reportViolations(violations, realtimeCondition: true)
+            reporter.reportViolations(violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,
@@ -127,10 +128,7 @@ private func isWarningThresholdBroken(configuration: Configuration,
                                       violations: [StyleViolation]) -> Bool {
     guard let warningThreshold = configuration.warningThreshold else { return false }
     let numberOfWarningViolations = violations.filter({ $0.severity == .Warning}).count
-    if numberOfWarningViolations >= warningThreshold {
-        return true
-    }
-    return false
+    return numberOfWarningViolations >= warningThreshold
 }
 
 private func createThresholdViolation(threshold: Int) -> StyleViolation {
@@ -142,7 +140,7 @@ private func createThresholdViolation(threshold: Int) -> StyleViolation {
     let location = Location(file: "", line: 0, character: 0)
     return StyleViolation(
         ruleDescription: description,
-        severity: ViolationSeverity.Error,
+        severity: .Error,
         location: location,
-        reason: "Number of warnings exceeded threshold of \(threshold)")
+        reason: "Number of warnings exceeded threshold of \(threshold).")
 }

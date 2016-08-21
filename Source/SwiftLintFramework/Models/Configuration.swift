@@ -76,9 +76,7 @@ public struct Configuration: Equatable {
         }
 
         // set the config threshold to the threshold provided in the config file
-        if let warningThreshold = warningThreshold {
-            self.warningThreshold = warningThreshold
-        }
+        self.warningThreshold = warningThreshold
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
@@ -150,7 +148,7 @@ public struct Configuration: Equatable {
             whitelistRules: defaultStringArray(dict[ConfigurationKey.WhitelistRules.rawValue]),
             included: defaultStringArray(dict[ConfigurationKey.Included.rawValue]),
             excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
-            warningThreshold: dict[ConfigurationKey.WarningThreshold.rawValue] as? Int ?? nil,
+            warningThreshold: dict[ConfigurationKey.WarningThreshold.rawValue] as? Int,
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
             configuredRules: masterRuleList.configuredRulesWithDictionary(dict)

@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `PrivateOutletRule` Opt-In rule to enforce `@IBOutlet`
+  instance variables to be `private`.  
+  [Olivier Halligon](https://github.com/AliSoftware)
+
 * Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)
@@ -28,12 +32,25 @@
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
 
+* Add configuration for setting a warning threshold.  
+  [woodhamgh](https://github.com/woodhamgh)
+  [696](https://github.com/realm/SwiftLint/issues/696)
+
 ##### Bug Fixes
+
+* Fixed CustomRule Regex.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#717](https://github.com/realm/SwiftLint/issues/717)
+  [#726](https://github.com/realm/SwiftLint/issues/726)
+
+* Allow disabling custom rules in code.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#515](https://github.com/realm/SwiftLint/issues/515)
 
 * Fix locally disabled comma rule autocorrect.  
   [J. Cheyo Jimenez](https://github.com/masters3d)  
-  [#601](https://github.com/realm/SwiftLint/issues/601)  
-   
+  [#601](https://github.com/realm/SwiftLint/issues/601)
+  
 * Fix LegacyConstructorRule when using variables instead of numbers.  
   [Sarr Blaise](https://github.com/bsarr007) 
   [#646](https://github.com/realm/SwiftLint/issues/646) 

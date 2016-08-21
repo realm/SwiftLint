@@ -10,7 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 private extension Region {
-
     func isRuleDisabled(customRuleIdentifier customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(customRuleIdentifier)
     }
@@ -77,25 +76,23 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
         return configurations.flatMap {
             self.validate(file, configuration: $0).filter { eachViolation in
-               let regions = file.regions().filter {
-                             $0.contains(eachViolation.location)
+                let regions = file.regions().filter {
+                    $0.contains(eachViolation.location)
                 }
-                guard let region = regions.first else {return true}
+                guard let region = regions.first else { return true }
 
-                for eachConfig in configurations {
-                    if region.isRuleDisabled(customRuleIdentifier: eachConfig.identifier) {
-                        return false
-                    }
+                for eachConfig in configurations where
+                    region.isRuleDisabled(customRuleIdentifier: eachConfig.identifier) {
+                    return false
                 }
-            return true
+                return true
             }
         }
     }
 
     private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
-        let pattern = configuration.regex.pattern
         let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtract(configuration.matchKinds))
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.matchPattern(configuration.regex.pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location),

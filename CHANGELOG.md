@@ -28,6 +28,10 @@
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
 
+* Add rule to check for private unit tests (private unit tests don't get run by
+XCTest).  
+  [Cristian Filipov](https://github.com/cfilipov)
+
 ##### Bug Fixes
 
 * Fix LegacyConstructorRule when using variables instead of numbers.  

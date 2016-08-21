@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-extension AccessControlLevel {
+private extension AccessControlLevel {
     init?(_ dictionary: [String: SourceKitRepresentable]) {
         guard let
             accessibility = dictionary["key.accessibility"] as? String,
@@ -40,7 +40,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
-        configuration.message = "Unit test marked `private` will be silently skipped."
+        configuration.message = "Unit test marked `private` will not be run by XCTest."
         configuration.regex = regex("XCTestCase")
         return configuration
     }()
@@ -53,45 +53,45 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         description: "Unit tests marked private are silently skipped.",
         nonTriggeringExamples: [
             "class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
             "}",
             "internal class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
             "}",
             "public class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
             "}"
         ],
         triggeringExamples: [
             "private ↓class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
-                "private func test4() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+                "private func test4() {}\n " +
             "}",
             "class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
-                "private ↓func test4() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+                "private ↓func test4() {}\n " +
             "}",
             "internal class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
-                "private ↓func test4() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+                "private ↓func test4() {}\n " +
             "}",
             "public class FooTest: XCTestCase { " +
-                "func test1() {}; " +
-                "internal func test2() {}; " +
-                "public func test3() {}; " +
-                "private ↓func test4() {}; " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+                "private ↓func test4() {}\n " +
             "}",
         ]
     )

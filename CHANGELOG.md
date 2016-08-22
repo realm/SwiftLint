@@ -10,6 +10,10 @@
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 
+* Add content of the todo statement to message.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#478](https://github.com/realm/SwiftLint/issues/478)
+
 * Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)

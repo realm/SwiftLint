@@ -25,7 +25,7 @@
 * Added Vertical Whitespace Rule.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#548](https://github.com/realm/SwiftLint/issues/548)
-  
+
 * Removed ConditionalBindingCascadeRule.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#701](https://github.com/realm/SwiftLint/issues/701)
@@ -89,7 +89,7 @@
 ##### Bug Fixes
 
 * Remove extraneous argument label added in LegacyCGGeometryFunctionsRule
-  autocorrect. 
+  autocorrect.  
   [Sarr Blaise](https://github.com/bsarr007)
   [643](https://github.com/realm/SwiftLint/issues/643)
 
@@ -728,7 +728,7 @@
 
 * Add `autocorrect` command to automatically correct certain violations
   (currently only `trailing_newline`, `trailing_semicolon` &
-  `trailing_whitespace`).
+  `trailing_whitespace`).  
   [JP Simard](https://github.com/jpsim)
   [#5](https://github.com/realm/SwiftLint/issues/5)
 

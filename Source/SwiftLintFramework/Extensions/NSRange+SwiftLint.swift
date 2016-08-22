@@ -14,8 +14,10 @@ extension NSRange {
     }
 
     func intersectsRanges(ranges: [NSRange]) -> Bool {
-        for range in ranges where intersectsRange(range) {
-            return true
+        for range in ranges {
+            if intersectsRange(range) {
+                return true
+            }
         }
         return false
     }

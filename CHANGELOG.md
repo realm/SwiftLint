@@ -18,7 +18,7 @@
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#478](https://github.com/realm/SwiftLint/issues/478)
 
-* Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and 
+* Add `LegacyNSGeometryFunctionsRule` rule. Add `NSSize`, `NSPoint`, and
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)
 
@@ -63,10 +63,10 @@
   [#515](https://github.com/realm/SwiftLint/issues/515)
 
 * Fix LegacyConstructorRule when using variables instead of numbers.  
-  [Sarr Blaise](https://github.com/bsarr007) 
-  [#646](https://github.com/realm/SwiftLint/issues/646) 
+  [Sarr Blaise](https://github.com/bsarr007)
+  [#646](https://github.com/realm/SwiftLint/issues/646)
 
-* Fix force_unwrapping false positive inside strings.
+* Fix force_unwrapping false positive inside strings.  
   [Daniel Beard](https://github.com/daniel-beard)
   [#721](https://github.com/realm/SwiftLint/issues/721)
 

@@ -487,8 +487,8 @@
 		D0D1216E19E87B05005E4BAA /* SwiftLintFramework */ = {
 			isa = PBXGroup;
 			children = (
-				4DCB8E7C1CBE43530070FCF0 /* Helpers */,
 				E8A541811BF94604006BA322 /* Extensions */,
+				4DCB8E7C1CBE43530070FCF0 /* Helpers */,
 				E8A541801BF945FF006BA322 /* Models */,
 				E8A5417F1BF945F9006BA322 /* Protocols */,
 				E86396C31BADAC0D002C9E88 /* Reporters */,

@@ -23,6 +23,6 @@ extension NSRegularExpression {
     }
     internal static func forcePattern(pattern: String) -> NSRegularExpression {
         // swiftlint:disable:next force_try
-        return try! NSRegularExpression.cached(pattern: pattern)
+        return try! .cached(pattern: pattern)
     }
 }

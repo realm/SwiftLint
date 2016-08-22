@@ -33,13 +33,3 @@ extension ASTRule where KindType.RawValue == String {
         }
     }
 }
-
-extension String: RawRepresentable {
-    public init?(rawValue: String) {
-        self.init(rawValue)
-    }
-
-    public var rawValue: String {
-        return self
-    }
-}

@@ -53,6 +53,16 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(whitelist, configuredIdentifiers)
     }
 
+    func testWarningThreshold_value() {
+        let config = Configuration(dict: ["warning_threshold": 5])!
+        XCTAssertEqual(config.warningThreshold, 5)
+    }
+
+    func testWarningThreshold_nil() {
+        let config = Configuration(dict: [:])!
+        XCTAssertEqual(config.warningThreshold, nil)
+    }
+
     func testOtherRuleConfigurationsAlongsideWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let enabledRulesConfigDict = [

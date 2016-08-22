@@ -6,6 +6,9 @@
 
 ##### Enhancements
 
+* Adds `MarkRule` rule.  
+  [Krzysztof Rodak](https://github.com/krodak)
+
 * Add `PrivateOutletRule` Opt-In rule to enforce `@IBOutlet`
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)

@@ -9,12 +9,11 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewline: Rule, OptInRule {
+public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
     public let configurationDescription = "N/A"
+    public var configuration = SeverityConfiguration(.Warning)
 
     public init() { }
-
-    public init(configuration: AnyObject) { }
 
     public static let description = RuleDescription(
         identifier: "conditional_returns_on_newline",

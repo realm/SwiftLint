@@ -158,6 +158,10 @@ class RulesTests: XCTestCase {
                    stringDoesntViolate: false)
     }
 
+    func testMark() {
+        verifyRule(MarkRule.description, commentDoesntViolate: false)
+    }
+
     func testMissingDocs() {
         verifyRule(MissingDocsRule.description)
     }

@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `MarkRule` rule to enforce `// MARK` syntax.  
+  [Krzysztof Rodak](https://github.com/krodak)
+  [#749](https://github.com/realm/SwiftLint/issues/749)
+
 * Add `PrivateOutletRule` Opt-In rule to enforce `@IBOutlet`
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)

@@ -232,4 +232,8 @@ class RulesTests: XCTestCase {
     func testVariableName() {
         verifyRule(VariableNameRule.description)
     }
+
+    func testWeakDelegate() {
+        verifyRule(WeakDelegateRule.description)
+    }
 }

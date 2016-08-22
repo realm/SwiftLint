@@ -166,6 +166,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testVerticalWhitespace() {
+        verifyRule(VerticalWhitespaceRule.description)
+    }
+
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }

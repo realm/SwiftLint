@@ -44,7 +44,6 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-
     public func validateFile(file: File) -> [StyleViolation] {
         return file.violatingClosingBraceRanges().map {
             StyleViolation(ruleDescription: self.dynamicType.description,

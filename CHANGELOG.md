@@ -18,6 +18,10 @@
   `NSRect` constants and constructors to existing rules.  
   [David Rönnqvist](https://github.com/d-ronnqvist)
 
+* Added Vertical Whitespace Rule.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#548](https://github.com/realm/SwiftLint/issues/548)
+  
 * Removed ConditionalBindingCascadeRule.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#701](https://github.com/realm/SwiftLint/issues/701)

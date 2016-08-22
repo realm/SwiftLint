@@ -16,6 +16,9 @@ public protocol RuleConfiguration {
 
 extension RuleConfiguration where Self: Equatable {
     public func isEqualTo(ruleConfiguration: RuleConfiguration) -> Bool {
-        return self == ruleConfiguration as? Self
+        if let ruleConfiguration = ruleConfiguration as? Self {
+            return self == ruleConfiguration
+        }
+        return false
     }
 }

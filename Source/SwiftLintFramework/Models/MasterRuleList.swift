@@ -44,6 +44,7 @@ public let masterRuleList = RuleList(rules:
     ClosingBraceRule.self,
     ColonRule.self,
     CommaRule.self,
+    ConditionalReturnsOnNewline.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,

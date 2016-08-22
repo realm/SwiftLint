@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testConditionalReturnsOnNewline() {
+        verifyRule(ConditionalReturnsOnNewline.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }

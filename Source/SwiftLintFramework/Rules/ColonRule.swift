@@ -103,16 +103,22 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public func correctFile(file: File) -> [Correction] {
         let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
+        let fileregions = file.regions()
 
         let regularExpression = regex(pattern)
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reverse() {
+            let location = Location(file: file, characterOffset: range.location)
+            let region = fileregions.filter {$0.contains(location)}.first
+            if region?.isRuleDisabled(self) == true {
+                continue
+            } else {
             contents = regularExpression.stringByReplacingMatchesInString(contents,
                 options: [], range: range, withTemplate: "$1: $2")
-            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
+            }
         }
         file.write(contents)
         return corrections

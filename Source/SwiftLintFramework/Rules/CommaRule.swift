@@ -50,6 +50,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
+        let fileregions = file.regions()
         let matches = violationRangesInFile(file)
         if matches.isEmpty { return [] }
 
@@ -57,9 +58,14 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         let description = self.dynamicType.description
         var corrections = [Correction]()
         for range in matches.reverse() {
-            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
             let location = Location(file: file, characterOffset: range.location)
+            let region = fileregions.filter { $0.contains(location) }.first
+         if region?.isRuleDisabled(self) == true {
+             continue
+         } else {
+            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
             corrections.append(Correction(ruleDescription: description, location: location))
+         }
         }
 
         file.write(contents as String)

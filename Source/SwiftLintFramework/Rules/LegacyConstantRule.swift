@@ -79,18 +79,25 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
-
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
                 .map { ($0, pattern, template) }
         }).flatten().sort { $0.0.location > $1.0.location } // reversed
 
+        if matches.isEmpty {return []}
+        let fileregions = file.regions()
+
         for (range, pattern, template) in matches {
+            let location = Location(file: file, characterOffset: range.location)
+            let region = fileregions.filter { $0.contains(location) }.first
+            if region?.isRuleDisabled(self) == true {
+                continue
+            }
+
             contents = regex(pattern).stringByReplacingMatchesInString(contents,
                                                                        options: [],
                                                                        range: range,
                                                                        withTemplate: template)
-            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 

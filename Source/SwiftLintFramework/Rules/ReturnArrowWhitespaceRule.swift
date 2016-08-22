@@ -60,7 +60,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     public func correctFile(file: File) -> [Correction] {
         let matches = violationRangesInFile(file)
-        guard !matches.isEmpty else { return [] }
+        if matches.isEmpty { return [] }
+        let fileregions = file.regions()
 
         let regularExpression = regex(pattern)
         let description = self.dynamicType.description
@@ -75,15 +76,17 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
         for result in results {
             guard result.numberOfRanges > replacementsByIndex.keys.maxElement() else { break }
-
+            let location = Location(file: file, characterOffset: result.range.location)
+            let region = fileregions.filter {$0.contains(location)}.first
+            if region?.isRuleDisabled(self) == true {
+                continue
+            }
             for (index, string) in replacementsByIndex {
                 if let range = contents.nsrangeToIndexRange(result.rangeAtIndex(index)) {
                     contents.replaceRange(range, with: string)
                     break
                 }
             }
-
-            let location = Location(file: file, characterOffset: result.range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)

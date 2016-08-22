@@ -118,18 +118,24 @@ private extension StatementPositionRule {
     func defaultCorrectFile(file: File) -> [Correction] {
         let matches = defaultViolationRangesInFile(file,
                                                    withPattern: self.dynamicType.defaultPattern)
-        guard !matches.isEmpty else { return [] }
+        if matches.isEmpty { return [] }
+        let fileregions = file.regions()
 
         let regularExpression = regex(self.dynamicType.defaultPattern)
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reverse() {
+            let location = Location(file: file, characterOffset: range.location)
+            let region = fileregions.filter { $0.contains(location)}.first
+            if region?.isRuleDisabled(self) == true {
+                continue
+            }
+
             contents = regularExpression.stringByReplacingMatchesInString(contents,
                                                                           options: [],
                                                                           range: range,
                                                                           withTemplate: "} $1")
-            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
@@ -217,11 +223,18 @@ private extension StatementPositionRule {
                                                                  syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
+        if validMatches.isEmpty {return []}
 
+        let fileregions = file.regions()
         let description = self.dynamicType.uncuddledDescription
         var corrections = [Correction]()
 
         for match in validMatches.reverse() {
+            let location = Location(file: file, characterOffset: match.range.location)
+            let region = fileregions.filter {$0.contains(location)}.first
+            if region?.isRuleDisabled(self) == true {
+                continue
+            }
             let range1 = match.rangeAtIndex(1)
             let nsRange2 = match.rangeAtIndex(3)
             let newlineRange = match.rangeAtIndex(2)
@@ -239,7 +252,6 @@ private extension StatementPositionRule {
                 whitespace.insert("\n", atIndex: whitespace.startIndex)
             }
             contents.replaceRange(range2, with: whitespace)
-            let location = Location(file: file, characterOffset: match.range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 

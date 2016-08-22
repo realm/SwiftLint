@@ -20,7 +20,6 @@ private enum ConfigurationKey: String {
     case Reporter = "reporter"
     case UseNestedConfigs = "use_nested_configs" // deprecated
     case WhitelistRules = "whitelist_rules"
-    case WarningThreshold = "warning_threshold"
 }
 
 public struct Configuration: Equatable {
@@ -28,7 +27,6 @@ public struct Configuration: Equatable {
     public let included: [String]             // included
     public let excluded: [String]             // excluded
     public let reporter: String               // reporter (xcode, json, csv, checkstyle)
-    public var warningThreshold: Int?         // warning threshold
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
@@ -38,7 +36,6 @@ public struct Configuration: Equatable {
                  whitelistRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
-                 warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
                  configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:])) {
         self.included = included
@@ -74,9 +71,6 @@ public struct Configuration: Equatable {
             }.joinWithSeparator("\n"))
             return nil
         }
-
-        // set the config threshold to the threshold provided in the config file
-        self.warningThreshold = warningThreshold
 
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
@@ -133,8 +127,7 @@ public struct Configuration: Equatable {
             .OptInRules,
             .Reporter,
             .UseNestedConfigs,
-            .WarningThreshold,
-            .WhitelistRules
+            .WhitelistRules,
         ].map({ $0.rawValue }) + masterRuleList.list.keys
 
         let invalidKeys = Set(dict.keys).subtract(validKeys)
@@ -148,7 +141,6 @@ public struct Configuration: Equatable {
             whitelistRules: defaultStringArray(dict[ConfigurationKey.WhitelistRules.rawValue]),
             included: defaultStringArray(dict[ConfigurationKey.Included.rawValue]),
             excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
-            warningThreshold: dict[ConfigurationKey.WarningThreshold.rawValue] as? Int,
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
             configuredRules: masterRuleList.configuredRulesWithDictionary(dict)

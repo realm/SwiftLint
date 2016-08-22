@@ -55,13 +55,6 @@ class CustomRulesTests: XCTestCase {
                         reason: regexConfig.message)])
     }
 
-    func testLocalDisableCustomRule() {
-        let (_, customRules) = getCustomRules()
-        let file = File(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validateFile(file),
-                       [])
-    }
-
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()

@@ -124,7 +124,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
      However, it's still useful to check the class explicitly because this
      gives us a more clear error message. If we check only methods, the line
      number of the error will be that of the function, which may not
-     necessarily be marked `private` but inhereted it from the class access
+     necessarily be marked `private` but inherited it from the class access
      modifier. By checking the class we ensure the line nuber we report for
      the violation will match the line that must be edited.
      */

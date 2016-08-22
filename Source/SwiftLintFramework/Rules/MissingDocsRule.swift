@@ -53,10 +53,27 @@ extension File {
     }
 }
 
-public enum AccessControlLevel: String {
+public enum AccessControlLevel: String, CustomStringConvertible {
     case Private = "source.lang.swift.accessibility.private"
     case Internal = "source.lang.swift.accessibility.internal"
     case Public = "source.lang.swift.accessibility.public"
+
+    internal init?(description value: String) {
+        switch value {
+        case "private": self = .Private
+        case "internal": self = .Internal
+        case "public": self = .Public
+        default: return nil
+        }
+    }
+
+    public var description: String {
+        switch self {
+        case Private: return "private"
+        case Internal: return "internal"
+        case Public: return "public"
+        }
+    }
 }
 
 public struct MissingDocsRule: OptInRule {
@@ -64,7 +81,7 @@ public struct MissingDocsRule: OptInRule {
         guard let array = [String].arrayOf(configuration) else {
             throw ConfigurationError.UnknownConfiguration
         }
-        let acl = array.flatMap(AccessControlLevel.init)
+        let acl = array.flatMap(AccessControlLevel.init(description:))
         parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 

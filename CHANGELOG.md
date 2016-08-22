@@ -2,7 +2,9 @@
 
 ##### Breaking
 
-* None.
+* Fixed: SwiftLint assumes paths in the YAML config file are relative to the
+current directory even when `--path` is passed as an argument.  
+  [Cristian Filipov](https://github.com/cfilipov)
 
 ##### Enhancements
 
@@ -27,10 +29,6 @@
 * Add included regex for custom rules to control what files are processed.  
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
-
-* Fixed: SwiftLint assumes paths in the YAML config file are relative to the
-current directory even when `--path` is passed as an argument.  
-  [Cristian Filipov](https://github.com/cfilipov)
 
 ##### Bug Fixes
 

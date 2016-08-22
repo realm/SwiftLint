@@ -32,8 +32,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             "let aaaa = 0\n\n\n",
             "struct AAAA {}\n\n\n\n",
              "class BBBB {}\n\n\n",
-        ]
-        ,
+        ],
         corrections: [
             "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",
             "let c = 0\n\n\nlet num = 1\n": "let c = 0\n\nlet num = 1\n",
@@ -52,7 +51,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             // Skips violation for areas where the rule is disabled
             let region = file.regions().filter {
                 $0.contains(Location(file: file.path, line: eachLastLine.index, character: 0))
-                }.first
+            }.first
             if region?.isRuleDisabled(self) == true {
                 continue
             }
@@ -75,14 +74,14 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             $0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty
         }
 
-        if filteredLines.isEmpty {return []}
+        if filteredLines.isEmpty { return [] }
 
         var blankLinesSections = [[Line]]()
         var lineSection = [Line]()
 
         var previousIndex = 0
         for index in 0..<filteredLines.count {
-            if  filteredLines[previousIndex].index + 1 == filteredLines[index].index {
+            if filteredLines[previousIndex].index + 1 == filteredLines[index].index {
                 lineSection.append(filteredLines[index])
             } else if !lineSection.isEmpty {
                 blankLinesSections.append(lineSection)
@@ -103,11 +102,11 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             guard let lastLine = eachSection.last else { continue }
 
             // filtering out violations within a multiple comment block
-            let sectionInComment = comments.filter {
-                (eachRange, _ ) in  eachRange.intersectsRange(lastLine.range)
-                }.first
+            let isSectionInComment = !comments.filter {
+                (eachRange, _ ) in eachRange.intersectsRange(lastLine.range)
+            }.isEmpty
 
-            if let _ = sectionInComment {
+            if isSectionInComment {
                 continue  // skipping the lines found in multiline comment
             } else {
                 result.append((lastLine, eachSection.count))
@@ -126,10 +125,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
 
         for eachLine in linesSections {
             let start = eachLine.lastLine.index - eachLine.linesToRemove
-            let range =  start..<eachLine.lastLine.index
-            for each in range {
-                indexOfLinesToDelete.append(each)
-            }
+            indexOfLinesToDelete.appendContentsOf(start..<eachLine.lastLine.index)
         }
 
         var correctedLines = [String]()
@@ -141,7 +137,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             // Doesnt correct lines where rule is disabled
             let region = fileRegions.filter {
                 $0.contains(Location(file: file.path, line: currentLine.index, character: 0))
-                }.first
+            }.first
             if region?.isRuleDisabled(self) == true {
                 correctedLines.append(currentLine.content)
                 continue forLoopCounter

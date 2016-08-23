@@ -44,6 +44,7 @@ public let masterRuleList = RuleList(rules:
     ClosingBraceRule.self,
     ColonRule.self,
     CommaRule.self,
+    ConditionalReturnsOnNewline.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
@@ -60,6 +61,7 @@ public let masterRuleList = RuleList(rules:
     LegacyConstructorRule.self,
     LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
+    MarkRule.self,
     MissingDocsRule.self,
     NestingRule.self,
     OpeningBraceRule.self,
@@ -75,5 +77,6 @@ public let masterRuleList = RuleList(rules:
     TypeBodyLengthRule.self,
     TypeNameRule.self,
     ValidDocsRule.self,
-    VariableNameRule.self
+    VariableNameRule.self,
+    VerticalWhitespaceRule.self
 )

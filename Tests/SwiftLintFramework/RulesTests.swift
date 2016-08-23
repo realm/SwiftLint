@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testConditionalReturnsOnNewline() {
+        verifyRule(ConditionalReturnsOnNewline.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
@@ -154,12 +158,20 @@ class RulesTests: XCTestCase {
                    stringDoesntViolate: false)
     }
 
+    func testMark() {
+        verifyRule(MarkRule.description, commentDoesntViolate: false)
+    }
+
     func testMissingDocs() {
         verifyRule(MissingDocsRule.description)
     }
 
     func testNesting() {
         verifyRule(NestingRule.description)
+    }
+
+    func testVerticalWhitespace() {
+        verifyRule(VerticalWhitespaceRule.description)
     }
 
     func testOpeningBrace() {

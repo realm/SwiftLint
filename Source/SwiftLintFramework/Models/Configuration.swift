@@ -189,8 +189,12 @@ public struct Configuration: Equatable {
     public func lintablePathsForPath(path: String,
                                      fileManager: NSFileManager = fileManager) -> [String] {
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
-        let excludedPaths = excluded.flatMap { fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath) }
-        let includedPaths = included.flatMap { fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath) }
+        let excludedPaths = excluded.flatMap {
+            fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath)
+        }
+        let includedPaths = included.flatMap {
+            fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath)
+        }
         return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
     }
 

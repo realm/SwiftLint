@@ -38,7 +38,7 @@ func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
 extension Configuration {
     private func assertCorrection(before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift").path else {
+            .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift")?.path else {
                 XCTFail("couldn't generate temporary path for assertCorrection()")
                 return
         }

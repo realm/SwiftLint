@@ -1,4 +1,6 @@
-## Master
+## 0.11.2: Communal Clothesline
+
+This release has seen a phenomenal uptake in community contributions!
 
 ##### Breaking
 

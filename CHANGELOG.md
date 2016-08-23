@@ -1,12 +1,26 @@
-## 0.11.2: Communal Clothesline
-
-This release has seen a phenomenal uptake in community contributions!
+## Master
 
 ##### Breaking
 
 * Fixed: SwiftLint assumes paths in the YAML config file are relative to the
   current directory even when `--path` is passed as an argument.  
   [Cristian Filipov](https://github.com/cfilipov)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.11.2: Communal Clothesline
+
+This release has seen a phenomenal uptake in community contributions!
+
+##### Breaking
+
+* None.
 
 ##### Enhancements
 

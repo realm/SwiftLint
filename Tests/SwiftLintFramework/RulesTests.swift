@@ -186,6 +186,10 @@ class RulesTests: XCTestCase {
         verifyRule(PrivateOutletRule.description)
     }
 
+    func testPrivateUnitTest() {
+        verifyRule(PrivateUnitTestRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

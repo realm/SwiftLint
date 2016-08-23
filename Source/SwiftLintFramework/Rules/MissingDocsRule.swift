@@ -43,7 +43,7 @@ extension File {
         guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             offset = dictionary["key.offset"] as? Int64,
             accessibility = dictionary["key.accessibility"] as? String
-            where acl.map({ $0.sourcekitValue() }).contains(accessibility) else {
+            where acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
         if getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
@@ -53,16 +53,25 @@ extension File {
     }
 }
 
-public enum AccessControlLevel: String {
-    case Private = "private"
-    case Internal = "internal"
-    case Public = "public"
+public enum AccessControlLevel: String, CustomStringConvertible {
+    case Private = "source.lang.swift.accessibility.private"
+    case Internal = "source.lang.swift.accessibility.internal"
+    case Public = "source.lang.swift.accessibility.public"
 
-    private func sourcekitValue() -> String {
+    internal init?(description value: String) {
+        switch value {
+        case "private": self = .Private
+        case "internal": self = .Internal
+        case "public": self = .Public
+        default: return nil
+        }
+    }
+
+    public var description: String {
         switch self {
-        case Private: return "source.lang.swift.accessibility.private"
-        case Internal: return "source.lang.swift.accessibility.internal"
-        case Public: return "source.lang.swift.accessibility.public"
+        case Private: return "private"
+        case Internal: return "internal"
+        case Public: return "public"
         }
     }
 }
@@ -72,7 +81,7 @@ public struct MissingDocsRule: OptInRule {
         guard let array = [String].arrayOf(configuration) else {
             throw ConfigurationError.UnknownConfiguration
         }
-        let acl = array.flatMap(AccessControlLevel.init)
+        let acl = array.flatMap(AccessControlLevel.init(description:))
         parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 

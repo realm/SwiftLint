@@ -4,7 +4,9 @@ This release has seen a phenomenal uptake in community contributions!
 
 ##### Breaking
 
-* None.
+* Fixed: SwiftLint assumes paths in the YAML config file are relative to the
+  current directory even when `--path` is passed as an argument.  
+  [Cristian Filipov](https://github.com/cfilipov)
 
 ##### Enhancements
 

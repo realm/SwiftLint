@@ -190,6 +190,10 @@ class RulesTests: XCTestCase {
         verifyRule(PrivateUnitTestRule.description)
     }
 
+    func testRedundantNilCoalesing() {
+        verifyRule(RedundantNilCoalesingRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

@@ -1,3 +1,19 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Add `RedundantNilCoalesingRule` Opt-In rule that warns against `?? nil`.  
+  [Daniel Beard](https://github.com/daniel-beard)
+  [#764](https://github.com/realm/SwiftLint/issues/764)
+
+##### Bug Fixes
+
+* None.
+
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

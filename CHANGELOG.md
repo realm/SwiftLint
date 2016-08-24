@@ -12,7 +12,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Made Vertical Whitespace Rule added in 0.11.2 opt-in due to performance
+  issues.  
+  [JP Simard](https://github.com/jpsim)
+  [#772](https://github.com/realm/SwiftLint/issues/772)
 
 ## 0.11.2: Communal Clothesline
 

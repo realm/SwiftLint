@@ -12,7 +12,7 @@ import SourceKittenFramework
 private let descriptionReason = "Limit vertical whitespace to a single empty line."
 
 public struct VerticalWhitespaceRule: CorrectableRule,
-                                      ConfigurationProviderRule {
+                                      ConfigurationProviderRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 

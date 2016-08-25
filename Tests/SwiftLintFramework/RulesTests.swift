@@ -184,6 +184,20 @@ class RulesTests: XCTestCase {
 
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
+
+        let baseDescription = PrivateOutletRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            "class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private(set) var label: UILabel!\n}\n",
+            "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
+        ]
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: baseDescription.triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
     func testPrivateUnitTest() {

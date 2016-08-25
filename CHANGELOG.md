@@ -10,6 +10,9 @@
   [Daniel Beard](https://github.com/daniel-beard)
   [#764](https://github.com/realm/SwiftLint/issues/764)
 
+* Adds `allow_private_set` configuration for the `private_outlet` rule.  
+  [Rohan Dhaimade](https://github.com/HaloZero)
+
 ##### Bug Fixes
 
 * None.

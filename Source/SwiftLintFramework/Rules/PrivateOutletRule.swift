@@ -47,9 +47,9 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         // Check if private
         let accessibility = (dictionary["key.accessibility"] as? String) ?? ""
-        let setterAccesiblity = (dictionary["key.setter_accessibility"] as? String) ?? ""
+        let setterAccessiblity = (dictionary["key.setter_accessibility"] as? String) ?? ""
         let isPrivate = accessibility == "source.lang.swift.accessibility.private"
-        let isPrivateSet = setterAccesiblity == "source.lang.swift.accessibility.private"
+        let isPrivateSet = setterAccessiblity == "source.lang.swift.accessibility.private"
 
         if isPrivate || (self.configuration.allowPrivateSet && isPrivateSet) {
             return []

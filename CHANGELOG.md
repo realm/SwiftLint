@@ -15,7 +15,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#772](https://github.com/realm/SwiftLint/issues/772)
 
 ## 0.12.0: Vertical Laundry
 

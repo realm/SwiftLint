@@ -12,7 +12,7 @@ import SourceKittenFramework
 private let descriptionReason = "Limit vertical whitespace to a single empty line."
 
 public struct VerticalWhitespaceRule: CorrectableRule,
-                                      ConfigurationProviderRule, OptInRule {
+                                      ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.Warning)
 
@@ -37,7 +37,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",
             "let c = 0\n\n\nlet num = 1\n": "let c = 0\n\nlet num = 1\n",
             "// bca \n\n\n": "// bca \n\n",
-        ] // End of line autocorrections are handeled by Trailing Newline Rule.
+        ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -48,23 +48,17 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         var violations = [StyleViolation]()
         for (eachLastLine, eachSectionCount) in linesSections {
 
-            // Skips violation for areas where the rule is disabled
-            let region = file.regions().filter {
-                $0.contains(Location(file: file.path, line: eachLastLine.index, character: 0))
-            }.first
-            if region?.isRuleDisabled(self) == true {
-                continue
-            }
-
-            let violation = StyleViolation(ruleDescription: self.dynamicType.description,
+            // Skips violations for areas where the rule is disabled
+            if !file.ruleEnabledViolatingRanges([eachLastLine.range], forRule: self).isEmpty {
+                let violation = StyleViolation(ruleDescription: self.dynamicType.description,
                                            severity: configuration.severity,
                                            location: Location(file: file.path,
                                             line: eachLastLine.index ),
                                            reason: descriptionReason
                                             + " Currently \(eachSectionCount + 1)." )
-            violations.append(violation)
+                violations.append(violation)
+            }
         }
-
         return violations
     }
 
@@ -93,22 +87,15 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             blankLinesSections.append(lineSection)
         }
 
-        // matching all accurrences of /* */
-        let matchMultilineComments = "/\\*(.|[\\r\\n])*?\\*/"
-        let comments = file.matchPattern(matchMultilineComments)
-
+        // filtering out violations in comments and strings
+        let stringAndComments = Set(SyntaxKind.commentAndStringKinds())
+        let syntaxMap = file.syntaxMap
         var result = [(lastLine: Line, linesToRemove: Int)]()
         for eachSection in blankLinesSections {
             guard let lastLine = eachSection.last else { continue }
-
-            // filtering out violations within a multiple comment block
-            let isSectionInComment = !comments.filter {
-                (eachRange, _ ) in eachRange.intersectsRange(lastLine.range)
-            }.isEmpty
-
-            if isSectionInComment {
-                continue  // skipping the lines found in multiline comment
-            } else {
+            let kindInSection = syntaxMap.tokensIn(lastLine.byteRange)
+                                        .flatMap { SyntaxKind(rawValue: $0.type) }
+            if stringAndComments.isDisjointWith(kindInSection) {
                 result.append((lastLine, eachSection.count))
             }
         }
@@ -130,33 +117,28 @@ public struct VerticalWhitespaceRule: CorrectableRule,
 
         var correctedLines = [String]()
         var corrections = [Correction]()
-        let fileRegions = file.regions()
-
-        forLoopCounter: for currentLine in file.lines {
+        for currentLine in file.lines {
 
             // Doesnt correct lines where rule is disabled
-            let region = fileRegions.filter {
-                $0.contains(Location(file: file.path, line: currentLine.index, character: 0))
-            }.first
-            if region?.isRuleDisabled(self) == true {
+            if file.ruleEnabledViolatingRanges([currentLine.range], forRule: self).isEmpty {
                 correctedLines.append(currentLine.content)
-                continue forLoopCounter
+                continue
             }
 
-            // by not incling lines in correctedLines, it removes them
+            // removes lines by skipping them from correctedLines
             if Set(indexOfLinesToDelete).contains(currentLine.index) {
                 let description = self.dynamicType.description
                 let location = Location(file: file.path, line: currentLine.index)
 
                 //reports every line that is being deleted
                 corrections.append(Correction(ruleDescription: description, location: location))
-                continue forLoopCounter
+                continue // skips line
             }
 
             // all lines that pass get added to final output file
             correctedLines.append(currentLine.content)
         }
-        // converts lines back to file, add trailing line
+        // converts lines back to file and adds trailing line
         if !corrections.isEmpty {
             file.write(correctedLines.joinWithSeparator("\n") + "\n")
             return corrections

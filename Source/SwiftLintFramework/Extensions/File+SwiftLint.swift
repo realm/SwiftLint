@@ -99,7 +99,7 @@ extension File {
 
     internal func matchPattern(regex: NSRegularExpression) -> [(NSRange, [SyntaxKind])] {
         return rangesAndTokensMatching(regex).map { range, tokens in
-            (range, tokens.map({ $0.type }).flatMap(SyntaxKind.init))
+            (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
         }
     }
 

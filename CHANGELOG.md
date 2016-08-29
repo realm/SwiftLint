@@ -15,7 +15,8 @@
 
 ##### Bug Fixes
 
-* Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.  
+* Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.
+  The rule now enabled by default again (no longer opt-in).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
 

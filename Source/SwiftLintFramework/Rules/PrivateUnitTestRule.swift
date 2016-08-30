@@ -66,6 +66,17 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                 "func test1() {}\n " +
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
+            "}",
+            // Non-test classes
+            "private class Foo: NSObject { " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
+            "}",
+            "private class Foo { " +
+                "func test1() {}\n " +
+                "internal func test2() {}\n " +
+                "public func test3() {}\n " +
             "}"
         ],
         triggeringExamples: [

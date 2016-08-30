@@ -13,6 +13,11 @@
 * Adds `allow_private_set` configuration for the `private_outlet` rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
 
+* Add ``ExplicitInitRule`` Opt-In rule to discourage calling ``init``
+  directly.  
+  [Matt Taube](https://github.com/mtaube)
+  [#715](https://github.com/realm/SwiftLint/pull/715)
+
 ##### Bug Fixes
 
 * Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.

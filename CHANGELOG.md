@@ -20,6 +20,10 @@
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
 
+* Fixed: Private unit test rule not scoped to test classes
+  [Cristian Filipov](https://github.com/cfilipov)
+  [#786](https://github.com/realm/SwiftLint/issues/786)
+
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

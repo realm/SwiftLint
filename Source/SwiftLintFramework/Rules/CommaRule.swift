@@ -50,19 +50,19 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(file: File) -> [Correction] {
-        let matches = violationRangesInFile(file)
+        let violations = violationRangesInFile(file)
+        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
 
-        var contents = file.contents as NSString
+        var nsstring = file.contents as NSString
         let description = self.dynamicType.description
         var corrections = [Correction]()
         for range in matches.reverse() {
-            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
             let location = Location(file: file, characterOffset: range.location)
+            nsstring = nsstring.stringByReplacingCharactersInRange(range, withString: ", ")
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-
-        file.write(contents as String)
+        file.write(nsstring as String)
         return corrections
     }
 

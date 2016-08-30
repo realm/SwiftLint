@@ -151,6 +151,14 @@ extension XCTestCase {
         ruleDescription.corrections.forEach(config.assertCorrection)
         // make sure strings that don't trigger aren't corrected
         zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
+
+        //"disable" command do not correct
+        ruleDescription.corrections.forEach { before, _ in
+            let beforeDisabled = command + before
+            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
+            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+        }
+
     }
 
     func checkError<T: protocol<ErrorType, Equatable>>(error: T, closure: () throws -> () ) {

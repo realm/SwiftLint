@@ -19,8 +19,9 @@
   The rule now enabled by default again (no longer opt-in).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
-* Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen 
-  but no descriptive text: `// MARK: -`  
+
+* Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
+  but no descriptive text: `// MARK: -`.  
   [Ruotger Deecke](https://github.com/roddi)
   [#778](https://github.com/realm/SwiftLint/issues/778)
 

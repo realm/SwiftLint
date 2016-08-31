@@ -25,6 +25,11 @@
   [Ruotger Deecke](https://github.com/roddi)
   [#778](https://github.com/realm/SwiftLint/issues/778)
 
+* Fixed: Private unit test rule not scoped to test classes.  
+  Fixed: Private unit test rule config is ignored if regex is missing.  
+  [Cristian Filipov](https://github.com/cfilipov)
+  [#786](https://github.com/realm/SwiftLint/issues/786)
+
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

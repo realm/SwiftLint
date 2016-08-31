@@ -36,13 +36,12 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject],
-            regexString = configurationDict["regex"] as? String else {
-                throw ConfigurationError.UnknownConfiguration
+        guard let configurationDict = configuration as? [String: AnyObject] else {
+            throw ConfigurationError.UnknownConfiguration
         }
-
-        regex = try NSRegularExpression.cached(pattern: regexString)
-
+        if let regexString = configurationDict["regex"] as? String {
+            regex = try NSRegularExpression.cached(pattern: regexString)
+        }
         if let includedString = configurationDict["included"] as? String {
             included = try NSRegularExpression.cached(pattern: includedString)
         }

@@ -113,8 +113,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         dictionary: [String: SourceKitRepresentable])
         -> [StyleViolation] {
 
-            guard kind == .Class else { return [] }
-            guard isTestClass(dictionary) == true else { return [] }
+            guard kind == .Class && isTestClass(dictionary) else { return [] }
 
             /* It's not strictly necessary to check for `private` on classes because a
              private class will result in `private` on all its members in the AST.
@@ -148,8 +147,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
             superclass,
             options: [],
             range: NSRange(location: 0, length: (superclass as NSString).length))
-        guard !pathMatch.isEmpty else { return false }
-        return true
+        return !pathMatch.isEmpty
     }
 
     private func validateFunction(

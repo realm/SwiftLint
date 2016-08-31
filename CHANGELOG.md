@@ -20,7 +20,8 @@
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
 
-* Fixed: Private unit test rule not scoped to test classes
+* Fixed: Private unit test rule not scoped to test classes.  
+  Fixed: Private unit test rule config is ignored if regex is missing.  
   [Cristian Filipov](https://github.com/cfilipov)
   [#786](https://github.com/realm/SwiftLint/issues/786)
 

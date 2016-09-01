@@ -15,6 +15,10 @@
 
 ##### Bug Fixes
 
+* Fixed whitespace being added to TODO messages
+  [W. Bagdon](https://github.com/wbagdon)
+  [#792](https://github.com/realm/SwiftLint/issues/792)
+
 * Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.
   The rule now enabled by default again (no longer opt-in).  
   [J. Cheyo Jimenez](https://github.com/masters3d)

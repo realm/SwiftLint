@@ -93,7 +93,7 @@ func makeConfig(ruleConfiguration: AnyObject?, _ identifier: String) -> Configur
     if let ruleConfiguration = ruleConfiguration, ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
-            return Configuration(configuredRules: [configuredRule])
+            return Configuration(whitelistRules: [identifier], configuredRules: [configuredRule])
         }
     }
     return Configuration(whitelistRules: [identifier])

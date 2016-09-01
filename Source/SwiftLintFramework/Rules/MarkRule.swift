@@ -20,7 +20,8 @@ public struct MarkRule: ConfigurationProviderRule {
         description: "MARK comment should be in valid format.",
         nonTriggeringExamples: [
             "// MARK: good\n",
-            "// MARK: - good\n"
+            "// MARK: - good\n",
+            "// MARK: -\n"
         ],
         triggeringExamples: [
             "//MARK: bad",
@@ -32,7 +33,7 @@ public struct MarkRule: ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let options = ["MARK:[^ ]", "[^ ]MARK: [^-]", "\\sMARK:[^ ]", "MARK:[ ][-][^ ]"]
+        let options = ["MARK:[^ ]", "[^ ]MARK: [^-]", "\\sMARK:[^ ]", "MARK:[ ][-][^\\s ]"]
         let pattern = "(" + options.joinWithSeparator("|") + ")"
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Comment]).flatMap { range in

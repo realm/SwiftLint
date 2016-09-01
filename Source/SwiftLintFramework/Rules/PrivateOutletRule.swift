@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
 
     public init() {}
 
@@ -47,8 +47,13 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         // Check if private
         let accessibility = (dictionary["key.accessibility"] as? String) ?? ""
+        let setterAccessiblity = (dictionary["key.setter_accessibility"] as? String) ?? ""
         let isPrivate = accessibility == "source.lang.swift.accessibility.private"
-        guard !isPrivate else { return [] }
+        let isPrivateSet = setterAccessiblity == "source.lang.swift.accessibility.private"
+
+        if isPrivate || (self.configuration.allowPrivateSet && isPrivateSet) {
+            return []
+        }
 
         // Violation found!
         let location: Location
@@ -60,7 +65,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: configuration.severity,
+                severity: configuration.severityConfiguration.severity,
                 location: location
             )
         ]

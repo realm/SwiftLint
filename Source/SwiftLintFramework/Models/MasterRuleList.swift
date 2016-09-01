@@ -67,6 +67,8 @@ public let masterRuleList = RuleList(rules:
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     PrivateOutletRule.self,
+    PrivateUnitTestRule.self,
+    RedundantNilCoalesingRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
     TodoRule.self,

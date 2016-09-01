@@ -6,6 +6,59 @@
 
 ##### Enhancements
 
+* Add `RedundantNilCoalesingRule` Opt-In rule that warns against `?? nil`.  
+  [Daniel Beard](https://github.com/daniel-beard)
+  [#764](https://github.com/realm/SwiftLint/issues/764)
+
+* Adds `allow_private_set` configuration for the `private_outlet` rule.  
+  [Rohan Dhaimade](https://github.com/HaloZero)
+
+##### Bug Fixes
+
+* Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.
+  The rule now enabled by default again (no longer opt-in).  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#772](https://github.com/realm/SwiftLint/issues/772)
+
+* Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
+  but no descriptive text: `// MARK: -`.  
+  [Ruotger Deecke](https://github.com/roddi)
+  [#778](https://github.com/realm/SwiftLint/issues/778)
+
+* Fixed: Private unit test rule not scoped to test classes.  
+  Fixed: Private unit test rule config is ignored if regex is missing.  
+  [Cristian Filipov](https://github.com/cfilipov)
+  [#786](https://github.com/realm/SwiftLint/issues/786)
+
+## 0.12.0: Vertical Laundry
+
+##### Breaking
+
+* Fixed: SwiftLint assumes paths in the YAML config file are relative to the
+  current directory even when `--path` is passed as an argument.  
+  [Cristian Filipov](https://github.com/cfilipov)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Made Vertical Whitespace Rule added in 0.11.2 opt-in due to performance
+  issues.  
+  [JP Simard](https://github.com/jpsim)
+  [#772](https://github.com/realm/SwiftLint/issues/772)
+
+## 0.11.2: Communal Clothesline
+
+This release has seen a phenomenal uptake in community contributions!
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
 * Add `MarkRule` rule to enforce `// MARK` syntax.  
   [Krzysztof Rodak](https://github.com/krodak)
   [#749](https://github.com/realm/SwiftLint/issues/749)
@@ -44,12 +97,20 @@
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
 
+* Add rule to check for private unit tests (private unit tests don't get run 
+  by XCTest).  
+  [Cristian Filipov](https://github.com/cfilipov)
+
 * Add configuration for setting a warning threshold.  
   [woodhamgh](https://github.com/woodhamgh)
   [696](https://github.com/realm/SwiftLint/issues/696)
 
 * Adds 'ConditionalReturnsOnNewLineRule' rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
+  
+* Made `- returns:` doc optional for initializers.  
+  [Mohpor](https://github.com/mohpor)
+  [#557](https://github.com/realm/SwiftLint/issues/557)
 
 ##### Bug Fixes
 

@@ -59,7 +59,7 @@ public struct TodoRule: ConfigurationProviderRule {
             }
             message = message.stringByReplacingOccurrencesOfString("//", withString: "")
             // trim whitespace
-            message = message.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewLineCharacterSet())
+            message = message.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
 
             // limiting the output length of todo message
             let maxLengthOfMessage = 30

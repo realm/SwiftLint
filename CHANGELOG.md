@@ -30,6 +30,8 @@
   [Cristian Filipov](https://github.com/cfilipov)
   [#786](https://github.com/realm/SwiftLint/issues/786)
 
+* Fixed: `- returns:` doc is not optional for implicitly unwrapped optional initializers.  
+  [mohpor](https://github.com/mohpor)
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking
@@ -97,7 +99,7 @@ This release has seen a phenomenal uptake in community contributions!
   [bootstraponline](https://github.com/bootstraponline)
   [#689](https://github.com/realm/SwiftLint/issues/689)
 
-* Add rule to check for private unit tests (private unit tests don't get run 
+* Add rule to check for private unit tests (private unit tests don't get run
   by XCTest).  
   [Cristian Filipov](https://github.com/cfilipov)
 
@@ -107,7 +109,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 * Adds 'ConditionalReturnsOnNewLineRule' rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
-  
+
 * Made `- returns:` doc optional for initializers.  
   [Mohpor](https://github.com/mohpor)
   [#557](https://github.com/realm/SwiftLint/issues/557)

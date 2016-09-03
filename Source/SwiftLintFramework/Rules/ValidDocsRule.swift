@@ -66,7 +66,7 @@ func matchOutsideBraces(declaration: String) -> NSString? {
 }
 
 func declarationIsInitializer(declaration: String) -> Bool {
-    return !regex("^((.+)?\\s+)?init\\?*\\!*\\(.*\\)")
+    return !regex("^((.+)?\\s+)?init[\\?\\!]{0,1}\\(.*\\)")
         .matchesInString(declaration, options: [],
                          range: NSRange(location: 0, length: declaration.characters.count)).isEmpty
 }

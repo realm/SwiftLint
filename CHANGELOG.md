@@ -12,7 +12,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fixed: `ConditionalReturnsOnNewline' now respects severity configuration.  
+  [Rohan Dhaimade](https://github.com/HaloZero)
+  [#783](https://github.com/realm/SwiftLint/issues/783)
 
 ## 0.12.0: Vertical Laundry
 

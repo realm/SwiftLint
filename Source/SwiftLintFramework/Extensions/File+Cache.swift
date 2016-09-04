@@ -26,8 +26,9 @@ private var structureCache = Cache({file -> Structure? in
     }
     return nil
 })
-private var syntaxMapCache = Cache({file in responseCache.get(file).map(SyntaxMap.init)})
-private var syntaxKindsByLinesCache = Cache({file in file.syntaxKindsByLine()})
+private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxMap.init) })
+private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
+private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
 private typealias AssertHandler = () -> ()
 private var assertHandlers = [String: AssertHandler?]()
@@ -115,6 +116,17 @@ extension File {
         return syntaxMap
     }
 
+    internal var syntaxTokensByLines: [[SyntaxToken]] {
+        guard let syntaxTokensByLines = syntaxTokensByLinesCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return []
+            }
+            fatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntaxTokensByLines
+    }
+
     internal var syntaxKindsByLines: [[SyntaxKind]] {
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
@@ -131,6 +143,7 @@ extension File {
         assertHandlers.removeValueForKey(cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
+        syntaxTokensByLinesCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
     }
 
@@ -141,6 +154,7 @@ extension File {
         assertHandlers = [:]
         structureCache.clear()
         syntaxMapCache.clear()
+        syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
     }
 

@@ -13,7 +13,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
     public let configurationDescription = "N/A"
     public var configuration = SeverityConfiguration(.Warning)
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "conditional_returns_on_newline",

@@ -10,6 +10,10 @@
   [Daniel Beard](https://github.com/daniel-beard)
   [#764](https://github.com/realm/SwiftLint/issues/764)
 
+* Added opt-In rule to makes closure expressions spacing consistent.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#770](https://github.com/realm/SwiftLint/issues/770)
+
 * Adds `allow_private_set` configuration for the `private_outlet` rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
 

@@ -103,11 +103,11 @@ extension File {
         }
     }
 
-    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+    internal func syntaxTokensByLine() -> [[SyntaxToken]]? {
         if sourcekitdFailed {
             return nil
         }
-        var results = [[SyntaxKind]](count: lines.count + 1, repeatedValue: [])
+        var results = [[SyntaxToken]](count: lines.count + 1, repeatedValue: [])
         var tokenGenerator = syntaxMap.tokens.generate()
         var lineGenerator = lines.generate()
         var maybeLine = lineGenerator.next()
@@ -116,7 +116,7 @@ extension File {
             let tokenRange = NSRange(location: token.offset, length: token.length)
             if NSLocationInRange(token.offset, line.byteRange) ||
                 NSLocationInRange(line.byteRange.location, tokenRange) {
-                    results[line.index].append(SyntaxKind(rawValue: token.type)!)
+                    results[line.index].append(token)
             }
             let tokenEnd = NSMaxRange(tokenRange)
             let lineEnd = NSMaxRange(line.byteRange)
@@ -130,6 +130,19 @@ extension File {
             }
         }
         return results
+    }
+
+    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+
+        if sourcekitdFailed {
+            return nil
+        }
+        guard let tokens = syntaxTokensByLine() else {
+            return nil
+        }
+
+        return tokens.map { $0.flatMap { SyntaxKind.init(rawValue: $0.type) } }
+
     }
 
     //Added by S2dent

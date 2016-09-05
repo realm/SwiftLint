@@ -20,6 +20,10 @@
 
 ##### Bug Fixes
 
+* Fixed whitespace being added to TODO messages.  
+  [W. Bagdon](https://github.com/wbagdon)
+  [#792](https://github.com/realm/SwiftLint/issues/792)
+
 * Fixed regex bug in Vertical Whitespace Rule by using SourceKitten instead.
   The rule now enabled by default again (no longer opt-in).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
@@ -29,6 +33,11 @@
   but no descriptive text: `// MARK: -`.  
   [Ruotger Deecke](https://github.com/roddi)
   [#778](https://github.com/realm/SwiftLint/issues/778)
+
+* Fixed: Private unit test rule not scoped to test classes.  
+  Fixed: Private unit test rule config is ignored if regex is missing.  
+  [Cristian Filipov](https://github.com/cfilipov)
+  [#786](https://github.com/realm/SwiftLint/issues/786)
 
 ## 0.12.0: Vertical Laundry
 

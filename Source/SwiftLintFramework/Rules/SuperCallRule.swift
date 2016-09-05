@@ -9,16 +9,7 @@
 import SourceKittenFramework
 
 public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
-    public var configuration = SeverityConfiguration(.Warning)
-
-    let methodNames = [
-        "viewWillAppear(_:)",
-        "viewWillDisappear(_:)",
-        "viewDidAppear(_:)",
-        "viewDidDisappear(_:)",
-        "prepareForSegue(_:sender:)"
-    ]
-
+    public var configuration = SuperCallConfiguration()
 
     public init() { }
 
@@ -68,7 +59,7 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
         else { return [] }
 
         guard   kind == .FunctionMethodInstance &&
-                methodNames.contains(name) &&
+                configuration.resolvedMethodNames.contains(name) &&
                 extractAttributes(dictionary).contains("source.decl.attribute.override")
         else { return [] }
 

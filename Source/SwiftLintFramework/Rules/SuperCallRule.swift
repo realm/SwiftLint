@@ -14,7 +14,7 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public init() { }
 
     public static let description = RuleDescription(
-        identifier: "overriden_method_call_super",
+        identifier: "overriden_super_call",
         name: "Overriden methods call super",
         description: "Some Overriden methods should always call super",
         nonTriggeringExamples: [

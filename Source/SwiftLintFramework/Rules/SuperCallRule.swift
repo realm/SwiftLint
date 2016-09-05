@@ -42,6 +42,10 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
             "class VC: UIViewController {\n" +
                 "\toverride func loadView() {\n" +
                 "\t}\n" +
+            "}\n",
+            "class Some {\n" +
+                "\tfunc viewWillAppear(animated: Bool) {\n" +
+                "\t}\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -57,35 +61,52 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .FunctionMethodInstance else { return [] }
+
         guard   let offset = dictionary["key.bodyoffset"] as? Int64,
-                let name = dictionary["key.name"] as? String where methodNames.contains(name),
+                let name = dictionary["key.name"] as? String,
                 let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable]
         else { return [] }
 
-        let superCall = "super.\(name)"
-        let callsToSuper: [String] = substructure.flatMap {
-            guard   let elems = $0 as? [String: SourceKitRepresentable],
-                    let type = elems["key.kind"] as? String,
-                    let name = elems["key.name"] as? String
-                    where   type == "source.lang.swift.expr.call" &&
-                            superCall.containsString(name)
-                            else { return nil }
-            return name
-        }
+        guard   kind == .FunctionMethodInstance &&
+                methodNames.contains(name) &&
+                extractAttributes(dictionary).contains("source.decl.attribute.override")
+        else { return [] }
+
+        let callsToSuper = extractCallsToSuper(name, substructure: substructure)
 
         if callsToSuper.isEmpty {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: .Warning,
+                severity: configuration.severity,
                 location: Location(file: file, byteOffset: Int(offset)),
                 reason: "Method '\(name)' should call to super function")]
         } else if callsToSuper.count > 1 {
             return [StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: .Warning,
+                severity: configuration.severity,
                 location: Location(file: file, byteOffset: Int(offset)),
                 reason: "Method '\(name)' should call to super only once")]
         }
         return []
     }
 
+    private func extractAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
+        guard let attributesDict = dictionary["key.attributes"] as? [SourceKitRepresentable]
+            else { return [] }
+        return attributesDict.flatMap {
+            ($0 as? [String: SourceKitRepresentable])?["key.attribute"] as? String
+        }
+    }
+
+    private func extractCallsToSuper(name: String,
+                                     substructure: [SourceKitRepresentable]) -> [String] {
+        let superCall = "super.\(name)"
+        return substructure.flatMap {
+            guard let elems = $0 as? [String: SourceKitRepresentable],
+                type = elems["key.kind"] as? String,
+                name = elems["key.name"] as? String
+                where   type == "source.lang.swift.expr.call" &&
+                    superCall.containsString(name)
+                else { return nil }
+            return name
+        }
+    }
 }

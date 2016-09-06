@@ -184,7 +184,7 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSuperCallConfigurationFromDictionary() {
         var configuration = SuperCallConfiguration()
-        
+
         let conf1 = [
             "severity": "error",
             "excluded": "viewWillAppear(_:)"
@@ -198,7 +198,7 @@ class RuleConfigurationsTests: XCTestCase {
         } catch {
             XCTFail()
         }
-        
+
         let conf2 = [
             "severity": "error",
             "excluded": "viewWillAppear(_:)",
@@ -215,7 +215,7 @@ class RuleConfigurationsTests: XCTestCase {
         } catch {
             XCTFail()
         }
-        
+
         let conf3 = [
             "severity": "warning",
             "excluded": "*",

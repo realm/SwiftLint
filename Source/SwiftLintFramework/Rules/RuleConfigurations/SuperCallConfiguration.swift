@@ -10,11 +10,37 @@ import Foundation
 
 public struct SuperCallConfiguration: RuleConfiguration, Equatable {
     var defaultIncluded = [
+        //NSObject
+        "awakeFromNib()",
+        "prepareForInterfaceBuilder()",
+        //UIViewController
+        "transitionCoordinator()",
+        "viewDidLoad()",
         "viewWillAppear(_:)",
         "viewWillDisappear(_:)",
         "viewDidAppear(_:)",
         "viewDidDisappear(_:)",
-        "prepareForSegue(_:sender:)"
+        "addChildViewController(_:)",
+        "removeFromParentViewController()",
+        "transition(from:to:duration:options:animations:completion:)",
+        "transitionFromViewController(_:toViewController:duration:options:animations:completion:)",
+        "didReceiveMemoryWarning()",
+        "encodeRestorableState(with:)",
+        "encodeRestorableStateWithCoder(_:)",
+        "decodeRestorableState(with:)",
+        "decodeRestorableStateWithCoder(_:)",
+        "setEditing(_:animated:)",
+        //UIView
+        "updateConstraints()",
+        "prepareForReuse()",
+        //UICollectionViewLayout
+        "invalidateLayout()",
+        "invalidateLayout(with:)",
+        "invalidateLayoutWithContext(_:)",
+        //XCTestCase
+        "tearDown()",
+        "setUp()"
+
     ]
 
     var severityConfiguration = SeverityConfiguration(.Warning)
@@ -45,7 +71,7 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    
+
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }

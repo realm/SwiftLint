@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testConditionalReturnsOnNewline() {
+        verifyRule(ConditionalReturnsOnNewline.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
@@ -154,6 +158,10 @@ class RulesTests: XCTestCase {
                    stringDoesntViolate: false)
     }
 
+    func testMark() {
+        verifyRule(MarkRule.description, commentDoesntViolate: false)
+    }
+
     func testMissingDocs() {
         verifyRule(MissingDocsRule.description)
     }
@@ -162,12 +170,42 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testVerticalWhitespace() {
+        verifyRule(VerticalWhitespaceRule.description)
+    }
+
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }
 
     func testOperatorFunctionWhitespace() {
         verifyRule(OperatorFunctionWhitespaceRule.description)
+    }
+
+    func testPrivateOutlet() {
+        verifyRule(PrivateOutletRule.description)
+
+        let baseDescription = PrivateOutletRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            "class Foo {\n  @IBOutlet private(set) var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private(set) var label: UILabel!\n}\n",
+            "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
+        ]
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: baseDescription.triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allow_private_set": true])
+    }
+
+    func testPrivateUnitTest() {
+        verifyRule(PrivateUnitTestRule.description)
+    }
+
+    func testRedundantNilCoalesing() {
+        verifyRule(RedundantNilCoalesingRule.description)
     }
 
     func testReturnArrowWhitespace() {

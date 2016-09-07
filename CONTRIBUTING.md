@@ -1,10 +1,20 @@
 ## Pull Requests
 
 All changes, no matter how trivial, must be done via pull request. Commits
-should never be made directly on the `master` branch. If you have commit access
-to SwiftLint and believe your change to be trivial and not worth waiting for
-review, you may open a pull request and merge immediately, but this should be
-the exception, not the norm.
+should never be made directly on the `master` branch.
+
+_If you have commit access to SwiftLint and believe your change to be trivial
+and not worth waiting for review, you may open a pull request and merge
+immediately, but this should be the exception, not the norm._
+
+### Submodules
+
+This SwiftLint repository uses submodules for its dependencies. 
+This means that if you decide to fork this repository to contribute to SwiftLint,
+don't forget to checkout the submodules as well when cloning, by running
+`git submodule update --init --recursive` after cloning.
+
+See more info [in the README](https://github.com/realm/SwiftLint#installation)
 
 ## Rules
 
@@ -19,7 +29,9 @@ Whenever possible, prefer adding tests via the `triggeringExamples` and
 `nonTriggeringExamples` properties of a rule's `description` rather than adding
 those test cases in the unit tests directly. This makes it easier to understand
 what rules do by reading their source, and simplifies adding more test cases
-over time.
+over time. This way adding a unit test for your new Rule is just a matter of
+adding a test case in `RulesTests.swift` which simply calls
+`verifyRule(YourNewRule.description)`.
 
 ### `ConfigurationProviderRule`
 

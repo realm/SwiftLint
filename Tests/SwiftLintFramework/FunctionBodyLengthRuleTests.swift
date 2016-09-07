@@ -31,6 +31,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             "whitespace: currently spans 41 lines")])
 
         let longerFunctionBodyWithEmptyLines = funcWithBody(
+            "// swiftlint:disable vertical_whitespace\n" +
             Repeat(count: 100, repeatedValue: "\n").joinWithSeparator("")
         )
         XCTAssertEqual(violations(longerFunctionBodyWithEmptyLines), [])

@@ -143,7 +143,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         let nsstring = file.contents as NSString
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
-            let syntaxKinds = syntaxTokens.map({ $0.type }).flatMap(SyntaxKind.init)
+            let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
             if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
                 return false
             }

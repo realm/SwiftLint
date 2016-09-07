@@ -62,6 +62,7 @@ public let masterRuleList = RuleList(rules:
     LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
     MarkRule.self,
+    MissingAccessControlRule.self,
     MissingDocsRule.self,
     NestingRule.self,
     OpeningBraceRule.self,

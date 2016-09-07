@@ -57,6 +57,7 @@
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
 		85DA81321D6B471000951BC4 /* MarkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856651A61D6B395F005E6B29 /* MarkRule.swift */; };
 		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */; };
+		AC3F41F71D656BDE00380D9E /* MissingAccessControlRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACDE16F31D5AFF1B00773021 /* MissingAccessControlRule.swift */; };
 		B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */; };
 		B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */; };
 		B58AEED61C492C7B00E901FD /* ForceUnwrappingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */; };
@@ -226,6 +227,7 @@
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
 		856651A61D6B395F005E6B29 /* MarkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkRule.swift; sourceTree = "<group>"; };
 		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewline.swift; sourceTree = "<group>"; };
+		ACDE16F31D5AFF1B00773021 /* MissingAccessControlRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MissingAccessControlRule.swift; sourceTree = "<group>"; };
 		B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestRule.swift; sourceTree = "<group>"; };
 		B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestConfiguration.swift; sourceTree = "<group>"; };
 		B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUnwrappingRule.swift; sourceTree = "<group>"; };
@@ -617,6 +619,7 @@
 				F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */,
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				856651A61D6B395F005E6B29 /* MarkRule.swift */,
+				ACDE16F31D5AFF1B00773021 /* MissingAccessControlRule.swift */,
 				E849FF271BF9481A009AE999 /* MissingDocsRule.swift */,
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 				692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */,
@@ -891,6 +894,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC3F41F71D656BDE00380D9E /* MissingAccessControlRule.swift in Sources */,
 				4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */,
 				6CC4259B1C77046200AEA885 /* SyntaxMap+SwiftLint.swift in Sources */,
 				E881985C1BEA978500333A11 /* TrailingNewlineRule.swift in Sources */,

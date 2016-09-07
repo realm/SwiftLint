@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `SuperCallRule` Opt-In rule that warns against overriden methods not calling to super in well known cases (ex: `viewWillAppear`).  
+  [Angel G. Olloqui](https://github.com/angelolloqui)
+  [#803](https://github.com/realm/SwiftLint/issues/803)
+  
 * Add `RedundantNilCoalesingRule` Opt-In rule that warns against `?? nil`.  
   [Daniel Beard](https://github.com/daniel-beard)
   [#764](https://github.com/realm/SwiftLint/issues/764)

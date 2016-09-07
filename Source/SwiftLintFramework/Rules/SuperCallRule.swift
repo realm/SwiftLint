@@ -14,9 +14,9 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public init() { }
 
     public static let description = RuleDescription(
-        identifier: "overriden_super_call",
-        name: "Overriden methods call super",
-        description: "Some Overriden methods should always call super",
+        identifier: "overridden_super_call",
+        name: "Overridden methods call super",
+        description: "Some Overridden methods should always call super",
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func viewWillAppear(animated: Bool) {\n" +
@@ -42,6 +42,7 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
         triggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func viewWillAppear(animated: Bool) () ↓{\n" +
+                    "\t\t//Not calling to super\n" +
                     "\t\tself.method()\n" +
                 "\t}\n" +
             "}\n",

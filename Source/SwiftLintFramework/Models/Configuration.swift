@@ -21,6 +21,7 @@ private enum ConfigurationKey: String {
     case UseNestedConfigs = "use_nested_configs" // deprecated
     case WhitelistRules = "whitelist_rules"
     case WarningThreshold = "warning_threshold"
+    case RequiredVersion = "required_version"
 }
 
 public struct Configuration: Equatable {
@@ -32,6 +33,7 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
+    public var requiredVersion: Version?
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -40,10 +42,12 @@ public struct Configuration: Equatable {
                  excluded: [String] = [],
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:])) {
+                 configuredRules: [Rule] = masterRuleList.configuredRulesWithDictionary([:]),
+                 requiredVersion: Version? = nil) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.requiredVersion = requiredVersion
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -134,8 +138,16 @@ public struct Configuration: Equatable {
             .Reporter,
             .UseNestedConfigs,
             .WarningThreshold,
-            .WhitelistRules
+            .WhitelistRules,
+            .RequiredVersion,
         ].map({ $0.rawValue }) + masterRuleList.list.keys
+
+        let requiredVersion: Version?
+        if let versionString = dict[ConfigurationKey.RequiredVersion.rawValue] as? String {
+            requiredVersion = Version(versionString: versionString)
+        } else {
+            requiredVersion = nil
+        }
 
         let invalidKeys = Set(dict.keys).subtract(validKeys)
         if !invalidKeys.isEmpty {
@@ -151,7 +163,8 @@ public struct Configuration: Equatable {
             warningThreshold: dict[ConfigurationKey.WarningThreshold.rawValue] as? Int,
             reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
-            configuredRules: masterRuleList.configuredRulesWithDictionary(dict)
+            configuredRules: masterRuleList.configuredRulesWithDictionary(dict),
+            requiredVersion: requiredVersion
         )
     }
 

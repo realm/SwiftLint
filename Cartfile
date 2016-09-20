@@ -1,2 +1,2 @@
-github "ikesyo/SourceKitten" "stable-swift2.3-support"
+github "jpsim/SourceKitten" "73b6b9f"
 github "scottrhoyt/SwiftyTextTable" ~> 0.3.1

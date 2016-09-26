@@ -49,7 +49,6 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
         ]
     )
 
-
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {

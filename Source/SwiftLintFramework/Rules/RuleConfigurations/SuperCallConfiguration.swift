@@ -71,7 +71,6 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }

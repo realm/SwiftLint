@@ -8,9 +8,6 @@ script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issu
 matrix:
   include:
     - script: set -o pipefail && script/cibuild | xcpretty
-      osx_image: xcode7.3
-      env: JOB=Xcode7
-    - script: set -o pipefail && script/cibuild | xcpretty
       osx_image: xcode8
       env: JOB=Xcode8
   exclude:

@@ -38,6 +38,8 @@
   [Cristian Filipov](https://github.com/cfilipov)
   [#786](https://github.com/realm/SwiftLint/issues/786)
 
+* Fixed: `- returns:` doc is not optional for implicitly unwrapped optional initializers.  
+  [mohpor](https://github.com/mohpor)
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

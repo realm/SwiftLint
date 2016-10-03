@@ -37,6 +37,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: self.dynamicType.description,
+                severity: self.configuration.severity,
                 location: Location(file: file, byteOffset: $0.location))
         }
     }

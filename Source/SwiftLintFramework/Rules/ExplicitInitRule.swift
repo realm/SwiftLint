@@ -70,7 +70,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                 && initializerWithType.numberOfMatchesInString(name, options: [], range: range) != 0
         }
 
-        let length = ".init".utf16.count
+        let length = ".init".utf8.count
 
         guard kind == .expr_call,
             let name = dictionary["key.name"] as? String where isExpected(name),

@@ -94,7 +94,11 @@ extension File {
     func members(declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
         return self.members(self, dictionary: self.structure.dictionary, declarations: declarations)
     }
-    private func members(file: File, dictionary: [String: SourceKitRepresentable], declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
+    private func members(
+        file: File,
+        dictionary: [String: SourceKitRepresentable],
+        declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
+        
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         
         return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
@@ -113,8 +117,9 @@ extension SequenceType where Generator.Element: Equatable {
     func suffix(matches items: [Generator.Element]) -> Bool {
         let suffix = Array(self.suffix(items.count))
         
+        // swiftlint:disable control_statement
         for (a, b) in zip(suffix, items) {
-            if (a == b) { return true }
+            if a == b { return true }
         }
         return false
     }
@@ -125,4 +130,3 @@ extension SequenceType where Generator.Element: Equatable {
         return false
     }
 }
-

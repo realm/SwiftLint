@@ -35,8 +35,6 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
         kind: SwiftDeclarationKind,
         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         
-        print(dictionary)
-        
         //only check kinds that might use instance members
         let types: [SwiftDeclarationKind] = [
             .FunctionMethodInstance,

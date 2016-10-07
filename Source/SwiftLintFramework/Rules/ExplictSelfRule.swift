@@ -11,9 +11,9 @@ import SourceKittenFramework
 
 public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Error)
-    
+
     public init() { }
-    
+
     public static let description = RuleDescription(
         identifier: "explicitSelf",
         name: "Explict Self",
@@ -29,19 +29,19 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "class Bad3 { let value: Int; init() { value = 42 } }",
         ]
     )
-    
+
     public func validateFile(
         file: File,
         kind: SwiftDeclarationKind,
         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        
+
         //only check kinds that might use instance members
         let types: [SwiftDeclarationKind] = [
             .FunctionMethodInstance,
             .VarInstance,
         ]
         guard types.contains(kind) else { return [] }
-        
+
         //build a set of instance memebers
         let memberTypes: [SwiftDeclarationKind] = [
             .FunctionMethodInstance,
@@ -49,33 +49,33 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
         let instanceMembers = file.members(memberTypes)
         let instanceMemberNames = instanceMembers.flatMap { $0["key.name"] as? String }
-        
+
         //get the members body (functions and calculated properties will have this data)
         guard
             let bodyLocation = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) })
             else { return [] }
-        
+
         //get all the tokens inside the body
         let range = NSRange(location: bodyLocation, length: bodyLength)
         let tokens = file.syntaxMap.tokensIn(range)
-        
+
         var violations: [StyleViolation] = []
-        
+
         var previous: [String] = []
         for token in tokens {
             guard let type = SyntaxKind(rawValue: token.type) else { continue }
-            
+
             let value = file.contents.substring(token.offset, length: token.length)
             defer { previous.append(value) }
-            
+
             let allowedSuffixes: [[String]] = [
                 ["self"], //self.value (normal access)
                 ["if", "let"] //if let value = self.value (shadowing)
             ]
-            
+
             let isInstanceIdentifier = (type == .Identifier && instanceMemberNames.contains(value))
-            
+
             if isInstanceIdentifier && !previous.suffix(matches: allowedSuffixes) {
                 violations.append(StyleViolation(
                     ruleDescription: self.dynamicType.description,
@@ -85,7 +85,7 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 )
             }
         }
-        
+
         return violations
     }
 }
@@ -98,15 +98,15 @@ extension File {
         file: File,
         dictionary: [String: SourceKitRepresentable],
         declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
-        
+
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        
+
         return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
                 kindString = subDict["key.kind"] as? String,
                 kind = SwiftDeclarationKind(rawValue: kindString)
                 else { return [] }
-            
+
             return self.members(file, dictionary: subDict, declarations: declarations) +
                 (declarations.contains(kind) ? [subDict] : [])
         }
@@ -116,14 +116,14 @@ extension File {
 extension SequenceType where Generator.Element: Equatable {
     func suffix(matches items: [Generator.Element]) -> Bool {
         let suffix = Array(self.suffix(items.count))
-        
+
         // swiftlint:disable control_statement
         for (a, b) in zip(suffix, items) {
             if a == b { return true }
         }
         return false
     }
-    
+
     func suffix(matches items: [[Generator.Element]]) -> Bool {
         for test in items
             where self.suffix(matches: test) { return true }

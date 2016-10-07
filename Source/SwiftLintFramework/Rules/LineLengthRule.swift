@@ -34,7 +34,24 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             if line.range.length < minValue {
                 return nil
             }
-            let length = line.content.characters.count
+                        
+            var length = line.content.characters.count
+            
+            // Check if a color literal exists in the line by trying to get range
+            if let colorLiteralRangeStart = line.content.rangeOfString("#colorLiteral("),
+                let colorLiteralRangeEnd = line.content.rangeOfString(")",
+                    options: .LiteralSearch,
+                    range: colorLiteralRangeStart.startIndex..<line.content.endIndex,
+                    locale: nil) {
+                
+                // Range was found, get substring of color literal range
+                let colorLiteralContent = line.content.substringWithRange(colorLiteralRangeStart.startIndex..<colorLiteralRangeEnd.endIndex)
+                
+                // Reduce length so that literal only counts as one character
+                length = length - (colorLiteralContent.characters.count - 1)
+            }
+            
+            
             for param in configuration.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,
                     severity: param.severity,

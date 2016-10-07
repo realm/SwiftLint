@@ -18,6 +18,7 @@
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
 		2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */; };
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
+		327368C51DA743D900EAD5A7 /* ExplictSelfRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 327368C41DA743D900EAD5A7 /* ExplictSelfRule.swift */; };
 		3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */; };
 		3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */; };
 		3B12C9C11C3209CB000B423F /* test.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B12C9BF1C3209AC000B423F /* test.yml */; };
@@ -200,6 +201,7 @@
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
 		2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CyclomaticComplexityRule.swift; sourceTree = "<group>"; };
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
+		327368C41DA743D900EAD5A7 /* ExplictSelfRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplictSelfRule.swift; sourceTree = "<group>"; };
 		3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityConfiguration.swift; sourceTree = "<group>"; };
 		3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yaml+SwiftLint.swift"; sourceTree = "<group>"; };
 		3B12C9BF1C3209AC000B423F /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.yml; sourceTree = "<group>"; };
@@ -666,6 +668,7 @@
 				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
 				1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
+				327368C41DA743D900EAD5A7 /* ExplictSelfRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -958,6 +961,7 @@
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				E847F0A91BFBBABD00EA9363 /* EmptyCountRule.swift in Sources */,
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
+				327368C51DA743D900EAD5A7 /* ExplictSelfRule.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,

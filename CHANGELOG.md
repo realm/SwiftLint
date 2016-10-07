@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `ExplicitSelfRule` Opt-In rule that enforces the use of `self.` for instance members
+  [Ian Keen](https://github.com/IanKeen)
+  [#321](https://github.com/realm/SwiftLint/issues/321)
+
 * Add `ImplicitGetterRule` to warn against using `get` on computed read-only
   properties.  
   [Marcelo Fabri](https://github.com/marcelofabri)

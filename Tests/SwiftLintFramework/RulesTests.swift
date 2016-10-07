@@ -314,4 +314,7 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
+    func testExplicitSelf() {
+        verifyRule(ExplicitSelfRule.description)
+    }
 }

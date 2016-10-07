@@ -88,4 +88,5 @@ public let masterRuleList = RuleList(rules:
     VariableNameRule.self,
     VerticalWhitespaceRule.self,
     WeakDelegateRule.self
+    ExplicitSelfRule.self
 )

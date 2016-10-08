@@ -8,19 +8,19 @@
 
 import Foundation
 
-extension NSFileManager {
-    internal func filesToLintAtPath(path: String, rootDirectory: String? = nil) -> [String] {
-        let rootPath = rootDirectory ?? NSFileManager.defaultManager().currentDirectoryPath
+extension FileManager {
+    internal func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
+        let rootPath = rootDirectory ?? FileManager.default.currentDirectoryPath
         let absolutePath = (path.absolutePathRepresentation(rootPath) as NSString)
-            .stringByStandardizingPath
+            .standardizingPath
         var isDirectory: ObjCBool = false
-        guard fileExistsAtPath(absolutePath, isDirectory: &isDirectory) else {
+        guard fileExists(atPath: absolutePath, isDirectory: &isDirectory) else {
             return []
         }
-        if isDirectory {
+        if isDirectory.boolValue {
             do {
-                return try subpathsOfDirectoryAtPath(absolutePath)
-                    .map((absolutePath as NSString).stringByAppendingPathComponent).filter {
+                return try subpathsOfDirectory(atPath: absolutePath)
+                    .map((absolutePath as NSString).appendingPathComponent).filter {
                         $0.isSwiftFile()
                 }
             } catch {

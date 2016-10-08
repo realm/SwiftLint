@@ -10,16 +10,16 @@ import Yaml
 
 // MARK: - YamlParsingError
 
-internal enum YamlParserError: ErrorType, Equatable {
-    case YamlParsing(String)
-    case YamlFlattening
+internal enum YamlParserError: Error, Equatable {
+    case yamlParsing(String)
+    case yamlFlattening
 }
 
 internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
     switch (lhs, rhs) {
-    case (.YamlFlattening, .YamlFlattening):
+    case (.yamlFlattening, .yamlFlattening):
         return true
-    case (.YamlParsing(let x), .YamlParsing(let y)):
+    case (.yamlParsing(let x), .yamlParsing(let y)):
         return x == y
     default:
         return false
@@ -29,22 +29,22 @@ internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
 // MARK: - YamlParser
 
 public struct YamlParser {
-    public static func parse(contents: String) throws -> [String: AnyObject] {
+    public static func parse(_ contents: String) throws -> [String: Any] {
         do {
             if let dict = try loadYaml(contents).flatDictionary {
                 return dict
             } else {
-                throw YamlParserError.YamlFlattening
+                throw YamlParserError.yamlFlattening
             }
         }
     }
 
-    private static func loadYaml(yaml: String) throws -> Yaml {
+    fileprivate static func loadYaml(_ yaml: String) throws -> Yaml {
         let yamlResult = Yaml.load(yaml)
         if let yamlConfig = yamlResult.value {
             return yamlConfig
         } else {
-            throw YamlParserError.YamlParsing(yamlResult.error!)
+            throw YamlParserError.yamlParsing(yamlResult.error!)
         }
     }
 }

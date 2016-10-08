@@ -41,23 +41,23 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let matches = violationRangesInFile(file)
         if matches.isEmpty { return [] }
 
         var contents = file.contents as NSString
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
-        for range in matches.reverse() {
-            contents = contents.stringByReplacingCharactersInRange(range, withString: ", ")
+        for range in matches.reversed() {
+            contents = contents.replacingCharacters(in: range, with: ", ") as NSString
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
@@ -68,7 +68,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     // captures spaces and comma only
     // http://userguide.icu-project.org/strings/regexp
-    private static let pattern =
+    fileprivate static let pattern =
         "\\S" +                // not whitespace
         "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
@@ -82,23 +82,23 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         "(\\S)"                // second capture is not whitespace.
 
     // swiftlint:disable:next force_try
-    private static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
+    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
+    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
         .map { $0.rawValue }
 
-    private func violationRangesInFile(file: File) -> [NSRange] {
+    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
-            .matchesInString(contents, options: [], range: range)
+            .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
                 if match.numberOfRanges != 3 { return nil }
 
                 // check first captured range
-                let firstRange = match.rangeAtIndex(1)
+                let firstRange = match.rangeAt(1)
                 guard let matchByteFirstRange = contents
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
@@ -114,12 +114,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !(contents as NSString).substringWithRange(firstRange).hasPrefix(",") {
+                if !(contents as NSString).substring(with: firstRange).hasPrefix(",") {
                     return firstRange
                 }
 
                 // check second captured range
-                let secondRange = match.rangeAtIndex(2)
+                let secondRange = match.rangeAt(2)
                 guard let matchByteSecondRange = contents
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }

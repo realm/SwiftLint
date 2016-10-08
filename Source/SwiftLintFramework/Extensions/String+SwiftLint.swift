@@ -16,64 +16,68 @@ extension String {
         }
 
         if let character = utf16.suffix(1).first {
-            return NSCharacterSet.whitespaceCharacterSet().characterIsMember(character)
+            return CharacterSet.whitespaces.contains(UnicodeScalar(character)!)
         }
 
         return false
     }
 
     internal func isUppercase() -> Bool {
-        return self == uppercaseString
+        return self == uppercased()
     }
 
     internal func isLowercase() -> Bool {
-        return self == lowercaseString
+        return self == lowercased()
     }
 
-    internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
+    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) ->
                                                           String {
         let privateACL = "source.lang.swift.accessibility.private"
         if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
-            return self[startIndex.successor()..<endIndex]
+            return substring(from: index(after: startIndex))
         }
         return self
     }
 
     internal subscript (range: Range<Int>) -> String {
-        let nsrange = NSRange(location: range.startIndex, length: range.endIndex - range.startIndex)
+        let nsrange = NSRange(location: range.lowerBound, length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
-            return substringWithRange(indexRange)
+            return self.substring(with: indexRange)
         }
         fatalError("invalid range")
     }
 
-    internal func substring(from: Int, length: Int? = nil) -> String {
+    internal func substring(_ from: Int, length: Int? = nil) -> String {
         if let length = length {
             return self[from..<from + length]
         }
-        return substringFromIndex(startIndex.advancedBy(from, limit: endIndex))
+        return self.substring(from: characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!)
     }
 
-    internal func lastIndexOf(search: String) -> Int? {
-        if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
-            return startIndex.distanceTo(range.startIndex)
+    internal func lastIndexOf(_ search: String) -> Int? {
+        if let range = range(of: search, options: [.literal, .backwards]) {
+            return characters.distance(from: startIndex, to: range.lowerBound)
         }
         return nil
     }
 
-    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index>? {
+    internal func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
         guard nsrange.location != NSNotFound else {
             return nil
         }
-        let from16 = utf16.startIndex.advancedBy(nsrange.location, limit: utf16.endIndex)
-        let to16 = from16.advancedBy(nsrange.length, limit: utf16.endIndex)
-        if let from = Index(from16, within: self), to = Index(to16, within: self) {
+        let from16 = utf16.index(utf16.startIndex,
+                                 offsetBy: nsrange.location,
+                                 limitedBy: utf16.endIndex) ?? utf16.endIndex
+        let to16 = utf16.index(from16,
+                               offsetBy: nsrange.length,
+                               limitedBy: utf16.endIndex) ?? utf16.endIndex
+        if let from = Index(from16, within: self), let to = Index(to16, within: self) {
             return from..<to
         }
         return nil
     }
 
     public func absolutePathStandardized() -> String {
-        return (self.absolutePathRepresentation() as NSString).stringByStandardizingPath
+        return (self.absolutePathRepresentation() as NSString).standardizingPath
     }
 }

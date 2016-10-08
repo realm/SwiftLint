@@ -16,16 +16,16 @@ public struct CheckstyleReporter: Reporter {
         return "Reports violations as Checkstyle XML."
     }
 
-    public static func generateReport(violations: [StyleViolation]) -> String {
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">" +
             violations.map({ violation in
                 let fileName = violation.location.file ?? "<nopath>"
                 return ["\n\t<file name=\"\(fileName)\">\n",
                     "\t\t<error line=\"\(violation.location.line ?? 0)\" ",
                     "column=\"\(violation.location.character ?? 0)\" ",
-                    "severity=\"\(violation.severity.rawValue.lowercaseString)\" ",
+                    "severity=\"\(violation.severity.rawValue.lowercased())\" ",
                     "message=\"\(violation.reason)\"/>\n",
-                    "\t</file>"].joinWithSeparator("")
-            }).joinWithSeparator("") + "\n</checkstyle>"
+                    "\t</file>"].joined(separator: "")
+            }).joined(separator: "") + "\n</checkstyle>"
     }
 }

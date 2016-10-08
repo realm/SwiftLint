@@ -11,7 +11,7 @@ import SourceKittenFramework
 extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
     public var isCommentLike: Bool {
-        return [Comment, CommentMark, CommentURL, DocComment, DocCommentField].contains(self)
+        return [SyntaxKind.Comment, SyntaxKind.CommentMark, SyntaxKind.CommentURL, SyntaxKind.DocComment, SyntaxKind.DocCommentField].contains(self)
     }
 }
 
@@ -41,8 +41,8 @@ public struct TodoRule: ConfigurationProviderRule {
         ]
     )
 
-    private func customMessage(lines: [Line], location: Location) -> String {
-            var reason = self.dynamicType.description.description
+    fileprivate func customMessage(_ lines: [Line], location: Location) -> String {
+            var reason = type(of: self).description.description
 
             guard let lineIndex = location.line,
                   let currentLine = lines.filter({ $0.index == lineIndex }).first
@@ -50,22 +50,24 @@ public struct TodoRule: ConfigurationProviderRule {
 
             // customizing the reason message to be specific to fixme or todo
             var message = currentLine.content
-            if currentLine.content.containsString("FIXME") {
+            if currentLine.content.contains("FIXME") {
                 reason = "FIXMEs should be avoided"
-                message = message.stringByReplacingOccurrencesOfString("FIXME", withString: "")
+                message = message.replacingOccurrences(of: "FIXME", with: "")
             } else {
                 reason = "TODOs should be avoided"
-                message = message.stringByReplacingOccurrencesOfString("TODO", withString: "")
+                message = message.replacingOccurrences(of: "TODO", with: "")
             }
-            message = message.stringByReplacingOccurrencesOfString("//", withString: "")
+            message = message.replacingOccurrences(of: "//", with: "")
             // trim whitespace
-            message = message.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
+            message = message.trimmingCharacters(in: .whitespacesAndNewlines)
 
             // limiting the output length of todo message
             let maxLengthOfMessage = 30
             if message.utf16.count > maxLengthOfMessage {
-                let index = message.startIndex.advancedBy(maxLengthOfMessage)
-                reason += message.substringToIndex(index) + "..."
+                let index = message.index(message.startIndex,
+                                          offsetBy: maxLengthOfMessage,
+                                          limitedBy: message.endIndex) ?? message.endIndex
+                reason += message.substring(to: index) + "..."
             } else {
                 reason += message
             }
@@ -73,7 +75,7 @@ public struct TodoRule: ConfigurationProviderRule {
             return reason
     }
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
             if !syntaxKinds.filter({ !$0.isCommentLike }).isEmpty {
                 return nil
@@ -81,7 +83,7 @@ public struct TodoRule: ConfigurationProviderRule {
             let location = Location(file: file, characterOffset: range.location)
             let reason = customMessage(file.lines, location: location)
 
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location,
                 reason: reason )

@@ -55,9 +55,9 @@ class YamlSwiftLintTests: XCTestCase {
                 return ymlString
             }
         #else
-            let testBundle = NSBundle(forClass: self.dynamicType)
-            if let path = testBundle.pathForResource("test", ofType: "yml"),
-                ymlString = try? String(contentsOfFile: path) {
+            let testBundle = Bundle(for: type(of: self))
+            if let path = testBundle.path(forResource: "test", ofType: "yml"),
+                let ymlString = try? String(contentsOfFile: path) {
                     return ymlString
             }
         #endif

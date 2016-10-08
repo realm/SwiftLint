@@ -15,7 +15,7 @@ class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
-                       "excluded": "id"]
+                       "excluded": "id"] as [String : Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
@@ -39,7 +39,7 @@ class RuleConfigurationsTests: XCTestCase {
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
                                            maxLengthError: 0)
-        checkError(ConfigurationError.UnknownConfiguration) {
+        checkError(ConfigurationError.unknownConfiguration) {
             try nameConfig.applyConfiguration(config)
         }
     }
@@ -95,7 +95,7 @@ class RuleConfigurationsTests: XCTestCase {
     func testSeverityConfigurationThrowsOnBadConfig() {
         let config = 17
         var severityConfig = SeverityConfiguration(.Warning)
-        checkError(ConfigurationError.UnknownConfiguration) {
+        checkError(ConfigurationError.unknownConfiguration) {
             try severityConfig.applyConfiguration(config)
         }
     }
@@ -114,7 +114,7 @@ class RuleConfigurationsTests: XCTestCase {
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration(identifier: "")
-        checkError(ConfigurationError.UnknownConfiguration) {
+        checkError(ConfigurationError.unknownConfiguration) {
             try regexConfig.applyConfiguration(config)
         }
     }
@@ -133,7 +133,7 @@ class RuleConfigurationsTests: XCTestCase {
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
         let config = "unknown"
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
-        checkError(ConfigurationError.UnknownConfiguration) {
+        checkError(ConfigurationError.unknownConfiguration) {
             try configuration.applyConfiguration(config)
         }
     }

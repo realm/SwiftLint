@@ -16,38 +16,38 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
     static let description = RuleDescription(identifier: "severity_level_mock",
                                              name: "",
                                              description: "")
-    func validateFile(file: File) -> [StyleViolation] { return [] }
+    func validateFile(_ file: File) -> [StyleViolation] { return [] }
 }
 
 class RuleTests: XCTestCase {
 
-    private struct RuleMock1: Rule {
+    fileprivate struct RuleMock1: Rule {
         init() {}
-        init(configuration: AnyObject) throws { self.init() }
+        init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
-        func validateFile(file: File) -> [StyleViolation] {
+        func validateFile(_ file: File) -> [StyleViolation] {
             return []
         }
     }
 
-    private struct RuleMock2: Rule {
+    fileprivate struct RuleMock2: Rule {
         init() {}
-        init(configuration: AnyObject) throws { self.init() }
+        init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
-        func validateFile(file: File) -> [StyleViolation] {
+        func validateFile(_ file: File) -> [StyleViolation] {
             return []
         }
     }
 
-    private struct RuleWithLevelsMock2: ConfigurationProviderRule {
+    fileprivate struct RuleWithLevelsMock2: ConfigurationProviderRule {
         var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",
                                                  description: "")
-        func validateFile(file: File) -> [StyleViolation] { return [] }
+        func validateFile(_ file: File) -> [StyleViolation] { return [] }
     }
 
     func testRuleIsEqualTo() {

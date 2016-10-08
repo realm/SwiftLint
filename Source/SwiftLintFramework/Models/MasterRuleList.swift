@@ -18,7 +18,7 @@ public struct RuleList {
         list = tmpList
     }
 
-    internal func configuredRulesWithDictionary(dictionary: [String: AnyObject]) -> [Rule] {
+    internal func configuredRules(with dictionary: [String: Any]) -> [Rule] {
         var rules = [Rule]()
         for ruleType in list.values {
             let identifier = ruleType.description.identifier

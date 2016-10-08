@@ -15,11 +15,11 @@ let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ 
 
 extension Configuration {
     var disabledRules: [String] {
-        let configuredRuleIDs = rules.map({ $0.dynamicType.description.identifier })
+        let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
             !($0.init() is OptInRule)
         }).map({ $0.description.identifier }))
-        return defaultRuleIDs.subtract(configuredRuleIDs).sort(<)
+        return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
     }
 }
 
@@ -48,7 +48,7 @@ class ConfigurationTests: XCTestCase {
         let whitelist = ["nesting", "todo"]
         let config = Configuration(dict: ["whitelist_rules":  whitelist])!
         let configuredIdentifiers = config.rules.map {
-            $0.dynamicType.description.identifier
+            type(of: $0).description.identifier
         }
         XCTAssertEqual(whitelist, configuredIdentifiers)
     }
@@ -92,7 +92,7 @@ class ConfigurationTests: XCTestCase {
         let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) })
         let configuredIdentifiers = disabledConfig.rules.map {
-            $0.dynamicType.description.identifier
+            type(of: $0).description.identifier
         }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
@@ -113,14 +113,14 @@ class ConfigurationTests: XCTestCase {
         let expectedIdentifiers = Array(masterRuleList.list.keys)
             .filter({ !([validRule] + optInRules).contains($0) })
         let configuredIdentifiers = configuration.rules.map {
-            $0.dynamicType.description.identifier
+            type(of: $0).description.identifier
         }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
-    private class TestFileManager: NSFileManager {
-        private override func filesToLintAtPath(
-            path: String,
+    fileprivate class TestFileManager: FileManager {
+        fileprivate override func filesToLintAtPath(
+            _ path: String,
             rootDirectory: String? = nil)
             -> [String] {
             switch path {
@@ -146,13 +146,13 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Configuration Equality
 
-    private var projectMockConfig0: Configuration {
+    fileprivate var projectMockConfig0: Configuration {
         var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
         configuration.rootPath = projectMockPathLevel0
         return configuration
     }
 
-    private var projectMockConfig2: Configuration {
+    fileprivate var projectMockConfig2: Configuration {
         return Configuration(path: projectMockYAML2, optional: false, quiet: true)
     }
 
@@ -197,14 +197,14 @@ class ConfigurationTests: XCTestCase {
     func testConfiguresCorrectlyFromDict() {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = testRuleList.configuredRulesWithDictionary(config)
+        let rules = testRuleList.configuredRules(with: config)
         // swiftlint:disable:next force_try
         XCTAssertTrue(rules == [try! RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = testRuleList.configuredRulesWithDictionary(config)
+        let rules = testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
 }
@@ -212,8 +212,8 @@ class ConfigurationTests: XCTestCase {
 // MARK: - ProjectMock Paths
 
 extension String {
-    func stringByAppendingPathComponent(pathComponent: String) -> String {
-        return (self as NSString).stringByAppendingPathComponent(pathComponent)
+    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
+        return (self as NSString).appendingPathComponent(pathComponent)
     }
 }
 
@@ -222,7 +222,7 @@ extension XCTestCase {
         #if SWIFT_PACKAGE
             return "Tests/SwiftLintFramework/Resources".absolutePathRepresentation()
         #else
-            return NSBundle(forClass: self.dynamicType).resourcePath!
+            return Bundle(for: type(of: self)).resourcePath!
         #endif
     }
 

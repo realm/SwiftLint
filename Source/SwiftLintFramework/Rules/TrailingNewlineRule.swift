@@ -10,10 +10,10 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
-    private func countOfTrailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
+    fileprivate func countOfTrailingCharactersInSet(_ characterSet: CharacterSet) -> Int {
         var count = 0
-        for char in utf16.lazy.reverse() {
-            if !characterSet.characterIsMember(char) {
+        for char in utf16.lazy.reversed() {
+            if !characterSet.contains(UnicodeScalar(char)!) {
                 break
             }
             count += 1
@@ -21,8 +21,8 @@ extension String {
         return count
     }
 
-    private func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    fileprivate func trailingNewlineCount() -> Int? {
+        return countOfTrailingCharactersInSet(CharacterSet.newlines)
     }
 }
 
@@ -50,17 +50,17 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
-        return [StyleViolation(ruleDescription: self.dynamicType.description,
+        return [StyleViolation(ruleDescription: type(of: self).description,
             severity: configuration.severity,
             location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        guard let count = file.contents.trailingNewlineCount() where count != 1 else {
+    public func correctFile(_ file: File) -> [Correction] {
+        guard let count = file.contents.trailingNewlineCount(), count != 1 else {
             return []
         }
         let region = file.regions().filter {
@@ -72,9 +72,9 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         if count < 1 {
             file.append("\n")
         } else {
-            file.write(file.contents.substringToIndex(file.contents.endIndex.advancedBy(1 - count)))
+            file.write(file.contents.substring(to: file.contents.characters.index(file.contents.endIndex, offsetBy: 1 - count)))
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
+        return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
 }

@@ -17,19 +17,20 @@ public struct JSONReporter: Reporter {
         return "Reports violations as a JSON array."
     }
 
-    public static func generateReport(violations: [StyleViolation]) -> String {
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
         return toJSON(violations.map(dictionaryForViolation))
     }
 
-    private static func dictionaryForViolation(violation: StyleViolation) -> NSDictionary {
-        return [
-            "file": violation.location.file ?? NSNull(),
-            "line": violation.location.line ?? NSNull(),
-            "character": violation.location.character ?? NSNull(),
+    fileprivate static func dictionaryForViolation(_ violation: StyleViolation) -> NSDictionary {
+        let result: [String: Any] = [
+            "file": violation.location.file,
+            "line": violation.location.line,
+            "character": violation.location.character,
             "severity": violation.severity.rawValue,
             "type": violation.ruleDescription.name,
             "rule_id": violation.ruleDescription.identifier,
-            "reason": violation.reason ?? NSNull()
+            "reason": violation.reason
         ]
+        return result as NSDictionary
     }
 }

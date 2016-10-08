@@ -51,20 +51,20 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let constants = ["CGRectInfinite", "CGPointZero", "CGRectZero", "CGSizeZero",
                          "NSZeroPoint", "NSZeroRect", "NSZeroSize", "CGRectNull"]
 
-        let pattern = "\\b(" + constants.joinWithSeparator("|") + ")\\b"
+        let pattern = "\\b(" + constants.joined(separator: "|") + ")\\b"
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let patterns = [
             "CGRectInfinite": "CGRect.infinite",
             "CGPointZero": "CGPoint.zero",
@@ -76,17 +76,17 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "CGRectNull": "CGRect.null"
         ]
 
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
 
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern, withSyntaxKinds: [.Identifier])
                 .map { ($0, pattern, template) }
-        }).flatten().sort { $0.0.location > $1.0.location } // reversed
+        }).joined().sorted { $0.0.location > $1.0.location } // reversed
 
         for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatchesInString(contents,
+            contents = regex(pattern).stringByReplacingMatches(in: contents,
                                                                        options: [],
                                                                        range: range,
                                                                        withTemplate: template)

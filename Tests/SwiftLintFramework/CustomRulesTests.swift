@@ -39,7 +39,7 @@ class CustomRulesTests: XCTestCase {
     func testCustomRuleConfigurationThrows() {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
-        checkError(ConfigurationError.UnknownConfiguration) {
+        checkError(ConfigurationError.unknownConfiguration) {
             try customRulesConfig.applyConfiguration(config)
         }
     }
@@ -80,7 +80,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func getCustomRules(extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
+    func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
@@ -106,8 +106,8 @@ class CustomRulesTests: XCTestCase {
                 .absolutePathRepresentation()
             return File(path: path)!
         #else
-            let testBundle = NSBundle(forClass: self.dynamicType)
-            let path: String? = testBundle.pathForResource("test", ofType: "txt")
+            let testBundle = Bundle(for: type(of: self))
+            let path: String? = testBundle.path(forResource: "test", ofType: "txt")
             if path != nil {
                 return File(path: path!)!
             }

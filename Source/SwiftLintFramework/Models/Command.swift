@@ -12,7 +12,7 @@ public enum CommandAction: String {
     case Enable = "enable"
     case Disable = "disable"
 
-    private func inverse() -> CommandAction {
+    fileprivate func inverse() -> CommandAction {
         switch self {
         case .Enable: return .Disable
         case .Disable: return .Enable
@@ -43,32 +43,32 @@ public struct Command {
     }
 
     public init?(string: NSString, range: NSRange) {
-        let scanner = NSScanner(string: string.substringWithRange(range))
-        scanner.scanString("swiftlint:", intoString: nil)
+        let scanner = Scanner(string: string.substring(with: range))
+        scanner.scanString("swiftlint:", into: nil)
         var optionalActionAndModifierNSString: NSString? = nil
-        scanner.scanUpToString(" ", intoString: &optionalActionAndModifierNSString)
+        scanner.scanUpTo(" ", into: &optionalActionAndModifierNSString)
         guard let actionAndModifierString = optionalActionAndModifierNSString as String? else {
             return nil
         }
-        let actionAndModifierScanner = NSScanner(string: actionAndModifierString)
+        let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         var actionNSString: NSString? = nil
-        actionAndModifierScanner.scanUpToString(":", intoString: &actionNSString)
+        actionAndModifierScanner.scanUpTo(":", into: &actionNSString)
         guard let actionString = actionNSString as String?,
-            action = CommandAction(rawValue: actionString),
-            lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
+            let action = CommandAction(rawValue: actionString),
+            let lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
                 return nil
         }
         self.action = action
-        ruleIdentifier = (scanner.string as NSString).substringFromIndex(scanner.scanLocation + 1)
+        ruleIdentifier = (scanner.string as NSString).substring(from: scanner.scanLocation + 1)
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(":", intoString: nil)
+        let hasModifier = actionAndModifierScanner.scanString(":", into: nil)
 
         // Modifier
         if hasModifier {
             let modifierString = (actionAndModifierScanner.string as NSString)
-                .substringFromIndex(actionAndModifierScanner.scanLocation)
+                .substring(from: actionAndModifierScanner.scanLocation)
             modifier = CommandModifier(rawValue: modifierString)
         } else {
             modifier = nil

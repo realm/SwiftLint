@@ -9,10 +9,10 @@
 import Foundation
 import SourceKittenFramework
 
-private let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 extension File {
-    private func violatingClosingBraceRanges() -> [NSRange] {
+    fileprivate func violatingClosingBraceRanges() -> [NSRange] {
         return matchPattern(
             "(\\}[ \\t]+\\))",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
@@ -44,15 +44,15 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.violatingClosingBraceRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabledViolatingRanges(
             file.violatingClosingBraceRanges(),
             forRule: self
@@ -60,22 +60,22 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 
-    private func writeToFile(file: File, violatingRanges: [NSRange]) -> [Correction] {
+    fileprivate func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
-        for violatingRange in violatingRanges.reverse() {
+        for violatingRange in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
                 correctedContents = correctedContents
-                    .stringByReplacingCharactersInRange(indexRange, withString: "})")
-                adjustedLocations.insert(violatingRange.location, atIndex: 0)
+                    .replacingCharacters(in: indexRange, with: "})")
+                adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }
 
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: self.dynamicType.description,
+            Correction(ruleDescription: type(of: self).description,
                 location: Location(file: file, characterOffset: $0))
         }
     }

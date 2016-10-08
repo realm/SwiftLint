@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension File {
-    private func violatingTrailingSemicolonRanges() -> [NSRange] {
+    fileprivate func violatingTrailingSemicolonRanges() -> [NSRange] {
         return matchPattern("(;+([^\\S\\n]?)*)+;?$",
                             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
@@ -43,15 +43,15 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.violatingTrailingSemicolonRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabledViolatingRanges(
             file.violatingTrailingSemicolonRanges(),
             forRule: self
@@ -68,12 +68,12 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         for range in adjustedRanges {
             if let indexRange = correctedContents.nsrangeToIndexRange(range) {
                 correctedContents = correctedContents
-                    .stringByReplacingCharactersInRange(indexRange, withString: "")
+                    .replacingCharacters(in: indexRange, with: "")
             }
         }
         file.write(correctedContents)
         return adjustedRanges.map {
-            Correction(ruleDescription: self.dynamicType.description,
+            Correction(ruleDescription: type(of: self).description,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

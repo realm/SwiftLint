@@ -23,7 +23,7 @@ class YamlParserTests: XCTestCase {
     }
 
     func testParseInvalidStringThrows() {
-        checkError(YamlParserError.YamlParsing("expected end, near \"a\"")) {
+        checkError(YamlParserError.yamlParsing("expected end, near \"a\"")) {
             try YamlParser.parse("|\na")
         }
     }

@@ -32,33 +32,33 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
+    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    func validateFile(file: File, kind: SwiftDeclarationKind,
+    func validateFile(_ file: File, kind: SwiftDeclarationKind,
                       dictionary: [String: SourceKitRepresentable],
                       level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                violations.append(StyleViolation(ruleDescription: type(of: self).description,
                     severity: configuration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Types should be nested at most 1 level deep"))
             } else if level > 5 {
-                violations.append(StyleViolation(ruleDescription: self.dynamicType.description,
+                violations.append(StyleViolation(ruleDescription: type(of: self).description,
                     severity: configuration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        violations.appendContentsOf(substructure.flatMap { subItem in
+        violations.append(contentsOf: substructure.flatMap { subItem in
             if let subDict = subItem as? [String: SourceKitRepresentable],
-                kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
+                let kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }
             return nil

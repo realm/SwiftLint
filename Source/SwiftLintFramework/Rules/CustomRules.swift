@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 private extension Region {
-    func isRuleDisabled(customRuleIdentifier customRuleIdentifier: String) -> Bool {
+    func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(customRuleIdentifier)
     }
 }
@@ -23,9 +23,9 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
 
     public init() {}
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         for (key, value) in configurationDict {
@@ -55,7 +55,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
     public init() {}
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         if configurations.isEmpty {
@@ -67,7 +67,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
                 let pattern = config.included.pattern
                 if pattern.isEmpty { return true }
 
-                let pathMatch = config.included.matchesInString(path, options: [],
+                let pathMatch = config.included.matches(in: path, options: [],
                     range: NSRange(location: 0, length: (path as NSString).length))
 
                 return !pathMatch.isEmpty
@@ -90,9 +90,10 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         }
     }
 
-    private func validate(file: File, configuration: RegexConfiguration) -> [StyleViolation] {
+    fileprivate func validate(_ file: File, configuration: RegexConfiguration) -> [StyleViolation] {
         let pattern = configuration.regex.pattern
-        let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtract(configuration.matchKinds))
+        let excludingKinds = Array(Set(SyntaxKind.allKinds())
+            .subtracting(configuration.matchKinds))
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,

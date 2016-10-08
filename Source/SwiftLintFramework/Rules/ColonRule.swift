@@ -17,8 +17,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     public var flexibleRightSpacing = false
 
-    public init(configuration: AnyObject) throws {
-        flexibleRightSpacing = configuration["flexible_right_spacing"] as? Bool == true
+    public init(configuration: Any) throws {
+        flexibleRightSpacing = (configuration as AnyObject)["flexible_right_spacing"] as? Bool == true
     }
 
     public var configurationDescription: String {
@@ -92,24 +92,24 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return violationRangesInFile(file, withPattern: pattern).flatMap { range in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let matches = violationRangesInFile(file, withPattern: pattern)
         guard !matches.isEmpty else { return [] }
 
         let regularExpression = regex(pattern)
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in matches.reverse() {
-            contents = regularExpression.stringByReplacingMatchesInString(contents,
+        for range in matches.reversed() {
+            contents = regularExpression.stringByReplacingMatches(in: contents,
                 options: [], range: range, withTemplate: "$1: $2")
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
@@ -120,7 +120,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     // MARK: - Private
 
-    private var pattern: String {
+    fileprivate var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
         let spacingRegex = flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
@@ -139,15 +139,15 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
                 "\\S)"          // lazily to the first non-whitespace character.
     }
 
-    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
+    fileprivate func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents as NSString
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
-            if !syntaxKinds.startsWith([.Identifier, .Typeidentifier]) {
+            if !syntaxKinds.starts(with: [.Identifier, .Typeidentifier]) {
                 return false
             }
-            return Set(syntaxKinds).intersect(commentAndStringKindsSet).isEmpty
+            return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring // swiftlint:disable:next force_unwrapping
                 .byteRangeToNSRange(start: syntaxTokens.first!.offset, length: 0)

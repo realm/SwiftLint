@@ -24,22 +24,22 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         corrections: ["\n": ""]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
-            NSCharacterSet.whitespaceAndNewlineCharacterSet()
+            CharacterSet.whitespacesAndNewlines
         )
         if countOfLeadingWhitespace == 0 {
             return []
         }
-        return [StyleViolation(ruleDescription: self.dynamicType.description,
+        return [StyleViolation(ruleDescription: type(of: self).description,
             severity: configuration.severity,
             location: Location(file: file.path, line: 1),
             reason: "File shouldn't start with whitespace: " +
             "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        let whitespaceAndNewline = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+    public func correctFile(_ file: File) -> [Correction] {
+        let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharactersInSet(whitespaceAndNewline)
         if spaceCount == 0 {
             return []
@@ -50,9 +50,12 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         if region?.isRuleDisabled(self) == true {
             return []
         }
-        let indexEnd = file.contents.startIndex.advancedBy(spaceCount)
-        file.write(file.contents.substringFromIndex(indexEnd))
+        let indexEnd = file.contents.index(
+            file.contents.startIndex,
+            offsetBy:spaceCount,
+            limitedBy: file.contents.endIndex) ?? file.contents.endIndex
+        file.write(file.contents.substring(from: indexEnd))
         let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
+        return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
 }

@@ -36,9 +36,9 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         self.excluded = Set(excluded)
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         if let minLengthConfiguration = configurationDict["min_length"] {
@@ -63,9 +63,9 @@ public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
 
 public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     public func severity(forLength length: Int) -> ViolationSeverity? {
-        if let minError = configuration.minLength.error where length < minError {
+        if let minError = configuration.minLength.error, length < minError {
             return .Error
-        } else if let maxError = configuration.maxLength.error where length > maxError {
+        } else if let maxError = configuration.maxLength.error, length > maxError {
             return .Error
         } else if length < configuration.minLength.warning ||
                   length > configuration.maxLength.warning {

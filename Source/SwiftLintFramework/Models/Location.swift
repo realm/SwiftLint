@@ -7,6 +7,16 @@
 //
 
 import SourceKittenFramework
+fileprivate func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
 
 public struct Location: CustomStringConvertible, Comparable {
     public let file: String?
@@ -19,7 +29,7 @@ public struct Location: CustomStringConvertible, Comparable {
             file ?? "<nopath>",
             line.map({ ":\($0)" }) ?? "",
             character.map({ ":\($0)" }) ?? ""
-        ].joinWithSeparator("")
+        ].joined()
     }
 
     public init(file: String?, line: Int? = nil, character: Int? = nil) {

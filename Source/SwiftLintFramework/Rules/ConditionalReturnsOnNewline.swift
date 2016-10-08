@@ -32,11 +32,11 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return[^\n]\n*"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: self.configuration.severity,
                 location: Location(file: file, byteOffset: $0.location))
         }

@@ -50,35 +50,35 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let matches = violationRangesInFile(file)
         guard !matches.isEmpty else { return [] }
 
         let regularExpression = regex(pattern)
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
 
-        let results = matches.reverse().flatMap { range in
-            return regularExpression.firstMatchInString(contents, options: [], range: range)
+        let results = matches.reversed().flatMap { range in
+            return regularExpression.firstMatch(in: contents, options: [], range: range)
         }
 
         let replacementsByIndex = [2: " -> ", 4: " -> ", 6: " ", 7: " "]
 
         for result in results {
-            guard result.numberOfRanges > replacementsByIndex.keys.maxElement() else { break }
+            guard result.numberOfRanges > (replacementsByIndex.keys.max() ?? 0) else { break }
 
             for (index, string) in replacementsByIndex {
-                if let range = contents.nsrangeToIndexRange(result.rangeAtIndex(index)) {
-                    contents.replaceRange(range, with: string)
+                if let range = contents.nsrangeToIndexRange(result.rangeAt(index)) {
+                    contents.replaceSubrange(range, with: string)
                     break
                 }
             }
@@ -92,7 +92,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     // MARK: - Private
 
-    private let pattern: String = {
+    fileprivate let pattern: String = {
         //just horizontal spacing so that "func abc()->\n" can pass validation
         let space = "[ \\f\\r\\t]"
 
@@ -108,11 +108,11 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         ]
 
         // ex: `func abc()-> Int {` & `func abc() ->Int {`
-        return "\\)(\(patterns.joinWithSeparator("|")))\\S+"
+        return "\\)(\(patterns.joined(separator: "|")))\\S+"
 
     }()
 
-    private func violationRangesInFile(file: File) -> [NSRange] {
+    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
         return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier])
     }
 }

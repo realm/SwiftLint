@@ -13,7 +13,7 @@ import SourceKittenFramework
 import SwiftLintFramework
 
 extension Reporter {
-    static func reportViolations(violations: [StyleViolation], realtimeCondition: Bool) {
+    static func reportViolations(_ violations: [StyleViolation], realtimeCondition: Bool) {
         if isRealtime == realtimeCondition {
             let report = generateReport(violations)
             if !report.isEmpty {
@@ -23,11 +23,11 @@ extension Reporter {
     }
 }
 
-struct LintCommand: CommandType {
+struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
 
-    func run(options: LintOptions) -> Result<(), CommandantError<()>> {
+    func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileTimes = [(id: String, time: Double)]()
         var ruleTimes = [(id: String, time: Double)]()
         var violations = [StyleViolation]()
@@ -46,7 +46,7 @@ struct LintCommand: CommandType {
                     let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                     currentViolations = _currentViolations
                     fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
-                    ruleTimes.appendContentsOf(currentRuleTimes)
+                    ruleTimes.append(contentsOf: currentRuleTimes)
                 } else {
                     currentViolations = linter.styleViolations
                 }
@@ -74,11 +74,11 @@ struct LintCommand: CommandType {
             } else if options.strict && !violations.isEmpty {
                 exit(3)
             }
-            return .Success()
+            return .success()
         }
     }
 
-    static func printStatus(violations violations: [StyleViolation], files: [File], serious: Int) {
+    static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {
         let violationSuffix = (violations.count != 1 ? "s" : "")
         let fileCount = files.count
         let filesSuffix = (fileCount != 1 ? "s." : ".")
@@ -88,7 +88,7 @@ struct LintCommand: CommandType {
     }
 }
 
-struct LintOptions: OptionsType {
+struct LintOptions: OptionsProtocol {
     let path: String
     let useSTDIN: Bool
     let configurationFile: String
@@ -99,13 +99,13 @@ struct LintOptions: OptionsType {
     let quiet: Bool
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (useSTDIN: Bool) -> (configurationFile: String) -> (strict: Bool) -> (useScriptInputFiles: Bool) -> (benchmark: Bool) -> (reporter: String) -> (quiet: Bool) -> LintOptions {
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> LintOptions {
         return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in
             self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet)
         }}}}}}}
     }
 
-    static func evaluate(mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
+    static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "lint")
@@ -124,14 +124,14 @@ struct LintOptions: OptionsType {
     }
 }
 
-private func isWarningThresholdBroken(configuration: Configuration,
+private func isWarningThresholdBroken(_ configuration: Configuration,
                                       violations: [StyleViolation]) -> Bool {
     guard let warningThreshold = configuration.warningThreshold else { return false }
     let numberOfWarningViolations = violations.filter({ $0.severity == .Warning }).count
     return numberOfWarningViolations >= warningThreshold
 }
 
-private func createThresholdViolation(threshold: Int) -> StyleViolation {
+private func createThresholdViolation(_ threshold: Int) -> StyleViolation {
     let description = RuleDescription(
         identifier: "warning_threshold",
         name: "Warning Threshold",

@@ -32,12 +32,12 @@ public struct MarkRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let options = ["MARK:[^ ]", "[^ ]MARK: [^-]", "\\sMARK:[^ ]", "MARK:[ ][-][^\\s ]"]
-        let pattern = "(" + options.joinWithSeparator("|") + ")"
+        let pattern = "(" + options.joined(separator: "|") + ")"
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Comment]).flatMap { range in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location))
         }

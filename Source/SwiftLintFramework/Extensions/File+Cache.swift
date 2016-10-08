@@ -37,14 +37,14 @@ private var queueForRebuild = [Structure]()
 
 private struct Cache<T> {
 
-    private var values = [String: T]()
-    private var factory: File -> T
+    fileprivate var values = [String: T]()
+    fileprivate var factory: (File) -> T
 
-    private init(_ factory: File -> T) {
+    fileprivate init(_ factory: @escaping (File) -> T) {
         self.factory = factory
     }
 
-    private mutating func get(file: File) -> T {
+    fileprivate mutating func get(_ file: File) -> T {
         let key = file.cacheKey
         if let value = values[key] {
             return value
@@ -54,20 +54,20 @@ private struct Cache<T> {
         return value
     }
 
-    private mutating func invalidate(file: File) {
+    fileprivate mutating func invalidate(_ file: File) {
         if let key = file.path {
-            values.removeValueForKey(key)
+            values.removeValue(forKey: key)
         }
     }
 
-    private mutating func clear() {
-        values.removeAll(keepCapacity: false)
+    fileprivate mutating func clear() {
+        values.removeAll(keepingCapacity: false)
     }
 }
 
 extension File {
 
-    private var cacheKey: String {
+    fileprivate var cacheKey: String {
         return path ?? "\(ObjectIdentifier(self).hashValue)"
     }
 
@@ -77,9 +77,9 @@ extension File {
         }
         set {
             if newValue {
-                responseCache.values[cacheKey] = Optional<[String: SourceKitRepresentable]>.None
+                responseCache.values[cacheKey] = Optional<[String: SourceKitRepresentable]>.none
             } else {
-                responseCache.values.removeValueForKey(cacheKey)
+                responseCache.values.removeValue(forKey: cacheKey)
             }
         }
     }
@@ -128,7 +128,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
-        assertHandlers.removeValueForKey(cacheKey)
+        assertHandlers.removeValue(forKey: cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxKindsByLinesCache.invalidate(self)
@@ -152,7 +152,7 @@ extension File {
     }
 }
 
-private func dictFromKeyValuePairs<Key: Hashable, Value>(pairs: [(Key, Value)]) -> [Key: Value] {
+private func dictFromKeyValuePairs<Key: Hashable, Value>(_ pairs: [(Key, Value)]) -> [Key: Value] {
     var dict = [Key: Value]()
     for pair in pairs {
         dict[pair.0] = pair.1
@@ -160,7 +160,7 @@ private func dictFromKeyValuePairs<Key: Hashable, Value>(pairs: [(Key, Value)]) 
     return dict
 }
 
-private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
+private func substructureForDict(_ dict: [String: SourceKitRepresentable]) ->
                                  [[String: SourceKitRepresentable]]? {
     return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
         $0 as? [String: SourceKitRepresentable]
@@ -170,9 +170,8 @@ private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
 private func rebuildAllDeclarationsByType() {
     let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
         guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
-            name = firstSubstructureDict["key.name"] as? String,
-            kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where kind == .Protocol,
+            let name = firstSubstructureDict["key.name"] as? String,
+            let kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init), kind == .Protocol,
             let substructure = substructureForDict(firstSubstructureDict) else {
                 return nil
         }

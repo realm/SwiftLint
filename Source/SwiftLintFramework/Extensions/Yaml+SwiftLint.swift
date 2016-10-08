@@ -10,9 +10,9 @@ import Foundation
 import Yaml
 
 extension Yaml {
-    var flatDictionary: [Swift.String: AnyObject]? {
+    var flatDictionary: [Swift.String: Any]? {
         if let dict = dictionary {
-            var newDict: [Swift.String: AnyObject] = [:]
+            var newDict: [Swift.String: Any] = [:]
             for (key, value) in dict {
                 newDict[key.stringValue] = value.flatValue
             }
@@ -24,22 +24,22 @@ extension Yaml {
         return nil
     }
 
-    var flatArray: [AnyObject]? { return array?.map { $0.flatValue } }
+    var flatArray: [Any]? { return array?.map { $0.flatValue } }
 
-    var flatValue: AnyObject {
+    var flatValue: Any {
         switch self {
         case .Bool(let myBool):
-            return myBool
+            return myBool as Any
         case .Int(let myInt):
-            return myInt
+            return myInt as Any
         case .Double(let myDouble):
-            return myDouble
+            return myDouble as Any
         case .String(let myString):
-            return myString
+            return myString as Any
         case .Array:
-            return flatArray! // This is valid because .Array will always flatten
+            return flatArray! as Any // This is valid because .Array will always flatten
         case .Dictionary:
-            return flatDictionary! // This is valid because .Dictionary will always flatten
+            return flatDictionary! as Any // This is valid because .Dictionary will always flatten
         case .Null:
             return NSNull()
         }

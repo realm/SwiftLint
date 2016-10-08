@@ -25,23 +25,23 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         corrections: [ "// \n": "//\n" ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
             $0.content.hasTrailingWhitespace() &&
                 (!configuration.ignoresEmptyLines ||
                     // If configured, ignore lines that contain nothing but whitespace (empty lines)
-                    !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty)
+                    !$0.content.trimmingCharacters(in: .whitespaces).isEmpty)
         }
 
         return filteredLines.map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file.path, line: $0.index))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        let whitespaceCharacterSet = NSCharacterSet.whitespaceCharacterSet()
+    public func correctFile(_ file: File) -> [Correction] {
+        let whitespaceCharacterSet = CharacterSet.whitespaces
         var correctedLines = [String]()
         var corrections = [Correction]()
         let fileRegions = file.regions()
@@ -63,7 +63,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             }
 
             if line.content != correctedLine {
-                let description = self.dynamicType.description
+                let description = type(of: self).description
                 let location = Location(file: file.path, line: line.index)
                 corrections.append(Correction(ruleDescription: description, location: location))
             }
@@ -71,7 +71,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
         if !corrections.isEmpty {
             // join and re-add trailing newline
-            file.write(correctedLines.joinWithSeparator("\n") + "\n")
+            file.write(correctedLines.joined(separator: "\n") + "\n")
             return corrections
         }
         return []

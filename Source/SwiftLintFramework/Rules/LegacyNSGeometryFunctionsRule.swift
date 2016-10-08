@@ -88,7 +88,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let functions = ["NSWidth", "NSHeight", "NSMinX", "NSMidX",
                          "NSMaxX", "NSMinY", "NSMidY", "NSMaxY",
                          "NSEqualRects", "NSEqualSizes", "NSEqualPoints", "NSEdgeInsetsEqual",
@@ -96,17 +96,17 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                          "NSOffsetRect", "NSUnionRect", "NSIntersectionRect",
                          "NSContainsRect", "NSPointInRect", "NSIntersectsRect"]
 
-        let pattern = "\\b(" + functions.joinWithSeparator("|") + ")\\b"
+        let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
     // swiftlint:disable function_body_length
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
@@ -135,7 +135,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "NSIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
 
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
 
@@ -143,12 +143,13 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             file.matchPattern(pattern)
                 .filter { $0.1.first == .Identifier }
                 .map { ($0.0, pattern, template) }
-        }).flatten().sort { $0.0.location > $1.0.location } // reversed
+        }).joined().sorted { $0.0.location > $1.0.location } // reversed
 
         for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatchesInString(contents, options: [],
-                                                                       range: range,
-                                                                       withTemplate: template)
+            contents = regex(pattern).stringByReplacingMatches(in: contents,
+                                                               options: [],
+                                                               range: range,
+                                                               withTemplate: template)
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }

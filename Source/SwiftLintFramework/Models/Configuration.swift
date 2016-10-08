@@ -21,7 +21,7 @@ private enum ConfigurationKey: String {
     case UseNestedConfigs = "use_nested_configs" // deprecated
     case WhitelistRules = "whitelist_rules"
     case WarningThreshold = "warning_threshold"
-    case RequiredVersion = "required_version"
+    case SwiftLintVersion = "swiftlint_version"
 }
 
 public struct Configuration: Equatable {
@@ -139,11 +139,11 @@ public struct Configuration: Equatable {
             .UseNestedConfigs,
             .WarningThreshold,
             .WhitelistRules,
-            .RequiredVersion,
+            .SwiftLintVersion,
         ].map({ $0.rawValue }) + masterRuleList.list.keys
 
         let requiredVersion: Version?
-        if let versionString = dict[ConfigurationKey.RequiredVersion.rawValue] as? String {
+        if let versionString = dict[ConfigurationKey.SwiftLintVersion.rawValue] as? String {
             requiredVersion = Version(versionString: versionString)
         } else {
             requiredVersion = nil

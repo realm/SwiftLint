@@ -105,7 +105,6 @@ let triggeringClassExamples = [
         + "class Bad18_B: Bad18_A { func function() -> Int { return value() } }",
 ]
 
-
 let nonTriggeringExamples = ["class", "struct"].flatMap(nonTriggering)
 let triggeringExamples = ["class", "struct"].flatMap(triggering)
 

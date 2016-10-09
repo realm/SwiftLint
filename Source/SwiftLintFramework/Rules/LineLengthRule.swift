@@ -35,22 +35,22 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
                 return nil
             }
 
-            var length = line.content.characters.count
-
-            // Check if a color literal exists in the line by trying to get range
-            if let rangeStart = line.content.rangeOfString("#colorLiteral("),
-                let rangeEnd = line.content.rangeOfString(")",
+            var string = line.content //Mutable copy of content string
+            // While copy of content contains color literal, replace with a single character
+            while string.containsString("#colorLiteral(") {
+                if let rangeStart = string.rangeOfString("#colorLiteral("),
+                let rangeEnd = string.rangeOfString(")",
                     options: .LiteralSearch,
-                    range: rangeStart.startIndex..<line.content.endIndex,
+                    range: rangeStart.startIndex..<string.endIndex,
                     locale: nil) {
+                    string.replaceRange(rangeStart.startIndex..<rangeEnd.endIndex, with: "#")
 
-                // Range was found, get substring of color literal range
-                let range = rangeStart.startIndex..<rangeEnd.endIndex
-                let content = line.content.substringWithRange(range)
-
-                // Reduce length so that literal only counts as one character
-                length = length - (content.characters.count - 1)
+                } else { // Should never be the case, but break to avoid accidental infinity loop
+                    break
+                }
             }
+
+            let length = string.characters.count
 
             for param in configuration.params where length > param.value {
                 return StyleViolation(ruleDescription: self.dynamicType.description,

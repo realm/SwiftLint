@@ -17,6 +17,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [Syo Ikeda](https://github.com/ikesyo)
 
+* Color literals count as single characters to avoid unintentional line length violations.
+  [Jonas](https://github.com/VFUC)
+  [#742](https://github.com/realm/SwiftLint/issues/742)
+
 ##### Bug Fixes
 
 * Fixed whitespace being added to TODO messages.  

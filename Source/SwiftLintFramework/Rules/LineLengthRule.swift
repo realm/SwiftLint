@@ -18,10 +18,12 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "Line Length",
         description: "Lines should not span too many characters.",
         nonTriggeringExamples: [
-            Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n"
+            Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n",
+            Repeat(count: 100, repeatedValue: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)").joinWithSeparator("") + "\n"
         ],
         triggeringExamples: [
-            Repeat(count: 101, repeatedValue: "/").joinWithSeparator("") + "\n"
+            Repeat(count: 101, repeatedValue: "/").joinWithSeparator("") + "\n",
+            Repeat(count: 101, repeatedValue: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)").joinWithSeparator("") + "\n"
         ]
     )
 

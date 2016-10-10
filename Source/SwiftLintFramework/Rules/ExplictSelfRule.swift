@@ -47,6 +47,7 @@ func nonTriggering(type: String) -> [String] {
             + "func function(value: Int) -> Int { return value } }",
         "\(type) Edge2 { func value() -> Int { return 42 }; "
             + "func function(value: Int) -> Int { return value } }",
+        "\(type) Edge3 { var value: Int; func function() { let value = 123; _ = value } }",
     ]
 }
 let nonTriggeringClassExamples = [
@@ -167,7 +168,8 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             let allowedSuffixes: [[String]] = [
                 ["self"], //self.value (normal access)
-                ["if", "let"] //if let value = self.value (shadowing)
+                ["let"], //'let value' or 'if let value' - local scope/unwrap shadowing
+                ["_"], //_ = value - local scope shadowing
             ]
 
             let isInstanceIdentifier = (type == .Identifier &&

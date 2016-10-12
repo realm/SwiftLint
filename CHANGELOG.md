@@ -42,6 +42,11 @@
   [Rohan Dhaimade](https://github.com/HaloZero)
   [#783](https://github.com/realm/SwiftLint/issues/783)
 
+* `ForceUnwrappingRule` did not recognize force unwraps in return statements
+  using subscript.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#813](https://github.com/realm/SwiftLint/issues/813)  
+
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

@@ -166,6 +166,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             default:
                 break
             }
+            if lastKind.kind.hasPrefix("source.lang.swift.decl.function") {
+                return true
+            }
         }
         return false
     }

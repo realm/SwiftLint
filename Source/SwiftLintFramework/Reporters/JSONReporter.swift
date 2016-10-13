@@ -23,9 +23,9 @@ public struct JSONReporter: Reporter {
 
     fileprivate static func dictionaryForViolation(_ violation: StyleViolation) -> NSDictionary {
         let result: [String: Any] = [
-            "file": violation.location.file,
-            "line": violation.location.line,
-            "character": violation.location.character,
+            "file": violation.location.file ?? NSNull() as Any,
+            "line": violation.location.line ?? NSNull() as Any,
+            "character": violation.location.character ?? NSNull() as Any,
             "severity": violation.severity.rawValue,
             "type": violation.ruleDescription.name,
             "rule_id": violation.ruleDescription.identifier,

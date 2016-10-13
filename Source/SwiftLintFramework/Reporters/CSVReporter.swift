@@ -42,8 +42,8 @@ public struct CSVReporter: Reporter {
     fileprivate static func arrayForViolation(_ violation: StyleViolation) -> [String] {
         return [
             violation.location.file?.escapedForCSV() ?? "",
-            "\(violation.location.line)",
-            "\(violation.location.character)",
+            violation.location.line?.description ?? "",
+            violation.location.character?.description ?? "",
             violation.severity.rawValue,
             violation.ruleDescription.name.escapedForCSV(),
             violation.reason.escapedForCSV(),

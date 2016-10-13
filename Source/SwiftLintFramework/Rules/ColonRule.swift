@@ -18,7 +18,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     public var flexibleRightSpacing = false
 
     public init(configuration: Any) throws {
-        flexibleRightSpacing = (configuration as AnyObject)["flexible_right_spacing"] as? Bool == true
+        let dictionary = configuration as? [String:Any]
+        flexibleRightSpacing = dictionary?["flexible_right_spacing"] as? Bool == true
     }
 
     public var configurationDescription: String {

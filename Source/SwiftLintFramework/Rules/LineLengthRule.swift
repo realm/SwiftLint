@@ -41,17 +41,17 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             // While copy of content contains color literal, replace with a single character
             while string.containsString("#colorLiteral(") {
                 if let rangeStart = string.rangeOfString("#colorLiteral("),
-                let rangeEnd = string.rangeOfString(")",
-                    options: .LiteralSearch,
-                    range: rangeStart.startIndex..<string.endIndex,
-                    locale: nil) {
+                    let rangeEnd = string.rangeOfString(")",
+                        options: .LiteralSearch,
+                        range: rangeStart.startIndex..<string.endIndex,
+                        locale: nil) {
                     string.replaceRange(rangeStart.startIndex..<rangeEnd.endIndex, with: "#")
 
                 } else { // Should never be the case, but break to avoid accidental infinity loop
                     break
                 }
             }
-
+            
             let length = string.characters.count
 
             for param in configuration.params where length > param.value {

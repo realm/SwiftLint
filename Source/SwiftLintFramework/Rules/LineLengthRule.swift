@@ -83,8 +83,8 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
                 break
             }
         }
-        
+
         return modifiedString
     }
-    
+
 }

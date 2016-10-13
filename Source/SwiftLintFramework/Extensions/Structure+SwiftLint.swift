@@ -22,8 +22,10 @@ extension Structure {
         func parse(_ dictionary: [String : SourceKitRepresentable]) {
             guard let
                 offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
-                let byteRange = (dictionary["key.length"] as? Int64).map({ Int($0) })
-                    .map({NSRange(location: offset, length: $0)}), NSLocationInRange(byteOffset, byteRange) else {
+                let byteRange = (dictionary["key.length"] as? Int64)
+                    .map({ Int($0) })
+                    .map({NSRange(location: offset, length: $0)}),
+                NSLocationInRange(byteOffset, byteRange) else {
                     return
             }
             if let kind = dictionary["key.kind"] as? String {

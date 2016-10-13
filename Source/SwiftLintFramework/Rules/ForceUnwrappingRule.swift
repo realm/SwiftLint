@@ -151,7 +151,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 let byteOffset = lastKind.byteRange.location
                 let byteLength = byteRange.location - byteOffset
                 if let varDeclarationString = nsstring
-                    .substringWithByteRange(start: byteOffset, length: byteLength), varDeclarationString.contains("=") {
+                    .substringWithByteRange(start: byteOffset, length: byteLength),
+                    varDeclarationString.contains("=") {
                         // if declarations contains "=", range is not type annotation
                         return true
                 } else {

@@ -42,7 +42,8 @@ extension File {
             .flatMap({ self.missingDocOffsets($0, acl: acl, skipping: inheritedMembers) }) ?? []
         guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             let offset = dictionary["key.offset"] as? Int64,
-            let accessibility = dictionary["key.accessibility"] as? String, acl.map({ $0.rawValue }).contains(accessibility) else {
+            let accessibility = dictionary["key.accessibility"] as? String,
+            acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
         if getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {

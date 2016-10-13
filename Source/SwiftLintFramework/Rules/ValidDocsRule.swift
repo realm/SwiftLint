@@ -14,10 +14,12 @@ extension File {
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
             .flatMap { $0 as? [String: SourceKitRepresentable] } ?? []
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
-        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init), kind != .VarParameter,
+        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
+            kind != .VarParameter,
             let offset = dictionary["key.offset"] as? Int64,
             let bodyOffset = dictionary["key.bodyoffset"] as? Int64,
-            let comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap), !comment.contains(":nodoc:") else {
+            let comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap),
+            !comment.contains(":nodoc:") else {
                 return substructureOffsets
         }
         let declaration = (contents as NSString)

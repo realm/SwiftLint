@@ -82,7 +82,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         "(\\S)"                // second capture is not whitespace.
 
     // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
+    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern)
     fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
     fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()

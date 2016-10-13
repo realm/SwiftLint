@@ -41,7 +41,8 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
         if let configurationArray = [Int].arrayOf(configuration), !configurationArray.isEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
-        } else if let configDict = configuration as? [String: Int], !configDict.isEmpty && Set(configDict.keys).isSubset(of: ["warning", "error"]) {
+        } else if let configDict = configuration as? [String: Int],
+            !configDict.isEmpty && Set(configDict.keys).isSubset(of: ["warning", "error"]) {
             warning = configDict["warning"] ?? warning
             error = configDict["error"]
         } else {

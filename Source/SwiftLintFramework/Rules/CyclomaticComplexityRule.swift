@@ -70,7 +70,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                 return complexity
             }
 
-            if let declarationKid = SwiftDeclarationKind(rawValue: kind), functionKinds.contains(declarationKid) {
+            if let declarationKid = SwiftDeclarationKind(rawValue: kind),
+                functionKinds.contains(declarationKid) {
                 return complexity
             }
 

@@ -24,7 +24,7 @@ class YamlParserTests: XCTestCase {
 
     func testParseInvalidStringThrows() {
         checkError(YamlParserError.yamlParsing("expected end, near \"a\"")) {
-            try YamlParser.parse("|\na")
+            _ = try YamlParser.parse("|\na")
         }
     }
     // swiftlint:enable force_try

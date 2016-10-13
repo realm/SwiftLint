@@ -30,8 +30,8 @@ extension String {
         return self == lowercased()
     }
 
-    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) ->
-                                                          String {
+    internal func nameStrippingLeadingUnderscoreIfPrivate(
+        _ dict: [String: SourceKitRepresentable]) -> String {
         let privateACL = "source.lang.swift.accessibility.private"
         if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
             return substring(from: index(after: startIndex))
@@ -40,7 +40,8 @@ extension String {
     }
 
     internal subscript (range: Range<Int>) -> String {
-        let nsrange = NSRange(location: range.lowerBound, length: range.upperBound - range.lowerBound)
+        let nsrange = NSRange(location: range.lowerBound,
+                              length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
             return self.substring(with: indexRange)
         }
@@ -51,7 +52,8 @@ extension String {
         if let length = length {
             return self[from..<from + length]
         }
-        return self.substring(from: characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!)
+        let index = characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!
+        return self.substring(from: index)
     }
 
     internal func lastIndexOf(_ search: String) -> Int? {

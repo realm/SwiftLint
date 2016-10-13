@@ -171,7 +171,9 @@ private func rebuildAllDeclarationsByType() {
     let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
         guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
             let name = firstSubstructureDict["key.name"] as? String,
-            let kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init), kind == .Protocol,
+            let kind = (firstSubstructureDict["key.kind"] as? String)
+                .flatMap(SwiftDeclarationKind.init),
+            kind == .Protocol,
             let substructure = substructureForDict(firstSubstructureDict) else {
                 return nil
         }

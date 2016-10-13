@@ -52,8 +52,9 @@ extension String {
             let byteSize = lengthOfBytes(using: .utf8)._builtinWordValue
             let isASCII = true._getBuiltinLogicValue()
             // swiftlint:disable:next variable_name
-            let staticString = StaticString(_builtinStringLiteral: rawPointer, utf8CodeUnitCount: byteSize,
-                isASCII: isASCII)
+            let staticString = StaticString(_builtinStringLiteral: rawPointer,
+                                            utf8CodeUnitCount: byteSize,
+                                            isASCII: isASCII)
             closure(staticString)
         }
     }

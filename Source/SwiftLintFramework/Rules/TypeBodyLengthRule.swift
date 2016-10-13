@@ -8,7 +8,10 @@
 
 import SourceKittenFramework
 
-private func example(_ type: String, _ template: String, _ count: Int, _ add: String = "") -> String {
+private func example(_ type: String,
+                     _ template: String,
+                     _ count: Int,
+                     _ add: String = "") -> String {
     return "\(type) Abc {\n" +
         repeatElement(template, count: count).joined() + "\(add)}\n"
 }

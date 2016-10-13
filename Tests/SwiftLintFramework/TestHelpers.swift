@@ -75,8 +75,8 @@ extension Configuration {
         }
         XCTAssertEqual(file.contents, expected)
         do {
-            let corrected = try NSString(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue)
-            XCTAssertEqual(corrected as String, expected)
+            let corrected = try String(contentsOfFile: path, encoding: .utf8)
+            XCTAssertEqual(corrected, expected)
         } catch {
             XCTFail("couldn't read file at path '\(path)': \(error)")
         }

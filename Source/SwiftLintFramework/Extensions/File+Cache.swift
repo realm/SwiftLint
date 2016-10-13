@@ -68,7 +68,7 @@ private struct Cache<T> {
 extension File {
 
     fileprivate var cacheKey: String {
-        return path ?? "\(ObjectIdentifier(self).hashValue)"
+        return path ?? contents
     }
 
     internal var sourcekitdFailed: Bool {

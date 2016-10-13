@@ -49,7 +49,7 @@ class ConfigurationTests: XCTestCase {
         let config = Configuration(dict: ["whitelist_rules":  whitelist])!
         let configuredIdentifiers = config.rules.map {
             type(of: $0).description.identifier
-        }
+        }.sorted()
         XCTAssertEqual(whitelist, configuredIdentifiers)
     }
 

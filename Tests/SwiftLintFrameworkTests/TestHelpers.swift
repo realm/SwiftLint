@@ -169,7 +169,8 @@ extension XCTestCase {
 
             // Assert locations missing vaiolation
             let violatedLocations = triggerViolations.map { $0.location }
-            let locationsWithoutViolation = expectedLocations.filter { !violatedLocations.contains($0) }
+            let locationsWithoutViolation = expectedLocations
+                .filter { !violatedLocations.contains($0) }
             if !locationsWithoutViolation.isEmpty {
                 XCTFail("triggeringExample did not violate at expected location: \n" +
                     "\(render(locations: locationsWithoutViolation, in: cleanTrigger))")

@@ -54,6 +54,18 @@ func render(violations: [StyleViolation], in contents: String) -> String {
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
 
+func render(locations: [Location], in contents: String) -> String {
+    var contents = (contents as NSString).lines().map { $0.content }
+    for location in locations.sorted(by: > ) {
+        guard let line = location.line, let character = location.character else { continue }
+        var content = contents[line - 1]
+        let index = content.index(content.startIndex, offsetBy: character - 1)
+        content.insert("↓", at: index)
+        contents[line - 1] = content
+    }
+    return (["```"] + contents + ["```"]).joined(separator: "\n")
+}
+
 extension Configuration {
     fileprivate func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -159,6 +171,13 @@ extension XCTestCase {
             if !violationsAtUnexpectedLocation.isEmpty {
                 XCTFail("triggeringExample violate at unexpected location: \n" +
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
+            }
+            // Assert locations missing vaiolation
+            let violatedLocations = triggerViolations.map { $0.location }
+            let locationsWithoutViolation = expectedLocations.filter { !violatedLocations.contains($0) }
+            if !locationsWithoutViolation.isEmpty {
+                XCTFail("triggeringExample did not violate at expected location: \n" +
+                    "\(render(locations: locationsWithoutViolation, in: cleanTrigger))")
             }
 
             XCTAssertEqual(triggerViolations.count, expectedLocations.count)

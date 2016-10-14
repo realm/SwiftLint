@@ -34,6 +34,26 @@ private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, 
     return (contents as String, markerOffsets.sorted())
 }
 
+func render(violations: [StyleViolation], in contents: String) -> String {
+    var contents = (contents as NSString).lines().map { $0.content }
+    for violation in violations.sorted(by: { $0.location > $1.location }) {
+        guard let line = violation.location.line,
+            let character = violation.location.character else { continue }
+
+        let message = String(repeating: " ", count: character - 1) + "^ " + [
+            "\(violation.severity.rawValue.lowercased()): ",
+            "\(violation.ruleDescription.name) Violation: ",
+            violation.reason,
+            " (\(violation.ruleDescription.identifier))"].joined()
+        if line >= contents.count {
+            contents.append(message)
+        } else {
+            contents.insert(message, at: line)
+        }
+    }
+    return (["```"] + contents + ["```"]).joined(separator: "\n")
+}
+
 extension Configuration {
     fileprivate func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -105,7 +125,12 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
 
         // Non-triggering examples don't violate
-        XCTAssertEqual(nonTriggers.flatMap({ violations($0, config: config) }), [])
+        for nonTrigger in nonTriggers {
+            let unexpectedViolations = violations(nonTrigger, config: config)
+            if unexpectedViolations.isEmpty { continue }
+            let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger)
+            XCTFail("nonTriggeringExample violated: \n\(nonTriggerWithViolations)")
+        }
 
         var violationsCount = 0
         var expectedViolationsCount = 0

@@ -14,10 +14,11 @@
   [Rohan Dhaimade](https://github.com/HaloZero)
 
 * Swift 2.3 support.  
-  [Norio Nomura](https://github.com/norio-nomura)
+  [Norio Nomura](https://github.com/norio-nomura),
   [Syo Ikeda](https://github.com/ikesyo)
 
-* Color literals count as single characters to avoid unintentional line length violations.  
+* Color literals count as single characters to avoid unintentional line length
+  violations.  
   [Jonas](https://github.com/VFUC)
   [#742](https://github.com/realm/SwiftLint/issues/742)
 

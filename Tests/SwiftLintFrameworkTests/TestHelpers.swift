@@ -152,6 +152,15 @@ extension XCTestCase {
             expectedViolationsCount += markerOffsets.count
             let file = File(contents: cleanTrigger)
             let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
+
+            // Assert violations on unexpected location
+            let violationsAtUnexpectedLocation = triggerViolations
+                .filter { !expectedLocations.contains($0.location) }
+            if !violationsAtUnexpectedLocation.isEmpty {
+                XCTFail("triggeringExample violate at unexpected location: \n" +
+                    "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
+            }
+
             XCTAssertEqual(triggerViolations.count, expectedLocations.count)
             for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
                 XCTAssertEqual(triggerViolation.location, expectedLocation,

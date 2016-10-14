@@ -145,23 +145,17 @@ extension XCTestCase {
         }
 
         // Triggering examples violate
-        var violationsCount = 0
-        var expectedViolationsCount = 0
         for trigger in triggers {
-            let triggerViolations = violations(trigger, config: config).sorted {
-                $0.location < $1.location
-            }
-            violationsCount += triggerViolations.count
+            let triggerViolations = violations(trigger, config: config)
+
             // Triggering examples with violation markers violate at the marker's location
             let (cleanTrigger, markerOffsets) = cleanedContentsAndMarkerOffsets(from: trigger)
             if markerOffsets.isEmpty {
                 if triggerViolations.isEmpty {
                     XCTFail("triggeringExample did not violate: \n```\n\(trigger)\n```")
                 }
-                expectedViolationsCount += 1
                 continue
             }
-            expectedViolationsCount += markerOffsets.count
             let file = File(contents: cleanTrigger)
             let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
 
@@ -172,6 +166,7 @@ extension XCTestCase {
                 XCTFail("triggeringExample violate at unexpected location: \n" +
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
             }
+
             // Assert locations missing vaiolation
             let violatedLocations = triggerViolations.map { $0.location }
             let locationsWithoutViolation = expectedLocations.filter { !violatedLocations.contains($0) }
@@ -186,7 +181,6 @@ extension XCTestCase {
                                "'\(trigger)' violation didn't match expected location.")
             }
         }
-        XCTAssertEqual(violationsCount, expectedViolationsCount)
 
         // Comment doesn't violate
         XCTAssertEqual(

@@ -46,6 +46,11 @@
 * Fixed: `ConditionalReturnsOnNewline' now respects severity configuration.  
   [Rohan Dhaimade](https://github.com/HaloZero)
   [#783](https://github.com/realm/SwiftLint/issues/783)
+  
+* Fixed: `ConditionalReturnsOnNewline' now checks if `return` is a keyword,
+  avoiding false positives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#784](https://github.com/realm/SwiftLint/issues/784)
 
 ## 0.12.0: Vertical Laundry
 

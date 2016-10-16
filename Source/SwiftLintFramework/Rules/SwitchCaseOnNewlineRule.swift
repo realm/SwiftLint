@@ -40,34 +40,36 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]+"
+        let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
             guard let firstToken = tokens.first where tokenIsKeyword(firstToken) else {
                 return false
             }
 
             let tokenString = contentForToken(firstToken, file: file)
+            guard ["case", "default"].contains(tokenString) else {
+                return false
+            }
+
+            // check if the first token in the line is `case`
             let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(range.location)
             guard let (lineNumber, _) = lineAndCharacter else {
                 return false
             }
 
-            // check if the first token in the line is `case`
             let line = file.lines[lineNumber - 1]
             let lineTokens = file.syntaxMap.tokensIn(line.byteRange).filter(tokenIsKeyword)
 
             guard let firstLineToken = lineTokens.first else {
                 return false
-
             }
 
             let firstTokenInLineString = contentForToken(firstLineToken, file: file)
-            return ["case", "default"].contains(tokenString) &&
-                firstTokenInLineString == tokenString
+            return firstTokenInLineString == tokenString
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
-                location: Location(file: file, byteOffset: $0.0.location))
+                location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 

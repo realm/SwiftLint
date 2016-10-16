@@ -203,8 +203,9 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             return nil
         }
 
-        let name = file.contents.substring(token.offset, length: token.length)
-        if isAttribute(name) {
+        let maybeName = file.contents.substringWithByteRange(start: token.offset,
+                                                             length: token.length)
+        if let name = maybeName where isAttribute(name) {
             return name
         }
 

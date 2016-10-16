@@ -51,7 +51,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
-                location: Location(file: file, byteOffset: $0.0.location))
+                location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 

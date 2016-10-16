@@ -41,6 +41,7 @@ public struct RuleList {
 }
 
 public let masterRuleList = RuleList(rules:
+    AttributesRule.self,
     ClosingBraceRule.self,
     ClosureSpacingRule.self,
     ColonRule.self,

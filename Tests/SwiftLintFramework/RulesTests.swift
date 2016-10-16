@@ -12,6 +12,10 @@ import XCTest
 // swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
+    func testAttributes() {
+        verifyRule(AttributesRule.description)
+    }
+
     func testClosingBrace() {
         verifyRule(ClosingBraceRule.description)
     }

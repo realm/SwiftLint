@@ -38,8 +38,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Enum]
-        if !typeKinds.contains(kind) {
+        guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),

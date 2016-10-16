@@ -19,4 +19,33 @@ extension SwiftDeclarationKind {
             .VarStatic
         ]
     }
+
+    internal static func functionKinds() -> [SwiftDeclarationKind] {
+        return [
+            .FunctionAccessorAddress,
+            .FunctionAccessorDidset,
+            .FunctionAccessorGetter,
+            .FunctionAccessorMutableaddress,
+            .FunctionAccessorSetter,
+            .FunctionAccessorWillset,
+            .FunctionConstructor,
+            .FunctionDestructor,
+            .FunctionFree,
+            .FunctionMethodClass,
+            .FunctionMethodInstance,
+            .FunctionMethodStatic,
+            .FunctionOperator,
+            .FunctionSubscript
+        ]
+    }
+
+    internal static func typeKinds() -> [SwiftDeclarationKind] {
+        return [
+            .Class,
+            .Struct,
+            .Typealias,
+            .Enum
+        ]
+    }
+
 }

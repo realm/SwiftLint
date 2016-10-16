@@ -41,7 +41,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                       dictionary: [String: SourceKitRepresentable],
                       level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
-        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Typealias, .Enum]
+        let typeKinds = SwiftDeclarationKind.typeKinds()
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             if level > 1 && typeKinds.contains(kind) {
                 violations.append(StyleViolation(ruleDescription: self.dynamicType.description,

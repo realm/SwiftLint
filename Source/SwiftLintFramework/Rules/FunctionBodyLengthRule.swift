@@ -22,23 +22,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let functionKinds: [SwiftDeclarationKind] = [
-            .FunctionAccessorAddress,
-            .FunctionAccessorDidset,
-            .FunctionAccessorGetter,
-            .FunctionAccessorMutableaddress,
-            .FunctionAccessorSetter,
-            .FunctionAccessorWillset,
-            .FunctionConstructor,
-            .FunctionDestructor,
-            .FunctionFree,
-            .FunctionMethodClass,
-            .FunctionMethodInstance,
-            .FunctionMethodStatic,
-            .FunctionOperator,
-            .FunctionSubscript
-        ]
-        if !functionKinds.contains(kind) {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),

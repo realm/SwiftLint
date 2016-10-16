@@ -40,7 +40,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     public func validateFile(file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !functionKinds.contains(kind) {
+        if !SwiftDeclarationKind.functionKinds().contains(kind) {
             return []
         }
 
@@ -71,7 +71,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             }
 
             if let declarationKid = SwiftDeclarationKind(rawValue: kind)
-                where functionKinds.contains(declarationKid) {
+                where SwiftDeclarationKind.functionKinds().contains(declarationKid) {
                 return complexity
             }
 
@@ -113,23 +113,6 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         "source.lang.swift.stmt.for",
         "source.lang.swift.stmt.repeatwhile",
         "source.lang.swift.stmt.while"
-    ]
-
-    private let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
     ]
 
 }

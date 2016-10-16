@@ -45,13 +45,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum
-        ]
-        if !typeKinds.contains(kind) {
+
+        guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }
         if let name = dictionary["key.name"] as? String where

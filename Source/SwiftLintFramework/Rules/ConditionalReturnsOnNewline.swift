@@ -26,40 +26,37 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
             "if true,\n let x = true else {\n return true\n}",
             "if textField.returnKeyType == .Next {",
             "if true { // return }",
-            "/*if true { */ return }",
+            "/*if true { */ return }"
         ],
         triggeringExamples: [
             "guard true else { return }",
             "if true { return }",
             "if true { break } else { return }",
             "if true { break } else {       return }",
+            "if true { return \"YES\" } else { return \"NO\" }"
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(guard|if)[^\n]*return[^\n]\n*"
-        let excludingKinds = SyntaxKind.commentAndStringKinds()
+        let pattern = "(guard|if)[^\n]*return"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
-            let kinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
-
-            guard kinds.filter(excludingKinds.contains).isEmpty else {
-                return false
+            guard let firstToken = tokens.first, lastToken = tokens.last
+                where SyntaxKind(rawValue: firstToken.type) == .Keyword &&
+                    SyntaxKind(rawValue: lastToken.type) == .Keyword else {
+                        return false
             }
 
-            let nsString: NSString = file.contents
-            return !tokens.filter { token in
-                guard SyntaxKind(rawValue: token.type) == .Keyword else {
-                    return false
-                }
-
-                let tokenRange = NSRange(location: token.offset, length: token.length)
-                let tokenString = nsString.substringWithRange(tokenRange)
-                return tokenString == "return"
-            }.isEmpty
+            return ["if", "guard"].contains(contentForToken(firstToken, file: file)) &&
+                contentForToken(lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
                 location: Location(file: file, byteOffset: $0.0.location))
         }
+    }
+
+    private func contentForToken(token: SyntaxToken, file: File) -> String {
+        return file.contents.substringWithByteRange(start: token.offset,
+                                                    length: token.length) ?? ""
     }
 }

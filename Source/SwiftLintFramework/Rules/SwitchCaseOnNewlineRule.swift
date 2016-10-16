@@ -26,7 +26,10 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "/*case 1: */return true",
             "//case 1:\n return true",
             "let x = [caseKey: value]",
-            "let x = [key: .default]"
+            "let x = [key: .default]",
+            "if case let .someEnum(value) = aFunction([key: 2]) {",
+            "guard case let .someEnum(value) = aFunction([key: 2]) {",
+            "for case let .someEnum(value) = aFunction([key: 2]) {"
         ],
         triggeringExamples: [
             "case 1: return true",
@@ -39,18 +42,37 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     public func validateFile(file: File) -> [StyleViolation] {
         let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]+"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
-            guard let firstToken = tokens.first
-                where SyntaxKind(rawValue: firstToken.type) == .Keyword else {
-                    return false
+            guard let firstToken = tokens.first where tokenIsKeyword(firstToken) else {
+                return false
             }
 
             let tokenString = contentForToken(firstToken, file: file)
-            return ["case", "default"].contains(tokenString)
+            let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(range.location)
+            guard let (lineNumber, _) = lineAndCharacter else {
+                return false
+            }
+
+            // check if the first token in the line is `case`
+            let line = file.lines[lineNumber - 1]
+            let lineTokens = file.syntaxMap.tokensIn(line.byteRange).filter(tokenIsKeyword)
+
+            guard let firstLineToken = lineTokens.first else {
+                return false
+
+            }
+
+            let firstTokenInLineString = contentForToken(firstLineToken, file: file)
+            return ["case", "default"].contains(tokenString) &&
+                firstTokenInLineString == tokenString
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
                 location: Location(file: file, byteOffset: $0.0.location))
         }
+    }
+
+    private func tokenIsKeyword(token: SyntaxToken) -> Bool {
+        return SyntaxKind(rawValue: token.type) == .Keyword
     }
 
     private func contentForToken(token: SyntaxToken, file: File) -> String {

@@ -13,34 +13,33 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
         //NSObject
         "awakeFromNib()",
         "prepareForInterfaceBuilder()",
-        //UIViewController
-        "transitionCoordinator()",
-        "viewDidLoad()",
-        "viewWillAppear(_:)",
-        "viewWillDisappear(_:)",
-        "viewDidAppear(_:)",
-        "viewDidDisappear(_:)",
-        "addChildViewController(_:)",
-        "removeFromParentViewController()",
-        "transition(from:to:duration:options:animations:completion:)",
-        "transitionFromViewController(_:toViewController:duration:options:animations:completion:)",
-        "didReceiveMemoryWarning()",
-        "encodeRestorableState(with:)",
-        "encodeRestorableStateWithCoder(_:)",
-        "decodeRestorableState(with:)",
-        "decodeRestorableStateWithCoder(_:)",
-        "setEditing(_:animated:)",
-        //UIView
-        "updateConstraints()",
-        "prepareForReuse()",
         //UICollectionViewLayout
         "invalidateLayout()",
         "invalidateLayout(with:)",
         "invalidateLayoutWithContext(_:)",
+        //UIView
+        "prepareForReuse()",
+        "updateConstraints()",
+        //UIViewController
+        "addChildViewController(_:)",
+        "decodeRestorableState(with:)",
+        "decodeRestorableStateWithCoder(_:)",
+        "didReceiveMemoryWarning()",
+        "encodeRestorableState(with:)",
+        "encodeRestorableStateWithCoder(_:)",
+        "removeFromParentViewController()",
+        "setEditing(_:animated:)",
+        "transition(from:to:duration:options:animations:completion:)",
+        "transitionCoordinator()",
+        "transitionFromViewController(_:toViewController:duration:options:animations:completion:)",
+        "viewDidAppear(_:)",
+        "viewDidDisappear(_:)",
+        "viewDidLoad()",
+        "viewWillAppear(_:)",
+        "viewWillDisappear(_:)",
         //XCTestCase
-        "tearDown()",
-        "setUp()"
-
+        "setUp()",
+        "tearDown()"
     ]
 
     var severityConfiguration = SeverityConfiguration(.Warning)

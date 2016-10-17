@@ -19,12 +19,12 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
         description: "Some Overridden methods should always call super",
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(animated: Bool) {\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) {\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
                 "\t}\n" +
             "}\n",
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(animated: Bool) {\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) {\n" +
                     "\t\tself.method1()\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
                     "\t\tself.method2()\n" +
@@ -35,17 +35,24 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
                 "\t}\n" +
             "}\n",
             "class Some {\n" +
-                "\tfunc viewWillAppear(animated: Bool) {\n" +
+                "\tfunc viewWillAppear(_ animated: Bool) {\n" +
                 "\t}\n" +
             "}\n"
         ],
         triggeringExamples: [
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(animated: Bool) () ↓{\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) () ↓{\n" +
                     "\t\t//Not calling to super\n" +
                     "\t\tself.method()\n" +
                 "\t}\n" +
             "}\n",
+            "class VC: UIViewController {\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) () ↓{\n" +
+                    "\t\tsuper.viewWillAppear(animated)\n" +
+                    "\t\t//Other code\n" +
+                    "\t\tsuper.viewWillAppear(animated)\n" +
+                "\t}\n" +
+            "}\n"
         ]
     )
 

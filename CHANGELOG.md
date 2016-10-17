@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* Add `SuperCallRule` Opt-In rule that warns against overriden methods not calling to super in well known cases (ex: `viewWillAppear`).  
+* Add `SuperCallRule` Opt-In rule that warns about methods not calling to super.  
   [Angel G. Olloqui](https://github.com/angelolloqui)
   [#803](https://github.com/realm/SwiftLint/issues/803)
   

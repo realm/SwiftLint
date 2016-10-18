@@ -21,6 +21,11 @@
   violations.  
   [Jonas](https://github.com/VFUC)
   [#742](https://github.com/realm/SwiftLint/issues/742)
+  
+* Add `SwitchCaseOnNewlineRule' opt-in rule that enforces a newline after
+  `case pattern:` in a `switch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#681](https://github.com/realm/SwiftLint/issues/681)
 
 ##### Bug Fixes
 
@@ -46,6 +51,11 @@
 * Fixed: `ConditionalReturnsOnNewline' now respects severity configuration.  
   [Rohan Dhaimade](https://github.com/HaloZero)
   [#783](https://github.com/realm/SwiftLint/issues/783)
+  
+* Fixed: `ConditionalReturnsOnNewline' now checks if `return` is a keyword,
+  avoiding false positives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#784](https://github.com/realm/SwiftLint/issues/784)
 
 ## 0.12.0: Vertical Laundry
 

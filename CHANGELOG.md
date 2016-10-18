@@ -21,6 +21,11 @@
   violations.  
   [Jonas](https://github.com/VFUC)
   [#742](https://github.com/realm/SwiftLint/issues/742)
+  
+* Add `SwitchCaseOnNewlineRule' opt-in rule that enforces a newline after
+  `case pattern:` in a `switch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#681](https://github.com/realm/SwiftLint/issues/681)
 
 ##### Bug Fixes
 

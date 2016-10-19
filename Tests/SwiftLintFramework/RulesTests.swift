@@ -221,6 +221,10 @@ class RulesTests: XCTestCase {
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
+    func testSwitchCaseOnNewline() {
+        verifyRule(SwitchCaseOnNewlineRule.description)
+    }
+
     func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }

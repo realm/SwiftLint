@@ -46,6 +46,12 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
     var excluded: [String] = []
     var included: [String] = ["*"]
 
+    public private(set) var resolvedMethodNames: [String]
+
+    init() {
+        resolvedMethodNames = defaultIncluded
+    }
+
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", excluded: [\(excluded)]" +
@@ -68,13 +74,15 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
         if let included = [String].arrayOf(configuration["included"]) {
             self.included = included
         }
+
+        self.resolvedMethodNames = calculateResolvedMethodNames()
     }
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 
-    public var resolvedMethodNames: [String] {
+    private func calculateResolvedMethodNames() -> [String] {
         var names: [String] = []
         if included.contains("*") && !excluded.contains("*") {
             names += defaultIncluded

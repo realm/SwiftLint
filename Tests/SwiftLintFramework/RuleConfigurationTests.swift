@@ -184,6 +184,7 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSuperCallConfigurationFromDictionary() {
         var configuration = SuperCallConfiguration()
+        XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
 
         let conf1 = [
             "severity": "error",

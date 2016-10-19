@@ -41,16 +41,20 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
         ],
         triggeringExamples: [
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(_ animated: Bool) () ↓{\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) ↓{\n" +
                     "\t\t//Not calling to super\n" +
                     "\t\tself.method()\n" +
                 "\t}\n" +
             "}\n",
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(_ animated: Bool) () ↓{\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) ↓{\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
                     "\t\t//Other code\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
+                "\t}\n" +
+            "}\n",
+            "class VC: UIViewController {\n" +
+                "\toverride func didReceiveMemoryWarning() ↓{\n" +
                 "\t}\n" +
             "}\n"
         ]
@@ -61,10 +65,10 @@ public struct SuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard   let offset = dictionary["key.bodyoffset"] as? Int64,
-                let name = dictionary["key.name"] as? String,
-                let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable]
+                let name = dictionary["key.name"] as? String
         else { return [] }
 
+        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
         guard   kind == .FunctionMethodInstance &&
                 configuration.resolvedMethodNames.contains(name) &&
                 extractAttributes(dictionary).contains("source.decl.attribute.override")

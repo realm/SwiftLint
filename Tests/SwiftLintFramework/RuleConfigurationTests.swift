@@ -181,4 +181,56 @@ class RuleConfigurationsTests: XCTestCase {
             XCTFail()
         }
     }
+
+    func testOverridenSuperCallConfigurationFromDictionary() {
+        var configuration = OverridenSuperCallConfiguration()
+        XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+
+        let conf1 = [
+            "severity": "error",
+            "excluded": "viewWillAppear(_:)"
+        ]
+        do {
+            try configuration.applyConfiguration(conf1)
+            XCTAssert(configuration.severityConfiguration.severity == .Error)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
+        } catch {
+            XCTFail()
+        }
+
+        let conf2 = [
+            "severity": "error",
+            "excluded": "viewWillAppear(_:)",
+            "included": ["*", "testMethod1()", "testMethod2(_:)"]
+        ]
+        do {
+            try configuration.applyConfiguration(conf2)
+            XCTAssert(configuration.severityConfiguration.severity == .Error)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
+        } catch {
+            XCTFail()
+        }
+
+        let conf3 = [
+            "severity": "warning",
+            "excluded": "*",
+            "included": ["testMethod1()", "testMethod2(_:)"]
+        ]
+        do {
+            try configuration.applyConfiguration(conf3)
+            XCTAssert(configuration.severityConfiguration.severity == .Warning)
+            XCTAssert(configuration.resolvedMethodNames.count == 2)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
+        } catch {
+            XCTFail()
+        }
+    }
 }

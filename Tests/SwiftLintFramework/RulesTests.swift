@@ -270,4 +270,9 @@ class RulesTests: XCTestCase {
     func testVariableName() {
         verifyRule(VariableNameRule.description)
     }
+
+    func testSuperCall() {
+        verifyRule(OverridenSuperCallRule.description)
+    }
+
 }

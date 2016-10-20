@@ -79,6 +79,7 @@ public let masterRuleList = RuleList(rules:
     TypeBodyLengthRule.self,
     TypeNameRule.self,
     ValidDocsRule.self,
+    ValidIBInspectableRule.self,
     VariableNameRule.self,
     VerticalWhitespaceRule.self
 )

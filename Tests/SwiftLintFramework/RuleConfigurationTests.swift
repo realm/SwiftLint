@@ -182,8 +182,8 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 
-    func testSuperCallConfigurationFromDictionary() {
-        var configuration = SuperCallConfiguration()
+    func testOverridenSuperCallConfigurationFromDictionary() {
+        var configuration = OverridenSuperCallConfiguration()
         XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
 
         let conf1 = [

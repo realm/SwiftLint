@@ -1,5 +1,5 @@
 //
-//  SuperCallConfiguration.swift
+//  OverridenSuperCallConfiguration.swift
 //  SwiftLint
 //
 //  Created by Angel Garcia on 05/09/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SuperCallConfiguration: RuleConfiguration, Equatable {
+public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
     var defaultIncluded = [
         //NSObject
         "awakeFromNib()",
@@ -93,8 +93,8 @@ public struct SuperCallConfiguration: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: SuperCallConfiguration,
-                rhs: SuperCallConfiguration) -> Bool {
+public func == (lhs: OverridenSuperCallConfiguration,
+                rhs: OverridenSuperCallConfiguration) -> Bool {
     return lhs.excluded == rhs.excluded &&
         lhs.included == rhs.included &&
         lhs.severityConfiguration == rhs.severityConfiguration

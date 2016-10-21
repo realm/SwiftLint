@@ -71,6 +71,12 @@
   [Matt Taube](https://github.com/mtaube)
   [#715](https://github.com/realm/SwiftLint/pull/715)
 
+* Add `SyntacticSugar` rule that enforces that shorthanded syntax should be
+  used when possible, for example `[Int]` instead of `Array<Int>`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
+
+
 ##### Bug Fixes
 
 * Fixed whitespace being added to TODO messages.  

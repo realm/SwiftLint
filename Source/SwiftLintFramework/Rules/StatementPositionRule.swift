@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = StatmentConfiguration(statementMode: .Default,
+    public var configuration = StatementConfiguration(statementMode: .Default,
                                                      severity: SeverityConfiguration(.Warning))
 
     public init() {}
@@ -44,7 +44,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
     public static let uncuddledDescription = RuleDescription(
         identifier: "statement_position",
-        name: "Statment Position",
+        name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration.",
         nonTriggeringExamples: [

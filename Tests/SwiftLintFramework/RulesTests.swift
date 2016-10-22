@@ -259,7 +259,22 @@ class RulesTests: XCTestCase {
                                nonTriggeringExamples: nonTriggeringExamples,
                                   triggeringExamples: baseDescription.triggeringExamples,
                                          corrections: baseDescription.corrections)
-        verifyRule(description, ruleConfiguration: ["ignores_empty_lines": true],
+        verifyRule(description,
+                   ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true],
+                   commentDoesntViolate: false)
+
+        // Perform additional tests with the ignores_comments settings disabled.
+        let baseDescription2 = TrailingWhitespaceRule.description
+        let nonTriggeringExamples2 = baseDescription2.nonTriggeringExamples.filter { $0 != "// \n" }
+        let triggeringExamples2 = baseDescription2.triggeringExamples + ["// \n"]
+        let description2 = RuleDescription(identifier: baseDescription2.identifier,
+                                           name: baseDescription2.name,
+                                           description: baseDescription2.description,
+                                           nonTriggeringExamples: nonTriggeringExamples2,
+                                           triggeringExamples: triggeringExamples2,
+                                           corrections: baseDescription2.corrections)
+        verifyRule(description2,
+                   ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)
     }
 

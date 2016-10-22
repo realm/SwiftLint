@@ -12,7 +12,8 @@ import SourceKittenFramework
 public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
                                       SourceKitFreeRule {
 
-    public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+    public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                               ignoresComments: true)
 
     public init() {}
 
@@ -20,14 +21,15 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
         description: "Lines should not have trailing whitespace.",
-        nonTriggeringExamples: [ "//\n" ],
-        triggeringExamples: [ "// \n" ],
-        corrections: [ "// \n": "//\n" ]
+        nonTriggeringExamples: [ "let name: String\n", "//\n", "// \n" ],
+        triggeringExamples: [ "let name: String \n" ],
+        corrections: [ "let name: String \n": "let name: String\n" ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
-            $0.content.hasTrailingWhitespace() &&
+            !(configuration.ignoresComments && $0.content.isComment()) &&
+                $0.content.hasTrailingWhitespace() &&
                 (!configuration.ignoresEmptyLines ||
                     // If configured, ignore lines that contain nothing but whitespace (empty lines)
                     !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty)
@@ -45,6 +47,11 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         var correctedLines = [String]()
         var corrections = [Correction]()
         for line in file.lines {
+            if configuration.ignoresComments && line.content.isComment() {
+                correctedLines.append(line.content)
+                continue
+            }
+
             let correctedLine = (line.content as NSString)
                 .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
 

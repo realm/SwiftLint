@@ -30,20 +30,6 @@ extension String {
         return self == lowercaseString
     }
 
-    internal func isComment() -> Bool {
-        guard !isEmpty else {
-            return false
-        }
-
-        let trimmedString = stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
-
-        guard trimmedString.characters.count > 1 else {
-            return false
-        }
-        let substring = trimmedString.substring(0, length: 2)
-        return substring == "//"
-    }
-
     internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
                                                           String {
         let privateACL = "source.lang.swift.accessibility.private"

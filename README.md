@@ -99,6 +99,14 @@ and are subject to change.
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
+opt_in_rules are disabled by default (you have to explicitly add them on your configuration file).
+
+Guidelines on when to implement a rule as opt-in:
+* A rule that can have many false positives (empty_count)
+* A rule that is too slow
+* A rule that is not general consensus or only useful in some cases (force_unwrapping, missing_docs)
+
+
 ### Disable a rule in code
 
 Rules can be disabled with a comment inside a source file with the following

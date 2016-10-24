@@ -23,7 +23,7 @@ extension Structure {
             guard let
                 offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
                 byteRange = (dictionary["key.length"] as? Int64).map({ Int($0) })
-                    .map({NSRange(location: offset, length: $0)})
+                    .map({ NSRange(location: offset, length: $0) })
                 where NSLocationInRange(byteOffset, byteRange) else {
                     return
             }

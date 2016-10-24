@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testClosureSpacingRule() {
+        verifyRule(ClosureSpacingRule.description)
+    }
+
     func testConditionalReturnsOnNewline() {
         verifyRule(ConditionalReturnsOnNewline.description)
     }

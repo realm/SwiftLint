@@ -34,7 +34,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({"\\\($0)"}) +
+        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({ "\\\($0)" }) +
             ["%", "<", ">", "&"]
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
         let pattern1 = "func\\s+[" + operators.joinWithSeparator("") +

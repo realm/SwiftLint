@@ -8,12 +8,12 @@
 
 import Foundation
 
-public enum StatmentModeConfiguration: String {
+public enum StatementModeConfiguration: String {
     case Default = "default", UncuddledElse = "uncuddled_else"
 
     init(value: AnyObject) throws {
         if let string = (value as? String)?.lowercaseString,
-            value = StatmentModeConfiguration(rawValue: string) {
+            value = StatementModeConfiguration(rawValue: string) {
             self = value
         } else {
             throw ConfigurationError.UnknownConfiguration
@@ -22,16 +22,16 @@ public enum StatmentModeConfiguration: String {
 
 }
 
-public struct StatmentConfiguration: RuleConfiguration, Equatable {
+public struct StatementConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(statement_mode) \(statementMode.rawValue), " +
             "(severity) \(severity.consoleDescription)"
     }
 
-    var statementMode: StatmentModeConfiguration
+    var statementMode: StatementModeConfiguration
     var severity: SeverityConfiguration
 
-    public init(statementMode: StatmentModeConfiguration,
+    public init(statementMode: StatementModeConfiguration,
                 severity: SeverityConfiguration) {
         self.statementMode = statementMode
         self.severity = severity
@@ -42,7 +42,7 @@ public struct StatmentConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
         if let statementModeConfiguration = configurationDict["statement_mode"] {
-            try statementMode = StatmentModeConfiguration(value: statementModeConfiguration)
+            try statementMode = StatementModeConfiguration(value: statementModeConfiguration)
         }
         if let severityConfiguration = configurationDict["severity"] {
             try severity.applyConfiguration(severityConfiguration)
@@ -50,6 +50,6 @@ public struct StatmentConfiguration: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: StatmentConfiguration, rhs: StatmentConfiguration) -> Bool {
+public func == (lhs: StatementConfiguration, rhs: StatementConfiguration) -> Bool {
     return lhs.statementMode == rhs.statementMode && lhs.severity == rhs.severity
 }

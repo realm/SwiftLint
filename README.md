@@ -54,6 +54,10 @@ fi
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
+### AppCode
+
+To integrate SwiftLint with AppCode, install [this plugin](https://plugins.jetbrains.com/plugin/9175) and configure path to SwiftLint installation in plugin preferences. ```autocorrect``` action is available via ```⌥⏎```.
+
 ### Atom
 
 To integrate SwiftLint with [Atom](https://atom.io/) install the

@@ -38,6 +38,7 @@
 		3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
+		4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */; };
 		4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
@@ -214,6 +215,7 @@
 		3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfigurationTests.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
+		4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLReporter.swift; sourceTree = "<group>"; };
 		4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyCGGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexHelpers.swift; sourceTree = "<group>"; };
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
@@ -598,6 +600,7 @@
 				E86396CA1BADB519002C9E88 /* CSVReporter.swift */,
 				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
 				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
+				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
 			);
 			path = Reporters;
 			sourceTree = "<group>";
@@ -983,6 +986,7 @@
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
 				3BB47D831C514E8100AE6A10 /* RegexConfiguration.swift in Sources */,
 				3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */,
+				4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */,
 				3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */,
 				E881985D1BEA97EB00333A11 /* TrailingWhitespaceRule.swift in Sources */,
 				E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */,

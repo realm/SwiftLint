@@ -26,7 +26,10 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
             "if true,\n let x = true else {\n return true\n}",
             "if textField.returnKeyType == .Next {",
             "if true { // return }",
-            "/*if true { */ return }"
+            "/*if true { */ return }",
+            "var myIdentifier: String { return 'foo' }",
+            "var bestGuard: String { return 'foo' }",
+            "if returnedContacts.isEmpty {\n}"
         ],
         triggeringExamples: [
             "guard true else { return }",
@@ -38,7 +41,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let pattern = "(guard|if)[^\n]*return"
+        let pattern = "\\b(guard|if)\\b[^\n]*return\\b"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
             guard let firstToken = tokens.first, lastToken = tokens.last
                 where SyntaxKind(rawValue: firstToken.type) == .Keyword &&

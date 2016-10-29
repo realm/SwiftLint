@@ -105,6 +105,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     public func correctFile(file: File) -> [Correction] {
         let matches = violationRangesInFile(file)
+            .filter { !file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty }
         guard !matches.isEmpty else { return [] }
 
         let description = self.dynamicType.description

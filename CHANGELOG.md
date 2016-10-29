@@ -46,6 +46,10 @@
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
 
+* Correctable rules no longer apply corrections if the rule is locally disabled.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)  
+  [#601](https://github.com/realm/SwiftLint/issues/601) 
+
 * Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
   but no descriptive text: `// MARK: -`.  
   [Ruotger Deecke](https://github.com/roddi)

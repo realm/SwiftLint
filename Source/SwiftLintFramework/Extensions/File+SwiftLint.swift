@@ -222,6 +222,7 @@ extension File {
     internal func ruleEnabledViolatingRanges(violatingRanges: [NSRange],
                                              forRule rule: Rule) -> [NSRange] {
         let fileRegions = regions()
+        if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
             let region = fileRegions.filter {
                 $0.contains(Location(file: self, characterOffset: range.location))

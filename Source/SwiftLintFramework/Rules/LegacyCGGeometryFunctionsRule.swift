@@ -105,7 +105,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
-
+// swiftlint:disable function_body_length
     public func correctFile(file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
@@ -140,18 +140,20 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
 
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern)
+                .filter { !file.ruleEnabledViolatingRanges([$0.0], forRule: self).isEmpty }
                 .filter { $0.1.first == .Identifier }
                 .map { ($0.0, pattern, template) }
         }).flatten().sort { $0.0.location > $1.0.location } // reversed
 
+        if matches.isEmpty { return [] }
+
         for (range, pattern, template) in matches {
+            let location = Location(file: file, characterOffset: range.location)
             contents = regex(pattern).stringByReplacingMatchesInString(contents, options: [],
                                                                        range: range,
                                                                        withTemplate: template)
-            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-
         file.write(contents)
         return corrections
     }

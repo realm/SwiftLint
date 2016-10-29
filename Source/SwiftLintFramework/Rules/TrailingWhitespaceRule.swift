@@ -44,7 +44,6 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         let whitespaceCharacterSet = NSCharacterSet.whitespaceCharacterSet()
         var correctedLines = [String]()
         var corrections = [Correction]()
-        let fileRegions = file.regions()
         for line in file.lines {
             let correctedLine = (line.content as NSString)
                 .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
@@ -54,10 +53,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 continue
             }
 
-            let region = fileRegions.filter {
-                $0.contains(Location(file: file.path, line: line.index, character: 0))
-            }.first
-            if region?.isRuleDisabled(self) == true {
+            if file.ruleEnabledViolatingRanges([line.range], forRule: self).isEmpty {
                 correctedLines.append(line.content)
                 continue
             }

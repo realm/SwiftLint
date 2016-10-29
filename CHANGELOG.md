@@ -35,6 +35,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#681](https://github.com/realm/SwiftLint/issues/681)
 
+* Add ``ExplicitInitRule`` Opt-In rule to discourage calling ``init``
+  directly.  
+  [Matt Taube](https://github.com/mtaube)
+  [#715](https://github.com/realm/SwiftLint/pull/715)
+
 ##### Bug Fixes
 
 * Fixed whitespace being added to TODO messages.  

@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Warning)
+    private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
     public init() {}
 
@@ -58,21 +59,21 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         // if key.setter_accessibility is nil, it's a `let` declaration
-        if dictionary["key.setter_accessibility"] as? String == nil {
+        if dictionary["key.setter_accessibility"] == nil {
             return violation(dictionary, file: file)
         }
 
         // Variable should have explicit type or IB won't recognize it
         // Variable should be of one of the supported types
         guard let type = dictionary["key.typename"] as? String
-            where supportedTypes().contains(type) else {
+            where ValidIBInspectableRule.supportedTypes.contains(type) else {
                 return violation(dictionary, file: file)
         }
 
         return []
     }
 
-    private func supportedTypes() -> [String] {
+    private static func createSupportedTypes() -> [String] {
         // "You can add the IBInspectable attribute to any property in a class declaration,
         // class extension, or category of type: boolean, integer or floating point number, string,
         // localized string, rectangle, point, size, color, range, and nil."

@@ -33,6 +33,7 @@
   * Its type is explicit (not inferred)
   * Its type is one of the 
   [supported types](http://help.apple.com/xcode/mac/8.0/#/devf60c1c514)  
+
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#756](https://github.com/realm/SwiftLint/issues/756)  
 

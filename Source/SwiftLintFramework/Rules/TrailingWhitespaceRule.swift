@@ -22,18 +22,21 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         description: "Lines should not have trailing whitespace.",
         nonTriggeringExamples: [ "let name: String\n", "//\n", "// \n",
             "let name: String //\n", "let name: String // \n" ],
-        triggeringExamples: [ "let name: String \n" ],
-        corrections: [ "let name: String \n": "let name: String\n" ]
+        triggeringExamples: [ "let name: String \n", "/* */ let name: String \n" ],
+        corrections: [ "let name: String \n": "let name: String\n",
+            "/* */ let name: String \n": "/* */ let name: String\n"]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
-            let commentKinds = Set(SyntaxKind.commentKinds())
-            let lineSyntaxKinds = file.syntaxKindsByLines[$0.index]
-            let lineContainsComment = !lineSyntaxKinds.filter { commentKinds.contains($0) }.isEmpty
+            let commentKinds = SyntaxKind.commentKinds()
+            if $0.content.hasTrailingWhitespace() && configuration.ignoresComments,
+                let lastSyntaxKind = file.syntaxKindsByLines[$0.index].last
+                where commentKinds.contains(lastSyntaxKind) {
+                return false
+            }
 
-            return !(configuration.ignoresComments && lineContainsComment) &&
-                $0.content.hasTrailingWhitespace() &&
+            return $0.content.hasTrailingWhitespace() &&
                 (!configuration.ignoresEmptyLines ||
                     // If configured, ignore lines that contain nothing but whitespace (empty lines)
                     !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty)
@@ -51,11 +54,10 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         var correctedLines = [String]()
         var corrections = [Correction]()
         for line in file.lines {
-            let commentKinds = Set(SyntaxKind.commentKinds())
-            let lineSyntaxKinds = file.syntaxKindsByLines[line.index]
-            let lineContainsComment = !lineSyntaxKinds.filter { commentKinds.contains($0) }.isEmpty
-
-            if configuration.ignoresComments && lineContainsComment {
+            let commentKinds = SyntaxKind.commentKinds()
+            if line.content.hasTrailingWhitespace() && configuration.ignoresComments,
+                let lastSyntaxKind = file.syntaxKindsByLines[line.index].last
+                where commentKinds.contains(lastSyntaxKind) {
                 correctedLines.append(line.content)
                 continue
             }

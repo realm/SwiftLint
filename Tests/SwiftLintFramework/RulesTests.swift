@@ -275,6 +275,10 @@ class RulesTests: XCTestCase {
         verifyRule(ValidDocsRule.description)
     }
 
+    func testValidIBInspectable() {
+        verifyRule(ValidIBInspectableRule.description)
+    }
+
     func testVariableName() {
         verifyRule(VariableNameRule.description)
     }

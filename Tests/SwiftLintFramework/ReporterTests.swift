@@ -92,7 +92,9 @@ class ReporterTests: XCTestCase {
         )
     }
 
+    // swiftlint:disable function_body_length
     func testHTMLReporter() {
+    // swiftlint:enable function_body_length
         let generatedHTML = HTMLReporter.generateReport(generateViolations())
 
         let formatter = NSDateFormatter()

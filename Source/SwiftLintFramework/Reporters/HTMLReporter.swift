@@ -126,10 +126,12 @@ public struct HTMLReporter: Reporter {
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
         let severity = violation.severity.rawValue
         let location = violation.location
+        let line = location.line ?? 0
+        let character = location.character ?? 0
         return "\t\t\t\t<tr>\n" +
             "\t\t\t\t\t<td align=\"right\">\(index)</td>\n" +
             "\t\t\t\t\t<td>\(location.file ?? "")</td>\n" +
-            "\t\t\t\t\t<td align=\"center\">\(location.line ?? 0):\(location.character ?? 0)</td>\n" +
+            "\t\t\t\t\t<td align=\"center\">\(line):\(character)</td>\n" +
             "\t\t\t\t\t<td class=\'\(severity.lowercaseString)\'>\(severity) </td>\n" +
             "\t\t\t\t\t<td>\(violation.reason)</td>\n" +
         "\t\t\t\t</tr>\n"

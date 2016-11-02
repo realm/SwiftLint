@@ -37,6 +37,21 @@
   `case pattern:` in a `switch`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#681](https://github.com/realm/SwiftLint/issues/681)
+  
+* Add `ValidIBInspectableRule` rule that checks if `@IBInspectable` declarations
+  are valid. An `@IBInspectable` is valid if:
+  * It's declared as a `var` (not `let`)
+  * Its type is explicit (not inferred)
+  * Its type is one of the 
+  [supported types](http://help.apple.com/xcode/mac/8.0/#/devf60c1c514)  
+
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#756](https://github.com/realm/SwiftLint/issues/756)  
+
+* Add ``ExplicitInitRule`` Opt-In rule to discourage calling ``init``
+  directly.  
+  [Matt Taube](https://github.com/mtaube)
+  [#715](https://github.com/realm/SwiftLint/pull/715)
 
 ##### Bug Fixes
 
@@ -48,6 +63,10 @@
   The rule now enabled by default again (no longer opt-in).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
+
+* Correctable rules no longer apply corrections if the rule is locally disabled.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)  
+  [#601](https://github.com/realm/SwiftLint/issues/601) 
 
 * Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
   but no descriptive text: `// MARK: -`.  
@@ -67,6 +86,11 @@
   avoiding false positives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#784](https://github.com/realm/SwiftLint/issues/784)
+
+* `ForceUnwrappingRule` did not recognize force unwraps in return statements
+  using subscript.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#813](https://github.com/realm/SwiftLint/issues/813)  
 
 ## 0.12.0: Vertical Laundry
 

@@ -113,6 +113,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testExplicitInit() {
+        verifyRule(ExplicitInitRule.description)
+    }
+
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false)
     }
@@ -269,6 +273,10 @@ class RulesTests: XCTestCase {
 
     func testValidDocs() {
         verifyRule(ValidDocsRule.description)
+    }
+
+    func testValidIBInspectable() {
+        verifyRule(ValidIBInspectableRule.description)
     }
 
     func testVariableName() {

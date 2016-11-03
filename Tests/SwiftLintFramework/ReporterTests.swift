@@ -161,14 +161,14 @@ class ReporterTests: XCTestCase {
             "\t\t\t\t\t<td align=\"right\">1</td>\n" +
             "\t\t\t\t\t<td>filename</td>\n" +
             "\t\t\t\t\t<td align=\"center\">1:2</td>\n" +
-            "\t\t\t\t\t<td class='warning'>Warning </td>\n" +
+            "\t\t\t\t\t<td class='warning'>Warning</td>\n" +
             "\t\t\t\t\t<td>Violation Reason.</td>\n" +
             "\t\t\t\t</tr>\n" +
             "\t\t\t\t<tr>\n" +
             "\t\t\t\t\t<td align=\"right\">2</td>\n" +
             "\t\t\t\t\t<td>filename</td>\n" +
             "\t\t\t\t\t<td align=\"center\">1:2</td>\n" +
-            "\t\t\t\t\t<td class='error'>Error </td>\n" +
+            "\t\t\t\t\t<td class='error'>Error</td>\n" +
             "\t\t\t\t\t<td>Violation Reason.</td>\n" +
             "\t\t\t\t</tr>\n" +
             "\t\t\t</tbody>\n" +

@@ -132,7 +132,7 @@ public struct HTMLReporter: Reporter {
             "\t\t\t\t\t<td align=\"right\">\(index)</td>\n" +
             "\t\t\t\t\t<td>\(location.file ?? "")</td>\n" +
             "\t\t\t\t\t<td align=\"center\">\(line):\(character)</td>\n" +
-            "\t\t\t\t\t<td class=\'\(severity.lowercaseString)\'>\(severity) </td>\n" +
+            "\t\t\t\t\t<td class=\'\(severity.lowercaseString)\'>\(severity)</td>\n" +
             "\t\t\t\t\t<td>\(violation.reason)</td>\n" +
         "\t\t\t\t</tr>\n"
     }

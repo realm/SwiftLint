@@ -29,17 +29,18 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     public func validateFile(file: File) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
+            guard $0.content.hasTrailingWhitespace() else { return false }
+
             let commentKinds = SyntaxKind.commentKinds()
-            if $0.content.hasTrailingWhitespace() && configuration.ignoresComments,
+            if configuration.ignoresComments,
                 let lastSyntaxKind = file.syntaxKindsByLines[$0.index].last
                 where commentKinds.contains(lastSyntaxKind) {
                 return false
             }
 
-            return $0.content.hasTrailingWhitespace() &&
-                (!configuration.ignoresEmptyLines ||
-                    // If configured, ignore lines that contain nothing but whitespace (empty lines)
-                    !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty)
+            return !configuration.ignoresEmptyLines ||
+                // If configured, ignore lines that contain nothing but whitespace (empty lines)
+                !$0.content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet()).isEmpty
         }
 
         return filteredLines.map {
@@ -54,8 +55,13 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         var correctedLines = [String]()
         var corrections = [Correction]()
         for line in file.lines {
+            guard line.content.hasTrailingWhitespace() else {
+                correctedLines.append(line.content)
+                continue
+            }
+
             let commentKinds = SyntaxKind.commentKinds()
-            if line.content.hasTrailingWhitespace() && configuration.ignoresComments,
+            if configuration.ignoresComments,
                 let lastSyntaxKind = file.syntaxKindsByLines[line.index].last
                 where commentKinds.contains(lastSyntaxKind) {
                 correctedLines.append(line.content)

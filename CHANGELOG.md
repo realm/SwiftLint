@@ -6,6 +6,20 @@
 
 ##### Enhancements
 
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.13.0: MakeYourClothesCleanAgain
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
 * Add `ignores_comment` configuration for `trailing_whitespace` rule.  
   [Javier Hernández](https://github.com/jaherhi)
   [#576](https://github.com/realm/SwiftLint/issues/576)

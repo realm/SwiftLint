@@ -6,6 +6,9 @@
 
 ##### Enhancements
 
+* Added HTML reporter, identifier is `html`.  
+  [Johnykutty Mathew](https://github.com/Johnykutty)
+  
 * Add `SuperCallRule` Opt-In rule that warns about methods not calling to super.  
   [Angel G. Olloqui](https://github.com/angelolloqui)
   [#803](https://github.com/realm/SwiftLint/issues/803)

@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `ignores_comment` configuration for `trailing_whitespace` rule.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#576](https://github.com/realm/SwiftLint/issues/576)
+
 * Added HTML reporter, identifier is `html`.  
   [Johnykutty Mathew](https://github.com/Johnykutty)
   

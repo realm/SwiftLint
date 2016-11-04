@@ -41,8 +41,8 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         let pattern = "(guard|if)[^\n]*return"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
-                SyntaxKind(rawValue: firstToken.type) == .Keyword &&
-                    SyntaxKind(rawValue: lastToken.type) == .Keyword else {
+                SyntaxKind(rawValue: firstToken.type) == .keyword &&
+                    SyntaxKind(rawValue: lastToken.type) == .keyword else {
                         return false
             }
 

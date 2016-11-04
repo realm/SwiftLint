@@ -42,7 +42,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         let pattern2 = "func\(zeroOrManySpaces)[" + operators.joined() +
             "]+\\s+(<[A-Z]+>)?\\("
         return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .Keyword
+            return syntaxKinds.first == .keyword
         }.map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,

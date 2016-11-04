@@ -77,7 +77,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                 return parameterCount
             }
 
-            if SwiftDeclarationKind(rawValue: key) == .VarParameter {
+            if SwiftDeclarationKind(rawValue: key) == .varParameter {
                 parameterCount += 1
             }
         }
@@ -92,19 +92,19 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
+        .functionAccessorAddress,
+        .functionAccessorDidset,
+        .functionAccessorGetter,
+        .functionAccessorMutableaddress,
+        .functionAccessorSetter,
+        .functionAccessorWillset,
+        .functionConstructor,
+        .functionDestructor,
+        .functionFree,
+        .functionMethodClass,
+        .functionMethodInstance,
+        .functionMethodStatic,
+        .functionOperator,
+        .functionSubscript
     ]
 }

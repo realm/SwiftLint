@@ -15,10 +15,10 @@ extension File {
             .flatMap { $0 as? [String: SourceKitRepresentable] } ?? []
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
         guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
-            kind != .VarParameter,
+            kind != .varParameter,
             let offset = dictionary["key.offset"] as? Int64,
             let bodyOffset = dictionary["key.bodyoffset"] as? Int64,
-            let comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap),
+            let comment = parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap),
             !comment.contains(":nodoc:") else {
                 return substructureOffsets
         }
@@ -102,7 +102,7 @@ func superfluousOrMissingParameterDocumentation(_ declaration: String,
     // This function doesn't handle batched parameters, so skip those.
     if commentHasBatchedParameters(comment) { return false }
     let parameterNames = substructure.filter {
-        ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .VarParameter
+        ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .varParameter
     }.filter { subDict in
         return (subDict["key.offset"] as? Int64).map({ $0 < bodyOffset }) ?? false
     }.flatMap {

@@ -11,7 +11,7 @@ import Foundation
 extension FileManager {
     internal func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
         let rootPath = rootDirectory ?? FileManager.default.currentDirectoryPath
-        let absolutePath = (path.absolutePathRepresentation(rootPath) as NSString)
+        let absolutePath = (path.absolutePathRepresentation(rootDirectory: rootPath) as NSString)
             .standardizingPath
         var isDirectory: ObjCBool = false
         guard fileExists(atPath: absolutePath, isDirectory: &isDirectory) else {

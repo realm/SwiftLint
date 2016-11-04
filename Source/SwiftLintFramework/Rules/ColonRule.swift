@@ -145,7 +145,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
-            if !syntaxKinds.starts(with: [.Identifier, .Typeidentifier]) {
+            if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {
                 return false
             }
             return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty

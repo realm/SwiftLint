@@ -52,7 +52,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             }
 
             // check if the first token in the line is `case`
-            let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(range.location)
+            let lineAndCharacter = file.contents.lineAndCharacter(forByteOffset: range.location)
             guard let (lineNumber, _) = lineAndCharacter else {
                 return false
             }
@@ -74,7 +74,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     }
 
     private func tokenIsKeyword(token: SyntaxToken) -> Bool {
-        return SyntaxKind(rawValue: token.type) == .Keyword
+        return SyntaxKind(rawValue: token.type) == .keyword
     }
 
     private func contentForToken(token: SyntaxToken, file: File) -> String {

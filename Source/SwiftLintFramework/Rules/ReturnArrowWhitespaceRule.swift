@@ -113,6 +113,6 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }()
 
     fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
-        return file.matchPattern(pattern, withSyntaxKinds: [.Typeidentifier])
+        return file.matchPattern(pattern, withSyntaxKinds: [.typeidentifier])
     }
 }

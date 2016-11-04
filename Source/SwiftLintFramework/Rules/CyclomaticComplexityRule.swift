@@ -116,20 +116,20 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     ]
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
+        .functionAccessorAddress,
+        .functionAccessorDidset,
+        .functionAccessorGetter,
+        .functionAccessorMutableaddress,
+        .functionAccessorSetter,
+        .functionAccessorWillset,
+        .functionConstructor,
+        .functionDestructor,
+        .functionFree,
+        .functionMethodClass,
+        .functionMethodInstance,
+        .functionMethodStatic,
+        .functionOperator,
+        .functionSubscript
     ]
 
 }

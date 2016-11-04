@@ -47,7 +47,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         let fileRegions = file.regions()
         for line in file.lines {
             let correctedLine = (line.content as NSString)
-                .stringByTrimmingTrailingCharactersInSet(whitespaceCharacterSet)
+                .trimmingTrailingCharacters(in: whitespaceCharacterSet)
 
             if configuration.ignoresEmptyLines && correctedLine.characters.isEmpty {
                 correctedLines.append(line.content)

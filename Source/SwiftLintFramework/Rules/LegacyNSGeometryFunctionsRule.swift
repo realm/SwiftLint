@@ -98,7 +98,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
 
         let pattern = "\\b(" + functions.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
+        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -141,7 +141,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
 
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern)
-                .filter { $0.1.first == .Identifier }
+                .filter { $0.1.first == .identifier }
                 .map { ($0.0, pattern, template) }
         }).joined().sorted { $0.0.location > $1.0.location } // reversed
 

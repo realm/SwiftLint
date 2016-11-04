@@ -24,7 +24,7 @@ class CustomRulesTests: XCTestCase {
         comp.message = "Message"
         comp.regex = NSRegularExpression.forcePattern("regex")
         comp.severityConfiguration = SeverityConfiguration(.Error)
-        comp.matchKinds = Set([SyntaxKind.Comment])
+        comp.matchKinds = Set([SyntaxKind.comment])
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {

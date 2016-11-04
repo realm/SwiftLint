@@ -41,15 +41,15 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [.Class, .Struct, .Enum]
+        let typeKinds: [SwiftDeclarationKind] = [.class, .struct, .enum]
         if !typeKinds.contains(kind) {
             return []
         }
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-            let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
-            let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
+            let startLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset)
+            let endLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
                 for parameter in configuration.params {

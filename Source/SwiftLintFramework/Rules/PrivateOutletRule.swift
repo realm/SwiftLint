@@ -34,7 +34,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+        guard kind == .varInstance else {
             return []
         }
 

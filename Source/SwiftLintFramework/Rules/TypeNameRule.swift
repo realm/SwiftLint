@@ -46,10 +46,10 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum
+            .class,
+            .struct,
+            .typealias,
+            .enum
         ]
         if !typeKinds.contains(kind) {
             return []

@@ -36,7 +36,7 @@ public struct MarkRule: ConfigurationProviderRule {
         let options = ["MARK:[^ ]", "[^ ]MARK: [^-]", "\\sMARK:[^ ]", "MARK:[ ][-][^\\s ]"]
         let pattern = "(" + options.joined(separator: "|") + ")"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.Comment]).flatMap { range in
+        return file.matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location))

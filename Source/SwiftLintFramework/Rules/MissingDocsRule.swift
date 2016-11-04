@@ -46,7 +46,7 @@ extension File {
             acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
-        if getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
+        if parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
             return substructureOffsets
         }
         return substructureOffsets + [Int(offset)]

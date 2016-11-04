@@ -12,11 +12,11 @@ extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
     public var isCommentLike: Bool {
         return [
-            SyntaxKind.Comment,
-            SyntaxKind.CommentMark,
-            SyntaxKind.CommentURL,
-            SyntaxKind.DocComment,
-            SyntaxKind.DocCommentField
+            SyntaxKind.comment,
+            SyntaxKind.commentMark,
+            SyntaxKind.commentURL,
+            SyntaxKind.docComment,
+            SyntaxKind.docCommentField
             ].contains(self)
     }
 }

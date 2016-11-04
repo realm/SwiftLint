@@ -56,7 +56,7 @@ public struct Command {
         guard let actionString = actionNSString as String?,
             let action = CommandAction(rawValue: actionString),
             let lineAndCharacter = string
-                .lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
+                .lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else {
                 return nil
         }
         self.action = action

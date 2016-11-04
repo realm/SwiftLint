@@ -61,7 +61,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         .commentKeywordStringAndTypeidentifierKinds().map { $0.rawValue }
     fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind
         .commentAndStringKinds().map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.Identifier.rawValue]
+    fileprivate static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
 
     // swiftlint:disable:next function_body_length
     fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
@@ -96,7 +96,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 }).isEmpty else { return nil }
 
                 // if first captured range is identifier, generate violation
-                if tokensInFirstRange.map({ $0.type }).contains(SyntaxKind.Identifier.rawValue) {
+                if tokensInFirstRange.map({ $0.type }).contains(SyntaxKind.identifier.rawValue) {
                     return violationRange
                 }
 
@@ -144,10 +144,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         if let lastKind = kinds.last {
             switch lastKind.kind {
             // range is in some "source.lang.swift.decl.var.*"
-            case SwiftDeclarationKind.VarClass.rawValue: fallthrough
-            case SwiftDeclarationKind.VarGlobal.rawValue: fallthrough
-            case SwiftDeclarationKind.VarInstance.rawValue: fallthrough
-            case SwiftDeclarationKind.VarStatic.rawValue:
+            case SwiftDeclarationKind.varClass.rawValue: fallthrough
+            case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
+            case SwiftDeclarationKind.varInstance.rawValue: fallthrough
+            case SwiftDeclarationKind.varStatic.rawValue:
                 let byteOffset = lastKind.byteRange.location
                 let byteLength = byteRange.location - byteOffset
                 if let varDeclarationString = nsstring

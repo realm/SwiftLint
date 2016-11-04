@@ -25,8 +25,8 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
-            CharacterSet.whitespacesAndNewlines
+        let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(
+            in: CharacterSet.whitespacesAndNewlines
         )
         if countOfLeadingWhitespace == 0 {
             return []
@@ -40,7 +40,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
 
     public func correctFile(_ file: File) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
-        let spaceCount = file.contents.countOfLeadingCharactersInSet(whitespaceAndNewline)
+        let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         if spaceCount == 0 {
             return []
         }

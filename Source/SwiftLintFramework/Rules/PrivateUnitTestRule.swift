@@ -24,7 +24,7 @@ func superclass(_ dictionary: [String: SourceKitRepresentable]) -> String? {
     typealias SKDict = [String: SourceKitRepresentable]
     guard let
         kindString = dictionary["key.kind"] as? String,
-        let kind = SwiftDeclarationKind(rawValue: kindString), kind == .Class
+        let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class
         else { return nil }
     guard let
         inheritedTypes = dictionary["key.inheritedtypes"] as? SKArray,
@@ -112,7 +112,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         dictionary: [String: SourceKitRepresentable])
         -> [StyleViolation] {
 
-            guard kind == .Class && isTestClass(dictionary) else { return [] }
+            guard kind == .class && isTestClass(dictionary) else { return [] }
 
             /* It's not strictly necessary to check for `private` on classes because a
              private class will result in `private` on all its members in the AST.
@@ -132,7 +132,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                 guard
                     let subDict = subItem as? [String: SourceKitRepresentable],
                     let kindString = subDict["key.kind"] as? String,
-                    let kind = KindType(rawValue: kindString), kind == .FunctionMethodInstance
+                    let kind = KindType(rawValue: kindString), kind == .functionMethodInstance
                     else { return [] }
                 return self.validateFunction(file, kind: kind, dictionary: subDict)
             }
@@ -154,7 +154,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         dictionary: [String: SourceKitRepresentable])
         -> [StyleViolation] {
 
-            assert(kind == .FunctionMethodInstance)
+            assert(kind == .functionMethodInstance)
             guard
                 let name = dictionary["key.name"] as? NSString, name.hasPrefix("test")
                 else { return [] }

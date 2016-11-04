@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.EditorOpen(file).failableSend()
+        return try Request.editorOpen(file: file).failableSend()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -173,7 +173,7 @@ private func rebuildAllDeclarationsByType() {
             let name = firstSubstructureDict["key.name"] as? String,
             let kind = (firstSubstructureDict["key.kind"] as? String)
                 .flatMap(SwiftDeclarationKind.init),
-            kind == .Protocol,
+            kind == .protocol,
             let substructure = substructureForDict(firstSubstructureDict) else {
                 return nil
         }

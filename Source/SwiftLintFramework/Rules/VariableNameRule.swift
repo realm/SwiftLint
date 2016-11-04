@@ -76,7 +76,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric " +
                         "characters: '\(name)'")]
-            } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
+            } else if kind != SwiftDeclarationKind.varStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),

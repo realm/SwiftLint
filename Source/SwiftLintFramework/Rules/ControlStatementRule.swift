@@ -75,7 +75,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
     }
 
     fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {
-        if syntaxKind != .Keyword {
+        if syntaxKind != .keyword {
             return true
         }
 

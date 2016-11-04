@@ -41,7 +41,7 @@ extension File {
         }
         let contents = self.contents as NSString
         return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
-            withSyntaxKinds: [.Comment]).flatMap { range in
+            withSyntaxKinds: [.comment]).flatMap { range in
                 return Command(string: contents, range: range)
             }.flatMap { command in
                 return command.expand()

@@ -25,7 +25,7 @@ class IntegrationTests: XCTestCase {
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFilesForPath("")
-        XCTAssert(swiftFiles.map({$0.path!}).contains(#file), "current file should be included")
+        XCTAssert(swiftFiles.map({ $0.path! }).contains(#file), "current file should be included")
 
         let violations = swiftFiles.flatMap {
             Linter(file: $0, configuration: config).styleViolations

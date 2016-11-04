@@ -44,10 +44,10 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         if spaceCount == 0 {
             return []
         }
-        let region = file.regions().filter {
-            $0.contains(Location(file: file.path, line: max(file.lines.count, 1)))
-        }.first
-        if region?.isRuleDisabled(self) == true {
+        guard let firstLineRange = file.lines.first?.range else {
+            return []
+        }
+        if file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty {
             return []
         }
         let indexEnd = file.contents.index(

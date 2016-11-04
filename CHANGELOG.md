@@ -6,9 +6,38 @@
 
 ##### Enhancements
 
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.13.0: MakeYourClothesCleanAgain
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Add `ignores_comment` configuration for `trailing_whitespace` rule.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#576](https://github.com/realm/SwiftLint/issues/576)
+
+* Added HTML reporter, identifier is `html`.  
+  [Johnykutty Mathew](https://github.com/Johnykutty)
+
+* Add `SuperCallRule` Opt-In rule that warns about methods not calling to super.  
+  [Angel G. Olloqui](https://github.com/angelolloqui)
+  [#803](https://github.com/realm/SwiftLint/issues/803)
+
 * Add `RedundantNilCoalesingRule` Opt-In rule that warns against `?? nil`.  
   [Daniel Beard](https://github.com/daniel-beard)
   [#764](https://github.com/realm/SwiftLint/issues/764)
+
+* Added opt-In rule to makes closure expressions spacing consistent.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#770](https://github.com/realm/SwiftLint/issues/770)
 
 * Adds `allow_private_set` configuration for the `private_outlet` rule.  
   [Rohan Dhaimade](https://github.com/HaloZero)
@@ -21,11 +50,26 @@
   violations.  
   [Jonas](https://github.com/VFUC)
   [#742](https://github.com/realm/SwiftLint/issues/742)
-  
-* Add `SwitchCaseOnNewlineRule' opt-in rule that enforces a newline after
+
+* Add `SwitchCaseOnNewlineRule` opt-in rule that enforces a newline after
   `case pattern:` in a `switch`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#681](https://github.com/realm/SwiftLint/issues/681)
+
+* Add `ValidIBInspectableRule` rule that checks if `@IBInspectable` declarations
+  are valid. An `@IBInspectable` is valid if:
+  * It's declared as a `var` (not `let`)
+  * Its type is explicit (not inferred)
+  * Its type is one of the
+  [supported types](http://help.apple.com/xcode/mac/8.0/#/devf60c1c514)  
+
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#756](https://github.com/realm/SwiftLint/issues/756)  
+
+* Add ``ExplicitInitRule`` Opt-In rule to discourage calling ``init``
+  directly.  
+  [Matt Taube](https://github.com/mtaube)
+  [#715](https://github.com/realm/SwiftLint/pull/715)
 
 ##### Bug Fixes
 
@@ -38,6 +82,10 @@
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#772](https://github.com/realm/SwiftLint/issues/772)
 
+* Correctable rules no longer apply corrections if the rule is locally disabled.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)  
+  [#601](https://github.com/realm/SwiftLint/issues/601)
+
 * Fixed regex bug in Mark Rule where MARK could not be used with only a hyphen
   but no descriptive text: `// MARK: -`.  
   [Ruotger Deecke](https://github.com/roddi)
@@ -48,14 +96,19 @@
   [Cristian Filipov](https://github.com/cfilipov)
   [#786](https://github.com/realm/SwiftLint/issues/786)
 
-* Fixed: `ConditionalReturnsOnNewline' now respects severity configuration.  
+* Fixed: `ConditionalReturnsOnNewline` now respects severity configuration.  
   [Rohan Dhaimade](https://github.com/HaloZero)
   [#783](https://github.com/realm/SwiftLint/issues/783)
-  
-* Fixed: `ConditionalReturnsOnNewline' now checks if `return` is a keyword,
+
+* Fixed: `ConditionalReturnsOnNewline` now checks if `return` is a keyword,
   avoiding false positives.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#784](https://github.com/realm/SwiftLint/issues/784)
+
+* `ForceUnwrappingRule` did not recognize force unwraps in return statements
+  using subscript.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#813](https://github.com/realm/SwiftLint/issues/813)  
 
 ## 0.12.0: Vertical Laundry
 

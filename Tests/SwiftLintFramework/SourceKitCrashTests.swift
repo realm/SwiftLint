@@ -33,6 +33,11 @@ class SourceKitCrashTests: XCTestCase {
         _ = file.syntaxKindsByLines
         XCTAssertFalse(assertHandlerCalled,
                        "Expects assert handler was not called on accessing File.syntaxKindsByLines")
+
+        assertHandlerCalled = false
+        _ = file.syntaxTokensByLines
+        XCTAssertFalse(assertHandlerCalled,
+                      "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
@@ -55,6 +60,11 @@ class SourceKitCrashTests: XCTestCase {
         _ = file.syntaxKindsByLines
         XCTAssertTrue(assertHandlerCalled,
                       "Expects assert handler was called on accessing File.syntaxKindsByLines")
+
+        assertHandlerCalled = false
+        _ = file.syntaxTokensByLines
+        XCTAssertTrue(assertHandlerCalled,
+                     "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testRulesWithFileThatCrashedSourceKitService() {

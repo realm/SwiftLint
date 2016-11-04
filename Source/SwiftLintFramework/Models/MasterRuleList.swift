@@ -42,6 +42,7 @@ public struct RuleList {
 
 public let masterRuleList = RuleList(rules:
     ClosingBraceRule.self,
+    ClosureSpacingRule.self,
     ColonRule.self,
     CommaRule.self,
     ConditionalReturnsOnNewline.self,
@@ -49,6 +50,7 @@ public let masterRuleList = RuleList(rules:
     CustomRules.self,
     CyclomaticComplexityRule.self,
     EmptyCountRule.self,
+    ExplicitInitRule.self,
     FileLengthRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
@@ -71,6 +73,7 @@ public let masterRuleList = RuleList(rules:
     RedundantNilCoalesingRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
+    OverridenSuperCallRule.self,
     SwitchCaseOnNewlineRule.self,
     TodoRule.self,
     TrailingNewlineRule.self,
@@ -79,6 +82,7 @@ public let masterRuleList = RuleList(rules:
     TypeBodyLengthRule.self,
     TypeNameRule.self,
     ValidDocsRule.self,
+    ValidIBInspectableRule.self,
     VariableNameRule.self,
     VerticalWhitespaceRule.self
 )

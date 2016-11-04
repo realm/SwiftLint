@@ -137,9 +137,11 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
 
         let matches = patterns.map({ pattern, template in
             file.matchPattern(pattern)
+                .filter { !file.ruleEnabledViolatingRanges([$0.0], forRule: self).isEmpty }
                 .filter { $0.1.first == .identifier }
                 .map { ($0.0, pattern, template) }
         }).joined().sorted { $0.0.location > $1.0.location } // reversed
+        if matches.isEmpty { return [] }
 
         for (range, pattern, template) in matches {
             contents = regex(pattern).stringByReplacingMatches(in: contents,

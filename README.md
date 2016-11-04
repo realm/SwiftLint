@@ -54,6 +54,10 @@ fi
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
+### AppCode
+
+To integrate SwiftLint with AppCode, install [this plugin](https://plugins.jetbrains.com/plugin/9175) and configure path to SwiftLint installation in plugin preferences. ```autocorrect``` action is available via ```⌥⏎```.
+
 ### Atom
 
 To integrate SwiftLint with [Atom](https://atom.io/) install the
@@ -98,6 +102,14 @@ and are subject to change.
 
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
+
+opt_in_rules are disabled by default (you have to explicitly add them on your configuration file).
+
+Guidelines on when to implement a rule as opt-in:
+* A rule that can have many false positives (empty_count)
+* A rule that is too slow
+* A rule that is not general consensus or only useful in some cases (force_unwrapping, missing_docs)
+
 
 ### Disable a rule in code
 

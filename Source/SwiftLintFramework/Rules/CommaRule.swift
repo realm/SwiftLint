@@ -50,7 +50,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let matches = violationRangesInFile(file)
+        let violations = violationRangesInFile(file)
+        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
 
         var contents = file.contents as NSString
@@ -61,7 +62,6 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-
         file.write(contents as String)
         return corrections
     }

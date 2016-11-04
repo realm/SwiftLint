@@ -59,9 +59,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let matches = violationRangesInFile(file)
-        guard !matches.isEmpty else { return [] }
-
+        let matches = file.ruleEnabledViolatingRanges(violationRangesInFile(file), forRule: self)
+        if matches.isEmpty { return [] }
         let regularExpression = regex(pattern)
         let description = type(of: self).description
         var corrections = [Correction]()

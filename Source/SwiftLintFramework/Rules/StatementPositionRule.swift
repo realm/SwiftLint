@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = StatmentConfiguration(statementMode: .Default,
+    public var configuration = StatementConfiguration(statementMode: .Default,
                                                      severity: SeverityConfiguration(.Warning))
 
     public init() {}
@@ -44,7 +44,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
     public static let uncuddledDescription = RuleDescription(
         identifier: "statement_position",
-        name: "Statment Position",
+        name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration.",
         nonTriggeringExamples: [
@@ -116,10 +116,10 @@ private extension StatementPositionRule {
     }
 
     func defaultCorrectFile(_ file: File) -> [Correction] {
-        let matches = defaultViolationRangesInFile(file,
+        let violations = defaultViolationRangesInFile(file,
                                                    withPattern: type(of: self).defaultPattern)
-        guard !matches.isEmpty else { return [] }
-
+        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        if matches.isEmpty { return [] }
         let regularExpression = regex(type(of: self).defaultPattern)
         let description = type(of: self).description
         var corrections = [Correction]()
@@ -217,7 +217,8 @@ private extension StatementPositionRule {
                                                                  syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
-
+                  .filter { !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty }
+        if validMatches.isEmpty { return [] }
         let description = type(of: self).uncuddledDescription
         var corrections = [Correction]()
 

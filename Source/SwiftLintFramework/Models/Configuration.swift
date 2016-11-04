@@ -50,7 +50,7 @@ public struct Configuration: Equatable {
             type(of: $0).description.identifier
         }
 
-        let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0)})
+        let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0) })
         let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
         if !invalidRules.isEmpty {
             for invalidRule in invalidRules {

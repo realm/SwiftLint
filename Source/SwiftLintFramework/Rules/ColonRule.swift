@@ -102,9 +102,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let matches = violationRangesInFile(file, withPattern: pattern)
+        let violations = violationRangesInFile(file, withPattern: pattern)
+        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         guard !matches.isEmpty else { return [] }
-
         let regularExpression = regex(pattern)
         let description = type(of: self).description
         var corrections = [Correction]()

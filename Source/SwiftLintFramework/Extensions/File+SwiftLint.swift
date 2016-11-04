@@ -103,11 +103,11 @@ extension File {
         }
     }
 
-    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+    internal func syntaxTokensByLine() -> [[SyntaxToken]]? {
         if sourcekitdFailed {
             return nil
         }
-        var results = [[SyntaxKind]](repeating: [], count: lines.count + 1)
+        var results = [[SyntaxToken]](repeating: [], count: lines.count + 1)
         var tokenGenerator = syntaxMap.tokens.makeIterator()
         var lineGenerator = lines.makeIterator()
         var maybeLine = lineGenerator.next()
@@ -116,7 +116,7 @@ extension File {
             let tokenRange = NSRange(location: token.offset, length: token.length)
             if NSLocationInRange(token.offset, line.byteRange) ||
                 NSLocationInRange(line.byteRange.location, tokenRange) {
-                    results[line.index].append(SyntaxKind(rawValue: token.type)!)
+                    results[line.index].append(token)
             }
             let tokenEnd = NSMaxRange(tokenRange)
             let lineEnd = NSMaxRange(line.byteRange)
@@ -130,6 +130,19 @@ extension File {
             }
         }
         return results
+    }
+
+    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+
+        if sourcekitdFailed {
+            return nil
+        }
+        guard let tokens = syntaxTokensByLine() else {
+            return nil
+        }
+
+        return tokens.map { $0.flatMap { SyntaxKind.init(rawValue: $0.type) } }
+
     }
 
     //Added by S2dent
@@ -213,6 +226,7 @@ extension File {
     internal func ruleEnabledViolatingRanges(_ violatingRanges: [NSRange],
                                              forRule rule: Rule) -> [NSRange] {
         let fileRegions = regions()
+        if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
             let region = fileRegions.filter {
                 $0.contains(Location(file: self, characterOffset: range.location))

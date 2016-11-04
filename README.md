@@ -41,7 +41,7 @@ in the IDE. Just add a new "Run Script Phase" with:
 
 ```bash
 if which swiftlint >/dev/null; then
-  swiftlint
+  swiftlint || echo "warning: SwiftLint failed with exit code $?. Is SwiftLint installed and up to date?"
 else
   echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
 fi

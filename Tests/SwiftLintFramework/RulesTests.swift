@@ -212,8 +212,8 @@ class RulesTests: XCTestCase {
         verifyRule(PrivateUnitTestRule.description)
     }
 
-    func testRedundantNilCoalesing() {
-        verifyRule(RedundantNilCoalesingRule.description)
+    func testRedundantNilCoalescing() {
+        verifyRule(RedundantNilCoalescingRule.description)
     }
 
     func testReturnArrowWhitespace() {

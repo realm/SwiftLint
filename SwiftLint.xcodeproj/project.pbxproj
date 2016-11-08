@@ -13,7 +13,7 @@
 		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
-		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalesingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalesingRule.swift */; };
+		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
 		2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */; };
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
@@ -192,7 +192,7 @@
 		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
-		24B4DF0B1D6DFA370097803B /* RedundantNilCoalesingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalesingRule.swift; sourceTree = "<group>"; };
+		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
 		2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CyclomaticComplexityRule.swift; sourceTree = "<group>"; };
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
@@ -642,7 +642,7 @@
 				78F032441D7C877800BE709A /* OverridenSuperCallRule.swift */,
 				B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */,
 				094385021D5D4F78009168CF /* PrivateOutletRule.swift */,
-				24B4DF0B1D6DFA370097803B /* RedundantNilCoalesingRule.swift */,
+				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
 				3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */,
 				692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */,
@@ -976,7 +976,7 @@
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */,
 				7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
-				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalesingRule.swift in Sources */,
+				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */,
 				7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,
 				E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */,

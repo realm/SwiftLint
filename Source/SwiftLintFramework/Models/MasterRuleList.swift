@@ -70,7 +70,7 @@ public let masterRuleList = RuleList(rules:
     OperatorFunctionWhitespaceRule.self,
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,
-    RedundantNilCoalesingRule.self,
+    RedundantNilCoalescingRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
     OverridenSuperCallRule.self,

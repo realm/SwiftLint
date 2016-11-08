@@ -220,7 +220,7 @@ extension String {
 extension XCTestCase {
     var bundlePath: String {
         #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFramework/Resources".absolutePathRepresentation()
+            return "Tests/SwiftLintFrameworkTests/Resources".absolutePathRepresentation()
         #else
             return Bundle(for: type(of: self)).resourcePath!
         #endif

@@ -102,7 +102,7 @@ class CustomRulesTests: XCTestCase {
 
     func getTestTextFile() -> File {
         #if SWIFT_PACKAGE
-            let path: String = "Tests/SwiftLintFramework/Resources/test.txt"
+            let path: String = "Tests/SwiftLintFrameworkTests/Resources/test.txt"
                 .absolutePathRepresentation()
             return File(path: path)!
         #else

@@ -48,7 +48,7 @@ class YamlSwiftLintTests: XCTestCase {
 
     func getTestYaml() -> String {
         #if SWIFT_PACKAGE
-            let path = "Tests/SwiftLintFramework/Resources/test.yml"
+            let path = "Tests/SwiftLintFrameworkTests/Resources/test.yml"
                 .absolutePathRepresentation()
             if let ymlString = try? String(contentsOfFile: path) {
                 return ymlString

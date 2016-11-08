@@ -40,11 +40,10 @@ public struct YamlParser {
     }
 
     fileprivate static func loadYaml(_ yaml: String) throws -> Yaml {
-        let yamlResult = Yaml.load(yaml)
-        if let yamlConfig = yamlResult.value {
-            return yamlConfig
-        } else {
-            throw YamlParserError.yamlParsing(yamlResult.error!)
+        do {
+            return try Yaml.load(yaml)
+        } catch Yaml.ResultError.message(let message) {
+            throw YamlParserError.yamlParsing(message ?? "Unknown Yaml Error")
         }
     }
 }

@@ -14,11 +14,8 @@ import Yaml
 class YamlSwiftLintTests: XCTestCase {
 
     func testFlattenYaml() {
-        let yamlResult = Yaml.load(getTestYaml())
-        if let error = yamlResult.error {
-            XCTFail(error)
-        } else {
-            let yaml = yamlResult.value!
+        do {
+            let yaml = try Yaml.load(getTestYaml())
             let yamlDict = yaml.flatDictionary!
 
             let dict1 = (yamlDict["dictionary1"] as? [Swift.String : Any])!
@@ -44,6 +41,8 @@ class YamlSwiftLintTests: XCTestCase {
                           dict2_2["double"] as? Double == 1.0)
             XCTAssertTrue(dict1_1["string"] as? String == "string" &&
                           dict2_2["string"] as? String == "string")
+        } catch {
+            XCTFail(error.localizedDescription)
         }
     }
 

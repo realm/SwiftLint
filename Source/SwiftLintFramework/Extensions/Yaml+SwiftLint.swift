@@ -17,7 +17,7 @@ extension Yaml {
                 newDict[key.stringValue] = value.flatValue
             }
             return newDict
-        } else if count == 0 || self == .Null { // swiftlint:disable:this empty_count
+        } else if count == 0 || self == .null { // swiftlint:disable:this empty_count
             return [:]
         }
 
@@ -28,38 +28,38 @@ extension Yaml {
 
     var flatValue: Any {
         switch self {
-        case .Bool(let myBool):
+        case .bool(let myBool):
             return myBool as Any
-        case .Int(let myInt):
+        case .int(let myInt):
             return myInt as Any
-        case .Double(let myDouble):
+        case .double(let myDouble):
             return myDouble as Any
-        case .String(let myString):
+        case .string(let myString):
             return myString as Any
-        case .Array:
+        case .array:
             return flatArray! as Any // This is valid because .Array will always flatten
-        case .Dictionary:
+        case .dictionary:
             return flatDictionary! as Any // This is valid because .Dictionary will always flatten
-        case .Null:
+        case .null:
             return NSNull()
         }
     }
 
     var stringValue: Swift.String {
         switch self {
-        case .Bool(let myBool):
+        case .bool(let myBool):
             return myBool.description
-        case .Int(let myInt):
+        case .int(let myInt):
             return myInt.description
-        case .Double(let myDouble):
+        case .double(let myDouble):
             return myDouble.description
-        case .String(let myString):
+        case .string(let myString):
             return myString
-        case .Array(let myArray):
+        case .array(let myArray):
             return myArray.description
-        case .Dictionary(let myDictionary):
+        case .dictionary(let myDictionary):
             return myDictionary.description
-        case .Null:
+        case .null:
             return "Null"
         }
     }

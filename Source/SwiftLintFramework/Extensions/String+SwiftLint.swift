@@ -15,8 +15,8 @@ extension String {
             return false
         }
 
-        if let character = utf16.suffix(1).first {
-            return CharacterSet.whitespaces.contains(UnicodeScalar(character)!)
+        if let unicodescalar = unicodeScalars.last {
+            return CharacterSet.whitespaces.contains(unicodescalar)
         }
 
         return false

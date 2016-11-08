@@ -12,8 +12,8 @@ import SourceKittenFramework
 extension String {
     fileprivate func countOfTrailingCharactersInSet(_ characterSet: CharacterSet) -> Int {
         var count = 0
-        for char in utf16.lazy.reversed() {
-            if !characterSet.contains(UnicodeScalar(char)!) {
+        for char in unicodeScalars.lazy.reversed() {
+            if !characterSet.contains(char) {
                 break
             }
             count += 1

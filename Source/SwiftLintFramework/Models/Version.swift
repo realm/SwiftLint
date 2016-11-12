@@ -17,7 +17,7 @@ public struct Version: CustomStringConvertible {
                     fatalError()
             }
 
-            return Version(versionString: version)
+            return Version(versionString: version)!
         }
     }
 
@@ -31,9 +31,16 @@ public struct Version: CustomStringConvertible {
         self.patch = patch
     }
 
-    init(versionString: String) {
-        let numbers = versionString.componentsSeparatedByString(".").map {
-            return Int($0)!
+    init?(versionString: String) {
+        let _numbers = try? versionString.componentsSeparatedByString(".").map { numberStr -> Int in
+            guard let number = Int(numberStr) else {
+                throw NSError.init(domain: "", code: 0, userInfo: nil)
+            }
+            return number
+        }
+
+        guard let numbers = _numbers else {
+            return nil
         }
 
         if numbers.isEmpty {

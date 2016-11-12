@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Version: CustomStringConvertible {
+public struct Version: CustomStringConvertible, Comparable {
 
     public static var current: Version {
         get {
@@ -61,10 +61,6 @@ public struct Version: CustomStringConvertible {
     public var description: String {
         return "\(major).\(minor).\(patch)"
     }
-}
-
-extension Version: Comparable {
-
 }
 
 public func == (left: Version, right: Version) -> Bool {

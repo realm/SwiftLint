@@ -21,11 +21,11 @@ public struct Version: CustomStringConvertible {
         }
     }
 
-    var major: Int
-    var minor: Int
-    var patch: Int
+    let major: Int
+    let minor: Int
+    let patch: Int
 
-    init(major: Int, minor: Int, patch: Int) {
+    init(major: Int, minor: Int = 0, patch: Int = 0) {
         self.major = major
         self.minor = minor
         self.patch = patch

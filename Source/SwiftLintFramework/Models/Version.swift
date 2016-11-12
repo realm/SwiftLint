@@ -56,16 +56,8 @@ public struct Version: CustomStringConvertible {
     }
 }
 
-public func > (left: Version, right: Version) -> Bool {
-    if left.major == right.major {
-        if left.minor == right.minor {
-            return left.patch > right.patch
-        } else {
-            return left.minor > right.minor
-        }
-    } else {
-        return left.major > right.major
-    }
+extension Version: Comparable {
+
 }
 
 public func == (left: Version, right: Version) -> Bool {
@@ -81,8 +73,4 @@ public func < (left: Version, right: Version) -> Bool {
     } else {
         return !(left > right)
     }
-}
-
-public func != (left: Version, right: Version) -> Bool {
-    return !(left == right)
 }

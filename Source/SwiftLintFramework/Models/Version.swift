@@ -25,6 +25,10 @@ public struct Version: CustomStringConvertible, Comparable {
     let minor: Int
     let patch: Int
 
+    private var components: [Int] {
+        return [major, minor, patch]
+    }
+
     init(major: Int, minor: Int = 0, patch: Int = 0) {
         self.major = major
         self.minor = minor
@@ -50,11 +54,11 @@ public struct Version: CustomStringConvertible, Comparable {
         if numbers.count == 3 {
             self.init(major: numbers[0], minor: numbers[1], patch: numbers[2])
         } else if numbers.count == 2 {
-            self.init(major: numbers[0], minor: numbers[1], patch: 0)
+            self.init(major: numbers[0], minor: numbers[1])
         } else if numbers.count == 1 {
-            self.init(major: numbers[0], minor: 0, patch: 0)
+            self.init(major: numbers[0])
         } else {
-            fatalError()
+            return nil
         }
     }
 
@@ -64,16 +68,9 @@ public struct Version: CustomStringConvertible, Comparable {
 }
 
 public func == (left: Version, right: Version) -> Bool {
-    return
-        left.major == right.major &&
-        left.minor == right.minor &&
-        left.patch == right.patch
+    return left.components == right.components
 }
 
 public func < (left: Version, right: Version) -> Bool {
-    if left == right {
-        return false
-    } else {
-        return !(left > right)
-    }
+    return left.components.lexicographicalCompare(right.components)
 }

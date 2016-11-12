@@ -44,7 +44,7 @@ public struct Version: CustomStringConvertible, Comparable {
         }
 
         if numbers.isEmpty {
-            fatalError()
+            return nil
         }
 
         if numbers.count == 3 {

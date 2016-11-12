@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = StatmentConfiguration(statementMode: .Default,
+    public var configuration = StatementConfiguration(statementMode: .Default,
                                                      severity: SeverityConfiguration(.Warning))
 
     public init() {}
@@ -44,7 +44,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
     public static let uncuddledDescription = RuleDescription(
         identifier: "statement_position",
-        name: "Statment Position",
+        name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration.",
         nonTriggeringExamples: [
@@ -116,20 +116,20 @@ private extension StatementPositionRule {
     }
 
     func defaultCorrectFile(file: File) -> [Correction] {
-        let matches = defaultViolationRangesInFile(file,
+        let violations = defaultViolationRangesInFile(file,
                                                    withPattern: self.dynamicType.defaultPattern)
-        guard !matches.isEmpty else { return [] }
-
+        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        if matches.isEmpty { return [] }
         let regularExpression = regex(self.dynamicType.defaultPattern)
         let description = self.dynamicType.description
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches.reverse() {
+            let location = Location(file: file, characterOffset: range.location)
             contents = regularExpression.stringByReplacingMatchesInString(contents,
                                                                           options: [],
                                                                           range: range,
                                                                           withTemplate: "} $1")
-            let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
@@ -217,11 +217,13 @@ private extension StatementPositionRule {
                                                                  syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
-
+                  .filter { !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty }
+        if validMatches.isEmpty { return [] }
         let description = self.dynamicType.uncuddledDescription
         var corrections = [Correction]()
 
         for match in validMatches.reverse() {
+            let location = Location(file: file, characterOffset: match.range.location)
             let range1 = match.rangeAtIndex(1)
             let nsRange2 = match.rangeAtIndex(3)
             let newlineRange = match.rangeAtIndex(2)
@@ -239,7 +241,6 @@ private extension StatementPositionRule {
                 whitespace.insert("\n", atIndex: whitespace.startIndex)
             }
             contents.replaceRange(range2, with: whitespace)
-            let location = Location(file: file, characterOffset: match.range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 

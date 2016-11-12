@@ -51,3 +51,6 @@ benchmark_*
 # SPM
 .build
 Packages
+
+# macOS
+.DS_Store

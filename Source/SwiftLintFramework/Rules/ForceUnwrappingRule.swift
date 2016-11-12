@@ -38,7 +38,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "navigationController↓!.pushViewController(viewController, animated: true)",
             "let unwrapped = optional↓!",
             "return cell↓!",
-            "let url = NSURL(string: \"http://www.google.com\")↓!"
+            "let url = NSURL(string: \"http://www.google.com\")↓!",
+            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓! }",
         ]
     )
 
@@ -164,6 +165,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 //            case SwiftDeclarationKind.VarLocal.rawValue: fallthrough
             default:
                 break
+            }
+            if lastKind.kind.hasPrefix("source.lang.swift.decl.function") {
+                return true
             }
         }
         return false

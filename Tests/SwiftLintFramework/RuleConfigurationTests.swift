@@ -132,22 +132,36 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
         let config = "unknown"
-        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                            ignoresComments: true)
         checkError(ConfigurationError.UnknownConfiguration) {
             try configuration.applyConfiguration(config)
         }
     }
 
     func testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines() {
-        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                             ignoresComments: true)
         XCTAssertFalse(configuration1.ignoresEmptyLines)
 
-        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
+                                                             ignoresComments: true)
         XCTAssertTrue(configuration2.ignoresEmptyLines)
     }
 
+    func testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments() {
+        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                             ignoresComments: true)
+        XCTAssertTrue(configuration1.ignoresComments)
+
+        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                             ignoresComments: false)
+        XCTAssertFalse(configuration2.ignoresComments)
+    }
+
     func testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines() {
-        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                            ignoresComments: true)
         do {
             let config1 = ["ignores_empty_lines": true]
             try configuration.applyConfiguration(config1)
@@ -161,22 +175,104 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 
+    func testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments() {
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                            ignoresComments: true)
+        do {
+            let config1 = ["ignores_comments": true]
+            try configuration.applyConfiguration(config1)
+            XCTAssertTrue(configuration.ignoresComments)
+
+            let config2 = ["ignores_comments": false]
+            try configuration.applyConfiguration(config2)
+            XCTAssertFalse(configuration.ignoresComments)
+        } catch {
+            XCTFail()
+        }
+    }
+
     func testTrailingWhitespaceConfigurationCompares() {
-        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
-        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                             ignoresComments: true)
+        let configuration2 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
+                                                             ignoresComments: true)
         XCTAssertFalse(configuration1 == configuration2)
 
-        let configuration3 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true)
+        let configuration3 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
+                                                             ignoresComments: true)
         XCTAssertTrue(configuration2 == configuration3)
+
+        let configuration4 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                             ignoresComments: false)
+
+        XCTAssertFalse(configuration1 == configuration4)
+
+        let configuration5 = TrailingWhitespaceConfiguration(ignoresEmptyLines: true,
+                                                             ignoresComments: false)
+
+        XCTAssertFalse(configuration1 == configuration5)
     }
 
     func testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration() {
-        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false)
+        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
+                                                            ignoresComments: true)
         configuration.severityConfiguration.severity = .Warning
 
         do {
             try configuration.applyConfiguration(["severity": "error"])
             XCTAssert(configuration.severityConfiguration.severity == .Error)
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testOverridenSuperCallConfigurationFromDictionary() {
+        var configuration = OverridenSuperCallConfiguration()
+        XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+
+        let conf1 = [
+            "severity": "error",
+            "excluded": "viewWillAppear(_:)"
+        ]
+        do {
+            try configuration.applyConfiguration(conf1)
+            XCTAssert(configuration.severityConfiguration.severity == .Error)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
+        } catch {
+            XCTFail()
+        }
+
+        let conf2 = [
+            "severity": "error",
+            "excluded": "viewWillAppear(_:)",
+            "included": ["*", "testMethod1()", "testMethod2(_:)"]
+        ]
+        do {
+            try configuration.applyConfiguration(conf2)
+            XCTAssert(configuration.severityConfiguration.severity == .Error)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
+        } catch {
+            XCTFail()
+        }
+
+        let conf3 = [
+            "severity": "warning",
+            "excluded": "*",
+            "included": ["testMethod1()", "testMethod2(_:)"]
+        ]
+        do {
+            try configuration.applyConfiguration(conf3)
+            XCTAssert(configuration.severityConfiguration.severity == .Warning)
+            XCTAssert(configuration.resolvedMethodNames.count == 2)
+            XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
+            XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
         } catch {
             XCTFail()
         }

@@ -37,11 +37,19 @@ func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
 
 extension Configuration {
     private func assertCorrection(before: String, expected: String) {
+#if swift(>=2.3)
+        guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift")?.path else {
+                XCTFail("couldn't generate temporary path for assertCorrection()")
+                return
+        }
+#else
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .URLByAppendingPathComponent(NSUUID().UUIDString + ".swift").path else {
                 XCTFail("couldn't generate temporary path for assertCorrection()")
                 return
         }
+#endif
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before)
         if cleanedBefore.dataUsingEncoding(NSUTF8StringEncoding)?
             .writeToFile(path, atomically: true) != true {
@@ -151,6 +159,14 @@ extension XCTestCase {
         ruleDescription.corrections.forEach(config.assertCorrection)
         // make sure strings that don't trigger aren't corrected
         zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
+
+        //"disable" command do not correct
+        ruleDescription.corrections.forEach { before, _ in
+            let beforeDisabled = command + before
+            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
+            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+        }
+
     }
 
     func checkError<T: protocol<ErrorType, Equatable>>(error: T, closure: () throws -> () ) {

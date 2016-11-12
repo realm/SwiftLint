@@ -93,6 +93,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testClosureSpacingRule() {
+        verifyRule(ClosureSpacingRule.description)
+    }
+
     func testConditionalReturnsOnNewline() {
         verifyRule(ConditionalReturnsOnNewline.description)
     }
@@ -107,6 +111,10 @@ class RulesTests: XCTestCase {
 
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
+    }
+
+    func testExplicitInit() {
+        verifyRule(ExplicitInitRule.description)
     }
 
     func testFileLength() {
@@ -204,8 +212,8 @@ class RulesTests: XCTestCase {
         verifyRule(PrivateUnitTestRule.description)
     }
 
-    func testRedundantNilCoalesing() {
-        verifyRule(RedundantNilCoalesingRule.description)
+    func testRedundantNilCoalescing() {
+        verifyRule(RedundantNilCoalescingRule.description)
     }
 
     func testReturnArrowWhitespace() {
@@ -219,6 +227,10 @@ class RulesTests: XCTestCase {
     func testStatementPositionUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
+    }
+
+    func testSwitchCaseOnNewline() {
+        verifyRule(SwitchCaseOnNewlineRule.description)
     }
 
     func testTodo() {
@@ -235,7 +247,7 @@ class RulesTests: XCTestCase {
     }
 
     func testTrailingWhitespace() {
-        verifyRule(TrailingWhitespaceRule.description, commentDoesntViolate: false)
+        verifyRule(TrailingWhitespaceRule.description)
 
         // Perform additional tests with the ignores_empty_lines setting enabled.
         // The set of non-triggering examples is extended by a whitespace-indented empty line
@@ -247,7 +259,23 @@ class RulesTests: XCTestCase {
                                nonTriggeringExamples: nonTriggeringExamples,
                                   triggeringExamples: baseDescription.triggeringExamples,
                                          corrections: baseDescription.corrections)
-        verifyRule(description, ruleConfiguration: ["ignores_empty_lines": true],
+        verifyRule(description,
+                   ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
+
+        // Perform additional tests with the ignores_comments settings disabled.
+        let triggeringComments = ["// \n", "let name: String // \n"]
+        let baseDescription2 = TrailingWhitespaceRule.description
+        let nonTriggeringExamples2 = baseDescription2.nonTriggeringExamples
+            .filter { !triggeringComments.contains($0) }
+        let triggeringExamples2 = baseDescription2.triggeringExamples + triggeringComments
+        let description2 = RuleDescription(identifier: baseDescription2.identifier,
+                                           name: baseDescription2.name,
+                                           description: baseDescription2.description,
+                                           nonTriggeringExamples: nonTriggeringExamples2,
+                                           triggeringExamples: triggeringExamples2,
+                                           corrections: baseDescription2.corrections)
+        verifyRule(description2,
+                   ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)
     }
 
@@ -263,7 +291,16 @@ class RulesTests: XCTestCase {
         verifyRule(ValidDocsRule.description)
     }
 
+    func testValidIBInspectable() {
+        verifyRule(ValidIBInspectableRule.description)
+    }
+
     func testVariableName() {
         verifyRule(VariableNameRule.description)
     }
+
+    func testSuperCall() {
+        verifyRule(OverridenSuperCallRule.description)
+    }
+
 }

@@ -8,7 +8,7 @@ export SCRIPT_DIR=$(dirname "$0")
 
 main ()
 {
-    local submodules=$(git submodule status)
+    submodules=$(git submodule status)
     local result=$?
 
     if [ "$result" -ne "0" ]

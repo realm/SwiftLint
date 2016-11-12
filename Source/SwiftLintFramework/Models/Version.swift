@@ -10,14 +10,14 @@ import Foundation
 
 public struct Version: CustomStringConvertible, Comparable {
 
-    public static var current: Version {
+    public static var current: Version? {
         get {
             guard let version = NSBundle(identifier: "io.realm.SwiftLintFramework")?
                 .objectForInfoDictionaryKey("CFBundleShortVersionString") as? String else {
-                    fatalError()
+                    return nil
             }
 
-            return Version(versionString: version)!
+            return Version(versionString: version)
         }
     }
 

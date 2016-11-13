@@ -13,7 +13,7 @@ private func classScoped(value: String) -> String {
     return "class Foo {\n  \(value)\n}\n"
 }
 
-public struct ImplicitGetterRule: ASTRule, ConfigurationProviderRule {
+public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.Warning)
 
     public init() {}
@@ -31,7 +31,18 @@ public struct ImplicitGetterRule: ASTRule, ConfigurationProviderRule {
             classScoped("var foo: Int {\n return getValueFromDisk() \n} \n}"),
             classScoped("var foo: String {\n return \"get\" \n} \n}"),
             "protocol Foo {\n var foo: Int { get }\n",
-            "protocol Foo {\n var foo: Int { get set }\n"
+            "protocol Foo {\n var foo: Int { get set }\n",
+            "class Foo {\n" +
+            "  var foo: Int {\n" +
+            "    struct Bar {\n" +
+            "      var bar: Int {\n" +
+            "        get { return 1 }\n" +
+            "        set { _ = newValue }\n" +
+            "      }\n" +
+            "    }\n" +
+            "    return Bar().bar\n" +
+            "  }\n" +
+            "}\n"
         ],
         triggeringExamples: [
             classScoped("var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
@@ -39,74 +50,32 @@ public struct ImplicitGetterRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Enum,
-            .Extension,
-            .ExtensionClass,
-            .ExtensionEnum,
-            .ExtensionProtocol,
-            .ExtensionStruct,
-            .Struct
-        ]
-
-        guard typeKinds.contains(kind) else {
-            return []
-        }
-
-        guard let substructures = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
-            .flatMap({ $0 as? [String: SourceKitRepresentable] }) else {
-                return []
-        }
-
-        return substructures.flatMap { dictionary -> [StyleViolation] in
-            guard let kind = (dictionary["key.kind"] as? String).flatMap(KindType.init) else {
-                return []
-            }
-
-            return validateType(file, kind: kind, dictionary: dictionary)
-        }
-    }
-
-    private func validateType(file: File,
-                              kind: SwiftDeclarationKind,
-                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let allowedKinds: [SwiftDeclarationKind] = [.VarClass, .VarInstance, .VarStatic]
-        guard allowedKinds.contains(kind) else {
-            return []
-        }
-
-        // If there's a setter, `get` is allowed
-        guard dictionary["key.setter_accessibility"] == nil else {
-            return []
-        }
-
-        // Only validates properties with body
-        guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) else {
-                return []
-        }
-
-        let bodyRange = NSRange(location: bodyOffset, length: bodyLength)
-        let contents = (file.contents as NSString)
-
-        let tokens = file.syntaxMap.tokensIn(bodyRange).filter { token in
+    public func validateFile(file: File) -> [StyleViolation] {
+        let getTokens = file.syntaxMap.tokens.filter { token -> Bool in
             guard SyntaxKind(rawValue: token.type) == .Keyword else {
                 return false
             }
 
-            guard let tokenValue = contents.substringWithByteRange(start: token.offset,
-                                                                   length: token.length) else {
-                return false
+            guard let tokenValue = file.contents.substringWithByteRange(start: token.offset,
+                length: token.length) else {
+                    return false
             }
 
             return tokenValue == "get"
         }
 
-        return tokens.map { token in
+        let violatingTokens = getTokens.filter { token -> Bool in
+            // the last element is the deepest structure
+            guard let dictionary =
+                variableDeclarationsFor(token.offset, structure: file.structure).last else {
+                    return false
+            }
+
+            // If there's a setter, `get` is allowed
+            return dictionary["key.setter_accessibility"] == nil
+        }
+
+        return violatingTokens.map { token in
             // Violation found!
             let location = Location(file: file, byteOffset: token.offset)
 
@@ -115,5 +84,52 @@ public struct ImplicitGetterRule: ASTRule, ConfigurationProviderRule {
                 location: location
             )
         }
+    }
+
+    private func variableDeclarationsFor(byteOffset: Int, structure: Structure) ->
+                                                             [[String : SourceKitRepresentable]] {
+        var results = [[String : SourceKitRepresentable]]()
+
+        func parse(dictionary: [String : SourceKitRepresentable]) {
+
+            let allowedKinds: [SwiftDeclarationKind] = [.VarClass, .VarInstance, .VarStatic]
+
+            // Only accepts variable declarations which contains a body and contains the
+            // searched byteOffset
+            if let kindString = (dictionary["key.kind"] as? String),
+                kind = SwiftDeclarationKind(rawValue: kindString),
+                bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+                bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) })
+                where allowedKinds.contains(kind) {
+                let byteRange = NSRange(location: bodyOffset, length: bodyLength)
+
+                if NSLocationInRange(byteOffset, byteRange) {
+                    results.append(dictionary)
+                }
+            }
+
+            let typeKinds: [SwiftDeclarationKind] = [
+                .Class,
+                .Enum,
+                .Extension,
+                .ExtensionClass,
+                .ExtensionEnum,
+                .ExtensionProtocol,
+                .ExtensionStruct,
+                .Struct
+                ] + allowedKinds
+
+            if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
+                for case let dictionary as [String : SourceKitRepresentable] in subStructure {
+                    if let kindString = (dictionary["key.kind"] as? String),
+                        kind = SwiftDeclarationKind(rawValue: kindString)
+                        where typeKinds.contains(kind) {
+                        parse(dictionary)
+                    }
+                }
+            }
+        }
+        parse(structure.dictionary)
+        return results
     }
 }

@@ -10,7 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
-    public let configurationDescription = "N/A"
     public var configuration = SeverityConfiguration(.Warning)
 
     public init() { }
@@ -29,13 +28,15 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "let x = [key: .default]",
             "if case let .someEnum(value) = aFunction([key: 2]) {",
             "guard case let .someEnum(value) = aFunction([key: 2]) {",
-            "for case let .someEnum(value) = aFunction([key: 2]) {"
+            "for case let .someEnum(value) = aFunction([key: 2]) {",
+            "case .myCase: // error from network"
         ],
         triggeringExamples: [
             "case 1: return true",
             "case let value: return true",
             "default: return true",
-            "case \"a string\": return false"
+            "case \"a string\": return false",
+            "case .myCase: return false // error from network"
         ]
     )
 
@@ -58,14 +59,19 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             }
 
             let line = file.lines[lineNumber - 1]
-            let lineTokens = file.syntaxMap.tokensIn(line.byteRange).filter(tokenIsKeyword)
+            let allLineTokens = file.syntaxMap.tokensIn(line.byteRange)
+            let lineTokens = allLineTokens.filter(tokenIsKeyword)
 
             guard let firstLineToken = lineTokens.first else {
                 return false
             }
 
             let firstTokenInLineString = contentForToken(firstLineToken, file: file)
-            return firstTokenInLineString == tokenString
+            guard firstTokenInLineString == tokenString else {
+                return false
+            }
+
+            return !lineEndsWithColon(allLineTokens, file: file, line: line)
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
@@ -77,8 +83,48 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         return SyntaxKind(rawValue: token.type) == .Keyword
     }
 
+    private func tokenIsComment(token: SyntaxToken) -> Bool {
+        guard let kind = SyntaxKind(rawValue: token.type) else {
+            return false
+        }
+
+        return SyntaxKind.commentKinds().contains(kind)
+    }
+
     private func contentForToken(token: SyntaxToken, file: File) -> String {
-        return file.contents.substringWithByteRange(start: token.offset,
-                                                    length: token.length) ?? ""
+        return contentForRange(token.offset, length: token.length, file: file)
+    }
+
+    private func contentForRange(start: Int, length: Int, file: File) -> String {
+        return file.contents.substringWithByteRange(start: start,
+                                                    length: length) ?? ""
+    }
+
+    private func trailingComments(tokens: [SyntaxToken]) -> [SyntaxToken] {
+        var lastWasComment = true
+        return tokens.reverse().filter { token in
+            let shouldRemove = lastWasComment && tokenIsComment(token)
+            if !shouldRemove {
+                lastWasComment = false
+            }
+
+            return shouldRemove
+        }.reverse()
+    }
+
+    private func lineEndsWithColon(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
+        let trailingCommentsTokens = trailingComments(lineTokens)
+
+        guard let firstComment = trailingCommentsTokens.first,
+            lastComment = trailingCommentsTokens.last else {
+                return false
+        }
+
+        let commentsLength = (lastComment.offset + lastComment.length) - firstComment.offset
+        let line = contentForRange(line.byteRange.location,
+                                   length: line.byteRange.length - commentsLength, file: file)
+        let cleaned = line.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
+
+        return cleaned.hasSuffix(":")
     }
 }

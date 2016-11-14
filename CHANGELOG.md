@@ -2,19 +2,7 @@
 
 ##### Breaking
 
-* Adds `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
-  `@discardableResult`, etc) is on the right position:
-    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
-    the same line as the declaration
-    - If the attribute is `@available`, it should always be on the line above
-    the declaration
-    - Otherwise:
-      - if the attribute is applied to a variable, it should be on the same line
-      - if it's applied to a type or function, it should be on the line above
-      - if it's applied to an import (the only option is `@testable import`), 
-      it should be on the same line.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#846](https://github.com/realm/SwiftLint/issues/846)
+* None.
 
 ##### Enhancements
 
@@ -77,6 +65,20 @@
 
 * Make `MarkRule` correctable.  
   [kohtenko](https://github.com/kohtenko)
+
+* Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
+  `@discardableResult`, etc) is on the right position:
+    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
+    the same line as the declaration
+    - If the attribute is `@available`, it should always be on the line above
+    the declaration
+    - Otherwise:
+      - if the attribute is applied to a variable, it should be on the same line
+      - if it's applied to a type or function, it should be on the line above
+      - if it's applied to an import (the only option is `@testable import`), 
+      it should be on the same line.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#846](https://github.com/realm/SwiftLint/issues/846)
 
 ##### Bug Fixes
 

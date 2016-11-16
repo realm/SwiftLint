@@ -21,7 +21,9 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         description: "Closure expressions should have a single space inside each brace.",
         nonTriggeringExamples: [
             "[].map ({ $0.description })",
-            "[].filter { $0.contains(location) }"
+            "[].filter { $0.contains(location) }",
+            "extension UITableViewCell: ReusableView { }",
+            "extension UITableViewCell: ReusableView {}"
         ],
         triggeringExamples: [
             "[].filter({$0.contains(location)})",
@@ -93,7 +95,10 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         var violationRanges = matchedUpBraces.filter {
             // removes enclosing brances to just content
             let content = file.contents.substring($0.location + 1, length: $0.length - 2)
-            if content.isEmpty { return false } // case when {} is not a closure
+            if content.isEmpty || content == " " {
+                // case when {} is not a closure
+                return false
+            }
             let cleaned = content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
             return content != " " + cleaned + " "
         }

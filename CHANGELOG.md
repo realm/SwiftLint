@@ -45,6 +45,10 @@
 * `switch_case_on_newline` rule should ignore trailing comments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#874](https://github.com/realm/SwiftLint/issues/874)
+  
+* `switch_case_on_newline` rule shouldn't trigger on enums.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#878](https://github.com/realm/SwiftLint/issues/878)
 
 
 ## 0.13.0: MakeYourClothesCleanAgain

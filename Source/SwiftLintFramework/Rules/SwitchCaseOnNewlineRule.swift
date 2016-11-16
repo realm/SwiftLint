@@ -29,14 +29,19 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "if case let .someEnum(value) = aFunction([key: 2]) {",
             "guard case let .someEnum(value) = aFunction([key: 2]) {",
             "for case let .someEnum(value) = aFunction([key: 2]) {",
-            "case .myCase: // error from network"
+            "case .myCase: // error from network",
+            "case let .myCase(value) where value > 10:\n return false",
+            "enum Environment {\n case development\n}",
+            "enum Environment {\n case development(url: URL)\n}",
+            "enum Environment {\n case development(url: URL) // staging\n}"
         ],
         triggeringExamples: [
             "case 1: return true",
             "case let value: return true",
             "default: return true",
             "case \"a string\": return false",
-            "case .myCase: return false // error from network"
+            "case .myCase: return false // error from network",
+            "case let .myCase(value) where value > 10: return false"
         ]
     )
 
@@ -71,7 +76,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
                 return false
             }
 
-            return !lineEndsWithColon(allLineTokens, file: file, line: line)
+            return isViolation(allLineTokens, file: file, line: line)
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: self.configuration.severity,
@@ -112,12 +117,20 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         }.reverse()
     }
 
-    private func lineEndsWithColon(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
+    private func isViolation(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
         let trailingCommentsTokens = trailingComments(lineTokens)
+
+        guard let firstToken = lineTokens.first else {
+            return false
+        }
+
+        if isEnumCase(file, token: firstToken) {
+            return false
+        }
 
         guard let firstComment = trailingCommentsTokens.first,
             lastComment = trailingCommentsTokens.last else {
-                return false
+                return true
         }
 
         let commentsLength = (lastComment.offset + lastComment.length) - firstComment.offset
@@ -125,6 +138,15 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
                                    length: line.byteRange.length - commentsLength, file: file)
         let cleaned = line.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
 
-        return cleaned.hasSuffix(":")
+        return !cleaned.hasSuffix(":")
+    }
+
+    private func isEnumCase(file: File, token: SyntaxToken) -> Bool {
+        let kinds = file.structure.kindsFor(token.offset).flatMap {
+            SwiftDeclarationKind(rawValue: $0.kind)
+        }
+
+        // it's a violation unless it's actually an enum case declaration
+        return kinds.contains(.Enumcase)
     }
 }

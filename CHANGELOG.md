@@ -10,6 +10,7 @@
 
 ##### Bug Fixes
 
+
 * Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a
   violation.  
   [JP Simard](https://github.com/jpsim)
@@ -18,6 +19,11 @@
 * Now lints single files passed to `--path` even if this file is excluded
   from the configuration file (`.swiftlint.yml`).  
   [JP Simard](https://github.com/jpsim)
+
+* Fixed error severity configuration in `colon` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#863](https://github.com/realm/SwiftLint/issues/863)
+
 
 ## 0.13.0: MakeYourClothesCleanAgain
 

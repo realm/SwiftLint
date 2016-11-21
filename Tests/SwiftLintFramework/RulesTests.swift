@@ -248,6 +248,10 @@ class RulesTests: XCTestCase {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }
 
+    func testTrailingComma() {
+        verifyRule(TrailingCommaRule.description)
+    }
+
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)

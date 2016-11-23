@@ -40,6 +40,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "@NSManaged func addSomeObject(book: SomeObject)",
             "@IBAction func buttonPressed(button: UIButton)",
             "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
+            "@available(iOS 9.0, *, message=\"A message\")\n func animate(view: UIStackView)",
             "@nonobjc\n final class X",
             "@available(iOS 9.0, *)\n class UIStackView",
             "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
@@ -52,12 +53,23 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             let swift3Only = [
                 "@GKInspectable var maxSpeed: Float",
                 "@discardableResult\n func a() -> Int",
-                "@objc\n @discardableResult\n func a() -> Int"
+                "@objc\n @discardableResult\n func a() -> Int",
+                "func increase(f: @autoclosure () -> Int) -> Int",
+                "func foo(completionHandler: @escaping () -> Void)"
             ]
 
             return common + swift3Only
         #else
-            return common
+            let swift2Only = [
+                "@warn_unused_result\n func a() -> Int",
+                "@objc\n @warn_unused_result\n func a() -> Int",
+                "func increase(@autoclosure f: () -> Int ) -> Int",
+                "func foo(@noescape x: Int -> Int)",
+                "@noreturn\n func exit(_: Int)",
+                "func exit(_: Int) -> @noreturn Int"
+            ]
+
+            return common + swift2Only
         #endif
     }
 
@@ -95,7 +107,15 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             return common + swift3Only
         #else
-            return common
+            let swift2Only = [
+                "@warn_unused_result func a() -> Int",
+                "@warn_unused_result(message=\"You should use this\") func a() -> Int",
+                "@objc\n @warn_unused_result func a() -> Int",
+                "@objc\n\n @warn_unused_result\n func a() -> Int",
+                "@noreturn func exit(_: Int)"
+            ]
+
+            return common + swift2Only
         #endif
     }
 
@@ -239,8 +259,17 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func isAttribute(name: String) -> Bool {
-        // all attributes start with @
-        return name.hasPrefix("@")
+        // all attributes *should* start with @
+        if name.hasPrefix("@") {
+            return true
+        }
+
+        // for some reason, `@` is not included if @warn_unused_result has parameters
+        if name.hasPrefix("warn_unused_result(") {
+            return true
+        }
+
+        return false
     }
 
     private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {

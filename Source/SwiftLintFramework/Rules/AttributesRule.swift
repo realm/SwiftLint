@@ -23,29 +23,46 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports",
-        nonTriggeringExamples: [
+        nonTriggeringExamples: AttributesRule.nonTriggeringExamples(),
+        triggeringExamples: AttributesRule.triggeringExamples()
+    )
+
+    private static func nonTriggeringExamples() -> [String] {
+        let common = [
             "@objc var x: String",
             "@objc private var x: String",
             "@nonobjc var x: String",
             "@IBOutlet private var label: UILabel",
             "@NSCopying var name: NSString",
             "@NSManaged var name: String?",
-            "@GKInspectable var maxSpeed: Float",
             "@IBInspectable var cornerRadius: CGFloat",
-            "@available(iOS 9.0)\n let stackView: UIStackView",
-            "@discardableResult\n func a() -> Int",
-            "@objc\n @discardableResult\n func a() -> Int",
+            "@available(iOS 9.0, *)\n let stackView: UIStackView",
             "@NSManaged func addSomeObject(book: SomeObject)",
             "@IBAction func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0)\n func animate(view: UIStackView)",
+            "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
             "@nonobjc\n final class X",
-            "@available(iOS 9.0)\n class UIStackView",
+            "@available(iOS 9.0, *)\n class UIStackView",
             "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
             "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate",
             "@IBDesignable\n class MyCustomView: UIView",
             "@testable import SourceKittenFramework"
-        ],
-        triggeringExamples: [
+        ]
+
+        #if swift(>=3.0)
+            let swift3Only = [
+                "@GKInspectable var maxSpeed: Float",
+                "@discardableResult\n func a() -> Int",
+                "@objc\n @discardableResult\n func a() -> Int"
+            ]
+
+            return common + swift3Only
+        #else
+            return common
+        #endif
+    }
+
+    private static func triggeringExamples() -> [String] {
+        let common = [
             "@objc\n var x: String",
             "@objc\n\n var x: String",
             "@objc\n private var x: String",
@@ -54,24 +71,33 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "@IBOutlet\n\n private var label: UILabel",
             "@NSCopying\n var name: NSString",
             "@NSManaged\n var name: String?",
-            "@GKInspectable\n var maxSpeed: Float",
             "@IBInspectable\n var cornerRadius: CGFloat",
-            "@available(iOS 9.0) let stackView: UIStackView",
-            "@discardableResult func a() -> Int",
-            "@objc\n @discardableResult func a() -> Int",
-            "@objc\n\n @discardableResult\n func a() -> Int",
+            "@available(iOS 9.0, *) let stackView: UIStackView",
             "@NSManaged\n func addSomeObject(book: SomeObject)",
             "@IBAction\n func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0) func animate(view: UIStackView)",
+            "@available(iOS 9.0, *) func animate(view: UIStackView)",
             "@nonobjc final class X",
-            "@available(iOS 9.0) class UIStackView",
-            "@available(iOS 9.0)\n\n class UIStackView",
+            "@available(iOS 9.0, *) class UIStackView",
+            "@available(iOS 9.0, *)\n\n class UIStackView",
             "@UIApplicationMain class AppDelegate: NSObject, UIApplicationDelegate",
             "@IBDesignable class MyCustomView: UIView",
             "@testable\nimport SourceKittenFramework",
             "@testable\n\n\nimport SourceKittenFramework"
         ]
-    )
+
+        #if swift(>=3.0)
+            let swift3Only = [
+                "@GKInspectable\n var maxSpeed: Float",
+                "@discardableResult func a() -> Int",
+                "@objc\n @discardableResult func a() -> Int",
+                "@objc\n\n @discardableResult\n func a() -> Int",
+            ]
+
+            return common + swift3Only
+        #else
+            return common
+        #endif
+    }
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateTestableImport(file) +

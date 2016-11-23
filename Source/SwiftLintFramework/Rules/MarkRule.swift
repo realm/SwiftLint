@@ -19,22 +19,35 @@ public struct MarkRule: ConfigurationProviderRule {
         name: "Mark",
         description: "MARK comment should be in valid format.",
         nonTriggeringExamples: [
-            "// MARK: good\n",
-            "// MARK: - good\n",
-            "// MARK: -\n"
+            "// MARK: good",
+            "// MARK: - good",
+            "// MARK: -"
         ],
         triggeringExamples: [
             "//MARK: bad",
+            "// MARK:bad",
             "//MARK:bad",
+            "//  MARK: bad",
+            "// MARK:  bad",
             "// MARK: -bad",
+            "// MARK:- bad",
             "// MARK:-bad",
-            "//MARK:-bad"
+            "//MARK: - bad",
+            "//MARK:- bad",
+            "//MARK: -bad",
+            "//MARK:-bad",
         ]
     )
 
     public func validateFile(file: File) -> [StyleViolation] {
-        let options = ["MARK:[^ ]", "[^ ]MARK: [^-]", "\\sMARK:[^ ]", "MARK:[ ][-][^\\s ]"]
-        let pattern = "(" + options.joinWithSeparator("|") + ")"
+        let nonSpace = "[^ ]"
+        let twoOrMoreSpace = " {2,}"
+        let nonSpaceOrTwoOrMoreSpace = "(\(nonSpace)|\(twoOrMoreSpace))"
+        let mark = "MARK:"
+        let badSpaceStart = "(\(nonSpaceOrTwoOrMoreSpace)?\(mark)\(nonSpaceOrTwoOrMoreSpace))"
+        let badSpaceEnd = "(\(nonSpaceOrTwoOrMoreSpace)\(mark)\(nonSpaceOrTwoOrMoreSpace)?)"
+        let badSpaceAfterHyphen = "(\(mark) -([^ \\n]|\(twoOrMoreSpace)))"
+        let pattern = [badSpaceStart, badSpaceEnd, badSpaceAfterHyphen].joinWithSeparator("|")
 
         return file.matchPattern(pattern, withSyntaxKinds: [.Comment]).flatMap { range in
             return StyleViolation(ruleDescription: self.dynamicType.description,

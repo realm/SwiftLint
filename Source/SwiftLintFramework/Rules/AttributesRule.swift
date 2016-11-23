@@ -218,8 +218,12 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
-        return (dictionary["key.attributes"] as? [SourceKitRepresentable])?
+        let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?
             .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
             .flatMap({ $0["key.attribute"] }) ?? []
+
+        let blacklisted = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
+                              "source.decl.attribute.mutating")
+        return attributes.filter { !blacklisted.contains($0) }
     }
 }

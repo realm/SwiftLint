@@ -188,6 +188,10 @@ public struct Configuration: Equatable {
 
     public func lintablePathsForPath(path: String,
                                      fileManager: NSFileManager = fileManager) -> [String] {
+        // If path is a Swift file, skip filtering with excluded/included paths
+        if (path as NSString).isSwiftFile() {
+            return [path]
+        }
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
         let excludedPaths = excluded.flatMap {
             fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath)

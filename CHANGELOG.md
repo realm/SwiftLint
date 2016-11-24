@@ -15,6 +15,10 @@
   [JP Simard](https://github.com/jpsim)
   [#805](https://github.com/realm/SwiftLint/issues/805)
 
+* Now lints single files passed to `--path` even if this file is excluded
+  from the configuration file (`.swiftlint.yml`).  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.13.0: MakeYourClothesCleanAgain
 
 ##### Breaking

@@ -141,6 +141,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
+    func testIndentation() {
+        verifyRule(IndentationRule.description)
+    }
+
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description)
     }

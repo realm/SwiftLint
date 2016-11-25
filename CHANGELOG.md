@@ -33,6 +33,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#881](https://github.com/realm/SwiftLint/issues/881)
 
+* `closure_spacing` rule now accepts empty bodies with a space.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#875](https://github.com/realm/SwiftLint/issues/875)
+
 ##### Bug Fixes
 
 * Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a

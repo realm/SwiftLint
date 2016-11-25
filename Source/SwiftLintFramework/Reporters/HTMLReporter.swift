@@ -5,6 +5,7 @@
 //  Created by Johnykutty on 10/27/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
+
 import Foundation
 
 public struct HTMLReporter: Reporter {
@@ -15,9 +16,8 @@ public struct HTMLReporter: Reporter {
         return "Reports violations as HTML"
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable:next function_body_length
     public static func generateReport(violations: [StyleViolation]) -> String {
-    // swiftlint:enable function_body_length
         var rows = ""
         for (index, violation) in violations.enumerate() {
             rows += generateSingleRow(for: violation, at: index + 1)

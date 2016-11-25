@@ -15,6 +15,11 @@
   marked as `weak`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 
+* Add `SyntacticSugar` rule that enforces that shorthanded syntax should be
+  used when possible, for example `[Int]` instead of `Array<Int>`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
+
 ##### Bug Fixes
 
 

@@ -15,7 +15,7 @@ class RulesTests: XCTestCase {
         verifyRule(ClosingBraceRule.description)
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable:next function_body_length
     func testColon() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is false (default).
@@ -87,7 +87,6 @@ class RulesTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
     }
-    // swiftlint:enable function_body_length
 
     func testComma() {
         verifyRule(CommaRule.description)

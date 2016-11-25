@@ -6,7 +6,12 @@
 
 ##### Enhancements
 
-* None.
+* Add `NimbleOperatorRule` opt-in rule that enforces using 
+  [operator overloads](https://github.com/Quick/Nimble/#operator-overloads)
+  instead of free matcher functions when using 
+  [Nimble](https://github.com/Quick/Nimble).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#881](https://github.com/realm/SwiftLint/issues/881)
 
 ##### Bug Fixes
 

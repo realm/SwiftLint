@@ -16,7 +16,7 @@ public struct OverridenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInR
     public static let description = RuleDescription(
         identifier: "overridden_super_call",
         name: "Overridden methods call super",
-        description: "Some Overridden methods should always call super",
+        description: "Some overridden methods should always call super",
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func viewWillAppear(_ animated: Bool) {\n" +
@@ -63,15 +63,14 @@ public struct OverridenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInR
     public func validateFile(file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
-        guard   let offset = dictionary["key.bodyoffset"] as? Int64,
-                let name = dictionary["key.name"] as? String
+        guard let offset = dictionary["key.bodyoffset"] as? Int64,
+              let name = dictionary["key.name"] as? String
         else { return [] }
 
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
-        guard   kind == .FunctionMethodInstance &&
-                configuration.resolvedMethodNames.contains(name) &&
-                extractAttributes(dictionary).contains("source.decl.attribute.override")
+        guard kind == .FunctionMethodInstance &&
+              configuration.resolvedMethodNames.contains(name) &&
+              extractAttributes(dictionary).contains("source.decl.attribute.override")
         else { return [] }
 
         let callsToSuper = extractCallsToSuper(name, substructure: substructure)
@@ -105,8 +104,7 @@ public struct OverridenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInR
             guard let elems = $0 as? [String: SourceKitRepresentable],
                 type = elems["key.kind"] as? String,
                 name = elems["key.name"] as? String
-                where   type == "source.lang.swift.expr.call" &&
-                    superCall.containsString(name)
+                where type == "source.lang.swift.expr.call" && superCall.containsString(name)
                 else { return nil }
             return name
         }

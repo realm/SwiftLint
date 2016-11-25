@@ -20,6 +20,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#319](https://github.com/realm/SwiftLint/issues/319)
 
+* Allow specifying multiple rule identifiers in comment commands. For example,
+  `// swiftlint:disable:next force_cast force_try`. Works with all command types
+  (`disable`/`enable`) and modifiers (`next`, `this`, `previous` or blank).  
+  [JP Simard](https://github.com/jpsim)
+  [#861](https://github.com/realm/SwiftLint/issues/861)
+
 ##### Bug Fixes
 
 

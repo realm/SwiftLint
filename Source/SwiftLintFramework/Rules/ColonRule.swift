@@ -154,8 +154,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             }
             return Set(syntaxKinds).intersect(commentAndStringKindsSet).isEmpty
         }.flatMap { range, syntaxTokens in
-            let identifierRange = nsstring // swiftlint:disable:next force_unwrapping
-                .byteRangeToNSRange(start: syntaxTokens.first!.offset, length: 0)
+            let identifierRange = nsstring
+                .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }

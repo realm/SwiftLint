@@ -116,17 +116,17 @@ Guidelines on when to implement a rule as opt-in:
 * A rule that is not general consensus or only useful in some cases
   (e.g. `force_unwrapping`, `missing_docs`)
 
-### Disable a rule in code
+### Disable rules in code
 
 Rules can be disabled with a comment inside a source file with the following
 format:
 
-`// swiftlint:disable <rule>`
+`// swiftlint:disable <rule1> [<rule2> <rule3>...]`
 
-The rule will be disabled until the end of the file or until the linter sees a
+The rules will be disabled until the end of the file or until the linter sees a
 matching enable comment:
 
-`// swiftlint:enable <rule>`
+`// swiftlint:enable <rule1> [<rule2> <rule3>...]`
 
 For example:
 

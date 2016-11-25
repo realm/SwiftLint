@@ -35,7 +35,6 @@
 
 ##### Bug Fixes
 
-
 * Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a
   violation.  
   [JP Simard](https://github.com/jpsim)
@@ -52,11 +51,15 @@
 * `switch_case_on_newline` rule should ignore trailing comments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#874](https://github.com/realm/SwiftLint/issues/874)
-  
+
 * `switch_case_on_newline` rule shouldn't trigger on enums.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#878](https://github.com/realm/SwiftLint/issues/878)
 
+* Fix regex bug in Comma Rule causing some violations to not be triggered
+  when there were consecutive violations in the same expression.  
+  [Savio Figueiredo](https://github.com/sadefigu)
+  [#872](https://github.com/realm/SwiftLint/issues/872)
 
 ## 0.13.0: MakeYourClothesCleanAgain
 
@@ -154,11 +157,6 @@
   using subscript.  
   [Norio Nomura](https://github.com/norio-nomura)
   [#813](https://github.com/realm/SwiftLint/issues/813)  
-
-* Fixed regex bug in Comma Rule. Some violations were not being triggered 
-  when there were consecutive violations in the same expression.  
-  [Savio Figueiredo](https://github.com/sadefigu)
-  [#872](https://github.com/realm/SwiftLint/issues/872)
 
 ## 0.12.0: Vertical Laundry
 

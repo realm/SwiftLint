@@ -1,5 +1,7 @@
 included:
   - Source
   - Tests
+excluded:
+  - Tests/SwiftLintFramework/Resources
 opt_in_rules:
   - empty_count

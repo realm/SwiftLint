@@ -57,6 +57,7 @@ public let masterRuleList = RuleList(rules:
     ForceUnwrappingRule.self,
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
+    ImplicitGetterRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
     LegacyConstantRule.self,

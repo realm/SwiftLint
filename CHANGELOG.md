@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `ImplicitGetterRule` to warn against using `get` on computed read-only
+  properties.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#57](https://github.com/realm/SwiftLint/issues/57)
 
 ##### Bug Fixes
 

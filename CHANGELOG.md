@@ -11,8 +11,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#57](https://github.com/realm/SwiftLint/issues/57)
 
-* Add `WeakDelegateRule` opt-in rule to enforce delegate instance variables to
-  be `weak`.  
+* Add `WeakDelegateRule` rule to enforce delegate instance variables to be
+  marked as `weak`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 
 ##### Bug Fixes

@@ -304,7 +304,7 @@ class RulesTests: XCTestCase {
     }
 
     func testSuperCall() {
-        verifyRule(OverridenSuperCallRule.description)
+        verifyRule(OverriddenSuperCallRule.description)
     }
 
 }

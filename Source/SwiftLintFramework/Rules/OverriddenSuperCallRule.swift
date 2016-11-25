@@ -1,5 +1,5 @@
 //
-//  OverridenSuperCallRule.swift
+//  OverriddenSuperCallRule.swift
 //  SwiftLint
 //
 //  Created by Angel Garcia on 04/09/16.
@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct OverridenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
+public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = OverridenSuperCallConfiguration()
 
     public init() { }

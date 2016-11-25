@@ -69,7 +69,7 @@ public let masterRuleList = RuleList(rules:
     NestingRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
-    OverridenSuperCallRule.self,
+    OverriddenSuperCallRule.self,
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,
     RedundantNilCoalescingRule.self,

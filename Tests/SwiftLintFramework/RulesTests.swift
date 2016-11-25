@@ -181,6 +181,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNimbleOperator() {
+        verifyRule(NimbleOperatorRule.description)
+    }
+
     func testVerticalWhitespace() {
         verifyRule(VerticalWhitespaceRule.description)
     }

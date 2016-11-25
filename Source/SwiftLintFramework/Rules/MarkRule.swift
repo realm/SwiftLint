@@ -48,7 +48,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     private var spaceStartPattern: String {
-        return "(\(nonSpaceOrTwoOrMoreSpace)?\(mark))"
+        return "(\(nonSpaceOrTwoOrMoreSpace)\(mark))"
     }
 
     private var endNonSpacePattern: String {

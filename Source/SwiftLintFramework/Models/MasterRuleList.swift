@@ -85,5 +85,6 @@ public let masterRuleList = RuleList(rules:
     ValidDocsRule.self,
     ValidIBInspectableRule.self,
     VariableNameRule.self,
-    VerticalWhitespaceRule.self
+    VerticalWhitespaceRule.self,
+    WeakDelegateRule.self
 )

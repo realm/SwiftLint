@@ -11,6 +11,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#57](https://github.com/realm/SwiftLint/issues/57)
 
+* Add `WeakDelegateRule` rule to enforce delegate instance variables to be
+  marked as `weak`.  
+  [Olivier Halligon](https://github.com/AliSoftware)
+
 ##### Bug Fixes
 
 * Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a

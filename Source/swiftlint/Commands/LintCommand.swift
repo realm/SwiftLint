@@ -36,6 +36,15 @@ struct LintCommand: CommandType {
         let reporter = reporterFromString(
             options.reporter.isEmpty ? configuration.reporter : options.reporter
         )
+
+        // Validate that current version is newer than or equals to required version
+        if let required = configuration.requiredVersion {
+            if Version.current < required {
+                return .Failure(.UsageError(description: "configuration error: Your version \(Version.current) is" +
+                    " older than required version \(required)"))
+            }
+        }
+
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in

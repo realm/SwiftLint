@@ -92,8 +92,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                 kind = ExplicitInitRule.Kind(rawValue: kindString) else {
                     return []
             }
-            return violationRangesInFile(file, dictionary: subDict) +
-                violationRangesInFile(file, kind: kind, dictionary: subDict)
+            return self.violationRangesInFile(file, dictionary: subDict) +
+                self.violationRangesInFile(file, kind: kind, dictionary: subDict)
         }
     }
 

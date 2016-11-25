@@ -63,7 +63,8 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(
+                ruleDescription: self.dynamicType.description,
                 severity: configuration.severity,
                 location: location
             )

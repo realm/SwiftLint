@@ -115,9 +115,9 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public init() { }
 
     public static let description = RuleDescription(
-        identifier: "explicitSelf",
+        identifier: "explicit_self",
         name: "Explict Self",
-        description: "Require explicit self for instance members",
+        description: "Explicit self for instance members is required.",
         nonTriggeringExamples: nonTriggeringExamples + nonTriggeringClassExamples,
         triggeringExamples: triggeringExamples + triggeringClassExamples
     )

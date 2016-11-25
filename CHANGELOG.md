@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* Add `ExplicitSelfRule` Opt-In rule that enforces the use of `self.` for instance members
+* Add `ExplicitSelfRule` opt-in rule that enforces the use of `self.` for
+  instance members.  
   [Ian Keen](https://github.com/IanKeen)
   [#321](https://github.com/realm/SwiftLint/issues/321)
 

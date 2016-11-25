@@ -51,6 +51,7 @@ public let masterRuleList = RuleList(rules:
     CyclomaticComplexityRule.self,
     EmptyCountRule.self,
     ExplicitInitRule.self,
+    ExplicitSelfRule.self,
     FileLengthRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
@@ -88,5 +89,4 @@ public let masterRuleList = RuleList(rules:
     VariableNameRule.self,
     VerticalWhitespaceRule.self,
     WeakDelegateRule.self
-    ExplicitSelfRule.self
 )

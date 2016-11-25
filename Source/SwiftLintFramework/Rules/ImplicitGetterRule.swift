@@ -87,10 +87,10 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
     }
 
     private func variableDeclarationsFor(byteOffset: Int, structure: Structure) ->
-                                                             [[String : SourceKitRepresentable]] {
-        var results = [[String : SourceKitRepresentable]]()
+                                                          [[String: SourceKitRepresentable]] {
+        var results = [[String: SourceKitRepresentable]]()
 
-        func parse(dictionary: [String : SourceKitRepresentable]) {
+        func parse(dictionary: [String: SourceKitRepresentable]) {
 
             let allowedKinds: [SwiftDeclarationKind] = [.VarClass, .VarInstance, .VarStatic]
 
@@ -117,10 +117,10 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
                 .ExtensionProtocol,
                 .ExtensionStruct,
                 .Struct
-                ] + allowedKinds
+            ] + allowedKinds
 
             if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-                for case let dictionary as [String : SourceKitRepresentable] in subStructure {
+                for case let dictionary as [String: SourceKitRepresentable] in subStructure {
                     if let kindString = (dictionary["key.kind"] as? String),
                         kind = SwiftDeclarationKind(rawValue: kindString)
                         where typeKinds.contains(kind) {

@@ -25,8 +25,8 @@ extension File {
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
-            case .Disable: disabledRules.insert(command.ruleIdentifier)
-            case .Enable: disabledRules.remove(command.ruleIdentifier)
+            case .Disable: disabledRules.unionInPlace(command.ruleIdentifiers)
+            case .Enable: disabledRules.subtractInPlace(command.ruleIdentifiers)
             }
             let start = Location(file: path, line: command.line, character: command.character)
             let end = endOfNextCommand(nextCommand)

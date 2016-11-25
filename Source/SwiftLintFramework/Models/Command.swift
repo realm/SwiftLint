@@ -28,15 +28,15 @@ public enum CommandModifier: String {
 
 public struct Command {
     let action: CommandAction
-    let ruleIdentifier: String
+    let ruleIdentifiers: [String]
     let line: Int
     let character: Int?
     let modifier: CommandModifier?
 
-    public init(action: CommandAction, ruleIdentifier: String, line: Int = 0, character: Int? = nil,
-                modifier: CommandModifier? = nil) {
+    public init(action: CommandAction, ruleIdentifiers: [String], line: Int = 0,
+                character: Int? = nil, modifier: CommandModifier? = nil) {
         self.action = action
-        self.ruleIdentifier = ruleIdentifier
+        self.ruleIdentifiers = ruleIdentifiers
         self.line = line
         self.character = character
         self.modifier = modifier
@@ -59,7 +59,9 @@ public struct Command {
                 return nil
         }
         self.action = action
-        ruleIdentifier = (scanner.string as NSString).substringFromIndex(scanner.scanLocation + 1)
+        ruleIdentifiers = (scanner.string as NSString)
+            .substringFromIndex(scanner.scanLocation + 1)
+            .componentsSeparatedByCharactersInSet(.whitespaceCharacterSet())
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
@@ -82,20 +84,20 @@ public struct Command {
         switch modifier {
         case .Previous:
             return [
-                Command(action: action, ruleIdentifier: ruleIdentifier, line: line - 1),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line - 1,
+                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
+                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
                     character: Int.max)
             ]
         case .This:
             return [
-                Command(action: action, ruleIdentifier: ruleIdentifier, line: line),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line,
+                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
+                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
                     character: Int.max)
             ]
         case .Next:
             return [
-                Command(action: action, ruleIdentifier: ruleIdentifier, line: line + 1),
-                Command(action: action.inverse(), ruleIdentifier: ruleIdentifier, line: line + 1,
+                Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
+                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,
                     character: Int.max)
             ]
         }

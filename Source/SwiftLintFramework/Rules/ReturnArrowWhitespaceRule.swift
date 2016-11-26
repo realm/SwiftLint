@@ -46,7 +46,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             "func abc()\n  ->  Int {}\n": "func abc()\n  -> Int {}\n",
             "func abc()\n->  Int {}\n": "func abc()\n-> Int {}\n",
             "func abc()  ->\n  Int {}\n": "func abc() ->\n  Int {}\n",
-            "func abc()  ->\nInt {}\n": "func abc() ->\nInt {}\n",
+            "func abc()  ->\nInt {}\n": "func abc() ->\nInt {}\n"
         ]
     )
 
@@ -101,7 +101,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             "(\(incorrectSpace)\\->\(space)*)",
             "(\(space)\\->\(incorrectSpace))",
             "\\n\(space)*\\->\(incorrectSpace)",
-            "\(incorrectSpace)\\->\\n\(space)*",
+            "\(incorrectSpace)\\->\\n\(space)*"
         ]
 
         // ex: `func abc()-> Int {` & `func abc() ->Int {`

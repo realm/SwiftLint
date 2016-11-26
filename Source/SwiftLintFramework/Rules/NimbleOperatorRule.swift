@@ -38,7 +38,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule {
             "↓expect(10).to(beLessThan(11))\n",
             "↓expect(10).to(beLessThanOrEqualTo(10))\n",
             "↓expect(x).to(beIdenticalTo(x))\n",
-            "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n",
+            "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n"
         ]
     )
 

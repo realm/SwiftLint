@@ -24,14 +24,14 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
             "abc(a: \"string\", b: \"string\"",
             "enum a { case a, b, c }",
             "func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n",
-            "func abc(\n  a: String,\n  bcd: String\n) {\n}\n",
+            "func abc(\n  a: String,\n  bcd: String\n) {\n}\n"
         ],
         triggeringExamples: [
             "func abc(a: String↓ ,b: String) { }",
             "func abc(a: String↓ ,b: String↓ ,c: String↓ ,d: String) { }",
             "abc(a: \"string\"↓,b: \"string\"",
             "enum a { case a↓ ,b }",
-            "let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n",
+            "let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n"
         ],
         corrections: [
             "func abc(a: String,b: String) {}\n": "func abc(a: String, b: String) {}\n",
@@ -39,7 +39,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
             "abc(a: \"string\"  ,  b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
             "enum a { case a  ,b }\n": "enum a { case a, b }\n",
             "let a = [1,1]\nlet b = 1\nf(1, b)\n": "let a = [1, 1]\nlet b = 1\nf(1, b)\n",
-            "let a = [1↓,1↓,1↓,1]\n": "let a = [1, 1, 1, 1]\n",
+            "let a = [1↓,1↓,1↓,1]\n": "let a = [1, 1, 1, 1]\n"
         ]
     )
 

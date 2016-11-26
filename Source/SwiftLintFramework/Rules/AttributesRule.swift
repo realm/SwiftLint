@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 private enum AttributesRuleError: ErrorType {
     case UnexpectedBlankLine
+    case MoreThanOneAttributeInSameLine
 }
 
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
@@ -23,101 +24,9 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports",
-        nonTriggeringExamples: AttributesRule.nonTriggeringExamples(),
-        triggeringExamples: AttributesRule.triggeringExamples()
+        nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples(),
+        triggeringExamples: AttributesRuleExamples.triggeringExamples()
     )
-
-    private static func nonTriggeringExamples() -> [String] {
-        let common = [
-            "@objc var x: String",
-            "@objc private var x: String",
-            "@nonobjc var x: String",
-            "@IBOutlet private var label: UILabel",
-            "@NSCopying var name: NSString",
-            "@NSManaged var name: String?",
-            "@IBInspectable var cornerRadius: CGFloat",
-            "@available(iOS 9.0, *)\n let stackView: UIStackView",
-            "@NSManaged func addSomeObject(book: SomeObject)",
-            "@IBAction func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
-            "@available(iOS 9.0, *, message=\"A message\")\n func animate(view: UIStackView)",
-            "@nonobjc\n final class X",
-            "@available(iOS 9.0, *)\n class UIStackView",
-            "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
-            "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate",
-            "@IBDesignable\n class MyCustomView: UIView",
-            "@testable import SourceKittenFramework"
-        ]
-
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable var maxSpeed: Float",
-                "@discardableResult\n func a() -> Int",
-                "@objc\n @discardableResult\n func a() -> Int",
-                "func increase(f: @autoclosure () -> Int) -> Int",
-                "func foo(completionHandler: @escaping () -> Void)"
-            ]
-
-            return common + swift3Only
-        #else
-            let swift2Only = [
-                "@warn_unused_result\n func a() -> Int",
-                "@objc\n @warn_unused_result\n func a() -> Int",
-                "func increase(@autoclosure f: () -> Int ) -> Int",
-                "func foo(@noescape x: Int -> Int)",
-                "@noreturn\n func exit(_: Int)",
-                "func exit(_: Int) -> @noreturn Int"
-            ]
-
-            return common + swift2Only
-        #endif
-    }
-
-    private static func triggeringExamples() -> [String] {
-        let common = [
-            "@objc\n var x: String",
-            "@objc\n\n var x: String",
-            "@objc\n private var x: String",
-            "@nonobjc\n var x: String",
-            "@IBOutlet\n private var label: UILabel",
-            "@IBOutlet\n\n private var label: UILabel",
-            "@NSCopying\n var name: NSString",
-            "@NSManaged\n var name: String?",
-            "@IBInspectable\n var cornerRadius: CGFloat",
-            "@available(iOS 9.0, *) let stackView: UIStackView",
-            "@NSManaged\n func addSomeObject(book: SomeObject)",
-            "@IBAction\n func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0, *) func animate(view: UIStackView)",
-            "@nonobjc final class X",
-            "@available(iOS 9.0, *) class UIStackView",
-            "@available(iOS 9.0, *)\n\n class UIStackView",
-            "@UIApplicationMain class AppDelegate: NSObject, UIApplicationDelegate",
-            "@IBDesignable class MyCustomView: UIView",
-            "@testable\nimport SourceKittenFramework",
-            "@testable\n\n\nimport SourceKittenFramework"
-        ]
-
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable\n var maxSpeed: Float",
-                "@discardableResult func a() -> Int",
-                "@objc\n @discardableResult func a() -> Int",
-                "@objc\n\n @discardableResult\n func a() -> Int",
-            ]
-
-            return common + swift3Only
-        #else
-            let swift2Only = [
-                "@warn_unused_result func a() -> Int",
-                "@warn_unused_result(message=\"You should use this\") func a() -> Int",
-                "@objc\n @warn_unused_result func a() -> Int",
-                "@objc\n\n @warn_unused_result\n func a() -> Int",
-                "@noreturn func exit(_: Int)"
-            ]
-
-            return common + swift2Only
-        #endif
-    }
 
     public func validateFile(file: File) -> [StyleViolation] {
         return validateTestableImport(file) +
@@ -175,25 +84,40 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokensIn(line.byteRange)
-        let attributesTokens = tokens.flatMap { attributeName($0, file: file) }
-        let isViolation: Bool
+        let attributesTokens = Set(tokens.flatMap { attributeName($0, file: file) })
+        var isViolation = false
 
         do {
-            let previousAttributes = try attributesFromPreviousLines(lineNumber - 1, file: file)
+            let previousAttributes = try Set(attributesFromPreviousLines(lineNumber - 1,
+                                                                         file: file))
 
-            let alwaysInSameLineAttributes = ["@IBAction", "@NSManaged"]
-            let alwaysInNewLineAttributes = ["@available"]
+            let alwaysInSameLineAttributes = Set(arrayLiteral: "@IBAction", "@NSManaged")
+            let alwaysInNewLineAttributes = attributesTokens.union(previousAttributes).filter {
+                if $0.containsString("(") {
+                    // some tokens contains parameters in themselves (i.e. warn_unused_result)
+                    return true
+                }
 
-            if !previousAttributes.filter(alwaysInNewLineAttributes.contains).isEmpty {
-                isViolation = false
-            } else if !attributesTokens.filter(alwaysInNewLineAttributes.contains).isEmpty {
+                return ["@available"].contains($0)
+            }
+
+            if !attributesTokens.intersect(alwaysInNewLineAttributes).isEmpty {
                 isViolation = true
-            } else if !previousAttributes.filter(alwaysInSameLineAttributes.contains).isEmpty {
+            } else if !previousAttributes.intersect(alwaysInSameLineAttributes).isEmpty {
                 isViolation = true
-            } else if !attributesTokens.filter(alwaysInSameLineAttributes.contains).isEmpty {
-                isViolation = false
             } else {
-                isViolation = attributesTokens.isEmpty == attributeShouldBeOnSameLine
+
+                // ignore whitelisted attributes
+                let operation: Set<String> -> Set<String> -> Set<String> =
+                    attributeShouldBeOnSameLine ? Set.union : Set.subtract
+
+                let attributesAfterWhitelist = operation(
+                        operation(attributesTokens)(
+                            previousAttributes.intersect(alwaysInNewLineAttributes)
+                        )
+                    )(attributesTokens.intersect(alwaysInSameLineAttributes))
+
+                isViolation = attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
             }
         } catch {
             isViolation = true
@@ -204,6 +128,11 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         // Violation found!
+        return violation(dictionary, file: file)
+    }
+
+    private func violation(dictionary: [String: SourceKitRepresentable],
+                           file: File) -> [StyleViolation] {
         let location: Location
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             location = Location(file: file, byteOffset: offset)
@@ -232,9 +161,14 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
 
             let attributesTokens = tokens.flatMap { attributeName($0, file: file) }
-            // found a line that does not contain an attribute token - we can stop looking
             if attributesTokens.isEmpty {
+                // found a line that does not contain an attribute token - we can stop looking
                 break
+            }
+
+            if attributesTokens.count > 1 {
+                // we don't allow multiple attributes in the same line if it's a previous line
+                throw AttributesRuleError.MoreThanOneAttributeInSameLine
             }
 
             allTokens.insertContentsOf(attributesTokens, at: 0)
@@ -280,5 +214,104 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let blacklisted = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
                               "source.decl.attribute.mutating")
         return attributes.filter { !blacklisted.contains($0) }
+    }
+}
+
+private struct AttributesRuleExamples {
+    static func nonTriggeringExamples() -> [String] {
+        let common = [
+            "@objc var x: String",
+            "@objc private var x: String",
+            "@nonobjc var x: String",
+            "@IBOutlet private var label: UILabel",
+            "@IBOutlet @objc private var label: UILabel",
+            "@NSCopying var name: NSString",
+            "@NSManaged var name: String?",
+            "@IBInspectable var cornerRadius: CGFloat",
+            "@available(iOS 9.0, *)\n let stackView: UIStackView",
+            "@NSManaged func addSomeObject(book: SomeObject)",
+            "@IBAction func buttonPressed(button: UIButton)",
+            "@objc\n @IBAction func buttonPressed(button: UIButton)",
+            "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
+            "@available(iOS 9.0, *, message=\"A message\")\n func animate(view: UIStackView)",
+            "@nonobjc\n final class X",
+            "@available(iOS 9.0, *)\n class UIStackView",
+            "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
+            "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate",
+            "@IBDesignable\n class MyCustomView: UIView",
+            "@testable import SourceKittenFramework"
+        ]
+
+        #if swift(>=3.0)
+            let swift3Only = [
+            "@GKInspectable var maxSpeed: Float",
+            "@discardableResult\n func a() -> Int",
+            "@objc\n @discardableResult\n func a() -> Int",
+            "func increase(f: @autoclosure () -> Int) -> Int",
+            "func foo(completionHandler: @escaping () -> Void)"
+            ]
+
+            return common + swift3Only
+        #else
+            let swift2Only = [
+                "@warn_unused_result\n func a() -> Int",
+                "@objc\n @warn_unused_result\n func a() -> Int",
+                "func increase(@autoclosure f: () -> Int ) -> Int",
+                "func foo(@noescape x: Int -> Int)",
+                "@noreturn\n func exit(_: Int)",
+                "func exit(_: Int) -> @noreturn Int"
+            ]
+
+            return common + swift2Only
+        #endif
+    }
+
+    static func triggeringExamples() -> [String] {
+        let common = [
+            "@objc\n var x: String",
+            "@objc\n\n var x: String",
+            "@objc\n private var x: String",
+            "@nonobjc\n var x: String",
+            "@IBOutlet\n private var label: UILabel",
+            "@IBOutlet\n\n private var label: UILabel",
+            "@NSCopying\n var name: NSString",
+            "@NSManaged\n var name: String?",
+            "@IBInspectable\n var cornerRadius: CGFloat",
+            "@available(iOS 9.0, *) let stackView: UIStackView",
+            "@NSManaged\n func addSomeObject(book: SomeObject)",
+            "@IBAction\n func buttonPressed(button: UIButton)",
+            "@IBAction\n @objc\n func buttonPressed(button: UIButton)",
+            "@available(iOS 9.0, *) func animate(view: UIStackView)",
+            "@nonobjc final class X",
+            "@available(iOS 9.0, *) class UIStackView",
+            "@available(iOS 9.0, *)\n @objc class UIStackView",
+            "@available(iOS 9.0, *) @objc\n class UIStackView",
+            "@available(iOS 9.0, *)\n\n class UIStackView",
+            "@UIApplicationMain class AppDelegate: NSObject, UIApplicationDelegate",
+            "@IBDesignable class MyCustomView: UIView",
+            "@testable\nimport SourceKittenFramework",
+            "@testable\n\n\nimport SourceKittenFramework"
+        ]
+
+        #if swift(>=3.0)
+            let swift3Only = [
+            "@GKInspectable\n var maxSpeed: Float",
+            "@discardableResult func a() -> Int",
+            "@objc\n @discardableResult func a() -> Int",
+            "@objc\n\n @discardableResult\n func a() -> Int",
+            ]
+
+            return common + swift3Only
+        #else
+            let swift2Only = [
+                "@warn_unused_result func a() -> Int",
+                "@warn_unused_result(message=\"You should use this\") func a() -> Int",
+                "@objc\n @warn_unused_result func a() -> Int",
+                "@objc\n\n @warn_unused_result\n func a() -> Int",
+                "@noreturn func exit(_: Int)"
+            ]
+
+            return common + swift2Only
+        #endif
     }
 }

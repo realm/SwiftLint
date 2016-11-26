@@ -9,15 +9,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TrailingCommaRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Warning)
+public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
+    public var configuration = TrailingCommaConfiguration()
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "trailing_comma",
         name: "Trailing Comma",
-        description: "Trailing commas in arrays and dictionaries should be avoided.",
+        description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
         nonTriggeringExamples: [
             "let foo = [1, 2, 3]\n",
             "let foo = []\n",
@@ -29,7 +29,8 @@ public struct TrailingCommaRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "let foo = [1, 2, 3↓, ]\n",
             "let foo = [1, 2, 3   ↓,]\n",
             "let foo = [1: 2, 2: 3↓, ]\n",
-            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n"
+            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
+            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n"
         ]
     )
 
@@ -64,16 +65,29 @@ public struct TrailingCommaRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let contentsAfterLastElement = file.contents
             .substringWithByteRange(start: lastPosition, length: length) ?? ""
 
+        // if a trailing comma is not present
         guard let commaIndex = contentsAfterLastElement.lastIndexOf(",") else {
+            guard configuration.mandatoryComma else {
+                return []
+            }
+
+            return violations(file, byteOffset: lastPosition)
+        }
+
+        // trailing comma is present, which is a violation if mandatoryComma is false
+        guard !configuration.mandatoryComma else {
             return []
         }
 
         let violationOffset = lastPosition + commaIndex
+        return violations(file, byteOffset: violationOffset)
+    }
 
+    private func violations(file: File, byteOffset: Int) -> [StyleViolation] {
         return [
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: violationOffset)
+                severity: configuration.severityConfiguration.severity,
+                location: Location(file: file, byteOffset: byteOffset)
             )
         ]
     }

@@ -36,6 +36,12 @@
 * `closure_spacing` rule now accepts empty bodies with a space.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#875](https://github.com/realm/SwiftLint/issues/875)
+  
+* Add `TrailingCommaRule` to enforce/forbid trailing commas in arrays and
+  dictionaries. The default is to forbid them, but this can be changed with
+  the `mandatory_comma` configuration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#883](https://github.com/realm/SwiftLint/issues/883)
 
 ##### Bug Fixes
 

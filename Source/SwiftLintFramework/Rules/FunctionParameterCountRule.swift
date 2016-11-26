@@ -26,7 +26,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"
         ]
     )
 

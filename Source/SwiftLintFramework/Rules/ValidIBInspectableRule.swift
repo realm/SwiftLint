@@ -28,7 +28,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  @IBInspectable private var x: Optional<String>\n}\n",
             "class Foo {\n  @IBInspectable private var count: Int = 0\n}\n",
             "class Foo {\n  private var notInspectable = 0\n}\n",
-            "class Foo {\n  private let notInspectable: Int\n}\n",
+            "class Foo {\n  private let notInspectable: Int\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  @IBInspectable private let count: Int\n}\n",
@@ -37,7 +37,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  @IBInspectable private var count: Int?\n}\n",
             "class Foo {\n  @IBInspectable private var count: Int!\n}\n",
             "class Foo {\n  @IBInspectable private var x: ImplicitlyUnwrappedOptional<Int>\n}\n",
-            "class Foo {\n  @IBInspectable private var count: Optional<Int>\n}\n",
+            "class Foo {\n  @IBInspectable private var count: Optional<Int>\n}\n"
         ]
     )
 

@@ -55,7 +55,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "\n\n  }\n  catch {",
             "\"}\nelse{\"",
             "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)",
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
         ],
         triggeringExamples: [
             "↓  }else if {",

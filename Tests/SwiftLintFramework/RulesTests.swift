@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
     func testClosingBrace() {
@@ -246,6 +247,36 @@ class RulesTests: XCTestCase {
 
     func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
+    }
+
+    func testTrailingComma() {
+        // verify with mandatory_comma = false (default value)
+        verifyRule(TrailingCommaRule.description)
+
+        // verify with mandatory_comma = true
+        let mandatoryCommaDescription = RuleDescription(
+            identifier: "trailing_comma",
+            name: "Trailing Comma",
+            description: "Trailing commas in arrays and dictionaries should be enforced.",
+            nonTriggeringExamples: [
+                "let foo = []\n",
+                "let foo = [:]\n",
+                "let foo = [1, 2, 3,]\n",
+                "let foo = [1, 2, 3, ]\n",
+                "let foo = [1, 2, 3   ,]\n",
+                "let foo = [1: 2, 2: 3, ]\n",
+                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n"
+            ],
+            triggeringExamples: [
+                "let foo = [1, 2, 3↓]\n",
+                "let foo = [1: 2, 2: 3↓]\n",
+                "let foo = [1: 2, 2: 3↓   ]\n",
+                "struct Bar {\n let foo = [1: 2, 2: 3↓]\n}\n",
+                "let foo = [1, 2, 3↓] + [4, 5, 6↓]\n"
+            ]
+        )
+
+        verifyRule(mandatoryCommaDescription, ruleConfiguration: ["mandatory_comma": true])
     }
 
     func testTrailingNewline() {

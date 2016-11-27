@@ -42,6 +42,14 @@
   the `mandatory_comma` configuration.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#883](https://github.com/realm/SwiftLint/issues/883)
+  
+* Add support for `fileprivate` on `PrivateOutletRule`.   
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#831](https://github.com/realm/SwiftLint/issues/831)
+  
+* Add support for `fileprivate` on `PrivateUnitTestRule`.   
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#781](https://github.com/realm/SwiftLint/issues/781)
 
 ##### Bug Fixes
 

@@ -171,15 +171,15 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         -> [StyleViolation] {
 
             guard let acl = AccessControlLevel(dictionary) else { return [] }
-            switch acl {
-            case .Private:
+            if acl.isPrivate {
                 let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
                 return [StyleViolation(
                     ruleDescription: self.dynamicType.description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: configuration.message)]
-            default: return []
             }
+
+            return []
     }
 }

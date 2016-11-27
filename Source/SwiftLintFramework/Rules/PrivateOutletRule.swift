@@ -46,10 +46,11 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard isOutlet else { return [] }
 
         // Check if private
-        let accessibility = (dictionary["key.accessibility"] as? String) ?? ""
-        let setterAccessiblity = (dictionary["key.setter_accessibility"] as? String) ?? ""
-        let isPrivate = accessibility == "source.lang.swift.accessibility.private"
-        let isPrivateSet = setterAccessiblity == "source.lang.swift.accessibility.private"
+        let accessibility = dictionary["key.accessibility"] as? String
+        let setterAccessiblity = dictionary["key.setter_accessibility"] as? String
+
+        let isPrivate = isPrivateLevel(accessibility)
+        let isPrivateSet = isPrivateLevel(setterAccessiblity)
 
         if isPrivate || (self.configuration.allowPrivateSet && isPrivateSet) {
             return []
@@ -69,5 +70,13 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 location: location
             )
         ]
+    }
+
+    private func isPrivateLevel(identifier: String?) -> Bool {
+        guard let accessibility = identifier.flatMap(AccessControlLevel.init(identifier:)) else {
+            return false
+        }
+
+        return accessibility.isPrivate
     }
 }

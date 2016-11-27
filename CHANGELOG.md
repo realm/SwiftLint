@@ -46,6 +46,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#910](https://github.com/realm/SwiftLint/issues/910)
   [#911](https://github.com/realm/SwiftLint/issues/911)
+  
+* Add `file_header` opt-in rule that warns when a file contains a 
+  copyright comment header, such as the one Xcode adds by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#884](https://github.com/realm/SwiftLint/issues/884)
 
 ##### Bug Fixes
 

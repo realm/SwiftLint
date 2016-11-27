@@ -63,6 +63,7 @@ public let masterRuleList = RuleList(rules:
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
     LegacyNSGeometryFunctionsRule.self,
+    FileHeaderRule.self,
     LineLengthRule.self,
     MarkRule.self,
     MissingDocsRule.self,

@@ -35,5 +35,6 @@ public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
 
 public func == (lhs: TrailingCommaConfiguration,
                 rhs: TrailingCommaConfiguration) -> Bool {
-    return lhs.mandatoryComma == rhs.mandatoryComma
+    return lhs.mandatoryComma == rhs.mandatoryComma &&
+        lhs.severityConfiguration == rhs.severityConfiguration
 }

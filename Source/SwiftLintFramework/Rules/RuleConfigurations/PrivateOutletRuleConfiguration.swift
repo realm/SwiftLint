@@ -35,5 +35,6 @@ public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
 
 public func == (lhs: PrivateOutletRuleConfiguration,
                 rhs: PrivateOutletRuleConfiguration) -> Bool {
-    return lhs.allowPrivateSet == rhs.allowPrivateSet
+    return lhs.allowPrivateSet == rhs.allowPrivateSet &&
+        lhs.severityConfiguration == rhs.severityConfiguration
 }

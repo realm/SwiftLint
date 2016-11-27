@@ -41,5 +41,6 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
 public func == (lhs: TrailingWhitespaceConfiguration,
                 rhs: TrailingWhitespaceConfiguration) -> Bool {
     return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines &&
-        lhs.ignoresComments == rhs.ignoresComments
+        lhs.ignoresComments == rhs.ignoresComments &&
+        lhs.severityConfiguration == rhs.severityConfiguration
 }

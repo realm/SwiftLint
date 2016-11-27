@@ -13,7 +13,50 @@ import XCTest
 class RulesTests: XCTestCase {
 
     func testAttributes() {
+        // Test with default parameters
         verifyRule(AttributesRule.description)
+
+        // Test with custom `always_in_same_line`
+        let alwaysInSameLineDescription = RuleDescription(
+            identifier: "attributes_rule",
+            name: "Attributes",
+            description: "Attributes should be on their own lines in functions and types, " +
+                         "but on the same line as variables and imports",
+            nonTriggeringExamples: [
+                "@objc var x: String",
+                "@objc func foo()",
+                "@nonobjc\n func foo()"
+            ],
+            triggeringExamples: [
+                "@objc\n var x: String",
+                "@objc\n func foo()",
+                "@nonobjc func foo()"
+            ]
+        )
+
+        verifyRule(alwaysInSameLineDescription,
+                   ruleConfiguration: ["always_in_same_line": ["@objc"]])
+
+        // Test with custom `always_in_new_line`
+        let alwaysInNewLineDescription = RuleDescription(
+            identifier: "attributes_rule",
+            name: "Attributes",
+            description: "Attributes should be on their own lines in functions and types, " +
+            "but on the same line as variables and imports",
+            nonTriggeringExamples: [
+                "@objc\n var x: String",
+                "@objc\n func foo()",
+                "@nonobjc\n func foo()"
+            ],
+            triggeringExamples: [
+                "@objc var x: String",
+                "@objc func foo()",
+                "@nonobjc func foo()"
+            ]
+        )
+
+        verifyRule(alwaysInNewLineDescription,
+                   ruleConfiguration: ["always_in_new_line": ["@objc"]])
     }
 
     func testClosingBrace() {

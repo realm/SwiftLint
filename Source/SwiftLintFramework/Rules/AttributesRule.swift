@@ -14,8 +14,14 @@ private enum AttributesRuleError: ErrorType {
     case MoreThanOneAttributeInSameLine
 }
 
-public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Warning)
+public struct AttributesRule: ASTRule, ConfigurationProviderRule {
+    public var configuration = AttributesConfiguration()
+
+    private static let parametersPattern = "^\\s*\\(.+\\)"
+
+    // swiftlint:disable:next force_try
+    private static let regularExpression = try! NSRegularExpression(pattern: parametersPattern,
+                                                                    options: [])
 
     public init() {}
 
@@ -23,7 +29,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         identifier: "attributes_rule",
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
-                     "but on the same line as variables and imports",
+                     "but on the same line as variables and imports.",
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples(),
         triggeringExamples: AttributesRuleExamples.triggeringExamples()
     )
@@ -61,12 +67,15 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     }
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
-        let pattern = "@testable[\n]+\\s*import*"
+        let pattern = "@testable[\n]+\\s*import"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: self.configuration.severity,
-                location: Location(file: file, byteOffset: $0.location))
+            let match = file.contents.substringWithByteRange(start: $0.location, length: $0.length)
+            let location = (match?.lastIndexOf("import") ?? 0) + $0.location
+
+            return StyleViolation(ruleDescription: self.dynamicType.description,
+                                  severity: configuration.severityConfiguration.severity,
+                                  location: Location(file: file, byteOffset: location))
         }
     }
 
@@ -84,22 +93,21 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokensIn(line.byteRange)
-        let attributesTokens = Set(tokens.flatMap { attributeName($0, file: file) })
+        let attributesTokensWithRanges = tokens.flatMap { attributeName($0, file: file) }
+
+        let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
         var isViolation = false
 
         do {
-            let previousAttributes = try Set(attributesFromPreviousLines(lineNumber - 1,
-                                                                         file: file))
+            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber - 1,
+                                                                                   file: file)
+            let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
 
-            let alwaysInSameLineAttributes = Set(arrayLiteral: "@IBAction", "@NSManaged")
-            let alwaysInNewLineAttributes = attributesTokens.union(previousAttributes).filter {
-                if $0.containsString("(") {
-                    // some tokens contains parameters in themselves (i.e. warn_unused_result)
-                    return true
-                }
-
-                return ["@available"].contains($0)
-            }
+            let alwaysInSameLineAttributes = configuration.alwaysInSameLine
+            let alwaysInNewLineAttributes =
+                createAlwaysInNewLineAttributes(previousAttributesWithParameters,
+                                                attributesTokens: attributesTokensWithRanges,
+                                                line: line, file: file)
 
             if !attributesTokens.intersect(alwaysInNewLineAttributes).isEmpty {
                 isViolation = true
@@ -131,6 +139,30 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return violation(dictionary, file: file)
     }
 
+    private func createAlwaysInNewLineAttributes(previousAttributesWithParameters: [(String, Bool)],
+                                                 attributesTokens: [(String, NSRange)],
+                                                 line: Line, file: File) -> [String] {
+        let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
+            let hasParameter = attributeContainsParameter($1, line: line, file: file)
+            return ($0, hasParameter)
+        }
+        let allAttributes = previousAttributesWithParameters + attributesTokensWithParameters
+
+        return allAttributes.flatMap { (token, hasParameter) -> String? in
+            // an attribute should be on a new line if one of these is true:
+            // 1. it's a parameterized attribute
+            //      a. the parameter is on the token (i.e. warn_unused_result)
+            //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
+            // 2. it's a whitelisted attribute, according to the current configuration
+            let isParameterized = hasParameter || token.containsString("(")
+            if isParameterized || configuration.alwaysInNewLine.contains(token) {
+                return token
+            }
+
+            return nil
+        }
+    }
+
     private func violation(dictionary: [String: SourceKitRepresentable],
                            file: File) -> [StyleViolation] {
         let location: Location
@@ -142,15 +174,18 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: configuration.severity,
+                severity: configuration.severityConfiguration.severity,
                 location: location
             )
         ]
     }
 
-    private func attributesFromPreviousLines(lineNumber: Int, file: File) throws -> [String] {
+    // returns an array with the token itself (i.e. "@objc") and whether it's parameterized
+    // note: the parameter is not contained in the token
+    private func attributesFromPreviousLines(lineNumber: Int,
+                                             file: File) throws -> [(String, Bool)] {
         var currentLine = lineNumber - 1
-        var allTokens = [String]()
+        var allTokens = [(String, Bool)]()
 
         while currentLine >= 0 {
             let line = file.lines[currentLine]
@@ -161,7 +196,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
 
             let attributesTokens = tokens.flatMap { attributeName($0, file: file) }
-            if attributesTokens.isEmpty {
+            guard let firstTokenRange = attributesTokens.first?.1 else {
                 // found a line that does not contain an attribute token - we can stop looking
                 break
             }
@@ -171,14 +206,35 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 throw AttributesRuleError.MoreThanOneAttributeInSameLine
             }
 
-            allTokens.insertContentsOf(attributesTokens, at: 0)
+            let hasParameter = attributeContainsParameter(firstTokenRange, line: line, file: file)
+
+            allTokens.insertContentsOf(attributesTokens.map { ($0.0, hasParameter) }, at: 0)
             currentLine -= 1
         }
 
         return allTokens
     }
 
-    private func attributeName(token: SyntaxToken, file: File) -> String? {
+    private func attributeContainsParameter(attributeRange: NSRange,
+                                            line: Line, file: File) -> Bool {
+        let restOfLineOffset = attributeRange.location + attributeRange.length
+        let restOfLineLength = line.byteRange.location + line.byteRange.length - restOfLineOffset
+
+        let range = NSRange(location: 0, length: restOfLineLength)
+        let regex = AttributesRule.regularExpression
+
+        // check if after the token is a `(` with only spaces allowed between the token and `(`
+        guard let restOfLine = file.contents.substringWithByteRange(start: restOfLineOffset,
+                                                                    length: restOfLineLength)
+            where regex.firstMatchInString(restOfLine, options: [], range: range) != nil else {
+
+            return false
+        }
+
+        return true
+    }
+
+    private func attributeName(token: SyntaxToken, file: File) -> (String, NSRange)? {
         guard SyntaxKind(rawValue: token.type) == .AttributeBuiltin else {
             return nil
         }
@@ -186,7 +242,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let maybeName = file.contents.substringWithByteRange(start: token.offset,
                                                              length: token.length)
         if let name = maybeName where isAttribute(name) {
-            return name
+            return (name, NSRange(location: token.offset, length: token.length))
         }
 
         return nil
@@ -218,6 +274,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 }
 
 private struct AttributesRuleExamples {
+
+    // swiftlint:disable:next function_body_length
     static func nonTriggeringExamples() -> [String] {
         let common = [
             "@objc var x: String",
@@ -239,7 +297,11 @@ private struct AttributesRuleExamples {
             "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
             "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate",
             "@IBDesignable\n class MyCustomView: UIView",
-            "@testable import SourceKittenFramework"
+            "@testable import SourceKittenFramework",
+            "@objc(foo_x)\n var x: String",
+            "@available(iOS 9.0, *)\n@objc(abc_stackView)\n let stackView: UIStackView",
+            "@objc(abc_addSomeObject:)\n @NSManaged func addSomeObject(book: SomeObject)",
+            "@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing"
         ]
 
         #if swift(>=3.0)
@@ -266,49 +328,55 @@ private struct AttributesRuleExamples {
         #endif
     }
 
+    // swiftlint:disable:next function_body_length
     static func triggeringExamples() -> [String] {
         let common = [
-            "@objc\n var x: String",
-            "@objc\n\n var x: String",
-            "@objc\n private var x: String",
-            "@nonobjc\n var x: String",
-            "@IBOutlet\n private var label: UILabel",
-            "@IBOutlet\n\n private var label: UILabel",
-            "@NSCopying\n var name: NSString",
-            "@NSManaged\n var name: String?",
-            "@IBInspectable\n var cornerRadius: CGFloat",
-            "@available(iOS 9.0, *) let stackView: UIStackView",
-            "@NSManaged\n func addSomeObject(book: SomeObject)",
-            "@IBAction\n func buttonPressed(button: UIButton)",
-            "@IBAction\n @objc\n func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0, *) func animate(view: UIStackView)",
-            "@nonobjc final class X",
-            "@available(iOS 9.0, *) class UIStackView",
-            "@available(iOS 9.0, *)\n @objc class UIStackView",
-            "@available(iOS 9.0, *) @objc\n class UIStackView",
-            "@available(iOS 9.0, *)\n\n class UIStackView",
-            "@UIApplicationMain class AppDelegate: NSObject, UIApplicationDelegate",
-            "@IBDesignable class MyCustomView: UIView",
-            "@testable\nimport SourceKittenFramework",
-            "@testable\n\n\nimport SourceKittenFramework"
+            "@objc\n ↓var x: String",
+            "@objc\n\n ↓var x: String",
+            "@objc\n private ↓var x: String",
+            "@nonobjc\n ↓var x: String",
+            "@IBOutlet\n private ↓var label: UILabel",
+            "@IBOutlet\n\n private ↓var label: UILabel",
+            "@NSCopying\n ↓var name: NSString",
+            "@NSManaged\n ↓var name: String?",
+            "@IBInspectable\n ↓var cornerRadius: CGFloat",
+            "@available(iOS 9.0, *) ↓let stackView: UIStackView",
+            "@NSManaged\n ↓func addSomeObject(book: SomeObject)",
+            "@IBAction\n ↓func buttonPressed(button: UIButton)",
+            "@IBAction\n @objc\n ↓func buttonPressed(button: UIButton)",
+            "@available(iOS 9.0, *) ↓func animate(view: UIStackView)",
+            "@nonobjc final ↓class X",
+            "@available(iOS 9.0, *) ↓class UIStackView",
+            "@available(iOS 9.0, *)\n @objc ↓class UIStackView",
+            "@available(iOS 9.0, *) @objc\n ↓class UIStackView",
+            "@available(iOS 9.0, *)\n\n ↓class UIStackView",
+            "@UIApplicationMain ↓class AppDelegate: NSObject, UIApplicationDelegate",
+            "@IBDesignable ↓class MyCustomView: UIView",
+            "@testable\n↓import SourceKittenFramework",
+            "@testable\n\n\n↓import SourceKittenFramework",
+            "@objc(foo_x) ↓var x: String",
+            "@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView",
+            "@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)",
+            "@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)",
+            "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing"
         ]
 
         #if swift(>=3.0)
             let swift3Only = [
-            "@GKInspectable\n var maxSpeed: Float",
-            "@discardableResult func a() -> Int",
-            "@objc\n @discardableResult func a() -> Int",
-            "@objc\n\n @discardableResult\n func a() -> Int",
+            "@GKInspectable\n ↓var maxSpeed: Float",
+            "@discardableResult ↓func a() -> Int",
+            "@objc\n @discardableResult ↓func a() -> Int",
+            "@objc\n\n @discardableResult\n ↓func a() -> Int",
             ]
 
             return common + swift3Only
         #else
             let swift2Only = [
-                "@warn_unused_result func a() -> Int",
-                "@warn_unused_result(message=\"You should use this\") func a() -> Int",
-                "@objc\n @warn_unused_result func a() -> Int",
-                "@objc\n\n @warn_unused_result\n func a() -> Int",
-                "@noreturn func exit(_: Int)"
+                "@warn_unused_result ↓func a() -> Int",
+                "@warn_unused_result(message=\"You should use this\") ↓func a() -> Int",
+                "@objc\n @warn_unused_result ↓func a() -> Int",
+                "@objc\n\n @warn_unused_result\n ↓func a() -> Int",
+                "@noreturn ↓func exit(_: Int)"
             ]
 
             return common + swift2Only

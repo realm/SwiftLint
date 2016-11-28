@@ -36,6 +36,15 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "//MARK:- bad",
             "//MARK: -bad",
             "//MARK:-bad"
+            ],
+        corrections: [
+            "//MARK: comment"   : "// MARK: comment",
+            "// MARK:  comment"   : "// MARK: comment",
+            "// MARK:comment" : "// MARK: comment",
+            "//  MARK: comment" : "// MARK: comment",
+            "//MARK: - comment" : "// MARK: - comment",
+            "// MARK:- comment" : "// MARK: - comment",
+            "// MARK: -comment" : "// MARK: - comment"
         ]
     )
 
@@ -68,12 +77,13 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     private var pattern: String {
-        return [spaceStartPattern,
+        return [
+            spaceStartPattern,
             endNonSpacePattern,
             endTwoOrMoreSpacePattern,
             twoOrMoreSpacesAfterHyphenPattern,
-            nonSpaceAfterHyphenPattern]
-            .joinWithSeparator("|")
+            nonSpaceAfterHyphenPattern
+            ].joinWithSeparator("|")
     }
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -112,10 +122,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return result
     }
 
-    public func correctFile(file: File,
-                            pattern: String,
-                            replaceString: String,
-                            keepLastChar: Bool = false) -> [Correction] {
+    private func correctFile(file: File,
+                             pattern: String,
+                             replaceString: String,
+                             keepLastChar: Bool = false) -> [Correction] {
         let violations = violationRangesInFile(file, withPattern: pattern)
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
@@ -125,7 +135,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         var corrections = [Correction]()
         for var range in matches.reverse() {
             if keepLastChar {
-                range.length = range.length - 1
+                range.length -= 1
             }
             let location = Location(file: file, characterOffset: range.location)
             nsstring = nsstring.stringByReplacingCharactersInRange(range, withString: replaceString)
@@ -142,8 +152,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
             return syntaxKinds.startsWith([.Comment])
             }.flatMap { range, syntaxTokens in
-                let identifierRange = nsstring // swiftlint:disable:next force_unwrapping
-                    .byteRangeToNSRange(start: syntaxTokens.first!.offset, length: 0)
+                let identifierRange = nsstring
+                    .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
                 return identifierRange.map { NSUnionRange($0, range) }
         }
     }

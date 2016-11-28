@@ -24,8 +24,6 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  @IBInspectable private var x: Int\n}\n",
             "class Foo {\n  @IBInspectable private var x: String?\n}\n",
             "class Foo {\n  @IBInspectable private var x: String!\n}\n",
-            "class Foo {\n  @IBInspectable private var x: ImplicitlyUnwrappedOptional<String>\n}\n",
-            "class Foo {\n  @IBInspectable private var x: Optional<String>\n}\n",
             "class Foo {\n  @IBInspectable private var count: Int = 0\n}\n",
             "class Foo {\n  private var notInspectable = 0\n}\n",
             "class Foo {\n  private let notInspectable: Int\n}\n"
@@ -37,7 +35,9 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  @IBInspectable private var count: Int?\n}\n",
             "class Foo {\n  @IBInspectable private var count: Int!\n}\n",
             "class Foo {\n  @IBInspectable private var x: ImplicitlyUnwrappedOptional<Int>\n}\n",
-            "class Foo {\n  @IBInspectable private var count: Optional<Int>\n}\n"
+            "class Foo {\n  @IBInspectable private var count: Optional<Int>\n}\n",
+            "class Foo {\n  @IBInspectable private var x: Optional<String>\n}\n",
+            "class Foo {\n  @IBInspectable private var x: ImplicitlyUnwrappedOptional<String>\n}\n"
         ]
     )
 
@@ -85,8 +85,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "UIColor",
             "NSColor",
             "UIImage",
-            "NSImage",
-            "NSNumber"
+            "NSImage"
         ]
 
         let types = [
@@ -104,10 +103,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         ]
 
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
-        return referenceTypes.flatMap {
-            [$0, $0 + "!", $0 + "?",
-            "ImplicitlyUnwrappedOptional<\($0)>", "Optional<\($0)>"] + types
-        }
+        return referenceTypes.flatMap { [$0, $0 + "!", $0 + "?"] } + types
     }
 
     private func violation(dictionary: [String: SourceKitRepresentable],

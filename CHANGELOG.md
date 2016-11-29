@@ -45,6 +45,9 @@
 
 ##### Bug Fixes
 
+* Rule out a few invalid `@IBInspectable` cases in `valid_ibinspectable`.  
+  [Daniel Duan](https://github.com/dduan)
+
 * Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a
   violation.  
   [JP Simard](https://github.com/jpsim)

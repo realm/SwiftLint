@@ -16,8 +16,8 @@ class RulesTests: XCTestCase {
         // Test with default parameters
         verifyRule(AttributesRule.description)
 
-        // Test with custom `always_in_same_line`
-        let alwaysInSameLineDescription = RuleDescription(
+        // Test with custom `always_on_same_line`
+        let alwaysOnSameLineDescription = RuleDescription(
             identifier: "attributes_rule",
             name: "Attributes",
             description: "Attributes should be on their own lines in functions and types, " +
@@ -34,11 +34,11 @@ class RulesTests: XCTestCase {
             ]
         )
 
-        verifyRule(alwaysInSameLineDescription,
-                   ruleConfiguration: ["always_in_same_line": ["@objc"]])
+        verifyRule(alwaysOnSameLineDescription,
+                   ruleConfiguration: ["always_on_same_line": ["@objc"]])
 
-        // Test with custom `always_in_new_line`
-        let alwaysInNewLineDescription = RuleDescription(
+        // Test with custom `always_on_line_above`
+        let alwaysOnNewLineDescription = RuleDescription(
             identifier: "attributes_rule",
             name: "Attributes",
             description: "Attributes should be on their own lines in functions and types, " +
@@ -55,8 +55,8 @@ class RulesTests: XCTestCase {
             ]
         )
 
-        verifyRule(alwaysInNewLineDescription,
-                   ruleConfiguration: ["always_in_new_line": ["@objc"]])
+        verifyRule(alwaysOnNewLineDescription,
+                   ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
 
     func testClosingBrace() {

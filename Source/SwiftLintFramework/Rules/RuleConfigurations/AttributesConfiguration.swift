@@ -10,19 +10,19 @@ import Foundation
 
 public struct AttributesConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.Warning)
-    private(set) var alwaysInSameLine = Set<String>()
-    private(set) var alwaysInNewLine = Set<String>()
+    private(set) var alwaysOnSameLine = Set<String>()
+    private(set) var alwaysOnNewLine = Set<String>()
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", always_in_same_line: \(alwaysInSameLine)" +
-            ", always_in_new_line: \(alwaysInNewLine)"
+            ", always_on_same_line: \(alwaysOnSameLine)" +
+            ", always_on_line_above: \(alwaysOnNewLine)"
     }
 
-    public init(alwaysInSameLine: [String] = ["@IBAction", "@NSManaged"],
+    public init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],
                 alwaysInNewLine: [String] = []) {
-        self.alwaysInSameLine = Set(alwaysInSameLine)
-        self.alwaysInNewLine = Set(alwaysInNewLine)
+        self.alwaysOnSameLine = Set(alwaysOnSameLine)
+        self.alwaysOnNewLine = Set(alwaysOnNewLine)
     }
 
     public mutating func applyConfiguration(configuration: AnyObject) throws {
@@ -30,12 +30,12 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.UnknownConfiguration
         }
 
-        if let alwaysInSameLine = configuration["always_in_same_line"] as? [String] {
-            self.alwaysInSameLine = Set(alwaysInSameLine)
+        if let alwaysOnSameLine = configuration["always_on_same_line"] as? [String] {
+            self.alwaysOnSameLine = Set(alwaysOnSameLine)
         }
 
-        if let alwaysInNewLine = configuration["always_in_new_line"] as? [String] {
-            self.alwaysInNewLine = Set(alwaysInNewLine)
+        if let alwaysOnNewLine = configuration["always_on_line_above"] as? [String] {
+            self.alwaysOnNewLine = Set(alwaysOnNewLine)
         }
 
         if let severityString = configuration["severity"] as? String {
@@ -47,6 +47,6 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
 public func == (lhs: AttributesConfiguration,
                 rhs: AttributesConfiguration) -> Bool {
     return lhs.severityConfiguration == rhs.severityConfiguration &&
-        lhs.alwaysInSameLine == rhs.alwaysInSameLine &&
-        rhs.alwaysInNewLine == rhs.alwaysInNewLine
+        lhs.alwaysOnSameLine == rhs.alwaysOnSameLine &&
+        rhs.alwaysOnNewLine == rhs.alwaysOnNewLine
 }

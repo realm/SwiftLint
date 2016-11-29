@@ -67,7 +67,7 @@
   [kohtenko](https://github.com/kohtenko)
 
 * Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
-  `@discardableResult`, etc) is on the right position:
+  `@discardableResult`, etc) is in the right position:
     - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
     the same line as the declaration
     - If the attribute has parameters, it should always be on the line above
@@ -77,9 +77,9 @@
       - if it's applied to a type or function, it should be on the line above
       - if it's applied to an import (the only option is `@testable import`), 
       it should be on the same line.
-  You can also configure what attributes should be always in a new line or in
-  the same line as the declaration with the `always_in_same_line` and 
-  `always_in_new_line` keys.  
+  You can also configure what attributes should be always on a new line or on
+  the same line as the declaration with the `always_on_same_line` and 
+  `always_on_line_above` keys.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#846](https://github.com/realm/SwiftLint/issues/846)
 

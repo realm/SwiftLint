@@ -68,10 +68,15 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        let excludingKinds = SyntaxKind.commentAndStringKinds()
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
-            let match = file.contents.substringWithByteRange(start: $0.location, length: $0.length)
-            let location = (match?.lastIndexOf("import") ?? 0) + $0.location
+        return file.matchPattern(pattern).flatMap { range, kinds -> StyleViolation? in
+            guard kinds.count == 2 &&
+                kinds.first == .AttributeBuiltin && kinds.last == .Keyword else {
+                    return nil
+            }
+
+            let match = file.contents
+                .substringWithByteRange(start: range.location, length: range.length)
+            let location = (match?.lastIndexOf("import") ?? 0) + range.location
 
             return StyleViolation(ruleDescription: self.dynamicType.description,
                                   severity: configuration.severityConfiguration.severity,
@@ -103,15 +108,15 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                                                                                    file: file)
             let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
 
-            let alwaysInSameLineAttributes = configuration.alwaysInSameLine
-            let alwaysInNewLineAttributes =
-                createAlwaysInNewLineAttributes(previousAttributesWithParameters,
+            let alwaysOnSameLineAttributes = configuration.alwaysOnSameLine
+            let alwaysOnNewLineAttributes =
+                createAlwaysOnNewLineAttributes(previousAttributesWithParameters,
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
-            if !attributesTokens.intersect(alwaysInNewLineAttributes).isEmpty {
+            if !attributesTokens.intersect(alwaysOnNewLineAttributes).isEmpty {
                 isViolation = true
-            } else if !previousAttributes.intersect(alwaysInSameLineAttributes).isEmpty {
+            } else if !previousAttributes.intersect(alwaysOnSameLineAttributes).isEmpty {
                 isViolation = true
             } else {
 
@@ -121,9 +126,9 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
                 let attributesAfterWhitelist = operation(
                         operation(attributesTokens)(
-                            previousAttributes.intersect(alwaysInNewLineAttributes)
+                            previousAttributes.intersect(alwaysOnNewLineAttributes)
                         )
-                    )(attributesTokens.intersect(alwaysInSameLineAttributes))
+                    )(attributesTokens.intersect(alwaysOnSameLineAttributes))
 
                 isViolation = attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
             }
@@ -139,7 +144,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         return violation(dictionary, file: file)
     }
 
-    private func createAlwaysInNewLineAttributes(previousAttributesWithParameters: [(String, Bool)],
+    private func createAlwaysOnNewLineAttributes(previousAttributesWithParameters: [(String, Bool)],
                                                  attributesTokens: [(String, NSRange)],
                                                  line: Line, file: File) -> [String] {
         let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
@@ -155,7 +160,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
             // 2. it's a whitelisted attribute, according to the current configuration
             let isParameterized = hasParameter || token.containsString("(")
-            if isParameterized || configuration.alwaysInNewLine.contains(token) {
+            if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token
             }
 
@@ -175,8 +180,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         return [
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severityConfiguration.severity,
-                location: location
-            )
+                location: location)
         ]
     }
 
@@ -306,11 +310,11 @@ private struct AttributesRuleExamples {
 
         #if swift(>=3.0)
             let swift3Only = [
-            "@GKInspectable var maxSpeed: Float",
-            "@discardableResult\n func a() -> Int",
-            "@objc\n @discardableResult\n func a() -> Int",
-            "func increase(f: @autoclosure () -> Int) -> Int",
-            "func foo(completionHandler: @escaping () -> Void)"
+                "@GKInspectable var maxSpeed: Float",
+                "@discardableResult\n func a() -> Int",
+                "@objc\n @discardableResult\n func a() -> Int",
+                "func increase(f: @autoclosure () -> Int) -> Int",
+                "func foo(completionHandler: @escaping () -> Void)"
             ]
 
             return common + swift3Only
@@ -363,10 +367,10 @@ private struct AttributesRuleExamples {
 
         #if swift(>=3.0)
             let swift3Only = [
-            "@GKInspectable\n ↓var maxSpeed: Float",
-            "@discardableResult ↓func a() -> Int",
-            "@objc\n @discardableResult ↓func a() -> Int",
-            "@objc\n\n @discardableResult\n ↓func a() -> Int",
+                "@GKInspectable\n ↓var maxSpeed: Float",
+                "@discardableResult ↓func a() -> Int",
+                "@objc\n @discardableResult ↓func a() -> Int",
+                "@objc\n\n @discardableResult\n ↓func a() -> Int",
             ]
 
             return common + swift3Only

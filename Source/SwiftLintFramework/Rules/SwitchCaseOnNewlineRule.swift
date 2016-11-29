@@ -101,8 +101,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     }
 
     private func contentForRange(start: Int, length: Int, file: File) -> String {
-        return file.contents.substringWithByteRange(start: start,
-                                                    length: length) ?? ""
+        return file.contents.substringWithByteRange(start: start, length: length) ?? ""
     }
 
     private func trailingComments(tokens: [SyntaxToken]) -> [SyntaxToken] {
@@ -112,7 +111,6 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             if !shouldRemove {
                 lastWasComment = false
             }
-
             return shouldRemove
         }.reverse()
     }
@@ -120,11 +118,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     private func isViolation(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
         let trailingCommentsTokens = trailingComments(lineTokens)
 
-        guard let firstToken = lineTokens.first else {
-            return false
-        }
-
-        if isEnumCase(file, token: firstToken) {
+        guard let firstToken = lineTokens.first where !isEnumCase(file, token: firstToken) else {
             return false
         }
 

@@ -11,6 +11,20 @@ import XCTest
 
 class ReporterTests: XCTestCase {
 
+    func testReporterFromString() {
+        let reporters: [Reporter.Type] = [
+            XcodeReporter.self,
+            JSONReporter.self,
+            CSVReporter.self,
+            CheckstyleReporter.self,
+            JUnitReporter.self,
+            HTMLReporter.self
+        ]
+        for reporter in reporters {
+            XCTAssertEqual(reporter.identifier, reporterFromString(reporter.identifier).identifier)
+        }
+    }
+
     func generateViolations() -> [StyleViolation] {
         let location = Location(file: "filename", line: 1, character: 2)
         return [

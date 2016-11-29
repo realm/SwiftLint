@@ -142,7 +142,6 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(nsstring as String)
-        file.invalidateCache()
         return corrections
     }
 

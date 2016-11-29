@@ -36,7 +36,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "//MARK:- bad",
             "//MARK: -bad",
             "//MARK:-bad"
-            ],
+        ],
         corrections: [
             "//MARK: comment"   : "// MARK: comment",
             "// MARK:  comment"   : "// MARK: comment",
@@ -83,7 +83,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             endTwoOrMoreSpacePattern,
             twoOrMoreSpacesAfterHyphenPattern,
             nonSpaceAfterHyphenPattern
-            ].joinWithSeparator("|")
+        ].joinWithSeparator("|")
     }
 
     public func validateFile(file: File) -> [StyleViolation] {
@@ -142,7 +142,6 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(nsstring as String)
-        file.invalidateCache()
         return corrections
     }
 
@@ -151,10 +150,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
             return syntaxKinds.startsWith([.Comment])
-            }.flatMap { range, syntaxTokens in
-                let identifierRange = nsstring
-                    .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
-                return identifierRange.map { NSUnionRange($0, range) }
+        }.flatMap { range, syntaxTokens in
+            let identifierRange = nsstring
+                .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
+            return identifierRange.map { NSUnionRange($0, range) }
         }
     }
 }

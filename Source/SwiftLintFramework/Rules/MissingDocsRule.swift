@@ -166,7 +166,7 @@ public struct MissingDocsRule: OptInRule {
 
     public func isEqualTo(rule: Rule) -> Bool {
         if let rule = rule as? MissingDocsRule {
-            return rule.parameters == self.parameters
+            return rule.parameters == parameters
         }
         return false
     }

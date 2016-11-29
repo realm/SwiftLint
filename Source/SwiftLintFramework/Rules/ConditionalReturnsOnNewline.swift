@@ -50,7 +50,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
                 contentForToken(lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: self.configuration.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.0.location))
         }
     }

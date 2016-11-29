@@ -59,11 +59,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     private let initializerWithType = regex("^[A-Z].*\\.init$")
 
-    private func violationRangesInFile(
-        file: File,
-        kind: ExplicitInitRule.Kind,
-        dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-
+    private func violationRangesInFile(file: File, kind: ExplicitInitRule.Kind,
+                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         func isExpected(name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
             return !["super.init", "self.init"].contains(name)
@@ -82,9 +79,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         return [range]
     }
 
-    private func violationRangesInFile(
-        file: File,
-        dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func violationRangesInFile(file: File,
+                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.flatMap { subItem -> [NSRange] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
@@ -92,8 +88,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                 kind = ExplicitInitRule.Kind(rawValue: kindString) else {
                     return []
             }
-            return violationRangesInFile(file, dictionary: subDict) +
-                violationRangesInFile(file, kind: kind, dictionary: subDict)
+            return self.violationRangesInFile(file, dictionary: subDict) +
+                self.violationRangesInFile(file, kind: kind, dictionary: subDict)
         }
     }
 

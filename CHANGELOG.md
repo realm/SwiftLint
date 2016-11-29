@@ -36,20 +36,18 @@
 * `closure_spacing` rule now accepts empty bodies with a space.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#875](https://github.com/realm/SwiftLint/issues/875)
-  
+
 * Add `TrailingCommaRule` to enforce/forbid trailing commas in arrays and
   dictionaries. The default is to forbid them, but this can be changed with
   the `mandatory_comma` configuration.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#883](https://github.com/realm/SwiftLint/issues/883)
-  
-* Add support for `fileprivate` on `PrivateOutletRule`.   
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#831](https://github.com/realm/SwiftLint/issues/831)
-  
-* Add support for `fileprivate` on `PrivateUnitTestRule`.   
+
+* Add support for `fileprivate` in `PrivateOutletRule` and
+  `PrivateUnitTestRule`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#781](https://github.com/realm/SwiftLint/issues/781)
+  [#831](https://github.com/realm/SwiftLint/issues/831)
 
 ##### Bug Fixes
 

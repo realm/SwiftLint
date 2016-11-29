@@ -119,16 +119,18 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             } else if !previousAttributes.intersect(alwaysOnSameLineAttributes).isEmpty {
                 isViolation = true
             } else {
-
                 // ignore whitelisted attributes
-                let operation: Set<String> -> Set<String> -> Set<String> =
-                    attributeShouldBeOnSameLine ? Set.union : Set.subtract
+                let attributesAfterWhitelist: Set<String>
+                let newLineExceptions = previousAttributes.intersect(alwaysOnNewLineAttributes)
+                let sameLineExceptions = attributesTokens.intersect(alwaysOnSameLineAttributes)
 
-                let attributesAfterWhitelist = operation(
-                        operation(attributesTokens)(
-                            previousAttributes.intersect(alwaysOnNewLineAttributes)
-                        )
-                    )(attributesTokens.intersect(alwaysOnSameLineAttributes))
+                if attributeShouldBeOnSameLine {
+                    attributesAfterWhitelist = attributesTokens
+                        .union(newLineExceptions).union(sameLineExceptions)
+                } else {
+                    attributesAfterWhitelist = attributesTokens
+                        .subtract(newLineExceptions).subtract(sameLineExceptions)
+                }
 
                 isViolation = attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
             }

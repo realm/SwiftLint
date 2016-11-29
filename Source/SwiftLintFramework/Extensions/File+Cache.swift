@@ -167,14 +167,6 @@ extension File {
     }
 }
 
-private func dictFromKeyValuePairs<Key: Hashable, Value>(pairs: [(Key, Value)]) -> [Key: Value] {
-    var dict = [Key: Value]()
-    for pair in pairs {
-        dict[pair.0] = pair.1
-    }
-    return dict
-}
-
 private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
                                  [[String: SourceKitRepresentable]]? {
     return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {

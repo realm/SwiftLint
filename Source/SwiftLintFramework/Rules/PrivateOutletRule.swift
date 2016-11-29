@@ -67,16 +67,11 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return [
             StyleViolation(ruleDescription: self.dynamicType.description,
                 severity: configuration.severityConfiguration.severity,
-                location: location
-            )
+                location: location)
         ]
     }
 
     private func isPrivateLevel(identifier: String?) -> Bool {
-        guard let accessibility = identifier.flatMap(AccessControlLevel.init(identifier:)) else {
-            return false
-        }
-
-        return accessibility.isPrivate
+        return identifier.flatMap(AccessControlLevel.init(identifier:))?.isPrivate ?? false
     }
 }

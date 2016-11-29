@@ -49,6 +49,9 @@
   [#781](https://github.com/realm/SwiftLint/issues/781)
   [#831](https://github.com/realm/SwiftLint/issues/831)
 
+* Make `MarkRule` correctable.  
+  [kohtenko](https://github.com/kohtenko)
+
 ##### Bug Fixes
 
 * Rule out a few invalid `@IBInspectable` cases in `valid_ibinspectable`.  

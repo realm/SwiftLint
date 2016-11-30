@@ -22,7 +22,7 @@ func violations(_ string: String, config: Configuration = Configuration()) -> [S
     return Linter(file: file, configuration: config).styleViolations
 }
 
-func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
+private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
     var contents = contents as NSString
     var markerOffsets = [Int]()
     var markerRange = contents.range(of: violationMarker)
@@ -81,7 +81,7 @@ extension String {
     }
 }
 
-func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
+fileprivate func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in

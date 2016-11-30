@@ -47,7 +47,7 @@ public struct MarkRule: ConfigurationProviderRule {
         let badSpaceStart = "(\(nonSpaceOrTwoOrMoreSpace)?\(mark)\(nonSpaceOrTwoOrMoreSpace))"
         let badSpaceEnd = "(\(nonSpaceOrTwoOrMoreSpace)\(mark)\(nonSpaceOrTwoOrMoreSpace)?)"
         let badSpaceAfterHyphen = "(\(mark) -([^ \\n]|\(twoOrMoreSpace)))"
-        let pattern = [badSpaceStart, badSpaceEnd, badSpaceAfterHyphen].join(separator: "|")
+        let pattern = [badSpaceStart, badSpaceEnd, badSpaceAfterHyphen].joined(separator: "|")
 
         return file.matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,

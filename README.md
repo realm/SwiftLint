@@ -30,7 +30,7 @@ You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 running it.
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 7.1).
+`git submodule update --init --recursive; make install` (Xcode 7.1 or later).
 
 ## Usage
 
@@ -56,7 +56,10 @@ To run `swiftlint autocorrect` on save in Xcode, install the
 
 ### AppCode
 
-To integrate SwiftLint with AppCode, install [this plugin](https://plugins.jetbrains.com/plugin/9175) and configure path to SwiftLint installation in plugin preferences. ```autocorrect``` action is available via ```⌥⏎```.
+To integrate SwiftLint with AppCode, install
+[this plugin](https://plugins.jetbrains.com/plugin/9175) and configure
+SwiftLint's installed path in the plugin's preferences.
+The `autocorrect` action is available via `⌥⏎`.
 
 ### Atom
 
@@ -94,8 +97,8 @@ These are same environment variables set for input files to
 ## Rules
 
 There are only a small number of rules currently implemented, but we hope the
-Swift community (that's you!) will contribute more over time. [Pull requests](CONTRIBUTING.md) are
-encouraged.
+Swift community (that's you!) will contribute more over time.
+[Pull requests](CONTRIBUTING.md) are encouraged.
 
 The rules that *are* currently implemented are mostly there as a starting point
 and are subject to change.
@@ -103,13 +106,15 @@ and are subject to change.
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
-opt_in_rules are disabled by default (you have to explicitly add them on your configuration file).
+`opt_in_rules` are disabled by default (you have to explicitly enable them in
+your configuration file).
 
 Guidelines on when to implement a rule as opt-in:
-* A rule that can have many false positives (empty_count)
-* A rule that is too slow
-* A rule that is not general consensus or only useful in some cases (force_unwrapping, missing_docs)
 
+* A rule that can have many false positives (e.g. `empty_count`)
+* A rule that is too slow
+* A rule that is not general consensus or only useful in some cases
+  (e.g. `force_unwrapping`, `missing_docs`)
 
 ### Disable a rule in code
 

@@ -37,15 +37,15 @@
 * Added HTML reporter, identifier is `html`.  
   [Johnykutty Mathew](https://github.com/Johnykutty)
 
-* Add `SuperCallRule` Opt-In rule that warns about methods not calling to super.  
+* Add `SuperCallRule` opt-in rule that warns about methods not calling to super.  
   [Angel G. Olloqui](https://github.com/angelolloqui)
   [#803](https://github.com/realm/SwiftLint/issues/803)
 
-* Add `RedundantNilCoalesingRule` Opt-In rule that warns against `?? nil`.  
+* Add `RedundantNilCoalesingRule` opt-in rule that warns against `?? nil`.  
   [Daniel Beard](https://github.com/daniel-beard)
   [#764](https://github.com/realm/SwiftLint/issues/764)
 
-* Added opt-In rule to makes closure expressions spacing consistent.  
+* Added opt-in rule to makes closure expressions spacing consistent.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [#770](https://github.com/realm/SwiftLint/issues/770)
 
@@ -74,10 +74,9 @@
   [supported types](http://help.apple.com/xcode/mac/8.0/#/devf60c1c514)  
 
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#756](https://github.com/realm/SwiftLint/issues/756)  
+  [#756](https://github.com/realm/SwiftLint/issues/756)
 
-* Add ``ExplicitInitRule`` Opt-In rule to discourage calling ``init``
-  directly.  
+* Add `ExplicitInitRule` opt-in rule to discourage calling `init` directly.  
   [Matt Taube](https://github.com/mtaube)
   [#715](https://github.com/realm/SwiftLint/pull/715)
 
@@ -153,7 +152,7 @@ This release has seen a phenomenal uptake in community contributions!
   [Krzysztof Rodak](https://github.com/krodak)
   [#749](https://github.com/realm/SwiftLint/issues/749)
 
-* Add `PrivateOutletRule` Opt-In rule to enforce `@IBOutlet`
+* Add `PrivateOutletRule` opt-in rule to enforce `@IBOutlet`
   instance variables to be `private`.  
   [Olivier Halligon](https://github.com/AliSoftware)
 

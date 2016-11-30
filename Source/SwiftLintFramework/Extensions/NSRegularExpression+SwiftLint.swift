@@ -21,6 +21,7 @@ extension NSRegularExpression {
         regexCache[pattern] = result
         return result
     }
+
     internal static func forcePattern(_ pattern: String) -> NSRegularExpression {
         // swiftlint:disable:next force_try
         return try! .cached(pattern: pattern)

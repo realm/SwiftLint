@@ -105,7 +105,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         }
     }
 
-    // swiftlint:disable function_body_length
+    // swiftlint:disable:next function_body_length
     public func correctFile(_ file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
@@ -159,5 +159,4 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         file.write(contents)
         return corrections
     }
-    // swiftlint:enable function_body_length
 }

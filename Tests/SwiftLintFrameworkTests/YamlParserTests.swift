@@ -11,14 +11,13 @@ import XCTest
 
 class YamlParserTests: XCTestCase {
 
-    // swiftlint:disable force_try
     func testParseEmptyString() {
-        XCTAssertEqual((try! YamlParser.parse("")).count, 0,
+        XCTAssertEqual((try YamlParser.parse("")).count, 0,
                        "Parsing empty YAML string should succeed")
     }
 
     func testParseValidString() {
-        XCTAssertEqual(try! YamlParser.parse("a: 1\nb: 2").count, 2,
+        XCTAssertEqual(try YamlParser.parse("a: 1\nb: 2").count, 2,
                        "Parsing valid YAML string should succeed")
     }
 
@@ -27,5 +26,4 @@ class YamlParserTests: XCTestCase {
             _ = try YamlParser.parse("|\na")
         }
     }
-    // swiftlint:enable force_try
 }

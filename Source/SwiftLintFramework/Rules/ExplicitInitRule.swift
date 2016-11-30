@@ -24,14 +24,14 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self
             "[1].flatMap(String.init)",                   // pass init as closure
             "[String.self].map { $0.init(1) }",           // initialize from a metatype value
-            "[String.self].map { type in type.init(1) }", // initialize from a metatype value
+            "[String.self].map { type in type.init(1) }"  // initialize from a metatype value
         ],
         triggeringExamples: [
             "[1].flatMap{String↓.init($0)}",
-            "[String.self].map { Type in Type↓.init(1) }", // starting with capital assumes as type
+            "[String.self].map { Type in Type↓.init(1) }"  // starting with capital assumes as type
         ],
         corrections: [
-            "[1].flatMap{String.init($0)}" : "[1].flatMap{String($0)}",
+            "[1].flatMap{String.init($0)}" : "[1].flatMap{String($0)}"
         ]
     )
 

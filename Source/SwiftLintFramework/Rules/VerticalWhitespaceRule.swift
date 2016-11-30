@@ -26,17 +26,17 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             "let abc = 0\n",
             "let abc = 0\n\n",
             "/* bcs \n\n\n\n*/",
-            "// bca \n\n",
+            "// bca \n\n"
         ],
         triggeringExamples: [
             "let aaaa = 0\n\n\n",
             "struct AAAA {}\n\n\n\n",
-             "class BBBB {}\n\n\n",
+             "class BBBB {}\n\n\n"
         ],
         corrections: [
             "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",
             "let c = 0\n\n\nlet num = 1\n": "let c = 0\n\nlet num = 1\n",
-            "// bca \n\n\n": "// bca \n\n",
+            "// bca \n\n\n": "// bca \n\n"
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 

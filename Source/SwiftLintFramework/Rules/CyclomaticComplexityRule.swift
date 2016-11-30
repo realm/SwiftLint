@@ -28,7 +28,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             "if true {}; if true {}; if true {}; if true {}; if true {}; if true {}\n" +
                 "func f2() {\n" +
                     "if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-                "}}",
+                "}}"
         ],
         triggeringExamples: [
             "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +

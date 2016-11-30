@@ -23,11 +23,11 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "class Foo {\n  @IBOutlet private var label: UILabel!\n}\n",
             "class Foo {\n  var notAnOutlet: UILabel\n}\n",
             "class Foo {\n  @IBOutlet weak private var label: UILabel?\n}\n",
-            "class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  @IBOutlet var label: UILabel?\n}\n",
-            "class Foo {\n  @IBOutlet var label: UILabel!\n}\n",
+            "class Foo {\n  @IBOutlet var label: UILabel!\n}\n"
         ]
     )
 

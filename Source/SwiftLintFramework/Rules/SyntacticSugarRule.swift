@@ -35,7 +35,7 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
             "let x: ↓ImplicitlyUnwrappedOptional<Int>",
             "func x(a: ↓Array<Int>, b: Int) -> [Int: Any]",
             "func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>",
-            "func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>",
+            "func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>"
         ]
     )
 

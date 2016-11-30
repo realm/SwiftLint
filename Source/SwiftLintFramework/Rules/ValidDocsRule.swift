@@ -193,7 +193,7 @@ public struct ValidDocsRule: ConfigurationProviderRule {
             "/// docs\n/// - throws: NSError\n/// - returns: false" +
                 "\nfunc a() throws -> Bool { return true }",
             "/// docs\n/// - parameter param: this is a closure\n/// - returns: Bool" +
-                "\nfunc a(param: (Void throws -> Bool)) -> Bool { return true }",
+                "\nfunc a(param: (Void throws -> Bool)) -> Bool { return true }"
         ],
         triggeringExamples: [
             "/// docs\npublic ↓func a(param: Void) {}\n",
@@ -223,7 +223,7 @@ public struct ValidDocsRule: ConfigurationProviderRule {
                 "\nfunc a(param: () -> Void) -> Foo<Void> {return Foo<Void>}",
             "/// docs\n/// - parameter param: this is a void closure" +
                 "\nfunc a(param: () -> Void) -> Foo<[Int]> {return Foo<[Int]>}",
-            "/// docs\nfunc a() throws -> Bool { return true }",
+            "/// docs\nfunc a() throws -> Bool { return true }"
         ]
     )
 

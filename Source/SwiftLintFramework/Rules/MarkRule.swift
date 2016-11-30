@@ -35,7 +35,7 @@ public struct MarkRule: ConfigurationProviderRule {
             "//MARK: - bad",
             "//MARK:- bad",
             "//MARK: -bad",
-            "//MARK:-bad",
+            "//MARK:-bad"
         ]
     )
 

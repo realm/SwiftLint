@@ -39,7 +39,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)",
             "UIEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)",
             "NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)",
-            "NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)",
+            "NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)"
         ],
         triggeringExamples: [
             "↓CGPointMake(10, 10)",
@@ -61,7 +61,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓UIEdgeInsetsMake(0, 0, 10, 10)",
             "↓UIEdgeInsetsMake(top, left, bottom, right)",
             "↓NSEdgeInsetsMake(0, 0, 10, 10)",
-            "↓NSEdgeInsetsMake(top, left, bottom, right)",
+            "↓NSEdgeInsetsMake(top, left, bottom, right)"
         ],
         corrections: [
             "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
@@ -93,7 +93,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓NSEdgeInsetsMake(0, 0, 10, 10)\n":
             "NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)\n",
             "↓NSEdgeInsetsMake(top, left, bottom, right)\n":
-            "NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)\n",
+            "NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)\n"
         ]
     )
 
@@ -128,7 +128,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "UIEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "UIEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)",
             "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
-            "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)",
+            "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
         ]
 
         let description = type(of: self).description

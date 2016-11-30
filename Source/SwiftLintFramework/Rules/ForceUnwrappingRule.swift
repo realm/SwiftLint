@@ -39,7 +39,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let unwrapped = optional↓!",
             "return cell↓!",
             "let url = NSURL(string: \"http://www.google.com\")↓!",
-            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓! }",
+            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓! }"
         ]
     )
 

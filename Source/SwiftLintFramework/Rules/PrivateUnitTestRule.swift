@@ -102,7 +102,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
                 "private ↓func test4() {}\n " +
-            "}",
+            "}"
         ]
     )
 

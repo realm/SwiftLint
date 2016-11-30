@@ -30,7 +30,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
             "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n",
-            "class Foo {\n  var delegateScroll: ScrollDelegate?\n}\n",
+            "class Foo {\n  var delegateScroll: ScrollDelegate?\n}\n"
         ]
     )
 

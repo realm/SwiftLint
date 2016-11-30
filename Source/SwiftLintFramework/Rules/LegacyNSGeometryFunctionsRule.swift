@@ -36,7 +36,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             // "rect.divide(atDistance: 10.2, fromEdge: edge)", No correction available for divide
             "rect1.contains(rect2)",
             "rect.contains(point)",
-            "rect1.intersects(rect2)",
+            "rect1.intersects(rect2)"
         ],
         triggeringExamples: [
             "↓NSWidth(rect)",

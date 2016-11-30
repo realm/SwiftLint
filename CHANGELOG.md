@@ -155,6 +155,11 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [#813](https://github.com/realm/SwiftLint/issues/813)  
 
+* Fixed regex bug in Comma Rule. Some violations were not being triggered 
+  when there were consecutive violations in the same expression.  
+  [Savio Figueiredo](https://github.com/sadefigu)
+  [#872](https://github.com/realm/SwiftLint/issues/872)
+
 ## 0.12.0: Vertical Laundry
 
 ##### Breaking

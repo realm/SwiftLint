@@ -6,6 +6,20 @@
 
 ##### Enhancements
 
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.13.1: Heavy Cycle
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
 * Add `ImplicitGetterRule` to warn against using `get` on computed read-only
   properties.  
   [Marcelo Fabri](https://github.com/marcelofabri)

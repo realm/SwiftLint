@@ -125,7 +125,8 @@ extension XCTestCase {
             let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
             XCTAssertEqual(triggerViolations.count, expectedLocations.count)
             for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
-                XCTAssertEqual(triggerViolation.location, expectedLocation)
+                XCTAssertEqual(triggerViolation.location, expectedLocation,
+                               "'\(trigger)' violation didn't match expected location.")
             }
         }
         // Triggering examples violate

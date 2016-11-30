@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix a few edge cases where malformed `MARK:` comments wouldn't trigger a
+  violation.  
+  [JP Simard](https://github.com/jpsim)
+  [#805](https://github.com/realm/SwiftLint/issues/805)
 
 ## 0.13.0: MakeYourClothesCleanAgain
 

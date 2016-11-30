@@ -52,7 +52,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let isPrivate = isPrivateLevel(identifier: accessibility)
         let isPrivateSet = isPrivateLevel(identifier: setterAccessiblity)
 
-        if isPrivate || (self.configuration.allowPrivateSet && isPrivateSet) {
+        if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {
             return []
         }
 

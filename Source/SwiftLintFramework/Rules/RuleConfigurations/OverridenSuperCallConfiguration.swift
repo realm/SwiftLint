@@ -75,7 +75,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
             self.included = included
         }
 
-        self.resolvedMethodNames = calculateResolvedMethodNames()
+        resolvedMethodNames = calculateResolvedMethodNames()
     }
 
     public var severity: ViolationSeverity {

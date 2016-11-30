@@ -117,7 +117,7 @@ private extension StatementPositionRule {
 
     func defaultCorrectFile(_ file: File) -> [Correction] {
         let violations = defaultViolationRangesInFile(file,
-                                                   withPattern: type(of: self).defaultPattern)
+                                                      withPattern: type(of: self).defaultPattern)
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(type(of: self).defaultPattern)

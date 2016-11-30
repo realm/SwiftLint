@@ -237,6 +237,10 @@ class RulesTests: XCTestCase {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
 
+    func testSyntacticSugar() {
+        verifyRule(SyntacticSugarRule.description)
+    }
+
     func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)
     }

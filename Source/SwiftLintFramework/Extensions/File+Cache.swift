@@ -78,7 +78,8 @@ extension File {
         }
         set {
             if newValue {
-                responseCache.values[cacheKey] = Optional<[String: SourceKitRepresentable]>.none
+                let value: [String: SourceKitRepresentable]? = nil
+                responseCache.values[cacheKey] = value
             } else {
                 responseCache.values.removeValue(forKey: cacheKey)
             }

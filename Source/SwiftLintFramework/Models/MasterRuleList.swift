@@ -76,6 +76,7 @@ public let masterRuleList = RuleList(rules:
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,
+    SyntacticSugarRule.self,
     TodoRule.self,
     TrailingNewlineRule.self,
     TrailingSemicolonRule.self,

@@ -10,7 +10,7 @@ import Foundation
 
 extension FileManager {
     internal func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
-        let rootPath = rootDirectory ?? FileManager.default.currentDirectoryPath
+        let rootPath = rootDirectory ?? currentDirectoryPath
         let absolutePath = (path.absolutePathRepresentation(rootDirectory: rootPath) as NSString)
             .standardizingPath
         var isDirectory: ObjCBool = false

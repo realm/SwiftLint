@@ -119,10 +119,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     fileprivate class TestFileManager: FileManager {
-        fileprivate override func filesToLintAtPath(
-            _ path: String,
-            rootDirectory: String? = nil)
-            -> [String] {
+        override func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
                                       "directory/excluded/Excluded.swift",

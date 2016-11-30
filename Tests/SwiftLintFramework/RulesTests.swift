@@ -109,6 +109,10 @@ class RulesTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
+    func testDictionaryColonRule() {
+        verifyRule(DictionaryColonRule.description)
+    }
+
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }

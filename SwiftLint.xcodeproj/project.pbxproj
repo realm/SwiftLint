@@ -140,6 +140,7 @@
 		E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
+		ED0A04A71DEF80B500DBC592 /* DictionaryColonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED0A04A51DEF805C00DBC592 /* DictionaryColonRule.swift */; };
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
 		F9D73F031D0CF15E00222FC4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = F9D73F021D0CF15E00222FC4 /* test.txt */; };
 /* End PBXBuildFile section */
@@ -343,6 +344,7 @@
 		E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesTests.swift; sourceTree = "<group>"; };
 		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
+		ED0A04A51DEF805C00DBC592 /* DictionaryColonRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryColonRule.swift; sourceTree = "<group>"; };
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		F9D73F021D0CF15E00222FC4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -633,6 +635,7 @@
 				65454F451B14D73800319A6C /* ControlStatementRule.swift */,
 				3B1DF0111C5148140011BCED /* CustomRules.swift */,
 				2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */,
+				ED0A04A51DEF805C00DBC592 /* DictionaryColonRule.swift */,
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
 				7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
@@ -947,6 +950,7 @@
 				3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */,
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
+				ED0A04A71DEF80B500DBC592 /* DictionaryColonRule.swift in Sources */,
 				3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,

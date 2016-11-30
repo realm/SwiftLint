@@ -141,6 +141,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
+    func testImplicitGetterRule() {
+        verifyRule(ImplicitGetterRule.description)
+    }
+
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description)
     }

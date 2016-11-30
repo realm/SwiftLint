@@ -19,7 +19,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         identifier: "valid_ibinspectable",
         name: "Valid IBInspectable",
         description: "@IBInspectable should be applied to variables only, have its type explicit " +
-        "and be of a supported type",
+            "and be of a supported type",
         nonTriggeringExamples: [
             "class Foo {\n  @IBInspectable private var x: Int\n}\n",
             "class Foo {\n  @IBInspectable private var x: String?\n}\n",
@@ -44,7 +44,6 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard kind == .varInstance else {
             return []
         }
@@ -113,7 +112,6 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
 
     private func violation(_ dictionary: [String: SourceKitRepresentable],
                            file: File) -> [StyleViolation] {
-
         let location: Location
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
             location = Location(file: file, byteOffset: offset)
@@ -122,7 +120,8 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location
             )

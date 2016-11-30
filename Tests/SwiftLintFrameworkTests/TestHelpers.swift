@@ -153,7 +153,7 @@ extension XCTestCase {
         // make sure strings that don't trigger aren't corrected
         zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
 
-        //"disable" command do not correct
+        // "disable" command do not correct
         ruleDescription.corrections.forEach { before, _ in
             let beforeDisabled = command + before
             let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0

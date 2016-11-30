@@ -19,11 +19,16 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 
     public init(configuration: Any) throws {
         let dictionary = configuration as? [String:Any]
+        if let severityString = dictionary?["severity"] as? String {
+            try self.configuration.applyConfiguration(severityString)
+        }
+
         flexibleRightSpacing = dictionary?["flexible_right_spacing"] as? Bool == true
     }
 
     public var configurationDescription: String {
-        return "flexible_right_spacing: \(flexibleRightSpacing)"
+        return configuration.consoleDescription +
+            ", flexible_right_spacing: \(flexibleRightSpacing)"
     }
 
     public static let description = RuleDescription(

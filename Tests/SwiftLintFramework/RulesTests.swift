@@ -312,14 +312,21 @@ class RulesTests: XCTestCase {
                 "let foo = [1, 2, 3, ]\n",
                 "let foo = [1, 2, 3   ,]\n",
                 "let foo = [1: 2, 2: 3, ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n"
+                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
+                "let foo = [Void]()\n",
+                "let foo = [(Void, Void)]()\n",
+                "let foo = [1, 2, 3]\n",
+                "let foo = [1: 2, 2: 3]\n",
+                "let foo = [1: 2, 2: 3   ]\n",
+                "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
+                "let foo = [1, 2, 3] + [4, 5, 6]\n"
             ],
             triggeringExamples: [
-                "let foo = [1, 2, 3↓]\n",
-                "let foo = [1: 2, 2: 3↓]\n",
-                "let foo = [1: 2, 2: 3↓   ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3↓]\n}\n",
-                "let foo = [1, 2, 3↓] + [4, 5, 6↓]\n"
+                "let foo = [1, 2,\n 3↓]\n",
+                "let foo = [1: 2,\n 2: 3↓]\n",
+                "let foo = [1: 2,\n 2: 3↓   ]\n",
+                "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
+                "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
             ]
         )
 

@@ -6,6 +6,12 @@
 
 ##### Enhancements
 
+* `TrailingCommaRule` now only triggers when a declaration is multi-line
+  when using `mandatory_comma: true`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#910](https://github.com/realm/SwiftLint/issues/910)
+  [#911](https://github.com/realm/SwiftLint/issues/911)
+  
 * Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
   `@discardableResult`, etc) is in the right position:
     - If the attribute is `@IBAction` or `@NSManaged`, it should always be on

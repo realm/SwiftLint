@@ -7,6 +7,7 @@
 //
 
 import SourceKittenFramework
+import Foundation
 
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 

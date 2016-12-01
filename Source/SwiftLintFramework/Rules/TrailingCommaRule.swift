@@ -22,7 +22,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = [1, 2, 3]\n",
             "let foo = []\n",
             "let foo = [:]\n",
-            "let foo = [1: 2, 2: 3]\n"
+            "let foo = [1: 2, 2: 3]\n",
+            "let foo = [Void]()\n"
         ],
         triggeringExamples: [
             "let foo = [1, 2, 3↓,]\n",
@@ -58,6 +59,13 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         guard let lastPosition = endPositions.max() else {
+            return []
+        }
+
+        if let (startLine, _) =  file.contents.lineAndCharacter(forByteOffset: bodyOffset),
+            let (endLine, _) =  file.contents.lineAndCharacter(forByteOffset: lastPosition),
+            configuration.mandatoryComma && startLine == endLine {
+            // shouldn't trigger if mandatory comma style and is a single-line declaration 
             return []
         }
 

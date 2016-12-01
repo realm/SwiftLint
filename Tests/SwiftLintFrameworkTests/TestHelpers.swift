@@ -34,7 +34,7 @@ private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, 
     return (contents as String, markerOffsets.sorted())
 }
 
-func render(violations: [StyleViolation], in contents: String) -> String {
+private func render(violations: [StyleViolation], in contents: String) -> String {
     var contents = (contents as NSString).lines().map { $0.content }
     for violation in violations.sorted(by: { $0.location > $1.location }) {
         guard let line = violation.location.line,
@@ -54,7 +54,7 @@ func render(violations: [StyleViolation], in contents: String) -> String {
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
 
-func render(locations: [Location], in contents: String) -> String {
+private func render(locations: [Location], in contents: String) -> String {
     var contents = (contents as NSString).lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }

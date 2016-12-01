@@ -10,7 +10,8 @@
 
 ##### Enhancements
 
-* None.
+* Add `EmojiReporter`: a human readble reporter.  
+  [Michał Kałużny](https://github.com/justMaku)
 
 ##### Bug Fixes
 

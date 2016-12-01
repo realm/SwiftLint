@@ -18,7 +18,8 @@ class ReporterTests: XCTestCase {
             CSVReporter.self,
             CheckstyleReporter.self,
             JUnitReporter.self,
-            HTMLReporter.self
+            HTMLReporter.self,
+            EmojiReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFromString(reporter.identifier).identifier)
@@ -43,6 +44,15 @@ class ReporterTests: XCTestCase {
             XcodeReporter.generateReport(generateViolations()),
             "filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)\n" +
             "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)"
+        )
+    }
+
+    func testEmojiReporter() {
+        XCTAssertEqual(
+            EmojiReporter.generateReport(generateViolations()),
+            "filename\n" +
+            "⛔️ Line 1: Violation Reason.\n" +
+            "⚠️ Line 1: Violation Reason."
         )
     }
 

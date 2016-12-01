@@ -148,8 +148,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents as NSString
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
-            let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
-            return syntaxKinds.startsWith([.Comment])
+            return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .Comment
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

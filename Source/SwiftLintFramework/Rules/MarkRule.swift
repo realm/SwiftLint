@@ -19,9 +19,9 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         name: "Mark",
         description: "MARK comment should be in valid format.",
         nonTriggeringExamples: [
-            "// MARK: good",
-            "// MARK: - good",
-            "// MARK: -"
+            "// MARK: good\n",
+            "// MARK: - good\n",
+            "// MARK: -\n"
         ],
         triggeringExamples: [
             "//MARK: bad",
@@ -72,8 +72,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return "(\(mark) -\(twoOrMoreSpace))"
     }
 
-    private var nonSpaceAfterHyphenPattern: String {
-        return "(\(mark) -\(nonSpace))"
+    private var nonSpaceOrNewlineAfterHyphenPattern: String {
+        return "(\(mark) -[^ \n])"
     }
 
     private var pattern: String {
@@ -82,7 +82,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             endNonSpacePattern,
             endTwoOrMoreSpacePattern,
             twoOrMoreSpacesAfterHyphenPattern,
-            nonSpaceAfterHyphenPattern
+            nonSpaceOrNewlineAfterHyphenPattern
         ].joinWithSeparator("|")
     }
 

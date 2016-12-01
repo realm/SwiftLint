@@ -102,8 +102,10 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "NSRect"
         ]
 
+        let expandToIncludeOptionals: (String) -> [String] = { [$0, $0 + "!", $0 + "?"] }
+
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
-        return referenceTypes.flatMap { [$0, $0 + "!", $0 + "?"] } + types
+        return referenceTypes.flatMap(expandToIncludeOptionals) + types
     }
 
     private func violation(_ dictionary: [String: SourceKitRepresentable],

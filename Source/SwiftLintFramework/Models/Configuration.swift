@@ -218,8 +218,8 @@ public struct Configuration: Equatable {
 
 extension Configuration {
     fileprivate func configurationForPath(_ path: String) -> Configuration {
-        let path = path as NSString
-        let configurationSearchPath = path.appendingPathComponent(Configuration.fileName)
+        let pathNSString = path as NSString
+        let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
         // If a configuration exists and it isn't us, load and merge the gurations
         if configurationSearchPath != configurationPath &&
@@ -229,8 +229,8 @@ extension Configuration {
         }
 
         // If we are not at the root path, continue down the tree
-        if path as String != rootPath && path != "/" {
-            return configurationForPath(path.deletingLastPathComponent)
+        if path != rootPath && path != "/" {
+            return configurationForPath(pathNSString.deletingLastPathComponent)
         }
 
         // If nothing else, return self

@@ -17,15 +17,26 @@ public struct CheckstyleReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">" +
-            violations.map({ violation in
-                let fileName = violation.location.file ?? "<nopath>"
-                return ["\n\t<file name=\"\(fileName)\">\n",
-                    "\t\t<error line=\"\(violation.location.line ?? 0)\" ",
-                    "column=\"\(violation.location.character ?? 0)\" ",
-                    "severity=\"\(violation.severity.rawValue.lowercased())\" ",
-                    "message=\"\(violation.reason)\"/>\n",
-                    "\t</file>"].joined(separator: "")
-            }).joined(separator: "") + "\n</checkstyle>"
+        return [
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
+            violations.map(generateForSingleViolation).joined(),
+            "\n</checkstyle>"
+        ].joined()
+    }
+
+    private static func generateForSingleViolation(_ violation: StyleViolation) -> String {
+        let file: String = violation.location.file ?? "<nopath>"
+        let line: Int = violation.location.line ?? 0
+        let col: Int = violation.location.character ?? 0
+        let severity: String = violation.severity.rawValue.lowercased()
+        let reason: String = violation.reason
+        return [
+            "\n\t<file name=\"", file, "\">\n",
+            "\t\t<error line=\"\(line)\" ",
+            "column=\"\(col)\" ",
+            "severity=\"", severity, "\" ",
+            "message=\"", reason, "\"/>\n",
+            "\t</file>"
+        ].joined()
     }
 }

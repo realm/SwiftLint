@@ -115,7 +115,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             replaceString: "// MARK: - "))
 
         result.appendContentsOf(correctFile(file,
-            pattern: nonSpaceAfterHyphenPattern,
+            pattern: nonSpaceOrNewlineAfterHyphenPattern,
             replaceString: "// MARK: - ",
             keepLastChar: true))
 

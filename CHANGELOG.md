@@ -6,6 +6,20 @@
 
 ##### Enhancements
 
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.13.2: Light Cycle
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
 * `TrailingCommaRule` now only triggers when a declaration is multi-line
   when using `mandatory_comma: true`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

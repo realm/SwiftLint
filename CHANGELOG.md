@@ -14,7 +14,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix `MarkRule` reporting a violation for `// MARK: -`, which is valid.  
+  [JP Simard](https://github.com/jpsim)
+  [#778](https://github.com/realm/SwiftLint/issues/778)
 
 ## 0.13.1: Heavy Cycle
 

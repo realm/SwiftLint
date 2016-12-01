@@ -26,6 +26,8 @@ public func reporterFromString(_ string: String) -> Reporter.Type {
         return JUnitReporter.self
     case HTMLReporter.identifier:
         return HTMLReporter.self
+    case EmojiReporter.identifier:
+        return EmojiReporter.self
     default:
         fatalError("no reporter with identifier '\(string)' available.")
     }

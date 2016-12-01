@@ -20,9 +20,9 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         name: "Mark",
         description: "MARK comment should be in valid format.",
         nonTriggeringExamples: [
-            "// MARK: good",
-            "// MARK: - good",
-            "// MARK: -"
+            "// MARK: good\n",
+            "// MARK: - good\n",
+            "// MARK: -\n"
         ],
         triggeringExamples: [
             "//MARK: bad",
@@ -73,8 +73,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return "(\(mark) -\(twoOrMoreSpace))"
     }
 
-    private var nonSpaceAfterHyphenPattern: String {
-        return "(\(mark) -\(nonSpace))"
+    private var nonSpaceOrNewlineAfterHyphenPattern: String {
+        return "(\(mark) -[^ \n])"
     }
 
     private var pattern: String {
@@ -83,7 +83,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             endNonSpacePattern,
             endTwoOrMoreSpacePattern,
             twoOrMoreSpacesAfterHyphenPattern,
-            nonSpaceAfterHyphenPattern
+            nonSpaceOrNewlineAfterHyphenPattern
         ].joined(separator: "|")
     }
 
@@ -116,7 +116,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             replaceString: "// MARK: - "))
 
         result.append(contentsOf: correctFile(file,
-            pattern: nonSpaceAfterHyphenPattern,
+            pattern: nonSpaceOrNewlineAfterHyphenPattern,
             replaceString: "// MARK: - ",
             keepLastChar: true))
 
@@ -149,8 +149,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents as NSString
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
-            let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
-            return syntaxKinds.starts(with: [.comment])
+            return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

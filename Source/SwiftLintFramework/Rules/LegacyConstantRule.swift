@@ -75,28 +75,6 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "NSZeroSize": "NSSize.zero",
             "CGRectNull": "CGRect.null"
         ]
-
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        var contents = file.contents
-        let matches = patterns.map({ pattern, template in
-            file.matchPattern(pattern, withSyntaxKinds: [.identifier])
-                .filter { !file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty }
-                .map { ($0, pattern, template) }
-        }).joined().sorted { $0.0.location > $1.0.location } // reversed
-
-        if matches.isEmpty { return [] }
-
-        for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatches(in: contents,
-                                                                       options: [],
-                                                                       range: range,
-                                                                       withTemplate: template)
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
+        return file.correctLegacyRule(self, patterns: patterns)
     }
 }

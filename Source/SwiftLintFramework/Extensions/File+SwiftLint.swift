@@ -56,24 +56,21 @@ extension File {
         let nextCharacter: Int?
         if let nextCommandCharacter = nextCommand.character {
             nextLine = nextCommand.line
-            if nextCommand.character! > 0 {
+            if nextCommandCharacter > 0 {
                 nextCharacter = nextCommandCharacter - 1
             } else {
                 nextCharacter = nil
             }
         } else {
             nextLine = max(nextCommand.line - 1, 0)
-            nextCharacter = Int.max
+            nextCharacter = .max
         }
         return Location(file: path, line: nextLine, character: nextCharacter)
     }
 
     internal func matchPattern(_ pattern: String,
                                withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        return matchPattern(pattern).filter { _, kindsInRange in
-            return kindsInRange.count == syntaxKinds.count &&
-                zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).isEmpty
-        }.map { $0.0 }
+        return matchPattern(pattern).filter({ $0.1 == syntaxKinds }).map { $0.0 }
     }
 
     internal func rangesAndTokensMatching(_ pattern: String) -> [(NSRange, [SyntaxToken])] {
@@ -183,7 +180,7 @@ extension File {
     internal func validateVariableName(_ dictionary: [String: SourceKitRepresentable],
                                        kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) ,
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
                 return nil
         }
@@ -252,4 +249,34 @@ extension File {
         let count = end - start - numberOfCommentAndWhitespaceOnlyLines(start, endLine: end)
         return (count > limit, count)
     }
+
+    internal func correctLegacyRule<R: Rule>(_ rule: R,
+                                             patterns: [String: String]) -> [Correction] {
+        typealias RangePatternTemplate = (NSRange, String, String)
+        let matches: [RangePatternTemplate]
+        matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
+            return matchPattern(pattern).filter { range, kinds in
+                return kinds.first == .identifier &&
+                    !ruleEnabledViolatingRanges([range], forRule: rule).isEmpty
+            }.map { ($0.0, pattern, template) }
+        }).sorted { $0.0.location > $1.0.location } // reversed
+
+        if matches.isEmpty { return [] }
+
+        let description = type(of: rule).description
+        var corrections = [Correction]()
+        var contents = self.contents
+
+        for (range, pattern, template) in matches {
+            contents = regex(pattern).stringByReplacingMatches(in: contents, options: [],
+                                                               range: range,
+                                                               withTemplate: template)
+            let location = Location(file: self, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+
+        write(contents)
+        return corrections
+    }
+
 }

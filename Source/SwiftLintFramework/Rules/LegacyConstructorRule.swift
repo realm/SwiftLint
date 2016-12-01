@@ -113,7 +113,6 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
 
     public func correctFile(_ file: File) -> [Correction] {
         let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
-
         let patterns = [
             "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",
             "CGSizeMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGSize(width: $1, height: $2)",
@@ -130,29 +129,6 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
         ]
-
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        var contents = file.contents
-
-        let matches = patterns.map({ pattern, template in
-            file.matchPattern(pattern)
-                .filter { !file.ruleEnabledViolatingRanges([$0.0], forRule: self).isEmpty }
-                .filter { $0.1.first == .identifier }
-                .map { ($0.0, pattern, template) }
-        }).joined().sorted { $0.0.location > $1.0.location } // reversed
-        if matches.isEmpty { return [] }
-
-        for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatches(in: contents,
-                                                                       options: [],
-                                                                       range: range,
-                                                                       withTemplate: template)
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
+        return file.correctLegacyRule(self, patterns: patterns)
     }
 }

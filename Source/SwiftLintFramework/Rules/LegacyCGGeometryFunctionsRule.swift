@@ -106,12 +106,10 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         }
     }
 
-    // swiftlint:disable function_body_length
     public func correctFile(_ file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-
         let patterns = [
             "CGRectGetWidth\\(\(varName)\\)": "$1.width",
             "CGRectGetHeight\\(\(varName)\\)": "$1.height",
@@ -134,29 +132,6 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
             "CGRectContainsPoint\\(\(twoVars)\\)": "$1.contains($2)",
             "CGRectIntersectsRect\\(\(twoVars)\\)": "$1.intersects($2)"
         ]
-
-        let description = type(of: self).description
-        var corrections = [Correction]()
-        var contents = file.contents
-
-        let matches = patterns.map({ pattern, template in
-            file.matchPattern(pattern)
-                .filter { !file.ruleEnabledViolatingRanges([$0.0], forRule: self).isEmpty }
-                .filter { $0.1.first == .identifier }
-                .map { ($0.0, pattern, template) }
-        }).joined().sorted { $0.0.location > $1.0.location } // reversed
-
-        if matches.isEmpty { return [] }
-
-        for (range, pattern, template) in matches {
-            contents = regex(pattern).stringByReplacingMatches(in: contents, options: [],
-                                                                       range: range,
-                                                                       withTemplate: template)
-            let location = Location(file: file, characterOffset: range.location)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
+        return file.correctLegacyRule(self, patterns: patterns)
     }
 }

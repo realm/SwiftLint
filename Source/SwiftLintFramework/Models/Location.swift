@@ -7,14 +7,15 @@
 //
 
 import SourceKittenFramework
-fileprivate func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
+
+private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
   }
 }
 
@@ -25,11 +26,10 @@ public struct Location: CustomStringConvertible, Comparable {
     public var description: String {
         // Xcode likes warnings and errors in the following format:
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
-        return [
-            file ?? "<nopath>",
-            line.map({ ":\($0)" }) ?? "",
-            character.map({ ":\($0)" }) ?? ""
-        ].joined()
+        let fileString: String = file ?? "<nopath>"
+        let lineString: String = line.map({ ":\($0)" }) ?? ""
+        let charString: String = character.map({ ":\($0)" }) ?? ""
+        return [fileString, lineString, charString].joined()
     }
 
     public init(file: String?, line: Int? = nil, character: Int? = nil) {

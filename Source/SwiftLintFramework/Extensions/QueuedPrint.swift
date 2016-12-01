@@ -12,11 +12,11 @@ private let outputQueue: DispatchQueue = {
     let queue = DispatchQueue(
         label: "io.realm.swiftlint.outputQueue",
         qos: .userInteractive,
-        target: DispatchQueue.global(qos: .userInteractive)
+        target: .global(qos: .userInteractive)
     )
 
     atexit_b {
-        queue.sync(flags: .barrier, execute: {})
+        queue.sync(flags: .barrier) {}
     }
 
     return queue

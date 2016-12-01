@@ -117,10 +117,6 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testFileHeader() {
-        verifyRule(FileHeaderRule.description, commentDoesntViolate: false)
-    }
-
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false)
     }

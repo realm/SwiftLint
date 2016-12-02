@@ -15,7 +15,7 @@
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing
-  but not ending in `delegate`.
+  but not ending in `delegate`. 
   [Phil Webster](https://github.com/philwebster)
 
 ## 0.13.2: Light Cycle

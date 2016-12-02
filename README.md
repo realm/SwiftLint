@@ -30,7 +30,7 @@ You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 running it.
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 7.1 or later).
+`git submodule update --init --recursive; make install` (Xcode 8.0 or later).
 
 ## Usage
 

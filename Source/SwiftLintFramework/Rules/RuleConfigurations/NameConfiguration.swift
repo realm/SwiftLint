@@ -47,7 +47,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         if let maxLengthConfiguration = configurationDict["max_length"] {
             try maxLength.applyConfiguration(maxLengthConfiguration)
         }
-        if let excluded = [String].arrayOf(configurationDict["excluded"]) {
+        if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
         }
     }

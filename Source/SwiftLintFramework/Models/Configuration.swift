@@ -115,7 +115,7 @@ public struct Configuration: Equatable {
         }
 
         func defaultStringArray(_ object: Any?) -> [String] {
-            return [String].arrayOf(object) ?? []
+            return [String].array(of: object) ?? []
         }
 
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.

@@ -67,11 +67,11 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.applyConfiguration(severityString)
         }
 
-        if let excluded = [String].arrayOf(configuration["excluded"]) {
+        if let excluded = [String].array(of: configuration["excluded"]) {
             self.excluded = excluded
         }
 
-        if let included = [String].arrayOf(configuration["included"]) {
+        if let included = [String].array(of: configuration["included"]) {
             self.included = included
         }
 

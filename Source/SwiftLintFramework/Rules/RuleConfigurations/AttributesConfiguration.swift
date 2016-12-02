@@ -9,7 +9,7 @@
 import Foundation
 
 public struct AttributesConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.Warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var alwaysOnSameLine = Set<String>()
     private(set) var alwaysOnNewLine = Set<String>()
 
@@ -25,9 +25,9 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
         self.alwaysOnNewLine = Set(alwaysOnNewLine)
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
+    public mutating func applyConfiguration(_ configuration: Any) throws {
         guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+            throw ConfigurationError.unknownConfiguration
         }
 
         if let alwaysOnSameLine = configuration["always_on_same_line"] as? [String] {

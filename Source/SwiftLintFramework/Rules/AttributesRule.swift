@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-private enum AttributesRuleError: ErrorType {
-    case UnexpectedBlankLine
-    case MoreThanOneAttributeInSameLine
+private enum AttributesRuleError: Error {
+    case unexpectedBlankLine
+    case moreThanOneAttributeInSameLine
 }
 
 public struct AttributesRule: ASTRule, ConfigurationProviderRule {
@@ -34,12 +34,12 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: AttributesRuleExamples.triggeringExamples()
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        return validateTestableImport(file) +
+    public func validateFile(_ file: File) -> [StyleViolation] {
+        return validateTestableImport(file: file) +
             validateFile(file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
@@ -56,7 +56,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
         let violations: [StyleViolation]
         if let attributeShouldBeOnSameLine = attributeShouldBeOnSameLine {
-            violations = validateKind(file,
+            violations = validateKind(file: file,
                                       attributeShouldBeOnSameLine: attributeShouldBeOnSameLine,
                                       dictionary: dictionary)
         } else {
@@ -70,7 +70,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         let pattern = "@testable[\n]+\\s*import"
         return file.matchPattern(pattern).flatMap { range, kinds -> StyleViolation? in
             guard kinds.count == 2 &&
-                kinds.first == .AttributeBuiltin && kinds.last == .Keyword else {
+                kinds.first == .attributeBuiltin && kinds.last == .keyword else {
                     return nil
             }
 
@@ -78,7 +78,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                 .substringWithByteRange(start: range.location, length: range.length)
             let location = (match?.lastIndexOf("import") ?? 0) + range.location
 
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, byteOffset: location))
         }
@@ -87,18 +87,18 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
     private func validateKind(file: File,
                               attributeShouldBeOnSameLine: Bool,
                               dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let attributes = parseAttributes(dictionary)
+        let attributes = parseAttributes(dictionary: dictionary)
 
         guard !attributes.isEmpty,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let (lineNumber, _) = file.contents.lineAndCharacterForByteOffset(offset) else {
+            let (lineNumber, _) = file.contents.lineAndCharacter(forByteOffset: offset) else {
             return []
         }
 
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokensIn(line.byteRange)
-        let attributesTokensWithRanges = tokens.flatMap { attributeName($0, file: file) }
+        let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
         var isViolation = false
@@ -114,22 +114,22 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
-            if !attributesTokens.intersect(alwaysOnNewLineAttributes).isEmpty {
+            if !attributesTokens.intersection(alwaysOnNewLineAttributes).isEmpty {
                 isViolation = true
-            } else if !previousAttributes.intersect(alwaysOnSameLineAttributes).isEmpty {
+            } else if !previousAttributes.intersection(alwaysOnSameLineAttributes).isEmpty {
                 isViolation = true
             } else {
                 // ignore whitelisted attributes
                 let attributesAfterWhitelist: Set<String>
-                let newLineExceptions = previousAttributes.intersect(alwaysOnNewLineAttributes)
-                let sameLineExceptions = attributesTokens.intersect(alwaysOnSameLineAttributes)
+                let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
+                let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
 
                 if attributeShouldBeOnSameLine {
                     attributesAfterWhitelist = attributesTokens
                         .union(newLineExceptions).union(sameLineExceptions)
                 } else {
                     attributesAfterWhitelist = attributesTokens
-                        .subtract(newLineExceptions).subtract(sameLineExceptions)
+                        .subtracting(newLineExceptions).subtracting(sameLineExceptions)
                 }
 
                 isViolation = attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
@@ -143,31 +143,32 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Violation found!
-        return violation(dictionary, file: file)
+        return violation(dictionary: dictionary, file: file)
     }
 
-    private func createAlwaysOnNewLineAttributes(previousAttributesWithParameters: [(String, Bool)],
+    private func createAlwaysOnNewLineAttributes(_ previousAttributes: [(String, Bool)],
                                                  attributesTokens: [(String, NSRange)],
-                                                 line: Line, file: File) -> [String] {
+                                                 line: Line, file: File) -> Set<String> {
         let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
-            let hasParameter = attributeContainsParameter($1, line: line, file: file)
+            let hasParameter = attributeContainsParameter(attributeRange: $1,
+                                                          line: line, file: file)
             return ($0, hasParameter)
         }
-        let allAttributes = previousAttributesWithParameters + attributesTokensWithParameters
+        let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return allAttributes.flatMap { (token, hasParameter) -> String? in
+        return Set(allAttributes.flatMap { (token, hasParameter) -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
             // 2. it's a whitelisted attribute, according to the current configuration
-            let isParameterized = hasParameter || token.containsString("(")
+            let isParameterized = hasParameter || (token as NSString).contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token
             }
 
             return nil
-        }
+        })
     }
 
     private func violation(dictionary: [String: SourceKitRepresentable],
@@ -180,7 +181,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
                 location: location)
         ]
@@ -188,7 +189,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
     // returns an array with the token itself (i.e. "@objc") and whether it's parameterized
     // note: the parameter is not contained in the token
-    private func attributesFromPreviousLines(lineNumber: Int,
+    private func attributesFromPreviousLines(_ lineNumber: Int,
                                              file: File) throws -> [(String, Bool)] {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
@@ -198,10 +199,10 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             let tokens = file.syntaxMap.tokensIn(line.byteRange)
 
             if tokens.isEmpty {
-                throw AttributesRuleError.UnexpectedBlankLine
+                throw AttributesRuleError.unexpectedBlankLine
             }
 
-            let attributesTokens = tokens.flatMap { attributeName($0, file: file) }
+            let attributesTokens = tokens.flatMap { attributeName(token: $0, file: file) }
             guard let firstTokenRange = attributesTokens.first?.1 else {
                 // found a line that does not contain an attribute token - we can stop looking
                 break
@@ -209,12 +210,13 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
             if attributesTokens.count > 1 {
                 // we don't allow multiple attributes in the same line if it's a previous line
-                throw AttributesRuleError.MoreThanOneAttributeInSameLine
+                throw AttributesRuleError.moreThanOneAttributeInSameLine
             }
 
-            let hasParameter = attributeContainsParameter(firstTokenRange, line: line, file: file)
+            let hasParameter = attributeContainsParameter(attributeRange: firstTokenRange,
+                                                          line: line, file: file)
 
-            allTokens.insertContentsOf(attributesTokens.map { ($0.0, hasParameter) }, at: 0)
+            allTokens.insert(contentsOf: attributesTokens.map { ($0.0, hasParameter) }, at: 0)
             currentLine -= 1
         }
 
@@ -231,8 +233,8 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`
         guard let restOfLine = file.contents.substringWithByteRange(start: restOfLineOffset,
-                                                                    length: restOfLineLength)
-            where regex.firstMatchInString(restOfLine, options: [], range: range) != nil else {
+                                                                    length: restOfLineLength),
+            regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
 
             return false
         }
@@ -241,20 +243,20 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func attributeName(token: SyntaxToken, file: File) -> (String, NSRange)? {
-        guard SyntaxKind(rawValue: token.type) == .AttributeBuiltin else {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
             return nil
         }
 
         let maybeName = file.contents.substringWithByteRange(start: token.offset,
                                                              length: token.length)
-        if let name = maybeName where isAttribute(name) {
+        if let name = maybeName, isAttribute(name) {
             return (name, NSRange(location: token.offset, length: token.length))
         }
 
         return nil
     }
 
-    private func isAttribute(name: String) -> Bool {
+    private func isAttribute(_ name: String) -> Bool {
         // all attributes *should* start with @
         if name.hasPrefix("@") {
             return true
@@ -372,7 +374,7 @@ private struct AttributesRuleExamples {
                 "@GKInspectable\n ↓var maxSpeed: Float",
                 "@discardableResult ↓func a() -> Int",
                 "@objc\n @discardableResult ↓func a() -> Int",
-                "@objc\n\n @discardableResult\n ↓func a() -> Int",
+                "@objc\n\n @discardableResult\n ↓func a() -> Int"
             ]
 
             return common + swift3Only

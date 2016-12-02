@@ -22,29 +22,29 @@ extension SwiftDeclarationKind {
 
     internal static func functionKinds() -> [SwiftDeclarationKind] {
         return [
-            .FunctionAccessorAddress,
-            .FunctionAccessorDidset,
-            .FunctionAccessorGetter,
-            .FunctionAccessorMutableaddress,
-            .FunctionAccessorSetter,
-            .FunctionAccessorWillset,
-            .FunctionConstructor,
-            .FunctionDestructor,
-            .FunctionFree,
-            .FunctionMethodClass,
-            .FunctionMethodInstance,
-            .FunctionMethodStatic,
-            .FunctionOperator,
-            .FunctionSubscript
+            .functionAccessorAddress,
+            .functionAccessorDidset,
+            .functionAccessorGetter,
+            .functionAccessorMutableaddress,
+            .functionAccessorSetter,
+            .functionAccessorWillset,
+            .functionConstructor,
+            .functionDestructor,
+            .functionFree,
+            .functionMethodClass,
+            .functionMethodInstance,
+            .functionMethodStatic,
+            .functionOperator,
+            .functionSubscript
         ]
     }
 
     internal static func typeKinds() -> [SwiftDeclarationKind] {
         return [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum
+            .`class`,
+            .`struct`,
+            .`typealias`,
+            .`enum`
         ]
     }
 

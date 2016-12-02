@@ -94,7 +94,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
 
 public struct MissingDocsRule: OptInRule {
     public init(configuration: Any) throws {
-        guard let array = [String].arrayOf(configuration) else {
+        guard let array = [String].array(of: configuration) else {
             throw ConfigurationError.unknownConfiguration
         }
         let acl = array.flatMap(AccessControlLevel.init(description:))

@@ -22,7 +22,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue.lowercased()): \(regex.pattern)"
+        return "\(severity.rawValue): \(regex.pattern)"
     }
 
     public var description: RuleDescription {

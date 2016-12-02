@@ -103,7 +103,7 @@ public struct MissingDocsRule: OptInRule {
 
     public var configurationDescription: String {
         return parameters.map({
-            "\($0.severity.rawValue.lowercased()): \($0.value.rawValue)"
+            "\($0.severity.rawValue): \($0.value.rawValue)"
         }).joined(separator: ", ")
     }
 

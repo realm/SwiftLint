@@ -41,7 +41,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
             let character = violation.location.character else { continue }
 
         let message = String(repeating: " ", count: character - 1) + "^ " + [
-            "\(violation.severity.rawValue.lowercased()): ",
+            "\(violation.severity.rawValue): ",
             "\(violation.ruleDescription.name) Violation: ",
             violation.reason,
             " (\(violation.ruleDescription.identifier))"].joined()

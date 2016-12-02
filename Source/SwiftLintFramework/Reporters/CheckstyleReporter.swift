@@ -28,7 +28,7 @@ public struct CheckstyleReporter: Reporter {
         let file: String = violation.location.file ?? "<nopath>"
         let line: Int = violation.location.line ?? 0
         let col: Int = violation.location.character ?? 0
-        let severity: String = violation.severity.rawValue.lowercased()
+        let severity: String = violation.severity.rawValue
         let reason: String = violation.reason
         return [
             "\n\t<file name=\"", file, "\">\n",

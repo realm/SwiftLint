@@ -36,12 +36,12 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         var firstToken: SyntaxToken?
         var lastToken: SyntaxToken?
 
-        for token in file.syntaxTokensByLines.flatten() {
-            guard let kind = SyntaxKind(rawValue: token.type) where kind.isCommentLike else {
+        for token in file.syntaxTokensByLines.joined() {
+            guard let kind = SyntaxKind(rawValue: token.type), kind.isCommentLike else {
                 // found a token that is not a comment, which means it's not the top of the file
                 // so we can just skip the remaining tokens
                 break
@@ -54,7 +54,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         }
 
         var violations: [StyleViolation] = []
-        if let firstToken = firstToken, lastToken = lastToken {
+        if let firstToken = firstToken, let lastToken = lastToken {
             let start = firstToken.offset
             let length = lastToken.offset + lastToken.length - firstToken.offset
             guard let range = file.contents.byteRangeToNSRange(start: start, length: length) else {
@@ -62,10 +62,10 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             }
 
             if let regex = configuration.forbiddenRegex {
-                let matches = regex.matchesInString(file.contents, options: [], range: range)
+                let matches = regex.matches(in: file.contents, options: [], range: range)
                 if let firstMatch = matches.first {
                     let violation = StyleViolation(
-                        ruleDescription: self.dynamicType.description,
+                        ruleDescription: type(of: self).description,
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, byteOffset: firstMatch.range.location)
                     )
@@ -74,10 +74,10 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             }
 
             if let regex = configuration.requiredRegex {
-                let matches = regex.matchesInString(file.contents, options: [], range: range)
+                let matches = regex.matches(in: file.contents, options: [], range: range)
                 if matches.isEmpty {
                     let violation = StyleViolation(
-                        ruleDescription: self.dynamicType.description,
+                        ruleDescription: type(of: self).description,
                         severity: configuration.severityConfiguration.severity,
                         location: Location(file: file, byteOffset: start)
                     )
@@ -87,7 +87,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         } else if configuration.requiredRegex != nil {
             return [
                 StyleViolation(
-                    ruleDescription: self.dynamicType.description,
+                    ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file.path)
                 )

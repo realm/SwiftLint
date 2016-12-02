@@ -9,7 +9,7 @@
 import Foundation
 
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.Warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private var requiredString: String?
     private var requiredPattern: String?
     private var forbiddenString: String?
@@ -37,7 +37,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     // swiftlint:disable:next force_try
     private static let defaultRegex = try! NSRegularExpression(pattern: "\\bCopyright\\b",
-                                                              options: [.CaseInsensitive])
+                                                              options: [.caseInsensitive])
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", required_string: \(requiredString)" +
@@ -48,15 +48,15 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     public init() {
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
+    public mutating func applyConfiguration(_ configuration: Any) throws {
         guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+            throw ConfigurationError.unknownConfiguration
         }
 
         if let requiredString = configuration["required_string"] as? String {
             self.requiredString = requiredString
             requiredRegex = try NSRegularExpression(pattern: requiredString,
-                                                    options: [.IgnoreMetacharacters])
+                                                    options: [.ignoreMetacharacters])
         } else if let requiredPattern = configuration["required_pattern"] as? String {
             self.requiredPattern = requiredPattern
             requiredRegex = try NSRegularExpression.cached(pattern: requiredPattern)
@@ -65,7 +65,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         if let forbiddenString = configuration["forbidden_string"] as? String {
             self.forbiddenString = forbiddenString
             forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
-                                                     options: [.IgnoreMetacharacters])
+                                                     options: [.ignoreMetacharacters])
         } else if let forbiddenPattern = configuration["forbidden_pattern"] as? String {
             self.forbiddenPattern = forbiddenPattern
             forbiddenRegex = try NSRegularExpression.cached(pattern: forbiddenPattern)

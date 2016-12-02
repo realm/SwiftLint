@@ -10,7 +10,7 @@ import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return severity.rawValue.lowercased()
+        return severity.rawValue
     }
 
     var severity: ViolationSeverity

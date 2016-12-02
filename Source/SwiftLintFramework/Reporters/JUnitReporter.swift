@@ -20,7 +20,7 @@ public struct JUnitReporter: Reporter {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
             violations.map({ violation in
                 let fileName = violation.location.file ?? "<nopath>"
-                let severity = violation.severity.rawValue.lowercased() + ":\n"
+                let severity = violation.severity.rawValue + ":\n"
                 let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
                 return ["\n\t<testcase classname='Formatting Test' name='\(fileName)\'>\n",
                     "<failure message='\(violation.reason)\'>" + message + "</failure>",

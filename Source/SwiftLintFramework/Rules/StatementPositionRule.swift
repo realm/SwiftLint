@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = StatementConfiguration(statementMode: .Default,
-                                                     severity: SeverityConfiguration(.Warning))
+    public var configuration = StatementConfiguration(statementMode: .default,
+                                                      severity: SeverityConfiguration(.warning))
 
     public init() {}
 
@@ -73,18 +73,18 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
     public func validateFile(_ file: File) -> [StyleViolation] {
         switch configuration.statementMode {
-        case .Default:
+        case .default:
             return defaultValidateFile(file)
-        case .UncuddledElse:
+        case .uncuddledElse:
             return uncuddledValidateFile(file)
         }
     }
 
     public func correctFile(_ file: File) -> [Correction] {
         switch configuration.statementMode {
-        case .Default:
+        case .default:
             return defaultCorrectFile(file)
-        case .UncuddledElse:
+        case .uncuddledElse:
             return uncuddledCorrectFile(file)
         }
 
@@ -210,11 +210,11 @@ private extension StatementPositionRule {
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
         let matches = StatementPositionRule.uncuddledRegularExpression.matches(in: contents,
-                                                                                       options: [],
-                                                                                       range: range)
+                                                                               options: [],
+                                                                               range: range)
         let validator = type(of: self).uncuddledMatchValidator(contents)
         let filterRanges = type(of: self).uncuddledMatchFilter(contents: contents,
-                                                                 syntaxMap: syntaxMap)
+                                                               syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
                   .filter { !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty }

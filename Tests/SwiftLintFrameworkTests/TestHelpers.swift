@@ -124,6 +124,7 @@ fileprivate func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> 
 }
 
 extension XCTestCase {
+    // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,

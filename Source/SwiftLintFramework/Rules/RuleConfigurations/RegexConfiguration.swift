@@ -16,7 +16,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var regex = NSRegularExpression()
     public var included = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
-    public var severityConfiguration = SeverityConfiguration(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
@@ -42,10 +42,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
                 throw ConfigurationError.unknownConfiguration
         }
 
-        regex = try NSRegularExpression.cached(pattern: regexString)
+        regex = try .cached(pattern: regexString)
 
         if let includedString = configurationDict["included"] as? String {
-            included = try NSRegularExpression.cached(pattern: includedString)
+            included = try .cached(pattern: includedString)
         }
 
         if let name = configurationDict["name"] as? String {

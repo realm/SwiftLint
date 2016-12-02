@@ -61,12 +61,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             let nameCharacterSet = CharacterSet(charactersIn: name)
             if !CharacterSet.alphanumerics.isSuperset(of: nameCharacterSet) {
                 return [StyleViolation(ruleDescription: type(of: self).description,
-                    severity: .Error,
+                    severity: .error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should only contain alphanumeric characters: '\(name)'")]
             } else if !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
                 return [StyleViolation(ruleDescription: type(of: self).description,
-                    severity: .Error,
+                    severity: .error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Type name should start with an uppercase character: '\(name)'")]
             } else if let severity = severity(forLength: name.characters.count) {

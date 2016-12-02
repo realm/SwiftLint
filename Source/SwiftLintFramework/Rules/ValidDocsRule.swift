@@ -136,7 +136,7 @@ func superfluousOrMissingParameterDocumentation(_ declaration: String,
 
 public struct ValidDocsRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

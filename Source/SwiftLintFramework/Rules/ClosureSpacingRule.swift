@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

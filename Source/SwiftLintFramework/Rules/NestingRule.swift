@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct NestingRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

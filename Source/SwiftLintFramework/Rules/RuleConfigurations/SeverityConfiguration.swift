@@ -29,7 +29,7 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
     }
 
     fileprivate func severity(fromString string: String) -> ViolationSeverity? {
-        return ViolationSeverity(rawValue: string.lowercased().capitalized)
+        return ViolationSeverity(rawValue: string.lowercased())
     }
 }
 

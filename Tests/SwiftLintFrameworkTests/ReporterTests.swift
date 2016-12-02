@@ -32,7 +32,7 @@ class ReporterTests: XCTestCase {
                 location: location,
                 reason: "Violation Reason."),
             StyleViolation(ruleDescription: LineLengthRule.description,
-                severity: .Error,
+                severity: .error,
                 location: location,
                 reason: "Violation Reason.")
         ]

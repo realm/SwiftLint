@@ -72,13 +72,13 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
             let description = type(of: self).description
             if !CharacterSet.alphanumerics.isSuperset(of: nameCharacterSet) {
                 return [StyleViolation(ruleDescription: description,
-                    severity: .Error,
+                    severity: .error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric " +
                         "characters: '\(name)'")]
             } else if kind != SwiftDeclarationKind.varStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
-                    severity: .Error,
+                    severity: .error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should start with a lowercase character: '\(name)'")]
             } else if let severity = severity(forLength: name.characters.count) {

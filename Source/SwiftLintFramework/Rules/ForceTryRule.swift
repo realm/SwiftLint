@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ForceTryRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Error)
+    public var configuration = SeverityConfiguration(.error)
 
     public init() {}
 

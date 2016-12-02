@@ -39,7 +39,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
                              kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        let allowedKinds: [SwiftExpressionKind] = [.Array, .Dictionary]
+        let allowedKinds: [SwiftExpressionKind] = [.array, .dictionary]
 
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
@@ -102,18 +102,18 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 }
 
 public enum SwiftExpressionKind: String {
-    case Array = "source.lang.swift.expr.array"
-    case Dictionary = "source.lang.swift.expr.dictionary"
-    case Other
+    case array = "source.lang.swift.expr.array"
+    case dictionary = "source.lang.swift.expr.dictionary"
+    case other
 
     public init?(rawValue: String) {
         switch rawValue {
-        case SwiftExpressionKind.Array.rawValue:
-            self = .Array
-        case SwiftExpressionKind.Dictionary.rawValue:
-            self = .Dictionary
+        case SwiftExpressionKind.array.rawValue:
+            self = .array
+        case SwiftExpressionKind.dictionary.rawValue:
+            self = .dictionary
         default:
-            self = .Other
+            self = .other
         }
     }
 }

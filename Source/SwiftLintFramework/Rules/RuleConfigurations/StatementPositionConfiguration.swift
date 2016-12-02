@@ -9,7 +9,8 @@
 import Foundation
 
 public enum StatementModeConfiguration: String {
-    case Default = "default", UncuddledElse = "uncuddled_else"
+    case `default` = "default"
+    case uncuddledElse = "uncuddled_else"
 
     init(value: Any) throws {
         if let string = (value as? String)?.lowercased(),

@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ForceCastRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Error)
+    public var configuration = SeverityConfiguration(.error)
 
     public init() {}
 

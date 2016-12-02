@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

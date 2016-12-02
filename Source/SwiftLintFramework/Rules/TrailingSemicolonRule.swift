@@ -18,7 +18,7 @@ extension File {
 
 public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

@@ -9,7 +9,7 @@
 import Foundation
 
 public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var allowPrivateSet = false
 
     public var consoleDescription: String {

@@ -32,8 +32,8 @@ public struct HTMLReporter: Reporter {
         }
 
         let fileCount = Set(violations.flatMap({ $0.location.file })).count
-        let warningCount = violations.filter({ $0.severity == .Warning }).count
-        let errorCount = violations.filter({ $0.severity == .Error }).count
+        let warningCount = violations.filter({ $0.severity == .warning }).count
+        let errorCount = violations.filter({ $0.severity == .error }).count
         let dateString = formatter.string(from: Date())
 
         return [
@@ -118,7 +118,7 @@ public struct HTMLReporter: Reporter {
     }
 
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
-        let severity: String = violation.severity.rawValue
+        let severity: String = violation.severity.rawValue.capitalized
         let location = violation.location
         let file: String = location.file ?? ""
         let line: Int = location.line ?? 0

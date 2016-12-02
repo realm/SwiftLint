@@ -25,8 +25,8 @@ extension File {
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
-            case .Disable: disabledRules.formUnion(command.ruleIdentifiers)
-            case .Enable: disabledRules.subtract(command.ruleIdentifiers)
+            case .disable: disabledRules.formUnion(command.ruleIdentifiers)
+            case .enable: disabledRules.subtract(command.ruleIdentifiers)
             }
             let start = Location(file: path, line: command.line, character: command.character)
             let end = endOfNextCommand(nextCommand)
@@ -50,7 +50,7 @@ extension File {
 
     fileprivate func endOfNextCommand(_ nextCommand: Command?) -> Location {
         guard let nextCommand = nextCommand else {
-            return Location(file: path, line: Int.max, character: Int.max)
+            return Location(file: path, line: .max, character: .max)
         }
         let nextLine: Int
         let nextCharacter: Int?

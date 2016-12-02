@@ -34,6 +34,38 @@ private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, 
     return (contents as String, markerOffsets.sorted())
 }
 
+private func render(violations: [StyleViolation], in contents: String) -> String {
+    var contents = (contents as NSString).lines().map { $0.content }
+    for violation in violations.sorted(by: { $0.location > $1.location }) {
+        guard let line = violation.location.line,
+            let character = violation.location.character else { continue }
+
+        let message = String(repeating: " ", count: character - 1) + "^ " + [
+            "\(violation.severity.rawValue.lowercased()): ",
+            "\(violation.ruleDescription.name) Violation: ",
+            violation.reason,
+            " (\(violation.ruleDescription.identifier))"].joined()
+        if line >= contents.count {
+            contents.append(message)
+        } else {
+            contents.insert(message, at: line)
+        }
+    }
+    return (["```"] + contents + ["```"]).joined(separator: "\n")
+}
+
+private func render(locations: [Location], in contents: String) -> String {
+    var contents = (contents as NSString).lines().map { $0.content }
+    for location in locations.sorted(by: > ) {
+        guard let line = location.line, let character = location.character else { continue }
+        var content = contents[line - 1]
+        let index = content.index(content.startIndex, offsetBy: character - 1)
+        content.insert("↓", at: index)
+        contents[line - 1] = content
+    }
+    return (["```"] + contents + ["```"]).joined(separator: "\n")
+}
+
 extension Configuration {
     fileprivate func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
@@ -105,32 +137,51 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
 
         // Non-triggering examples don't violate
-        XCTAssertEqual(nonTriggers.flatMap({ violations($0, config: config) }), [])
+        for nonTrigger in nonTriggers {
+            let unexpectedViolations = violations(nonTrigger, config: config)
+            if unexpectedViolations.isEmpty { continue }
+            let nonTriggerWithViolations = render(violations: unexpectedViolations, in: nonTrigger)
+            XCTFail("nonTriggeringExample violated: \n\(nonTriggerWithViolations)")
+        }
 
-        var violationsCount = 0
-        var expectedViolationsCount = 0
+        // Triggering examples violate
         for trigger in triggers {
-            let triggerViolations = violations(trigger, config: config).sorted {
-                $0.location < $1.location
-            }
-            violationsCount += triggerViolations.count
+            let triggerViolations = violations(trigger, config: config)
+
             // Triggering examples with violation markers violate at the marker's location
             let (cleanTrigger, markerOffsets) = cleanedContentsAndMarkerOffsets(from: trigger)
             if markerOffsets.isEmpty {
-                expectedViolationsCount += 1
+                if triggerViolations.isEmpty {
+                    XCTFail("triggeringExample did not violate: \n```\n\(trigger)\n```")
+                }
                 continue
             }
-            expectedViolationsCount += markerOffsets.count
             let file = File(contents: cleanTrigger)
             let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
+
+            // Assert violations on unexpected location
+            let violationsAtUnexpectedLocation = triggerViolations
+                .filter { !expectedLocations.contains($0.location) }
+            if !violationsAtUnexpectedLocation.isEmpty {
+                XCTFail("triggeringExample violate at unexpected location: \n" +
+                    "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
+            }
+
+            // Assert locations missing vaiolation
+            let violatedLocations = triggerViolations.map { $0.location }
+            let locationsWithoutViolation = expectedLocations
+                .filter { !violatedLocations.contains($0) }
+            if !locationsWithoutViolation.isEmpty {
+                XCTFail("triggeringExample did not violate at expected location: \n" +
+                    "\(render(locations: locationsWithoutViolation, in: cleanTrigger))")
+            }
+
             XCTAssertEqual(triggerViolations.count, expectedLocations.count)
             for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
                 XCTAssertEqual(triggerViolation.location, expectedLocation,
                                "'\(trigger)' violation didn't match expected location.")
             }
         }
-        // Triggering examples violate
-        XCTAssertEqual(violationsCount, expectedViolationsCount)
 
         // Comment doesn't violate
         XCTAssertEqual(

@@ -39,9 +39,13 @@ class IntegrationTests: XCTestCase {
 
     func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFilesForPath("")
-        XCTAssertEqual(swiftFiles.flatMap({
-            Linter(file: $0, configuration: config).correct()
-        }), [])
+        let corrections = swiftFiles.flatMap { Linter(file: $0, configuration: config).correct() }
+        for correction in corrections {
+            correction.location.file!.withStaticString {
+                XCTFail(correction.ruleDescription.description,
+                        file: $0, line: UInt(correction.location.line!))
+            }
+        }
     }
 }
 

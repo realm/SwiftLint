@@ -44,7 +44,7 @@ public struct CSVReporter: Reporter {
             violation.location.file?.escapedForCSV() ?? "",
             violation.location.line?.description ?? "",
             violation.location.character?.description ?? "",
-            violation.severity.rawValue,
+            violation.severity.rawValue.capitalized,
             violation.ruleDescription.name.escapedForCSV(),
             violation.reason.escapedForCSV(),
             violation.ruleDescription.identifier

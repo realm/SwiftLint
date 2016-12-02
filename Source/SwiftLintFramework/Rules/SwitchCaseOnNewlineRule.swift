@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() { }
 

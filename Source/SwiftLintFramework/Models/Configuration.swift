@@ -12,15 +12,15 @@ import SourceKittenFramework
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
-    case DisabledRules = "disabled_rules"
-    case EnabledRules = "enabled_rules" // deprecated in favor of OptInRules
-    case Excluded = "excluded"
-    case Included = "included"
-    case OptInRules = "opt_in_rules"
-    case Reporter = "reporter"
-    case UseNestedConfigs = "use_nested_configs" // deprecated
-    case WhitelistRules = "whitelist_rules"
-    case WarningThreshold = "warning_threshold"
+    case disabledRules = "disabled_rules"
+    case enabledRules = "enabled_rules" // deprecated in favor of OptInRules
+    case excluded = "excluded"
+    case included = "included"
+    case optInRules = "opt_in_rules"
+    case reporter = "reporter"
+    case useNestedConfigs = "use_nested_configs" // deprecated
+    case whitelistRules = "whitelist_rules"
+    case warningThreshold = "warning_threshold"
 }
 
 public struct Configuration: Equatable {
@@ -81,9 +81,9 @@ public struct Configuration: Equatable {
         // white_list rules take precendence over all else.
         if !whitelistRules.isEmpty {
             if !disabledRules.isEmpty || !optInRules.isEmpty {
-                queuedPrintError("'\(ConfigurationKey.DisabledRules.rawValue)' or " +
-                    "'\(ConfigurationKey.OptInRules.rawValue)' cannot be used in combination " +
-                    "with '\(ConfigurationKey.WhitelistRules.rawValue)'")
+                queuedPrintError("'\(ConfigurationKey.disabledRules.rawValue)' or " +
+                    "'\(ConfigurationKey.optInRules.rawValue)' cannot be used in combination " +
+                    "with '\(ConfigurationKey.whitelistRules.rawValue)'")
                 return nil
             }
 
@@ -101,15 +101,15 @@ public struct Configuration: Equatable {
 
     public init?(dict: [String: Any]) {
         // Deprecation warning for "enabled_rules"
-        if dict[ConfigurationKey.EnabledRules.rawValue] != nil {
-            queuedPrintError("'\(ConfigurationKey.EnabledRules.rawValue)' has been renamed to " +
-                "'\(ConfigurationKey.OptInRules.rawValue)' and will be completely removed in a " +
+        if dict[ConfigurationKey.enabledRules.rawValue] != nil {
+            queuedPrintError("'\(ConfigurationKey.enabledRules.rawValue)' has been renamed to " +
+                "'\(ConfigurationKey.optInRules.rawValue)' and will be completely removed in a " +
                 "future release.")
         }
 
         // Deprecation warning for "use_nested_configs"
-        if dict[ConfigurationKey.UseNestedConfigs.rawValue] != nil {
-            queuedPrintError("Support for '\(ConfigurationKey.UseNestedConfigs.rawValue)' has " +
+        if dict[ConfigurationKey.useNestedConfigs.rawValue] != nil {
+            queuedPrintError("Support for '\(ConfigurationKey.useNestedConfigs.rawValue)' has " +
                 "been deprecated and its value is now ignored. Nested configuration files are " +
                 "now always considered.")
         }
@@ -120,21 +120,21 @@ public struct Configuration: Equatable {
 
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
-            dict[ConfigurationKey.OptInRules.rawValue] ??
-                dict[ConfigurationKey.EnabledRules.rawValue]
+            dict[ConfigurationKey.optInRules.rawValue] ??
+                dict[ConfigurationKey.enabledRules.rawValue]
         )
 
         // Log an error when supplying invalid keys in the configuration dictionary
         let validKeys = [
-            ConfigurationKey.DisabledRules,
-            .EnabledRules,
-            .Excluded,
-            .Included,
-            .OptInRules,
-            .Reporter,
-            .UseNestedConfigs,
-            .WarningThreshold,
-            .WhitelistRules
+            ConfigurationKey.disabledRules,
+            .enabledRules,
+            .excluded,
+            .included,
+            .optInRules,
+            .reporter,
+            .useNestedConfigs,
+            .warningThreshold,
+            .whitelistRules
         ].map({ $0.rawValue }) + masterRuleList.list.keys
 
         let invalidKeys = Set(dict.keys).subtracting(validKeys)
@@ -143,13 +143,13 @@ public struct Configuration: Equatable {
         }
 
         self.init(
-            disabledRules: defaultStringArray(dict[ConfigurationKey.DisabledRules.rawValue]),
+            disabledRules: defaultStringArray(dict[ConfigurationKey.disabledRules.rawValue]),
             optInRules: optInRules,
-            whitelistRules: defaultStringArray(dict[ConfigurationKey.WhitelistRules.rawValue]),
-            included: defaultStringArray(dict[ConfigurationKey.Included.rawValue]),
-            excluded: defaultStringArray(dict[ConfigurationKey.Excluded.rawValue]),
-            warningThreshold: dict[ConfigurationKey.WarningThreshold.rawValue] as? Int,
-            reporter: dict[ConfigurationKey.Reporter.rawValue] as? String ??
+            whitelistRules: defaultStringArray(dict[ConfigurationKey.whitelistRules.rawValue]),
+            included: defaultStringArray(dict[ConfigurationKey.included.rawValue]),
+            excluded: defaultStringArray(dict[ConfigurationKey.excluded.rawValue]),
+            warningThreshold: dict[ConfigurationKey.warningThreshold.rawValue] as? Int,
+            reporter: dict[ConfigurationKey.reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
             configuredRules: masterRuleList.configuredRules(with: dict)
         )

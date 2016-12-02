@@ -9,7 +9,7 @@
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.Warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var mandatoryComma: Bool
 
     public var consoleDescription: String {

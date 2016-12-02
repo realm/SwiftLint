@@ -22,8 +22,8 @@ class CustomRulesTests: XCTestCase {
         var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = NSRegularExpression.forcePattern("regex")
-        comp.severityConfiguration = SeverityConfiguration(.Error)
+        comp.regex = .forcePattern("regex")
+        comp.severityConfiguration = SeverityConfiguration(.error)
         comp.matchKinds = Set([SyntaxKind.comment])
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
@@ -50,7 +50,7 @@ class CustomRulesTests: XCTestCase {
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validateFile(file),
                        [StyleViolation(ruleDescription: regexConfig.description,
-                        severity: .Warning,
+                        severity: .warning,
                         location: Location(file: nil, line: 2, character: 6),
                         reason: regexConfig.message)])
     }

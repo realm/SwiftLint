@@ -15,7 +15,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
     public var included = NSRegularExpression()
-    public var severityConfiguration = SeverityConfiguration(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity

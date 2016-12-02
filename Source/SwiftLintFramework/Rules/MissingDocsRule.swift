@@ -98,7 +98,7 @@ public struct MissingDocsRule: OptInRule {
             throw ConfigurationError.unknownConfiguration
         }
         let acl = array.flatMap(AccessControlLevel.init(description:))
-        parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
+        parameters = zip([.warning, .error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 
     public var configurationDescription: String {
@@ -108,8 +108,8 @@ public struct MissingDocsRule: OptInRule {
     }
 
     public init() {
-        parameters = [RuleParameter(severity: .Warning, value: .Public),
-                      RuleParameter(severity: .Warning, value: .Open)]
+        parameters = [RuleParameter(severity: .warning, value: .Public),
+                      RuleParameter(severity: .warning, value: .Open)]
     }
 
     public let parameters: [RuleParameter<AccessControlLevel>]

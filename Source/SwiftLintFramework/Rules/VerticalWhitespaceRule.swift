@@ -14,7 +14,7 @@ private let descriptionReason = "Limit vertical whitespace to a single empty lin
 public struct VerticalWhitespaceRule: CorrectableRule,
                                       ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

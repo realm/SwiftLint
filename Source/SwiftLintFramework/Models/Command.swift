@@ -9,21 +9,21 @@
 import Foundation
 
 public enum CommandAction: String {
-    case Enable = "enable"
-    case Disable = "disable"
+    case enable
+    case disable
 
     fileprivate func inverse() -> CommandAction {
         switch self {
-        case .Enable: return .Disable
-        case .Disable: return .Enable
+        case .enable: return .disable
+        case .disable: return .enable
         }
     }
 }
 
 public enum CommandModifier: String {
-    case Previous = "previous"
-    case This = "this"
-    case Next = "next"
+    case previous
+    case this
+    case next
 }
 
 public struct Command {
@@ -83,19 +83,19 @@ public struct Command {
             return [self]
         }
         switch modifier {
-        case .Previous:
+        case .previous:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
                     character: Int.max)
             ]
-        case .This:
+        case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
                     character: Int.max)
             ]
-        case .Next:
+        case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,

@@ -42,7 +42,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "tearDown()"
     ]
 
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var excluded: [String] = []
     var included: [String] = ["*"]
 

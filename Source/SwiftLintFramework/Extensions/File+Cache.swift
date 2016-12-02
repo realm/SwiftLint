@@ -19,7 +19,7 @@ private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
         return nil
     }
 })
-private var structureCache = Cache({file -> Structure? in
+private var structureCache = Cache({ file -> Structure? in
     if let structure = responseCache.get(file).map(Structure.init) {
         queueForRebuild.append(structure)
         return structure

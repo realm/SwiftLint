@@ -60,7 +60,7 @@ struct LintCommand: CommandProtocol {
                 reporter.reportViolations([violations.last!], realtimeCondition: true)
             }
             reporter.reportViolations(violations, realtimeCondition: false)
-            let numberOfSeriousViolations = violations.filter({ $0.severity == .Error }).count
+            let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,
                     serious: numberOfSeriousViolations)
@@ -127,7 +127,7 @@ struct LintOptions: OptionsProtocol {
 private func isWarningThresholdBroken(_ configuration: Configuration,
                                       violations: [StyleViolation]) -> Bool {
     guard let warningThreshold = configuration.warningThreshold else { return false }
-    let numberOfWarningViolations = violations.filter({ $0.severity == .Warning }).count
+    let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
     return numberOfWarningViolations >= warningThreshold
 }
 
@@ -139,7 +139,7 @@ private func createThresholdViolation(_ threshold: Int) -> StyleViolation {
     )
     return StyleViolation(
         ruleDescription: description,
-        severity: .Error,
+        severity: .error,
         location: Location(file: "", line: 0, character: 0),
         reason: "Number of warnings exceeded threshold of \(threshold).")
 }

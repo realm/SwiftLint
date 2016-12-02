@@ -47,13 +47,13 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private func nameIsViolatingCase(name: String) -> Bool {
-        let secondIndex = name.startIndex.successor()
-        let firstCharacter = name.substringToIndex(secondIndex)
+    fileprivate func nameIsViolatingCase(_ name: String) -> Bool {
+        let secondIndex = name.characters.index(after: name.startIndex)
+        let firstCharacter = name.substring(to: secondIndex)
         if firstCharacter.isUppercase() {
             if name.characters.count > 1 {
-                let range = secondIndex..<secondIndex.successor()
-                let secondCharacter = name.substringWithRange(range)
+                let range = secondIndex..<name.characters.index(after: secondIndex)
+                let secondCharacter = name.substring(with: range)
                 return secondCharacter.isLowercase()
             }
             return true
@@ -61,28 +61,28 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
         return false
     }
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
+    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             if configuration.excluded.contains(name) {
                 return []
             }
 
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            let description = self.dynamicType.description
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
+            let nameCharacterSet = CharacterSet(charactersIn: name)
+            let description = type(of: self).description
+            if !CharacterSet.alphanumerics.isSuperset(of: nameCharacterSet) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should only contain alphanumeric " +
                         "characters: '\(name)'")]
-            } else if kind != SwiftDeclarationKind.VarStatic && nameIsViolatingCase(name) {
+            } else if kind != SwiftDeclarationKind.varStatic && nameIsViolatingCase(name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .Error,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should start with a lowercase character: '\(name)'")]
             } else if let severity = severity(forLength: name.characters.count) {
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
+                return [StyleViolation(ruleDescription: type(of: self).description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Variable name should be between \(configuration.minLengthThreshold) " +

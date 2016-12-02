@@ -60,7 +60,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
@@ -68,7 +68,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         else { return [] }
 
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
-        guard kind == .FunctionMethodInstance &&
+        guard kind == .functionMethodInstance &&
               configuration.resolvedMethodNames.contains(name) &&
               extractAttributes(dictionary).contains("source.decl.attribute.override")
         else { return [] }
@@ -76,12 +76,12 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         let callsToSuper = extractCallsToSuper(name, substructure: substructure)
 
         if callsToSuper.isEmpty {
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: Int(offset)),
                 reason: "Method '\(name)' should call to super function")]
         } else if callsToSuper.count > 1 {
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: Int(offset)),
                 reason: "Method '\(name)' should call to super only once")]
@@ -89,7 +89,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         return []
     }
 
-    private func extractAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
+    private func extractAttributes(_ dictionary: [String: SourceKitRepresentable]) -> [String] {
         guard let attributesDict = dictionary["key.attributes"] as? [SourceKitRepresentable]
             else { return [] }
         return attributesDict.flatMap {
@@ -97,14 +97,14 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         }
     }
 
-    private func extractCallsToSuper(name: String,
+    private func extractCallsToSuper(_ name: String,
                                      substructure: [SourceKitRepresentable]) -> [String] {
         let superCall = "super.\(name)"
         return substructure.flatMap {
             guard let elems = $0 as? [String: SourceKitRepresentable],
-                type = elems["key.kind"] as? String,
-                name = elems["key.name"] as? String
-                where type == "source.lang.swift.expr.call" && superCall.containsString(name)
+                let type = elems["key.kind"] as? String,
+                let name = elems["key.name"] as? String,
+                type == "source.lang.swift.expr.call" && superCall.contains(name)
                 else { return nil }
             return name
         }

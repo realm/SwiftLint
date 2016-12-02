@@ -10,56 +10,56 @@ import Foundation
 import Yaml
 
 extension Yaml {
-    var flatDictionary: [Swift.String: AnyObject]? {
+    var flatDictionary: [Swift.String: Any]? {
         if let dict = dictionary {
-            var newDict: [Swift.String: AnyObject] = [:]
+            var newDict: [Swift.String: Any] = [:]
             for (key, value) in dict {
                 newDict[key.stringValue] = value.flatValue
             }
             return newDict
-        } else if count == 0 || self == .Null { // swiftlint:disable:this empty_count
+        } else if count == 0 || self == .null { // swiftlint:disable:this empty_count
             return [:]
         }
 
         return nil
     }
 
-    var flatArray: [AnyObject]? { return array?.map { $0.flatValue } }
+    var flatArray: [Any]? { return array?.map { $0.flatValue } }
 
-    var flatValue: AnyObject {
+    var flatValue: Any {
         switch self {
-        case .Bool(let myBool):
-            return myBool
-        case .Int(let myInt):
-            return myInt
-        case .Double(let myDouble):
-            return myDouble
-        case .String(let myString):
-            return myString
-        case .Array:
-            return flatArray! // This is valid because .Array will always flatten
-        case .Dictionary:
-            return flatDictionary! // This is valid because .Dictionary will always flatten
-        case .Null:
+        case .bool(let myBool):
+            return myBool as Any
+        case .int(let myInt):
+            return myInt as Any
+        case .double(let myDouble):
+            return myDouble as Any
+        case .string(let myString):
+            return myString as Any
+        case .array:
+            return flatArray! as Any // This is valid because .Array will always flatten
+        case .dictionary:
+            return flatDictionary! as Any // This is valid because .Dictionary will always flatten
+        case .null:
             return NSNull()
         }
     }
 
     var stringValue: Swift.String {
         switch self {
-        case .Bool(let myBool):
+        case .bool(let myBool):
             return myBool.description
-        case .Int(let myInt):
+        case .int(let myInt):
             return myInt.description
-        case .Double(let myDouble):
+        case .double(let myDouble):
             return myDouble.description
-        case .String(let myString):
+        case .string(let myString):
             return myString
-        case .Array(let myArray):
+        case .array(let myArray):
             return myArray.description
-        case .Dictionary(let myDictionary):
+        case .dictionary(let myDictionary):
             return myDictionary.description
-        case .Null:
+        case .null:
             return "Null"
         }
     }

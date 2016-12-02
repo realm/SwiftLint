@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-private func classScoped(value: String) -> String {
+private func classScoped(_ value: String) -> String {
     return "class Foo {\n  \(value)\n}\n"
 }
 
@@ -50,9 +50,9 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let getTokens = file.syntaxMap.tokens.filter { token -> Bool in
-            guard SyntaxKind(rawValue: token.type) == .Keyword else {
+            guard SyntaxKind(rawValue: token.type) == .keyword else {
                 return false
             }
 
@@ -79,28 +79,28 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             // Violation found!
             let location = Location(file: file, byteOffset: token.offset)
 
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location
             )
         }
     }
 
-    private func variableDeclarationsFor(byteOffset: Int, structure: Structure) ->
+    private func variableDeclarationsFor(_ byteOffset: Int, structure: Structure) ->
                                                           [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
 
         func parse(dictionary: [String: SourceKitRepresentable]) {
 
-            let allowedKinds: [SwiftDeclarationKind] = [.VarClass, .VarInstance, .VarStatic]
+            let allowedKinds: [SwiftDeclarationKind] = [.varClass, .varInstance, .varStatic]
 
             // Only accepts variable declarations which contains a body and contains the
             // searched byteOffset
             if let kindString = (dictionary["key.kind"] as? String),
-                kind = SwiftDeclarationKind(rawValue: kindString),
-                bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) })
-                where allowedKinds.contains(kind) {
+                let kind = SwiftDeclarationKind(rawValue: kindString),
+                let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+                let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+                allowedKinds.contains(kind) {
                 let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
                 if NSLocationInRange(byteOffset, byteRange) {
@@ -109,27 +109,27 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             }
 
             let typeKinds: [SwiftDeclarationKind] = [
-                .Class,
-                .Enum,
-                .Extension,
-                .ExtensionClass,
-                .ExtensionEnum,
-                .ExtensionProtocol,
-                .ExtensionStruct,
-                .Struct
+                .class,
+                .enum,
+                .extension,
+                .extensionClass,
+                .extensionEnum,
+                .extensionProtocol,
+                .extensionStruct,
+                .struct
             ] + allowedKinds
 
             if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
                 for case let dictionary as [String: SourceKitRepresentable] in subStructure {
                     if let kindString = (dictionary["key.kind"] as? String),
-                        kind = SwiftDeclarationKind(rawValue: kindString)
-                        where typeKinds.contains(kind) {
-                        parse(dictionary)
+                        let kind = SwiftDeclarationKind(rawValue: kindString),
+                        typeKinds.contains(kind) {
+                        parse(dictionary: dictionary)
                     }
                 }
             }
         }
-        parse(structure.dictionary)
+        parse(dictionary: structure.dictionary)
         return results
     }
 }

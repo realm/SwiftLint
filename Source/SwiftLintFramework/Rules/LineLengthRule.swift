@@ -18,24 +18,24 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "Line Length",
         description: "Lines should not span too many characters.",
         nonTriggeringExamples: [
-            Repeat(count: 100, repeatedValue: "/").joinWithSeparator("") + "\n",
-            Repeat(count: 100, repeatedValue: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)").joinWithSeparator("") + "\n",
-            Repeat(count: 100, repeatedValue: "#imageLiteral(resourceName: \"image.jpg\")").joinWithSeparator("") + "\n"
+            String(repeating: "/", count: 100) + "\n",
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 100) + "\n",
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 100) + "\n"
         ],
         triggeringExamples: [
-            Repeat(count: 101, repeatedValue: "/").joinWithSeparator("") + "\n",
-            Repeat(count: 101, repeatedValue: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)").joinWithSeparator("") + "\n",
-            Repeat(count: 101, repeatedValue: "#imageLiteral(resourceName: \"image.jpg\")").joinWithSeparator("") + "\n"
+            String(repeating: "/", count: 101) + "\n",
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 101) + "\n",
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 101) + "\n"
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).minElement(<)
+    public func validateFile(_ file: File) -> [StyleViolation] {
+        let minValue = configuration.params.map({ $0.value }).min(by: <)
         return file.lines.flatMap { line in
             // `line.content.characters.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
             // for avoiding using heavy `line.content.characters.count`.
-            if line.range.length < minValue {
+            if line.range.length < minValue! {
                 return nil
             }
 
@@ -48,7 +48,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             let length = strippedString.characters.count
 
             for param in configuration.params where length > param.value {
-                return StyleViolation(ruleDescription: self.dynamicType.description,
+                return StyleViolation(ruleDescription: type(of: self).description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
                     reason: "Line should be \(configuration.warning) characters or less: " +
@@ -70,14 +70,14 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         var modifiedString = sourceString
 
         // While copy of content contains literal, replace with a single character
-        while modifiedString.containsString("\(delimiter)(") {
-            if let rangeStart = modifiedString.rangeOfString("\(delimiter)("),
-                let rangeEnd = modifiedString.rangeOfString(")",
-                                                            options: .LiteralSearch,
-                                                            range:
-                    rangeStart.startIndex..<modifiedString.endIndex,
-                                                            locale: nil) {
-                modifiedString.replaceRange(rangeStart.startIndex..<rangeEnd.endIndex, with: "#")
+        while modifiedString.contains("\(delimiter)(") {
+            if let rangeStart = modifiedString.range(of: "\(delimiter)("),
+                let rangeEnd = modifiedString.range(of: ")",
+                                                    options: .literal,
+                                                    range:
+                    rangeStart.lowerBound..<modifiedString.endIndex) {
+                modifiedString.replaceSubrange(rangeStart.lowerBound..<rangeEnd.upperBound,
+                                               with: "#")
 
             } else { // Should never be the case, but break to avoid accidental infinity loop
                 break

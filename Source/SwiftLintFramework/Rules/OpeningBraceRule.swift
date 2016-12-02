@@ -9,10 +9,10 @@
 import Foundation
 import SourceKittenFramework
 
-private let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 extension File {
-    private func violatingOpeningBraceRanges() -> [NSRange] {
+    fileprivate func violatingOpeningBraceRanges() -> [NSRange] {
         return matchPattern(
             "((?:[^( ]|[\\s(][\\s]+)\\{)",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
@@ -68,15 +68,15 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabledViolatingRanges(
             file.violatingOpeningBraceRanges(),
             forRule: self
@@ -84,29 +84,29 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 
-    private func writeToFile(file: File, violatingRanges: [NSRange]) -> [Correction] {
+    fileprivate func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
-        for violatingRange in violatingRanges.reverse() {
+        for violatingRange in violatingRanges.reversed() {
             let (contents, adjustedRange) =
                 correctContents(correctedContents, violatingRange: violatingRange)
 
             correctedContents = contents
             if let adjustedRange = adjustedRange {
-                adjustedLocations.insert(adjustedRange.location, atIndex: 0)
+                adjustedLocations.insert(adjustedRange.location, at: 0)
             }
         }
 
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: self.dynamicType.description,
+            Correction(ruleDescription: type(of: self).description,
                 location: Location(file: file, characterOffset: $0))
         }
     }
 
-    private func correctContents(contents: String, violatingRange: NSRange)
+    fileprivate func correctContents(_ contents: String, violatingRange: NSRange)
         -> (correctedContents: String, adjustedRange: NSRange?) {
         guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
             return (contents, nil)
@@ -117,7 +117,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         // "struct Command{" has violating string = "d{", so ignore first "d"
         if capturedString.characters.count == 2 &&
-            capturedString.rangeOfCharacterFromSet(whitespaceAndNewlineCharacterSet) == nil {
+            capturedString.rangeOfCharacter(from: whitespaceAndNewlineCharacterSet) == nil {
             adjustedRange = NSRange(
                 location: violatingRange.location + 1,
                 length: violatingRange.length - 1
@@ -136,7 +136,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         if let indexRange = contents.nsrangeToIndexRange(adjustedRange) {
             let correctedContents = contents
-                .stringByReplacingCharactersInRange(indexRange, withString: correctString)
+                .replacingCharacters(in: indexRange, with: correctString)
             return (correctedContents, adjustedRange)
         } else {
             return (contents, nil)

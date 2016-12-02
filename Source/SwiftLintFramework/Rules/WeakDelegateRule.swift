@@ -34,16 +34,16 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+        guard kind == .varInstance else {
             return []
         }
 
         // Check if name contains "delegate"
-        guard let name = (dictionary["key.name"] as? String) where
-            name.lowercaseString.containsString("delegate") else {
+        guard let name = (dictionary["key.name"] as? String),
+            name.lowercased().contains("delegate") else {
                 return []
         }
 
@@ -64,7 +64,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(
-                ruleDescription: self.dynamicType.description,
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location
             )

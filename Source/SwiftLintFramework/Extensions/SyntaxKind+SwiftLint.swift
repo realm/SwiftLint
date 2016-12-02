@@ -11,28 +11,28 @@ import SourceKittenFramework
 extension SyntaxKind {
     init(shortName: Swift.String) throws {
         let prefix = "source.lang.swift.syntaxtype."
-        guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercaseString) else {
-            throw ConfigurationError.UnknownConfiguration
+        guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercased()) else {
+            throw ConfigurationError.unknownConfiguration
         }
         self = kind
     }
 
     static func commentKeywordStringAndTypeidentifierKinds() -> [SyntaxKind] {
-        return commentAndStringKinds() + [.Keyword, .Typeidentifier]
+        return commentAndStringKinds() + [.keyword, .typeidentifier]
     }
 
     static func commentAndStringKinds() -> [SyntaxKind] {
-        return commentKinds() + [.String]
+        return commentKinds() + [.string]
     }
 
     static func commentKinds() -> [SyntaxKind] {
-        return [.Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField]
+        return [.comment, .commentMark, .commentURL, .docComment, .docCommentField]
     }
 
     static func allKinds() -> [SyntaxKind] {
-        return [.Argument, .AttributeBuiltin, .AttributeID, .BuildconfigID, .BuildconfigKeyword,
-                .Comment, .CommentMark, .CommentURL, .DocComment, .DocCommentField, .Identifier,
-                .Keyword, .Number, .ObjectLiteral, .Parameter, .Placeholder, .String,
-                .StringInterpolationAnchor, .Typeidentifier]
+        return [.argument, .attributeBuiltin, .attributeID, .buildconfigID, .buildconfigKeyword,
+                .comment, .commentMark, .commentURL, .docComment, .docCommentField, .identifier,
+                .keyword, .number, .objectLiteral, .parameter, .placeholder, .string,
+                .stringInterpolationAnchor, .typeidentifier]
     }
 }

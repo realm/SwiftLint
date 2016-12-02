@@ -31,10 +31,10 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+        guard kind == .varInstance else {
             return []
         }
 
@@ -49,8 +49,8 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let accessibility = dictionary["key.accessibility"] as? String
         let setterAccessiblity = dictionary["key.setter_accessibility"] as? String
 
-        let isPrivate = isPrivateLevel(accessibility)
-        let isPrivateSet = isPrivateLevel(setterAccessiblity)
+        let isPrivate = isPrivateLevel(identifier: accessibility)
+        let isPrivateSet = isPrivateLevel(identifier: setterAccessiblity)
 
         if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {
             return []
@@ -65,7 +65,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         return [
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
                 location: location)
         ]

@@ -23,7 +23,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue.lowercaseString): \(regex.pattern)"
+        return "\(severity.rawValue.lowercased()): \(regex.pattern)"
     }
 
     public var description: RuleDescription {
@@ -36,10 +36,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject],
-            regexString = configurationDict["regex"] as? String else {
-                throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any],
+            let regexString = configurationDict["regex"] as? String else {
+                throw ConfigurationError.unknownConfiguration
         }
 
         regex = try NSRegularExpression.cached(pattern: regexString)
@@ -54,7 +54,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let matchKinds = [String].arrayOf(configurationDict["match_kinds"]) {
+        if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
         }
         if let severityString = configurationDict["severity"] as? String {

@@ -37,16 +37,16 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
         return [RuleParameter(severity: .Warning, value: warning)]
     }
 
-    mutating public func applyConfiguration(configuration: AnyObject) throws {
-        if let configurationArray = [Int].arrayOf(configuration) where !configurationArray.isEmpty {
+    mutating public func applyConfiguration(_ configuration: Any) throws {
+        if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil
-        } else if let configDict = configuration as? [String: Int]
-                where !configDict.isEmpty && Set(configDict.keys).isSubsetOf(["warning", "error"]) {
+        } else if let configDict = configuration as? [String: Int],
+            !configDict.isEmpty && Set(configDict.keys).isSubset(of: ["warning", "error"]) {
             warning = configDict["warning"] ?? warning
             error = configDict["error"]
         } else {
-            throw ConfigurationError.UnknownConfiguration
+            throw ConfigurationError.unknownConfiguration
         }
     }
 }

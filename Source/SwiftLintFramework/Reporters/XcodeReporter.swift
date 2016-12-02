@@ -14,18 +14,18 @@ public struct XcodeReporter: Reporter {
         return "Reports violations in the format Xcode uses to display in the IDE. (default)"
     }
 
-    public static func generateReport(violations: [StyleViolation]) -> String {
-        return violations.map(generateForSingleViolation).joinWithSeparator("\n")
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
+        return violations.map(generateForSingleViolation).joined(separator: "\n")
     }
 
-    internal static func generateForSingleViolation(violation: StyleViolation) -> String {
+    internal static func generateForSingleViolation(_ violation: StyleViolation) -> String {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         return [
             "\(violation.location): ",
-            "\(violation.severity.rawValue.lowercaseString): ",
+            "\(violation.severity.rawValue.lowercased()): ",
             "\(violation.ruleDescription.name) Violation: ",
-            (violation.reason ?? ""),
+            violation.reason,
             " (\(violation.ruleDescription.identifier))"
-        ].joinWithSeparator("")
+        ].joined()
     }
 }

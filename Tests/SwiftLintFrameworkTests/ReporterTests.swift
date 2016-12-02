@@ -110,13 +110,12 @@ class ReporterTests: XCTestCase {
     func testHTMLReporter() {
         let generatedHTML = HTMLReporter.generateReport(generateViolations())
 
-        let formatter = NSDateFormatter()
-        formatter.dateStyle = .ShortStyle
-        let dateString = formatter.stringFromDate(NSDate())
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        let dateString = formatter.string(from: Date())
 
-        let bundle = NSBundle(identifier: "io.realm.SwiftLintFramework")!
-        let version = bundle.objectForInfoDictionaryKey("CFBundleShortVersionString")
-        let v = (version as? String ?? "0.0.0")
+        let v = Bundle(identifier: "io.realm.SwiftLintFramework")?
+            .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
 
         let expectedHTML = "<!doctype html>\n" +
             "<html>\n" +

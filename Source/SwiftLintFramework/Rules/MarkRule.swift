@@ -7,6 +7,7 @@
 //
 
 import SourceKittenFramework
+import Foundation
 
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
@@ -83,38 +84,38 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             endTwoOrMoreSpacePattern,
             twoOrMoreSpacesAfterHyphenPattern,
             nonSpaceOrNewlineAfterHyphenPattern
-        ].joinWithSeparator("|")
+        ].joined(separator: "|")
     }
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return violationRangesInFile(file, withPattern: pattern).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         var result = [Correction]()
 
-        result.appendContentsOf(correctFile(file,
+        result.append(contentsOf: correctFile(file,
             pattern: spaceStartPattern,
             replaceString: "// MARK:"))
 
-        result.appendContentsOf(correctFile(file,
+        result.append(contentsOf: correctFile(file,
             pattern: endNonSpacePattern,
             replaceString: "// MARK: ",
             keepLastChar: true))
 
-        result.appendContentsOf(correctFile(file,
+        result.append(contentsOf: correctFile(file,
             pattern: endTwoOrMoreSpacePattern,
             replaceString: "// MARK: "))
 
-        result.appendContentsOf(correctFile(file,
+        result.append(contentsOf: correctFile(file,
             pattern: twoOrMoreSpacesAfterHyphenPattern,
             replaceString: "// MARK: - "))
 
-        result.appendContentsOf(correctFile(file,
+        result.append(contentsOf: correctFile(file,
             pattern: nonSpaceOrNewlineAfterHyphenPattern,
             replaceString: "// MARK: - ",
             keepLastChar: true))
@@ -122,7 +123,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return result
     }
 
-    private func correctFile(file: File,
+    private func correctFile(_ file: File,
                              pattern: String,
                              replaceString: String,
                              keepLastChar: Bool = false) -> [Correction] {
@@ -131,24 +132,24 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         if matches.isEmpty { return [] }
 
         var nsstring = file.contents as NSString
-        let description = self.dynamicType.description
+        let description = type(of: self).description
         var corrections = [Correction]()
-        for var range in matches.reverse() {
+        for var range in matches.reversed() {
             if keepLastChar {
                 range.length -= 1
             }
             let location = Location(file: file, characterOffset: range.location)
-            nsstring = nsstring.stringByReplacingCharactersInRange(range, withString: replaceString)
+            nsstring = nsstring.replacingCharacters(in: range, with: replaceString) as NSString
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(nsstring as String)
         return corrections
     }
 
-    private func violationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
+    private func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents as NSString
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
-            return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .Comment
+            return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

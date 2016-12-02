@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension File {
-    private func violatingRedundantNilCoalescingRanges() -> [NSRange] {
+    fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
         return matchPattern(
             "\\?\\?\\s*nil\\b", // ?? {whitespace} nil {word boundary}
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
@@ -37,9 +37,9 @@ public struct RedundantNilCoalescingRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.violatingRedundantNilCoalescingRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }

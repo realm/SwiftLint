@@ -39,14 +39,14 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
 
-        let pattern = "\\b(" + types.joinWithSeparator("|") + ")\\s*<.*?>"
+        let pattern = "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
 
         return file.matchPattern(pattern,
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
-                StyleViolation(ruleDescription: self.dynamicType.description,
+                StyleViolation(ruleDescription: type(of: self).description,
                     severity: configuration.severity,
                     location: Location(file: file, characterOffset: $0.location))
         }

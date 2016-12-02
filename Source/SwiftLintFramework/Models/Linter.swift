@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct Linter {
     public let file: File
-    private let rules: [Rule]
+    fileprivate let rules: [Rule]
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -21,7 +21,7 @@ public struct Linter {
         return getStyleViolations(true)
     }
 
-    private func getStyleViolations(benchmark: Bool = false) ->
+    fileprivate func getStyleViolations(_ benchmark: Bool = false) ->
         ([StyleViolation], [(id: String, time: Double)]) {
         if file.sourcekitdFailed {
             queuedPrintError("Most of rules are skipped because sourcekitd fails.")
@@ -32,10 +32,10 @@ public struct Linter {
             if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
                 return []
             }
-            let start: NSDate! = benchmark ? NSDate() : nil
+            let start: Date! = benchmark ? Date() : nil
             let violations = rule.validateFile(self.file)
             if benchmark {
-                let id = rule.dynamicType.description.identifier
+                let id = type(of: rule).description.identifier
                 ruleTimes.append((id, -start.timeIntervalSinceNow))
             }
             return violations.filter { violation in

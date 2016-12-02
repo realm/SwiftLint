@@ -23,6 +23,7 @@ struct RulesCommand: CommandType {
                 return .Failure(.UsageError(description: "No rule with identifier: \(ruleID)"))
             }
 
+            _ = Configuration(commandLinePath: options.configurationFile)
             printRuleDescript(rule.description)
             return .Success()
         }

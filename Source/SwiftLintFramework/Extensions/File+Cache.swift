@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.EditorOpen(file).failableSend()
+        return try Request.editorOpen(file: file).failableSend()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -19,7 +19,7 @@ private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
         return nil
     }
 })
-private var structureCache = Cache({file -> Structure? in
+private var structureCache = Cache({ file -> Structure? in
     if let structure = responseCache.get(file).map(Structure.init) {
         queueForRebuild.append(structure)
         return structure
@@ -38,14 +38,14 @@ private var queueForRebuild = [Structure]()
 
 private struct Cache<T> {
 
-    private var values = [String: T]()
-    private var factory: File -> T
+    fileprivate var values = [String: T]()
+    fileprivate var factory: (File) -> T
 
-    private init(_ factory: File -> T) {
+    fileprivate init(_ factory: @escaping (File) -> T) {
         self.factory = factory
     }
 
-    private mutating func get(file: File) -> T {
+    fileprivate mutating func get(_ file: File) -> T {
         let key = file.cacheKey
         if let value = values[key] {
             return value
@@ -55,20 +55,20 @@ private struct Cache<T> {
         return value
     }
 
-    private mutating func invalidate(file: File) {
+    fileprivate mutating func invalidate(_ file: File) {
         if let key = file.path {
-            values.removeValueForKey(key)
+            values.removeValue(forKey: key)
         }
     }
 
-    private mutating func clear() {
-        values.removeAll(keepCapacity: false)
+    fileprivate mutating func clear() {
+        values.removeAll(keepingCapacity: false)
     }
 }
 
 extension File {
 
-    private var cacheKey: String {
+    fileprivate var cacheKey: String {
         return path ?? contents
     }
 
@@ -81,7 +81,7 @@ extension File {
                 let value: [String: SourceKitRepresentable]? = nil
                 responseCache.values[cacheKey] = value
             } else {
-                responseCache.values.removeValueForKey(cacheKey)
+                responseCache.values.removeValue(forKey: cacheKey)
             }
         }
     }
@@ -141,7 +141,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
-        assertHandlers.removeValueForKey(cacheKey)
+        assertHandlers.removeValue(forKey: cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
@@ -167,7 +167,7 @@ extension File {
     }
 }
 
-private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
+private func substructureForDict(_ dict: [String: SourceKitRepresentable]) ->
                                  [[String: SourceKitRepresentable]]? {
     return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
         $0 as? [String: SourceKitRepresentable]
@@ -177,9 +177,10 @@ private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
 private func rebuildAllDeclarationsByType() {
     let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
         guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
-            name = firstSubstructureDict["key.name"] as? String,
-            kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where kind == .Protocol,
+            let name = firstSubstructureDict["key.name"] as? String,
+            let kind = (firstSubstructureDict["key.kind"] as? String)
+                .flatMap(SwiftDeclarationKind.init),
+            kind == .protocol,
             let substructure = substructureForDict(firstSubstructureDict) else {
                 return nil
         }

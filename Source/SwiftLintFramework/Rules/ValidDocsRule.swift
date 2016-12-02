@@ -10,16 +10,16 @@ import Foundation
 import SourceKittenFramework
 
 extension File {
-    private func invalidDocOffsets(dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    fileprivate func invalidDocOffsets(_ dictionary: [String: SourceKitRepresentable]) -> [Int] {
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
             .flatMap { $0 as? [String: SourceKitRepresentable] } ?? []
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
-        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where kind != .VarParameter,
+        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
+            kind != .varParameter,
             let offset = dictionary["key.offset"] as? Int64,
-            bodyOffset = dictionary["key.bodyoffset"] as? Int64,
-            comment = getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap)
-            where !comment.containsString(":nodoc:") else {
+            let bodyOffset = dictionary["key.bodyoffset"] as? Int64,
+            let comment = parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap),
+            !comment.contains(":nodoc:") else {
                 return substructureOffsets
         }
         let declaration = (contents as NSString)
@@ -35,59 +35,59 @@ extension File {
     }
 }
 
-func superfluousOrMissingThrowsDocumentation(declaration: String, comment: String) -> Bool {
+func superfluousOrMissingThrowsDocumentation(_ declaration: String, comment: String) -> Bool {
     guard let outsideBracesMatch = matchOutsideBraces(declaration) else {
-        return false == !comment.lowercaseString.containsString("- throws:")
+        return false == !comment.lowercased().contains("- throws:")
     }
-    return outsideBracesMatch.containsString(" throws ") ==
-        !comment.lowercaseString.containsString("- throws:")
+    return outsideBracesMatch.contains(" throws ") ==
+        !comment.lowercased().contains("- throws:")
 }
 
-func declarationReturns(declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
-    if let kind = kind where SwiftDeclarationKind.variableKinds().contains(kind) {
+func declarationReturns(_ declaration: String, kind: SwiftDeclarationKind? = nil) -> Bool {
+    if let kind = kind, SwiftDeclarationKind.variableKinds().contains(kind) {
         return true
     }
 
     guard let outsideBracesMatch = matchOutsideBraces(declaration) else {
         return false
     }
-    return outsideBracesMatch.containsString("->")
+    return outsideBracesMatch.contains("->")
 }
 
-func matchOutsideBraces(declaration: String) -> NSString? {
+func matchOutsideBraces(_ declaration: String) -> NSString? {
     guard let outsideBracesMatch =
         regex("(?:\\)(\\s*\\w*\\s*)*((\\s*->\\s*)(\\(.*\\))*(?!.*->)[^()]*(\\(.*\\))*)?\\s*\\{)")
-        .matchesInString(declaration, options: [],
+        .matches(in: declaration, options: [],
             range: NSRange(location: 0, length: declaration.characters.count)).first else {
                 return nil
     }
 
-    return NSString(string: declaration).substringWithRange(outsideBracesMatch.range)
+    return (declaration as NSString).substring(with: outsideBracesMatch.range) as NSString
 }
 
-func declarationIsInitializer(declaration: String) -> Bool {
+func declarationIsInitializer(_ declaration: String) -> Bool {
     return !regex("^((.+)?\\s+)?init\\?*\\(.*\\)")
-        .matchesInString(declaration, options: [],
+        .matches(in: declaration, options: [],
                          range: NSRange(location: 0, length: declaration.characters.count)).isEmpty
 }
 
-func commentHasBatchedParameters(comment: String) -> Bool {
-    return comment.lowercaseString.containsString("- parameters:")
+func commentHasBatchedParameters(_ comment: String) -> Bool {
+    return comment.lowercased().contains("- parameters:")
 }
 
-func commentReturns(comment: String) -> Bool {
-    return comment.lowercaseString.containsString("- returns:") ||
-        comment.rangeOfString("Returns")?.startIndex == comment.startIndex
+func commentReturns(_ comment: String) -> Bool {
+    return comment.lowercased().contains("- returns:") ||
+        comment.range(of: "Returns")?.lowerBound == comment.startIndex
 }
 
-func missingReturnDocumentation(declaration: String, comment: String) -> Bool {
+func missingReturnDocumentation(_ declaration: String, comment: String) -> Bool {
     guard !declarationIsInitializer(declaration) else {
         return false
     }
     return declarationReturns(declaration) && !commentReturns(comment)
 }
 
-func superfluousReturnDocumentation(declaration: String, comment: String,
+func superfluousReturnDocumentation(_ declaration: String, comment: String,
                                     kind: SwiftDeclarationKind) -> Bool {
     guard !declarationIsInitializer(declaration) else {
         return false
@@ -95,25 +95,25 @@ func superfluousReturnDocumentation(declaration: String, comment: String,
     return !declarationReturns(declaration, kind: kind) && commentReturns(comment)
 }
 
-func superfluousOrMissingParameterDocumentation(declaration: String,
+func superfluousOrMissingParameterDocumentation(_ declaration: String,
                                                 substructure: [[String: SourceKitRepresentable]],
                                                 offset: Int64, bodyOffset: Int64,
                                                 comment: String) -> Bool {
     // This function doesn't handle batched parameters, so skip those.
     if commentHasBatchedParameters(comment) { return false }
     let parameterNames = substructure.filter {
-        ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .VarParameter
+        ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .varParameter
     }.filter { subDict in
         return (subDict["key.offset"] as? Int64).map({ $0 < bodyOffset }) ?? false
     }.flatMap {
         $0["key.name"] as? String
-    } ?? []
+    }
     let labelsAndParams = parameterNames.map { parameter -> (label: String, parameter: String) in
         let fullRange = NSRange(location: 0, length: declaration.utf16.count)
         let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
-            .firstMatchInString(declaration, options: [], range: fullRange)
+            .firstMatch(in: declaration, options: [], range: fullRange)
         if let match = firstMatch {
-            let label = (declaration as NSString).substringWithRange(match.rangeAtIndex(1))
+            let label = (declaration as NSString).substring(with: match.rangeAt(1))
             return (label, parameter)
         }
         return (parameter, parameter)
@@ -121,9 +121,9 @@ func superfluousOrMissingParameterDocumentation(declaration: String,
     let optionallyDocumentedParameterCount = labelsAndParams.filter({ $0.0 == "_" }).count
     let commentRange = NSRange(location: 0, length: comment.utf16.count)
     let commentParameterMatches = regex("- [p|P]arameter ([^:]+)")
-        .matchesInString(comment, options: [], range: commentRange)
+        .matches(in: comment, options: [], range: commentRange)
     let commentParameters = commentParameterMatches.map { match in
-        return (comment as NSString).substringWithRange(match.rangeAtIndex(1))
+        return (comment as NSString).substring(with: match.rangeAt(1))
     }
     if commentParameters.count > labelsAndParams.count ||
         labelsAndParams.count - commentParameters.count > optionallyDocumentedParameterCount {
@@ -136,7 +136,7 @@ func superfluousOrMissingParameterDocumentation(declaration: String,
 
 public struct ValidDocsRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -227,9 +227,9 @@ public struct ValidDocsRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return file.invalidDocOffsets(file.structure.dictionary).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: $0))
         }

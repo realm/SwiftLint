@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -33,18 +33,18 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({ "\\\($0)" }) +
             ["%", "<", ">", "&"]
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[" + operators.joinWithSeparator("") +
+        let pattern1 = "func\\s+[" + operators.joined() +
             "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[" + operators.joinWithSeparator("") +
+        let pattern2 = "func\(zeroOrManySpaces)[" + operators.joined() +
             "]+\\s+(<[A-Z]+>)?\\("
         return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .Keyword
+            return syntaxKinds.first == .keyword
         }.map { range, _ in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location))
         }

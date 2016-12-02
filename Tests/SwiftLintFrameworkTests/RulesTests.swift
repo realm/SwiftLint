@@ -265,9 +265,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-    func testMissingDocs() {
-        verifyRule(MissingDocsRule.description)
-    }
+// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+//    func testMissingDocs() {
+//        verifyRule(MissingDocsRule.description)
+//    }
 
     func testNesting() {
         verifyRule(NestingRule.description)
@@ -356,14 +357,21 @@ class RulesTests: XCTestCase {
                 "let foo = [1, 2, 3, ]\n",
                 "let foo = [1, 2, 3   ,]\n",
                 "let foo = [1: 2, 2: 3, ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n"
+                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
+                "let foo = [Void]()\n",
+                "let foo = [(Void, Void)]()\n",
+                "let foo = [1, 2, 3]\n",
+                "let foo = [1: 2, 2: 3]\n",
+                "let foo = [1: 2, 2: 3   ]\n",
+                "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
+                "let foo = [1, 2, 3] + [4, 5, 6]\n"
             ],
             triggeringExamples: [
-                "let foo = [1, 2, 3↓]\n",
-                "let foo = [1: 2, 2: 3↓]\n",
-                "let foo = [1: 2, 2: 3↓   ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3↓]\n}\n",
-                "let foo = [1, 2, 3↓] + [4, 5, 6↓]\n"
+                "let foo = [1, 2,\n 3↓]\n",
+                "let foo = [1: 2,\n 2: 3↓]\n",
+                "let foo = [1: 2,\n 2: 3↓   ]\n",
+                "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
+                "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
             ]
         )
 
@@ -420,9 +428,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeNameRule.description)
     }
 
-    func testValidDocs() {
-        verifyRule(ValidDocsRule.description)
-    }
+// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+//    func testValidDocs() {
+//        verifyRule(ValidDocsRule.description)
+//    }
 
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)

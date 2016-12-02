@@ -2,7 +2,11 @@
 
 ##### Breaking
 
-* None.
+* SwiftLint now requires Xcode 8.x and Swift 3.0 to build.
+  APIs have not yet been adapted to conform to the Swift 3 API Design
+  Guidelines but will shortly.  
+  [JP Simard](https://github.com/jpsim), 
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements
 
@@ -11,6 +15,26 @@
 ##### Bug Fixes
 
 * None.
+
+## 0.13.2: Light Cycle
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* `TrailingCommaRule` now only triggers when a declaration is multi-line
+  when using `mandatory_comma: true`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#910](https://github.com/realm/SwiftLint/issues/910)
+  [#911](https://github.com/realm/SwiftLint/issues/911)
+
+##### Bug Fixes
+
+* Fix `MarkRule` reporting a violation for `// MARK: -`, which is valid.  
+  [JP Simard](https://github.com/jpsim)
+  [#778](https://github.com/realm/SwiftLint/issues/778)
 
 ## 0.13.1: Heavy Cycle
 

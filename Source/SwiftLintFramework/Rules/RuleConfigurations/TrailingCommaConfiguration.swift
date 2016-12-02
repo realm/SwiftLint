@@ -9,7 +9,7 @@
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.Warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var mandatoryComma: Bool
 
     public var consoleDescription: String {
@@ -20,9 +20,9 @@ public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
         self.mandatoryComma = mandatoryComma
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configuration = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         mandatoryComma = (configuration["mandatory_comma"] as? Bool == true)

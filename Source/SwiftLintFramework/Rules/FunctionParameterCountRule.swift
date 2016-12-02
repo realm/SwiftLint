@@ -30,7 +30,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
+    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         if !functionKinds.contains(kind) {
             return []
@@ -40,11 +40,11 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
 
-        let minThreshold = configuration.params.map({ $0.value }).minElement(<)
+        let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
         let allParameterCount =
             allFunctionParameterCount(substructure, offset: nameOffset, length: length)
-        if allParameterCount < minThreshold {
+        if allParameterCount < minThreshold! {
             return []
         }
 
@@ -53,7 +53,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where parameterCount > parameter.value {
             let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
                 reason: "Function should have \(configuration.warning) parameters or less: " +
@@ -63,13 +63,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    private func allFunctionParameterCount(structure: [SourceKitRepresentable],
+    fileprivate func allFunctionParameterCount(_ structure: [SourceKitRepresentable],
                                            offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for substructure in structure {
             guard let subDict = substructure as? [String: SourceKitRepresentable],
-                key = subDict["key.kind"] as? String,
-                parameterOffset = subDict["key.offset"] as? Int64 else {
+                let key = subDict["key.kind"] as? String,
+                let parameterOffset = subDict["key.offset"] as? Int64 else {
                     continue
             }
 
@@ -77,34 +77,34 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                 return parameterCount
             }
 
-            if SwiftDeclarationKind(rawValue: key) == .VarParameter {
+            if SwiftDeclarationKind(rawValue: key) == .varParameter {
                 parameterCount += 1
             }
         }
         return parameterCount
     }
 
-    private func defaultFunctionParameterCount(file: File, offset: Int, length: Int) -> Int {
+    fileprivate func defaultFunctionParameterCount(_ file: File, offset: Int, length: Int) -> Int {
         let equalCharacter = Character("=")
         return (file.contents as NSString)
             .substringWithByteRange(start: offset, length: length)?
             .characters.filter { $0 == equalCharacter }.count ?? 0
     }
 
-    private let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
+    fileprivate let functionKinds: [SwiftDeclarationKind] = [
+        .functionAccessorAddress,
+        .functionAccessorDidset,
+        .functionAccessorGetter,
+        .functionAccessorMutableaddress,
+        .functionAccessorSetter,
+        .functionAccessorWillset,
+        .functionConstructor,
+        .functionDestructor,
+        .functionFree,
+        .functionMethodClass,
+        .functionMethodInstance,
+        .functionMethodStatic,
+        .functionOperator,
+        .functionSubscript
     ]
 }

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
     public init() {}
@@ -41,10 +41,10 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+        guard kind == .varInstance else {
             return []
         }
 
@@ -64,8 +64,8 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
 
         // Variable should have explicit type or IB won't recognize it
         // Variable should be of one of the supported types
-        guard let type = dictionary["key.typename"] as? String
-            where ValidIBInspectableRule.supportedTypes.contains(type) else {
+        guard let type = dictionary["key.typename"] as? String,
+            ValidIBInspectableRule.supportedTypes.contains(type) else {
                 return violation(dictionary, file: file)
         }
 
@@ -102,11 +102,13 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "NSRect"
         ]
 
+        let expandToIncludeOptionals: (String) -> [String] = { [$0, $0 + "!", $0 + "?"] }
+
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
-        return referenceTypes.flatMap { [$0, $0 + "!", $0 + "?"] } + types
+        return referenceTypes.flatMap(expandToIncludeOptionals) + types
     }
 
-    private func violation(dictionary: [String: SourceKitRepresentable],
+    private func violation(_ dictionary: [String: SourceKitRepresentable],
                            file: File) -> [StyleViolation] {
         let location: Location
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
@@ -117,7 +119,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(
-                ruleDescription: self.dynamicType.description,
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location
             )

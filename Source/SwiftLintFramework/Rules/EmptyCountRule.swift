@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.Error)
+    public var configuration = SeverityConfiguration(.error)
 
     public init() {}
 
@@ -30,11 +30,11 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let pattern = "count\\s*(==|!=|<|<=|>|>=)\\s*0"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: $0.location))
         }

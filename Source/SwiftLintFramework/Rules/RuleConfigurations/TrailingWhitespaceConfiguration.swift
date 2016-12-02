@@ -9,7 +9,7 @@
 import Foundation
 
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var ignoresEmptyLines = false
     var ignoresComments = true
 
@@ -24,9 +24,9 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
         self.ignoresComments = ignoresComments
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configuration = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         ignoresEmptyLines = (configuration["ignores_empty_lines"] as? Bool == true)

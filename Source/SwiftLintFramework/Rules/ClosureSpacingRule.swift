@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -33,18 +33,17 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
     // this helps cut down the time to search true a file by
     // skipping lines that do not have at least one { and one } brace
-    private func lineContainsBracesIn(range: NSRange, content: NSString) -> NSRange? {
-        let start = content.rangeOfString("{", options: [.LiteralSearch], range: range)
+    private func lineContainsBracesIn(_ range: NSRange, content: NSString) -> NSRange? {
+        let start = content.range(of: "{", options: [.literal], range: range)
         guard start.length != 0 else { return nil }
-        let end = content.rangeOfString("}", options: [.LiteralSearch, .BackwardsSearch],
-                                        range: range)
+        let end = content.range(of: "}", options: [.literal, .backwards], range: range)
         guard end.length != 0 else { return nil }
         guard start.location < end.location else { return nil }
         return NSRange(location: start.location, length: end.location - start.location + 1)
     }
 
     // returns ranges of braces { or } in the same line
-    private func validBraces(file: File) -> [NSRange] {
+    private func validBraces(_ file: File) -> [NSRange] {
         let nsstring = (file.contents as NSString)
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
@@ -57,8 +56,8 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
                 continue
             }
 
-            let braces = bracePattern.matchesInString(file.contents, options: [],
-                                                      range: nsrange).map { $0.range }
+            let braces = bracePattern.matches(in: file.contents, options: [],
+                                              range: nsrange).map { $0.range }
             // filter out braces in comments and strings
             let tokens = linesTokens[eachLine.index].filter { kindsToExclude.contains($0.type) }
             let tokenRanges = tokens.flatMap {
@@ -69,22 +68,23 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         return linesWithBraces.flatMap { $0 }
     }
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         // match open braces to corresponding closing braces
-        func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
+        func matchBraces(_ validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
             var validBraces = validBraceLocations
             var ranges = [NSRange]()
             var bracesAsString = validBraces.map({
                 file.contents.substring($0.location, length: $0.length)
-            }).joinWithSeparator("")
-            while let foundRange = bracesAsString.rangeOfString("{}") {
-                let startIndex = bracesAsString.startIndex.distanceTo(foundRange.startIndex)
+            }).joined(separator: "")
+            while let foundRange = bracesAsString.range(of: "{}") {
+                let startIndex = bracesAsString.distance(from: bracesAsString.startIndex,
+                                                         to: foundRange.lowerBound)
                 let location = validBraces[startIndex].location
                 let length = validBraces[startIndex + 1 ].location + 1 - location
                 ranges.append(NSRange(location:location, length: length))
-                bracesAsString.replaceRange(foundRange, with: "")
-                validBraces.removeRange(startIndex...startIndex  + 1)
+                bracesAsString.replaceSubrange(foundRange, with: "")
+                validBraces.removeSubrange(startIndex...startIndex  + 1)
             }
             return ranges
         }
@@ -99,7 +99,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
                 // case when {} is not a closure
                 return false
             }
-            let cleaned = content.stringByTrimmingCharactersInSet(.whitespaceCharacterSet())
+            let cleaned = content.trimmingCharacters(in: .whitespaces)
             return content != " " + cleaned + " "
         }
 
@@ -107,7 +107,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         violationRanges = file.ruleEnabledViolatingRanges(violationRanges, forRule: self)
 
         return violationRanges.flatMap {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }

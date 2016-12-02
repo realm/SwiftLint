@@ -22,7 +22,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = [1, 2, 3]\n",
             "let foo = []\n",
             "let foo = [:]\n",
-            "let foo = [1: 2, 2: 3]\n"
+            "let foo = [1: 2, 2: 3]\n",
+            "let foo = [Void]()\n"
         ],
         triggeringExamples: [
             "let foo = [1, 2, 3↓,]\n",
@@ -34,30 +35,37 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        let allowedKinds: [SwiftExpressionKind] = [.Array, .Dictionary]
+        let allowedKinds: [SwiftExpressionKind] = [.array, .dictionary]
 
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            elements = dictionary["key.elements"]  as? [SourceKitRepresentable]
-            where allowedKinds.contains(kind) else {
+            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let elements = dictionary["key.elements"]  as? [SourceKitRepresentable],
+            allowedKinds.contains(kind) else {
                 return []
         }
 
         let endPositions = elements.flatMap { element -> Int? in
             guard let dictionary = element as? [String: SourceKitRepresentable],
-                offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-                length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
+                let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+                let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
                     return nil
             }
 
             return offset + length
         }
 
-        guard let lastPosition = endPositions.maxElement() else {
+        guard let lastPosition = endPositions.max() else {
+            return []
+        }
+
+        if let (startLine, _) =  file.contents.lineAndCharacter(forByteOffset: bodyOffset),
+            let (endLine, _) =  file.contents.lineAndCharacter(forByteOffset: lastPosition),
+            configuration.mandatoryComma && startLine == endLine {
+            // shouldn't trigger if mandatory comma style and is a single-line declaration 
             return []
         }
 
@@ -71,7 +79,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            return violations(file, byteOffset: lastPosition)
+            return violations(file: file, byteOffset: lastPosition)
         }
 
         // trailing comma is present, which is a violation if mandatoryComma is false
@@ -80,12 +88,12 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         let violationOffset = lastPosition + commaIndex
-        return violations(file, byteOffset: violationOffset)
+        return violations(file: file, byteOffset: violationOffset)
     }
 
     private func violations(file: File, byteOffset: Int) -> [StyleViolation] {
         return [
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
                 location: Location(file: file, byteOffset: byteOffset)
             )
@@ -94,18 +102,18 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 }
 
 public enum SwiftExpressionKind: String {
-    case Array = "source.lang.swift.expr.array"
-    case Dictionary = "source.lang.swift.expr.dictionary"
-    case Other
+    case array = "source.lang.swift.expr.array"
+    case dictionary = "source.lang.swift.expr.dictionary"
+    case other
 
     public init?(rawValue: String) {
         switch rawValue {
-        case Array.rawValue:
-            self = .Array
-        case Dictionary.rawValue:
-            self = .Dictionary
+        case SwiftExpressionKind.array.rawValue:
+            self = .array
+        case SwiftExpressionKind.dictionary.rawValue:
+            self = .dictionary
         default:
-            self = .Other
+            self = .other
         }
     }
 }

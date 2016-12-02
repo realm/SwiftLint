@@ -13,55 +13,55 @@ import SwiftyTextTable
 
 private let violationMarker = "↓"
 
-struct RulesCommand: CommandType {
+struct RulesCommand: CommandProtocol {
     let verb = "rules"
     let function = "Display the list of rules and their identifiers"
 
-    func run(options: RulesOptions) -> Result<(), CommandantError<()>> {
+    func run(_ options: RulesOptions) -> Result<(), CommandantError<()>> {
         if let ruleID = options.ruleID {
             guard let rule = masterRuleList.list[ruleID] else {
-                return .Failure(.UsageError(description: "No rule with identifier: \(ruleID)"))
+                return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
             }
 
             _ = Configuration(commandLinePath: options.configurationFile)
             printRuleDescript(rule.description)
-            return .Success()
+            return .success()
         }
 
         let configuration = Configuration(commandLinePath: options.configurationFile)
         print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
-        return .Success()
+        return .success()
     }
 
-    private func printRuleDescript(desc: RuleDescription) {
+    fileprivate func printRuleDescript(_ desc: RuleDescription) {
         print("\(desc.consoleDescription)")
 
         if !desc.triggeringExamples.isEmpty {
-            func indent(string: String) -> String {
-                return string.componentsSeparatedByString("\n")
+            func indent(_ string: String) -> String {
+                return string.components(separatedBy: "\n")
                     .map { "    \($0)" }
-                    .joinWithSeparator("\n")
+                    .joined(separator: "\n")
             }
             print("\nTriggering Examples (violation is marked with '\(violationMarker)'):")
-            for (index, example) in desc.triggeringExamples.enumerate() {
+            for (index, example) in desc.triggeringExamples.enumerated() {
                 print("\nExample #\(index + 1)\n\n\(indent(example))")
             }
         }
     }
 }
 
-struct RulesOptions: OptionsType {
-    private let ruleID: String?
-    private let configurationFile: String
+struct RulesOptions: OptionsProtocol {
+    fileprivate let ruleID: String?
+    fileprivate let configurationFile: String
 
-    static func create(configurationFile: String) -> (ruleID: String) -> RulesOptions {
+    static func create(_ configurationFile: String) -> (_ ruleID: String) -> RulesOptions {
         return { ruleID in
             self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile)
         }
     }
 
     // swiftlint:disable:next line_length
-    static func evaluate(mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
+    static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| configOption
             <*> mode <| Argument(defaultValue: "",
@@ -81,17 +81,17 @@ extension TextTable {
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
-        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
+        let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule: Rule? = {
                 for rule in configuration.rules
-                    where rule.dynamicType.description.identifier == ruleID {
+                    where type(of: rule).description.identifier == ruleID {
                         return rule
                 }
                 return nil
             }()
-            addRow([
+            addRow(values: [
                 ruleID,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",

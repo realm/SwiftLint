@@ -10,7 +10,7 @@ import Foundation
 import Commandant
 import SwiftLintFramework
 
-dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+DispatchQueue.global().async {
     let registry = CommandRegistry<CommandantError<()>>()
     registry.register(LintCommand())
     registry.register(AutoCorrectCommand())
@@ -19,8 +19,8 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
     registry.register(HelpCommand(registry: registry))
 
     registry.main(defaultVerb: LintCommand().verb) { error in
-        queuedPrintError(String(error))
+        queuedPrintError(String(describing: error))
     }
 }
 
-dispatch_main()
+dispatchMain()

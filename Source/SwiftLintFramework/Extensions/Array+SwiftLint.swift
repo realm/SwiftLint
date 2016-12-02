@@ -9,7 +9,7 @@
 import Foundation
 
 extension Array {
-    static func arrayOf(obj: AnyObject?) -> [Element]? {
+    static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array
         } else if let obj = obj as? Element {

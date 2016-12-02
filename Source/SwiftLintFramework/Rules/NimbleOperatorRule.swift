@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -42,20 +42,20 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let operators = ["equal", "beIdenticalTo", "beGreaterThan",
                          "beGreaterThanOrEqualTo", "beLessThan", "beLessThanOrEqualTo"]
-        let operatorsPattern = "(" + operators.joinWithSeparator("|") + ")"
+        let operatorsPattern = "(" + operators.joined(separator: "|") + ")"
         let pattern = "expect\\((.(?!expect\\())+?\\)\\.to(Not)?\\(\(operatorsPattern)\\("
         let excludingKinds = SyntaxKind.commentKinds()
 
         let matches = file.matchPattern(pattern).filter {
             // excluding comment kinds and making sure first token (`expect`) is an identifier
-            $0.1.filter(excludingKinds.contains).isEmpty && $0.1.first == .Identifier
+            $0.1.filter(excludingKinds.contains).isEmpty && $0.1.first == .identifier
         }
 
         return matches.map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: $0.0.location))
         }

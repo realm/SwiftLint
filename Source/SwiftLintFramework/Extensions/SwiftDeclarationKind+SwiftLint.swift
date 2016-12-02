@@ -11,12 +11,12 @@ import SourceKittenFramework
 extension SwiftDeclarationKind {
     internal static func variableKinds() -> [SwiftDeclarationKind] {
         return [
-            .VarClass,
-            .VarGlobal,
-            .VarInstance,
-            .VarLocal,
-            .VarParameter,
-            .VarStatic
+            .varClass,
+            .varGlobal,
+            .varInstance,
+            .varLocal,
+            .varParameter,
+            .varStatic
         ]
     }
 }

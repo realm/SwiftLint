@@ -38,7 +38,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
+    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         if !functionKinds.contains(kind) {
             return []
@@ -48,7 +48,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where complexity > parameter.value {
             let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
                 reason: "Function should have complexity \(configuration.warning) or less: " +
@@ -58,7 +58,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    private func measureComplexity(file: File,
+    fileprivate func measureComplexity(_ file: File,
                                    dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
@@ -66,12 +66,12 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         let complexity = substructure.reduce(0) { complexity, subItem in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                      kind = subDict["key.kind"] as? String else {
+                      let kind = subDict["key.kind"] as? String else {
                 return complexity
             }
 
-            if let declarationKid = SwiftDeclarationKind(rawValue: kind)
-                where functionKinds.contains(declarationKid) {
+            if let declarationKid = SwiftDeclarationKind(rawValue: kind),
+                functionKinds.contains(declarationKid) {
                 return complexity
             }
 
@@ -80,7 +80,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             }
 
             return complexity +
-                Int(complexityStatements.contains(kind)) +
+                (complexityStatements.contains(kind) ? 1 : 0) +
                 measureComplexity(file, dictionary: subDict)
         }
 
@@ -93,7 +93,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    private func reduceSwitchComplexity(complexity: Int, file: File,
+    fileprivate func reduceSwitchComplexity(_ complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
         let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
         let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
@@ -101,11 +101,11 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let c = (file.contents as NSString)
             .substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""
 
-        let fallthroughCount = c.componentsSeparatedByString("fallthrough").count - 1
+        let fallthroughCount = c.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount
     }
 
-    private let complexityStatements = [
+    fileprivate let complexityStatements = [
         "source.lang.swift.stmt.foreach",
         "source.lang.swift.stmt.if",
         "source.lang.swift.stmt.case",
@@ -115,21 +115,21 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         "source.lang.swift.stmt.while"
     ]
 
-    private let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
+    fileprivate let functionKinds: [SwiftDeclarationKind] = [
+        .functionAccessorAddress,
+        .functionAccessorDidset,
+        .functionAccessorGetter,
+        .functionAccessorMutableaddress,
+        .functionAccessorSetter,
+        .functionAccessorWillset,
+        .functionConstructor,
+        .functionDestructor,
+        .functionFree,
+        .functionMethodClass,
+        .functionMethodInstance,
+        .functionMethodStatic,
+        .functionOperator,
+        .functionSubscript
     ]
 
 }

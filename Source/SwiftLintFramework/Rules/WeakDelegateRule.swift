@@ -30,7 +30,6 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
             "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n",
-            "class Foo {\n  var delegateScroll: ScrollDelegate?\n}\n"
         ]
     )
 
@@ -43,7 +42,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
         // Check if name contains "delegate"
         guard let name = (dictionary["key.name"] as? String),
-            name.lowercased().contains("delegate") else {
+            name.lowercased().hasSuffix("delegate") else {
                 return []
         }
 

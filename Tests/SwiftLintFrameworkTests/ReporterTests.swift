@@ -114,9 +114,8 @@ class ReporterTests: XCTestCase {
         formatter.dateStyle = .short
         let dateString = formatter.string(from: Date())
 
-        let bundle = Bundle(identifier: "io.realm.SwiftLintFramework")!
-        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString")
-        let v = (version as? String ?? "0.0.0")
+        let v = Bundle(identifier: "io.realm.SwiftLintFramework")?
+            .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
 
         let expectedHTML = "<!doctype html>\n" +
             "<html>\n" +

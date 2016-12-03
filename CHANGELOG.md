@@ -5,7 +5,7 @@
 * SwiftLint now requires Xcode 8.x and Swift 3.0 to build.
   APIs have not yet been adapted to conform to the Swift 3 API Design
   Guidelines but will shortly.  
-  [JP Simard](https://github.com/jpsim), 
+  [JP Simard](https://github.com/jpsim),
   [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements
@@ -14,6 +14,10 @@
   used as thousand separators in large numbers.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#924](https://github.com/realm/SwiftLint/issues/924)
+
+* `FunctionParameterCountRule` now ignores initializers.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#544](https://github.com/realm/SwiftLint/issues/544)
 
 ##### Bug Fixes
 

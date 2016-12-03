@@ -27,11 +27,11 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             // Only trigger on instance variables, not local variables
             "func foo() {\n  var delegate: SomeDelegate\n}\n",
             // Only trigger when variable has the suffix "-delegate" to avoid false positives
-            "class Foo {\n  var delegateNotified: Bool?\n}\n",
+            "class Foo {\n  var delegateNotified: Bool?\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
-            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n",
+            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n"
         ]
     )
 

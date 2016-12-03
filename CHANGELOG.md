@@ -10,7 +10,9 @@
 
 ##### Enhancements
 
-* None.
+* `FunctionParameterCountRule` ignores initializers.
+  [Denis Lebedev](https://github.com/garnett)
+  [#544](https://github.com/realm/SwiftLint/issues/544)
 
 ##### Bug Fixes
 

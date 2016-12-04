@@ -17,9 +17,9 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithRequiredString() {
         let description = RuleDescription(
-            identifier: "file_header",
-            name: "File Header",
-            description: "Files should not have header comments.",
+            identifier: FileHeaderRule.description.identifier,
+            name: FileHeaderRule.description.name,
+            description: FileHeaderRule.description.description,
             nonTriggeringExamples: [
                 "// **Header",
                 "//\n // **Header"
@@ -39,9 +39,9 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithRequiredPattern() {
         let description = RuleDescription(
-            identifier: "file_header",
-            name: "File Header",
-            description: "Files should not have header comments.",
+            identifier: FileHeaderRule.description.identifier,
+            name: FileHeaderRule.description.name,
+            description: FileHeaderRule.description.description,
             nonTriggeringExamples: [
                 "// Copyright © 2016 Realm",
                 "//\n // Copyright © 2016 Realm"
@@ -59,9 +59,9 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithForbiddenString() {
         let description = RuleDescription(
-            identifier: "file_header",
-            name: "File Header",
-            description: "Files should not have header comments.",
+            identifier: FileHeaderRule.description.identifier,
+            name: FileHeaderRule.description.name,
+            description: FileHeaderRule.description.description,
             nonTriggeringExamples: [
                 "// Copyright\n",
                 "let foo = \"**All rights reserved.\"",
@@ -81,9 +81,9 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithForbiddenPattern() {
         let description = RuleDescription(
-            identifier: "file_header",
-            name: "File Header",
-            description: "Files should not have header comments.",
+            identifier: FileHeaderRule.description.identifier,
+            name: FileHeaderRule.description.name,
+            description: FileHeaderRule.description.description,
             nonTriggeringExamples: [
                 "// Copyright\n",
                 "// FileHeaderRuleTests.m\n",

@@ -53,7 +53,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             lastToken = token
         }
 
-        var violationsOffsets: [Int] = []
+        // first location will be used for region purposes, second one will be the one reported
+        var violationsOffsets: [(Int, Int)] = []
         if let firstToken = firstToken, let lastToken = lastToken {
             let start = firstToken.offset
             let length = lastToken.offset + lastToken.length - firstToken.offset
@@ -65,7 +66,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 let matches = regex.matches(in: file.contents, options: [], range: range)
                 if let firstMatch = matches.first {
                     let location = firstMatch.range.location + firstMatch.range.length - 1
-                    violationsOffsets.append(location)
+                    violationsOffsets.append((location, firstMatch.range.location))
                 }
             }
 
@@ -73,7 +74,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 let matches = regex.matches(in: file.contents, options: [], range: range)
                 if matches.isEmpty {
                     let location = range.location + range.length - 1
-                    violationsOffsets.append(location)
+                    violationsOffsets.append((location, start))
                 }
             }
         } else if configuration.requiredRegex != nil {
@@ -86,12 +87,25 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             ]
         }
 
-        let ranges = violationsOffsets.map { NSRange(location: $0, length: 0) }
-        return file.ruleEnabledViolatingRanges(ranges, forRule: self).map {
+        return violationsFromOffsets(violationsOffsets, file: file)
+    }
+
+    private func violationsFromOffsets(_ violationsOffsets: [(Int, Int)],
+                                       file: File) -> [StyleViolation] {
+        let locations: [Int] = violationsOffsets.flatMap {
+            let ranges = [NSRange(location: $0.0, length: 0)]
+            guard !file.ruleEnabledViolatingRanges(ranges, forRule: self).isEmpty else {
+                return nil
+            }
+
+            return $0.1
+        }
+
+        return locations.map {
             StyleViolation(
                 ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, characterOffset: $0.location)
+                location: Location(file: file, characterOffset: $0)
             )
         }
     }

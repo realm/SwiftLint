@@ -76,6 +76,6 @@ class SourceKitCrashTests: XCTestCase {
         }
         // swiftlint:disable:next force_unwrapping
         let configuration = Configuration(whitelistRules: allRuleIdentifiers)!
-        Linter(file: file, configuration: configuration).styleViolations
+        _ = Linter(file: file, configuration: configuration).styleViolations
     }
 }

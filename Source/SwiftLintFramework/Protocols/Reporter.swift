@@ -8,11 +8,11 @@
 
 public protocol Reporter: CustomStringConvertible {
     static var identifier: String { get }
-    static func generateReport(violations: [StyleViolation]) -> String
+    static func generateReport(_ violations: [StyleViolation]) -> String
     static var isRealtime: Bool { get }
 }
 
-public func reporterFromString(string: String) -> Reporter.Type {
+public func reporterFromString(_ string: String) -> Reporter.Type {
     switch string {
     case XcodeReporter.identifier:
         return XcodeReporter.self

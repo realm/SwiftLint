@@ -10,6 +10,9 @@ matrix:
     - script: set -o pipefail && script/cibuild | xcpretty
       osx_image: xcode8
       env: JOB=Xcode8
+    - script: swift test
+      osx_image: xcode8
+      env: JOB=SPM
   exclude:
     - script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
 

@@ -9,11 +9,11 @@
 import Foundation
 
 extension NSRange {
-    func intersectsRange(range: NSRange) -> Bool {
+    func intersectsRange(_ range: NSRange) -> Bool {
         return NSIntersectionRange(self, range).length > 0
     }
 
-    func intersectsRanges(ranges: [NSRange]) -> Bool {
+    func intersectsRanges(_ ranges: [NSRange]) -> Bool {
         for range in ranges where intersectsRange(range) {
             return true
         }

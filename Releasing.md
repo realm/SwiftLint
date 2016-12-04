@@ -14,8 +14,8 @@ For SwiftLint contributors, follow these steps to cut a release:
    name.
 4. Commit & push to the `master` branch.
 5. Tag: `git tag -a 0.2.0 -m "0.2.0: Tumble Dry"; git push origin 0.2.0`
-6. Make sure you have the latest stable Xcode version installed or symlinked
-   under `/Applications/Xcode.app` and `xcode-select`ed.
+6. Make sure you have the latest stable Xcode version installed and
+  `xcode-select`ed.
 7. Create the pkg installer & framework zip: `make release`
 8. Create a GitHub release: https://github.com/realm/SwiftLint/releases/new
     * Specify the tag you just pushed from the dropdown.
@@ -24,4 +24,4 @@ For SwiftLint contributors, follow these steps to cut a release:
     * Upload the pkg installer and Carthage zip you just built to the GitHub
       release binaries.
     * Click "Publish release"
-9. Update Homebrew: `brew bump-formula-pr --tag=$(git describe --tags) --revision=$(git rev-parse HEAD) swiftlint`.
+9. Update Homebrew: `brew update && brew bump-formula-pr --tag=$(git describe --tags) --revision=$(git rev-parse HEAD) swiftlint`.

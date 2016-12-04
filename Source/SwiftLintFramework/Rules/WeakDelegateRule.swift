@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -25,25 +25,26 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             // We only consider properties to be a delegate if it has "delegate" in its name
             "class Foo {\n  var scrollHandler: ScrollDelegate?\n}\n",
             // Only trigger on instance variables, not local variables
-            "func foo() {\n  var delegate: SomeDelegate\n}\n"
+            "func foo() {\n  var delegate: SomeDelegate\n}\n",
+            // Only trigger when variable has the suffix "-delegate" to avoid false positives
+            "class Foo {\n  var delegateNotified: Bool?\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
-            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n",
-            "class Foo {\n  var delegateScroll: ScrollDelegate?\n}\n"
+            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n"
         ]
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+        guard kind == .varInstance else {
             return []
         }
 
         // Check if name contains "delegate"
-        guard let name = (dictionary["key.name"] as? String) where
-            name.lowercaseString.containsString("delegate") else {
+        guard let name = (dictionary["key.name"] as? String),
+            name.lowercased().hasSuffix("delegate") else {
                 return []
         }
 
@@ -64,7 +65,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(
-                ruleDescription: self.dynamicType.description,
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: location
             )

@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
     public let configurationDescription = "N/A"
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -37,19 +37,19 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return"
         return file.rangesAndTokensMatching(pattern).filter { range, tokens in
-            guard let firstToken = tokens.first, lastToken = tokens.last
-                where SyntaxKind(rawValue: firstToken.type) == .Keyword &&
-                    SyntaxKind(rawValue: lastToken.type) == .Keyword else {
+            guard let firstToken = tokens.first, let lastToken = tokens.last,
+                SyntaxKind(rawValue: firstToken.type) == .keyword &&
+                    SyntaxKind(rawValue: lastToken.type) == .keyword else {
                         return false
             }
 
-            return ["if", "guard"].contains(contentForToken(firstToken, file: file)) &&
-                contentForToken(lastToken, file: file) == "return"
+            return ["if", "guard"].contains(contentForToken(token: firstToken, file: file)) &&
+                contentForToken(token: lastToken, file: file) == "return"
         }.map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.0.location))
         }

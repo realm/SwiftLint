@@ -9,21 +9,21 @@
 import Foundation
 
 public enum CommandAction: String {
-    case Enable = "enable"
-    case Disable = "disable"
+    case enable
+    case disable
 
-    private func inverse() -> CommandAction {
+    fileprivate func inverse() -> CommandAction {
         switch self {
-        case .Enable: return .Disable
-        case .Disable: return .Enable
+        case .enable: return .disable
+        case .disable: return .enable
         }
     }
 }
 
 public enum CommandModifier: String {
-    case Previous = "previous"
-    case This = "this"
-    case Next = "next"
+    case previous
+    case this
+    case next
 }
 
 public struct Command {
@@ -43,34 +43,35 @@ public struct Command {
     }
 
     public init?(string: NSString, range: NSRange) {
-        let scanner = NSScanner(string: string.substringWithRange(range))
-        scanner.scanString("swiftlint:", intoString: nil)
+        let scanner = Scanner(string: string.substring(with: range))
+        scanner.scanString("swiftlint:", into: nil)
         var optionalActionAndModifierNSString: NSString? = nil
-        scanner.scanUpToString(" ", intoString: &optionalActionAndModifierNSString)
+        scanner.scanUpTo(" ", into: &optionalActionAndModifierNSString)
         guard let actionAndModifierString = optionalActionAndModifierNSString as String? else {
             return nil
         }
-        let actionAndModifierScanner = NSScanner(string: actionAndModifierString)
+        let actionAndModifierScanner = Scanner(string: actionAndModifierString)
         var actionNSString: NSString? = nil
-        actionAndModifierScanner.scanUpToString(":", intoString: &actionNSString)
+        actionAndModifierScanner.scanUpTo(":", into: &actionNSString)
         guard let actionString = actionNSString as String?,
-            action = CommandAction(rawValue: actionString),
-            lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
+            let action = CommandAction(rawValue: actionString),
+            let lineAndCharacter = string
+                .lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else {
                 return nil
         }
         self.action = action
         ruleIdentifiers = (scanner.string as NSString)
-            .substringFromIndex(scanner.scanLocation + 1)
-            .componentsSeparatedByCharactersInSet(.whitespaceCharacterSet())
+            .substring(from: scanner.scanLocation + 1)
+            .components(separatedBy: .whitespaces)
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(":", intoString: nil)
+        let hasModifier = actionAndModifierScanner.scanString(":", into: nil)
 
         // Modifier
         if hasModifier {
             let modifierString = (actionAndModifierScanner.string as NSString)
-                .substringFromIndex(actionAndModifierScanner.scanLocation)
+                .substring(from: actionAndModifierScanner.scanLocation)
             modifier = CommandModifier(rawValue: modifierString)
         } else {
             modifier = nil
@@ -82,19 +83,19 @@ public struct Command {
             return [self]
         }
         switch modifier {
-        case .Previous:
+        case .previous:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
                     character: Int.max)
             ]
-        case .This:
+        case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
                     character: Int.max)
             ]
-        case .Next:
+        case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,

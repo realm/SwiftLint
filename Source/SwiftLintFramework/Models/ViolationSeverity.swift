@@ -7,12 +7,12 @@
 //
 
 public enum ViolationSeverity: String, Comparable {
-    case Warning
-    case Error
+    case warning
+    case error
 }
 
 // MARK: Comparable
 
 public func < (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
-    return lhs == .Warning && rhs == .Error
+    return lhs == .warning && rhs == .error
 }

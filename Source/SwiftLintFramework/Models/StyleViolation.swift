@@ -15,7 +15,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
         return XcodeReporter.generateForSingleViolation(self)
     }
 
-    public init(ruleDescription: RuleDescription, severity: ViolationSeverity = .Warning,
+    public init(ruleDescription: RuleDescription, severity: ViolationSeverity = .warning,
                 location: Location, reason: String? = nil) {
         self.ruleDescription = ruleDescription
         self.severity = severity

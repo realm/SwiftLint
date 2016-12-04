@@ -8,9 +8,12 @@
 
 import SourceKittenFramework
 
-private func example(type: String, _ template: String, _ count: Int, _ add: String = "") -> String {
+private func example(_ type: String,
+                     _ template: String,
+                     _ count: Int,
+                     _ add: String = "") -> String {
     return "\(type) Abc {\n" +
-        Repeat(count: count, repeatedValue: template).joinWithSeparator("") + "\(add)}\n"
+        repeatElement(template, count: count).joined() + "\(add)}\n"
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
@@ -35,25 +38,25 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         })
     )
 
-    public func validateFile(file: File,
+    public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-            let startLine = file.contents.lineAndCharacterForByteOffset(bodyOffset)
-            let endLine = file.contents.lineAndCharacterForByteOffset(bodyOffset + bodyLength)
+            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
+            let startLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset)
+            let endLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
 
-            if let startLine = startLine?.line, endLine = endLine?.line {
+            if let startLine = startLine?.line, let endLine = endLine?.line {
                 for parameter in configuration.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
                         startLine, endLine, parameter.value
                     )
                     if exceeds {
-                        return [StyleViolation(ruleDescription: self.dynamicType.description,
+                        return [StyleViolation(ruleDescription: type(of: self).description,
                             severity: parameter.severity,
                             location: Location(file: file, byteOffset: offset),
                             reason: "Type body should span \(parameter.value) lines or less " +

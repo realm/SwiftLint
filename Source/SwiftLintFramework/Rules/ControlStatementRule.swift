@@ -10,7 +10,7 @@ import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -55,7 +55,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while"]
         return statements.flatMap { statementKind -> [StyleViolation] in
             let pattern = statementKind == "guard"
@@ -66,7 +66,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
                 if self.isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
                     return nil
                 }
-                return StyleViolation(ruleDescription: self.dynamicType.description,
+                return StyleViolation(ruleDescription: type(of: self).description,
                     severity: self.configuration.severity,
                     location: Location(file: file, characterOffset: match.location))
             }
@@ -74,8 +74,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
 
     }
 
-    private func isFalsePositive(content: String, syntaxKind: SyntaxKind?) -> Bool {
-        if syntaxKind != .Keyword {
+    fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {
+        if syntaxKind != .keyword {
             return true
         }
 

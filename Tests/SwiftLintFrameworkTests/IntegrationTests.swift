@@ -13,10 +13,10 @@ import XCTest
 
 let config: Configuration = {
     let directory = (((#file as NSString)
-        .stringByDeletingLastPathComponent as NSString)
-        .stringByDeletingLastPathComponent as NSString)
-        .stringByDeletingLastPathComponent
-    NSFileManager.defaultManager().changeCurrentDirectoryPath(directory)
+        .deletingLastPathComponent as NSString)
+        .deletingLastPathComponent as NSString)
+        .deletingLastPathComponent
+    FileManager.default.changeCurrentDirectoryPath(directory)
     return Configuration(path: Configuration.fileName)
 }()
 
@@ -39,20 +39,25 @@ class IntegrationTests: XCTestCase {
 
     func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFilesForPath("")
-        XCTAssertEqual(swiftFiles.flatMap({
-            Linter(file: $0, configuration: config).correct()
-        }), [])
+        let corrections = swiftFiles.flatMap { Linter(file: $0, configuration: config).correct() }
+        for correction in corrections {
+            correction.location.file!.withStaticString {
+                XCTFail(correction.ruleDescription.description,
+                        file: $0, line: UInt(correction.location.line!))
+            }
+        }
     }
 }
 
 extension String {
-    func withStaticString(@noescape closure: StaticString -> Void) {
+    func withStaticString(_ closure: (StaticString) -> Void) {
         withCString {
             let rawPointer = $0._rawValue
-            let byteSize = lengthOfBytesUsingEncoding(NSUTF8StringEncoding)._builtinWordValue
+            let byteSize = lengthOfBytes(using: .utf8)._builtinWordValue
             let isASCII = true._getBuiltinLogicValue()
-            let staticString = StaticString(_builtinStringLiteral: rawPointer, byteSize: byteSize,
-                isASCII: isASCII)
+            let staticString = StaticString(_builtinStringLiteral: rawPointer,
+                                            utf8CodeUnitCount: byteSize,
+                                            isASCII: isASCII)
             closure(staticString)
         }
     }

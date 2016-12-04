@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -24,23 +24,23 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         corrections: ["\n": ""]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        let countOfLeadingWhitespace = file.contents.countOfLeadingCharactersInSet(
-            NSCharacterSet.whitespaceAndNewlineCharacterSet()
+    public func validateFile(_ file: File) -> [StyleViolation] {
+        let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(
+            in: CharacterSet.whitespacesAndNewlines
         )
         if countOfLeadingWhitespace == 0 {
             return []
         }
-        return [StyleViolation(ruleDescription: self.dynamicType.description,
+        return [StyleViolation(ruleDescription: type(of: self).description,
             severity: configuration.severity,
             location: Location(file: file.path, line: 1),
             reason: "File shouldn't start with whitespace: " +
             "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        let whitespaceAndNewline = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-        let spaceCount = file.contents.countOfLeadingCharactersInSet(whitespaceAndNewline)
+    public func correctFile(_ file: File) -> [Correction] {
+        let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
+        let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         if spaceCount == 0 {
             return []
         }
@@ -50,9 +50,12 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         if file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty {
             return []
         }
-        let indexEnd = file.contents.startIndex.advancedBy(spaceCount)
-        file.write(file.contents.substringFromIndex(indexEnd))
+        let indexEnd = file.contents.index(
+            file.contents.startIndex,
+            offsetBy:spaceCount,
+            limitedBy: file.contents.endIndex) ?? file.contents.endIndex
+        file.write(file.contents.substring(from: indexEnd))
         let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
+        return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var allowPrivateSet = false
 
     public var consoleDescription: String {
@@ -20,9 +20,9 @@ public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
         self.allowPrivateSet = allowPrivateSet
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configuration = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         allowPrivateSet = (configuration["allow_private_set"] as? Bool == true)

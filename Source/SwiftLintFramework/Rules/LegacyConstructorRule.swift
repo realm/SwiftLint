@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -97,23 +97,22 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
                             "NSMakePoint", "NSMakeSize", "NSMakeRect", "NSMakeRange",
                             "UIEdgeInsetsMake", "NSEdgeInsetsMake"]
 
-        let pattern = "\\b(" + constructors.joinWithSeparator("|") + ")\\b"
+        let pattern = "\\b(" + constructors.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.Identifier]).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
-
         let patterns = [
             "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",
             "CGSizeMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGSize(width: $1, height: $2)",
@@ -130,29 +129,6 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
         ]
-
-        let description = self.dynamicType.description
-        var corrections = [Correction]()
-        var contents = file.contents
-
-        let matches = patterns.map({ pattern, template in
-            file.matchPattern(pattern)
-                .filter { !file.ruleEnabledViolatingRanges([$0.0], forRule: self).isEmpty }
-                .filter { $0.1.first == .Identifier }
-                .map { ($0.0, pattern, template) }
-        }).flatten().sort { $0.0.location > $1.0.location } // reversed
-        if matches.isEmpty { return [] }
-
-        for (range, pattern, template) in matches {
-            let location = Location(file: file, characterOffset: range.location)
-            contents = regex(pattern).stringByReplacingMatchesInString(contents,
-                                                                       options: [],
-                                                                       range: range,
-                                                                       withTemplate: template)
-            corrections.append(Correction(ruleDescription: description, location: location))
-        }
-
-        file.write(contents)
-        return corrections
+        return file.correctLegacyRule(self, patterns: patterns)
     }
 }

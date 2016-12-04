@@ -15,14 +15,14 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     public var message = "Regex matched."
     public var regex = NSRegularExpression()
     public var included = NSRegularExpression()
-    public var severityConfiguration = SeverityConfiguration(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue.lowercaseString): \(regex.pattern)"
+        return "\(severity.rawValue): \(regex.pattern)"
     }
 
     public var description: RuleDescription {
@@ -35,9 +35,9 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
         if let regexString = configurationDict["regex"] as? String {
             regex = try NSRegularExpression.cached(pattern: regexString)

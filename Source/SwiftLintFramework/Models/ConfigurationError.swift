@@ -8,6 +8,6 @@
 
 import Foundation
 
-public enum ConfigurationError: ErrorType {
-    case UnknownConfiguration
+public enum ConfigurationError: Error {
+    case unknownConfiguration
 }

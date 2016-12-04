@@ -16,15 +16,15 @@ public struct JUnitReporter: Reporter {
         return "Reports violations as JUnit XML."
     }
 
-    public static func generateReport(violations: [StyleViolation]) -> String {
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
             violations.map({ violation in
                 let fileName = violation.location.file ?? "<nopath>"
-                let severity = violation.severity.rawValue.lowercaseString + ":\n"
+                let severity = violation.severity.rawValue + ":\n"
                 let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
                 return ["\n\t<testcase classname='Formatting Test' name='\(fileName)\'>\n",
                     "<failure message='\(violation.reason)\'>" + message + "</failure>",
-                    "\t</testcase>"].joinWithSeparator("")
-            }).joinWithSeparator("") + "\n</testsuite></testsuites>"
+                    "\t</testcase>"].joined(separator: "")
+            }).joined(separator: "") + "\n</testsuite></testsuites>"
     }
 }

@@ -16,14 +16,14 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var regex = NSRegularExpression()
     public var included = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
-    public var severityConfiguration = SeverityConfiguration(.Warning)
+    public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue.lowercaseString): \(regex.pattern)"
+        return "\(severity.rawValue): \(regex.pattern)"
     }
 
     public var description: RuleDescription {
@@ -36,16 +36,16 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject],
-            regexString = configurationDict["regex"] as? String else {
-                throw ConfigurationError.UnknownConfiguration
+    public mutating func applyConfiguration(_ configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any],
+            let regexString = configurationDict["regex"] as? String else {
+                throw ConfigurationError.unknownConfiguration
         }
 
-        regex = try NSRegularExpression.cached(pattern: regexString)
+        regex = try .cached(pattern: regexString)
 
         if let includedString = configurationDict["included"] as? String {
-            included = try NSRegularExpression.cached(pattern: includedString)
+            included = try .cached(pattern: includedString)
         }
 
         if let name = configurationDict["name"] as? String {
@@ -54,7 +54,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let matchKinds = [String].arrayOf(configurationDict["match_kinds"]) {
+        if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
         }
         if let severityString = configurationDict["severity"] as? String {

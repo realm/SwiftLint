@@ -2,6 +2,26 @@
 
 ##### Breaking
 
+* SwiftLint now requires Xcode 8.x and Swift 3.0 to build.
+  APIs have not yet been adapted to conform to the Swift 3 API Design
+  Guidelines but will shortly.  
+  [JP Simard](https://github.com/jpsim), 
+  [Norio Nomura](https://github.com/norio-nomura)
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix `weak_delegate` rule reporting a violation for variables containing
+  but not ending in `delegate`.  
+  [Phil Webster](https://github.com/philwebster)
+
+## 0.13.2: Light Cycle
+
+##### Breaking
+
 * None.
 
 ##### Enhancements
@@ -31,7 +51,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix `MarkRule` reporting a violation for `// MARK: -`, which is valid.  
+  [JP Simard](https://github.com/jpsim)
+  [#778](https://github.com/realm/SwiftLint/issues/778)
 
 ## 0.13.1: Heavy Cycle
 

@@ -10,7 +10,7 @@ import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return severity.rawValue.lowercaseString
+        return severity.rawValue
     }
 
     var severity: ViolationSeverity
@@ -19,17 +19,17 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
         self.severity = severity
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
+    public mutating func applyConfiguration(_ configuration: Any) throws {
         // swiftlint:disable:next line_length
-        guard let value = configuration as? String ?? (configuration as? [String: AnyObject])?["severity"] as? String,
-            severity = severity(fromString: value) else {
-                throw ConfigurationError.UnknownConfiguration
+        guard let value = configuration as? String ?? (configuration as? [String: Any])?["severity"] as? String,
+            let severity = severity(fromString: value) else {
+                throw ConfigurationError.unknownConfiguration
         }
         self.severity = severity
     }
 
-    private func severity(fromString string: String) -> ViolationSeverity? {
-        return ViolationSeverity(rawValue: string.lowercaseString.capitalizedString)
+    fileprivate func severity(fromString string: String) -> ViolationSeverity? {
+        return ViolationSeverity(rawValue: string.lowercased())
     }
 }
 

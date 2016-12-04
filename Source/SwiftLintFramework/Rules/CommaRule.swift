@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -43,35 +43,35 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validateFile(_ file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correctFile(_ file: File) -> [Correction] {
         let violations = violationRangesInFile(file)
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
 
-        var nsstring = file.contents as NSString
-        let description = self.dynamicType.description
+        var contents = file.contents as NSString
+        let description = type(of: self).description
         var corrections = [Correction]()
-        for range in matches.reverse() {
+        for range in matches.reversed() {
+            contents = contents.replacingCharacters(in: range, with: ", ") as NSString
             let location = Location(file: file, characterOffset: range.location)
-            nsstring = nsstring.stringByReplacingCharactersInRange(range, withString: ", ")
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        file.write(nsstring as String)
+        file.write(contents as String)
         return corrections
     }
 
     // captures spaces and comma only
     // http://userguide.icu-project.org/strings/regexp
 
-    private static let mainPatternGroups =
+    fileprivate static let mainPatternGroups =
         "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
         "," +                  // to the left of a comma
@@ -83,34 +83,34 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ")" +                  // end capture
         "(\\S)"                // second capture is not whitespace.
 
-    private static let pattern =
+    fileprivate static let pattern =
         "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
         "|" +                       // or
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
     // swiftlint:disable:next force_try
-    private static let regularExpression = try! NSRegularExpression(pattern: pattern, options: [])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
+    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern)
+    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
         .map { $0.rawValue }
 
-    private func violationRangesInFile(file: File) -> [NSRange] {
+    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
-            .matchesInString(contents, options: [], range: range)
+            .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
                 if match.numberOfRanges != 5 { return nil } // Number of Groups in regexp
 
                 var indexStartRange = 1
-                if match.rangeAtIndex(indexStartRange).location == NSNotFound {
+                if match.rangeAt(indexStartRange).location == NSNotFound {
                     indexStartRange += 2
                 }
 
                 // check first captured range
-                let firstRange = match.rangeAtIndex(indexStartRange)
+                let firstRange = match.rangeAt(indexStartRange)
                 guard let matchByteFirstRange = contents
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
@@ -126,12 +126,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !(contents as NSString).substringWithRange(firstRange).hasPrefix(",") {
+                if !(contents as NSString).substring(with: firstRange).hasPrefix(",") {
                     return firstRange
                 }
 
                 // check second captured range
-                let secondRange = match.rangeAtIndex(indexStartRange + 1)
+                let secondRange = match.rangeAt(indexStartRange + 1)
                 guard let matchByteSecondRange = contents
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }

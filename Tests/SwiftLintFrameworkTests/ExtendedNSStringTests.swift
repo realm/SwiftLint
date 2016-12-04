@@ -22,7 +22,7 @@ class ExtendedNSStringTests: XCTestCase {
         "}"
         let string = NSString(string: contents)
         // A character placed on 80 offset indicates a white-space before 'do' at 5th line.
-        if let lineAndCharacter = string.lineAndCharacterForCharacterOffset(80) {
+        if let lineAndCharacter = string.lineAndCharacter(forCharacterOffset: 80) {
             XCTAssertEqual(lineAndCharacter.line, 5)
             XCTAssertEqual(lineAndCharacter.character, 3)
         } else {

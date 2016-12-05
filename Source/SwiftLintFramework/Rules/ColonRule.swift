@@ -263,11 +263,11 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
                 // When there is a dictionary like this ["key": "value"], source kitten
                 // gives us 2 syntax tokens of kind .String. We want to allow these types
                 // of dictionaries to be flagged if the colon is incorrect.
-                let onlyStringSyntaxKinds = !Set(syntaxKinds).intersect(Set([SyntaxKind.string])).isEmpty //swiftlint:disable:this line_length
+                let onlyStringSyntaxKinds = !Set(syntaxKinds).intersection(Set([SyntaxKind.string])).isEmpty //swiftlint:disable:this line_length
                 if syntaxKinds.count > 1 && onlyStringSyntaxKinds {
                     return true
                 } else {
-                    return Set(syntaxKinds).intersect(commentAndStringKindsSet).isEmpty
+                    return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty
                 }
             } else {
                 if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {

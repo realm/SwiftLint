@@ -25,12 +25,13 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             // We only consider properties to be a delegate if it has "delegate" in its name
             "class Foo {\n  var scrollHandler: ScrollDelegate?\n}\n",
             // Only trigger on instance variables, not local variables
-            "func foo() {\n  var delegate: SomeDelegate\n}\n"
+            "func foo() {\n  var delegate: SomeDelegate\n}\n",
+            // Only trigger when variable has the suffix "-delegate" to avoid false positives
+            "class Foo {\n  var delegateNotified: Bool?\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
-            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n",
-            "class Foo {\n  var delegateScroll: ScrollDelegate?\n}\n"
+            "class Foo {\n  var scrollDelegate: ScrollDelegate?\n}\n"
         ]
     )
 
@@ -43,7 +44,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
         // Check if name contains "delegate"
         guard let name = (dictionary["key.name"] as? String),
-            name.lowercased().contains("delegate") else {
+            name.lowercased().hasSuffix("delegate") else {
                 return []
         }
 

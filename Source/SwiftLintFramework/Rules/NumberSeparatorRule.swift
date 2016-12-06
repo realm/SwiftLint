@@ -17,13 +17,19 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
-        description: "Underscores should be used as thousand separator in large numbers.",
+        description: "Underscores should be used as thousand separator in large decimal numbers.",
         nonTriggeringExamples: [
             "let foo = 100",
             "let foo = 1_000",
             "let foo = 1_000_000",
             "let foo = 1.000_1",
-            "let foo = 1_000_000.000_000_1"
+            "let foo = 1_000_000.000_000_1",
+            "let binary = 0b10000",
+            "let binary = 0b1000_0001",
+            "let hex = 0xA",
+            "let hex = 0xAA_BB",
+            "let octal = 0o21",
+            "let octal = 0o21_1"
         ],
         triggeringExamples: [
             "let foo = ↓10_0",
@@ -38,8 +44,9 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
     public func validateFile(_ file: File) -> [StyleViolation] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
         let violations = numberTokens.filter { token in
-            guard let content = contentFrom(file: file, token: token) else {
-                return false
+            guard let content = contentFrom(file: file, token: token),
+                isDecimal(number: content) else {
+                    return false
             }
 
             let components = content.components(separatedBy: ".")
@@ -61,6 +68,13 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
         }
 
         return violations
+    }
+
+    private func isDecimal(number: String) -> Bool {
+        let lowercased = number.lowercased()
+        let prefixes = ["0x", "0o", "0b"]
+
+        return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
     }
 
     private func isValid(number: String, reversed: Bool) -> Bool {

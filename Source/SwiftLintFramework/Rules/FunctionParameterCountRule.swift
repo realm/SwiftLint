@@ -103,7 +103,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
     fileprivate func functionIsInitializer(_ file: File, offset: Int, length: Int) -> Bool {
         if let function = (file.contents as NSString)
-            .substringWithByteRange(start: offset, length: length), function.contains("init") {
+            .substringWithByteRange(start: offset, length: length), function.hasPrefix("init") {
             return true
         }
         return false

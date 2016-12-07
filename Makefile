@@ -16,8 +16,11 @@ BINARIES_FOLDER=/usr/local/bin
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
+SWIFTLINT_PLIST=Source/swiftlint/Supporting Files/Info.plist
+SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
+
+VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
 SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a
 SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
@@ -111,3 +114,14 @@ spm_clean:
 
 spm_clean_dist:
 	$(SWIFT_BUILD_COMMAND) --clean=dist
+
+get_version:
+	@echo $(VERSION_STRING)
+
+set_version:
+	$(eval NEW_VERSION := $(filter-out $@,$(MAKECMDGOALS)))
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+
+%:
+	@:

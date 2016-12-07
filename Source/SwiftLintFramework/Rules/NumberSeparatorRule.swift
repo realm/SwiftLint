@@ -29,7 +29,8 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
             "let hex = 0xA",
             "let hex = 0xAA_BB",
             "let octal = 0o21",
-            "let octal = 0o21_1"
+            "let octal = 0o21_1",
+            "let exp = 1_000_000.000_000e2"
         ],
         triggeringExamples: [
             "let foo = ↓10_0",
@@ -49,7 +50,11 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
                     return false
             }
 
-            let components = content.components(separatedBy: ".")
+            guard let nonExponential = content.components(separatedBy: "e").first else {
+                return false
+            }
+
+            let components = nonExponential.components(separatedBy: ".")
             if let integerSubstring = components.first,
                 !isValid(number: integerSubstring, reversed: true) {
                 return true

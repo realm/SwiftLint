@@ -3,7 +3,7 @@ matrix:
   include:
     - script:
         - set -o pipefail && script/cibuild | xcpretty
-        - pod lib lint
+        - pod lib lint SwiftLintFramework.podspec
       os: osx
       osx_image: xcode8
       env: JOB=Xcode8

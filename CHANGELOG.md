@@ -61,6 +61,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#934](https://github.com/realm/SwiftLint/issues/934)
 
+* Fix `traling_comma` rule reporting a violation for commas in comments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#940](https://github.com/realm/SwiftLint/issues/940)
+
 ## 0.13.2: Light Cycle
 
 ##### Breaking

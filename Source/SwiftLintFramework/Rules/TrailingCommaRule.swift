@@ -23,7 +23,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = []\n",
             "let foo = [:]\n",
             "let foo = [1: 2, 2: 3]\n",
-            "let foo = [Void]()\n"
+            "let foo = [Void]()\n",
+            "let example = [ 1,\n 2\n // 3,\n]"
         ],
         triggeringExamples: [
             "let foo = [1, 2, 3↓,]\n",
@@ -31,7 +32,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = [1, 2, 3   ↓,]\n",
             "let foo = [1: 2, 2: 3↓, ]\n",
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n"
+            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
+            "let example = [ 1,\n2↓,\n // 3,\n]"
         ]
     )
 
@@ -74,7 +76,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             .substringWithByteRange(start: lastPosition, length: length) ?? ""
 
         // if a trailing comma is not present
-        guard let commaIndex = contentsAfterLastElement.lastIndexOf(",") else {
+        guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file,
+                                                  offset: lastPosition) else {
             guard configuration.mandatoryComma else {
                 return []
             }
@@ -98,6 +101,22 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
                 location: Location(file: file, byteOffset: byteOffset)
             )
         ]
+    }
+
+    private func trailingCommaIndex(_ contents: String, file: File, offset: Int) -> Int? {
+        // swiftlint:disable:next force_try
+        let regex = try! NSRegularExpression(pattern: ",", options: [.ignoreMetacharacters])
+        let range = NSRange(location: 0, length: contents.characters.count)
+        let ranges = regex.matches(in: contents, options: [], range: range).map { $0.range }
+
+        // skip commas in comments
+        return ranges.filter {
+            let range = NSRange(location: $0.location + offset, length: $0.length)
+            let kinds = file.syntaxMap.tokensIn(range).flatMap { SyntaxKind(rawValue: $0.type) }
+            return kinds.filter { SyntaxKind.commentKinds().contains($0) }.isEmpty
+        }.last.flatMap {
+            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
+        }?.location
     }
 }
 

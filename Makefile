@@ -117,3 +117,11 @@ spm_clean_dist:
 
 get_version:
 	@echo $(VERSION_STRING)
+
+set_version:
+	$(eval NEW_VERSION := $(filter-out $@,$(MAKECMDGOALS)))
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+
+%:
+	@:

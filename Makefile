@@ -89,7 +89,7 @@ archive:
 	carthage build --no-skip-current --platform mac
 	carthage archive SwiftLintFramework
 
-release: package archive
+release: package archive portable_zip
 
 # http://irace.me/swift-profiling/
 display_compilation_time:

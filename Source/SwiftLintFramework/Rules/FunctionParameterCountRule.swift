@@ -19,6 +19,9 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
         nonTriggeringExamples: [
+            "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
@@ -26,7 +29,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"
+            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "struct Foo {\n" +
+                "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}\n" +
+                "func bar(a: b, c: Int, d: Int, e: Int, f: Int, g: Int) {}}"
         ]
     )
 
@@ -39,6 +45,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
         let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
+
+        if functionIsInitializer(file, offset: nameOffset, length: length) {
+            return []
+        }
 
         let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
@@ -89,6 +99,14 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return (file.contents as NSString)
             .substringWithByteRange(start: offset, length: length)?
             .characters.filter { $0 == equalCharacter }.count ?? 0
+    }
+
+    fileprivate func functionIsInitializer(_ file: File, offset: Int, length: Int) -> Bool {
+        if let function = (file.contents as NSString)
+            .substringWithByteRange(start: offset, length: length), function.hasPrefix("init") {
+            return true
+        }
+        return false
     }
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [

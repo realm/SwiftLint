@@ -30,7 +30,10 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
             "let hex = 0xAA_BB",
             "let octal = 0o21",
             "let octal = 0o21_1",
-            "let exp = 1_000_000.000_000e2"
+            "let octal = -0o21_1",
+            "let exp = 1_000_000.000_000e2",
+            "let negative = -1_000_000.000_000",
+            "let positive = +1_000_000.000_000"
         ],
         triggeringExamples: [
             "let foo = ↓10_0",
@@ -50,7 +53,9 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
                     return false
             }
 
-            guard let nonExponential = content.components(separatedBy: "e").first else {
+            let signals = CharacterSet(charactersIn: "+-")
+            guard let nonSignal = content.components(separatedBy: signals).first,
+                let nonExponential = nonSignal.components(separatedBy: "e").first else {
                 return false
             }
 
@@ -77,7 +82,7 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
 
     private func isDecimal(number: String) -> Bool {
         let lowercased = number.lowercased()
-        let prefixes = ["0x", "0o", "0b"]
+        let prefixes = ["0x", "0o", "0b"].flatMap { [$0, "-" + $0] }
 
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
     }

@@ -2,9 +2,7 @@
 
 For SwiftLint contributors, follow these steps to cut a release:
 
-1. Update version number in the following files:
-    * `Source/swiftlint/Supporting Files/Info.plist`
-    * `Source/SwiftLintFramework/Supporting Files/Info.plist`
+1. Update version number: `make set_version 0.2.0`
 2. Come up with a witty washer/dryer themed release name. Past names include:
     * Tumble Dry
     * FabricSoftenerRule

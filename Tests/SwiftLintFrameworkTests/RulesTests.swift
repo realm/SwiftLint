@@ -187,6 +187,10 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
+    func testNumberSeparator() {
+        verifyRule(NumberSeparatorRule.description)
+    }
+
     func testVerticalWhitespace() {
         verifyRule(VerticalWhitespaceRule.description)
     }

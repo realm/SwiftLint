@@ -10,7 +10,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `number_separator` opt-in rule that enforces that underscores are
+  used as thousand separators in large numbers.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#924](https://github.com/realm/SwiftLint/issues/924)
 
 ##### Bug Fixes
 

@@ -17,6 +17,11 @@
 * Fix `weak_delegate` rule reporting a violation for variables containing
   but not ending in `delegate`.  
   [Phil Webster](https://github.com/philwebster)
+  
+* Fix `weak_delegate` rule reporting a violation for variables in protocols
+  declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#934](https://github.com/realm/SwiftLint/issues/934)
 
 ## 0.13.2: Light Cycle
 

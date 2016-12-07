@@ -114,3 +114,6 @@ spm_clean:
 
 spm_clean_dist:
 	$(SWIFT_BUILD_COMMAND) --clean=dist
+
+get_version:
+	@echo $(VERSION_STRING)

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                = 'SwiftLintFramework'
-  s.version             = '0.13.2'
+  s.version             = `make get_version`
   s.summary             = 'A tool to enforce Swift style and conventions.'
   s.homepage            = 'https://github.com/realm/SwiftLint'
   s.source              = { :git => s.homepage + '.git', :tag => s.version }

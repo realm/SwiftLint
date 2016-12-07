@@ -89,7 +89,7 @@ archive:
 	carthage build --no-skip-current --platform mac
 	carthage archive SwiftLintFramework
 
-release: package archive
+release: package archive portable_zip
 
 # http://irace.me/swift-profiling/
 display_compilation_time:
@@ -114,6 +114,10 @@ spm_clean:
 
 spm_clean_dist:
 	$(SWIFT_BUILD_COMMAND) --clean=dist
+
+publish:
+	brew update && brew bump-formula-pr --tag=$(git describe --tags) --revision=$(git rev-parse HEAD) swiftlint
+	pod trunk push
 
 get_version:
 	@echo $(VERSION_STRING)

@@ -112,6 +112,39 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(corrections.count, 1)
     }
 
+    func testBasicNonCorrectableCustomRule() {
+        var (regexConfig, customRules) = getCustomRules()
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let file = File(contents: "// My file with\n// a pattern")
+        XCTAssertEqual(customRules.validateFile(file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 6),
+                                       reason: regexConfig.message)])
+
+        guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
+                XCTFail("couldn't generate temporary path for custom rule correction")
+                return
+        }
+        do {
+            try file.contents.write(toFile: path, atomically: true, encoding: .utf8)
+        } catch {
+            XCTFail("couldn't write to file for custom rule correction with error: \(error)")
+            return
+        }
+        guard let correctedFile = File(path: path) else {
+            XCTFail("couldn't read file at path '\(path)' for custom rule correction")
+            return
+        }
+        let corrections = customRules.correctFile(correctedFile)
+        XCTAssertEqual(corrections.count, 0)
+    }
+
     //swiftlint:disable:next function_body_length
     func testDictionaryColonCorrectableCustomRule() {
         let pattern =

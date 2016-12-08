@@ -19,6 +19,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var template = ""
 
+    public var isCorrectable: Bool {
+        return !template.isEmpty
+    }
+
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }

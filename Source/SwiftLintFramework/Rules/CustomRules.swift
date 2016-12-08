@@ -111,11 +111,12 @@ public struct CustomRules: Rule, CorrectableRule, ConfigurationProviderRule {
 
         if let path = file.path {
             configurations = configurations.filter { config in
+                if !config.isCorrectable { return false }
                 let pattern = config.included.pattern
                 if pattern.isEmpty { return true }
 
                 let pathMatch = config.included.matches(in: path, options: [],
-                        range: NSRange(location: 0, length: (path as NSString).length)) //swiftlint:disable:this line_length
+                    range: NSRange(location: 0, length: (path as NSString).length))
 
                 return !pathMatch.isEmpty
             }

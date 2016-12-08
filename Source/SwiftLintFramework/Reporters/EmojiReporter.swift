@@ -17,55 +17,27 @@ public struct EmojiReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return violations.group { (violation) in
-                violation.location.file ?? "Other"
-            }.map { (filename, violations) in
-                return reportFor(file: filename, with: violations)
-            }.joined(separator: "\n")
+        return violations.group { violation in
+            violation.location.file ?? "Other"
+        }.map(reportFor).joined(separator: "\n")
     }
 
     private static func reportFor(file: String, with violations: [StyleViolation]) -> String {
-        var lines: [String] = []
-
-        let sortedViolatons = violations.sorted { (lhs, rhs) -> Bool in
-            switch (lhs.severity, rhs.severity) {
-            case (.warning, .error): return false
-            case (.error, .warning): return true
-            case (_, _):
-                switch (lhs.location.line, rhs.location.line) {
-                case (.some(let lhs), .some(let rhs)): return lhs < rhs
-                case (.some, .none): return true
-                case (.none, .some): return false
-                case (.none, .none): return false
-                }
+        let lines = [file] + violations.sorted(by: { lhs, rhs in
+            guard lhs.severity == rhs.severity else {
+                return lhs.severity > rhs.severity
             }
-        }
-
-        lines.append(file)
-
-        for violation in sortedViolatons {
-            var line = ""
-            line += emojiFor(violationSeverity: violation.severity)
-            line += " "
-
-            if let locationLine = violation.location.line {
-                line += "Line \(locationLine): "
+            return lhs.location > rhs.location
+        }).map { violation in
+            let emoji = (violation.severity == .error) ? "⛔️" : "⚠️"
+            let lineString: String
+            if let line = violation.location.line {
+                lineString = "Line \(line): "
+            } else {
+                lineString = ""
             }
-
-            line += violation.reason
-
-            lines.append(line)
+            return "\(emoji) \(lineString)\(violation.reason)"
         }
-
         return lines.joined(separator: "\n")
-    }
-
-    private static func emojiFor(violationSeverity: ViolationSeverity) -> String {
-        switch violationSeverity {
-        case .error:
-            return "⛔️"
-        case .warning:
-            return "⚠️"
-        }
     }
 }

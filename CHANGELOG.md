@@ -2,7 +2,7 @@
 
 ##### Breaking
 
-* SwiftLint now requires Xcode 8.x and Swift 3.0 to build.
+* SwiftLint now requires Xcode 8.x and Swift 3.x to build.
   APIs have not yet been adapted to conform to the Swift 3 API Design
   Guidelines but will shortly.  
   [JP Simard](https://github.com/jpsim),
@@ -28,7 +28,7 @@
   but not ending in `delegate`.  
   [Phil Webster](https://github.com/philwebster)
 
-* Fix `weak_delegate` rule reporting a violation for variables in protocols
+* Fix `weak_delegate` rule reporting a violation for variables in protocol
   declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#934](https://github.com/realm/SwiftLint/issues/934)

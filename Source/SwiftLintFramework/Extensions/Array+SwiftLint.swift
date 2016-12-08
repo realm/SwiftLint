@@ -27,24 +27,21 @@ extension Array where Element: NSTextCheckingResult {
 
 extension Array where Element: Equatable {
     var unique: [Element] {
-        var uniqueValues: [Element] = []
-        forEach { item in
-            if !uniqueValues.contains(item) {
-                uniqueValues += [item]
-            }
+        var uniqueValues = [Element]()
+        for item in self where !uniqueValues.contains(item) {
+            uniqueValues.append(item)
         }
         return uniqueValues
     }
 }
 
 extension Array {
-    // swiftlint:disable:next line_length
     func group<U: Hashable>(by transform: (Element) -> U) -> [U: [Element]] {
-        var dictionary: [U: [Element]] = [:]
-        for element in self {
+        return reduce([:]) { dictionary, element in
+            var dictionary = dictionary
             let key = transform(element)
-            if case nil = dictionary[key]?.append(element) { dictionary[key] = [element] }
+            dictionary[key] = (dictionary[key] ?? []) + [element]
+            return dictionary
         }
-        return dictionary
     }
 }

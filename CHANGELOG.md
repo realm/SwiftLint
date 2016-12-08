@@ -19,12 +19,15 @@
   [Denis Lebedev](https://github.com/garnett)
   [#544](https://github.com/realm/SwiftLint/issues/544)
 
+* Add `EmojiReporter`: a human friendly reporter.  
+  [Michał Kałużny](https://github.com/justMaku)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing
   but not ending in `delegate`.  
   [Phil Webster](https://github.com/philwebster)
-  
+
 * Fix `weak_delegate` rule reporting a violation for variables in protocols
   declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

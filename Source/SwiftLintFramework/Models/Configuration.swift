@@ -221,7 +221,7 @@ extension Configuration {
         let pathNSString = path as NSString
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
-        // If a configuration exists and it isn't us, load and merge the gurations
+        // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             return merge(Configuration(path: configurationSearchPath, rootPath: rootPath,

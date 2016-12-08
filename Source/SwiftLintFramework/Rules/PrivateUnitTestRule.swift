@@ -134,9 +134,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                     let kindString = subDict["key.kind"] as? String,
                     let kind = KindType(rawValue: kindString), kind == .functionMethodInstance
                     else { return [] }
-                return self.validateFunction(file, kind: kind, dictionary: subDict)
+                return validateFunction(file, kind: kind, dictionary: subDict)
             }
-
     }
 
     fileprivate func isTestClass(_ dictionary: [String: SourceKitRepresentable]) -> Bool {

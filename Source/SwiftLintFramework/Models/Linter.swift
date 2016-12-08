@@ -29,11 +29,11 @@ public struct Linter {
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
         let violations = rules.flatMap { rule -> [StyleViolation] in
-            if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
+            if !(rule is SourceKitFreeRule) && file.sourcekitdFailed {
                 return []
             }
             let start: Date! = benchmark ? Date() : nil
-            let violations = rule.validateFile(self.file)
+            let violations = rule.validateFile(file)
             if benchmark {
                 let id = type(of: rule).description.identifier
                 ruleTimes.append((id, -start.timeIntervalSinceNow))

@@ -55,7 +55,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             self.message = message
         }
         if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
-            self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
+            self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
         }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.applyConfiguration(severityString)

@@ -229,6 +229,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 
+    func testRedundantStringEnumValue() {
+        verifyRule(RedundantStringEnumValueRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

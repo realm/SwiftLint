@@ -21,6 +21,11 @@
 
 * Add `EmojiReporter`: a human friendly reporter.  
   [Michał Kałużny](https://github.com/justMaku)
+  
+* Add `redundant_string_enum_value` rule that warns against String enums
+  with redundant value assignments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#946](https://github.com/realm/SwiftLint/issues/946)
 
 ##### Bug Fixes
 

@@ -2,7 +2,7 @@
 //  EmojiReporter.swift
 //  SwiftLint
 //
-//  Created by Michał Kałużny on 01/12/2016.
+//  Created by Michał Kałużny on 12/01/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

@@ -28,8 +28,8 @@ extension ASTRule where KindType.RawValue == String {
                 let kind = KindType(rawValue: kindString) else {
                     return []
             }
-            return self.validateFile(file, dictionary: subDict) +
-                self.validateFile(file, kind: kind, dictionary: subDict)
+            return validateFile(file, dictionary: subDict) +
+                validateFile(file, kind: kind, dictionary: subDict)
         }
     }
 }

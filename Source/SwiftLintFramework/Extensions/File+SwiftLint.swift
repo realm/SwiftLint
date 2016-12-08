@@ -170,10 +170,8 @@ extension File {
         if matches.isEmpty {
             return []
         }
-        let exclusionRanges = regex(excludingPattern).matches(in: self.contents,
-                                                                      options: [],
-                                                                      range: range)
-            .ranges()
+        let exclusionRanges = regex(excludingPattern).matches(in: self.contents, options: [],
+                                                              range: range).ranges()
         return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 

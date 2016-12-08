@@ -44,7 +44,7 @@ extension String {
         let nsrange = NSRange(location: range.lowerBound,
                               length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
-            return self.substring(with: indexRange)
+            return substring(with: indexRange)
         }
         fatalError("invalid range")
     }
@@ -54,7 +54,7 @@ extension String {
             return self[from..<from + length]
         }
         let index = characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!
-        return self.substring(from: index)
+        return substring(from: index)
     }
 
     internal func lastIndexOf(_ search: String) -> Int? {
@@ -68,11 +68,9 @@ extension String {
         guard nsrange.location != NSNotFound else {
             return nil
         }
-        let from16 = utf16.index(utf16.startIndex,
-                                 offsetBy: nsrange.location,
+        let from16 = utf16.index(utf16.startIndex, offsetBy: nsrange.location,
                                  limitedBy: utf16.endIndex) ?? utf16.endIndex
-        let to16 = utf16.index(from16,
-                               offsetBy: nsrange.length,
+        let to16 = utf16.index(from16, offsetBy: nsrange.length,
                                limitedBy: utf16.endIndex) ?? utf16.endIndex
         if let from = Index(from16, within: self), let to = Index(to16, within: self) {
             return from..<to

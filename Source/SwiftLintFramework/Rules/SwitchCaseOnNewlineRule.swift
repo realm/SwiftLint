@@ -79,7 +79,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             return isViolation(lineTokens: allLineTokens, file: file, line: line)
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: self.configuration.severity,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.0.location))
         }
     }

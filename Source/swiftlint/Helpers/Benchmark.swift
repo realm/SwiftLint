@@ -29,9 +29,9 @@ internal func saveBenchmark(_ name: String, times: [(id: String, time: Double)])
             return accu
         })
         .sorted(by: { $0.1 < $1.1 })
-        .map({ "\(numberFormatter.string(from: NSNumber(value:$0.1))!): \($0.0)" })
+        .map({ "\(numberFormatter.string(from: NSNumber(value: $0.1))!): \($0.0)" })
         .joined(separator: "\n")
-    let data = (string + "\n").data(using: String.Encoding.utf8)
+    let data = (string + "\n").data(using: .utf8)
     let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt")
     try? data?.write(to: url, options: [.atomic])
 }

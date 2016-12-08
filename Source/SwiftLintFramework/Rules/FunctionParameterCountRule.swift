@@ -19,6 +19,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
         nonTriggeringExamples: [
+            "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
@@ -26,7 +30,11 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}"
+            "func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "struct Foo {\n" +
+                "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}\n" +
+                "func bar(a: b, c: Int, d: Int, e: Int, f: Int, g: Int) {}}"
         ]
     )
 
@@ -38,12 +46,17 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
         let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
         let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
+
+        if functionIsInitializer(file, offset: nameOffset, length: length) {
+            return []
+        }
+
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
 
         let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
-        let allParameterCount =
-            allFunctionParameterCount(substructure, offset: nameOffset, length: length)
+        let allParameterCount = allFunctionParameterCount(substructure, offset: nameOffset,
+                                                          length: length)
         if allParameterCount < minThreshold! {
             return []
         }
@@ -64,7 +77,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     fileprivate func allFunctionParameterCount(_ structure: [SourceKitRepresentable],
-                                           offset: Int, length: Int) -> Int {
+                                               offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for substructure in structure {
             guard let subDict = substructure as? [String: SourceKitRepresentable],
@@ -85,10 +98,22 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     fileprivate func defaultFunctionParameterCount(_ file: File, offset: Int, length: Int) -> Int {
-        let equalCharacter = Character("=")
-        return (file.contents as NSString)
-            .substringWithByteRange(start: offset, length: length)?
-            .characters.filter { $0 == equalCharacter }.count ?? 0
+        return file.contents.substringWithByteRange(start: offset, length: length)?
+            .characters.filter { $0 == "=" }.count ?? 0
+    }
+
+    fileprivate func functionIsInitializer(_ file: File, offset: Int, length: Int) -> Bool {
+        guard let name = file.contents.substringWithByteRange(start: offset, length: length),
+            name.hasPrefix("init"),
+            let funcName = name.components(separatedBy: "(").first else {
+            return false
+        }
+        if funcName == "init" { // fast path
+            return true
+        }
+        let nonAlphas = CharacterSet.alphanumerics.inverted
+        let alphaNumericName = funcName.components(separatedBy: nonAlphas).joined()
+        return alphaNumericName == "init"
     }
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [

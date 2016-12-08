@@ -74,7 +74,7 @@ public struct CustomRules: Rule, CorrectableRule, ConfigurationProviderRule {
         }
 
         return configurations.flatMap {
-            self.validate(file, configuration: $0).filter { eachViolation in
+            validate(file, configuration: $0).filter { eachViolation in
                 let regions = file.regions().filter {
                     $0.contains(eachViolation.location)
                 }

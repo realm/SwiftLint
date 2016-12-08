@@ -24,3 +24,24 @@ extension Array where Element: NSTextCheckingResult {
         return map { $0.range }
     }
 }
+
+extension Array where Element: Equatable {
+    var unique: [Element] {
+        var uniqueValues = [Element]()
+        for item in self where !uniqueValues.contains(item) {
+            uniqueValues.append(item)
+        }
+        return uniqueValues
+    }
+}
+
+extension Array {
+    func group<U: Hashable>(by transform: (Element) -> U) -> [U: [Element]] {
+        return reduce([:]) { dictionary, element in
+            var dictionary = dictionary
+            let key = transform(element)
+            dictionary[key] = (dictionary[key] ?? []) + [element]
+            return dictionary
+        }
+    }
+}

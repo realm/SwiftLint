@@ -63,11 +63,11 @@ public struct ControlStatementRule: ConfigurationProviderRule {
                 : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
             return file.matchPattern(pattern).flatMap { match, syntaxKinds in
                 let matchString = file.contents.substring(match.location, length: match.length)
-                if self.isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
+                if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
                     return nil
                 }
                 return StyleViolation(ruleDescription: type(of: self).description,
-                    severity: self.configuration.severity,
+                    severity: configuration.severity,
                     location: Location(file: file, characterOffset: match.location))
             }
         }

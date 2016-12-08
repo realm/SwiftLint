@@ -194,10 +194,10 @@ public struct Configuration: Equatable {
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
         let excludedPaths = excluded.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath)
+            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
         }
         let includedPaths = included.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: self.rootPath)
+            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
         }
         return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
     }

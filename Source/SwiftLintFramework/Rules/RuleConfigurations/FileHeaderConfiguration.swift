@@ -37,7 +37,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     // swiftlint:disable:next force_try
     private static let defaultRegex = try! NSRegularExpression(pattern: "\\bCopyright\\b",
-                                                              options: [.caseInsensitive])
+                                                               options: [.caseInsensitive])
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", required_string: \(requiredString)" +
@@ -45,8 +45,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         ", forbidden_pattern: \(forbiddenPattern)"
     }
 
-    public init() {
-    }
+    public init() {}
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
         guard let configuration = configuration as? [String: AnyObject] else {
@@ -59,7 +58,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
                                                     options: [.ignoreMetacharacters])
         } else if let requiredPattern = configuration["required_pattern"] as? String {
             self.requiredPattern = requiredPattern
-            requiredRegex = try NSRegularExpression.cached(pattern: requiredPattern)
+            requiredRegex = try .cached(pattern: requiredPattern)
         }
 
         if let forbiddenString = configuration["forbidden_string"] as? String {
@@ -68,7 +67,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
                                                      options: [.ignoreMetacharacters])
         } else if let forbiddenPattern = configuration["forbidden_pattern"] as? String {
             self.forbiddenPattern = forbiddenPattern
-            forbiddenRegex = try NSRegularExpression.cached(pattern: forbiddenPattern)
+            forbiddenRegex = try .cached(pattern: forbiddenPattern)
         }
 
         if let severityString = configuration["severity"] as? String {

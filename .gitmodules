@@ -19,3 +19,6 @@
 [submodule "Carthage/Checkouts/SwiftyTextTable"]
 	path = Carthage/Checkouts/SwiftyTextTable
 	url = https://github.com/scottrhoyt/SwiftyTextTable.git
+[submodule "Carthage/Checkouts/Yams"]
+	path = Carthage/Checkouts/Yams
+	url = https://github.com/jpsim/Yams.git

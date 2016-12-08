@@ -22,4 +22,7 @@
    <FileRef
       location = "group:Carthage/Checkouts/YamlSwift/Yaml.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Yams/Yams.xcodeproj">
+   </FileRef>
 </Workspace>

@@ -71,7 +71,7 @@ extension Configuration {
         .flatMap { files -> Result<[File], CommandantError<()>> in
             if files.isEmpty {
                 let errorMessage = "No lintable files found at path '\(path)'"
-                return .failure(CommandantError<()>.usageError(description: errorMessage))
+                return .failure(.usageError(description: errorMessage))
             }
             return .success(files)
         }.flatMap { files in
@@ -88,12 +88,10 @@ extension Configuration {
     }
 
     fileprivate func getFiles(_ path: String, action: String, useSTDIN: Bool, quiet: Bool,
-                          useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
+                              useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
-            let standardInput = FileHandle.standardInput
-            let stdinData = standardInput.readDataToEndOfFile()
-            let stdinNSString = NSString(data: stdinData, encoding: String.Encoding.utf8.rawValue)
-            if let stdinString = stdinNSString as? String {
+            let stdinData = FileHandle.standardInput.readDataToEndOfFile()
+            if let stdinString = String(data: stdinData, encoding: .utf8) {
                 return .success([File(contents: stdinString)])
             }
             return .failure(.usageError(description: "stdin isn't a UTF8-encoded string"))

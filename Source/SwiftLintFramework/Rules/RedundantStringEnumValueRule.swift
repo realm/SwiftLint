@@ -9,6 +9,18 @@
 import Foundation
 import SourceKittenFramework
 
+private func children(of dict: [String: SourceKitRepresentable],
+                      matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
+    return (dict["key.substructure"] as? [SourceKitRepresentable] ?? []).flatMap { item in
+        if let subDict = item as? [String: SourceKitRepresentable],
+            let kindString = subDict["key.kind"] as? String,
+            SwiftDeclarationKind(rawValue: kindString) == kind {
+                return subDict
+        }
+        return nil
+    }
+}
+
 public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -17,7 +29,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
         name: "Redudant String Enum Value",
-        description: "String enum values can be ommited when they are equal to the enumcase name.",
+        description: "String enum values can be omitted when they are equal to the enumcase name.",
         nonTriggeringExamples: [
             "enum Numbers: String {\n case one\n case two\n}\n",
             "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
@@ -57,21 +69,15 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
 
     private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable],
                                          file: File) -> [Int] {
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        var enumCases = 0
+        var caseCount = 0
+        var violations = [Int]()
 
-        let violations = substructure.flatMap { subItem -> [Int] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
-                SwiftDeclarationKind(rawValue: kindString) == .enumcase else {
-                    return []
-            }
-
-            enumCases += enumElementsCount(dictionary: subDict)
-            return violatingOffsetsForEnumCase(dictionary: subDict, file: file)
+        for enumCase in children(of: dictionary, matching: .enumcase) {
+            caseCount += enumElementsCount(dictionary: enumCase)
+            violations += violatingOffsetsForEnumCase(dictionary: enumCase, file: file)
         }
 
-        guard violations.count == enumCases else {
+        guard violations.count == caseCount else {
             return []
         }
 
@@ -79,37 +85,19 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func enumElementsCount(dictionary: [String: SourceKitRepresentable]) -> Int {
-        let enumSubstructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return enumSubstructure.filter { item -> Bool in
-            guard let subDict = item as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
-                SwiftDeclarationKind(rawValue: kindString) == .enumelement else {
-                    return false
-            }
-
-            guard !filterEnumInits(dictionary: subDict).isEmpty else {
-                return false
-            }
-
-            return true
-        }.count
+        return children(of: dictionary, matching: .enumelement).filter({ element in
+            return !filterEnumInits(dictionary: element).isEmpty
+        }).count
     }
 
     private func violatingOffsetsForEnumCase(dictionary: [String: SourceKitRepresentable],
                                              file: File) -> [Int] {
-        let enumSubstructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        let violations = enumSubstructure.flatMap { item -> [Int] in
-            guard let subDict = item as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
-                SwiftDeclarationKind(rawValue: kindString) == .enumelement,
-                let name = subDict["key.name"] as? String else {
-                    return []
+        return children(of: dictionary, matching: .enumelement).flatMap { element -> [Int] in
+            guard let name = element["key.name"] as? String else {
+                return []
             }
-
-            return violatingOffsetsForEnumElement(dictionary: subDict, name: name, file: file)
+            return violatingOffsetsForEnumElement(dictionary: element, name: name, file: file)
         }
-
-        return violations
     }
 
     private func violatingOffsetsForEnumElement(dictionary: [String: SourceKitRepresentable],

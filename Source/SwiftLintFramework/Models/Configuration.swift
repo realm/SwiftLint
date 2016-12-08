@@ -2,8 +2,8 @@
 //  Configuration.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-08-23.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 8/23/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation

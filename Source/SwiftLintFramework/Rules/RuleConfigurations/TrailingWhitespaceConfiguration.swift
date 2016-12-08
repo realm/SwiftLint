@@ -2,7 +2,7 @@
 //  TrailingWhitespaceConfiguration.swift
 //  SwiftLint
 //
-//  Created by Reimar Twelker on 12.04.16.
+//  Created by Reimar Twelker on 12/4/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

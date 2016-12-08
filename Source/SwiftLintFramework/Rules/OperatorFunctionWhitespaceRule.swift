@@ -34,13 +34,12 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({ "\\\($0)" }) +
-            ["%", "<", ">", "&"]
+        let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
+            .map({ "\\\($0)" }).joined()
+        let operators = "\(escapedOperators)%<>&"
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[" + operators.joined() +
-            "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[" + operators.joined() +
-            "]+\\s+(<[A-Z]+>)?\\("
+        let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
+        let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
         return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
             return syntaxKinds.first == .keyword
         }.map { range, _ in

@@ -109,7 +109,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        let patterns = [
+        let patterns: [String: String] = [
             "NSWidth\\(\(varName)\\)": "$1.width",
             "NSHeight\\(\(varName)\\)": "$1.height",
             "NSMinX\\(\(varName)\\)": "$1.minX",

@@ -79,6 +79,92 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testBasicCorrectableCustomRule() {
+        var (regexConfig, customRules) = getCustomRules(["template": "replaced"])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let file = File(contents: "// My file with\n// a pattern")
+        XCTAssertEqual(customRules.validateFile(file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 6),
+                                       reason: regexConfig.message)])
+
+        guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
+                XCTFail("couldn't generate temporary path for custom rule correction")
+                return
+        }
+        do {
+            try file.contents.write(toFile: path, atomically: true, encoding: .utf8)
+        } catch {
+            XCTFail("couldn't write to file for custom rule correction with error: \(error)")
+            return
+        }
+        guard let correctedFile = File(path: path) else {
+            XCTFail("couldn't read file at path '\(path)' for custom rule correction")
+            return
+        }
+        let corrections = customRules.correctFile(correctedFile)
+        XCTAssertEqual(corrections.count, 1)
+    }
+
+    //swiftlint:disable:next function_body_length
+    func testDictionaryColonCorrectableCustomRule() {
+        let pattern =
+            "(\\w|[\"]?)" +       // Capture an identifier
+                "(?:" +         // start group
+                "\\s+" +        // followed by whitespace
+                ":" +           // to the left of a colon
+                "\\s*" +        // followed by any amount of whitespace.
+                "|" +           // or
+                ":" +           // immediately followed by a colon
+                "(?:\\s{0}|\\s{2,})" +  // followed by right spacing regex
+                ")" +           // end group
+                "(" +           // Capture a type identifier
+                "[\\[|\\(]*" +  // which may begin with a series of nested parenthesis or brackets
+        "\\S)"          // lazily to the first non-whitespace character.
+
+        var (regexConfig, customRules) = getCustomRules(["regex": pattern,
+                                                         "template": "$1: $2",
+                                                         "match_kinds": ""])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let file = File(contents:
+            "let abc: [Void : Void]\n" +
+            "let abc: [Void :Void]\n" +
+            "let abc: ([Void: Void], [Void :[Void: Void]])\n" +
+            "let abc: ([Void: Void], [Void:[Void : Void]])\n" +
+            "let abc: ([Void : Void], [Void : [Void : Void]])\n" +
+            "let abc: [String: String] = [\"key\" : \"value\"]" +
+            "let abc: [String: String] = [\"key\" :\"value\"]")
+        XCTAssertEqual(customRules.validateFile(file).count, 10)
+
+        guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
+                XCTFail("couldn't generate temporary path for custom rule correction")
+                return
+        }
+        do {
+            try file.contents.write(toFile: path, atomically: true, encoding: .utf8)
+        } catch {
+            XCTFail("couldn't write to file for custom rule correction with error: \(error)")
+            return
+        }
+        guard let correctedFile = File(path: path) else {
+            XCTFail("couldn't read file at path '\(path)' for custom rule correction")
+            return
+        }
+        let corrections = customRules.correctFile(correctedFile)
+        XCTAssertEqual(corrections.count, 10)
+    }
+
     func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]

@@ -17,6 +17,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var included = NSRegularExpression()
     public var matchKinds = Set(SyntaxKind.allKinds())
     public var severityConfiguration = SeverityConfiguration(.warning)
+    public var template = ""
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
@@ -54,11 +55,16 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         if let message = configurationDict["message"] as? String {
             self.message = message
         }
-        if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
+        if let matchKindsString = configurationDict["match_kinds"] as? String,
+            let matchKinds = [String].array(of: matchKindsString),
+            !matchKindsString.isEmpty {
             self.matchKinds = Set( try matchKinds.map { try SyntaxKind(shortName: $0) })
         }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.applyConfiguration(severityString)
+        }
+        if let template = configurationDict["template"] as? String {
+            self.template = template
         }
     }
 }

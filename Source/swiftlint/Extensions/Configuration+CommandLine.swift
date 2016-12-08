@@ -33,16 +33,14 @@ private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     }()
 
     return count.flatMap { count in
-        let inputFiles = (0..<count)
-            .map { getEnvironmentVariable("SCRIPT_INPUT_FILE_\($0)") }
-            .flatMap { path -> String? in
-                switch path {
-                case let .success(path):
-                    return path
-                case let .failure(error):
-                    queuedPrintError(String(describing: error))
-                    return nil
-                }
+        let inputFiles = (0..<count).flatMap { fileNumber -> String? in
+            switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
+            case let .success(path):
+                return path
+            case let .failure(error):
+                queuedPrintError(String(describing: error))
+                return nil
+            }
         }
         return Result(inputFiles)
     }

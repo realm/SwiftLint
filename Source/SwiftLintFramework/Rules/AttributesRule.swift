@@ -54,16 +54,13 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             attributeShouldBeOnSameLine = nil
         }
 
-        let violations: [StyleViolation]
         if let attributeShouldBeOnSameLine = attributeShouldBeOnSameLine {
-            violations = validateKind(file: file,
-                                      attributeShouldBeOnSameLine: attributeShouldBeOnSameLine,
-                                      dictionary: dictionary)
-        } else {
-            violations = []
+            return validateKind(file: file,
+                                attributeShouldBeOnSameLine: attributeShouldBeOnSameLine,
+                                dictionary: dictionary)
         }
 
-        return validateFile(file, dictionary: dictionary) + violations
+        return []
     }
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
@@ -95,18 +92,32 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        guard isViolation(lineNumber: lineNumber, file: file,
+                          attributeShouldBeOnSameLine: attributeShouldBeOnSameLine) else {
+            return []
+        }
+
+        // Violation found!
+        return violation(dictionary: dictionary, file: file)
+    }
+
+    private func isViolation(lineNumber: Int, file: File,
+                             attributeShouldBeOnSameLine: Bool) -> Bool {
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokensIn(line.byteRange)
         let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
-        var isViolation = false
 
         do {
             let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber - 1,
                                                                                    file: file)
             let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
+
+            if previousAttributes.isEmpty && attributesTokens.isEmpty {
+                return false
+            }
 
             let alwaysOnSameLineAttributes = configuration.alwaysOnSameLine
             let alwaysOnNewLineAttributes =
@@ -114,36 +125,28 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
-            if !attributesTokens.intersection(alwaysOnNewLineAttributes).isEmpty {
-                isViolation = true
-            } else if !previousAttributes.intersection(alwaysOnSameLineAttributes).isEmpty {
-                isViolation = true
-            } else {
-                // ignore whitelisted attributes
-                let attributesAfterWhitelist: Set<String>
-                let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
-                let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
-
-                if attributeShouldBeOnSameLine {
-                    attributesAfterWhitelist = attributesTokens
-                        .union(newLineExceptions).union(sameLineExceptions)
-                } else {
-                    attributesAfterWhitelist = attributesTokens
-                        .subtracting(newLineExceptions).subtracting(sameLineExceptions)
-                }
-
-                isViolation = attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
+            guard attributesTokens.intersection(alwaysOnNewLineAttributes).isEmpty &&
+                previousAttributes.intersection(alwaysOnSameLineAttributes).isEmpty else {
+                return true
             }
+
+            // ignore whitelisted attributes
+            let attributesAfterWhitelist: Set<String>
+            let newLineExceptions = previousAttributes.intersection(alwaysOnNewLineAttributes)
+            let sameLineExceptions = attributesTokens.intersection(alwaysOnSameLineAttributes)
+
+            if attributeShouldBeOnSameLine {
+                attributesAfterWhitelist = attributesTokens
+                    .union(newLineExceptions).union(sameLineExceptions)
+            } else {
+                attributesAfterWhitelist = attributesTokens
+                    .subtracting(newLineExceptions).subtracting(sameLineExceptions)
+            }
+
+            return attributesAfterWhitelist.isEmpty == attributeShouldBeOnSameLine
         } catch {
-            isViolation = true
+            return true
         }
-
-        guard isViolation else {
-            return []
-        }
-
-        // Violation found!
-        return violation(dictionary: dictionary, file: file)
     }
 
     private func createAlwaysOnNewLineAttributes(_ previousAttributes: [(String, Bool)],
@@ -193,13 +196,19 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                                              file: File) throws -> [(String, Bool)] {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
+        var foundEmptyLine = false
 
         while currentLine >= 0 {
+            defer {
+                currentLine -= 1
+            }
+
             let line = file.lines[currentLine]
             let tokens = file.syntaxMap.tokensIn(line.byteRange)
 
             if tokens.isEmpty {
-                throw AttributesRuleError.unexpectedBlankLine
+                foundEmptyLine = true
+                continue
             }
 
             let attributesTokens = tokens.flatMap { attributeName(token: $0, file: file) }
@@ -213,11 +222,15 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                 throw AttributesRuleError.moreThanOneAttributeInSameLine
             }
 
+            if foundEmptyLine {
+                // we don't allow attributes with empty lines between them
+                throw AttributesRuleError.unexpectedBlankLine
+            }
+
             let hasParameter = attributeContainsParameter(attributeRange: firstTokenRange,
                                                           line: line, file: file)
 
             allTokens.insert(contentsOf: attributesTokens.map { ($0.0, hasParameter) }, at: 0)
-            currentLine -= 1
         }
 
         return allTokens
@@ -276,118 +289,19 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             .flatMap({ $0["key.attribute"] }) ?? []
 
         let blacklisted = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
-                              "source.decl.attribute.mutating")
+                              "source.decl.attribute.mutating",
+                              "source.decl.attribute.nonmutating",
+                              "source.decl.attribute.lazy",
+                              "source.decl.attribute.dynamic",
+                              "source.decl.attribute.final",
+                              "source.decl.attribute.infix",
+                              "source.decl.attribute.optional",
+                              "source.decl.attribute.override",
+                              "source.decl.attribute.postfix",
+                              "source.decl.attribute.prefix",
+                              "source.decl.attribute.required",
+                              "source.decl.attribute.weak"
+                              )
         return attributes.filter { !blacklisted.contains($0) }
-    }
-}
-
-private struct AttributesRuleExamples {
-
-    // swiftlint:disable:next function_body_length
-    static func nonTriggeringExamples() -> [String] {
-        let common = [
-            "@objc var x: String",
-            "@objc private var x: String",
-            "@nonobjc var x: String",
-            "@IBOutlet private var label: UILabel",
-            "@IBOutlet @objc private var label: UILabel",
-            "@NSCopying var name: NSString",
-            "@NSManaged var name: String?",
-            "@IBInspectable var cornerRadius: CGFloat",
-            "@available(iOS 9.0, *)\n let stackView: UIStackView",
-            "@NSManaged func addSomeObject(book: SomeObject)",
-            "@IBAction func buttonPressed(button: UIButton)",
-            "@objc\n @IBAction func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0, *)\n func animate(view: UIStackView)",
-            "@available(iOS 9.0, *, message=\"A message\")\n func animate(view: UIStackView)",
-            "@nonobjc\n final class X",
-            "@available(iOS 9.0, *)\n class UIStackView",
-            "@NSApplicationMain\n class AppDelegate: NSObject, NSApplicationDelegate",
-            "@UIApplicationMain\n class AppDelegate: NSObject, UIApplicationDelegate",
-            "@IBDesignable\n class MyCustomView: UIView",
-            "@testable import SourceKittenFramework",
-            "@objc(foo_x)\n var x: String",
-            "@available(iOS 9.0, *)\n@objc(abc_stackView)\n let stackView: UIStackView",
-            "@objc(abc_addSomeObject:)\n @NSManaged func addSomeObject(book: SomeObject)",
-            "@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing"
-        ]
-
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable var maxSpeed: Float",
-                "@discardableResult\n func a() -> Int",
-                "@objc\n @discardableResult\n func a() -> Int",
-                "func increase(f: @autoclosure () -> Int) -> Int",
-                "func foo(completionHandler: @escaping () -> Void)"
-            ]
-
-            return common + swift3Only
-        #else
-            let swift2Only = [
-                "@warn_unused_result\n func a() -> Int",
-                "@objc\n @warn_unused_result\n func a() -> Int",
-                "func increase(@autoclosure f: () -> Int ) -> Int",
-                "func foo(@noescape x: Int -> Int)",
-                "@noreturn\n func exit(_: Int)",
-                "func exit(_: Int) -> @noreturn Int"
-            ]
-
-            return common + swift2Only
-        #endif
-    }
-
-    // swiftlint:disable:next function_body_length
-    static func triggeringExamples() -> [String] {
-        let common = [
-            "@objc\n ↓var x: String",
-            "@objc\n\n ↓var x: String",
-            "@objc\n private ↓var x: String",
-            "@nonobjc\n ↓var x: String",
-            "@IBOutlet\n private ↓var label: UILabel",
-            "@IBOutlet\n\n private ↓var label: UILabel",
-            "@NSCopying\n ↓var name: NSString",
-            "@NSManaged\n ↓var name: String?",
-            "@IBInspectable\n ↓var cornerRadius: CGFloat",
-            "@available(iOS 9.0, *) ↓let stackView: UIStackView",
-            "@NSManaged\n ↓func addSomeObject(book: SomeObject)",
-            "@IBAction\n ↓func buttonPressed(button: UIButton)",
-            "@IBAction\n @objc\n ↓func buttonPressed(button: UIButton)",
-            "@available(iOS 9.0, *) ↓func animate(view: UIStackView)",
-            "@nonobjc final ↓class X",
-            "@available(iOS 9.0, *) ↓class UIStackView",
-            "@available(iOS 9.0, *)\n @objc ↓class UIStackView",
-            "@available(iOS 9.0, *) @objc\n ↓class UIStackView",
-            "@available(iOS 9.0, *)\n\n ↓class UIStackView",
-            "@UIApplicationMain ↓class AppDelegate: NSObject, UIApplicationDelegate",
-            "@IBDesignable ↓class MyCustomView: UIView",
-            "@testable\n↓import SourceKittenFramework",
-            "@testable\n\n\n↓import SourceKittenFramework",
-            "@objc(foo_x) ↓var x: String",
-            "@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView",
-            "@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)",
-            "@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)",
-            "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing"
-        ]
-
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable\n ↓var maxSpeed: Float",
-                "@discardableResult ↓func a() -> Int",
-                "@objc\n @discardableResult ↓func a() -> Int",
-                "@objc\n\n @discardableResult\n ↓func a() -> Int"
-            ]
-
-            return common + swift3Only
-        #else
-            let swift2Only = [
-                "@warn_unused_result ↓func a() -> Int",
-                "@warn_unused_result(message=\"You should use this\") ↓func a() -> Int",
-                "@objc\n @warn_unused_result ↓func a() -> Int",
-                "@objc\n\n @warn_unused_result\n ↓func a() -> Int",
-                "@noreturn ↓func exit(_: Int)"
-            ]
-
-            return common + swift2Only
-        #endif
     }
 }

@@ -2,7 +2,7 @@
 //  WeakDelegate.swift
 //  SwiftLint
 //
-//  Created by Olivier Halligon on 11/08/2016.
+//  Created by Olivier Halligon on 11/8/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

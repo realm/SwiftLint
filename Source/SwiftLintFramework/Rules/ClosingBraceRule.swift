@@ -2,8 +2,8 @@
 //  ClosingBraceRule.swift
 //  SwiftLint
 //
-//  Created by Yasuhiro Inami on 2015-12-19.
-//  Copyright © 2015 Yasuhiro Inami. All rights reserved.
+//  Created by Yasuhiro Inami on 12/19/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation

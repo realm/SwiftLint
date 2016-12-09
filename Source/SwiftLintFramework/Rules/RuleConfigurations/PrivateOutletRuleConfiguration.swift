@@ -1,8 +1,8 @@
 //
-//  PrivateOutletRuleConfiguration
+//  PrivateOutletRuleConfiguration.swift
 //  SwiftLint
 //
-//  Created by Rohan Dhaimade on 24/08/2016.
+//  Created by Rohan Dhaimade on 24/8/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

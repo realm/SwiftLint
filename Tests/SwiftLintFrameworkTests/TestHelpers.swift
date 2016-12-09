@@ -2,8 +2,8 @@
 //  TestHelpers.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -113,7 +113,7 @@ extension String {
     }
 }
 
-fileprivate func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
+internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
@@ -128,7 +128,9 @@ extension XCTestCase {
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,
-                    stringDoesntViolate: Bool = true) {
+                    stringDoesntViolate: Bool = true,
+                    skipCommentTests: Bool = false,
+                    skipStringTests: Bool = false) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
             XCTFail()
             return
@@ -136,7 +138,44 @@ extension XCTestCase {
 
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
+        verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
 
+        // Comment doesn't violate
+        if !skipCommentTests {
+            XCTAssertEqual(
+                triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
+                commentDoesntViolate ? 0 : triggers.count
+            )
+        }
+
+        // String doesn't violate
+        if !skipStringTests {
+            XCTAssertEqual(
+                triggers.flatMap({ violations($0.toStringLiteral(), config: config) }).count,
+                stringDoesntViolate ? 0 : triggers.count
+            )
+        }
+
+        // "disable" command doesn't violate
+        let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
+        XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+
+        // corrections
+        ruleDescription.corrections.forEach(config.assertCorrection)
+        // make sure strings that don't trigger aren't corrected
+        zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
+
+        // "disable" command do not correct
+        ruleDescription.corrections.forEach { before, _ in
+            let beforeDisabled = command + before
+            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
+            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+        }
+
+    }
+
+    private func verifyExamples(triggers: [String], nonTriggers: [String],
+                                configuration config: Configuration) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
             let unexpectedViolations = violations(nonTrigger, config: config)
@@ -183,35 +222,6 @@ extension XCTestCase {
                                "'\(trigger)' violation didn't match expected location.")
             }
         }
-
-        // Comment doesn't violate
-        XCTAssertEqual(
-            triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
-            commentDoesntViolate ? 0 : triggers.count
-        )
-
-        // String doesn't violate
-        XCTAssertEqual(
-            triggers.flatMap({ violations($0.toStringLiteral(), config: config) }).count,
-            stringDoesntViolate ? 0 : triggers.count
-        )
-
-        // "disable" command doesn't violate
-        let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
-
-        // corrections
-        ruleDescription.corrections.forEach(config.assertCorrection)
-        // make sure strings that don't trigger aren't corrected
-        zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
-
-        // "disable" command do not correct
-        ruleDescription.corrections.forEach { before, _ in
-            let beforeDisabled = command + before
-            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
-            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
-        }
-
     }
 
     func checkError<T: Error & Equatable>(_ error: T, closure: () throws -> () ) {

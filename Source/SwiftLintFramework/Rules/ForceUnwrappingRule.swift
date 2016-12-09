@@ -3,7 +3,7 @@
 //  SwiftLint
 //
 //  Created by Benjamin Otto on 14/01/16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation

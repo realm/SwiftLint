@@ -2,8 +2,8 @@
 //  VerticalWhitespaceRule.swift
 //  SwiftLint
 //
-//  Created by J. Cheyo Jimenez on 2015-05-16.
-//  Copyright (c) 2016 Realm. All rights reserved.
+//  Created by J. Cheyo Jimenez on 5/16/15.
+//  Copyright © 2016 Realm. All rights reserved.
 //
 
 import Foundation

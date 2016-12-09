@@ -2,8 +2,8 @@
 //  Configuration.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-08-23.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 8/23/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -221,7 +221,7 @@ extension Configuration {
         let pathNSString = path as NSString
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
-        // If a configuration exists and it isn't us, load and merge the gurations
+        // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             return merge(Configuration(path: configurationSearchPath, rootPath: rootPath,

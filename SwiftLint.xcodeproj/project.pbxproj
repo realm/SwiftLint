@@ -189,7 +189,7 @@
 		E881985D1BEA97EB00333A11 /* TrailingWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */; };
 		E881985E1BEA982100333A11 /* TypeBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */; };
 		E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */; };
-		E88198601BEA98F000333A11 /* VariableNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */; };
+		E88198601BEA98F000333A11 /* IdentifierNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */; };
 		E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */; };
 		E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */; };
 		E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6E1B09843F00A66CB0 /* Location.swift */; };
@@ -462,7 +462,7 @@
 		E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeBodyLengthRule.swift; sourceTree = "<group>"; };
 		E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionBodyLengthRule.swift; sourceTree = "<group>"; };
 		E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRule.swift; sourceTree = "<group>"; };
-		E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameRule.swift; sourceTree = "<group>"; };
+		E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRule.swift; sourceTree = "<group>"; };
 		E88DEA951B099CF200A66CB0 /* NestingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestingRule.swift; sourceTree = "<group>"; };
 		E89376AC1B8A701E0025708E /* Yaml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Yaml.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8AB1A2D1A649F2100452012 /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib; sourceTree = DEVELOPER_DIR; };
@@ -810,6 +810,7 @@
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
 				2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */,
 				D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */,
+				E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */,
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
 				D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
@@ -857,7 +858,6 @@
 				92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */,
 				E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */,
 				D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */,
-				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
 				D4B0226E1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift */,
 				1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */,
 				D47079AE1DFE520000027086 /* VoidReturnRule.swift */,
@@ -1173,7 +1173,7 @@
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,
-				E88198601BEA98F000333A11 /* VariableNameRule.swift in Sources */,
+				E88198601BEA98F000333A11 /* IdentifierNameRule.swift in Sources */,
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
 				D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */,
 				D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */,

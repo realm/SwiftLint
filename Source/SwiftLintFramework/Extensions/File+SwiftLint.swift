@@ -171,9 +171,12 @@ extension File {
 
     internal func validateVariableName(_ dictionary: [String: SourceKitRepresentable],
                                        kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
+        let kinds = SwiftDeclarationKind.variableKinds() +
+            SwiftDeclarationKind.functionKinds() + [.enumelement]
+
         guard let name = dictionary.name,
             let offset = dictionary.offset,
-            SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
+            kinds.contains(kind) && !name.hasPrefix("$") else {
                 return nil
         }
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)

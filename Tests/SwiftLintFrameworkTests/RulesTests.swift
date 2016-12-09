@@ -105,6 +105,10 @@ class RulesTests: XCTestCase {
         verifyRule(GenericTypeNameRule.description)
     }
 
+    func testIdentifierName() {
+        verifyRule(IdentifierNameRule.description)
+    }
+
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
@@ -314,10 +318,6 @@ class RulesTests: XCTestCase {
         verifyRule(ValidIBInspectableRule.description)
     }
 
-    func testVariableName() {
-        verifyRule(VariableNameRule.description)
-    }
-
     func testVerticalParameterAlignment() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
@@ -362,6 +362,7 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
             ("testGenericTypeName", testGenericTypeName),
+            ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
@@ -400,8 +401,7 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
-            ("testVariableName", testVariableName),
-            ("VerticalParameterAlignment", testVerticalParameterAlignment),
+            ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)

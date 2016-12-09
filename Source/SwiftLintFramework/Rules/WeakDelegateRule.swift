@@ -2,7 +2,7 @@
 //  WeakDelegate.swift
 //  SwiftLint
 //
-//  Created by Olivier Halligon on 11/08/2016.
+//  Created by Olivier Halligon on 11/8/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -27,7 +27,10 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             // Only trigger on instance variables, not local variables
             "func foo() {\n  var delegate: SomeDelegate\n}\n",
             // Only trigger when variable has the suffix "-delegate" to avoid false positives
-            "class Foo {\n  var delegateNotified: Bool?\n}\n"
+            "class Foo {\n  var delegateNotified: Bool?\n}\n",
+            // There's no way to declare a property weak in a protocol
+            "protocol P {\n var delegate: AnyObject? { get set }\n}\n",
+            "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  var delegate: SomeProtocol?\n}\n",
@@ -55,6 +58,12 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         let isWeak = attributes.contains("source.decl.attribute.weak")
         guard !isWeak else { return [] }
 
+        // if the declaration is inside a protocol
+        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            !protocolDeclarationsFor(offset, structure: file.structure).isEmpty {
+            return []
+        }
+
         // Violation found!
         let location: Location
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
@@ -70,5 +79,34 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
                 location: location
             )
         ]
+    }
+
+    private func protocolDeclarationsFor(_ byteOffset: Int, structure: Structure) ->
+        [[String: SourceKitRepresentable]] {
+            var results = [[String: SourceKitRepresentable]]()
+
+            func parse(dictionary: [String: SourceKitRepresentable]) {
+
+                // Only accepts protocols declarations which contains a body and contains the
+                // searched byteOffset
+                if let kindString = (dictionary["key.kind"] as? String),
+                    SwiftDeclarationKind(rawValue: kindString) == .protocol,
+                    let offset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+                    let length = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
+                    let byteRange = NSRange(location: offset, length: length)
+
+                    if NSLocationInRange(byteOffset, byteRange) {
+                        results.append(dictionary)
+                    }
+                }
+
+                if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
+                    for case let dictionary as [String: SourceKitRepresentable] in subStructure {
+                        parse(dictionary: dictionary)
+                    }
+                }
+            }
+            parse(dictionary: structure.dictionary)
+            return results
     }
 }

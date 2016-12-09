@@ -2,8 +2,8 @@
 //  Linter.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -29,11 +29,11 @@ public struct Linter {
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
         let violations = rules.flatMap { rule -> [StyleViolation] in
-            if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
+            if !(rule is SourceKitFreeRule) && file.sourcekitdFailed {
                 return []
             }
             let start: Date! = benchmark ? Date() : nil
-            let violations = rule.validateFile(self.file)
+            let violations = rule.validateFile(file)
             if benchmark {
                 let id = type(of: rule).description.identifier
                 ruleTimes.append((id, -start.timeIntervalSinceNow))

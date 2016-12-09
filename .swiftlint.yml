@@ -5,3 +5,14 @@ excluded:
   - Tests/SwiftLintFrameworkTests/Resources
 opt_in_rules:
   - empty_count
+  - file_header
+
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  .*?\.swift
+                    \/\/  SwiftLint
+                    \/\/
+                    \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2}\.
+                    \/\/  Copyright © \d{4} Realm\. All rights reserved\.
+                    \/\/

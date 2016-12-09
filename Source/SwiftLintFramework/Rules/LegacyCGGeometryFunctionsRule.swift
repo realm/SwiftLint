@@ -110,7 +110,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber
-        let patterns = [
+        let patterns: [String: String] = [
             "CGRectGetWidth\\(\(varName)\\)": "$1.width",
             "CGRectGetHeight\\(\(varName)\\)": "$1.height",
             "CGRectGetMinX\\(\(varName)\\)": "$1.minX",

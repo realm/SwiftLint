@@ -3,7 +3,7 @@
 //  SwiftLint
 //
 //  Created by Matt Taube on 7/2/16.
-//  Copyright (c) 2016 Realm. All rights reserved.
+//  Copyright © 2016 Realm. All rights reserved.
 //
 
 import Foundation
@@ -88,8 +88,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                 let kind = ExplicitInitRule.Kind(rawValue: kindString) else {
                     return []
             }
-            return self.violationRangesInFile(file, dictionary: subDict) +
-                self.violationRangesInFile(file, kind: kind, dictionary: subDict)
+            return violationRangesInFile(file, dictionary: subDict) +
+                violationRangesInFile(file, kind: kind, dictionary: subDict)
         }
     }
 

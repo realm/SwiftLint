@@ -39,7 +39,7 @@ extension File {
         let inheritedMembers = inheritedMembersForDictionary(dictionary)
         let substructureOffsets = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
             .flatMap { $0 as? [String: SourceKitRepresentable] }
-            .flatMap({ self.missingDocOffsets($0, acl: acl, skipping: inheritedMembers) }) ?? []
+            .flatMap({ missingDocOffsets($0, acl: acl, skipping: inheritedMembers) }) ?? []
         guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             let offset = dictionary["key.offset"] as? Int64,
             let accessibility = dictionary["key.accessibility"] as? String,

@@ -2,21 +2,46 @@
 
 ##### Breaking
 
-* SwiftLint now requires Xcode 8.x and Swift 3.0 to build.
+* SwiftLint now requires Xcode 8.x and Swift 3.x to build.
   APIs have not yet been adapted to conform to the Swift 3 API Design
   Guidelines but will shortly.  
-  [JP Simard](https://github.com/jpsim), 
+  [JP Simard](https://github.com/jpsim),
   [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements
 
-* None.
+* Add `number_separator` opt-in rule that enforces that underscores are
+  used as thousand separators in large numbers.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#924](https://github.com/realm/SwiftLint/issues/924)
+  
+* Add `file_header` opt-in rule that warns when a file contains a 
+  copyright comment header, such as the one Xcode adds by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#884](https://github.com/realm/SwiftLint/issues/884)
+
+* `FunctionParameterCountRule` now ignores initializers.  
+  [Denis Lebedev](https://github.com/garnett)
+  [#544](https://github.com/realm/SwiftLint/issues/544)
+
+* Add `EmojiReporter`: a human friendly reporter.  
+  [Michał Kałużny](https://github.com/justMaku)
+  
+* Add `redundant_string_enum_value` rule that warns against String enums
+  with redundant value assignments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#946](https://github.com/realm/SwiftLint/issues/946)
 
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing
   but not ending in `delegate`.  
   [Phil Webster](https://github.com/philwebster)
+
+* Fix `weak_delegate` rule reporting a violation for variables in protocol
+  declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#934](https://github.com/realm/SwiftLint/issues/934)
 
 ## 0.13.2: Light Cycle
 

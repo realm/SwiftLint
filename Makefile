@@ -16,8 +16,11 @@ BINARIES_FOLDER=/usr/local/bin
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
-VERSION_STRING=$(shell agvtool what-marketing-version -terse1)
 COMPONENTS_PLIST=Source/swiftlint/Supporting Files/Components.plist
+SWIFTLINT_PLIST=Source/swiftlint/Supporting Files/Info.plist
+SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
+
+VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
 SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a
 SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
@@ -86,7 +89,7 @@ archive:
 	carthage build --no-skip-current --platform mac
 	carthage archive SwiftLintFramework
 
-release: package archive
+release: package archive portable_zip
 
 # http://irace.me/swift-profiling/
 display_compilation_time:
@@ -111,3 +114,18 @@ spm_clean:
 
 spm_clean_dist:
 	$(SWIFT_BUILD_COMMAND) --clean=dist
+
+publish:
+	brew update && brew bump-formula-pr --tag=$(git describe --tags) --revision=$(git rev-parse HEAD) swiftlint
+	pod trunk push
+
+get_version:
+	@echo $(VERSION_STRING)
+
+set_version:
+	$(eval NEW_VERSION := $(filter-out $@,$(MAKECMDGOALS)))
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
+	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+
+%:
+	@:

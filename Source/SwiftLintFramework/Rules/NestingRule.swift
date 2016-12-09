@@ -2,8 +2,8 @@
 //  NestingRule.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import SourceKittenFramework
@@ -63,7 +63,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
             }
             return nil
         }.flatMap { kind, subDict in
-            return self.validateFile(file, kind: kind, dictionary: subDict, level: level + 1)
+            return validateFile(file, kind: kind, dictionary: subDict, level: level + 1)
         })
         return violations
     }

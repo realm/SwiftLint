@@ -72,4 +72,9 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             reason: "Function body should span 40 lines or less excluding comments and " +
             "whitespace: currently spans 41 lines")])
     }
+
+    private func violations(_ string: String) -> [StyleViolation] {
+        let config = makeConfig(nil, FunctionBodyLengthRule.description.identifier)!
+        return SwiftLintFrameworkTests.violations(string, config: config)
+    }
 }

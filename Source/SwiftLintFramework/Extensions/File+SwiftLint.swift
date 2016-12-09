@@ -2,8 +2,8 @@
 //  File+SwiftLint.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -170,10 +170,8 @@ extension File {
         if matches.isEmpty {
             return []
         }
-        let exclusionRanges = regex(excludingPattern).matches(in: self.contents,
-                                                                      options: [],
-                                                                      range: range)
-            .ranges()
+        let exclusionRanges = regex(excludingPattern).matches(in: self.contents, options: [],
+                                                              range: range).ranges()
         return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 

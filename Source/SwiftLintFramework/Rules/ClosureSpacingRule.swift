@@ -2,7 +2,7 @@
 //  ClosureSpacingRule.swift
 //  SwiftLint
 //
-//  Created by J. Cheyo Jimenez on 2016-08-26.
+//  Created by J. Cheyo Jimenez on 8/26/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

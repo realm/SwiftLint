@@ -1,21 +1,19 @@
-language: objective-c
-git:
-  submodules: false
-branches:
-  only:
-    - master
-script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
+language: generic
 matrix:
   include:
-    - script: set -o pipefail && script/cibuild | xcpretty
-      osx_image: xcode8
+    - script:
+        - set -o pipefail && script/cibuild | xcpretty
+        - pod lib lint SwiftLintFramework.podspec
+      os: osx
+      osx_image: xcode8.1
       env: JOB=Xcode8
+      before_install:
+        - gem install cocoapods -v '1.1.1'
+        - pod repo update
     - script: swift test
-      osx_image: xcode8
+      os: osx
+      osx_image: xcode8.1
       env: JOB=SPM
-  exclude:
-    - script: placeholder # workaround for https://github.com/travis-ci/travis-ci/issues/4681
-
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

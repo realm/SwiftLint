@@ -2,7 +2,7 @@
 //  CyclomaticComplexityRule.swift
 //  SwiftLint
 //
-//  Created by Denis Lebedev on 24/01/2016.
+//  Created by Denis Lebedev on 24/1/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

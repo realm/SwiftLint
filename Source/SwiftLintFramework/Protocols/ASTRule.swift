@@ -2,8 +2,8 @@
 //  ASTRule.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import SourceKittenFramework
@@ -28,8 +28,8 @@ extension ASTRule where KindType.RawValue == String {
                 let kind = KindType(rawValue: kindString) else {
                     return []
             }
-            return self.validateFile(file, dictionary: subDict) +
-                self.validateFile(file, kind: kind, dictionary: subDict)
+            return validateFile(file, dictionary: subDict) +
+                validateFile(file, kind: kind, dictionary: subDict)
         }
     }
 }

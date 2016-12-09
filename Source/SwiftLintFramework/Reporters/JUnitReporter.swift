@@ -2,7 +2,7 @@
 //  JUnitReporter.swift
 //  SwiftLint
 //
-//  Created by Matthew Ellis on 25/05/2016.
+//  Created by Matthew Ellis on 5/25/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

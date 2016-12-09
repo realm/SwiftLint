@@ -2,8 +2,8 @@
 //  File+Cache.swift
 //  SwiftLint
 //
-//  Created by Nikolaj Schumacher on 2015-05-26.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by Nikolaj Schumacher on 5/26/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation

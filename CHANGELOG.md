@@ -14,6 +14,11 @@
   used as thousand separators in large numbers.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#924](https://github.com/realm/SwiftLint/issues/924)
+  
+* Add `file_header` opt-in rule that warns when a file contains a 
+  copyright comment header, such as the one Xcode adds by default.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#884](https://github.com/realm/SwiftLint/issues/884)
 
 * `FunctionParameterCountRule` now ignores initializers.  
   [Denis Lebedev](https://github.com/garnett)

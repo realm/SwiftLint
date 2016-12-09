@@ -109,6 +109,10 @@ class RulesTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
+    func testDynamicInline() {
+        verifyRule(DynamicInlineRule.description)
+    }
+
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }

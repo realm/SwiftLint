@@ -52,19 +52,19 @@ extension File {
 }
 
 public enum AccessControlLevel: String, CustomStringConvertible {
-    case Private = "source.lang.swift.accessibility.private"
-    case FilePrivate = "source.lang.swift.accessibility.fileprivate"
-    case Internal = "source.lang.swift.accessibility.internal"
-    case Public = "source.lang.swift.accessibility.public"
-    case Open = "source.lang.swift.accessibility.open"
+    case `private` = "source.lang.swift.accessibility.private"
+    case `fileprivate` = "source.lang.swift.accessibility.fileprivate"
+    case `internal` = "source.lang.swift.accessibility.internal"
+    case `public` = "source.lang.swift.accessibility.public"
+    case `open` = "source.lang.swift.accessibility.open"
 
     internal init?(description value: String) {
         switch value {
-        case "private": self = .Private
-        case "fileprivate": self = .FilePrivate
-        case "internal": self = .Internal
-        case "public": self = .Public
-        case "open": self = .Open
+        case "private": self = .private
+        case "fileprivate": self = .fileprivate
+        case "internal": self = .internal
+        case "public": self = .public
+        case "open": self = .open
         default: return nil
         }
     }
@@ -75,17 +75,17 @@ public enum AccessControlLevel: String, CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .Private: return "private"
-        case .FilePrivate: return "fileprivate"
-        case .Internal: return "internal"
-        case .Public: return "public"
-        case .Open: return "open"
+        case .private: return "private"
+        case .fileprivate: return "fileprivate"
+        case .internal: return "internal"
+        case .public: return "public"
+        case .open: return "open"
         }
     }
 
     // Returns true if is `private` or `fileprivate`
     var isPrivate: Bool {
-        return self == .Private || self == .FilePrivate
+        return self == .private || self == .fileprivate
     }
 
 }
@@ -106,8 +106,8 @@ public struct MissingDocsRule: OptInRule {
     }
 
     public init() {
-        parameters = [RuleParameter(severity: .warning, value: .Public),
-                      RuleParameter(severity: .warning, value: .Open)]
+        parameters = [RuleParameter(severity: .warning, value: .public),
+                      RuleParameter(severity: .warning, value: .open)]
     }
 
     public let parameters: [RuleParameter<AccessControlLevel>]

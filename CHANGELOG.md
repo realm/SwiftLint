@@ -31,6 +31,23 @@
   with redundant value assignments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#946](https://github.com/realm/SwiftLint/issues/946)
+  
+* Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
+  `@discardableResult`, etc) is in the right position:
+    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
+    the same line as the declaration
+    - If the attribute has parameters, it should always be on the line above
+    the declaration
+    - Otherwise:
+      - if the attribute is applied to a variable, it should be on the same line
+      - if it's applied to a type or function, it should be on the line above
+      - if it's applied to an import (the only option is `@testable import`), 
+      it should be on the same line.
+  You can also configure what attributes should be always on a new line or on
+  the same line as the declaration with the `always_on_same_line` and 
+  `always_on_line_above` keys.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#846](https://github.com/realm/SwiftLint/issues/846)
 
 ##### Bug Fixes
 
@@ -56,23 +73,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#910](https://github.com/realm/SwiftLint/issues/910)
   [#911](https://github.com/realm/SwiftLint/issues/911)
-  
-* Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
-  `@discardableResult`, etc) is in the right position:
-    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
-    the same line as the declaration
-    - If the attribute has parameters, it should always be on the line above
-    the declaration
-    - Otherwise:
-      - if the attribute is applied to a variable, it should be on the same line
-      - if it's applied to a type or function, it should be on the line above
-      - if it's applied to an import (the only option is `@testable import`), 
-      it should be on the same line.
-  You can also configure what attributes should be always on a new line or on
-  the same line as the declaration with the `always_on_same_line` and 
-  `always_on_line_above` keys.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#846](https://github.com/realm/SwiftLint/issues/846)
 
 ##### Bug Fixes
 

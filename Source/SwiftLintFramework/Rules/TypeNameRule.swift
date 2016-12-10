@@ -19,7 +19,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     public init() {}
 
     private static func nonTriggeringExamples() -> [String] {
-        let typeExamples: [String] = ["class", "struct", "enum"].flatMap { type -> [String] in
+        let types = ["class", "struct", "enum"]
+        let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
             [
                 "\(type) MyType {}",
                 "private \(type) _MyType {}",
@@ -27,12 +28,14 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 "\(type) \(repeatElement("A", count: 40).joined()) {}"
             ]
         }
-        let typeAliasExamples = [
+        let typeAliasAndAssociatedTypeExamples = [
             "typealias Foo = Void",
-            "private typealias Foo = Void"
+            "private typealias Foo = Void",
+            "protocol Foo {\n associatedtype Bar\n }",
+            "protocol Foo {\n associatedtype Bar: Equatable\n }"
         ]
 
-        return typeExamples + typeAliasExamples
+        return typeExamples + typeAliasAndAssociatedTypeExamples
     }
 
     private static func triggeringExamples() -> [String] {
@@ -46,14 +49,17 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 "↓\(type) \(repeatElement("A", count: 41).joined()) {}"
             ]
         }
-        let typeAliasExamples: [String] = [
+        let typeAliasAndAssociatedTypeExamples: [String] = [
             "typealias X = Void",
             "private typealias Foo_Bar = Void",
             "private typealias foo = Void",
-            "typealias \(repeatElement("A", count: 41).joined()) = Void"
+            "typealias \(repeatElement("A", count: 41).joined()) = Void",
+            "protocol Foo {\n associatedtype X\n }",
+            "protocol Foo {\n associatedtype Foo_Bar: Equatable\n }",
+            "protocol Foo {\n associatedtype \(repeatElement("A", count: 41).joined())\n }"
         ]
 
-        return typeExamples + typeAliasExamples
+        return typeExamples + typeAliasAndAssociatedTypeExamples
     }
 
     public static let description = RuleDescription(
@@ -66,7 +72,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        return validateTypeAliases(file) +
+        return validateTypeAliasesAndAssociatedTypes(file) +
             validateFile(file, dictionary: file.structure.dictionary)
     }
 
@@ -89,9 +95,9 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         return validateName(name: name, dictionary: dictionary, file: file, offset: offset)
     }
 
-    private func validateTypeAliases(_ file: File) -> [StyleViolation] {
-        let rangesAndTokens = file.rangesAndTokensMatching("typealias\\s+.+?\\b")
-        return rangesAndTokens.flatMap { range, tokens -> [StyleViolation] in
+    private func validateTypeAliasesAndAssociatedTypes(_ file: File) -> [StyleViolation] {
+        let rangesAndTokens = file.rangesAndTokensMatching("(typealias|associatedtype)\\s+.+?\\b")
+        return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
             guard tokens.count == 2,
                 let keywordToken = tokens.first,
                 let nameToken = tokens.last,
@@ -100,8 +106,9 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                     return []
             }
 
-            guard let name = file.contents.substringWithByteRange(start: nameToken.offset,
-                                                                  length: nameToken.length) else {
+            let contents = file.contents.bridge()
+            guard let name = contents.substringWithByteRange(start: nameToken.offset,
+                                                             length: nameToken.length) else {
                 return []
             }
 

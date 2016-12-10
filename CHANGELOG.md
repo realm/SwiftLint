@@ -50,6 +50,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#885](https://github.com/realm/SwiftLint/issues/885)
 
+* `type_name` rule now validates `typealias` too.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#49](https://github.com/realm/SwiftLint/issues/49)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

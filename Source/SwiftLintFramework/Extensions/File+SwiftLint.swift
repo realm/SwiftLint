@@ -138,7 +138,7 @@ extension File {
             return nil
         }
 
-        return tokens.map { $0.flatMap { SyntaxKind.init(rawValue: $0.type) } }
+        return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
 
     }
 

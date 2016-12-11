@@ -23,6 +23,7 @@ struct RulesCommand: CommandProtocol {
                 return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
             }
 
+            _ = Configuration(commandLinePath: options.configurationFile)
             printRuleDescript(rule.description)
             return .success()
         }

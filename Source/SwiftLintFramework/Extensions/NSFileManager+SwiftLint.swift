@@ -14,11 +14,16 @@ extension FileManager {
         let absolutePath = path.bridge()
             .absolutePathRepresentation(rootDirectory: rootPath).bridge()
             .standardizingPath
-        var isDirectory: ObjCBool = false
-        guard fileExists(atPath: absolutePath, isDirectory: &isDirectory) else {
+        var isDirectoryObjC: ObjCBool = false
+        guard fileExists(atPath: absolutePath, isDirectory: &isDirectoryObjC) else {
             return []
         }
-        if isDirectory.boolValue {
+        #if os(Linux)
+        let isDirectory = isDirectoryObjC
+        #else
+        let isDirectory = isDirectoryObjC.boolValue
+        #endif
+        if isDirectory {
             do {
                 return try subpathsOfDirectory(atPath: absolutePath)
                     .map(absolutePath.bridge().appendingPathComponent).filter {

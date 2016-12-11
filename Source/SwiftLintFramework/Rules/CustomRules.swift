@@ -68,7 +68,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
                 if pattern.isEmpty { return true }
 
                 let pathMatch = config.included.matches(in: path, options: [],
-                    range: NSRange(location: 0, length: (path as NSString).length))
+                    range: NSRange(location: 0, length: path.bridge().length))
 
                 return !pathMatch.isEmpty
             }

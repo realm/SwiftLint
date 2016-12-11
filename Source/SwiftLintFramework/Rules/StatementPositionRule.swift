@@ -180,8 +180,8 @@ private extension StatementPositionRule {
         ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
-            guard let matchRange = contents.NSRangeToByteRange(start: range.location,
-                                                               length: range.length) else {
+            guard let matchRange = contents.bridge()
+                .NSRangeToByteRange(start: range.location, length: range.length) else {
                 return false
             }
             let tokens = syntaxMap.tokensIn(matchRange).flatMap { SyntaxKind(rawValue: $0.type) }

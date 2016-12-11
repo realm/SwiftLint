@@ -56,8 +56,8 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
                 return false
             }
 
-            guard let tokenValue = file.contents.substringWithByteRange(start: token.offset,
-                length: token.length) else {
+            guard let tokenValue = file.contents.bridge()
+                .substringWithByteRange(start: token.offset, length: token.length) else {
                     return false
             }
 

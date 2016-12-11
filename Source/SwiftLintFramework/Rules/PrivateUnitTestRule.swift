@@ -143,7 +143,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         let pathMatch = configuration.regex.matches(
             in: superclass,
             options: [],
-            range: NSRange(location: 0, length: (superclass as NSString).length))
+            range: NSRange(location: 0, length: superclass.bridge().length))
         return !pathMatch.isEmpty
     }
 

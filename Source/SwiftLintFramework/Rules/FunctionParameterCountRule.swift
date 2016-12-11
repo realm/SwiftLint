@@ -98,12 +98,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     }
 
     fileprivate func defaultFunctionParameterCount(_ file: File, offset: Int, length: Int) -> Int {
-        return file.contents.substringWithByteRange(start: offset, length: length)?
+        return file.contents.bridge().substringWithByteRange(start: offset, length: length)?
             .characters.filter { $0 == "=" }.count ?? 0
     }
 
     fileprivate func functionIsInitializer(_ file: File, offset: Int, length: Int) -> Bool {
-        guard let name = file.contents.substringWithByteRange(start: offset, length: length),
+        guard let name = file.contents.bridge()
+            .substringWithByteRange(start: offset, length: length),
             name.hasPrefix("init"),
             let funcName = name.components(separatedBy: "(").first else {
             return false

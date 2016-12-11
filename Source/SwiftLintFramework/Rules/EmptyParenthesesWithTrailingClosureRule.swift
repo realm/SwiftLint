@@ -69,7 +69,8 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let regex = EmptyParenthesesWithTrailingClosureRule.emptyParenthesesRegex
 
-        guard let range = file.contents.byteRangeToNSRange(start: rangeStart, length: rangeLength),
+        guard let range = file.contents.bridge()
+                              .byteRangeToNSRange(start: rangeStart, length: rangeLength),
             let match = regex.firstMatch(in: file.contents, options: [], range: range),
             match.range.location != NSNotFound else {
                 return []

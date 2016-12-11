@@ -58,7 +58,8 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             }
 
             // check if the first token in the line is `case`
-            let lineAndCharacter = file.contents.lineAndCharacter(forByteOffset: range.location)
+            let lineAndCharacter = file.contents.bridge()
+                .lineAndCharacter(forByteOffset: range.location)
             guard let (lineNumber, _) = lineAndCharacter else {
                 return false
             }
@@ -101,7 +102,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     }
 
     private func contentForRange(start: Int, length: Int, file: File) -> String {
-        return file.contents.substringWithByteRange(start: start, length: length) ?? ""
+        return file.contents.bridge().substringWithByteRange(start: start, length: length) ?? ""
     }
 
     private func trailingComments(tokens: [SyntaxToken]) -> [SyntaxToken] {

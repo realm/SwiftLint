@@ -39,7 +39,7 @@ extension File {
         if sourcekitdFailed {
             return []
         }
-        let contents = self.contents as NSString
+        let contents = self.contents.bridge()
         return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
             withSyntaxKinds: [.comment]).flatMap { range in
                 return Command(string: contents, range: range)
@@ -79,7 +79,7 @@ extension File {
 
     internal func rangesAndTokensMatching(_ regex: NSRegularExpression) ->
         [(NSRange, [SyntaxToken])] {
-        let contents = self.contents as NSString
+        let contents = self.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
         return regex.matches(in: self.contents, options: [], range: range).map { match in
@@ -164,7 +164,7 @@ extension File {
     internal func matchPattern(_ pattern: String,
                                excludingSyntaxKinds: [SyntaxKind],
                                excludingPattern: String) -> [NSRange] {
-        let contents = self.contents as NSString
+        let contents = self.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
@@ -196,7 +196,7 @@ extension File {
         fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
     internal func write(_ string: String) {
@@ -215,7 +215,7 @@ extension File {
             fatalError("can't write file to \(path)")
         }
         contents = string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
     internal func ruleEnabledViolatingRanges(_ violatingRanges: [NSRange],

@@ -146,7 +146,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     fileprivate func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
-        let nsstring = file.contents as NSString
+        let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }

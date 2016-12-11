@@ -112,8 +112,8 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
             }
 
             // the string would be quoted if offset and length were used directly
-            let enumCaseName = file.contents.substringWithByteRange(start: offset + 1,
-                                                                    length: length - 2) ?? ""
+            let enumCaseName = file.contents.bridge()
+                .substringWithByteRange(start: offset + 1, length: length - 2) ?? ""
             guard enumCaseName == name else {
                 return nil
             }

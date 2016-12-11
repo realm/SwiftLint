@@ -22,7 +22,7 @@ extension File {
             !comment.contains(":nodoc:") else {
                 return substructureOffsets
         }
-        let declaration = (contents as NSString)
+        let declaration = contents.bridge()
             .substringWithByteRange(start: Int(offset), length: Int(bodyOffset - offset))!
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
@@ -58,17 +58,17 @@ func matchOutsideBraces(_ declaration: String) -> NSString? {
     guard let outsideBracesMatch =
         regex("(?:\\)(\\s*\\w*\\s*)*((\\s*->\\s*)(\\(.*\\))*(?!.*->)[^()]*(\\(.*\\))*)?\\s*\\{)")
         .matches(in: declaration, options: [],
-            range: NSRange(location: 0, length: declaration.characters.count)).first else {
+            range: NSRange(location: 0, length: declaration.bridge().length)).first else {
                 return nil
     }
 
-    return (declaration as NSString).substring(with: outsideBracesMatch.range) as NSString
+    return declaration.bridge().substring(with: outsideBracesMatch.range).bridge()
 }
 
 func declarationIsInitializer(_ declaration: String) -> Bool {
+    let range = NSRange(location: 0, length: declaration.bridge().length)
     return !regex("^((.+)?\\s+)?init\\?*\\(.*\\)")
-        .matches(in: declaration, options: [],
-                         range: NSRange(location: 0, length: declaration.characters.count)).isEmpty
+        .matches(in: declaration, options: [], range: range).isEmpty
 }
 
 func commentHasBatchedParameters(_ comment: String) -> Bool {
@@ -113,7 +113,7 @@ func superfluousOrMissingParameterDocumentation(_ declaration: String,
         let firstMatch = regex("([^,\\s(]+)\\s+\(parameter)\\s*:")
             .firstMatch(in: declaration, options: [], range: fullRange)
         if let match = firstMatch {
-            let label = (declaration as NSString).substring(with: match.rangeAt(1))
+            let label = declaration.bridge().substring(with: match.rangeAt(1))
             return (label, parameter)
         }
         return (parameter, parameter)
@@ -123,7 +123,7 @@ func superfluousOrMissingParameterDocumentation(_ declaration: String,
     let commentParameterMatches = regex("- [p|P]arameter ([^:]+)")
         .matches(in: comment, options: [], range: commentRange)
     let commentParameters = commentParameterMatches.map { match in
-        return (comment as NSString).substring(with: match.rangeAt(1))
+        return comment.bridge().substring(with: match.rangeAt(1))
     }
     if commentParameters.count > labelsAndParams.count ||
         labelsAndParams.count - commentParameters.count > optionallyDocumentedParameterCount {

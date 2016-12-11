@@ -12,9 +12,9 @@ import SwiftLintFramework
 import XCTest
 
 let config: Configuration = {
-    let directory = (((#file as NSString)
-        .deletingLastPathComponent as NSString)
-        .deletingLastPathComponent as NSString)
+    let directory = #file.bridge()
+        .deletingLastPathComponent.bridge()
+        .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
     FileManager.default.changeCurrentDirectoryPath(directory)
     return Configuration(path: Configuration.fileName)

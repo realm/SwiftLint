@@ -131,7 +131,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
 
-        var nsstring = file.contents as NSString
+        var nsstring = file.contents.bridge()
         let description = type(of: self).description
         var corrections = [Correction]()
         for var range in matches.reversed() {
@@ -139,15 +139,15 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
                 range.length -= 1
             }
             let location = Location(file: file, characterOffset: range.location)
-            nsstring = nsstring.replacingCharacters(in: range, with: replaceString) as NSString
+            nsstring = nsstring.replacingCharacters(in: range, with: replaceString).bridge()
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        file.write(nsstring as String)
+        file.write(nsstring.bridge())
         return corrections
     }
 
     private func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
-        let nsstring = file.contents as NSString
+        let nsstring = file.contents.bridge()
         return file.rangesAndTokensMatching(pattern).filter { range, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
         }.flatMap { range, syntaxTokens in

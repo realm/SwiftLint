@@ -209,14 +209,14 @@ class ConfigurationTests: XCTestCase {
 
 extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return (self as NSString).appendingPathComponent(pathComponent)
+        return bridge().appendingPathComponent(pathComponent)
     }
 }
 
 extension XCTestCase {
     var bundlePath: String {
         #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFrameworkTests/Resources".absolutePathRepresentation()
+            return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
         #else
             return Bundle(for: type(of: self)).resourcePath!
         #endif

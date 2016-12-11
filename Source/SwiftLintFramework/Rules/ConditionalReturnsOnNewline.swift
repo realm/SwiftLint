@@ -56,7 +56,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
     }
 
     private func contentForToken(token: SyntaxToken, file: File) -> String {
-        return file.contents.substringWithByteRange(start: token.offset,
-                                                    length: token.length) ?? ""
+        return file.contents.bridge().substringWithByteRange(start: token.offset,
+                                                             length: token.length) ?? ""
     }
 }

@@ -73,7 +73,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             let name = dictionary["key.name"] as? String, isExpected(name),
             let nameOffset = dictionary["key.nameoffset"] as? Int64,
             let nameLength = dictionary["key.namelength"] as? Int64,
-            let range = (file.contents as NSString)
+            let range = file.contents.bridge()
                 .byteRangeToNSRange(start: Int(nameOffset + nameLength) - length, length: length)
             else { return [] }
         return [range]
@@ -108,7 +108,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         var corrections = [Correction]()
         var contents = file.contents
         for range in matches {
-            contents = (contents as NSString)
+            contents = contents.bridge()
                 .replacingCharacters(in: range, with: "")
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))

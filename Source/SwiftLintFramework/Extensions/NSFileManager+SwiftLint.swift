@@ -11,7 +11,8 @@ import Foundation
 extension FileManager {
     internal func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
         let rootPath = rootDirectory ?? currentDirectoryPath
-        let absolutePath = (path.absolutePathRepresentation(rootDirectory: rootPath) as NSString)
+        let absolutePath = path.bridge()
+            .absolutePathRepresentation(rootDirectory: rootPath).bridge()
             .standardizingPath
         var isDirectory: ObjCBool = false
         guard fileExists(atPath: absolutePath, isDirectory: &isDirectory) else {
@@ -20,13 +21,13 @@ extension FileManager {
         if isDirectory.boolValue {
             do {
                 return try subpathsOfDirectory(atPath: absolutePath)
-                    .map((absolutePath as NSString).appendingPathComponent).filter {
-                        $0.isSwiftFile()
+                    .map(absolutePath.bridge().appendingPathComponent).filter {
+                        $0.bridge().isSwiftFile()
                 }
             } catch {
                 fatalError("Couldn't find files in \(absolutePath): \(error)")
             }
-        } else if absolutePath.isSwiftFile() {
+        } else if absolutePath.bridge().isSwiftFile() {
             return [absolutePath]
         }
         return []

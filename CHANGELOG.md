@@ -49,6 +49,11 @@
   empty parentheses after method call when using trailing closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#885](https://github.com/realm/SwiftLint/issues/885)
+  
+* Add `closure_parameter_position` rule that validates that closure
+  parameters are in the same line as the opening brace.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#931](https://github.com/realm/SwiftLint/issues/931)
 
 * `type_name` rule now validates `typealias` and `associatedtype` too.  
   [Marcelo Fabri](https://github.com/marcelofabri)

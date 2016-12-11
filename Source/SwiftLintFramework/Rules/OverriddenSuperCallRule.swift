@@ -94,9 +94,9 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         let superCall = "super.\(name)"
         return substructure.flatMap {
             guard let elems = $0 as? [String: SourceKitRepresentable],
-                let type = elems["key.kind"] as? String,
+                let type = (elems["key.kind"] as? String).flatMap(SwiftExpressionCallKind.init),
                 let name = elems["key.name"] as? String,
-                type == "source.lang.swift.expr.call" && superCall.contains(name)
+                type == .exprCall && superCall.contains(name)
                 else { return nil }
             return name
         }

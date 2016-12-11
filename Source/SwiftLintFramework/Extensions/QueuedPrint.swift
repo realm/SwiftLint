@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Dispatch
 import Foundation
 
 private let outputQueue: DispatchQueue = {
@@ -15,9 +16,11 @@ private let outputQueue: DispatchQueue = {
         target: .global(qos: .userInteractive)
     )
 
+    #if !os(Linux)
     atexit_b {
         queue.sync(flags: .barrier) {}
     }
+    #endif
 
     return queue
 }()

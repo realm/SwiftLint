@@ -9,7 +9,8 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable:next type_body_length
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
     func testClosingBrace() {
@@ -19,12 +20,12 @@ class RulesTests: XCTestCase {
     // swiftlint:disable:next function_body_length
     func testColon() {
         // Verify Colon rule with test values for when flexible_right_spacing
-        // is false (default).
+        // is false (default) and apply_to_dictionaries is false (default).
         verifyRule(ColonRule.description)
 
         // Verify Colon rule with test values for when flexible_right_spacing
         // is true.
-        let description = RuleDescription(
+        let flexibleRightSpacingDescription = RuleDescription(
             identifier: "colon",
             name: "Colon",
             description: "Colons should be next to the identifier when specifying a type.",
@@ -66,27 +67,117 @@ class RulesTests: XCTestCase {
                 "func abc(def: Void, ↓ghi :Void) {}\n"
             ],
             corrections: [
-                "let abc:Void\n": "let abc: Void\n",
-                "let abc :Void\n": "let abc: Void\n",
-                "let abc : Void\n": "let abc: Void\n",
-                "let abc : [Void: Void]\n": "let abc: [Void: Void]\n",
-                "let abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
-                "let abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
-                "let abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
-                "let abc :String=\"def\"\n": "let abc: String=\"def\"\n",
-                "let abc :Int=0\n": "let abc: Int=0\n",
-                "let abc :Int = 0\n": "let abc: Int = 0\n",
-                "let abc:Int=0\n": "let abc: Int=0\n",
-                "let abc:Int = 0\n": "let abc: Int = 0\n",
-                "let abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
-                "func abc(def:Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def :Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def : Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def: Void, ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
+                "let ↓abc:Void\n": "let abc: Void\n",
+                "let ↓abc :Void\n": "let abc: Void\n",
+                "let ↓abc : Void\n": "let abc: Void\n",
+                "let ↓abc : [Void: Void]\n": "let abc: [Void: Void]\n",
+                "let ↓abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
+                "let ↓abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
+                "let ↓abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
+                "let ↓abc :String=\"def\"\n": "let abc: String=\"def\"\n",
+                "let ↓abc :Int=0\n": "let abc: Int=0\n",
+                "let ↓abc :Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Int=0\n": "let abc: Int=0\n",
+                "let ↓abc:Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
+                "func abc(↓def:Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def :Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def : Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
             ]
         )
 
-        verifyRule(description, ruleConfiguration: ["flexible_right_spacing": true])
+        verifyRule(flexibleRightSpacingDescription, ruleConfiguration: ["flexible_right_spacing": true]) //swiftlint:disable:this line_length
+
+        // Verify Colon rule with test values for when apply_to_dictionaries
+        // is true and flexible_right_spacing is false (default).
+        verifyRule(ColonRule.description, ruleConfiguration: ["apply_to_dictionaries": true])
+
+        // Verify Colon rule with test values for when apply_to_dictionaries
+        // is true and flexible_right_spacing is true.
+        let flexibleRightSpacingAndApplyToDictionariesDescription = RuleDescription(
+            identifier: "colon",
+            name: "Colon",
+            description: "Colons should be next to the identifier when specifying a type or dictionary literal.", //swiftlint:disable:this line_length
+            nonTriggeringExamples: [
+                "let abc: Void\n",
+                "let abc: [Void: Void]\n",
+                "let abc: (Void, Void)\n",
+                "let abc: ([Void], String, Int)\n",
+                "let abc: [([Void], String, Int)]\n",
+                "let abc: String=\"def\"\n",
+                "let abc: Int=0\n",
+                "let abc: Enum=Enum.Value\n",
+                "func abc(def: Void) {}\n",
+                "func abc(def: Void, ghi: Void) {}\n",
+                "// 周斌佳年周斌佳\nlet abc: String = \"abc:\"",
+                "let abc:  Void\n",
+                "let abc:  (Void, String, Int)\n",
+                "let abc:  ([Void], String, Int)\n",
+                "let abc:  [([Void], String, Int)]\n",
+                "func abc(def:  Void) {}\n",
+                "let abc: [Void:    Void]\n",
+                "let abc: ([Void:   Void], [Void:  [Void:  Void]])\n",
+                "let abc: ([Void], String, [Void:  Void])\n",
+                "let abc: [([Void], [Void:         Void], Int)]\n",
+                "let abc: String=\"[Void :         Void]\"\n",
+                "let abc: [String: String] = [\"key\": \"value\"]",
+                "let abc: [String: String] = [\"key\": \"value\", \"key2\": \"value2\"]",
+                "func abc(def: [Void: Void]) {}\n",
+                "func abc(def: Void, ghi: [Void: [Void: [Void: [Void]]]]) {}\n",
+                "// 周斌佳年周斌佳\nlet abc: String = \"[Void : Void]\""
+            ],
+            triggeringExamples: [
+                "let ↓abc:Void\n",
+                "let ↓abc :Void\n",
+                "let ↓abc : Void\n",
+                "let ↓abc : [Void: Void]\n",
+                "let ↓abc : (Void, String, Int)\n",
+                "let ↓abc : ([Void], String, Int)\n",
+                "let ↓abc : [([Void], String, Int)]\n",
+                "let ↓abc :String=\"def\"\n",
+                "let ↓abc :Int=0\n",
+                "let ↓abc :Int = 0\n",
+                "let ↓abc:Int=0\n",
+                "let ↓abc:Int = 0\n",
+                "let ↓abc:Enum=Enum.Value\n",
+                "func abc(↓def:Void) {}\n",
+                "func abc(↓def :Void) {}\n",
+                "func abc(↓def : Void) {}\n",
+                "func abc(def: Void, ↓ghi :Void) {}\n",
+                "let abc: [↓Void :Void]\n",
+                "let abc: ([Void:   Void], [↓Void :[Void: Void]])\n",
+                "let abc: ([Void:   Void], [↓Void:[↓Void : Void]])\n",
+                "let abc: ([↓Void : Void], [↓Void : [↓Void :Void]])\n",
+                "let abc: [String: String] = [↓\"key\" :\"value\", ↓\"key2\" : \"value2\"]"
+            ],
+            corrections: [
+                "let ↓abc:Void\n": "let abc: Void\n",
+                "let ↓abc :Void\n": "let abc: Void\n",
+                "let ↓abc : Void\n": "let abc: Void\n",
+                "let ↓abc : [Void: Void]\n": "let abc: [Void: Void]\n",
+                "let ↓abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
+                "let ↓abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
+                "let ↓abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
+                "let ↓abc :String=\"def\"\n": "let abc: String=\"def\"\n",
+                "let ↓abc :Int=0\n": "let abc: Int=0\n",
+                "let ↓abc :Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Int=0\n": "let abc: Int=0\n",
+                "let ↓abc:Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
+                "func abc(↓def:Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def :Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def : Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n",
+                "let abc: [↓Void :Void]\n": "let abc: [Void: Void]\n",
+                "let abc: ([Void:   Void], [↓Void :[Void: Void]])\n": "let abc: ([Void:   Void], [Void: [Void: Void]])\n", //swiftlint:disable:this line_length
+                "let abc: ([Void:   Void], [↓Void:[↓Void : Void]])\n": "let abc: ([Void:   Void], [Void: [Void: Void]])\n", //swiftlint:disable:this line_length
+                "let abc: ([↓Void :   Void], [↓Void : [↓Void :Void]])\n": "let abc: ([Void: Void], [Void: [Void: Void]])\n", //swiftlint:disable:this line_length
+                "let abc: [String: String] = [↓\"key\" :\"value\"]": "let abc: [String: String] = [\"key\": \"value\"]", //swiftlint:disable:this line_length
+                "let abc: [String: String] = [↓\"key\" :\"value\", ↓\"key2\" : \"value2\"]": "let abc: [String: String] = [\"key\": \"value\", \"key2\": \"value2\"]" //swiftlint:disable:this line_length
+            ]
+        )
+        verifyRule(flexibleRightSpacingAndApplyToDictionariesDescription, ruleConfiguration: ["apply_to_dictionaries": true, "flexible_right_spacing": true]) //swiftlint:disable:this line_length
     }
 
     func testComma() {
@@ -222,10 +313,10 @@ class RulesTests: XCTestCase {
             "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
         ]
         let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples)
+                                                name: baseDescription.name,
+                                         description: baseDescription.description,
+                               nonTriggeringExamples: nonTriggeringExamples,
+                                  triggeringExamples: baseDescription.triggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
@@ -320,11 +411,11 @@ class RulesTests: XCTestCase {
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
         let description = RuleDescription(identifier: baseDescription.identifier,
-                                                name: baseDescription.name,
-                                         description: baseDescription.description,
-                               nonTriggeringExamples: nonTriggeringExamples,
-                                  triggeringExamples: baseDescription.triggeringExamples,
-                                         corrections: baseDescription.corrections)
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: baseDescription.triggeringExamples,
+                                          corrections: baseDescription.corrections)
         verifyRule(description,
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
 
@@ -335,11 +426,11 @@ class RulesTests: XCTestCase {
             .filter { !triggeringComments.contains($0) }
         let triggeringExamples2 = baseDescription2.triggeringExamples + triggeringComments
         let description2 = RuleDescription(identifier: baseDescription2.identifier,
-                                           name: baseDescription2.name,
-                                           description: baseDescription2.description,
-                                           nonTriggeringExamples: nonTriggeringExamples2,
-                                           triggeringExamples: triggeringExamples2,
-                                           corrections: baseDescription2.corrections)
+                                                 name: baseDescription2.name,
+                                          description: baseDescription2.description,
+                                nonTriggeringExamples: nonTriggeringExamples2,
+                                   triggeringExamples: triggeringExamples2,
+                                          corrections: baseDescription2.corrections)
         verifyRule(description2,
                    ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)

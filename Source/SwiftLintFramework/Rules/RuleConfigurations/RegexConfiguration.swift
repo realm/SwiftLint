@@ -13,8 +13,8 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
-    public var regex = NSRegularExpression()
-    public var included = NSRegularExpression()
+    public var regex = NSRegularExpression.forcePattern("placeholder")
+    public var included = NSRegularExpression.forcePattern("placeholder")
     public var matchKinds = Set(SyntaxKind.allKinds())
     public var severityConfiguration = SeverityConfiguration(.warning)
 

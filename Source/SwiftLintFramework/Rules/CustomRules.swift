@@ -65,7 +65,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         if let path = file.path {
             configurations = configurations.filter { config in
                 let pattern = config.included.pattern
-                if pattern.isEmpty { return true }
+                if pattern.isEmpty || pattern == "placeholder" { return true }
 
                 let pathMatch = config.included.matches(in: path, options: [],
                     range: NSRange(location: 0, length: path.bridge().length))

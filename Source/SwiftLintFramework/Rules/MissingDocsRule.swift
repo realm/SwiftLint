@@ -16,8 +16,7 @@ private func mappedDictValues(_ dictionary: [String: SourceKitRepresentable], ke
 }
 
 private func declarationOverrides(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
-    return mappedDictValues(dictionary, key: "key.attributes", subKey: "key.attribute")
-        .contains("source.decl.attribute.override")
+    return dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
 }
 
 private func inheritedMembersForDictionary(_ dictionary: [String: SourceKitRepresentable]) ->

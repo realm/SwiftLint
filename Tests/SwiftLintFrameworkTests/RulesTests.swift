@@ -113,6 +113,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyParenthesesWithTrailingClosure() {
+        verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
+    }
+
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }

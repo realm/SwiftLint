@@ -192,7 +192,7 @@ extension File {
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
             fatalError("can't write to path '\(self.path)'")
         }
-        fileHandle.seekToEndOfFile()
+        _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string

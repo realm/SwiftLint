@@ -9,18 +9,30 @@ immediately, but this should be the exception, not the norm._
 
 ### Submodules
 
-This SwiftLint repository uses submodules for its dependencies. 
+This SwiftLint repository uses submodules for its dependencies.
 This means that if you decide to fork this repository to contribute to SwiftLint,
 don't forget to checkout the submodules as well when cloning, by running
 `git submodule update --init --recursive` after cloning.
 
-See more info [in the README](https://github.com/realm/SwiftLint#installation)
+See more info [in the README](https://github.com/realm/SwiftLint#installation).
+
+### Tests
+
+SwiftLint supports building via Xcode and Swift Package Manager on macOS, and
+with Swift Package Manager on Linux. When contributing code changes, please
+ensure that all three supported build methods continue to work and pass tests.
+
+```shell
+$ script/cibuild
+$ swift test
+$ make docker_test
+```
 
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
-Rules should conform to either the `Rule` or `ASTRule` protocols. 
+Rules should conform to either the `Rule` or `ASTRule` protocols.
 To activate a rule, add the rule to `masterRuleList` in `MasterRuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.

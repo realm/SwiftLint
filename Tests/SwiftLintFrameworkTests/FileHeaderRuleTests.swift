@@ -101,3 +101,11 @@ class FileHeaderRuleTests: XCTestCase {
                    skipCommentTests: true)
     }
 }
+
+extension FileHeaderRuleTests {
+    static var allTests: [(String, (FileHeaderRuleTests) -> () throws -> Void)] {
+        return [
+            ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration)
+        ]
+    }
+}

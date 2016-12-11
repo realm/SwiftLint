@@ -79,3 +79,16 @@ class SourceKitCrashTests: XCTestCase {
         _ = Linter(file: file, configuration: configuration).styleViolations
     }
 }
+
+extension SourceKitCrashTests {
+    static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] {
+        return [
+            ("testAssertHandlerIsNotCalledOnNormalFile",
+                testAssertHandlerIsNotCalledOnNormalFile),
+            ("testAssertHandlerIsCalledOnFileThatCrashedSourceKitService",
+                testAssertHandlerIsCalledOnFileThatCrashedSourceKitService),
+            ("testRulesWithFileThatCrashedSourceKitService",
+                testRulesWithFileThatCrashedSourceKitService)
+        ]
+    }
+}

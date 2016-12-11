@@ -62,3 +62,11 @@ class YamlSwiftLintTests: XCTestCase {
     }
 
 }
+
+extension YamlSwiftLintTests {
+    static var allTests: [(String, (YamlSwiftLintTests) -> () throws -> Void)] {
+        return [
+            ("testFlattenYaml", testFlattenYaml)
+        ]
+    }
+}

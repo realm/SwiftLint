@@ -26,6 +26,28 @@ public enum CommandModifier: String {
     case next
 }
 
+#if !os(Linux)
+private extension Scanner {
+    func scanUpToString(_ string: String) -> String? {
+        var result: NSString? = nil
+        let success = scanUpTo(string, into: &result)
+        if success {
+            return result?.bridge()
+        }
+        return nil
+    }
+
+    func scanString(string: String) -> String? {
+        var result: NSString? = nil
+        let success = scanString(string, into: &result)
+        if success {
+            return result?.bridge()
+        }
+        return nil
+    }
+}
+#endif
+
 public struct Command {
     let action: CommandAction
     let ruleIdentifiers: [String]
@@ -44,19 +66,15 @@ public struct Command {
 
     public init?(string: NSString, range: NSRange) {
         let scanner = Scanner(string: string.substring(with: range))
-        scanner.scanString("swiftlint:", into: nil)
-        var optionalActionAndModifierNSString: NSString? = nil
-        scanner.scanUpTo(" ", into: &optionalActionAndModifierNSString)
-        guard let actionAndModifierString = optionalActionAndModifierNSString as String? else {
+        _ = scanner.scanString(string: "swiftlint:")
+        guard let actionAndModifierString = scanner.scanUpToString(" ") else {
             return nil
         }
         let actionAndModifierScanner = Scanner(string: actionAndModifierString)
-        var actionNSString: NSString? = nil
-        actionAndModifierScanner.scanUpTo(":", into: &actionNSString)
-        guard let actionString = actionNSString as String?,
+        guard let actionString = actionAndModifierScanner.scanUpToString(":"),
             let action = CommandAction(rawValue: actionString),
-            let lineAndCharacter = string
-                .lineAndCharacter(forCharacterOffset: NSMaxRange(range)) else {
+            let lineAndCharacter = string.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+            else {
                 return nil
         }
         self.action = action
@@ -66,7 +84,7 @@ public struct Command {
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(":", into: nil)
+        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
 
         // Modifier
         if hasModifier {

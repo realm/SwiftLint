@@ -70,7 +70,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
         guard kind == .functionMethodInstance &&
               configuration.resolvedMethodNames.contains(name) &&
-              extractAttributes(dictionary).contains("source.decl.attribute.override")
+              dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
         else { return [] }
 
         let callsToSuper = extractCallsToSuper(name, substructure: substructure)
@@ -87,14 +87,6 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
                 reason: "Method '\(name)' should call to super only once")]
         }
         return []
-    }
-
-    private func extractAttributes(_ dictionary: [String: SourceKitRepresentable]) -> [String] {
-        guard let attributesDict = dictionary["key.attributes"] as? [SourceKitRepresentable]
-            else { return [] }
-        return attributesDict.flatMap {
-            ($0 as? [String: SourceKitRepresentable])?["key.attribute"] as? String
-        }
     }
 
     private func extractCallsToSuper(_ name: String,

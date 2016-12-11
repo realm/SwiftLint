@@ -10,6 +10,10 @@
 
 ##### Enhancements
 
+* Add `dynamic_inline` rule to discourage combination of `@inline(__always)`
+  and `dynamic` function attributes.  
+  [Daniel Duan](https://github.com/dduan)
+
 * Add `number_separator` opt-in rule that enforces that underscores are
   used as thousand separators in large numbers.  
   [Marcelo Fabri](https://github.com/marcelofabri)

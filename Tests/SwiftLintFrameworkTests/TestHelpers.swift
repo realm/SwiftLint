@@ -23,19 +23,19 @@ func violations(_ string: String, config: Configuration = Configuration()) -> [S
 }
 
 private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
-    var contents = contents as NSString
+    var contents = contents.bridge()
     var markerOffsets = [Int]()
     var markerRange = contents.range(of: violationMarker)
     while markerRange.location != NSNotFound {
         markerOffsets.append(markerRange.location)
-        contents = contents.replacingCharacters(in: markerRange, with: "") as NSString
+        contents = contents.replacingCharacters(in: markerRange, with: "").bridge()
         markerRange = contents.range(of: violationMarker)
     }
-    return (contents as String, markerOffsets.sorted())
+    return (contents.bridge(), markerOffsets.sorted())
 }
 
 private func render(violations: [StyleViolation], in contents: String) -> String {
-    var contents = (contents as NSString).lines().map { $0.content }
+    var contents = contents.bridge().lines().map { $0.content }
     for violation in violations.sorted(by: { $0.location > $1.location }) {
         guard let line = violation.location.line,
             let character = violation.location.character else { continue }
@@ -55,7 +55,7 @@ private func render(violations: [StyleViolation], in contents: String) -> String
 }
 
 private func render(locations: [Location], in contents: String) -> String {
-    var contents = (contents as NSString).lines().map { $0.content }
+    var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
         var content = contents[line - 1]

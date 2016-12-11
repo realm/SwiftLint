@@ -44,7 +44,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
     // returns ranges of braces { or } in the same line
     private func validBraces(_ file: File) -> [NSRange] {
-        let nsstring = (file.contents as NSString)
+        let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
         let kindsToExclude = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
@@ -61,7 +61,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             // filter out braces in comments and strings
             let tokens = linesTokens[eachLine.index].filter { kindsToExclude.contains($0.type) }
             let tokenRanges = tokens.flatMap {
-                file.contents.byteRangeToNSRange(start: $0.offset, length: $0.length)
+                file.contents.bridge().byteRangeToNSRange(start: $0.offset, length: $0.length)
             }
             linesWithBraces.append(braces.filter({ !$0.intersectsRanges(tokenRanges) }))
         }

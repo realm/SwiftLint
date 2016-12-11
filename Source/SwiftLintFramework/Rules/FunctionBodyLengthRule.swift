@@ -44,8 +44,9 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-            let startLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset)
-            let endLine = file.contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
+            let contentsNSString = file.contents.bridge()
+            let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)
+            let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
 
             if let startLine = startLine?.line, let endLine = endLine?.line {
                 for parameter in configuration.params {

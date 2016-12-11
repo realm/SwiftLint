@@ -62,15 +62,15 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        if let (startLine, _) =  file.contents.lineAndCharacter(forByteOffset: bodyOffset),
-            let (endLine, _) =  file.contents.lineAndCharacter(forByteOffset: lastPosition),
+        if let (startLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset),
+            let (endLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
             // shouldn't trigger if mandatory comma style and is a single-line declaration 
             return []
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = file.contents
+        let contentsAfterLastElement = file.contents.bridge()
             .substringWithByteRange(start: lastPosition, length: length) ?? ""
 
         // if a trailing comma is not present

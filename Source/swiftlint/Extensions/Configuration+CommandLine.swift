@@ -48,7 +48,7 @@ private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
 
 extension File {
     fileprivate static func maybeSwiftFile(_ path: String) -> File? {
-        if let file = File(path: path), path.isSwiftFile() {
+        if let file = File(path: path), path.bridge().isSwiftFile() {
             return file
         }
         return nil
@@ -76,7 +76,7 @@ extension Configuration {
             let fileCount = files.count
             for (index, file) in files.enumerated() {
                 if !quiet, let path = file.path {
-                    let filename = (path as NSString).lastPathComponent
+                    let filename = path.bridge().lastPathComponent
                     queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
                 }
                 visitorBlock(Linter(file: file, configuration: configurationForFile(file)))

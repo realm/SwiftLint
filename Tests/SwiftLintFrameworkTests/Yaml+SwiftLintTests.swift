@@ -46,20 +46,18 @@ class YamlSwiftLintTests: XCTestCase {
         }
     }
 
-    func getTestYaml() -> String {
+    private func getTestYaml() -> String {
         #if SWIFT_PACKAGE
-            let path = "Tests/SwiftLintFrameworkTests/Resources/test.yml"
-                .absolutePathRepresentation()
-            if let ymlString = try? String(contentsOfFile: path) {
-                return ymlString
-            }
+        let path = "Tests/SwiftLintFrameworkTests/Resources/test.yml".bridge()
+            .absolutePathRepresentation()
         #else
-            let testBundle = Bundle(for: type(of: self))
-            if let path = testBundle.path(forResource: "test", ofType: "yml"),
-                let ymlString = try? String(contentsOfFile: path) {
-                    return ymlString
-            }
+        guard let path = Bundle(for: type(of: self)).path(forResource: "test", ofType: "yml") else {
+            fatalError("Could not load test.yml")
+        }
         #endif
+        if let yamlString = try? String(contentsOfFile: path, encoding: .utf8) {
+            return yamlString
+        }
         fatalError("Could not load test.yml")
     }
 

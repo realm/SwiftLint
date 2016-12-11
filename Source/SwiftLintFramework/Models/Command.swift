@@ -60,7 +60,7 @@ public struct Command {
                 return nil
         }
         self.action = action
-        ruleIdentifiers = (scanner.string as NSString)
+        ruleIdentifiers = scanner.string.bridge()
             .substring(from: scanner.scanLocation + 1)
             .components(separatedBy: .whitespaces)
         line = lineAndCharacter.line
@@ -70,7 +70,7 @@ public struct Command {
 
         // Modifier
         if hasModifier {
-            let modifierString = (actionAndModifierScanner.string as NSString)
+            let modifierString = actionAndModifierScanner.string.bridge()
                 .substring(from: actionAndModifierScanner.scanLocation)
             modifier = CommandModifier(rawValue: modifierString)
         } else {

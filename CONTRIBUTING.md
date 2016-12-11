@@ -28,6 +28,9 @@ $ swift test
 $ make docker_test
 ```
 
+XCTest functions that are added need to be mirrored in the `allTests` static var
+in the test class extensions at the bottom of the test files.
+
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.

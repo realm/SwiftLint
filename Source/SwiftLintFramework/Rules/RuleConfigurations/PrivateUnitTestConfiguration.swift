@@ -40,10 +40,10 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
         if let regexString = configurationDict["regex"] as? String {
-            regex = try NSRegularExpression.cached(pattern: regexString)
+            regex = try .cached(pattern: regexString)
         }
         if let includedString = configurationDict["included"] as? String {
-            included = try NSRegularExpression.cached(pattern: includedString)
+            included = try .cached(pattern: includedString)
         }
         if let name = configurationDict["name"] as? String {
             self.name = name

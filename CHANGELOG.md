@@ -33,7 +33,7 @@
   [#946](https://github.com/realm/SwiftLint/issues/946)
   
 * Add `empty_parentheses_with_trailing_closure` rule that checks for 
-  empty parenthesis after method call when using trailing closures.  
+  empty parentheses after method call when using trailing closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#885](https://github.com/realm/SwiftLint/issues/885)
 

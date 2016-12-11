@@ -118,6 +118,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
+#if !os(Linux)
     fileprivate class TestFileManager: FileManager {
         override func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
@@ -140,6 +141,7 @@ class ConfigurationTests: XCTestCase {
         let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
+#endif
 
     // MARK: - Testing Configuration Equality
 

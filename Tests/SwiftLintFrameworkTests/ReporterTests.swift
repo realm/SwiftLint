@@ -10,6 +10,7 @@ import Foundation
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_body_length
 class ReporterTests: XCTestCase {
 
     func testReporterFromString() {
@@ -36,7 +37,12 @@ class ReporterTests: XCTestCase {
             StyleViolation(ruleDescription: LineLengthRule.description,
                 severity: .error,
                 location: location,
-                reason: "Violation Reason.")
+                reason: "Violation Reason."),
+            StyleViolation(ruleDescription: SyntacticSugarRule.description,
+                severity: .error,
+                location: location,
+                reason: "Shorthand syntactic sugar should be used" +
+                ", i.e. [Int] instead of Array<Int>.")
         ]
     }
 
@@ -44,7 +50,9 @@ class ReporterTests: XCTestCase {
         XCTAssertEqual(
             XcodeReporter.generateReport(generateViolations()),
             "filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)\n" +
-            "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)"
+            "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)\n" +
+            "filename:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar" +
+            " should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)"
         )
     }
 
@@ -53,6 +61,8 @@ class ReporterTests: XCTestCase {
             EmojiReporter.generateReport(generateViolations()),
             "filename\n" +
             "⛔️ Line 1: Violation Reason.\n" +
+            "⛔️ Line 1: Shorthand syntactic sugar should be used" +
+            ", i.e. [Int] instead of Array<Int>.\n" +
             "⚠️ Line 1: Violation Reason."
         )
     }
@@ -78,6 +88,16 @@ class ReporterTests: XCTestCase {
                 "    \"line\" : 1,\n" +
                 "    \"severity\" : \"Error\",\n" +
                 "    \"type\" : \"Line Length\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"reason\" : \"Shorthand syntactic sugar should be used" +
+                ", i.e. [Int] instead of Array<Int>.\",\n" +
+                "    \"character\" : 2,\n" +
+                "    \"file\" : \"filename\",\n" +
+                "    \"rule_id\" : \"syntactic_sugar\",\n" +
+                "    \"line\" : 1,\n" +
+                "    \"severity\" : \"Error\",\n" +
+                "    \"type\" : \"Syntactic Sugar\"\n" +
                 "  }\n" +
             "]"
         )
@@ -88,7 +108,9 @@ class ReporterTests: XCTestCase {
             CSVReporter.generateReport(generateViolations()),
             "file,line,character,severity,type,reason,rule_id," +
             "filename,1,2,Warning,Line Length,Violation Reason.,line_length," +
-            "filename,1,2,Error,Line Length,Violation Reason.,line_length"
+            "filename,1,2,Error,Line Length,Violation Reason.,line_length," +
+            "filename,1,2,Error,Syntactic Sugar,\"Shorthand syntactic sugar should be used" +
+            ", i.e. [Int] instead of Array<Int>.\",syntactic_sugar"
         )
     }
 
@@ -100,6 +122,9 @@ class ReporterTests: XCTestCase {
             "message=\"Violation Reason.\"/>\n\t</file>\n" +
             "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
             "message=\"Violation Reason.\"/>\n\t</file>\n" +
+            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
+            "message=\"Shorthand syntactic sugar should be used" +
+            ", i.e. [Int] instead of Array&lt;Int&gt;.\"/>\n\t</file>\n" +
             "</checkstyle>"
         )
     }
@@ -113,7 +138,12 @@ class ReporterTests: XCTestCase {
                 "\t</testcase>\n" +
                 "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
                     "<failure message=\'Violation Reason.\'>error:\nLine:1 </failure>" +
-                "\t</testcase>\n</testsuite></testsuites>"
+                "\t</testcase>\n" +
+                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
+                "<failure message=\'Shorthand syntactic sugar should be used" +
+                ", i.e. [Int] instead of Array&lt;Int&gt;.\'>error:\nLine:1 </failure>" +
+                "\t</testcase>\n" +
+                "</testsuite></testsuites>"
         )
     }
 
@@ -194,6 +224,14 @@ class ReporterTests: XCTestCase {
             "\t\t\t\t\t<td class='error'>Error</td>\n" +
             "\t\t\t\t\t<td>Violation Reason.</td>\n" +
             "\t\t\t\t</tr>\n" +
+            "\t\t\t\t<tr>\n" +
+            "\t\t\t\t\t<td align=\"right\">3</td>\n" +
+            "\t\t\t\t\t<td>filename</td>\n" +
+            "\t\t\t\t\t<td align=\"center\">1:2</td>\n" +
+            "\t\t\t\t\t<td class='error'>Error</td>\n" +
+            "\t\t\t\t\t<td>Shorthand syntactic sugar should be used" +
+            ", i.e. [Int] instead of Array&lt;Int&gt;.</td>\n" +
+            "\t\t\t\t</tr>\n" +
             "\t\t\t</tbody>\n" +
             "\t\t</table>\n" +
             "\t\t<br/>\n" +
@@ -210,7 +248,7 @@ class ReporterTests: XCTestCase {
             "\t\t\t\t</tr>\n" +
             "\t\t\t\t<tr>\n" +
             "\t\t\t\t\t<td>Total errors</td>\n" +
-            "\t\t\t\t\t<td>1</td>\n" +
+            "\t\t\t\t\t<td>2</td>\n" +
             "\t\t\t\t</tr>\n" +
             "\t\t\t</tbody>\n" +
             "\t\t</table>\n" +

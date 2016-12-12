@@ -13,8 +13,8 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
-    public var regex = NSRegularExpression.forcePattern("placeholder")
-    public var included = NSRegularExpression.forcePattern("placeholder")
+    public var regex: NSRegularExpression!
+    public var included: NSRegularExpression?
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
@@ -26,9 +26,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     }
 
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier,
-                               name: name ?? identifier,
-                               description: "")
+        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
     }
 
     public init(identifier: String) {
@@ -61,6 +59,6 @@ public func == (lhs: PrivateUnitTestConfiguration, rhs: PrivateUnitTestConfigura
     return lhs.identifier == rhs.identifier &&
         lhs.message == rhs.message &&
         lhs.regex == rhs.regex &&
-        lhs.included.pattern == rhs.included.pattern &&
+        lhs.included?.pattern == rhs.included?.pattern &&
         lhs.severity == rhs.severity
 }

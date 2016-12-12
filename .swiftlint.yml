@@ -6,6 +6,12 @@ excluded:
 opt_in_rules:
   - empty_count
   - file_header
+  - explicit_init
+  - closure_spacing
+  - overridden_super_call
+  - redundant_nil_coalescing
+  - private_outlet
+  - nimble_operator
 
 file_header:
   required_pattern: |

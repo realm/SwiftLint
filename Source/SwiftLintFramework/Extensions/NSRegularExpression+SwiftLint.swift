@@ -8,6 +8,11 @@
 
 import Foundation
 
+#if os(Linux)
+public typealias NSRegularExpression = RegularExpression
+public typealias NSTextCheckingResult = TextCheckingResult
+#endif
+
 private var regexCache = [String: NSRegularExpression]()
 
 extension NSRegularExpression {

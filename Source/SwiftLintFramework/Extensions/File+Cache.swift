@@ -31,7 +31,7 @@ private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() }
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
 private typealias AssertHandler = () -> ()
-private var assertHandlers = [String: AssertHandler?]()
+private var assertHandlers = [String: AssertHandler]()
 
 private var _allDeclarationsByType = [String: [String]]()
 private var queueForRebuild = [Structure]()
@@ -88,7 +88,7 @@ extension File {
 
     internal var assertHandler: (() -> ())? {
         get {
-            return assertHandlers[cacheKey] ?? nil
+            return assertHandlers[cacheKey]
         }
         set {
             assertHandlers[cacheKey] = newValue

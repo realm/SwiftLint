@@ -10,12 +10,25 @@
 
 ##### Enhancements
 
+* Now builds and passes most tests on Linux using the Swift Package Manager with
+  Swift 3. This requires `libsourcekitdInProc.so` to be built and located in
+  `/usr/lib`, or in another location specified by the `LINUX_SOURCEKIT_LIB_PATH`
+  environment variable. A preconfigured Docker image is available on Docker Hub
+  by the ID of `norionomura/sourcekit:301`.  
+  [JP Simard](https://github.com/jpsim)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#732](https://github.com/realm/SwiftLint/issues/732)
+
+* Add `dynamic_inline` rule to discourage combination of `@inline(__always)`
+  and `dynamic` function attributes.  
+  [Daniel Duan](https://github.com/dduan)
+
 * Add `number_separator` opt-in rule that enforces that underscores are
   used as thousand separators in large numbers.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#924](https://github.com/realm/SwiftLint/issues/924)
-  
-* Add `file_header` opt-in rule that warns when a file contains a 
+
+* Add `file_header` opt-in rule that warns when a file contains a
   copyright comment header, such as the one Xcode adds by default.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#884](https://github.com/realm/SwiftLint/issues/884)
@@ -26,7 +39,7 @@
 
 * Add `EmojiReporter`: a human friendly reporter.  
   [Michał Kałużny](https://github.com/justMaku)
-  
+
 * Add `redundant_string_enum_value` rule that warns against String enums
   with redundant value assignments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -48,6 +61,11 @@
   `always_on_line_above` keys.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#846](https://github.com/realm/SwiftLint/issues/846)
+
+* Add `empty_parentheses_with_trailing_closure` rule that checks for
+  empty parentheses after method call when using trailing closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#885](https://github.com/realm/SwiftLint/issues/885)
 
 ##### Bug Fixes
 

@@ -101,16 +101,34 @@ class CustomRulesTests: XCTestCase {
 
     func getTestTextFile() -> File {
         #if SWIFT_PACKAGE
-            let path: String = "Tests/SwiftLintFrameworkTests/Resources/test.txt"
+            let path = "Tests/SwiftLintFrameworkTests/Resources/test.txt".bridge()
                 .absolutePathRepresentation()
             return File(path: path)!
         #else
             let testBundle = Bundle(for: type(of: self))
-            let path: String? = testBundle.path(forResource: "test", ofType: "txt")
-            if path != nil {
-                return File(path: path!)!
+            if let path = testBundle.path(forResource: "test", ofType: "txt") {
+                return File(path: path)!
             }
+            fatalError("Could not load test.txt")
         #endif
-        fatalError("Could not load test.txt")
+    }
+}
+
+extension CustomRulesTests {
+    static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
+        return [
+            ("testCustomRuleConfigurationSetsCorrectly",
+                testCustomRuleConfigurationSetsCorrectly),
+            ("testCustomRuleConfigurationThrows",
+                testCustomRuleConfigurationThrows),
+            ("testCustomRules",
+                testCustomRules),
+            ("testLocalDisableCustomRule",
+                testLocalDisableCustomRule),
+            ("testCustomRulesIncludedDefault",
+                testCustomRulesIncludedDefault),
+            ("testCustomRulesIncludedExcludesFile",
+                testCustomRulesIncludedExcludesFile)
+        ]
     }
 }

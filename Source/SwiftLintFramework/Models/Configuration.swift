@@ -157,7 +157,7 @@ public struct Configuration: Equatable {
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false) {
-        let fullPath = (path as NSString).absolutePathRepresentation()
+        let fullPath = path.bridge().absolutePathRepresentation()
         let fail = { (msg: String) in
             fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
         }
@@ -168,8 +168,7 @@ public struct Configuration: Equatable {
             return
         }
         do {
-            let yamlContents = try NSString(contentsOfFile: fullPath,
-                                            encoding: String.Encoding.utf8.rawValue) as String
+            let yamlContents = try String(contentsOfFile: fullPath, encoding: .utf8)
             let dict = try YamlParser.parse(yamlContents)
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
@@ -189,7 +188,7 @@ public struct Configuration: Equatable {
     public func lintablePathsForPath(_ path: String,
                                      fileManager: FileManager = fileManager) -> [String] {
         // If path is a Swift file, skip filtering with excluded/included paths
-        if (path as NSString).isSwiftFile() {
+        if path.bridge().isSwiftFile() {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path) : []
@@ -207,7 +206,7 @@ public struct Configuration: Equatable {
     }
 
     public func configurationForFile(_ file: File) -> Configuration {
-        if let containingDir = (file.path as NSString?)?.deletingLastPathComponent {
+        if let containingDir = file.path?.bridge().deletingLastPathComponent {
             return configurationForPath(containingDir)
         }
         return self
@@ -218,7 +217,7 @@ public struct Configuration: Equatable {
 
 extension Configuration {
     fileprivate func configurationForPath(_ path: String) -> Configuration {
-        let pathNSString = path as NSString
+        let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
         // If a configuration exists and it isn't us, load and merge the configurations

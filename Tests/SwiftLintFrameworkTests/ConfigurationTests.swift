@@ -118,6 +118,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
+#if !os(Linux)
     fileprivate class TestFileManager: FileManager {
         override func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
@@ -140,6 +141,7 @@ class ConfigurationTests: XCTestCase {
         let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
+#endif
 
     // MARK: - Testing Configuration Equality
 
@@ -209,14 +211,14 @@ class ConfigurationTests: XCTestCase {
 
 extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return (self as NSString).appendingPathComponent(pathComponent)
+        return bridge().appendingPathComponent(pathComponent)
     }
 }
 
 extension XCTestCase {
     var bundlePath: String {
         #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFrameworkTests/Resources".absolutePathRepresentation()
+            return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
         #else
             return Bundle(for: type(of: self)).resourcePath!
         #endif
@@ -260,5 +262,31 @@ extension XCTestCase {
 
     var projectMockSwift3: String {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
+    }
+}
+
+extension ConfigurationTests {
+    static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
+        return [
+            ("testInit", testInit),
+            ("testEmptyConfiguration", testEmptyConfiguration),
+            ("testWhitelistRules", testWhitelistRules),
+            ("testWarningThreshold_value", testWarningThreshold_value),
+            ("testWarningThreshold_nil", testWarningThreshold_nil),
+            ("testOtherRuleConfigurationsAlongsideWhitelistRules",
+                testOtherRuleConfigurationsAlongsideWhitelistRules),
+            ("testDisabledRules", testDisabledRules),
+            ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
+            // ("testExcludedPaths", testExcludedPaths),
+            ("testIsEqualTo", testIsEqualTo),
+            ("testIsNotEqualTo", testIsNotEqualTo),
+            ("testMerge", testMerge),
+            ("testLevel0", testLevel0),
+            ("testLevel1", testLevel1),
+            ("testLevel2", testLevel2),
+            ("testLevel3", testLevel3),
+            ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
+            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly)
+        ]
     }
 }

@@ -40,7 +40,7 @@ public struct Location: CustomStringConvertible, Comparable {
 
     public init(file: File, byteOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.lineAndCharacter(forByteOffset: offset) {
+        if let lineAndCharacter = file.contents.bridge().lineAndCharacter(forByteOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {
@@ -51,7 +51,8 @@ public struct Location: CustomStringConvertible, Comparable {
 
     public init(file: File, characterOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.lineAndCharacter(forCharacterOffset: offset) {
+        if let lineAndCharacter = file.contents.bridge()
+            .lineAndCharacter(forCharacterOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {

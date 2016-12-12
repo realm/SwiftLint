@@ -20,10 +20,11 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
-        // swiftlint:disable:next line_length
-        guard let value = configuration as? String ?? (configuration as? [String: Any])?["severity"] as? String,
-            let severity = severity(fromString: value) else {
-                throw ConfigurationError.unknownConfiguration
+        let configString = configuration as? String
+        let configDict = configuration as? [String: Any]
+        guard let severityString: String = configString ?? configDict?["severity"] as? String,
+            let severity = severity(fromString: severityString) else {
+            throw ConfigurationError.unknownConfiguration
         }
         self.severity = severity
     }

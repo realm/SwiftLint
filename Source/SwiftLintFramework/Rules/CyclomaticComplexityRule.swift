@@ -98,7 +98,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
         let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
 
-        let c = (file.contents as NSString)
+        let c = file.contents.bridge()
             .substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""
 
         let fallthroughCount = c.components(separatedBy: "fallthrough").count - 1

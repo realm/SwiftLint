@@ -64,13 +64,9 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
         if let path = file.path {
             configurations = configurations.filter { config in
-                let pattern = config.included.pattern
-                if pattern.isEmpty { return true }
-
-                let pathMatch = config.included.matches(in: path, options: [],
-                    range: NSRange(location: 0, length: (path as NSString).length))
-
-                return !pathMatch.isEmpty
+                guard let includedRegex = config.included else { return true }
+                let range = NSRange(location: 0, length: path.bridge().length)
+                return !includedRegex.matches(in: path, options: [], range: range).isEmpty
             }
         }
 

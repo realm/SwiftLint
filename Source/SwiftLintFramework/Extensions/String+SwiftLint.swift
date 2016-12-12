@@ -79,6 +79,6 @@ extension String {
     }
 
     public func absolutePathStandardized() -> String {
-        return (self.absolutePathRepresentation() as NSString).standardizingPath
+        return bridge().absolutePathRepresentation().bridge().standardizingPath
     }
 }

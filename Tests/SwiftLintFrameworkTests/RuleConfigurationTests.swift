@@ -275,3 +275,48 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 }
+
+extension RuleConfigurationsTests {
+    static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
+        return [
+            ("testNameConfigurationSetsCorrectly",
+                testNameConfigurationSetsCorrectly),
+            ("testNameConfigurationThrowsOnBadConfig",
+                testNameConfigurationThrowsOnBadConfig),
+            ("testNameConfigurationMinLengthThreshold",
+                testNameConfigurationMinLengthThreshold),
+            ("testNameConfigurationMaxLengthThreshold",
+                testNameConfigurationMaxLengthThreshold),
+            ("testSeverityConfigurationFromString",
+                testSeverityConfigurationFromString),
+            ("testSeverityConfigurationFromDictionary",
+                testSeverityConfigurationFromDictionary),
+            ("testSeverityConfigurationThrowsOnBadConfig",
+                testSeverityConfigurationThrowsOnBadConfig),
+            ("testSeverityLevelConfigParams",
+                testSeverityLevelConfigParams),
+            ("testSeverityLevelConfigPartialParams",
+                testSeverityLevelConfigPartialParams),
+            ("testRegexConfigurationThrows",
+                testRegexConfigurationThrows),
+            ("testRegexRuleDescription",
+                testRegexRuleDescription),
+            ("testTrailingWhitespaceConfigurationThrowsOnBadConfig",
+                testTrailingWhitespaceConfigurationThrowsOnBadConfig),
+            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines",
+                testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines),
+            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments",
+                testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments),
+            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines",
+                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines),
+            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments",
+                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
+            ("testTrailingWhitespaceConfigurationCompares",
+                testTrailingWhitespaceConfigurationCompares),
+            ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration",
+                testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
+            ("testOverridenSuperCallConfigurationFromDictionary",
+                testOverridenSuperCallConfigurationFromDictionary)
+        ]
+    }
+}

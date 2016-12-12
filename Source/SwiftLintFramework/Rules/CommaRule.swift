@@ -56,15 +56,15 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         if matches.isEmpty { return [] }
 
-        var contents = file.contents as NSString
+        var contents = file.contents.bridge()
         let description = type(of: self).description
         var corrections = [Correction]()
         for range in matches.reversed() {
-            contents = contents.replacingCharacters(in: range, with: ", ") as NSString
+            contents = contents.replacingCharacters(in: range, with: ", ").bridge()
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
-        file.write(contents as String)
+        file.write(contents.bridge())
         return corrections
     }
 
@@ -89,7 +89,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
     // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern)
+    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern,
+                                                                        options: [])
     fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
     fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
@@ -111,7 +112,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // check first captured range
                 let firstRange = match.rangeAt(indexStartRange)
-                guard let matchByteFirstRange = contents
+                guard let matchByteFirstRange = contents.bridge()
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
 
@@ -126,13 +127,13 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !(contents as NSString).substring(with: firstRange).hasPrefix(",") {
+                if !contents.bridge().substring(with: firstRange).hasPrefix(",") {
                     return firstRange
                 }
 
                 // check second captured range
                 let secondRange = match.rangeAt(indexStartRange + 1)
-                guard let matchByteSecondRange = contents
+                guard let matchByteSecondRange = contents.bridge()
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 

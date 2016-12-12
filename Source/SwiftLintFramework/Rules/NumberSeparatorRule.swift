@@ -113,6 +113,7 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func contentFrom(file: File, token: SyntaxToken) -> String? {
-        return file.contents.substringWithByteRange(start: token.offset, length: token.length)
+        return file.contents.bridge().substringWithByteRange(start: token.offset,
+                                                             length: token.length)
     }
 }

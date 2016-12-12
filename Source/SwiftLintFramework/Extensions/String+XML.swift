@@ -1,5 +1,5 @@
 //
-//  CheckstyleReporter.swift
+//  String+XML.swift
 //  SwiftLint
 //
 //  Created by Fabian Ehrentraud on 12/12/16.

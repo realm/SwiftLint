@@ -80,6 +80,7 @@ class FunctionBodyLengthRuleTests: XCTestCase {
 }
 
 extension FunctionBodyLengthRuleTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] {
         return [
             ("testFunctionBodyLengths",

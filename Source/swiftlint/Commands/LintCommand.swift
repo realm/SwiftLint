@@ -24,7 +24,7 @@ extension Reporter {
 }
 
 #if os(Linux)
-private func autoreleasepool(block: () -> ()) { block() }
+private func autoreleasepool(block: () -> Void) { block() }
 #endif
 
 struct LintCommand: CommandProtocol {

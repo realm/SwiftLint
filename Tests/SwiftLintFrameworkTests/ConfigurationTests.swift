@@ -266,6 +266,7 @@ extension XCTestCase {
 }
 
 extension ConfigurationTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
         return [
             ("testInit", testInit),

@@ -226,6 +226,7 @@ class ReporterTests: XCTestCase {
 }
 
 extension ReporterTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (ReporterTests) -> () throws -> Void)] {
         return [
             ("testReporterFromString", testReporterFromString),

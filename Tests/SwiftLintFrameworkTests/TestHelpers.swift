@@ -224,7 +224,7 @@ extension XCTestCase {
         }
     }
 
-    func checkError<T: Error & Equatable>(_ error: T, closure: () throws -> () ) {
+    func checkError<T: Error & Equatable>(_ error: T, closure: () throws -> Void) {
         do {
             try closure()
             XCTFail("No error caught")

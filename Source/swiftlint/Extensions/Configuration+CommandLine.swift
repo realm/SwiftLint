@@ -63,7 +63,7 @@ extension Configuration {
 
     func visitLintableFiles(_ path: String, action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool,
-                            visitorBlock: (Linter) -> ()) -> Result<[File], CommandantError<()>> {
+                            visitorBlock: (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
         .flatMap { files -> Result<[File], CommandantError<()>> in

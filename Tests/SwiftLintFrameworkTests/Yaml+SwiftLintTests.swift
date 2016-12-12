@@ -64,6 +64,7 @@ class YamlSwiftLintTests: XCTestCase {
 }
 
 extension YamlSwiftLintTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (YamlSwiftLintTests) -> () throws -> Void)] {
         return [
             ("testFlattenYaml", testFlattenYaml)

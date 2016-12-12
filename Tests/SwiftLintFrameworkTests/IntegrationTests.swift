@@ -64,6 +64,7 @@ extension String {
 }
 
 extension IntegrationTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] {
         return [
             ("testSwiftLintLints", testSwiftLintLints),

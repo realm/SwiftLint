@@ -20,7 +20,11 @@ public struct VoidReturnRule: Rule, ConfigurationProviderRule {
         description: "Prefer `-> Void` over `-> ()`.",
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
-            "func foo(completion: () -> Void)\n"
+            "func foo(completion: () -> Void)\n",
+            "func foo: (ConfigurationTests) -> () throws -> Void)\n",
+            "func foo: (ConfigurationTests) ->   () throws -> Void)\n",
+            "func foo: (ConfigurationTests) ->() throws -> Void)\n",
+            "func foo: (ConfigurationTests) -> () -> Void)\n"
         ],
         triggeringExamples: [
             "let abc: () -> ↓() = {}\n",
@@ -31,8 +35,11 @@ public struct VoidReturnRule: Rule, ConfigurationProviderRule {
 
     public func validateFile(_ file: File) -> [StyleViolation] {
         let kinds = SyntaxKind.commentAndStringKinds()
+        let pattern = "->\\s*\\(\\s*\\)\\s*(?!->)"
+        let excludingPattern = pattern + "\\s*(throws\\s+)?->"
 
-        return file.matchPattern("->\\s*\\(\\s*\\)", excludingSyntaxKinds: kinds).flatMap {
+        return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
+                                 excludingPattern: excludingPattern).flatMap {
 
             let range = file.contents.bridge().substring(with: $0).bridge().range(of: "(")
             guard range.location != NSNotFound else {

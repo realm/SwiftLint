@@ -44,7 +44,7 @@
   with redundant value assignments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#946](https://github.com/realm/SwiftLint/issues/946)
-  
+
 * Add `AttributesRule` which validates if an attribute (`@objc`, `@IBOutlet`,
   `@discardableResult`, etc) is in the right position:
     - If the attribute is `@IBAction` or `@NSManaged`, it should always be on

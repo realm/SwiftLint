@@ -72,16 +72,13 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             }
 
             let contents = file.contents.bridge()
-            let match = contents.substringWithByteRange(start: range.location,
-                                                                      length: range.length)
-            let idx = match?.lastIndexOf("import").flatMap {
-                contents.NSRangeToByteRange(start: $0, length: 0)?.location
-            } ?? 0
+            let match = contents.substring(with: range)
+            let idx = match.lastIndexOf("import") ?? 0
             let location = idx + range.location
 
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, byteOffset: location))
+                                  location: Location(file: file, characterOffset: location))
         }
     }
 

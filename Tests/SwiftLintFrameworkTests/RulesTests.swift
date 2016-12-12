@@ -375,6 +375,10 @@ class RulesTests: XCTestCase {
         verifyRule(VariableNameRule.description)
     }
 
+    func testVoidReturn() {
+        verifyRule(VoidReturnRule.description)
+    }
+
     func testSuperCall() {
         verifyRule(OverriddenSuperCallRule.description)
     }
@@ -386,6 +390,7 @@ class RulesTests: XCTestCase {
 }
 
 extension RulesTests {
+    // swiftlint:disable:next void_return
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
         return [
             ("testClosingBrace", testClosingBrace),
@@ -439,6 +444,7 @@ extension RulesTests {
             // ("testTypeName", testTypeName),
             ("testValidIBInspectable", testValidIBInspectable),
             // ("testVariableName", testVariableName),
+            ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)
         ]

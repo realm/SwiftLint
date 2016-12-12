@@ -82,6 +82,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#970](https://github.com/realm/SwiftLint/issues/970)
 
+* Add `void_return` rule to validate usage of `-> Void` over `-> ()`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#964](https://github.com/realm/SwiftLint/issues/964)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

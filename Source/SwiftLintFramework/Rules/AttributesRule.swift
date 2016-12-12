@@ -71,9 +71,13 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                     return nil
             }
 
-            let match = file.contents
-                .substringWithByteRange(start: range.location, length: range.length)
-            let location = (match?.lastIndexOf("import") ?? 0) + range.location
+            let contents = file.contents.bridge()
+            let match = contents.substringWithByteRange(start: range.location,
+                                                                      length: range.length)
+            let idx = match?.lastIndexOf("import").flatMap {
+                contents.NSRangeToByteRange(start: $0, length: 0)?.location
+            } ?? 0
+            let location = idx + range.location
 
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
@@ -88,11 +92,11 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
         guard !attributes.isEmpty,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let (lineNumber, _) = file.contents.lineAndCharacter(forByteOffset: offset) else {
+            let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset) else {
             return []
         }
 
-        guard isViolation(lineNumber: lineNumber, file: file,
+        guard isViolation(lineNumber: line, file: file,
                           attributeShouldBeOnSameLine: attributeShouldBeOnSameLine) else {
             return []
         }
@@ -165,7 +169,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
             // 2. it's a whitelisted attribute, according to the current configuration
-            let isParameterized = hasParameter || (token as NSString).contains("(")
+            let isParameterized = hasParameter || token.bridge().contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token
             }
@@ -243,10 +247,11 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
 
         let range = NSRange(location: 0, length: restOfLineLength)
         let regex = AttributesRule.regularExpression
+        let contents = file.contents.bridge()
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`
-        guard let restOfLine = file.contents.substringWithByteRange(start: restOfLineOffset,
-                                                                    length: restOfLineLength),
+        guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset,
+                                                               length: restOfLineLength),
             regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
 
             return false
@@ -260,8 +265,8 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             return nil
         }
 
-        let maybeName = file.contents.substringWithByteRange(start: token.offset,
-                                                             length: token.length)
+        let maybeName = file.contents.bridge().substringWithByteRange(start: token.offset,
+                                                                      length: token.length)
         if let name = maybeName, isAttribute(name) {
             return (name, NSRange(location: token.offset, length: token.length))
         }

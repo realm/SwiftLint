@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */; };
+		009E09281DFEE4C200B588A7 /* ProhibitedSuperRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */; };
+		009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */; };
 		02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */; };
 		094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094384FF1D5D2382009168CF /* WeakDelegateRule.swift */; };
 		094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
@@ -206,6 +208,8 @@
 
 /* Begin PBXFileReference section */
 		006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstantRule.swift; sourceTree = "<group>"; };
+		009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperRule.swift; sourceTree = "<group>"; };
+		009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperConfiguration.swift; sourceTree = "<group>"; };
 		02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNSStringTests.swift; sourceTree = "<group>"; };
 		094384FF1D5D2382009168CF /* WeakDelegateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakDelegateRule.swift; sourceTree = "<group>"; };
 		094385021D5D4F78009168CF /* PrivateOutletRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRule.swift; sourceTree = "<group>"; };
@@ -425,6 +429,7 @@
 				78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */,
 				DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */,
 				B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */,
+				009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */,
 				3BB47D821C514E8100AE6A10 /* RegexConfiguration.swift */,
 				3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */,
 				3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */,
@@ -694,6 +699,7 @@
 				78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */,
 				B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */,
 				094385021D5D4F78009168CF /* PrivateOutletRule.swift */,
+				009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */,
 				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
@@ -986,6 +992,7 @@
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,
 				3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */,
 				D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */,
+				009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */,
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
@@ -1023,6 +1030,7 @@
 				1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */,
 				57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
+				009E09281DFEE4C200B588A7 /* ProhibitedSuperRule.swift in Sources */,
 				E80E018F1B92C1350078EB70 /* Region.swift in Sources */,
 				E88198581BEA956C00333A11 /* FunctionBodyLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,

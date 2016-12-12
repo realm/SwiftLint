@@ -234,6 +234,10 @@ class RulesTests: XCTestCase {
         verifyRule(PrivateUnitTestRule.description)
     }
 
+    func testProhibitedSuper() {
+        verifyRule(ProhibitedSuperRule.description)
+    }
+
     func testRedundantNilCoalescing() {
         verifyRule(RedundantNilCoalescingRule.description)
     }
@@ -413,6 +417,7 @@ extension RulesTests {
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testPrivateOutlet", testPrivateOutlet),
             // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),

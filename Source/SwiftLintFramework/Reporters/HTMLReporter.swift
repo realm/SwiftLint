@@ -120,7 +120,7 @@ public struct HTMLReporter: Reporter {
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
         let severity: String = violation.severity.rawValue.capitalized
         let location = violation.location
-        let file: String = location.file ?? ""
+        let file: String = location.file?.escapedForXml() ?? ""
         let line: Int = location.line ?? 0
         let character: Int = location.character ?? 0
         return [
@@ -129,7 +129,7 @@ public struct HTMLReporter: Reporter {
             "\t\t\t\t\t<td>", file, "</td>\n",
             "\t\t\t\t\t<td align=\"center\">\(line):\(character)</td>\n",
             "\t\t\t\t\t<td class=\'", severity.lowercased(), "\'>", severity, "</td>\n",
-            "\t\t\t\t\t<td>\(violation.reason)</td>\n",
+            "\t\t\t\t\t<td>\(violation.reason.escapedForXml())</td>\n",
             "\t\t\t\t</tr>\n"
         ].joined()
     }

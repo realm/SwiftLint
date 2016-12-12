@@ -127,7 +127,6 @@ class RuleTests: XCTestCase {
 }
 
 extension RuleTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (RuleTests) -> () throws -> Void)] {
         return [
             ("testRuleIsEqualTo",

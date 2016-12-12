@@ -115,7 +115,6 @@ class CustomRulesTests: XCTestCase {
 }
 
 extension CustomRulesTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
         return [
             ("testCustomRuleConfigurationSetsCorrectly",

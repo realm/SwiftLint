@@ -103,7 +103,6 @@ class FileHeaderRuleTests: XCTestCase {
 }
 
 extension FileHeaderRuleTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (FileHeaderRuleTests) -> () throws -> Void)] {
         return [
             ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration)

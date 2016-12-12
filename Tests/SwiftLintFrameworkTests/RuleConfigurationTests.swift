@@ -277,7 +277,6 @@ class RuleConfigurationsTests: XCTestCase {
 }
 
 extension RuleConfigurationsTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
         return [
             ("testNameConfigurationSetsCorrectly",

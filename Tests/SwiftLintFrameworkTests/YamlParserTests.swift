@@ -29,7 +29,6 @@ class YamlParserTests: XCTestCase {
 }
 
 extension YamlParserTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] {
         return [
             ("testParseEmptyString", testParseEmptyString),

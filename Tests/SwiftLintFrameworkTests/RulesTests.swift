@@ -390,7 +390,6 @@ class RulesTests: XCTestCase {
 }
 
 extension RulesTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
         return [
             ("testClosingBrace", testClosingBrace),

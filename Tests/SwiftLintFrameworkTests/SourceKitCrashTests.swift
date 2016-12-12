@@ -81,7 +81,6 @@ class SourceKitCrashTests: XCTestCase {
 }
 
 extension SourceKitCrashTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] {
         return [
             ("testAssertHandlerIsNotCalledOnNormalFile",

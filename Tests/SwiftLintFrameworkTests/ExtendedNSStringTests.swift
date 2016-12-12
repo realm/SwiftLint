@@ -32,7 +32,6 @@ class ExtendedNSStringTests: XCTestCase {
 }
 
 extension ExtendedNSStringTests {
-    // swiftlint:disable:next void_return
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] {
         return [
             ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters",

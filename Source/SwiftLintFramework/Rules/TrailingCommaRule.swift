@@ -68,16 +68,17 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        if let (startLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset),
-            let (endLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: lastPosition),
+        let contents = file.contents.bridge()
+        if let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
-            // shouldn't trigger if mandatory comma style and is a single-line declaration 
+            // shouldn't trigger if mandatory comma style and is a single-line declaration
             return []
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = file.contents.bridge()
-            .substringWithByteRange(start: lastPosition, length: length) ?? ""
+        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition,
+                                                                       length: length) ?? ""
 
         // if a trailing comma is not present
         guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file,
@@ -108,7 +109,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func trailingCommaIndex(_ contents: String, file: File, offset: Int) -> Int? {
-        let range = NSRange(location: 0, length: (contents as NSString).length)
+        let range = NSRange(location: 0, length: contents.bridge().length)
         let ranges = TrailingCommaRule.regex
             .matches(in: contents, options: [], range: range).map { $0.range }
 
@@ -118,7 +119,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             let kinds = file.syntaxMap.tokensIn(range).flatMap { SyntaxKind(rawValue: $0.type) }
             return kinds.filter { SyntaxKind.commentKinds().contains($0) }.isEmpty
         }.last.flatMap {
-            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
+            contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }
 }

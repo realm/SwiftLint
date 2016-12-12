@@ -88,6 +88,7 @@
 		D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */; };
 		D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */; };
 		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
+		D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */; };
@@ -308,6 +309,7 @@
 		D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureParameterPositionRule.swift; sourceTree = "<group>"; };
 		D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExpressionKind.swift; sourceTree = "<group>"; };
 		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
+		D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParametersRule.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRulesExamples.swift; sourceTree = "<group>"; };
@@ -680,6 +682,7 @@
 				2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */,
 				E315B83B1DFA4BC500621B44 /* DynamicInlineRule.swift */,
 				E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */,
+				D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */,
 				D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */,
 				7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */,
 				D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */,
@@ -1012,6 +1015,7 @@
 				DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */,
 				2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */,
 				D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */,
+				D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */,
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,

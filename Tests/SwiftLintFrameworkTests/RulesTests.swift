@@ -122,6 +122,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyParameters() {
+        verifyRule(EmptyParametersRule.description)
+    }
+
     func testEmptyParenthesesWithTrailingClosure() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
@@ -404,6 +408,7 @@ extension RulesTests {
             ("testCyclomaticComplexity", testCyclomaticComplexity),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
+            ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
             ("testFileLength", testFileLength),

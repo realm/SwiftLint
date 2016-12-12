@@ -53,6 +53,7 @@ public let masterRuleList = RuleList(rules:
     CyclomaticComplexityRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
+    EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,
     FileHeaderRule.self,

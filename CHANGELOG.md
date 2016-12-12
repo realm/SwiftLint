@@ -317,8 +317,8 @@
   Guidelines but will shortly.  
   [JP Simard](https://github.com/jpsim)
   [Norio Nomura](https://github.com/norio-nomura)
-  
-* `variable_name` rule is now `identifier_rule` as it validates other
+
+* `variable_name` rule is now `identifier_name` as it validates other
   identifiers as well.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#663](https://github.com/realm/SwiftLint/issues/663)

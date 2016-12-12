@@ -49,7 +49,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let elements = dictionary["key.elements"]  as? [SourceKitRepresentable],
+            let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
             allowedKinds.contains(kind) else {
                 return []
         }
@@ -117,7 +117,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         return ranges.filter {
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.tokensIn(range).flatMap { SyntaxKind(rawValue: $0.type) }
-            return kinds.filter { SyntaxKind.commentKinds().contains($0) }.isEmpty
+            return kinds.filter(SyntaxKind.commentKinds().contains).isEmpty
         }.last.flatMap {
             contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location

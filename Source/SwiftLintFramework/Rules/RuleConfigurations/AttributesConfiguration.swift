@@ -26,7 +26,7 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
+        guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
 

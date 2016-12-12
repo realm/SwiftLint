@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SwiftLintFramework
 import XCTest
 
@@ -221,5 +222,21 @@ class ReporterTests: XCTestCase {
         "</html>"
 
         XCTAssertEqual(generatedHTML, expectedHTML)
+    }
+}
+
+extension ReporterTests {
+    static var allTests: [(String, (ReporterTests) -> () throws -> Void)] {
+        return [
+            ("testReporterFromString", testReporterFromString),
+            ("testXcodeReporter", testXcodeReporter),
+            ("testEmojiReporter", testEmojiReporter),
+            // Fails on Linux
+            // ("testJSONReporter", testJSONReporter),
+            ("testCSVReporter", testCSVReporter),
+            ("testCheckstyleReporter", testCheckstyleReporter),
+            ("testJunitReporter", testJunitReporter),
+            ("testHTMLReporter", testHTMLReporter)
+        ]
     }
 }

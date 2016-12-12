@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
@@ -374,4 +375,62 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
+}
+
+extension RulesTests {
+    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
+        return [
+            ("testClosingBrace", testClosingBrace),
+            ("testColon", testColon),
+            ("testComma", testComma),
+            ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
+            ("testControlStatement", testControlStatement),
+            ("testCyclomaticComplexity", testCyclomaticComplexity),
+            ("testDynamicInline", testDynamicInline),
+            ("testEmptyCount", testEmptyCount),
+            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
+            ("testExplicitInit", testExplicitInit),
+            ("testFileLength", testFileLength),
+            ("testForceCast", testForceCast),
+            ("testForceTry", testForceTry),
+            // ("testForceUnwrapping", testForceUnwrapping),
+            ("testFunctionBodyLength", testFunctionBodyLength),
+            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
+            ("testImplicitGetterRule", testImplicitGetterRule),
+            // ("testLeadingWhitespace", testLeadingWhitespace),
+            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
+            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
+            ("testLegacyConstant", testLegacyConstant),
+            ("testLegacyConstructor", testLegacyConstructor),
+            ("testLineLength", testLineLength),
+            ("testMark", testMark),
+            ("testNesting", testNesting),
+            ("testNimbleOperator", testNimbleOperator),
+            ("testNumberSeparator", testNumberSeparator),
+            ("testVerticalWhitespace", testVerticalWhitespace),
+            ("testOpeningBrace", testOpeningBrace),
+            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+            ("testPrivateOutlet", testPrivateOutlet),
+            // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testStatementPosition", testStatementPosition),
+            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
+            ("testSyntacticSugar", testSyntacticSugar),
+            ("testTodo", testTodo),
+            ("testTrailingComma", testTrailingComma),
+            ("testTrailingNewline", testTrailingNewline),
+            ("testTrailingSemicolon", testTrailingSemicolon),
+            ("testTrailingWhitespace", testTrailingWhitespace),
+            ("testTypeBodyLength", testTypeBodyLength),
+            // ("testTypeName", testTypeName),
+            ("testValidIBInspectable", testValidIBInspectable),
+            // ("testVariableName", testVariableName),
+            ("testSuperCall", testSuperCall),
+            ("testWeakDelegate", testWeakDelegate)
+        ]
+    }
 }

@@ -10,6 +10,15 @@
 
 ##### Enhancements
 
+* Now builds and passes most tests on Linux using the Swift Package Manager with
+  Swift 3. This requires `libsourcekitdInProc.so` to be built and located in
+  `/usr/lib`, or in another location specified by the `LINUX_SOURCEKIT_LIB_PATH`
+  environment variable. A preconfigured Docker image is available on Docker Hub
+  by the ID of `norionomura/sourcekit:301`.  
+  [JP Simard](https://github.com/jpsim)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#732](https://github.com/realm/SwiftLint/issues/732)
+
 * Add `dynamic_inline` rule to discourage combination of `@inline(__always)`
   and `dynamic` function attributes.  
   [Daniel Duan](https://github.com/dduan)

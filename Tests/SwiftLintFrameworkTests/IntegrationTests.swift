@@ -16,7 +16,7 @@ let config: Configuration = {
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent
-    FileManager.default.changeCurrentDirectoryPath(directory)
+    _ = FileManager.default.changeCurrentDirectoryPath(directory)
     return Configuration(path: Configuration.fileName)
 }()
 
@@ -60,5 +60,14 @@ extension String {
                                             isASCII: isASCII)
             closure(staticString)
         }
+    }
+}
+
+extension IntegrationTests {
+    static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] {
+        return [
+            ("testSwiftLintLints", testSwiftLintLints),
+            ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects)
+        ]
     }
 }

@@ -47,12 +47,14 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
                 .byteRangeToNSRange(start: funcByteOffset, length: 0)?.location,
             case let inlinePattern = regex("@inline"),
             case let range = NSRange(location: 0, length: funcOffset),
-            let inlineMatch = inlinePattern.matches(in: file.contents, range: range).last,
+            let inlineMatch = inlinePattern.matches(in: file.contents, options: [], range: range)
+                .last,
             inlineMatch.range.location != NSNotFound,
             case let attributeRange = NSRange(location: inlineMatch.range.location,
                 length: funcOffset - inlineMatch.range.location),
             case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
-            alwaysInlinePattern.firstMatch(in: file.contents, range: attributeRange) != nil
+            alwaysInlinePattern.firstMatch(in: file.contents, options: [],
+                                           range: attributeRange) != nil
         else {
             return []
         }

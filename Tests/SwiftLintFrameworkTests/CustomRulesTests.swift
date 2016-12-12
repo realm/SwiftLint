@@ -113,3 +113,22 @@ class CustomRulesTests: XCTestCase {
         #endif
     }
 }
+
+extension CustomRulesTests {
+    static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
+        return [
+            ("testCustomRuleConfigurationSetsCorrectly",
+                testCustomRuleConfigurationSetsCorrectly),
+            ("testCustomRuleConfigurationThrows",
+                testCustomRuleConfigurationThrows),
+            ("testCustomRules",
+                testCustomRules),
+            ("testLocalDisableCustomRule",
+                testLocalDisableCustomRule),
+            ("testCustomRulesIncludedDefault",
+                testCustomRulesIncludedDefault),
+            ("testCustomRulesIncludedExcludesFile",
+                testCustomRulesIncludedExcludesFile)
+        ]
+    }
+}

@@ -37,9 +37,9 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
     public func validateFile(_ file: File,
-                             kind: SwiftExpressionCallKind,
+                             kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .exprCall else {
+        guard kind == .call else {
             return []
         }
 

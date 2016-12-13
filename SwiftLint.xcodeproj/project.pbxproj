@@ -84,7 +84,7 @@
 		D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */; };
 		D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */; };
 		D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */; };
-		D47079AB1DFDCF7A00027086 /* SwiftExpressionCallKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionCallKind.swift */; };
+		D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */; };
 		D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
@@ -297,7 +297,7 @@
 		D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRule.swift; sourceTree = "<group>"; };
 		D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParenthesesWithTrailingClosureRule.swift; sourceTree = "<group>"; };
 		D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureParameterPositionRule.swift; sourceTree = "<group>"; };
-		D47079AA1DFDCF7A00027086 /* SwiftExpressionCallKind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExpressionCallKind.swift; sourceTree = "<group>"; };
+		D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExpressionKind.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRuleTests.swift; sourceTree = "<group>"; };
 		D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRule.swift; sourceTree = "<group>"; };
@@ -752,7 +752,7 @@
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */,
 				E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */,
-				D47079AA1DFDCF7A00027086 /* SwiftExpressionCallKind.swift */,
+				D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */,
 				E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */,
 				6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */,
 				3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */,
@@ -1039,7 +1039,7 @@
 				D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */,
 				7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
-				D47079AB1DFDCF7A00027086 /* SwiftExpressionCallKind.swift in Sources */,
+				D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */,
 				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */,
 				7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,

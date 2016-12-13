@@ -123,20 +123,3 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }?.location
     }
 }
-
-public enum SwiftExpressionKind: String {
-    case array = "source.lang.swift.expr.array"
-    case dictionary = "source.lang.swift.expr.dictionary"
-    case other
-
-    public init?(rawValue: String) {
-        switch rawValue {
-        case SwiftExpressionKind.array.rawValue:
-            self = .array
-        case SwiftExpressionKind.dictionary.rawValue:
-            self = .dictionary
-        default:
-            self = .other
-        }
-    }
-}

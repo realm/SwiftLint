@@ -2,7 +2,7 @@
 //  ClosureParameterPositionRule.swift
 //  SwiftLint
 //
-//  Created by Marcelo Fabri on 11/12/16.
+//  Created by Marcelo Fabri on 12/11/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -48,9 +48,9 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
     private static let openBraceRegex = regex("\\{")
 
     public func validateFile(_ file: File,
-                             kind: SwiftExpressionCallKind,
+                             kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .exprCall else {
+        guard kind == .call else {
             return []
         }
 
@@ -107,7 +107,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
                 return [subDict]
             }
 
-            if kindString == "source.lang.swift.expr.argument" {
+            if SwiftExpressionKind(rawValue: kindString) == .argument {
                 return filterByKind(dictionary: subDict, kind: kind)
             }
 

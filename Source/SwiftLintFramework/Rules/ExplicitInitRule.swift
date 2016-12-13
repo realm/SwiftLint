@@ -36,7 +36,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
     )
 
     public func validateFile(_ file: File,
-                             kind: SwiftExpressionCallKind,
+                             kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -47,7 +47,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     private let initializerWithType = regex("^[A-Z].*\\.init$")
 
-    private func violationRangesInFile(_ file: File, kind: SwiftExpressionCallKind,
+    private func violationRangesInFile(_ file: File, kind: SwiftExpressionKind,
                                        dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         func isExpected(_ name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
@@ -57,7 +57,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
         let length = ".init".utf8.count
 
-        guard kind == .exprCall,
+        guard kind == .call,
             let name = dictionary["key.name"] as? String, isExpected(name),
             let nameOffset = dictionary["key.nameoffset"] as? Int64,
             let nameLength = dictionary["key.namelength"] as? Int64,
@@ -73,7 +73,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         return substructure.flatMap { subItem -> [NSRange] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
                 let kindString = subDict["key.kind"] as? String,
-                let kind = SwiftExpressionCallKind(rawValue: kindString) else {
+                let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }
             return violationRangesInFile(file, dictionary: subDict) +

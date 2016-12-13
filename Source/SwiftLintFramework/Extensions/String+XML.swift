@@ -7,7 +7,7 @@
 //
 
 extension String {
-    func escapedForXml() -> String {
+    func escapedForXML() -> String {
         // & needs to go first, otherwise other replacements will be replaced again
         let htmlEscapes = [
             ("&", "&amp;"),

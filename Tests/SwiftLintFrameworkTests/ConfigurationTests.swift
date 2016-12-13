@@ -203,6 +203,22 @@ class ConfigurationTests: XCTestCase {
         let rules = testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
+
+    // MARK: - Aliases
+
+    func testInitsFromAlias() {
+        let ruleConfiguration = [1, 2]
+        let config = ["severity_mock": ruleConfiguration]
+        let rules = testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    }
+
+    func testInitsFromDeprecatedAlias() {
+        let ruleConfiguration = [1, 2]
+        let config = ["mock": ruleConfiguration]
+        let rules = testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    }
 }
 
 // MARK: - ProjectMock Paths
@@ -287,7 +303,9 @@ extension ConfigurationTests {
             ("testLevel2", testLevel2),
             ("testLevel3", testLevel3),
             ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly)
+            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
+            ("testInitsFromAlias", testInitsFromAlias),
+            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias)
         ]
     }
 }

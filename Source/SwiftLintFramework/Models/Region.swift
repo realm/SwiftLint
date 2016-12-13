@@ -29,6 +29,8 @@ public struct Region {
     }
 
     public func isRuleDisabled(_ rule: Rule) -> Bool {
-        return disabledRuleIdentifiers.contains(type(of: rule).description.identifier)
+        let description = type(of: rule).description
+        let identifiers = Array(description.allAliases) + [description.identifier]
+        return !disabledRuleIdentifiers.intersection(identifiers).isEmpty
     }
 }

@@ -10,21 +10,30 @@ import Foundation
 
 public struct RuleList {
     public let list: [String: Rule.Type]
+    private let aliases: [String: String]
     public init(rules: Rule.Type...) {
         var tmpList = [String: Rule.Type]()
+        var tmpAliases = [String: String]()
+
         for rule in rules {
-            tmpList[rule.description.identifier] = rule
+            let identifier = rule.description.identifier
+            tmpList[identifier] = rule
+            for alias in rule.description.allAliases {
+                tmpAliases[alias] = identifier
+            }
+            tmpAliases[identifier] = identifier
         }
         list = tmpList
+        aliases = tmpAliases
     }
 
     internal func configuredRules(with dictionary: [String: Any]) -> [Rule] {
         var rules = [Rule]()
-        for ruleType in list.values {
-            let identifier = ruleType.description.identifier
-            if let ruleConfiguration = dictionary[identifier] {
+
+        for (key, configuration) in dictionary {
+            if let identifier = identifier(for: key), let ruleType = list[identifier] {
                 do {
-                    let configuredRule = try ruleType.init(configuration: ruleConfiguration)
+                    let configuredRule = try ruleType.init(configuration: configuration)
                     rules.append(configuredRule)
                 } catch {
                     queuedPrintError(
@@ -32,11 +41,24 @@ public struct RuleList {
                     )
                     rules.append(ruleType.init())
                 }
-            } else {
-                rules.append(ruleType.init())
             }
         }
+
+        let addedRules = Set(rules.map { type(of: $0).description.identifier })
+        for (identifier, ruleType) in list where !addedRules.contains(identifier) {
+            rules.append(ruleType.init())
+        }
         return rules
+    }
+
+    internal func identifier(for alias: String) -> String? {
+        return aliases[alias]
+    }
+
+    internal func allValidIdentifiers() -> [String] {
+        return list.flatMap { (identifier, rule) -> [String] in
+            Array(rule.description.allAliases) + [identifier]
+        }
     }
 }
 

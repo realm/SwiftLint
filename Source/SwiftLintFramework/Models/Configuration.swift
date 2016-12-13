@@ -41,9 +41,13 @@ public struct Configuration: Equatable {
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
                  configuredRules: [Rule] = masterRuleList.configuredRules(with: [:])) {
-        self.included = included
-        self.excluded = excluded
+        self.included = included.map(handleAlias)
+        self.excluded = excluded.map(handleAlias)
         self.reporter = reporter
+
+        let disabledRules = disabledRules.map(handleAlias)
+        let optInRules = optInRules.map(handleAlias)
+        let whitelistRules = whitelistRules.map(handleAlias)
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -135,7 +139,7 @@ public struct Configuration: Equatable {
             .useNestedConfigs,
             .warningThreshold,
             .whitelistRules
-        ].map({ $0.rawValue }) + masterRuleList.list.keys
+        ].map({ $0.rawValue }) + masterRuleList.allValidIdentifiers()
 
         let invalidKeys = Set(dict.keys).subtracting(validKeys)
         if !invalidKeys.isEmpty {
@@ -211,6 +215,10 @@ public struct Configuration: Equatable {
         }
         return self
     }
+}
+
+private func handleAlias(_ alias: String) -> String {
+    return masterRuleList.identifier(for: alias) ?? alias
 }
 
 // MARK: - Nested Configurations Extension

@@ -2,7 +2,7 @@
 //  AttributesRulesExamples.swift
 //  SwiftLint
 //
-//  Created by Marcelo Fabri on 09/12/16.
+//  Created by Marcelo Fabri on 12/09/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 

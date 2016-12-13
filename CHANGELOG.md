@@ -45,8 +45,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#946](https://github.com/realm/SwiftLint/issues/946)
 
-* Add `attributes` opt-in which validates if an attribute (`@objc`, `@IBOutlet`,
-  `@discardableResult`, etc) is in the right position:
+* Add `attributes` opt-in rule which validates if an attribute (`@objc`,
+  `@IBOutlet`, `@discardableResult`, etc) is in the right position:
     - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
     the same line as the declaration
     - If the attribute has parameters, it should always be on the line above

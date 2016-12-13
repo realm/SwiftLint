@@ -80,7 +80,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
                 let match = regex.matches(in: file.contents, options: [], range: range).last?.range,
                 match.location != NSNotFound,
                 let braceOffset = contents.NSRangeToByteRange(start: match.location,
-                                                                   length: match.length)?.location,
+                                                              length: match.length)?.location,
                 let (braceLine, _) = contents.lineAndCharacter(forByteOffset: braceOffset),
                 let (paramLine, _) = contents.lineAndCharacter(forByteOffset: paramOffset),
                 braceLine != paramLine else {

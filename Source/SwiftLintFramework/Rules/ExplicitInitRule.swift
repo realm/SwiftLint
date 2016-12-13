@@ -35,21 +35,9 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         ]
     )
 
-    public enum Kind: String {
-        case expr_call = "source.lang.swift.expr.call"
-        case other
-        public init?(rawValue: String) {
-            switch rawValue {
-            case Kind.expr_call.rawValue: self = .expr_call
-            default: self = .other
-            }
-        }
-    }
-
-    public func validateFile(
-        _ file: File,
-        kind: ExplicitInitRule.Kind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validateFile(_ file: File,
+                             kind: SwiftExpressionKind,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -59,7 +47,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     private let initializerWithType = regex("^[A-Z].*\\.init$")
 
-    private func violationRangesInFile(_ file: File, kind: ExplicitInitRule.Kind,
+    private func violationRangesInFile(_ file: File, kind: SwiftExpressionKind,
                                        dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         func isExpected(_ name: String) -> Bool {
             let range = NSRange(location: 0, length: name.utf16.count)
@@ -69,7 +57,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
         let length = ".init".utf8.count
 
-        guard kind == .expr_call,
+        guard kind == .call,
             let name = dictionary["key.name"] as? String, isExpected(name),
             let nameOffset = dictionary["key.nameoffset"] as? Int64,
             let nameLength = dictionary["key.namelength"] as? Int64,
@@ -85,7 +73,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         return substructure.flatMap { subItem -> [NSRange] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
                 let kindString = subDict["key.kind"] as? String,
-                let kind = ExplicitInitRule.Kind(rawValue: kindString) else {
+                let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }
             return violationRangesInFile(file, dictionary: subDict) +

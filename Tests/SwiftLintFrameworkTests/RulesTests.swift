@@ -94,6 +94,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testClosureParameterPosition() {
+        verifyRule(ClosureParameterPositionRule.description)
+    }
+
     func testClosureSpacingRule() {
         verifyRule(ClosureSpacingRule.description)
     }
@@ -387,6 +391,7 @@ extension RulesTests {
             ("testClosingBrace", testClosingBrace),
             ("testColon", testColon),
             ("testComma", testComma),
+            ("testClosureParameterPosition", testClosureParameterPosition),
             ("testClosureSpacingRule", testClosureSpacingRule),
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),

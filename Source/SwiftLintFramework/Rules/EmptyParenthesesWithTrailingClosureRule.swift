@@ -24,7 +24,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
             "[1, 2].map({ $0 + 1 })\n",
             "[1, 2].reduce(0) { $0 + $1 }",
             "[1, 2].map { number in\n number + 1 \n}\n",
-            "let isEmpty = [1, 2].map.isEmpty()\n"
+            "let isEmpty = [1, 2].isEmpty()\n"
         ],
         triggeringExamples: [
             "[1, 2].map↓() { $0 + 1 }",
@@ -34,25 +34,12 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
         ]
     )
 
-    public enum Kind: String {
-        case exprCall = "source.lang.swift.expr.call"
-        case other
-        public init?(rawValue: String) {
-            switch rawValue {
-            case Kind.exprCall.rawValue:
-                self = .exprCall
-            default:
-                self = .other
-            }
-        }
-    }
-
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
     public func validateFile(_ file: File,
-                             kind: Kind,
+                             kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .exprCall else {
+        guard kind == .call else {
             return []
         }
 

@@ -12,6 +12,7 @@ opt_in_rules:
   - redundant_nil_coalescing
   - private_outlet
   - nimble_operator
+  - attributes
 
 file_header:
   required_pattern: |

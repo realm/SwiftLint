@@ -40,7 +40,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
     public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !functionKinds.contains(kind) {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 
@@ -117,20 +117,4 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return alphaNumericName == "init"
     }
 
-    fileprivate let functionKinds: [SwiftDeclarationKind] = [
-        .functionAccessorAddress,
-        .functionAccessorDidset,
-        .functionAccessorGetter,
-        .functionAccessorMutableaddress,
-        .functionAccessorSetter,
-        .functionAccessorWillset,
-        .functionConstructor,
-        .functionDestructor,
-        .functionFree,
-        .functionMethodClass,
-        .functionMethodInstance,
-        .functionMethodStatic,
-        .functionOperator,
-        .functionSubscript
-    ]
 }

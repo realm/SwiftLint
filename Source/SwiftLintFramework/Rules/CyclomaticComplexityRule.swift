@@ -40,7 +40,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !functionKinds.contains(kind) {
+        if !SwiftDeclarationKind.functionKinds().contains(kind) {
             return []
         }
 
@@ -59,7 +59,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     }
 
     fileprivate func measureComplexity(_ file: File,
-                                   dictionary: [String: SourceKitRepresentable]) -> Int {
+                                       dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
@@ -71,7 +71,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             }
 
             if let declarationKid = SwiftDeclarationKind(rawValue: kind),
-                functionKinds.contains(declarationKid) {
+                SwiftDeclarationKind.functionKinds().contains(declarationKid) {
                 return complexity
             }
 
@@ -113,23 +113,6 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         "source.lang.swift.stmt.for",
         "source.lang.swift.stmt.repeatwhile",
         "source.lang.swift.stmt.while"
-    ]
-
-    fileprivate let functionKinds: [SwiftDeclarationKind] = [
-        .functionAccessorAddress,
-        .functionAccessorDidset,
-        .functionAccessorGetter,
-        .functionAccessorMutableaddress,
-        .functionAccessorSetter,
-        .functionAccessorWillset,
-        .functionConstructor,
-        .functionDestructor,
-        .functionFree,
-        .functionMethodClass,
-        .functionMethodInstance,
-        .functionMethodStatic,
-        .functionOperator,
-        .functionSubscript
     ]
 
 }

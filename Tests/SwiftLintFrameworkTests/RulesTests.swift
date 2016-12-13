@@ -94,6 +94,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testClosureParameterPosition() {
+        verifyRule(ClosureParameterPositionRule.description)
+    }
+
     func testClosureSpacingRule() {
         verifyRule(ClosureSpacingRule.description)
     }
@@ -232,6 +236,10 @@ class RulesTests: XCTestCase {
 
     func testPrivateUnitTest() {
         verifyRule(PrivateUnitTestRule.description)
+    }
+
+    func testProhibitedSuper() {
+        verifyRule(ProhibitedSuperRule.description)
     }
 
     func testRedundantNilCoalescing() {
@@ -383,6 +391,7 @@ extension RulesTests {
             ("testClosingBrace", testClosingBrace),
             ("testColon", testColon),
             ("testComma", testComma),
+            ("testClosureParameterPosition", testClosureParameterPosition),
             ("testClosureSpacingRule", testClosureSpacingRule),
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
@@ -413,6 +422,7 @@ extension RulesTests {
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testPrivateOutlet", testPrivateOutlet),
             // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),

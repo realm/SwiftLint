@@ -23,7 +23,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = []\n",
             "let foo = [:]\n",
             "let foo = [1: 2, 2: 3]\n",
-            "let foo = [Void]()\n"
+            "let foo = [Void]()\n",
+            "let example = [ 1,\n 2\n // 3,\n]"
         ],
         triggeringExamples: [
             "let foo = [1, 2, 3↓,]\n",
@@ -31,9 +32,14 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = [1, 2, 3   ↓,]\n",
             "let foo = [1: 2, 2: 3↓, ]\n",
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n"
+            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
+            "let example = [ 1,\n2↓,\n // 3,\n]"
         ]
     )
+
+    // swiftlint:disable:next force_try
+    private static let regex = try! NSRegularExpression(pattern: ",",
+                                                        options: [.ignoreMetacharacters])
 
     public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
@@ -43,7 +49,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let elements = dictionary["key.elements"]  as? [SourceKitRepresentable],
+            let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
             allowedKinds.contains(kind) else {
                 return []
         }
@@ -62,19 +68,21 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        if let (startLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset),
-            let (endLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: lastPosition),
+        let contents = file.contents.bridge()
+        if let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
-            // shouldn't trigger if mandatory comma style and is a single-line declaration 
+            // shouldn't trigger if mandatory comma style and is a single-line declaration
             return []
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = file.contents.bridge()
-            .substringWithByteRange(start: lastPosition, length: length) ?? ""
+        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition,
+                                                                       length: length) ?? ""
 
         // if a trailing comma is not present
-        guard let commaIndex = contentsAfterLastElement.lastIndexOf(",") else {
+        guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file,
+                                                  offset: lastPosition) else {
             guard configuration.mandatoryComma else {
                 return []
             }
@@ -99,21 +107,19 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             )
         ]
     }
-}
 
-public enum SwiftExpressionKind: String {
-    case array = "source.lang.swift.expr.array"
-    case dictionary = "source.lang.swift.expr.dictionary"
-    case other
+    private func trailingCommaIndex(_ contents: String, file: File, offset: Int) -> Int? {
+        let range = NSRange(location: 0, length: contents.bridge().length)
+        let ranges = TrailingCommaRule.regex
+            .matches(in: contents, options: [], range: range).map { $0.range }
 
-    public init?(rawValue: String) {
-        switch rawValue {
-        case SwiftExpressionKind.array.rawValue:
-            self = .array
-        case SwiftExpressionKind.dictionary.rawValue:
-            self = .dictionary
-        default:
-            self = .other
-        }
+        // skip commas in comments
+        return ranges.filter {
+            let range = NSRange(location: $0.location + offset, length: $0.length)
+            let kinds = file.syntaxMap.tokensIn(range).flatMap { SyntaxKind(rawValue: $0.type) }
+            return kinds.filter(SyntaxKind.commentKinds().contains).isEmpty
+        }.last.flatMap {
+            contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
+        }?.location
     }
 }

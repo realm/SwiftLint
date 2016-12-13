@@ -10,6 +10,7 @@
 import XCTest
 
 XCTMain([
+    testCase(AttributesRuleTests.allTests),
     testCase(ConfigurationTests.allTests),
     testCase(CustomRulesTests.allTests),
     testCase(ExtendedNSStringTests.allTests),

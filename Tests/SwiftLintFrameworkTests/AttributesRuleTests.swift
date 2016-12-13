@@ -2,7 +2,7 @@
 //  AttributesRuleTests.swift
 //  SwiftLint
 //
-//  Created by Marcelo Fabri on 30/11/16.
+//  Created by Marcelo Fabri on 11/30/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -19,10 +19,9 @@ class AttributesRuleTests: XCTestCase {
     func testAttributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
         let alwaysOnSameLineDescription = RuleDescription(
-            identifier: "attributes_rule",
-            name: "Attributes",
-            description: "Attributes should be on their own lines in functions and types, " +
-            "but on the same line as variables and imports",
+            identifier: AttributesRule.description.identifier,
+            name: AttributesRule.description.name,
+            description: AttributesRule.description.description,
             nonTriggeringExamples: [
                 "@objc var x: String",
                 "@objc func foo()",
@@ -47,10 +46,9 @@ class AttributesRuleTests: XCTestCase {
     func testAttributesWithAlwaysOnLineAbove() {
         // Test with custom `always_on_line_above`
         let alwaysOnNewLineDescription = RuleDescription(
-            identifier: "attributes_rule",
-            name: "Attributes",
-            description: "Attributes should be on their own lines in functions and types, " +
-            "but on the same line as variables and imports",
+            identifier: AttributesRule.description.identifier,
+            name: AttributesRule.description.name,
+            description: AttributesRule.description.description,
             nonTriggeringExamples: [
                 "@objc\n var x: String",
                 "@objc\n func foo()",

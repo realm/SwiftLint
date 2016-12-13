@@ -14,7 +14,7 @@ private enum AttributesRuleError: Error {
     case moreThanOneAttributeInSameLine
 }
 
-public struct AttributesRule: ASTRule, ConfigurationProviderRule {
+public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
@@ -26,7 +26,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "attributes_rule",
+        identifier: "attributes",
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
@@ -302,11 +302,8 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
-        let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?
-            .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
-            .flatMap({ $0["key.attribute"] }) ?? []
-
-        let blacklisted = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
+        let attributes = dictionary.enclosedSwiftAttributes
+        let blacklist = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
                               "source.decl.attribute.mutating",
                               "source.decl.attribute.nonmutating",
                               "source.decl.attribute.lazy",
@@ -320,6 +317,6 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
                               "source.decl.attribute.required",
                               "source.decl.attribute.weak"
                               )
-        return attributes.filter { !blacklisted.contains($0) }
+        return attributes.filter { !blacklist.contains($0) }
     }
 }

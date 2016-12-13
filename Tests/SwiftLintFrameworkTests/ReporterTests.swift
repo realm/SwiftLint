@@ -29,8 +29,8 @@ class ReporterTests: XCTestCase {
 
     func stringFromFile(_ filename: String) -> String {
         let bundle: Bundle = Bundle(for:type(of: self).self)
-        let resourceName = (filename as NSString).deletingPathExtension
-        let resourceExtension = (filename as NSString).pathExtension
+        let resourceName = filename.bridge().deletingPathExtension
+        let resourceExtension = filename.bridge().pathExtension
         let filePath: String? = bundle.path(forResource: resourceName, ofType: resourceExtension)
         let data: Data? = try? Data(contentsOf: URL(fileURLWithPath: filePath!))
         assert(data != nil)

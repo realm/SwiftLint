@@ -51,26 +51,21 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
+    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
             let name = dictionary["key.name"] as? String,
             let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]),
             kind == .functionMethodInstance &&
             configuration.resolvedMethodNames.contains(name) &&
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
+            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") &&
+            !extractCallsToSuper(name, substructure: substructure).isEmpty
             else { return [] }
 
-        let callsToSuper = extractCallsToSuper(name, substructure: substructure)
-
-        if !callsToSuper.isEmpty {
-            return [StyleViolation(ruleDescription: type(of: self).description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: Int(offset)),
-                                   reason: "Method '\(name)' should not call to super function")]
-        }
-        return []
+        return [StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: Int(offset)),
+                               reason: "Method '\(name)' should not call to super function")]
     }
 
     private func extractCallsToSuper(_ name: String,

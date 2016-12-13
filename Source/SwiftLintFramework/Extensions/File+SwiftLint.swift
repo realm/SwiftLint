@@ -40,7 +40,7 @@ extension File {
             return []
         }
         let contents = self.contents.bridge()
-        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
+        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+",
             withSyntaxKinds: [.comment]).flatMap { range in
                 return Command(string: contents, range: range)
             }.flatMap { command in

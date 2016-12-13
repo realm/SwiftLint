@@ -187,7 +187,8 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+// swiftlint:disable:next todo
+// FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testMissingDocs() {
 //        verifyRule(MissingDocsRule.description)
 //    }
@@ -362,7 +363,8 @@ class RulesTests: XCTestCase {
         verifyRule(TypeNameRule.description)
     }
 
-// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+// swiftlint:disable:next todo
+// FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testValidDocs() {
 //        verifyRule(ValidDocsRule.description)
 //    }

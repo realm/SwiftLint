@@ -47,20 +47,9 @@ class YamlSwiftLintTests: XCTestCase {
     }
 
     private func getTestYaml() -> String {
-        #if SWIFT_PACKAGE
-        let path = "Tests/SwiftLintFrameworkTests/Resources/test.yml".bridge()
-            .absolutePathRepresentation()
-        #else
-        guard let path = Bundle(for: type(of: self)).path(forResource: "test", ofType: "yml") else {
-            fatalError("Could not load test.yml")
-        }
-        #endif
-        if let yamlString = try? String(contentsOfFile: path, encoding: .utf8) {
-            return yamlString
-        }
-        fatalError("Could not load test.yml")
+        // swiftlint:disable:next force_try
+        return try! String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
     }
-
 }
 
 extension YamlSwiftLintTests {

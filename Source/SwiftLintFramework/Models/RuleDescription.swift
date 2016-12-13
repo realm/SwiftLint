@@ -22,6 +22,10 @@ public struct RuleDescription: Equatable {
         return aliases.union(deprecatedAliases)
     }
 
+    public var allIdentifiers: [String] {
+        return Array(allAliases) + [identifier]
+    }
+
     public init(identifier: String, name: String, description: String,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],

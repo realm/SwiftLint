@@ -184,9 +184,13 @@ extension XCTestCase {
             )
         }
 
-        // "disable" command doesn't violate
-        let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+        var commands = [String]()
+        // "disable"s command doesn't violate
+        for identifier in ruleDescription.allIdentifiers {
+            let command = "// swiftlint:disable \(identifier)\n"
+            commands.append(command)
+            XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+        }
 
         // corrections
         ruleDescription.corrections.forEach {
@@ -199,9 +203,11 @@ extension XCTestCase {
 
         // "disable" command do not correct
         ruleDescription.corrections.forEach { before, _ in
-            let beforeDisabled = command + before
-            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
-            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            for command in commands {
+                let beforeDisabled = command + before
+                let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
+                config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            }
         }
 
     }

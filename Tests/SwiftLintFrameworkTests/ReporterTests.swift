@@ -10,7 +10,6 @@ import Foundation
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable type_body_length
 class ReporterTests: XCTestCase {
 
     func testReporterFromString() {
@@ -26,6 +25,18 @@ class ReporterTests: XCTestCase {
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFromString(reporter.identifier).identifier)
         }
+    }
+
+    func stringFromFile(_ filename: String) -> String {
+        let bundle: Bundle = Bundle(for:type(of: self).self)
+        let resourceName = (filename as NSString).deletingPathExtension
+        let resourceExtension = (filename as NSString).pathExtension
+        let filePath: String? = bundle.path(forResource: resourceName, ofType: resourceExtension)
+        let data: Data? = try? Data(contentsOf: URL(fileURLWithPath: filePath!))
+        assert(data != nil)
+        let string = String(data: data!, encoding: .utf8)
+        assert(string != nil)
+        return string!
     }
 
     func generateViolations() -> [StyleViolation] {
@@ -51,129 +62,39 @@ class ReporterTests: XCTestCase {
     }
 
     func testXcodeReporter() {
-        XCTAssertEqual(
-            XcodeReporter.generateReport(generateViolations()),
-            "filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)\n" +
-            "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)\n" +
-            "filename:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar" +
-            " should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)\n" +
-            "<nopath>: error: Colon Violation: Colons should be next to the identifier" +
-            " when specifying a type. (colon)"
-        )
+        let expectedOutput = stringFromFile("CannedXcodeReporterOutput.txt")
+        let result = XcodeReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
     func testEmojiReporter() {
-        XCTAssertEqual(
-            EmojiReporter.generateReport(generateViolations()),
-            "filename\n" +
-            "⛔️ Line 1: Violation Reason.\n" +
-            "⛔️ Line 1: Shorthand syntactic sugar should be used" +
-            ", i.e. [Int] instead of Array<Int>.\n" +
-            "⚠️ Line 1: Violation Reason.\n" +
-            "Other\n" +
-            "⛔️ Colons should be next to the identifier when specifying a type."
-        )
+        let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
+        let result = EmojiReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
-    // swiftlint:disable:next function_body_length
     func testJSONReporter() {
-        XCTAssertEqual(
-            JSONReporter.generateReport(generateViolations()),
-            "[\n" +
-                "  {\n" +
-                "    \"reason\" : \"Violation Reason.\",\n" +
-                "    \"character\" : 2,\n" +
-                "    \"file\" : \"filename\",\n" +
-                "    \"rule_id\" : \"line_length\",\n" +
-                "    \"line\" : 1,\n" +
-                "    \"severity\" : \"Warning\",\n" +
-                "    \"type\" : \"Line Length\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"reason\" : \"Violation Reason.\",\n" +
-                "    \"character\" : 2,\n" +
-                "    \"file\" : \"filename\",\n" +
-                "    \"rule_id\" : \"line_length\",\n" +
-                "    \"line\" : 1,\n" +
-                "    \"severity\" : \"Error\",\n" +
-                "    \"type\" : \"Line Length\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"reason\" : \"Shorthand syntactic sugar should be used" +
-                ", i.e. [Int] instead of Array<Int>.\",\n" +
-                "    \"character\" : 2,\n" +
-                "    \"file\" : \"filename\",\n" +
-                "    \"rule_id\" : \"syntactic_sugar\",\n" +
-                "    \"line\" : 1,\n" +
-                "    \"severity\" : \"Error\",\n" +
-                "    \"type\" : \"Syntactic Sugar\"\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"reason\" : \"Colons should be next to the identifier" +
-                " when specifying a type.\",\n" +
-                "    \"character\" : null,\n" +
-                "    \"file\" : null,\n" +
-                "    \"rule_id\" : \"colon\",\n" +
-                "    \"line\" : null,\n" +
-                "    \"severity\" : \"Error\",\n" +
-                "    \"type\" : \"Colon\"\n" +
-                "  }\n" +
-            "]"
-        )
+        let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
+        let result = JSONReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
     func testCSVReporter() {
-        XCTAssertEqual(
-            CSVReporter.generateReport(generateViolations()),
-            "file,line,character,severity,type,reason,rule_id," +
-            "filename,1,2,Warning,Line Length,Violation Reason.,line_length," +
-            "filename,1,2,Error,Line Length,Violation Reason.,line_length," +
-            "filename,1,2,Error,Syntactic Sugar,\"Shorthand syntactic sugar should be used" +
-            ", i.e. [Int] instead of Array<Int>.\",syntactic_sugar," +
-            ",,,Error,Colon,Colons should be next to the identifier" +
-            " when specifying a type.,colon"
-        )
+        let expectedOutput = stringFromFile("CannedCSVReporterOutput.csv")
+        let result = CSVReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
     func testCheckstyleReporter() {
-        XCTAssertEqual(
-            CheckstyleReporter.generateReport(generateViolations()),
-            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">\n" +
-            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"warning\" " +
-            "message=\"Violation Reason.\"/>\n\t</file>\n" +
-            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
-            "message=\"Violation Reason.\"/>\n\t</file>\n" +
-            "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
-            "message=\"Shorthand syntactic sugar should be used" +
-            ", i.e. [Int] instead of Array&lt;Int&gt;.\"/>\n\t</file>\n" +
-            "\t<file name=\"&lt;nopath&gt;\">\n\t\t<error line=\"0\" column=\"0\" " +
-            "severity=\"error\" " +
-            "message=\"Colons should be next to the identifier" +
-            " when specifying a type.\"/>\n\t</file>\n" +
-            "</checkstyle>"
-        )
+        let expectedOutput = stringFromFile("CannedCheckstyleReporterOutput.xml")
+        let result = CheckstyleReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
     func testJunitReporter() {
-        XCTAssertEqual(
-            JUnitReporter.generateReport(generateViolations()),
-            "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>\n" +
-                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
-                    "<failure message=\'Violation Reason.\'>warning:\nLine:1 </failure>" +
-                "\t</testcase>\n" +
-                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
-                    "<failure message=\'Violation Reason.\'>error:\nLine:1 </failure>" +
-                "\t</testcase>\n" +
-                "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
-                "<failure message=\'Shorthand syntactic sugar should be used" +
-                ", i.e. [Int] instead of Array&lt;Int&gt;.\'>error:\nLine:1 </failure>" +
-                "\t</testcase>\n" +
-                "\t<testcase classname=\'Formatting Test\' name=\'&lt;nopath&gt;\'>\n" +
-                "<failure message=\'Colons should be next to the identifier" +
-                " when specifying a type.\'>error:\nLine:0 </failure>" +
-                "\t</testcase>\n" +
-                "</testsuite></testsuites>"
-        )
+        let expectedOutput = stringFromFile("CannedJunitReporterOutput.xml")
+        let result = JUnitReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 
     // swiftlint:disable:next function_body_length

@@ -69,6 +69,12 @@
 		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */; };
 		B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */; };
 		B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */; };
+		B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */ = {isa = PBXBuildFile; fileRef = B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */; };
+		B3935522DC192D38D4852FA3 /* CannedXcodeReporterOutput.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39352E4EA2A06BE66BD661A /* CannedXcodeReporterOutput.txt */; };
+		B39357173B43C9B5E351C360 /* CannedCheckstyleReporterOutput.xml in Resources */ = {isa = PBXBuildFile; fileRef = B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */; };
+		B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */; };
+		B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */; };
+		B3935A32BE03C4D11B4364D6 /* CannedCSVReporterOutput.csv in Resources */ = {isa = PBXBuildFile; fileRef = B3935939C8366514D2694722 /* CannedCSVReporterOutput.csv */; };
 		B3935EE74B1E8E14FBD65E7F /* String+XML.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39353F28BCCA39247B316BD /* String+XML.swift */; };
 		B58AEED61C492C7B00E901FD /* ForceUnwrappingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */; };
 		BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */; };
@@ -270,7 +276,13 @@
 		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewline.swift; sourceTree = "<group>"; };
 		B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestRule.swift; sourceTree = "<group>"; };
 		B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestConfiguration.swift; sourceTree = "<group>"; };
+		B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedEmojiReporterOutput.txt; sourceTree = "<group>"; };
+		B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CannedJSONReporterOutput.json; sourceTree = "<group>"; };
+		B39352E4EA2A06BE66BD661A /* CannedXcodeReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedXcodeReporterOutput.txt; sourceTree = "<group>"; };
 		B39353F28BCCA39247B316BD /* String+XML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+XML.swift"; sourceTree = "<group>"; };
+		B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CannedCheckstyleReporterOutput.xml; sourceTree = "<group>"; };
+		B3935939C8366514D2694722 /* CannedCSVReporterOutput.csv */ = {isa = PBXFileReference; lastKnownFileType = file.csv; path = CannedCSVReporterOutput.csv; sourceTree = "<group>"; };
+		B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CannedJunitReporterOutput.xml; sourceTree = "<group>"; };
 		B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUnwrappingRule.swift; sourceTree = "<group>"; };
 		BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingWhitespaceConfiguration.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -424,6 +436,12 @@
 				3B12C9BF1C3209AC000B423F /* test.yml */,
 				3BDB224A1C345B4900473680 /* ProjectMock */,
 				F9D73F021D0CF15E00222FC4 /* test.txt */,
+				B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */,
+				B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */,
+				B3935939C8366514D2694722 /* CannedCSVReporterOutput.csv */,
+				B39352E4EA2A06BE66BD661A /* CannedXcodeReporterOutput.txt */,
+				B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */,
+				B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -918,6 +936,12 @@
 				3B12C9C11C3209CB000B423F /* test.yml in Resources */,
 				F9D73F031D0CF15E00222FC4 /* test.txt in Resources */,
 				3BDB224B1C345B4900473680 /* ProjectMock in Resources */,
+				B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */,
+				B39357173B43C9B5E351C360 /* CannedCheckstyleReporterOutput.xml in Resources */,
+				B3935A32BE03C4D11B4364D6 /* CannedCSVReporterOutput.csv in Resources */,
+				B3935522DC192D38D4852FA3 /* CannedXcodeReporterOutput.txt in Resources */,
+				B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */,
+				B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -72,6 +72,11 @@
   [#49](https://github.com/realm/SwiftLint/issues/49)
   [#956](https://github.com/realm/SwiftLint/issues/959)
 
+* Add `ProhibitedSuperRule` opt-in rule that warns about methods calling
+  to super that should not, for example `UIViewController.loadView()`.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#970](https://github.com/realm/SwiftLint/issues/970)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

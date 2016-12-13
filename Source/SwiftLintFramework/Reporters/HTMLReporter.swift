@@ -25,8 +25,18 @@ public struct HTMLReporter: Reporter {
         return "Reports violations as HTML"
     }
 
-    // swiftlint:disable:next function_body_length
     public static func generateReport(_ violations: [StyleViolation]) -> String {
+        let dateString = formatter.string(from: Date())
+        return generateReport(
+                violations,
+                swiftlintVersion: swiftlintVersion,
+                dateString: dateString
+        )
+    }
+
+    // swiftlint:disable function_body_length
+    // swiftlint:disable line_length
+    internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String, dateString: String) -> String {
         let rows = violations.enumerated().reduce("") { rows, indexAndViolation in
             return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
         }
@@ -34,7 +44,6 @@ public struct HTMLReporter: Reporter {
         let fileCount = Set(violations.flatMap({ $0.location.file })).count
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
-        let dateString = formatter.string(from: Date())
 
         return [
             "<!doctype html>\n",

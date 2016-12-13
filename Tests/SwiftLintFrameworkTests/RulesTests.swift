@@ -377,6 +377,10 @@ class RulesTests: XCTestCase {
         verifyRule(VariableNameRule.description)
     }
 
+    func testVoidReturn() {
+        verifyRule(VoidReturnRule.description)
+    }
+
     func testSuperCall() {
         verifyRule(OverriddenSuperCallRule.description)
     }
@@ -441,6 +445,7 @@ extension RulesTests {
             // ("testTypeName", testTypeName),
             ("testValidIBInspectable", testValidIBInspectable),
             // ("testVariableName", testVariableName),
+            ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)
         ]

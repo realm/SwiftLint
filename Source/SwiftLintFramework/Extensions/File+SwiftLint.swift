@@ -161,9 +161,12 @@ extension File {
         }.map { $0.0 }
     }
 
+    internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
+
     internal func matchPattern(_ pattern: String,
                                excludingSyntaxKinds: [SyntaxKind],
-                               excludingPattern: String) -> [NSRange] {
+                               excludingPattern: String,
+                               exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let contents = self.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
@@ -171,7 +174,7 @@ extension File {
             return []
         }
         let exclusionRanges = regex(excludingPattern).matches(in: self.contents, options: [],
-                                                              range: range).ranges()
+                                                              range: range).map(exclusionMapping)
         return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 

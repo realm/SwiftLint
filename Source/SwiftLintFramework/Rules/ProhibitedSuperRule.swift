@@ -55,15 +55,13 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
-            let name = dictionary["key.name"] as? String
-            else { return [] }
-
-        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
-        guard kind == .functionMethodInstance &&
+            let name = dictionary["key.name"] as? String,
+            kind == .functionMethodInstance &&
             configuration.resolvedMethodNames.contains(name) &&
             dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
             else { return [] }
 
+        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
         let callsToSuper = extractCallsToSuper(name, substructure: substructure)
 
         if !callsToSuper.isEmpty {

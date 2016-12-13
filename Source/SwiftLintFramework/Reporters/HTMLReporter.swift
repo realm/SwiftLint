@@ -25,8 +25,18 @@ public struct HTMLReporter: Reporter {
         return "Reports violations as HTML"
     }
 
-    // swiftlint:disable:next function_body_length
     public static func generateReport(_ violations: [StyleViolation]) -> String {
+        let dateString = formatter.string(from: Date())
+        return generateReport(
+                violations,
+                swiftlintVersion: swiftlintVersion,
+                dateString: dateString
+        )
+    }
+
+    // swiftlint:disable function_body_length
+    // swiftlint:disable line_length
+    internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String, dateString: String) -> String {
         let rows = violations.enumerated().reduce("") { rows, indexAndViolation in
             return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
         }
@@ -34,7 +44,6 @@ public struct HTMLReporter: Reporter {
         let fileCount = Set(violations.flatMap({ $0.location.file })).count
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
-        let dateString = formatter.string(from: Date())
 
         return [
             "<!doctype html>\n",
@@ -120,7 +129,7 @@ public struct HTMLReporter: Reporter {
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
         let severity: String = violation.severity.rawValue.capitalized
         let location = violation.location
-        let file: String = location.file ?? ""
+        let file: String = (violation.location.file ?? "<nopath>").escapedForXML()
         let line: Int = location.line ?? 0
         let character: Int = location.character ?? 0
         return [
@@ -129,7 +138,7 @@ public struct HTMLReporter: Reporter {
             "\t\t\t\t\t<td>", file, "</td>\n",
             "\t\t\t\t\t<td align=\"center\">\(line):\(character)</td>\n",
             "\t\t\t\t\t<td class=\'", severity.lowercased(), "\'>", severity, "</td>\n",
-            "\t\t\t\t\t<td>\(violation.reason)</td>\n",
+            "\t\t\t\t\t<td>\(violation.reason.escapedForXML())</td>\n",
             "\t\t\t\t</tr>\n"
         ].joined()
     }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<checkstyle version="4.3">
+	<file name="filename">
+		<error line="1" column="2" severity="warning" message="Violation Reason."/>
+	</file>
+	<file name="filename">
+		<error line="1" column="2" severity="error" message="Violation Reason."/>
+	</file>
+	<file name="filename">
+		<error line="1" column="2" severity="error" message="Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;."/>
+	</file>
+	<file name="&lt;nopath&gt;">
+		<error line="0" column="0" severity="error" message="Colons should be next to the identifier when specifying a type."/>
+	</file>
+</checkstyle>

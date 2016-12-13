@@ -26,7 +26,11 @@ class AttributesRuleTests: XCTestCase {
             nonTriggeringExamples: [
                 "@objc var x: String",
                 "@objc func foo()",
-                "@nonobjc\n func foo()"
+                "@nonobjc\n func foo()",
+                "class Foo {\n" +
+                    "@objc private var object: RLMWeakObjectHandle?\n" +
+                    "@objc private var property: RLMProperty?\n" +
+                "}"
             ],
             triggeringExamples: [
                 "@objc\n var x: String",

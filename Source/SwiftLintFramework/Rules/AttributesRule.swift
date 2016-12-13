@@ -198,6 +198,7 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
         var foundEmptyLine = false
+        let contents = file.contents.bridge()
 
         while currentLine >= 0 {
             defer {
@@ -210,6 +211,21 @@ public struct AttributesRule: ASTRule, ConfigurationProviderRule {
             if tokens.isEmpty {
                 foundEmptyLine = true
                 continue
+            }
+
+            // check if it's a line with other declaration which could have its own attributes
+            let nonAttributeTokens = tokens.filter { token in
+                guard SyntaxKind(rawValue: token.type) == .keyword,
+                    let keyword = contents.substringWithByteRange(start: token.offset,
+                                                                  length: token.length) else {
+                    return false
+                }
+
+                return ["func", "var", "let"].contains(keyword)
+            }
+
+            guard nonAttributeTokens.isEmpty else {
+                break
             }
 
             let attributesTokens = tokens.flatMap { attributeName(token: $0, file: file) }

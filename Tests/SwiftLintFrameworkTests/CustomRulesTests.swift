@@ -100,17 +100,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func getTestTextFile() -> File {
-        #if SWIFT_PACKAGE
-            let path = "Tests/SwiftLintFrameworkTests/Resources/test.txt".bridge()
-                .absolutePathRepresentation()
-            return File(path: path)!
-        #else
-            let testBundle = Bundle(for: type(of: self))
-            if let path = testBundle.path(forResource: "test", ofType: "txt") {
-                return File(path: path)!
-            }
-            fatalError("Could not load test.txt")
-        #endif
+        return File(path: "\(bundlePath)/test.txt")!
     }
 }
 

@@ -101,6 +101,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#940](https://github.com/realm/SwiftLint/issues/940)
 
+* Fix XML reporters not escaping characters.  
+  [Fabian Ehrentraud](https://github.com/fabb)
+  [#968](https://github.com/realm/SwiftLint/issues/968)
+
 * Fix specifying multiple rule identifiers in comment commands.  
   [JP Simard](https://github.com/jpsim)
   [#976](https://github.com/realm/SwiftLint/issues/976)

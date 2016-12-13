@@ -42,7 +42,11 @@ class ReporterTests: XCTestCase {
                 severity: .error,
                 location: location,
                 reason: "Shorthand syntactic sugar should be used" +
-                ", i.e. [Int] instead of Array<Int>.")
+                ", i.e. [Int] instead of Array<Int>."),
+            StyleViolation(ruleDescription: ColonRule.description,
+                severity: .error,
+                location: Location(file: nil),
+                reason: nil)
         ]
     }
 
@@ -52,7 +56,9 @@ class ReporterTests: XCTestCase {
             "filename:1:2: warning: Line Length Violation: Violation Reason. (line_length)\n" +
             "filename:1:2: error: Line Length Violation: Violation Reason. (line_length)\n" +
             "filename:1:2: error: Syntactic Sugar Violation: Shorthand syntactic sugar" +
-            " should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)"
+            " should be used, i.e. [Int] instead of Array<Int>. (syntactic_sugar)\n" +
+            "<nopath>: error: Colon Violation: Colons should be next to the identifier" +
+            " when specifying a type. (colon)"
         )
     }
 
@@ -63,10 +69,13 @@ class ReporterTests: XCTestCase {
             "⛔️ Line 1: Violation Reason.\n" +
             "⛔️ Line 1: Shorthand syntactic sugar should be used" +
             ", i.e. [Int] instead of Array<Int>.\n" +
-            "⚠️ Line 1: Violation Reason."
+            "⚠️ Line 1: Violation Reason.\n" +
+            "Other\n" +
+            "⛔️ Colons should be next to the identifier when specifying a type."
         )
     }
 
+    // swiftlint:disable:next function_body_length
     func testJSONReporter() {
         XCTAssertEqual(
             JSONReporter.generateReport(generateViolations()),
@@ -98,6 +107,16 @@ class ReporterTests: XCTestCase {
                 "    \"line\" : 1,\n" +
                 "    \"severity\" : \"Error\",\n" +
                 "    \"type\" : \"Syntactic Sugar\"\n" +
+                "  },\n" +
+                "  {\n" +
+                "    \"reason\" : \"Colons should be next to the identifier" +
+                " when specifying a type.\",\n" +
+                "    \"character\" : null,\n" +
+                "    \"file\" : null,\n" +
+                "    \"rule_id\" : \"colon\",\n" +
+                "    \"line\" : null,\n" +
+                "    \"severity\" : \"Error\",\n" +
+                "    \"type\" : \"Colon\"\n" +
                 "  }\n" +
             "]"
         )
@@ -110,7 +129,9 @@ class ReporterTests: XCTestCase {
             "filename,1,2,Warning,Line Length,Violation Reason.,line_length," +
             "filename,1,2,Error,Line Length,Violation Reason.,line_length," +
             "filename,1,2,Error,Syntactic Sugar,\"Shorthand syntactic sugar should be used" +
-            ", i.e. [Int] instead of Array<Int>.\",syntactic_sugar"
+            ", i.e. [Int] instead of Array<Int>.\",syntactic_sugar," +
+            ",,,Error,Colon,Colons should be next to the identifier" +
+            " when specifying a type.,colon"
         )
     }
 
@@ -125,6 +146,10 @@ class ReporterTests: XCTestCase {
             "\t<file name=\"filename\">\n\t\t<error line=\"1\" column=\"2\" severity=\"error\" " +
             "message=\"Shorthand syntactic sugar should be used" +
             ", i.e. [Int] instead of Array&lt;Int&gt;.\"/>\n\t</file>\n" +
+            "\t<file name=\"&lt;nopath&gt;\">\n\t\t<error line=\"0\" column=\"0\" " +
+            "severity=\"error\" " +
+            "message=\"Colons should be next to the identifier" +
+            " when specifying a type.\"/>\n\t</file>\n" +
             "</checkstyle>"
         )
     }
@@ -142,6 +167,10 @@ class ReporterTests: XCTestCase {
                 "\t<testcase classname=\'Formatting Test\' name=\'filename\'>\n" +
                 "<failure message=\'Shorthand syntactic sugar should be used" +
                 ", i.e. [Int] instead of Array&lt;Int&gt;.\'>error:\nLine:1 </failure>" +
+                "\t</testcase>\n" +
+                "\t<testcase classname=\'Formatting Test\' name=\'&lt;nopath&gt;\'>\n" +
+                "<failure message=\'Colons should be next to the identifier" +
+                " when specifying a type.\'>error:\nLine:0 </failure>" +
                 "\t</testcase>\n" +
                 "</testsuite></testsuites>"
         )
@@ -232,6 +261,14 @@ class ReporterTests: XCTestCase {
             "\t\t\t\t\t<td>Shorthand syntactic sugar should be used" +
             ", i.e. [Int] instead of Array&lt;Int&gt;.</td>\n" +
             "\t\t\t\t</tr>\n" +
+            "\t\t\t\t<tr>\n" +
+            "\t\t\t\t\t<td align=\"right\">4</td>\n" +
+            "\t\t\t\t\t<td>&lt;nopath&gt;</td>\n" +
+            "\t\t\t\t\t<td align=\"center\">0:0</td>\n" +
+            "\t\t\t\t\t<td class='error'>Error</td>\n" +
+            "\t\t\t\t\t<td>Colons should be next to the identifier" +
+            " when specifying a type.</td>\n" +
+            "\t\t\t\t</tr>\n" +
             "\t\t\t</tbody>\n" +
             "\t\t</table>\n" +
             "\t\t<br/>\n" +
@@ -248,7 +285,7 @@ class ReporterTests: XCTestCase {
             "\t\t\t\t</tr>\n" +
             "\t\t\t\t<tr>\n" +
             "\t\t\t\t\t<td>Total errors</td>\n" +
-            "\t\t\t\t\t<td>2</td>\n" +
+            "\t\t\t\t\t<td>3</td>\n" +
             "\t\t\t\t</tr>\n" +
             "\t\t\t</tbody>\n" +
             "\t\t</table>\n" +

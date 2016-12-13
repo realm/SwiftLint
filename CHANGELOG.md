@@ -101,7 +101,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#940](https://github.com/realm/SwiftLint/issues/940)
 
-* Fix XML reporters not escaping characters.
+* Fix XML reporters not escaping characters.  
   [Fabian Ehrentraud](https://github.com/fabb)
   [#968](https://github.com/realm/SwiftLint/issues/968)
 

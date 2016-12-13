@@ -9,26 +9,22 @@
 import Foundation
 
 public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
-    var defaultIncluded = [
-        //NSFileProviderExtension
+    var severityConfiguration = SeverityConfiguration(.warning)
+    var excluded = [String]()
+    var included = ["*"]
+
+    private(set) var resolvedMethodNames = [
+        // NSFileProviderExtension
         "providePlaceholder(at:completionHandler:)",
-        //NSTextInput
+        // NSTextInput
         "doCommand(by:)",
-        //NSView
+        // NSView
         "updateLayer()",
-        //UIViewController
+        // UIViewController
         "loadView()"
     ]
 
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var excluded: [String] = []
-    var included: [String] = ["*"]
-
-    public private(set) var resolvedMethodNames: [String]
-
-    init() {
-        resolvedMethodNames = defaultIncluded
-    }
+    init() {}
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
@@ -61,11 +57,11 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
     }
 
     private func calculateResolvedMethodNames() -> [String] {
-        var names: [String] = []
+        var names = [String]()
         if included.contains("*") && !excluded.contains("*") {
-            names += defaultIncluded
+            names += resolvedMethodNames
         }
-        names += included.filter({ $0 != "*" })
+        names += included.filter { $0 != "*" }
         names = names.filter { !excluded.contains($0) }
         return names
     }

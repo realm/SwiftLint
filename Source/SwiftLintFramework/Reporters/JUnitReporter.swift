@@ -19,7 +19,7 @@ public struct JUnitReporter: Reporter {
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<testsuites><testsuite>" +
             violations.map({ violation in
-                let fileName = violation.location.file?.escapedForXml() ?? "<nopath>"
+                let fileName = (violation.location.file ?? "<nopath>").escapedForXml()
                 let severity = violation.severity.rawValue + ":\n"
                 let message = severity + "Line:" + String(violation.location.line ?? 0) + " "
                 let reason = violation.reason.escapedForXml()

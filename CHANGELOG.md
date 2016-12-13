@@ -66,7 +66,7 @@
   empty parentheses after method call when using trailing closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#885](https://github.com/realm/SwiftLint/issues/885)
-  
+
 * Add `closure_parameter_position` rule that validates that closure
   parameters are in the same line as the opening brace.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -100,6 +100,10 @@
 * Fix XML reporters not escaping characters.  
   [Fabian Ehrentraud](https://github.com/fabb)
   [#968](https://github.com/realm/SwiftLint/issues/968)
+
+* Fix specifying multiple rule identifiers in comment commands.  
+  [JP Simard](https://github.com/jpsim)
+  [#976](https://github.com/realm/SwiftLint/issues/976)
 
 ## 0.13.2: Light Cycle
 

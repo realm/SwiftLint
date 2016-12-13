@@ -70,6 +70,7 @@
 		B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */ = {isa = PBXBuildFile; fileRef = B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */; };
 		B3935522DC192D38D4852FA3 /* CannedXcodeReporterOutput.txt in Resources */ = {isa = PBXBuildFile; fileRef = B39352E4EA2A06BE66BD661A /* CannedXcodeReporterOutput.txt */; };
 		B39357173B43C9B5E351C360 /* CannedCheckstyleReporterOutput.xml in Resources */ = {isa = PBXBuildFile; fileRef = B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */; };
+		B3935797FF80C7F97953D375 /* CannedHTMLReporterOutput.html in Resources */ = {isa = PBXBuildFile; fileRef = B3935250C8E0DBACFB27E021 /* CannedHTMLReporterOutput.html */; };
 		B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */; };
 		B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */ = {isa = PBXBuildFile; fileRef = B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */; };
 		B3935A32BE03C4D11B4364D6 /* CannedCSVReporterOutput.csv in Resources */ = {isa = PBXBuildFile; fileRef = B3935939C8366514D2694722 /* CannedCSVReporterOutput.csv */; };
@@ -267,6 +268,7 @@
 		B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestConfiguration.swift; sourceTree = "<group>"; };
 		B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedEmojiReporterOutput.txt; sourceTree = "<group>"; };
 		B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CannedJSONReporterOutput.json; sourceTree = "<group>"; };
+		B3935250C8E0DBACFB27E021 /* CannedHTMLReporterOutput.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = CannedHTMLReporterOutput.html; sourceTree = "<group>"; };
 		B39352E4EA2A06BE66BD661A /* CannedXcodeReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedXcodeReporterOutput.txt; sourceTree = "<group>"; };
 		B39353F28BCCA39247B316BD /* String+XML.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+XML.swift"; sourceTree = "<group>"; };
 		B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = CannedCheckstyleReporterOutput.xml; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				3B12C9BF1C3209AC000B423F /* test.yml */,
 				3BDB224A1C345B4900473680 /* ProjectMock */,
 				F9D73F021D0CF15E00222FC4 /* test.txt */,
+				B3935250C8E0DBACFB27E021 /* CannedHTMLReporterOutput.html */,
 				B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */,
 				B39356DE1F73BDA1CA21C504 /* CannedCheckstyleReporterOutput.xml */,
 				B3935939C8366514D2694722 /* CannedCSVReporterOutput.csv */,
@@ -909,6 +912,7 @@
 				3B12C9C11C3209CB000B423F /* test.yml in Resources */,
 				F9D73F031D0CF15E00222FC4 /* test.txt in Resources */,
 				3BDB224B1C345B4900473680 /* ProjectMock in Resources */,
+				B3935797FF80C7F97953D375 /* CannedHTMLReporterOutput.html in Resources */,
 				B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */,
 				B39357173B43C9B5E351C360 /* CannedCheckstyleReporterOutput.xml in Resources */,
 				B3935A32BE03C4D11B4364D6 /* CannedCSVReporterOutput.csv in Resources */,

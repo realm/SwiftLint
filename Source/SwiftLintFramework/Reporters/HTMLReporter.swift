@@ -120,7 +120,7 @@ public struct HTMLReporter: Reporter {
     private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
         let severity: String = violation.severity.rawValue.capitalized
         let location = violation.location
-        let file: String = location.file?.escapedForXml() ?? ""
+        let file: String = (violation.location.file ?? "<nopath>").escapedForXml()
         let line: Int = location.line ?? 0
         let character: Int = location.character ?? 0
         return [

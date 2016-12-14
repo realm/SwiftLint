@@ -47,13 +47,13 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
     public func validateFile(_ file: File) -> [StyleViolation] {
         let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"]
             .map({ "\\\($0)" }).joined()
-        let rangePattern = "\\.\\.(\\.|<)" // ... or ..<
-        let operators = "([\(escapedOperators)%<>&]+|\(rangePattern))"
+        let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
+        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern))"
 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let variableOrNumber = "(\(RegexHelpers.varName)|\(RegexHelpers.number))"
+        let variableOrNumber = "(?:\(RegexHelpers.varName)|\(RegexHelpers.number))"
 
         let pattern1 = variableOrNumber + zeroSpaces + operators + zeroSpaces + variableOrNumber
         let pattern2 = variableOrNumber + oneSpace + operators + manySpaces + variableOrNumber
@@ -65,10 +65,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
             zeroSpaces + variableOrNumber
 
         let pattern = [pattern1, pattern2, pattern3, pattern4].joined(separator: "|")
-        let excludingPattern = "(\(genericPattern)|\(validRangePattern))"
+        let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
         let kinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern("(\(pattern))", excludingSyntaxKinds: kinds,
+        return file.matchPattern("(?:\(pattern))", excludingSyntaxKinds: kinds,
                                  excludingPattern: excludingPattern).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,

@@ -40,7 +40,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
             "let foo=1+2\n",
             "let foo=1 + 2\n",
             "let foo=bar\n",
-            "let range = 1 ..<  3\n"
+            "let range = 1 ..<  3\n",
+            "let foo = bar   ?? 0\n",
+            "let foo = bar??0\n",
+            "let foo = bar !=  0\n",
+            "let foo = bar !==  bar2\n"
         ]
     )
 
@@ -48,27 +52,32 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
         let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"]
             .map({ "\\\($0)" }).joined()
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
-        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern))"
+        let notEqualsPattern = "\\!\\=\\=?" // != or !==
+        let coalescingPattern = "\\?{2}"
+
+        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
+            "\(notEqualsPattern))"
 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let variableOrNumber = "(?:\(RegexHelpers.varName)|\(RegexHelpers.number))"
+        let variableOrNumber = "\\b"
 
-        let pattern1 = variableOrNumber + zeroSpaces + operators + zeroSpaces + variableOrNumber
-        let pattern2 = variableOrNumber + oneSpace + operators + manySpaces + variableOrNumber
-        let pattern3 = variableOrNumber + manySpaces + operators + oneSpace + variableOrNumber
-        let pattern4 = variableOrNumber + manySpaces + operators + manySpaces + variableOrNumber
+        let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
+                      (manySpaces, oneSpace), (manySpaces, manySpaces)]
+        let patterns = spaces.map { first, second in
+            variableOrNumber + first + operators + second + variableOrNumber
+        }
+        let pattern = "(?:\(patterns.joined(separator: "|")))"
 
         let genericPattern = "<.+?>"
         let validRangePattern = variableOrNumber + zeroSpaces + rangePattern +
             zeroSpaces + variableOrNumber
-
-        let pattern = [pattern1, pattern2, pattern3, pattern4].joined(separator: "|")
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
+
         let kinds = SyntaxKind.commentAndStringKinds()
 
-        return file.matchPattern("(?:\(pattern))", excludingSyntaxKinds: kinds,
+        return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
                                  excludingPattern: excludingPattern).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,

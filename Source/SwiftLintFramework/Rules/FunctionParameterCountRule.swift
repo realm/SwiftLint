@@ -86,7 +86,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                     continue
             }
 
-            guard offset..<offset+length ~= Int(parameterOffset) else {
+            guard offset..<(offset + length) ~= Int(parameterOffset) else {
                 return parameterCount
             }
 

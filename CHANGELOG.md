@@ -86,6 +86,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#964](https://github.com/realm/SwiftLint/issues/964)
 
+* Add `empty_parameters` rule to validate usage of `() -> ` over `Void -> `.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#573](https://github.com/realm/SwiftLint/issues/573)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

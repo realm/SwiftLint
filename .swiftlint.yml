@@ -13,6 +13,7 @@ opt_in_rules:
   - private_outlet
   - nimble_operator
   - attributes
+  - operator_usage_whitespace
 
 file_header:
   required_pattern: |

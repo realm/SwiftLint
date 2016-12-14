@@ -90,6 +90,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#573](https://github.com/realm/SwiftLint/issues/573)
 
+* Add `operator_usage_whitespace` opt-in rule to validate that operators are
+  surrounded by a single whitespace when they are being used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#626](https://github.com/realm/SwiftLint/issues/626)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

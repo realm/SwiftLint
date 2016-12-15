@@ -133,6 +133,10 @@
 
 ##### Enhancements
 
+* Add a rule that enforces alphabetical sorting of imports.  
+  [Scott Berrevoets](https://github.com/sberrevoets)
+  [#991](https://github.com/realm/SwiftLint/pull/991)
+
 * Now builds and passes most tests on Linux using the Swift Package Manager with
   Swift 3. This requires `libsourcekitdInProc.so` to be built and located in
   `/usr/lib`, or in another location specified by the `LINUX_SOURCEKIT_LIB_PATH`

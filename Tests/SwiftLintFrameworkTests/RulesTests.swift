@@ -199,6 +199,10 @@ class RulesTests: XCTestCase {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 
+    func testSortedImports() {
+        verifyRule(SortedImportsRule.description)
+    }
+
     func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
     }

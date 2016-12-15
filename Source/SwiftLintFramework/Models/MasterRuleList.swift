@@ -87,6 +87,7 @@ public let masterRuleList = RuleList(rules:
     RedundantNilCoalescingRule.self,
     RedundantStringEnumValueRule.self,
     ReturnArrowWhitespaceRule.self,
+    SortedImportsRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,

@@ -83,6 +83,7 @@
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65619E9C76900EDBA4D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1211B19E87861005E4BAA /* main.swift */; };
+		D40AD08A1E032F9700F48C30 /* UnusedClosureParameterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */; };
 		D40F83881DE9179200524C62 /* TrailingCommaConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */; };
 		D41E7E0B1DF9DABB0065259A /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
 		D4348EEA1C46122C007707FB /* FunctionBodyLengthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */; };
@@ -95,8 +96,8 @@
 		D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */; };
 		D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */; };
 		D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */; };
-		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
 		D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */; };
+		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */; };
@@ -313,6 +314,7 @@
 		D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftLintFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0D1217D19E87B05005E4BAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D0E7B63219E9C64500EDBA4D /* swiftlint.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = swiftlint.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedClosureParameterRule.swift; sourceTree = "<group>"; };
 		D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaConfiguration.swift; sourceTree = "<group>"; };
 		D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantStringEnumValueRule.swift; sourceTree = "<group>"; };
 		D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionBodyLengthRuleTests.swift; sourceTree = "<group>"; };
@@ -325,8 +327,8 @@
 		D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParenthesesWithTrailingClosureRule.swift; sourceTree = "<group>"; };
 		D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureParameterPositionRule.swift; sourceTree = "<group>"; };
 		D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftExpressionKind.swift; sourceTree = "<group>"; };
-		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
 		D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParametersRule.swift; sourceTree = "<group>"; };
+		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRulesExamples.swift; sourceTree = "<group>"; };
@@ -750,6 +752,7 @@
 				E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */,
 				E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
+				D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */,
 				E81CDE701C00FEAA00B430F6 /* ValidDocsRule.swift */,
 				D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */,
 				E88DEA931B099C0900A66CB0 /* VariableNameRule.swift */,
@@ -1134,6 +1137,7 @@
 				4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */,
 				E86396C21BADAAE5002C9E88 /* Reporter.swift in Sources */,
 				E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */,
+				D40AD08A1E032F9700F48C30 /* UnusedClosureParameterRule.swift in Sources */,
 				D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */,
 				E88198521BEA941300333A11 /* TodoRule.swift in Sources */,
 				3B828E531C546468000D180E /* RuleConfiguration.swift in Sources */,

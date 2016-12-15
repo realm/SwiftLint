@@ -58,7 +58,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
                                  excludingPattern: excludingPattern) { $0.rangeAt(1) }.flatMap {
             let parensRegex = NSRegularExpression.forcePattern(parensPattern)
-            return parensRegex.firstMatch(in: file.contents, range: $0)?.range
+            return parensRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
         }
     }
 

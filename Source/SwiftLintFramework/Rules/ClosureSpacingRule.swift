@@ -52,7 +52,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         // find all lines and accurences of open { and closed } braces
         var linesWithBraces = [[NSRange]]()
         for eachLine in file.lines {
-            guard let nsrange  = lineContainsBracesIn(eachLine.range, content: nsstring) else {
+            guard let nsrange = lineContainsBracesIn(eachLine.range, content: nsstring) else {
                 continue
             }
 
@@ -84,7 +84,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
                 let length = validBraces[startIndex + 1 ].location + 1 - location
                 ranges.append(NSRange(location:location, length: length))
                 bracesAsString.replaceSubrange(foundRange, with: "")
-                validBraces.removeSubrange(startIndex...startIndex  + 1)
+                validBraces.removeSubrange(startIndex...startIndex + 1)
             }
             return ranges
         }

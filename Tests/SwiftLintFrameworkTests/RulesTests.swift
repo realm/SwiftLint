@@ -221,6 +221,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorFunctionWhitespaceRule.description)
     }
 
+    func testOperatorUsageWhitespace() {
+        verifyRule(OperatorUsageWhitespaceRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 
@@ -431,6 +435,7 @@ extension RulesTests {
             ("testVerticalWhitespace", testVerticalWhitespace),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
             ("testPrivateOutlet", testPrivateOutlet),
             // ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),

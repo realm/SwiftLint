@@ -17,6 +17,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#326](https://github.com/realm/SwiftLint/issues/326)
 
+* `operator_usage_whitespace` rule is now correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  
 ##### Bug Fixes
 
 * None.

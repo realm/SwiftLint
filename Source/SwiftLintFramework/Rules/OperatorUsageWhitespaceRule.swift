@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule {
+public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -35,27 +35,51 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
             "array.removeAtIndex(-200)\n"
         ],
         triggeringExamples: [
-            "let foo = 1+2\n",
-            "let foo = 1   + 2\n",
-            "let foo = 1   +    2\n",
-            "let foo = 1 +    2\n",
-            "let foo=1+2\n",
-            "let foo=1 + 2\n",
-            "let foo=bar\n",
-            "let range = 1 ..<  3\n",
-            "let foo = bar   ?? 0\n",
-            "let foo = bar??0\n",
-            "let foo = bar !=  0\n",
-            "let foo = bar !==  bar2\n",
-            "let v8 = Int8(1)  << 6\n",
-            "let v8 = 1 <<  (6)\n",
-            "let v8 = 1 <<  (6)\n let foo = 1 > 2\n"
+            "let foo = 1↓+2\n",
+            "let foo = 1↓   + 2\n",
+            "let foo = 1↓   +    2\n",
+            "let foo = 1↓ +    2\n",
+            "let foo↓=1↓+2\n",
+            "let foo↓=1 + 2\n",
+            "let foo↓=bar\n",
+            "let range = 1↓ ..<  3\n",
+            "let foo = bar↓   ?? 0\n",
+            "let foo = bar↓??0\n",
+            "let foo = bar↓ !=  0\n",
+            "let foo = bar↓ !==  bar2\n",
+            "let v8 = Int8(1)↓  << 6\n",
+            "let v8 = 1↓ <<  (6)\n",
+            "let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"
+        ],
+        corrections: [
+            "let foo = 1↓+2\n": "let foo = 1 + 2\n",
+            "let foo = 1↓   + 2\n": "let foo = 1 + 2\n",
+            "let foo = 1↓   +    2\n": "let foo = 1 + 2\n",
+            "let foo = 1↓ +    2\n": "let foo = 1 + 2\n",
+            "let foo↓=1↓+2\n": "let foo = 1 + 2\n",
+            "let foo↓=1 + 2\n": "let foo = 1 + 2\n",
+            "let foo↓=bar\n": "let foo = bar\n",
+            "let range = 1↓ ..<  3\n": "let range = 1..<3\n",
+            "let foo = bar↓   ?? 0\n": "let foo = bar ?? 0\n",
+            "let foo = bar↓??0\n": "let foo = bar ?? 0\n",
+            "let foo = bar↓ !=  0\n": "let foo = bar != 0\n",
+            "let foo = bar↓ !==  bar2\n": "let foo = bar !== bar2\n",
+            "let v8 = Int8(1)↓  << 6\n": "let v8 = Int8(1) << 6\n",
+            "let v8 = 1↓ <<  (6)\n": "let v8 = 1 << (6)\n",
+            "let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n": "let v8 = 1 << (6)\n let foo = 1 > 2\n"
         ]
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"]
-            .map({ "\\\($0)" }).joined()
+        return violationRanges(file: file).map { range, _ in
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: range.location))
+        }
+    }
+
+    private func violationRanges(file: File) -> [(NSRange, String)] {
+        let escapedOperators = ["/", "=", "-", "+", "*", "|", "^", "~"].map({ "\\\($0)" }).joined()
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
         let notEqualsPattern = "\\!\\=\\=?" // != or !==
         let coalescingPattern = "\\?{2}"
@@ -84,10 +108,63 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
         let kinds = SyntaxKind.commentAndStringKinds()
 
         return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
-                                 excludingPattern: excludingPattern).map {
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, characterOffset: $0.location))
+                                 excludingPattern: excludingPattern).flatMap {
+
+            let spacesPattern = oneSpace + "*"
+            let rangeRegex = NSRegularExpression
+                .forcePattern(spacesPattern + rangePattern + spacesPattern)
+
+            // if it's a range operator, the correction shouldn't have spaces
+            if let range = rangeRegex.firstMatch(in: file.contents,
+                                                 options: [], range: $0)?.range {
+                let correction = operatorInRange(file: file, range: range)
+                return (range, correction)
+            }
+
+            let pattern = spacesPattern + operators + spacesPattern
+            let operatorsRegex = NSRegularExpression.forcePattern(pattern)
+
+            guard let range = operatorsRegex.firstMatch(in: file.contents,
+                                                        options: [], range: $0)?.range else {
+                return nil
+            }
+
+            let operatorContent = operatorInRange(file: file, range: range)
+            let correction = " " + operatorContent + " "
+
+            return (range, correction)
+        }
+    }
+
+    private func operatorInRange(file: File, range: NSRange) -> String {
+        return file.contents.bridge().substring(with: range).trimmingCharacters(in: .whitespaces)
+    }
+
+    public func correctFile(_ file: File) -> [Correction] {
+        let violatingRanges = violationRanges(file: file).filter { range, _ in
+            return !file.ruleEnabledViolatingRanges([range], forRule: self).isEmpty
+        }
+
+        return writeToFile(file, violatingRanges: violatingRanges)
+    }
+
+    private func writeToFile(_ file: File, violatingRanges: [(NSRange, String)]) -> [Correction] {
+        var correctedContents = file.contents
+        var adjustedLocations = [Int]()
+
+        for (violatingRange, correction) in violatingRanges.reversed() {
+            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
+                correctedContents = correctedContents
+                    .replacingCharacters(in: indexRange, with: correction)
+                adjustedLocations.insert(violatingRange.location, at: 0)
+            }
+        }
+
+        file.write(correctedContents)
+
+        return adjustedLocations.map {
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 }

@@ -82,8 +82,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#970](https://github.com/realm/SwiftLint/issues/970)
 
-* Add `void_return` rule to validate usage of `-> Void` over `-> ()`.  
+* Add correctable `void_return` rule to validate usage of `-> Void`
+  over `-> ()`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [JP Simard](https://github.com/jpsim)
   [#964](https://github.com/realm/SwiftLint/issues/964)
 
 * Add `empty_parameters` rule to validate usage of `() -> ` over `Void -> `.  

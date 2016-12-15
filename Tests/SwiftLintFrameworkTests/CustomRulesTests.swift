@@ -45,7 +45,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testCustomRules() {
-        let (regexConfig, customRules) = getCustomRules()
+        let (regexConfig, customRules) = getCustomRules(["match_kinds": "comment"])
 
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validateFile(file),
@@ -69,7 +69,8 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testCustomRulesIncludedExcludesFile() {
-        var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$"])
+        var (regexConfig, customRules) = getCustomRules(["included": "\\.yml$",
+                                                      "match_kinds": "comment"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
@@ -80,7 +81,8 @@ class CustomRulesTests: XCTestCase {
     }
 
     func testBasicCorrectableCustomRule() {
-        var (regexConfig, customRules) = getCustomRules(["template": "replaced"])
+        var (regexConfig, customRules) = getCustomRules(["template": "replaced",
+                                                      "match_kinds": "comment"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
@@ -162,8 +164,7 @@ class CustomRulesTests: XCTestCase {
         "\\S)"          // lazily to the first non-whitespace character.
 
         var (regexConfig, customRules) = getCustomRules(["regex": pattern,
-                                                         "template": "$1: $2",
-                                                         "match_kinds": ""])
+                                                         "template": "$1: $2"])
 
         var customRuleConfiguration = CustomRulesConfiguration()
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
@@ -199,8 +200,7 @@ class CustomRulesTests: XCTestCase {
     }
 
     func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
-        var config = ["regex": "pattern",
-                      "match_kinds": "comment"]
+        var config = ["regex": "pattern"]
         extraConfig.forEach { config[$0] = $1 }
 
         var regexConfig = RegexConfiguration(identifier: "custom")

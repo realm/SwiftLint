@@ -108,13 +108,9 @@ public struct CustomRules: Rule, CorrectableRule, ConfigurationProviderRule {
         if let path = file.path {
             configurations = configurations.filter { config in
                 if !config.isCorrectable { return false }
-                let pattern = config.included.pattern
-                if pattern.isEmpty { return true }
-
-                let pathMatch = config.included.matches(in: path, options: [],
-                    range: NSRange(location: 0, length: (path as NSString).length))
-
-                return !pathMatch.isEmpty
+                guard let includedRegex = config.included else { return true }
+                let range = NSRange(location: 0, length: path.bridge().length)
+                return !includedRegex.matches(in: path, options: [], range: range).isEmpty
             }
         }
 
@@ -124,8 +120,11 @@ public struct CustomRules: Rule, CorrectableRule, ConfigurationProviderRule {
     }
 
     fileprivate func correctFile(_ file: File, configuration: RegexConfiguration) -> [Correction] {
+        guard let template = configuration.template else {
+            return []
+        }
+
         let pattern = configuration.regex.pattern
-        let template = configuration.template
         let violations = violationRangesInFile(file, configuration: configuration)
         let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
         guard !matches.isEmpty else { return [] }

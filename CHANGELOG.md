@@ -113,6 +113,10 @@
   [JP Simard](https://github.com/jpsim)
   [#976](https://github.com/realm/SwiftLint/issues/976)
 
+* Fix invalid CSS in HTML reporter template.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#981](https://github.com/realm/SwiftLint/issues/981)
+
 ## 0.13.2: Light Cycle
 
 ##### Breaking

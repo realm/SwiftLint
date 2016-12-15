@@ -60,7 +60,7 @@ public struct HTMLReporter: Reporter {
             "\t\t}\n",
             "\t\tth {\n",
             "\t\t\tborder-bottom: 1px solid gray;\n",
-            "\t\t\tbackground-color: #29345C50;\n",
+            "\t\t\tbackground-color: rgba(41,52,92,0.313);\n",
             "\t\t}\n",
             "\t\t.error, .warning {\n",
             "\t\t\tbackground-color: #f0f099;\n",

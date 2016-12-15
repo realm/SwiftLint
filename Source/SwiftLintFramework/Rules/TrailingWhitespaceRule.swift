@@ -68,7 +68,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 continue
             }
 
-            let correctedLine = (line.content as NSString)
+            let correctedLine = line.content.bridge()
                 .trimmingTrailingCharacters(in: whitespaceCharacterSet)
 
             if configuration.ignoresEmptyLines && correctedLine.characters.isEmpty {

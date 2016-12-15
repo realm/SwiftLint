@@ -41,36 +41,36 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", required_string: \(requiredString)" +
-        ", required_pattern: \(requiredPattern), forbidden_string: \(forbiddenString)" +
-        ", forbidden_pattern: \(forbiddenPattern)"
+            ", required_pattern: \(requiredPattern), forbidden_string: \(forbiddenString)" +
+            ", forbidden_pattern: \(forbiddenPattern)"
     }
 
     public init() {}
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
+        guard let configuration = configuration as? [String: String] else {
             throw ConfigurationError.unknownConfiguration
         }
 
-        if let requiredString = configuration["required_string"] as? String {
+        if let requiredString = configuration["required_string"] {
             self.requiredString = requiredString
             requiredRegex = try NSRegularExpression(pattern: requiredString,
                                                     options: [.ignoreMetacharacters])
-        } else if let requiredPattern = configuration["required_pattern"] as? String {
+        } else if let requiredPattern = configuration["required_pattern"] {
             self.requiredPattern = requiredPattern
             requiredRegex = try .cached(pattern: requiredPattern)
         }
 
-        if let forbiddenString = configuration["forbidden_string"] as? String {
+        if let forbiddenString = configuration["forbidden_string"] {
             self.forbiddenString = forbiddenString
             forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
                                                      options: [.ignoreMetacharacters])
-        } else if let forbiddenPattern = configuration["forbidden_pattern"] as? String {
+        } else if let forbiddenPattern = configuration["forbidden_pattern"] {
             self.forbiddenPattern = forbiddenPattern
             forbiddenRegex = try .cached(pattern: forbiddenPattern)
         }
 
-        if let severityString = configuration["severity"] as? String {
+        if let severityString = configuration["severity"] {
             try severityConfiguration.applyConfiguration(severityString)
         }
     }

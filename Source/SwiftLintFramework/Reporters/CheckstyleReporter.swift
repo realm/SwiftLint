@@ -25,11 +25,11 @@ public struct CheckstyleReporter: Reporter {
     }
 
     private static func generateForSingleViolation(_ violation: StyleViolation) -> String {
-        let file: String = violation.location.file ?? "<nopath>"
+        let file: String = (violation.location.file ?? "<nopath>").escapedForXML()
         let line: Int = violation.location.line ?? 0
         let col: Int = violation.location.character ?? 0
         let severity: String = violation.severity.rawValue
-        let reason: String = violation.reason
+        let reason: String = violation.reason.escapedForXML()
         return [
             "\n\t<file name=\"", file, "\">\n",
             "\t\t<error line=\"\(line)\" ",

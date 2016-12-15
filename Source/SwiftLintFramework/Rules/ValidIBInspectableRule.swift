@@ -49,10 +49,8 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if IBInspectable
-        let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?
-            .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
-            .flatMap({ $0["key.attribute"] }) ?? []
-        let isIBInspectable = attributes.contains("source.decl.attribute.ibinspectable")
+        let isIBInspectable = dictionary.enclosedSwiftAttributes.contains(
+           "source.decl.attribute.ibinspectable")
         guard isIBInspectable else {
             return []
         }

@@ -39,8 +39,8 @@ extension File {
         if sourcekitdFailed {
             return []
         }
-        let contents = self.contents as NSString
-        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
+        let contents = self.contents.bridge()
+        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+",
             withSyntaxKinds: [.comment]).flatMap { range in
                 return Command(string: contents, range: range)
             }.flatMap { command in
@@ -79,7 +79,7 @@ extension File {
 
     internal func rangesAndTokensMatching(_ regex: NSRegularExpression) ->
         [(NSRange, [SyntaxToken])] {
-        let contents = self.contents as NSString
+        let contents = self.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
         return regex.matches(in: self.contents, options: [], range: range).map { match in
@@ -138,7 +138,7 @@ extension File {
             return nil
         }
 
-        return tokens.map { $0.flatMap { SyntaxKind.init(rawValue: $0.type) } }
+        return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
 
     }
 
@@ -161,17 +161,20 @@ extension File {
         }.map { $0.0 }
     }
 
+    internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
+
     internal func matchPattern(_ pattern: String,
                                excludingSyntaxKinds: [SyntaxKind],
-                               excludingPattern: String) -> [NSRange] {
-        let contents = self.contents as NSString
+                               excludingPattern: String,
+                               exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
+        let contents = self.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
             return []
         }
         let exclusionRanges = regex(excludingPattern).matches(in: self.contents, options: [],
-                                                              range: range).ranges()
+                                                              range: range).map(exclusionMapping)
         return matches.filter { !$0.intersectsRanges(exclusionRanges) }
     }
 
@@ -192,11 +195,11 @@ extension File {
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
             fatalError("can't write to path '\(self.path)'")
         }
-        fileHandle.seekToEndOfFile()
+        _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
     internal func write(_ string: String) {
@@ -215,7 +218,7 @@ extension File {
             fatalError("can't write file to \(path)")
         }
         contents = string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
     internal func ruleEnabledViolatingRanges(_ violatingRanges: [NSRange],

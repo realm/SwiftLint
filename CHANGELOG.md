@@ -10,12 +10,25 @@
 
 ##### Enhancements
 
+* Now builds and passes most tests on Linux using the Swift Package Manager with
+  Swift 3. This requires `libsourcekitdInProc.so` to be built and located in
+  `/usr/lib`, or in another location specified by the `LINUX_SOURCEKIT_LIB_PATH`
+  environment variable. A preconfigured Docker image is available on Docker Hub
+  by the ID of `norionomura/sourcekit:301`.  
+  [JP Simard](https://github.com/jpsim)
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#732](https://github.com/realm/SwiftLint/issues/732)
+
+* Add `dynamic_inline` rule to discourage combination of `@inline(__always)`
+  and `dynamic` function attributes.  
+  [Daniel Duan](https://github.com/dduan)
+
 * Add `number_separator` opt-in rule that enforces that underscores are
   used as thousand separators in large numbers.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#924](https://github.com/realm/SwiftLint/issues/924)
-  
-* Add `file_header` opt-in rule that warns when a file contains a 
+
+* Add `file_header` opt-in rule that warns when a file contains a
   copyright comment header, such as the one Xcode adds by default.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#884](https://github.com/realm/SwiftLint/issues/884)
@@ -26,11 +39,56 @@
 
 * Add `EmojiReporter`: a human friendly reporter.  
   [Michał Kałużny](https://github.com/justMaku)
-  
+
 * Add `redundant_string_enum_value` rule that warns against String enums
   with redundant value assignments.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#946](https://github.com/realm/SwiftLint/issues/946)
+
+* Add `attributes` opt-in rule which validates if an attribute (`@objc`,
+  `@IBOutlet`, `@discardableResult`, etc) is in the right position:
+    - If the attribute is `@IBAction` or `@NSManaged`, it should always be on
+    the same line as the declaration
+    - If the attribute has parameters, it should always be on the line above
+    the declaration
+    - Otherwise:
+      - if the attribute is applied to a variable, it should be on the same line
+      - if it's applied to a type or function, it should be on the line above
+      - if it's applied to an import (the only option is `@testable import`), 
+      it should be on the same line.
+  You can also configure what attributes should be always on a new line or on
+  the same line as the declaration with the `always_on_same_line` and 
+  `always_on_line_above` keys.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#846](https://github.com/realm/SwiftLint/issues/846)
+
+* Add `empty_parentheses_with_trailing_closure` rule that checks for
+  empty parentheses after method call when using trailing closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#885](https://github.com/realm/SwiftLint/issues/885)
+
+* Add `closure_parameter_position` rule that validates that closure
+  parameters are in the same line as the opening brace.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#931](https://github.com/realm/SwiftLint/issues/931)
+
+* `type_name` rule now validates `typealias` and `associatedtype` too.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#49](https://github.com/realm/SwiftLint/issues/49)
+  [#956](https://github.com/realm/SwiftLint/issues/959)
+
+* Add `ProhibitedSuperRule` opt-in rule that warns about methods calling
+  to super that should not, for example `UIViewController.loadView()`.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#970](https://github.com/realm/SwiftLint/issues/970)
+
+* Add `void_return` rule to validate usage of `-> Void` over `-> ()`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#964](https://github.com/realm/SwiftLint/issues/964)
+
+* Add `empty_parameters` rule to validate usage of `() -> ` over `Void -> `.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#573](https://github.com/realm/SwiftLint/issues/573)
 
 ##### Bug Fixes
 
@@ -42,6 +100,18 @@
   declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#934](https://github.com/realm/SwiftLint/issues/934)
+
+* Fix `traling_comma` rule reporting a violation for commas in comments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#940](https://github.com/realm/SwiftLint/issues/940)
+
+* Fix XML reporters not escaping characters.  
+  [Fabian Ehrentraud](https://github.com/fabb)
+  [#968](https://github.com/realm/SwiftLint/issues/968)
+
+* Fix specifying multiple rule identifiers in comment commands.  
+  [JP Simard](https://github.com/jpsim)
+  [#976](https://github.com/realm/SwiftLint/issues/976)
 
 ## 0.13.2: Light Cycle
 

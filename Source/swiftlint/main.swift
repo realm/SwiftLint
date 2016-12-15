@@ -6,8 +6,9 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import Foundation
 import Commandant
+import Dispatch
+import Foundation
 import SwiftLintFramework
 
 DispatchQueue.global().async {

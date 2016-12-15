@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
@@ -93,6 +94,10 @@ class RulesTests: XCTestCase {
         verifyRule(CommaRule.description)
     }
 
+    func testClosureParameterPosition() {
+        verifyRule(ClosureParameterPositionRule.description)
+    }
+
     func testClosureSpacingRule() {
         verifyRule(ClosureSpacingRule.description)
     }
@@ -109,8 +114,20 @@ class RulesTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
+    func testDynamicInline() {
+        verifyRule(DynamicInlineRule.description)
+    }
+
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
+    }
+
+    func testEmptyParameters() {
+        verifyRule(EmptyParametersRule.description)
+    }
+
+    func testEmptyParenthesesWithTrailingClosure() {
+        verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
     func testExplicitInit() {
@@ -174,7 +191,8 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+// swiftlint:disable:next todo
+// FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testMissingDocs() {
 //        verifyRule(MissingDocsRule.description)
 //    }
@@ -223,6 +241,10 @@ class RulesTests: XCTestCase {
 
     func testPrivateUnitTest() {
         verifyRule(PrivateUnitTestRule.description)
+    }
+
+    func testProhibitedSuper() {
+        verifyRule(ProhibitedSuperRule.description)
     }
 
     func testRedundantNilCoalescing() {
@@ -345,7 +367,8 @@ class RulesTests: XCTestCase {
         verifyRule(TypeNameRule.description)
     }
 
-// swiftlint:disable:this todo FIXME: https://github.com/jpsim/SourceKitten/issues/269
+// swiftlint:disable:next todo
+// FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testValidDocs() {
 //        verifyRule(ValidDocsRule.description)
 //    }
@@ -358,6 +381,10 @@ class RulesTests: XCTestCase {
         verifyRule(VariableNameRule.description)
     }
 
+    func testVoidReturn() {
+        verifyRule(VoidReturnRule.description)
+    }
+
     func testSuperCall() {
         verifyRule(OverriddenSuperCallRule.description)
     }
@@ -366,4 +393,66 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
+}
+
+extension RulesTests {
+    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
+        return [
+            ("testClosingBrace", testClosingBrace),
+            ("testColon", testColon),
+            ("testComma", testComma),
+            ("testClosureParameterPosition", testClosureParameterPosition),
+            ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
+            ("testControlStatement", testControlStatement),
+            ("testCyclomaticComplexity", testCyclomaticComplexity),
+            ("testDynamicInline", testDynamicInline),
+            ("testEmptyCount", testEmptyCount),
+            ("testEmptyParameters", testEmptyParameters),
+            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
+            ("testExplicitInit", testExplicitInit),
+            ("testFileLength", testFileLength),
+            ("testForceCast", testForceCast),
+            ("testForceTry", testForceTry),
+            // ("testForceUnwrapping", testForceUnwrapping),
+            ("testFunctionBodyLength", testFunctionBodyLength),
+            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
+            ("testImplicitGetterRule", testImplicitGetterRule),
+            // ("testLeadingWhitespace", testLeadingWhitespace),
+            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
+            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
+            ("testLegacyConstant", testLegacyConstant),
+            ("testLegacyConstructor", testLegacyConstructor),
+            ("testLineLength", testLineLength),
+            ("testMark", testMark),
+            ("testNesting", testNesting),
+            ("testNimbleOperator", testNimbleOperator),
+            ("testNumberSeparator", testNumberSeparator),
+            ("testVerticalWhitespace", testVerticalWhitespace),
+            ("testOpeningBrace", testOpeningBrace),
+            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+            ("testPrivateOutlet", testPrivateOutlet),
+            // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testProhibitedSuper", testProhibitedSuper),
+            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testStatementPosition", testStatementPosition),
+            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
+            ("testSyntacticSugar", testSyntacticSugar),
+            ("testTodo", testTodo),
+            ("testTrailingComma", testTrailingComma),
+            ("testTrailingNewline", testTrailingNewline),
+            ("testTrailingSemicolon", testTrailingSemicolon),
+            ("testTrailingWhitespace", testTrailingWhitespace),
+            ("testTypeBodyLength", testTypeBodyLength),
+            // ("testTypeName", testTypeName),
+            ("testValidIBInspectable", testValidIBInspectable),
+            // ("testVariableName", testVariableName),
+            ("testVoidReturn", testVoidReturn),
+            ("testSuperCall", testSuperCall),
+            ("testWeakDelegate", testWeakDelegate)
+        ]
+    }
 }

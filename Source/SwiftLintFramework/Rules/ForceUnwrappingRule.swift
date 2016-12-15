@@ -67,7 +67,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // swiftlint:disable:next function_body_length
     fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
         let contents = file.contents
-        let nsstring = contents as NSString
+        let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
         return ForceUnwrappingRule.regularExpression
@@ -80,9 +80,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
                 let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
 
-                guard let matchByteFirstRange = contents
+                guard let matchByteFirstRange = contents.bridge()
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
-                    let matchByteSecondRange = contents
+                    let matchByteSecondRange = contents.bridge()
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
@@ -116,7 +116,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
                     // check third captured range
                     let secondRange = match.rangeAt(3)
-                    guard let matchByteThirdRange = contents
+                    guard let matchByteThirdRange = contents.bridge()
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                         else { return nil }
 
@@ -140,7 +140,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // Returns if range should generate violation
     // check deepest kind matching range in structure
     fileprivate func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
-        let nsstring = file.contents as NSString
+        let nsstring = file.contents.bridge()
         let kinds = file.structure.kindsFor(byteRange.location)
         if let lastKind = kinds.last {
             switch lastKind.kind {

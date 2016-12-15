@@ -39,10 +39,8 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         // Check if IBOutlet
-        let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?
-            .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
-            .flatMap({ $0["key.attribute"] }) ?? []
-        let isOutlet = attributes.contains("source.decl.attribute.iboutlet")
+        let isOutlet = dictionary.enclosedSwiftAttributes.contains(
+           "source.decl.attribute.iboutlet")
         guard isOutlet else { return [] }
 
         // Check if private

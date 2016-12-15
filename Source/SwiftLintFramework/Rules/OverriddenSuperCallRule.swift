@@ -70,7 +70,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
         guard kind == .functionMethodInstance &&
               configuration.resolvedMethodNames.contains(name) &&
-              extractAttributes(dictionary).contains("source.decl.attribute.override")
+              dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
         else { return [] }
 
         let callsToSuper = extractCallsToSuper(name, substructure: substructure)
@@ -89,22 +89,15 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         return []
     }
 
-    private func extractAttributes(_ dictionary: [String: SourceKitRepresentable]) -> [String] {
-        guard let attributesDict = dictionary["key.attributes"] as? [SourceKitRepresentable]
-            else { return [] }
-        return attributesDict.flatMap {
-            ($0 as? [String: SourceKitRepresentable])?["key.attribute"] as? String
-        }
-    }
-
     private func extractCallsToSuper(_ name: String,
                                      substructure: [SourceKitRepresentable]) -> [String] {
         let superCall = "super.\(name)"
         return substructure.flatMap {
             guard let elems = $0 as? [String: SourceKitRepresentable],
-                let type = elems["key.kind"] as? String,
+                let type = (elems["key.kind"] as? String)
+                    .flatMap({ SwiftExpressionKind(rawValue: $0) }),
                 let name = elems["key.name"] as? String,
-                type == "source.lang.swift.expr.call" && superCall.contains(name)
+                type == .call && superCall.contains(name)
                 else { return nil }
             return name
         }

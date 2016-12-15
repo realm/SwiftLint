@@ -58,7 +58,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         if let firstToken = firstToken, let lastToken = lastToken {
             let start = firstToken.offset
             let length = lastToken.offset + lastToken.length - firstToken.offset
-            guard let range = file.contents.byteRangeToNSRange(start: start, length: length) else {
+            guard let range = file.contents.bridge()
+                .byteRangeToNSRange(start: start, length: length) else {
                 return []
             }
 

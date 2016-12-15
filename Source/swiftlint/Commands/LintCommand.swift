@@ -23,6 +23,10 @@ extension Reporter {
     }
 }
 
+#if os(Linux)
+private func autoreleasepool(block: () -> Void) { block() }
+#endif
+
 struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"

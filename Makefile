@@ -91,6 +91,9 @@ archive:
 
 release: package archive portable_zip
 
+docker_test:
+	docker run -v `pwd`:/SwiftLint norionomura/sourcekit:301 bash -c "cd /SwiftLint && swift test"
+
 # http://irace.me/swift-profiling/
 display_compilation_time:
 	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build test | grep -E ^[1-9]{1}[0-9]*.[0-9]ms | sort -n

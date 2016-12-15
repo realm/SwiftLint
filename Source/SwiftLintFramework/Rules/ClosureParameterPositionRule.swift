@@ -61,7 +61,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
                 return []
         }
 
-        let parameters = filterByKind(dictionary: dictionary, kind: .varParameter)
+        let parameters = dictionary.enclosedVarParameters
         let rangeStart = nameOffset + nameLength
         let regex = ClosureParameterPositionRule.openBraceRegex
 
@@ -90,28 +90,6 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: paramOffset))
-        }
-    }
-
-    private func filterByKind(dictionary: [String: SourceKitRepresentable],
-                              kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
-
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String else {
-                    return []
-            }
-
-            if SwiftDeclarationKind(rawValue: kindString) == kind {
-                return [subDict]
-            }
-
-            if SwiftExpressionKind(rawValue: kindString) == .argument {
-                return filterByKind(dictionary: subDict, kind: kind)
-            }
-
-            return []
         }
     }
 }

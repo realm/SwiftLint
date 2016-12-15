@@ -2,7 +2,7 @@
 //  UnusedClosureParameterRule.swift
 //  SwiftLint
 //
-//  Created by Marcelo Fabri on 15/12/16.
+//  Created by Marcelo Fabri on 12/15/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -41,8 +41,6 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
-
     public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -61,7 +59,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule {
 
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
-        let parameters = filterByKind(dictionary: dictionary, kind: .varParameter)
+        let parameters = dictionary.enclosedVarParameters
         let contents = file.contents.bridge()
 
         return parameters.flatMap { param -> StyleViolation? in
@@ -107,28 +105,6 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule {
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: paramOffset),
                                   reason: reason)
-        }
-    }
-
-    private func filterByKind(dictionary: [String: SourceKitRepresentable],
-                              kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
-
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String else {
-                    return []
-            }
-
-            if SwiftDeclarationKind(rawValue: kindString) == kind {
-                return [subDict]
-            }
-
-            if SwiftExpressionKind(rawValue: kindString) == .argument {
-                return filterByKind(dictionary: subDict, kind: kind)
-            }
-
-            return []
         }
     }
 }

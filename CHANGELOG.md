@@ -88,7 +88,8 @@
   [JP Simard](https://github.com/jpsim)
   [#964](https://github.com/realm/SwiftLint/issues/964)
 
-* Add `empty_parameters` rule to validate usage of `() -> ` over `Void -> `.  
+* Add correctable `empty_parameters` rule to validate usage of `() -> `
+  over `Void -> `.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#573](https://github.com/realm/SwiftLint/issues/573)
 

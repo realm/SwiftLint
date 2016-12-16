@@ -55,6 +55,45 @@ class CustomRulesTests: XCTestCase {
                         reason: regexConfig.message)])
     }
 
+    func testExcludeKinds() {
+        let (regexConfig, customRules) = getCustomRules(["exclude_kinds": "comment"])
+
+        let file = File(contents: "// My file with\n// a pattern\n" +
+                                  "My file with\n a pattern")
+        XCTAssertEqual(customRules.validateFile(file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 4, character: 4),
+                                       reason: regexConfig.message)])
+    }
+
+    func testExcludeKindsWithMatchKindsSame() {
+        // exclude kinds, if defined, will always be excluded
+        let (regexConfig, customRules) = getCustomRules(["match_kinds": "comment",
+                                                       "exclude_kinds": "comment"])
+
+        let file = File(contents: "// My file with\n// a pattern\n" +
+            "My file with\n a pattern")
+        XCTAssertEqual(customRules.validateFile(file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 4, character: 4),
+                                       reason: regexConfig.message)])
+    }
+
+    func testExcludeKindsWithMatchKindsDifferent() {
+        let (regexConfig, customRules) = getCustomRules(["match_kinds": "identifier",
+                                                       "exclude_kinds": "comment"])
+
+        let file = File(contents: "// My file with\n// a pattern\n" +
+            "let pattern = \"test\"")
+        XCTAssertEqual(customRules.validateFile(file),
+                       [StyleViolation(ruleDescription: regexConfig.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 3, character: 5),
+                                       reason: regexConfig.message)])
+    }
+
     func testLocalDisableCustomRule() {
         let (_, customRules) = getCustomRules()
         let file = File(contents: "//swiftlint:disable custom \n// file with a pattern")

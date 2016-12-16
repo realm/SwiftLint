@@ -16,6 +16,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var matchKinds = Set(SyntaxKind.allKinds())
+    public var excludeKinds = Set<SyntaxKind>()
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var template: String?
 
@@ -60,6 +61,9 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         if let matchKinds = [String].array(of: configurationDict["match_kinds"]) {
             self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
         }
+        if let excludeKinds = [String].array(of: configurationDict["exclude_kinds"]) {
+            self.excludeKinds = Set(try excludeKinds.map({ try SyntaxKind(shortName: $0) }))
+        }
         if let severityString = configurationDict["severity"] as? String {
             try severityConfiguration.applyConfiguration(severityString)
         }
@@ -67,13 +71,15 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             self.template = template
         }
     }
-}
 
-public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
-    return lhs.identifier == rhs.identifier &&
-           lhs.message == rhs.message &&
-           lhs.regex == rhs.regex &&
-           lhs.included?.pattern == rhs.included?.pattern &&
-           lhs.matchKinds == rhs.matchKinds &&
-           lhs.severity == rhs.severity
+    public static func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
+        return lhs.identifier == rhs.identifier &&
+            lhs.message == rhs.message &&
+            lhs.regex == rhs.regex &&
+            lhs.included?.pattern == rhs.included?.pattern &&
+            lhs.matchKinds == rhs.matchKinds &&
+            lhs.excludeKinds == rhs.excludeKinds &&
+            lhs.severity == rhs.severity &&
+            lhs.template == rhs.template
+    }
 }

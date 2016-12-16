@@ -34,10 +34,10 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
             customRuleConfigurations.append(ruleConfiguration)
         }
     }
-}
 
-public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
-    return lhs.customRuleConfigurations == rhs.customRuleConfigurations
+    public static func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
+        return lhs.customRuleConfigurations == rhs.customRuleConfigurations
+    }
 }
 
 // MARK: - CustomRules
@@ -87,8 +87,13 @@ public struct CustomRules: Rule, CorrectableRule, ConfigurationProviderRule {
 
     fileprivate func validate(_ file: File, configuration: RegexConfiguration) -> [StyleViolation] {
         let pattern = configuration.regex.pattern
-        let excludingKinds = Array(Set(SyntaxKind.allKinds())
-            .subtracting(configuration.matchKinds))
+
+        let excludingKinds: [SyntaxKind]
+        if configuration.excludeKinds.isEmpty {
+            excludingKinds = Array(Set(SyntaxKind.allKinds()).subtracting(configuration.matchKinds))
+        } else {
+            excludingKinds = Array(configuration.excludeKinds)
+        }
 
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,

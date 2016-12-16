@@ -31,7 +31,7 @@
 * Add `file_header` opt-in rule that warns when a file contains a
   copyright comment header, such as the one Xcode adds by default.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#884](https://github.com/realm/SwiftLint/issues/884)
+  [#844](https://github.com/realm/SwiftLint/issues/844)
 
 * `FunctionParameterCountRule` now ignores initializers.  
   [Denis Lebedev](https://github.com/garnett)
@@ -59,6 +59,7 @@
   You can also configure what attributes should be always on a new line or on
   the same line as the declaration with the `always_on_same_line` and 
   `always_on_line_above` keys.  
+
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#846](https://github.com/realm/SwiftLint/issues/846)
 

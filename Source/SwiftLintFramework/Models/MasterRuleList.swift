@@ -77,6 +77,7 @@ public let masterRuleList = RuleList(rules:
     NumberSeparatorRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
+    OperatorUsageWhitespaceRule.self,
     OverriddenSuperCallRule.self,
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,

@@ -31,7 +31,7 @@
 * Add `file_header` opt-in rule that warns when a file contains a
   copyright comment header, such as the one Xcode adds by default.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#884](https://github.com/realm/SwiftLint/issues/884)
+  [#844](https://github.com/realm/SwiftLint/issues/844)
 
 * `FunctionParameterCountRule` now ignores initializers.  
   [Denis Lebedev](https://github.com/garnett)
@@ -59,6 +59,7 @@
   You can also configure what attributes should be always on a new line or on
   the same line as the declaration with the `always_on_same_line` and 
   `always_on_line_above` keys.  
+
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#846](https://github.com/realm/SwiftLint/issues/846)
 
@@ -82,13 +83,21 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#970](https://github.com/realm/SwiftLint/issues/970)
 
-* Add `void_return` rule to validate usage of `-> Void` over `-> ()`.  
+* Add correctable `void_return` rule to validate usage of `-> Void`
+  over `-> ()`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [JP Simard](https://github.com/jpsim)
   [#964](https://github.com/realm/SwiftLint/issues/964)
 
-* Add `empty_parameters` rule to validate usage of `() -> ` over `Void -> `.  
+* Add correctable `empty_parameters` rule to validate usage of `() -> `
+  over `Void -> `.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#573](https://github.com/realm/SwiftLint/issues/573)
+
+* Add `operator_usage_whitespace` opt-in rule to validate that operators are
+  surrounded by a single whitespace when they are being used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#626](https://github.com/realm/SwiftLint/issues/626)
 
 ##### Bug Fixes
 
@@ -112,6 +121,10 @@
 * Fix specifying multiple rule identifiers in comment commands.  
   [JP Simard](https://github.com/jpsim)
   [#976](https://github.com/realm/SwiftLint/issues/976)
+
+* Fix invalid CSS in HTML reporter template.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#981](https://github.com/realm/SwiftLint/issues/981)
 
 ## 0.13.2: Light Cycle
 

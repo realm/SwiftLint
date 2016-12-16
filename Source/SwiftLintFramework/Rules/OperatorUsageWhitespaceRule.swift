@@ -30,7 +30,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
             "let foo = 1 + \n  2\n",
             "let range = 1...3\n",
             "let range = 1 ... 3\n",
-            "let range = 1..<3\n"
+            "let range = 1..<3\n",
+            "#if swift(>=3.0)\n",
+            "array.removeAtIndex(-200)\n"
         ],
         triggeringExamples: [
             "let foo = 1+2\n",
@@ -44,7 +46,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
             "let foo = bar   ?? 0\n",
             "let foo = bar??0\n",
             "let foo = bar !=  0\n",
-            "let foo = bar !==  bar2\n"
+            "let foo = bar !==  bar2\n",
+            "let v8 = Int8(1)  << 6\n",
+            "let v8 = 1 <<  (6)\n",
+            "let v8 = 1 <<  (6)\n let foo = 1 > 2\n"
         ]
     )
 
@@ -61,18 +66,19 @@ public struct OperatorUsageWhitespaceRule: OptInRule, ConfigurationProviderRule 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"
         let manySpaces = oneSpace + "{2,}"
-        let variableOrNumber = "\\b"
+        let leadingVariableOrNumber = "(?:\\b|\\))"
+        let trailingVariableOrNumber = "(?:\\b|\\()"
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]
         let patterns = spaces.map { first, second in
-            variableOrNumber + first + operators + second + variableOrNumber
+            leadingVariableOrNumber + first + operators + second + trailingVariableOrNumber
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
-        let genericPattern = "<.+?>"
-        let validRangePattern = variableOrNumber + zeroSpaces + rangePattern +
-            zeroSpaces + variableOrNumber
+        let genericPattern = "<(?:\(oneSpace)|\\S)+?>" // not using dot to avoid matching new line
+        let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
+            zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
         let kinds = SyntaxKind.commentAndStringKinds()

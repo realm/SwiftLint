@@ -64,36 +64,27 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule {
 
         return parameters.flatMap { param -> StyleViolation? in
             guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let name = param["key.name"] as? String else {
-                return nil
-            }
-
-            // swiftlint:disable:next force_try
-            let regex = try! NSRegularExpression(pattern: name, options: [.ignoreMetacharacters])
-            guard let range = contents.byteRangeToNSRange(start: rangeStart,
-                                                          length: rangeLength) else {
+                let name = param["key.name"] as? String,
+                let regex = try? NSRegularExpression(pattern: name,
+                                                     options: [.ignoreMetacharacters]),
+                let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
+            else {
                 return nil
             }
 
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {
                 guard let byteRange = contents.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length) else {
+                                                                  length: range.length),
+                    // if it's the parameter declaration itself, we should skip
+                    byteRange.location != paramOffset,
+                    case let tokens = file.syntaxMap.tokensIn(byteRange),
+                    // a parameter usage should be only one token
+                    tokens.count == 1 else {
                     continue
                 }
 
-                // if it's the parameter declaration itself, we should skip
-                if byteRange.location == paramOffset {
-                    continue
-                }
-
-                let tokens = file.syntaxMap.tokensIn(byteRange)
-                // a parameter usage should be only one token
-                if tokens.count != 1 {
-                    continue
-                }
-
-                // found an usage, there's no violation!
+                // found a usage, there's no violation!
                 if let token = tokens.first, SyntaxKind(rawValue: token.type) == .identifier,
                     token.offset == byteRange.location, token.length == byteRange.length {
                     return nil

@@ -34,7 +34,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             ]
         }),
         triggeringExamples: ["class", "struct", "enum"].map({ type in
-            example(type, "let abc = 0\n", 201)
+            "↓" + example(type, "let abc = 0\n", 201)
         })
     )
 

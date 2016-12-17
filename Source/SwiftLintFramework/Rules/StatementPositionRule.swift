@@ -36,9 +36,9 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓}\n\t  catch {"
         ],
         corrections: [
-            "}\n else {\n": "} else {\n",
-            "}\n   else if {\n": "} else if {\n",
-            "}\n catch {\n": "} catch {\n"
+            "↓}\n else {\n": "} else {\n",
+            "↓}\n   else if {\n": "} else if {\n",
+            "↓}\n catch {\n": "} catch {\n"
         ]
     )
 

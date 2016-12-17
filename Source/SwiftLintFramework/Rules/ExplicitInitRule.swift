@@ -31,7 +31,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             "[String.self].map { Type in Type↓.init(1) }"  // starting with capital assumes as type
         ],
         corrections: [
-            "[1].flatMap{String.init($0)}" : "[1].flatMap{String($0)}"
+            "[1].flatMap{String↓.init($0)}" : "[1].flatMap{String($0)}"
         ]
     )
 

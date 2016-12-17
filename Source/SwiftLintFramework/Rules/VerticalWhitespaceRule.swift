@@ -31,7 +31,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         triggeringExamples: [
             "let aaaa = 0\n\n\n",
             "struct AAAA {}\n\n\n\n",
-             "class BBBB {}\n\n\n"
+            "class BBBB {}\n\n\n"
         ],
         corrections: [
             "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\nclass AAA {}\n",

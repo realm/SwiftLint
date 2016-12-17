@@ -29,11 +29,11 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
             "/*if true { */ return }"
         ],
         triggeringExamples: [
-            "guard true else { return }",
-            "if true { return }",
-            "if true { break } else { return }",
-            "if true { break } else {       return }",
-            "if true { return \"YES\" } else { return \"NO\" }"
+            "↓guard true else { return }",
+            "↓if true { return }",
+            "↓if true { break } else { return }",
+            "↓if true { break } else {       return }",
+            "↓if true { return \"YES\" } else { return \"NO\" }"
         ]
     )
 

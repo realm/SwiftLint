@@ -35,11 +35,11 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
             "let a = 0↓; ; ;\n"
         ],
         corrections: [
-            "let a = 0;\n": "let a = 0\n",
-            "let a = 0;\nlet b = 1\n": "let a = 0\nlet b = 1\n",
-            "let a = 0;;\n": "let a = 0\n",
-            "let a = 0;    ;;\n": "let a = 0\n",
-            "let a = 0; ; ;\n": "let a = 0\n"
+            "let a = 0↓;\n": "let a = 0\n",
+            "let a = 0↓;\nlet b = 1\n": "let a = 0\nlet b = 1\n",
+            "let a = 0↓;;\n": "let a = 0\n",
+            "let a = 0↓;    ;;\n": "let a = 0\n",
+            "let a = 0↓; ; ;\n": "let a = 0\n"
         ]
     )
 

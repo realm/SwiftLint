@@ -50,13 +50,13 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             ]
         }
         let typeAliasAndAssociatedTypeExamples: [String] = [
-            "typealias X = Void",
-            "private typealias Foo_Bar = Void",
-            "private typealias foo = Void",
-            "typealias \(repeatElement("A", count: 41).joined()) = Void",
-            "protocol Foo {\n associatedtype X\n }",
-            "protocol Foo {\n associatedtype Foo_Bar: Equatable\n }",
-            "protocol Foo {\n associatedtype \(repeatElement("A", count: 41).joined())\n }"
+            "typealias ↓X = Void",
+            "private typealias ↓Foo_Bar = Void",
+            "private typealias ↓foo = Void",
+            "typealias ↓\(repeatElement("A", count: 41).joined()) = Void",
+            "protocol Foo {\n associatedtype ↓X\n }",
+            "protocol Foo {\n associatedtype ↓Foo_Bar: Equatable\n }",
+            "protocol Foo {\n associatedtype ↓\(repeatElement("A", count: 41).joined())\n }"
         ]
 
         return typeExamples + typeAliasAndAssociatedTypeExamples

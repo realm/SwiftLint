@@ -25,11 +25,11 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
             "class C {\n@inline(never) dynamic func f() {}}"
         ],
         triggeringExamples: [
-            "class C {\n@inline(__always) dynamic func f() {}\n}",
-            "class C {\n@inline(__always) public dynamic func f() {}\n}",
-            "class C {\n@inline(__always) dynamic internal func f() {}\n}",
-            "class C {\n@inline(__always)\ndynamic func f() {}\n}",
-            "class C {\n@inline(__always)\ndynamic\nfunc f() {}\n}"
+            "class C {\n@inline(__always) dynamic ↓func f() {}\n}",
+            "class C {\n@inline(__always) public dynamic ↓func f() {}\n}",
+            "class C {\n@inline(__always) dynamic internal ↓func f() {}\n}",
+            "class C {\n@inline(__always)\ndynamic ↓func f() {}\n}",
+            "class C {\n@inline(__always)\ndynamic\n↓func f() {}\n}"
         ]
     )
 

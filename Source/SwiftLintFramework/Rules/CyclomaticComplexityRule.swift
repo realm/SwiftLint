@@ -31,7 +31,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                 "}}"
         ],
         triggeringExamples: [
-            "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
+            "↓func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
                 "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
                 "  case 2: break\n  case 3: break\n  case 4: break\n default: break\n  }\n" +
                 "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"

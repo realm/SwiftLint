@@ -25,7 +25,7 @@ class FileHeaderRuleTests: XCTestCase {
                 "//\n // **Header"
             ],
             triggeringExamples: [
-                "// Copyright\n",
+                "↓// Copyright\n",
                 "let foo = \"**Header\"",
                 "let foo = 2 // **Header",
                 "let foo = 2\n // **Header",
@@ -34,7 +34,7 @@ class FileHeaderRuleTests: XCTestCase {
         )
 
         verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
-                   stringDoesntViolate: false, skipCommentTests: true)
+                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
     }
 
     func testFileHeaderWithRequiredPattern() {
@@ -47,14 +47,14 @@ class FileHeaderRuleTests: XCTestCase {
                 "//\n // Copyright © 2016 Realm"
             ],
             triggeringExamples: [
-                "// Copyright\n",
-                "// Copyright © foo Realm",
-                "// Copyright © 2016 MyCompany"
+                "↓// Copyright\n",
+                "↓// Copyright © foo Realm",
+                "↓// Copyright © 2016 MyCompany"
             ]
         )
 
         verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
-                   stringDoesntViolate: false, skipCommentTests: true)
+                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
     }
 
     func testFileHeaderWithForbiddenString() {
@@ -70,8 +70,8 @@ class FileHeaderRuleTests: XCTestCase {
                 "let foo = 2 // **All rights reserved."
             ],
             triggeringExamples: [
-                "// **All rights reserved.",
-                "//\n // **All rights reserved."
+                "// ↓**All rights reserved.",
+                "//\n // ↓**All rights reserved."
             ]
         )
 
@@ -92,12 +92,12 @@ class FileHeaderRuleTests: XCTestCase {
                 "let foo = 2\n // FileHeaderRuleTests.swift."
             ],
             triggeringExamples: [
-                "// FileHeaderRuleTests.swift",
-                "//\n // FileHeaderRuleTests.swift"
+                "//↓ FileHeaderRuleTests.swift",
+                "//\n //↓ FileHeaderRuleTests.swift"
             ]
         )
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": ".*\\.swift"],
+        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
                    skipCommentTests: true)
     }
 }
@@ -105,7 +105,11 @@ class FileHeaderRuleTests: XCTestCase {
 extension FileHeaderRuleTests {
     static var allTests: [(String, (FileHeaderRuleTests) -> () throws -> Void)] {
         return [
-            ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration)
+            ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration),
+            ("testFileHeaderWithRequiredString", testFileHeaderWithRequiredString),
+            ("testFileHeaderWithRequiredPattern", testFileHeaderWithRequiredPattern),
+            ("testFileHeaderWithForbiddenString", testFileHeaderWithForbiddenString),
+            ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern)
         ]
     }
 }

@@ -141,11 +141,13 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
 
+        #if !os(Linux)
         if testMultiByteOffsets {
             let addEmoji: (String) -> String = { "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\($0)" }
             verifyExamples(triggers: triggers.map(addEmoji),
                            nonTriggers: nonTriggers.map(addEmoji), configuration: config)
         }
+        #endif
 
         // Comment doesn't violate
         if !skipCommentTests {

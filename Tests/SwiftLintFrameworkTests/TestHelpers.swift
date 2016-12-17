@@ -130,7 +130,8 @@ extension XCTestCase {
                     commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,
-                    skipStringTests: Bool = false) {
+                    skipStringTests: Bool = false,
+                    testMultiByteOffsets: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
             XCTFail()
             return
@@ -139,6 +140,12 @@ extension XCTestCase {
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
+
+        if testMultiByteOffsets {
+            let addEmoji: (String) -> String = { "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\($0)" }
+            verifyExamples(triggers: triggers.map(addEmoji),
+                           nonTriggers: nonTriggers.map(addEmoji), configuration: config)
+        }
 
         // Comment doesn't violate
         if !skipCommentTests {
@@ -207,7 +214,7 @@ extension XCTestCase {
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
             }
 
-            // Assert locations missing vaiolation
+            // Assert locations missing violation
             let violatedLocations = triggerViolations.map { $0.location }
             let locationsWithoutViolation = expectedLocations
                 .filter { !violatedLocations.contains($0) }

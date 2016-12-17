@@ -135,7 +135,8 @@ class RulesTests: XCTestCase {
     }
 
     func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false)
+        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
+                   testMultiByteOffsets: false)
     }
 
     func testForceCast() {
@@ -163,7 +164,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description)
+        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false)
     }
 
     func testLegacyCGGeometryFunctions() {

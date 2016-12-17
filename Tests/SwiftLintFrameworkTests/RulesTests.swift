@@ -371,6 +371,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeNameRule.description)
     }
 
+    func testUnusedClosureParameter() {
+        verifyRule(UnusedClosureParameterRule.description)
+    }
+
 // swiftlint:disable:next todo
 // FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testValidDocs() {
@@ -453,6 +457,7 @@ extension RulesTests {
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
             // ("testTypeName", testTypeName),
+            ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testValidIBInspectable", testValidIBInspectable),
             // ("testVariableName", testVariableName),
             ("testVoidReturn", testVoidReturn),

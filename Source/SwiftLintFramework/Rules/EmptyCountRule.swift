@@ -36,7 +36,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, byteOffset: $0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

@@ -59,7 +59,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
 
             // check if the first token in the line is `case`
             let lineAndCharacter = file.contents.bridge()
-                .lineAndCharacter(forByteOffset: range.location)
+                .lineAndCharacter(forCharacterOffset: range.location)
             guard let (lineNumber, _) = lineAndCharacter else {
                 return false
             }

@@ -49,15 +49,15 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule {
         let pattern = "expect\\((.(?!expect\\())+?\\)\\.to(Not)?\\(\(operatorsPattern)\\("
         let excludingKinds = SyntaxKind.commentKinds()
 
-        let matches = file.matchPattern(pattern).filter {
+        let matches = file.matchPattern(pattern).filter { _, kinds in
             // excluding comment kinds and making sure first token (`expect`) is an identifier
-            $0.1.filter(excludingKinds.contains).isEmpty && $0.1.first == .identifier
+            kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
         }
 
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, byteOffset: $0.0.location))
+                location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 }

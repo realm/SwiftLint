@@ -99,9 +99,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#626](https://github.com/realm/SwiftLint/issues/626)
 
-* Add `unused_closure_parameter` rule that validates if all closure parameters
-  are being used. If any of them isn't, it should be replaced by `_`.  
+* Add `unused_closure_parameter` correctable rule that validates if all closure
+  parameters are being used. If a parameter is unused, it should be replaced by
+  `_`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  [JP Simard](https://github.com/jpsim)
   [#982](https://github.com/realm/SwiftLint/issues/982)
 
 ##### Bug Fixes

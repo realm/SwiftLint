@@ -92,7 +92,7 @@ archive:
 release: package archive portable_zip
 
 docker_test:
-	docker run -v `pwd`:/SwiftLint norionomura/sourcekit:301 bash -c "cd /SwiftLint && swift test"
+	docker run -v `pwd`:/SwiftLint norionomura/sourcekit:302 bash -c "cd /SwiftLint && swift test"
 
 # http://irace.me/swift-profiling/
 display_compilation_time:

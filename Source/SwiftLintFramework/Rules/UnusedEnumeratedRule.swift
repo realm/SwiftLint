@@ -23,7 +23,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
             "for (_, foo) in bar.enumerated().something() { }\n",
             "for (_, foo) in bar.something() { }\n",
             "for foo in bar.enumerated() { }\n",
-            "for foo in bar { }\n"
+            "for foo in bar { }\n",
+            "for (idx, _) in bar.enumerated() { }\n"
         ],
         triggeringExamples: [
             "for (↓_, foo) in bar.enumerated() { }\n",

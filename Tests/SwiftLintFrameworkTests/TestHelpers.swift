@@ -123,6 +123,24 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Con
     return Configuration(whitelistRules: [identifier])
 }
 
+private func testCorrection(_ correction: (String, String),
+                            configuration config: Configuration,
+                            testMultiByteOffsets: Bool) {
+    config.assertCorrection(correction.0, expected: correction.1)
+
+    // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
+    // https://bugs.swift.org/browse/SR-3449
+    #if !os(Linux)
+        if testMultiByteOffsets {
+            config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
+        }
+    #endif
+}
+
+private func addEmoji(_ string: String) -> String {
+    return "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(string)"
+}
+
 extension XCTestCase {
     // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
@@ -130,7 +148,8 @@ extension XCTestCase {
                     commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,
-                    skipStringTests: Bool = false) {
+                    skipStringTests: Bool = false,
+                    testMultiByteOffsets: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
             XCTFail()
             return
@@ -139,6 +158,15 @@ extension XCTestCase {
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
+
+        // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
+        // https://bugs.swift.org/browse/SR-3449
+        #if !os(Linux)
+        if testMultiByteOffsets {
+            verifyExamples(triggers: triggers.map(addEmoji),
+                           nonTriggers: nonTriggers.map(addEmoji), configuration: config)
+        }
+        #endif
 
         // Comment doesn't violate
         if !skipCommentTests {
@@ -161,9 +189,13 @@ extension XCTestCase {
         XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
 
         // corrections
-        ruleDescription.corrections.forEach(config.assertCorrection)
+        ruleDescription.corrections.forEach {
+            testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+        }
         // make sure strings that don't trigger aren't corrected
-        zip(nonTriggers, nonTriggers).forEach(config.assertCorrection)
+        zip(nonTriggers, nonTriggers).forEach {
+            testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+        }
 
         // "disable" command do not correct
         ruleDescription.corrections.forEach { before, _ in
@@ -207,7 +239,7 @@ extension XCTestCase {
                     "\(render(violations: violationsAtUnexpectedLocation, in: trigger))")
             }
 
-            // Assert locations missing vaiolation
+            // Assert locations missing violation
             let violatedLocations = triggerViolations.map { $0.location }
             let locationsWithoutViolation = expectedLocations
                 .filter { !violatedLocations.contains($0) }

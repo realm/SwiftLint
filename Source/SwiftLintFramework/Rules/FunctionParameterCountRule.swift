@@ -29,12 +29,12 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                 "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
         ],
         triggeringExamples: [
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
             "struct Foo {\n" +
                 "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}\n" +
-                "func bar(a: b, c: Int, d: Int, e: Int, f: Int, g: Int) {}}"
+                "↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}"
         ]
     )
 

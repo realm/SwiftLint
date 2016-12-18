@@ -67,23 +67,23 @@ class RulesTests: XCTestCase {
                 "func abc(def: Void, ↓ghi :Void) {}\n"
             ],
             corrections: [
-                "let abc:Void\n": "let abc: Void\n",
-                "let abc :Void\n": "let abc: Void\n",
-                "let abc : Void\n": "let abc: Void\n",
-                "let abc : [Void: Void]\n": "let abc: [Void: Void]\n",
-                "let abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
-                "let abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
-                "let abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
-                "let abc :String=\"def\"\n": "let abc: String=\"def\"\n",
-                "let abc :Int=0\n": "let abc: Int=0\n",
-                "let abc :Int = 0\n": "let abc: Int = 0\n",
-                "let abc:Int=0\n": "let abc: Int=0\n",
-                "let abc:Int = 0\n": "let abc: Int = 0\n",
-                "let abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
-                "func abc(def:Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def :Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def : Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def: Void, ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
+                "let ↓abc:Void\n": "let abc: Void\n",
+                "let ↓abc :Void\n": "let abc: Void\n",
+                "let ↓abc : Void\n": "let abc: Void\n",
+                "let ↓abc : [Void: Void]\n": "let abc: [Void: Void]\n",
+                "let ↓abc : (Void, String, Int)\n": "let abc: (Void, String, Int)\n",
+                "let ↓abc : ([Void], String, Int)\n": "let abc: ([Void], String, Int)\n",
+                "let ↓abc : [([Void], String, Int)]\n": "let abc: [([Void], String, Int)]\n",
+                "let ↓abc :String=\"def\"\n": "let abc: String=\"def\"\n",
+                "let ↓abc :Int=0\n": "let abc: Int=0\n",
+                "let ↓abc :Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Int=0\n": "let abc: Int=0\n",
+                "let ↓abc:Int = 0\n": "let abc: Int = 0\n",
+                "let ↓abc:Enum=Enum.Value\n": "let abc: Enum=Enum.Value\n",
+                "func abc(↓def:Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def :Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(↓def : Void) {}\n": "func abc(def: Void) {}\n",
+                "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
             ]
         )
 
@@ -135,7 +135,8 @@ class RulesTests: XCTestCase {
     }
 
     func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false)
+        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
+                   testMultiByteOffsets: false)
     }
 
     func testForceCast() {
@@ -163,7 +164,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description)
+        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false)
     }
 
     func testLegacyCGGeometryFunctions() {

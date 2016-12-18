@@ -2,7 +2,7 @@
 //  MarkRule.swift
 //  SwiftLint
 //
-//  Created by Krzysztof Rodak on 22/08/16.
+//  Created by Krzysztof Rodak on 08/22/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -25,27 +25,27 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "// MARK: -\n"
         ],
         triggeringExamples: [
-            "//MARK: bad",
-            "// MARK:bad",
-            "//MARK:bad",
-            "//  MARK: bad",
-            "// MARK:  bad",
-            "// MARK: -bad",
-            "// MARK:- bad",
-            "// MARK:-bad",
-            "//MARK: - bad",
-            "//MARK:- bad",
-            "//MARK: -bad",
-            "//MARK:-bad"
+            "↓//MARK: bad",
+            "↓// MARK:bad",
+            "↓//MARK:bad",
+            "↓//  MARK: bad",
+            "↓// MARK:  bad",
+            "↓// MARK: -bad",
+            "↓// MARK:- bad",
+            "↓// MARK:-bad",
+            "↓//MARK: - bad",
+            "↓//MARK:- bad",
+            "↓//MARK: -bad",
+            "↓//MARK:-bad"
         ],
         corrections: [
-            "//MARK: comment"   : "// MARK: comment",
-            "// MARK:  comment"   : "// MARK: comment",
-            "// MARK:comment" : "// MARK: comment",
-            "//  MARK: comment" : "// MARK: comment",
-            "//MARK: - comment" : "// MARK: - comment",
-            "// MARK:- comment" : "// MARK: - comment",
-            "// MARK: -comment" : "// MARK: - comment"
+            "↓//MARK: comment": "// MARK: comment",
+            "↓// MARK:  comment": "// MARK: comment",
+            "↓// MARK:comment": "// MARK: comment",
+            "↓//  MARK: comment": "// MARK: comment",
+            "↓//MARK: - comment": "// MARK: - comment",
+            "↓// MARK:- comment": "// MARK: - comment",
+            "↓// MARK: -comment": "// MARK: - comment"
         ]
     )
 

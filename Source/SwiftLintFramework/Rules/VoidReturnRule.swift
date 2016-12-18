@@ -33,10 +33,10 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
             "let foo: (ConfigurationTests) -> () throws -> ↓())\n"
         ],
         corrections: [
-            "let abc: () -> () = {}\n": "let abc: () -> Void = {}\n",
-            "func foo(completion: () -> ())\n": "func foo(completion: () -> Void)\n",
-            "func foo(completion: () -> (   ))\n": "func foo(completion: () -> Void)\n",
-            "let foo: (ConfigurationTests) -> () throws -> ())\n":
+            "let abc: () -> ↓() = {}\n": "let abc: () -> Void = {}\n",
+            "func foo(completion: () -> ↓())\n": "func foo(completion: () -> Void)\n",
+            "func foo(completion: () -> ↓(   ))\n": "func foo(completion: () -> Void)\n",
+            "let foo: (ConfigurationTests) -> () throws -> ↓())\n":
                 "let foo: (ConfigurationTests) -> () throws -> Void)\n"
         ]
     )

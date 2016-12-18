@@ -26,8 +26,8 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n"
         ],
         triggeringExamples: [
-            "class Foo {\n  @IBOutlet var label: UILabel?\n}\n",
-            "class Foo {\n  @IBOutlet var label: UILabel!\n}\n"
+            "class Foo {\n  @IBOutlet ↓var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet ↓var label: UILabel!\n}\n"
         ]
     )
 

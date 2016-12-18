@@ -34,11 +34,11 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
             "let result = plus(\n    first: 3↓ , // #683\n    second: 4\n)\n"
         ],
         corrections: [
-            "func abc(a: String,b: String) {}\n": "func abc(a: String, b: String) {}\n",
-            "abc(a: \"string\",b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
-            "abc(a: \"string\"  ,  b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
-            "enum a { case a  ,b }\n": "enum a { case a, b }\n",
-            "let a = [1,1]\nlet b = 1\nf(1, b)\n": "let a = [1, 1]\nlet b = 1\nf(1, b)\n",
+            "func abc(a: String↓,b: String) {}\n": "func abc(a: String, b: String) {}\n",
+            "abc(a: \"string\"↓,b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
+            "abc(a: \"string\"↓  ,  b: \"string\"\n": "abc(a: \"string\", b: \"string\"\n",
+            "enum a { case a↓  ,b }\n": "enum a { case a, b }\n",
+            "let a = [1↓,1]\nlet b = 1\nf(1, b)\n": "let a = [1, 1]\nlet b = 1\nf(1, b)\n",
             "let a = [1↓,1↓,1↓,1]\n": "let a = [1, 1, 1, 1]\n"
         ]
     )

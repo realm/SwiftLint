@@ -26,12 +26,12 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             "extension UITableViewCell: ReusableView {}"
         ],
         triggeringExamples: [
-            "[].filter({$0.contains(location)})",
-            "[].map({$0})"
+            "[].filter(↓{$0.contains(location)})",
+            "[].map(↓{$0})"
         ]
     )
 
-    // this helps cut down the time to search true a file by
+    // this helps cut down the time to search through a file by
     // skipping lines that do not have at least one { and one } brace
     private func lineContainsBracesIn(_ range: NSRange, content: NSString) -> NSRange? {
         let start = content.range(of: "{", options: [.literal], range: range)

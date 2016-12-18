@@ -36,12 +36,12 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "enum Environment {\n case development(url: URL) // staging\n}"
         ],
         triggeringExamples: [
-            "case 1: return true",
-            "case let value: return true",
-            "default: return true",
-            "case \"a string\": return false",
-            "case .myCase: return false // error from network",
-            "case let .myCase(value) where value > 10: return false"
+            "↓case 1: return true",
+            "↓case let value: return true",
+            "↓default: return true",
+            "↓case \"a string\": return false",
+            "↓case .myCase: return false // error from network",
+            "↓case let .myCase(value) where value > 10: return false"
         ]
     )
 

@@ -32,9 +32,9 @@ class AttributesRuleTests: XCTestCase {
                 "}"
             ],
             triggeringExamples: [
-                "@objc\n var x: String",
-                "@objc\n func foo()",
-                "@nonobjc func foo()"
+                "@objc\n ↓var x: String",
+                "@objc\n ↓func foo()",
+                "@nonobjc ↓func foo()"
             ]
         )
 
@@ -55,9 +55,9 @@ class AttributesRuleTests: XCTestCase {
                 "@nonobjc\n func foo()"
             ],
             triggeringExamples: [
-                "@objc var x: String",
-                "@objc func foo()",
-                "@nonobjc func foo()"
+                "@objc ↓var x: String",
+                "@objc ↓func foo()",
+                "@nonobjc ↓func foo()"
             ]
         )
 

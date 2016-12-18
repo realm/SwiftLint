@@ -40,15 +40,15 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].something { number, ↓idx in\n return number\n}\n"
         ],
         corrections: [
-            "[1, 2].map { number in\n return 3\n}\n":
+            "[1, 2].map { ↓number in\n return 3\n}\n":
                 "[1, 2].map { _ in\n return 3\n}\n",
-            "[1, 2].map { number in\n return numberWithSuffix\n}\n":
+            "[1, 2].map { ↓number in\n return numberWithSuffix\n}\n":
                 "[1, 2].map { _ in\n return numberWithSuffix\n}\n",
-            "[1, 2].map { number in\n return 3 // number\n}\n":
+            "[1, 2].map { ↓number in\n return 3 // number\n}\n":
                 "[1, 2].map { _ in\n return 3 // number\n}\n",
-            "[1, 2].map { number in\n return 3 \"number\"\n}\n":
+            "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n":
                 "[1, 2].map { _ in\n return 3 \"number\"\n}\n",
-            "[1, 2].something { number, idx in\n return number\n}\n":
+            "[1, 2].something { number, ↓idx in\n return number\n}\n":
                 "[1, 2].something { number, _ in\n return number\n}\n"
         ]
     )

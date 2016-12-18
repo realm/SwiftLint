@@ -24,9 +24,9 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
             "[Int]().count == 1\n"
         ],
         triggeringExamples: [
-            "[Int]().count == 0\n",
-            "[Int]().count > 0\n",
-            "[Int]().count != 0\n"
+            "[Int]().↓count == 0\n",
+            "[Int]().↓count > 0\n",
+            "[Int]().↓count != 0\n"
         ]
     )
 

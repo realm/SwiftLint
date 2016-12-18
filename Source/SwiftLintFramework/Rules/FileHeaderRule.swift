@@ -24,14 +24,14 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             "let foo = 2\n // Copyright"
         ],
         triggeringExamples: [
-            "// Copyright\n",
-            "//\n// Copyright",
+            "// ↓Copyright\n",
+            "//\n// ↓Copyright",
             "//\n" +
             "//  FileHeaderRule.swift\n" +
             "//  SwiftLint\n" +
             "//\n" +
             "//  Created by Marcelo Fabri on 27/11/16.\n" +
-            "//  Copyright © 2016 Realm. All rights reserved.\n" +
+            "//  ↓Copyright © 2016 Realm. All rights reserved.\n" +
             "//"
         ]
     )

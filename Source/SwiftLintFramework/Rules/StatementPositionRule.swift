@@ -36,9 +36,9 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓}\n\t  catch {"
         ],
         corrections: [
-            "}\n else {\n": "} else {\n",
-            "}\n   else if {\n": "} else if {\n",
-            "}\n catch {\n": "} catch {\n"
+            "↓}\n else {\n": "} else {\n",
+            "↓}\n   else if {\n": "} else if {\n",
+            "↓}\n catch {\n": "} catch {\n"
         ]
     )
 
@@ -224,22 +224,19 @@ private extension StatementPositionRule {
 
         for match in validMatches.reversed() {
             let range1 = match.rangeAt(1)
-            let nsRange2 = match.rangeAt(3)
+            let range2 = match.rangeAt(3)
             let newlineRange = match.rangeAt(2)
-            let start = contents.characters.index(contents.startIndex, offsetBy: nsRange2.location)
-            let end = contents.characters.index(start, offsetBy: nsRange2.length)
-            let range2 = start..<end
-            var whitespace = contents.substring(range1.location, length: range1.length)
+            var whitespace = contents.bridge().substring(with: range1)
             let newLines: String
             if newlineRange.location != NSNotFound {
-               newLines = contents.substring(newlineRange.location, length: newlineRange.length)
+               newLines = contents.bridge().substring(with: newlineRange)
             } else {
                 newLines = ""
             }
             if !whitespace.hasPrefix("\n") && newLines != "\n" {
                 whitespace.insert("\n", at: whitespace.startIndex)
             }
-            contents.replaceSubrange(range2, with: whitespace)
+            contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)
             let location = Location(file: file, characterOffset: match.range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }

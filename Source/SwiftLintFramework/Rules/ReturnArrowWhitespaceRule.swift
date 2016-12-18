@@ -29,29 +29,29 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             "func abc()\n    -> Int {}\n"
         ],
         triggeringExamples: [
-            "func abc(↓)->Int {}\n",
-            "func abc(↓)->[Int] {}\n",
-            "func abc(↓)->(Int, Int) {}\n",
-            "func abc(↓)-> Int {}\n",
-            "func abc(↓) ->Int {}\n",
-            "func abc(↓)  ->  Int {}\n",
-            "var abc = {(param: Int↓) ->Bool in }\n",
-            "var abc = {(param: Int↓)->Bool in }\n"
+            "func abc()↓->Int {}\n",
+            "func abc()↓->[Int] {}\n",
+            "func abc()↓->(Int, Int) {}\n",
+            "func abc()↓-> Int {}\n",
+            "func abc()↓ ->Int {}\n",
+            "func abc()↓  ->  Int {}\n",
+            "var abc = {(param: Int)↓ ->Bool in }\n",
+            "var abc = {(param: Int)↓->Bool in }\n"
         ],
         corrections: [
-            "func abc()->Int {}\n": "func abc() -> Int {}\n",
-            "func abc()-> Int {}\n": "func abc() -> Int {}\n",
-            "func abc() ->Int {}\n": "func abc() -> Int {}\n",
-            "func abc()  ->  Int {}\n": "func abc() -> Int {}\n",
-            "func abc()\n  ->  Int {}\n": "func abc()\n  -> Int {}\n",
-            "func abc()\n->  Int {}\n": "func abc()\n-> Int {}\n",
-            "func abc()  ->\n  Int {}\n": "func abc() ->\n  Int {}\n",
-            "func abc()  ->\nInt {}\n": "func abc() ->\nInt {}\n"
+            "func abc()↓->Int {}\n": "func abc() -> Int {}\n",
+            "func abc()↓-> Int {}\n": "func abc() -> Int {}\n",
+            "func abc()↓ ->Int {}\n": "func abc() -> Int {}\n",
+            "func abc()↓  ->  Int {}\n": "func abc() -> Int {}\n",
+            "func abc()↓\n  ->  Int {}\n": "func abc()\n  -> Int {}\n",
+            "func abc()↓\n->  Int {}\n": "func abc()\n-> Int {}\n",
+            "func abc()↓  ->\n  Int {}\n": "func abc() ->\n  Int {}\n",
+            "func abc()↓  ->\nInt {}\n": "func abc() ->\nInt {}\n"
         ]
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        return violationRangesInFile(file).map {
+        return violationRangesInFile(file, skipParentheses: true).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -59,7 +59,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let matches = file.ruleEnabledViolatingRanges(violationRangesInFile(file), forRule: self)
+        let violationsRanges = violationRangesInFile(file, skipParentheses: false)
+        let matches = file.ruleEnabledViolatingRanges(violationsRanges, forRule: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(pattern)
         let description = type(of: self).description
@@ -82,7 +83,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
                 }
             }
 
-            let location = Location(file: file, characterOffset: result.range.location)
+            // skip the parentheses when reporting correction
+            let location = Location(file: file, characterOffset: result.range.location + 1)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
@@ -91,7 +93,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     // MARK: - Private
 
-    fileprivate let pattern: String = {
+    private let pattern: String = {
         //just horizontal spacing so that "func abc()->\n" can pass validation
         let space = "[ \\f\\r\\t]"
 
@@ -111,7 +113,15 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     }()
 
-    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
-        return file.matchPattern(pattern, withSyntaxKinds: [.typeidentifier])
+    private func violationRangesInFile(_ file: File, skipParentheses: Bool) -> [NSRange] {
+        let matches = file.matchPattern(pattern, withSyntaxKinds: [.typeidentifier])
+        guard skipParentheses else {
+            return matches
+        }
+
+        return matches.map {
+            // skip first (
+            NSRange(location: $0.location + 1, length: $0.length - 1)
+        }
     }
 }

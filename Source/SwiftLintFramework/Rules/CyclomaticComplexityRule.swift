@@ -58,7 +58,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    fileprivate func measureComplexity(_ file: File,
+    private func measureComplexity(_ file: File,
                                        dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
@@ -70,17 +70,21 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                 return complexity
             }
 
-            if let declarationKid = SwiftDeclarationKind(rawValue: kind),
-                SwiftDeclarationKind.functionKinds().contains(declarationKid) {
+            if let declarationKind = SwiftDeclarationKind(rawValue: kind),
+                SwiftDeclarationKind.functionKinds().contains(declarationKind) {
                 return complexity
             }
 
-            if kind == "source.lang.swift.stmt.switch" {
+            guard let statementKind = StatementKind(rawValue: kind) else {
+                return complexity + measureComplexity(file, dictionary: subDict)
+            }
+
+            if statementKind == .switch {
                 hasSwitchStatements = true
             }
 
             return complexity +
-                (complexityStatements.contains(kind) ? 1 : 0) +
+                (complexityStatements.contains(statementKind) ? 1 : 0) +
                 measureComplexity(file, dictionary: subDict)
         }
 
@@ -93,7 +97,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    fileprivate func reduceSwitchComplexity(_ complexity: Int, file: File,
+    private func reduceSwitchComplexity(_ complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
         let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
         let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
@@ -105,14 +109,14 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         return complexity - fallthroughCount
     }
 
-    fileprivate let complexityStatements = [
-        "source.lang.swift.stmt.foreach",
-        "source.lang.swift.stmt.if",
-        "source.lang.swift.stmt.case",
-        "source.lang.swift.stmt.guard",
-        "source.lang.swift.stmt.for",
-        "source.lang.swift.stmt.repeatwhile",
-        "source.lang.swift.stmt.while"
+    private let complexityStatements: [StatementKind] = [
+        .forEach,
+        .if,
+        .case,
+        .guard,
+        .for,
+        .repeatWhile,
+        .while
     ]
 
 }

@@ -133,6 +133,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#981](https://github.com/realm/SwiftLint/issues/981)
 
+* Fix crash when correcting `statement_position` rule when there are
+  multi-byte characters in the file.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.13.2: Light Cycle
 
 ##### Breaking

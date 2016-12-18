@@ -20,12 +20,16 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n"
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n",
+            "https://github.com/realm/SwiftLint " + String(repeating: "/", count: 118)
+                + " https://github.com/realm/SwiftLint\n",
+            "https://github.com/realm/SwiftLint/" + String(repeating: "a", count: 120)
         ],
         triggeringExamples: [
             String(repeating: "/", count: 121) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n"
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n",
+            String(repeating: "/", count: 121) + "https://github.com/realm/SwiftLint\n"
         ]
     )
 
@@ -40,6 +44,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             }
 
             var strippedString = line.content
+            strippedString = stripUrls(fromSourceString: strippedString)
             strippedString = stripLiterals(fromSourceString: strippedString,
                 withDelimiter: "#colorLiteral")
             strippedString = stripLiterals(fromSourceString: strippedString,
@@ -85,6 +90,16 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         }
 
         return modifiedString
+    }
+
+    private func stripUrls(fromSourceString sourceString: String) -> String {
+        let types = NSTextCheckingResult.CheckingType.link.rawValue
+        let range = NSRange(location: 0, length: sourceString.bridge().length)
+        guard let urlDetector = try? NSDataDetector(types: types) else {
+            return sourceString
+        }
+        return urlDetector.stringByReplacingMatches(in: sourceString, options: [],
+                                                    range: range, withTemplate: "")
     }
 
 }

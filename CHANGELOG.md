@@ -134,6 +134,10 @@
 
 ##### Enhancements
 
+* Add check to ignore urls in `line_length` rule.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#384](https://github.com/realm/SwiftLint/issues/384)
+
 * Add `closure_end_indentation` opt-in rule that validates closure closing
   braces according to these rules:
   * If the method call has chained breaking lines on each method

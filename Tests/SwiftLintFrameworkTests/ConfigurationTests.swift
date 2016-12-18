@@ -46,7 +46,7 @@ class ConfigurationTests: XCTestCase {
 
     func testWhitelistRules() {
         let whitelist = ["nesting", "todo"]
-        let config = Configuration(dict: ["whitelist_rules":  whitelist])!
+        let config = Configuration(dict: ["whitelist_rules": whitelist])!
         let configuredIdentifiers = config.rules.map {
             type(of: $0).description.identifier
         }.sorted()
@@ -85,7 +85,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testDisabledRules() {
-        let disabledConfig = Configuration(dict: ["disabled_rules":  ["nesting", "todo"]])!
+        let disabledConfig = Configuration(dict: ["disabled_rules": ["nesting", "todo"]])!
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
@@ -97,7 +97,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
-        let duplicateConfig = Configuration(dict: ["disabled_rules":  ["todo", "todo"]])
+        let duplicateConfig = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
         XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
     }

@@ -64,10 +64,10 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓}\n\t  catch {"
         ],
         corrections: [
-            "  }else if {":"  }\n  else if {",
-            "}\n  else {":"}\nelse {",
-            "  }\ncatch {":"  }\n  catch {",
-            "}\n\t  catch {":"}\ncatch {"
+            "  }else if {": "  }\n  else if {",
+            "}\n  else {": "}\nelse {",
+            "  }\ncatch {": "  }\n  catch {",
+            "}\n\t  catch {": "}\ncatch {"
         ]
     )
 

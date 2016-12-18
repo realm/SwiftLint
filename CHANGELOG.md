@@ -106,6 +106,11 @@
   [JP Simard](https://github.com/jpsim)
   [#982](https://github.com/realm/SwiftLint/issues/982)
 
+* Add `unused_enumerated` rule that warns against unused indexes when using
+  `.enumerated()` on a for loop, e.g. `for (_, foo) in bar.enumerated()`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#619](https://github.com/realm/SwiftLint/issues/619)
+
 ##### Bug Fixes
 
 * Fix `weak_delegate` rule reporting a violation for variables containing

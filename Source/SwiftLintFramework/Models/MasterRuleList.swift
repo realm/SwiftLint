@@ -96,6 +96,7 @@ public let masterRuleList = RuleList(rules:
     TypeBodyLengthRule.self,
     TypeNameRule.self,
     UnusedClosureParameterRule.self,
+    UnusedEnumeratedRule.self,
     ValidDocsRule.self,
     ValidIBInspectableRule.self,
     VariableNameRule.self,

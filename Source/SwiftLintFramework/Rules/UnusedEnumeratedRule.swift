@@ -41,7 +41,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
             let byteRange = byteRangeForVariables(dictionary),
             let firstToken = file.syntaxMap.tokensIn(byteRange).first,
             firstToken.length == 1,
-            SyntaxKind(rawValue: firstToken.type) == .keyword else {
+            SyntaxKind(rawValue: firstToken.type) == .keyword,
+            isUnderscore(file: file, token: firstToken) else {
             return []
         }
 
@@ -88,5 +89,10 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         }
 
         return nil
+    }
+
+    private func isUnderscore(file: File, token: SyntaxToken) -> Bool {
+        let contents = file.contents.bridge()
+        return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
     }
 }

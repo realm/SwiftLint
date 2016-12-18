@@ -80,7 +80,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let nameCharacterSet = CharacterSet(charactersIn: name)
+            let nameCharacterSet = CharacterSet(fixedCharactersIn: name)
             let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
             let description = type(of: self).description
 

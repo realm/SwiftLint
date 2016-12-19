@@ -119,7 +119,7 @@ spm_clean_dist:
 	$(SWIFT_BUILD_COMMAND) --clean=dist
 
 publish:
-	brew update && brew bump-formula-pr --tag=$(git describe --tags) --revision=$(git rev-parse HEAD) swiftlint
+	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
 	pod trunk push
 
 get_version:

@@ -58,15 +58,15 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     private func nameIsViolatingCase(_ name: String) -> Bool {
         let secondIndex = name.characters.index(after: name.startIndex)
         let firstCharacter = name.substring(to: secondIndex)
-        if firstCharacter.isUppercase() {
-            if name.characters.count > 1 {
-                let range = secondIndex..<name.characters.index(after: secondIndex)
-                let secondCharacter = name.substring(with: range)
-                return secondCharacter.isLowercase()
-            }
+        guard firstCharacter.isUppercase() else {
+            return false
+        }
+        guard name.characters.count > 1 else {
             return true
         }
-        return false
+        let range = secondIndex..<name.characters.index(after: secondIndex)
+        let secondCharacter = name.substring(with: range)
+        return secondCharacter.isLowercase()
     }
 
     public func validateFile(_ file: File, kind: SwiftDeclarationKind,
@@ -75,7 +75,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        return file.validateIdentifierName(dictionary, kind: kind).map { name, offset in
+        return validateName(dictionary, kind: kind).map { name, offset in
             guard !configuration.excluded.contains(name) else {
                 return []
             }
@@ -125,7 +125,21 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
     private func isOperator(name: String) -> Bool {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return !operators.filter { name.hasPrefix($0) }.isEmpty
+        return !operators.filter(name.hasPrefix).isEmpty
+    }
+
+    private func validateName(_ dictionary: [String: SourceKitRepresentable],
+                              kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
+        let kinds = SwiftDeclarationKind.variableKinds() +
+            SwiftDeclarationKind.functionKinds() + [.enumelement]
+
+        guard let name = dictionary["key.name"] as? String,
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            kinds.contains(kind) && !name.hasPrefix("$") else {
+                return nil
+        }
+
+        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
     private func typeForKind(_ kind: SwiftDeclarationKind) -> String {

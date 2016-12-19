@@ -74,7 +74,7 @@ portable_zip: installables
 	install_name_tool -rpath "/Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks" "@executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks" "$(TEMPORARY_FOLDER)/swiftlint"
 	install_name_tool -rpath "/Library/Frameworks" "@executable_path" "$(TEMPORARY_FOLDER)/swiftlint"
 	rm -f "./portable_swiftlint.zip"
-	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "SwiftLintFramework.framework") > "./portable_swiftlint.zip"
+	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "SwiftLintFramework.framework" "LICENSE") > "./portable_swiftlint.zip"
 
 package: installables
 	pkgbuild \
@@ -120,7 +120,8 @@ spm_clean_dist:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push
+	pod trunk push SwiftLintFramework.podspec
+	pod trunk push SwiftLint.podspec
 
 get_version:
 	@echo $(VERSION_STRING)

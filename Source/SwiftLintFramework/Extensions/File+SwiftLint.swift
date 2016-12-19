@@ -45,7 +45,7 @@ extension File {
                 return Command(string: contents, range: range)
             }.flatMap { command in
                 return command.expand()
-        }
+            }
     }
 
     fileprivate func endOfNextCommand(_ nextCommand: Command?) -> Location {

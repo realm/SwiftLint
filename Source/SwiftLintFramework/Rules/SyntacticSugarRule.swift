@@ -45,7 +45,7 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
         let pattern = "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
 
         return file.matchPattern(pattern,
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
+                                 excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()).map {
                 StyleViolation(ruleDescription: type(of: self).description,
                     severity: configuration.severity,
                     location: Location(file: file, characterOffset: $0.location))

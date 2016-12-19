@@ -40,12 +40,12 @@ extension File {
             return []
         }
         let contents = self.contents.bridge()
-        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+",
-            withSyntaxKinds: [.comment]).flatMap { range in
-                return Command(string: contents, range: range)
-            }.flatMap { command in
-                return command.expand()
-            }
+        let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
+        return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in
+            return Command(string: contents, range: range)
+        }.flatMap { command in
+            return command.expand()
+        }
     }
 
     fileprivate func endOfNextCommand(_ nextCommand: Command?) -> Location {

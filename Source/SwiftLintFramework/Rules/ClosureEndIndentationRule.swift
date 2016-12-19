@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureEndIndentationRule: ASTRule, ConfigurationProviderRule {
+public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -22,13 +22,24 @@ public struct ClosureEndIndentationRule: ASTRule, ConfigurationProviderRule {
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +
             "       print(number)\n" +
-            "   }"
+            "   }\n",
+            "[1, 2].map { $0 + 1 }\n",
+            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "   return Command(string: contents, range: range)\n" +
+            "}.flatMap { command in\n" +
+            "   return command.expand()\n" +
+            "}\n"
         ],
         triggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +
             "       print(number)\n" +
-            "}"
+            "↓}\n",
+            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "   return Command(string: contents, range: range)\n" +
+            "   ↓}.flatMap { command in\n" +
+            "   return command.expand()\n" +
+            "↓}\n"
         ]
     )
 
@@ -44,28 +55,57 @@ public struct ClosureEndIndentationRule: ASTRule, ConfigurationProviderRule {
         let contents = file.contents
         guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
+            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
             bodyLength > 0,
             case let endOffset = offset + length - 1,
             contents.bridge().substringWithByteRange(start: endOffset, length: 1) == "}",
-            let (startLine, _) = contents.lineAndCharacter(forByteOffset: bodyOffset),
+            let startOffset = startOffsetFor(dictionary: dictionary, file: file),
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
-            startLine != endLine else {
+            case let nameEndPosition = nameOffset + nameLength,
+            let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
+            startLine != endLine, bodyOffsetLine != endLine else {
                 return []
         }
 
         let range = file.lines[startLine - 1].range
         let regex = ClosureEndIndentationRule.notWhitespace
+        let actual = endPosition - 1
         guard let match = regex.firstMatch(in: contents, options: [], range: range)?.range,
-            match.location - range.location != endPosition - 1 else {
+            case let expected = match.location - range.location,
+            expected != actual  else {
                 return []
         }
 
+        let reason = "Closure end should have the same indentation as the line that started it. " +
+                     "Expected \(expected), got \(actual)."
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: endOffset))
+                           location: Location(file: file, byteOffset: endOffset),
+                           reason: reason)
         ]
+    }
+
+    private func startOffsetFor(dictionary: [String: SourceKitRepresentable],
+                                file: File) -> Int? {
+        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
+            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }) else {
+            return nil
+        }
+
+        let newLineRegex = regex("\n(\\s*\\}?\\.)")
+        let contents = file.contents.bridge()
+        guard let range = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
+            let match = newLineRegex.matches(in: file.contents, options: [],
+                                             range: range).last?.rangeAt(1),
+            let methodByteRange = contents.NSRangeToByteRange(start: match.location,
+                                                              length: match.length) else {
+            return nameOffset
+        }
+
+        return methodByteRange.location
     }
 }

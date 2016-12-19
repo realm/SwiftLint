@@ -32,7 +32,9 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "func abc(def: Void, ghi: Void) {}\n",
             "// 周斌佳年周斌佳\nlet abc: String = \"abc:\"",
             "let abc = [Void: Void]()\n",
-            "let abc = [1: [3: 2], 3: 4]\n"
+            "let abc = [1: [3: 2], 3: 4]\n",
+            "let abc = [\"string\": \"string\"]\n",
+            "let abc = [\"string:string\": \"string\"]\n"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",

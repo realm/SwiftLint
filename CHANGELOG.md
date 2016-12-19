@@ -1,11 +1,11 @@
-## Master
+## 0.14.0: Super Awesome Retractable Drying Rack
 
 ##### Breaking
 
 * SwiftLint now requires Xcode 8.x and Swift 3.x to build.
   APIs have not yet been adapted to conform to the Swift 3 API Design
   Guidelines but will shortly.  
-  [JP Simard](https://github.com/jpsim),
+  [JP Simard](https://github.com/jpsim)
   [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements

@@ -298,7 +298,7 @@ applying corrections.
 
 ## License
 
-[MIT licensed.](https://github.com/realm/SwiftLint/blob/master/LICENSE)
+[MIT licensed.](LICENSE)
 
 ## About
 

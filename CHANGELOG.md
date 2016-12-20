@@ -103,7 +103,7 @@
 * `type_name` rule now validates `typealias` and `associatedtype` too.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#49](https://github.com/realm/SwiftLint/issues/49)
-  [#956](https://github.com/realm/SwiftLint/issues/959)
+  [#956](https://github.com/realm/SwiftLint/issues/956)
 
 * Add `ProhibitedSuperRule` opt-in rule that warns about methods calling
   to super that should not, for example `UIViewController.loadView()`.  

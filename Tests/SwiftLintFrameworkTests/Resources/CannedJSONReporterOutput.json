@@ -27,7 +27,7 @@
     "type" : "Syntactic Sugar"
   },
   {
-    "reason" : "Colons should be next to the identifier when specifying a type.",
+    "reason" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
     "character" : null,
     "file" : null,
     "rule_id" : "colon",

@@ -32,7 +32,7 @@ class ReporterTests: XCTestCase {
         return File(path: "\(bundlePath)/\(filename)")!.contents
     }
 
-    func generateViolations() -> [StyleViolation] {
+    private func generateViolations() -> [StyleViolation] {
         let location = Location(file: "filename", line: 1, character: 2)
         return [
             StyleViolation(ruleDescription: LineLengthRule.description,

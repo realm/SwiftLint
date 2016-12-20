@@ -201,10 +201,10 @@ extension ColonRule {
                 return false
             }
             return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty
-            }.flatMap { range, syntaxTokens in
-                let identifierRange = nsstring
-                    .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
-                return identifierRange.map { NSUnionRange($0, range) }
+        }.flatMap { range, syntaxTokens in
+            let identifierRange = nsstring
+                .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
+            return identifierRange.map { NSUnionRange($0, range) }
         }
     }
 }

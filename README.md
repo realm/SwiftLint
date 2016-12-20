@@ -19,7 +19,7 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
-Using [Homebrew](http://brew.sh/)
+Using [Homebrew](http://brew.sh/):
 
 ```
 brew install swiftlint
@@ -54,6 +54,8 @@ fi
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
+⚠ ️This plugin will not work with Xcode 8 without diabling SIP. This is not recommended.
+
 ### AppCode
 
 To integrate SwiftLint with AppCode, install
@@ -63,7 +65,7 @@ The `autocorrect` action is available via `⌥⏎`.
 
 ### Atom
 
-To integrate SwiftLint with [Atom](https://atom.io/) install the
+To integrate SwiftLint with [Atom](https://atom.io/), install the
 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
 APM.
 
@@ -86,10 +88,10 @@ will be searched recursively.
 To specify a list of files when using `lint` or `autocorrect` (like the list of
 files modified by Xcode specified by the
 [`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
-plugin, or modified files in the working tree based on `git ls-files -m`) you
+plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
-`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`... `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
 
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
@@ -106,14 +108,14 @@ and are subject to change.
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
-`opt_in_rules` are disabled by default (you have to explicitly enable them in
+`opt_in_rules` are disabled by default (i.e., you have to explicitly enable them in
 your configuration file).
 
 Guidelines on when to implement a rule as opt-in:
 
 * A rule that can have many false positives (e.g. `empty_count`)
 * A rule that is too slow
-* A rule that is not general consensus or only useful in some cases
+* A rule that is not general consensus or is only useful in some cases
   (e.g. `force_unwrapping`, `missing_docs`)
 
 ### Disable rules in code
@@ -137,7 +139,7 @@ let noWarning :String = "" // No warning about colons immediately after variable
 let hasWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
-It's also possible to modify a disable or enable command by appending
+It's also possible to modify a `disable` or `enable` command by appending
 `:previous`, `:this` or `:next` for only applying the command to the previous,
 this (current) or next line respectively.
 
@@ -163,10 +165,10 @@ run SwiftLint from. The following parameters can be configured:
 Rule inclusion:
 
 * `disabled_rules`: Disable rules from the default enabled set.
-* `opt_in_rules`: Some rules are opt-in.
-* `whitelist_rules`: Can not be specified alongside `disabled_rules` or
-  `opt_in_rules`. Acts as a whitelist, only the rules specified in this list
-  will be enabled.
+* `opt_in_rules`: Enable rules not from the default set.
+* `whitelist_rules`: Acts as a whitelist, only the rules specified in this list
+  will be enabled. Can not be specified alongside `disabled_rules` or
+  `opt_in_rules`.
 
 ```yaml
 disabled_rules: # rule identifiers to exclude from running
@@ -296,7 +298,7 @@ applying corrections.
 
 ## License
 
-MIT licensed.
+[MIT licensed.](LICENSE)
 
 ## About
 
@@ -307,5 +309,5 @@ Realm are trademarks of Realm Inc.
 
 We :heart: open source software!
 See [our other open source projects](https://github.com/realm),
-read [our blog](https://realm.io/news) or say hi on twitter
+read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).

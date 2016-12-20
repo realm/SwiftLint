@@ -15,8 +15,8 @@ public struct ColonConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-        ", flexible_right_spacing: \(flexibleRightSpacing)" +
-        ", apply_to_dictionaries: \(applyToDictionaries)"
+            ", flexible_right_spacing: \(flexibleRightSpacing)" +
+            ", apply_to_dictionaries: \(applyToDictionaries)"
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {

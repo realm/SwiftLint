@@ -23,7 +23,8 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",
-        description: "Colons should be next to the identifier when specifying a type.",
+        description: "Colons should be next to the identifier when specifying a type " +
+                     "and next to the key in dictionary literals.",
         nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",
@@ -248,7 +249,7 @@ extension ColonRule {
 
     fileprivate func dictionaryViolations(in file: File,
                                           dictionary: [String: SourceKitRepresentable])
-                                                                                    -> [NSRange] {
+                                          -> [NSRange] {
         guard configuration.applyToDictionaries else {
             return []
         }

@@ -59,6 +59,7 @@ public let masterRuleList = RuleList(rules:
     ExplicitInitRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
+    FirstWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,

@@ -19,7 +19,8 @@
 
 ##### Bug Fixes
 
-* None.
+* Grammar checks.  
+  [Michael Helmbrecht](https://github.com/mrh-is)
 
 ## 0.14.0: Super Awesome Retractable Drying Rack
 

@@ -148,6 +148,6 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // return first captured range
                 return firstRange
-        }
+            }
     }
 }

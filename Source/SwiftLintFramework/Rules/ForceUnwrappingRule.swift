@@ -134,7 +134,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 } else {
                     return nil
                 }
-        }
+            }
     }
 
     // Returns if range should generate violation

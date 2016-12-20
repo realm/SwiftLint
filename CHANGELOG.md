@@ -6,7 +6,16 @@
 
 ##### Enhancements
 
-* None.
+* Add `closure_end_indentation` opt-in rule that validates closure closing
+  braces according to these rules:
+  * If the method call has chained breaking lines on each method
+    (`.` is on a new line), the closing brace should be vertically aligned
+    with the `.`.
+  * Otherwise, the closing brace should be vertically aligned with
+    the beginning of the statement in the first line.  
+
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#326](https://github.com/realm/SwiftLint/issues/326)
 
 ##### Bug Fixes
 

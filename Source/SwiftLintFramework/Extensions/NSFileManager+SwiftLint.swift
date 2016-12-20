@@ -28,7 +28,7 @@ extension FileManager {
                 return try subpathsOfDirectory(atPath: absolutePath)
                     .map(absolutePath.bridge().appendingPathComponent).filter {
                         $0.bridge().isSwiftFile()
-                }
+                    }
             } catch {
                 fatalError("Couldn't find files in \(absolutePath): \(error)")
             }

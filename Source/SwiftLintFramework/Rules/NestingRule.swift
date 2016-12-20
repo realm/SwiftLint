@@ -26,7 +26,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         } + ["enum Enum0 { enum Enum1 { case Case } }"],
         triggeringExamples: ["class", "struct", "enum"].map { kind in
             "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
-            } + [
+        } + [
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
         ]

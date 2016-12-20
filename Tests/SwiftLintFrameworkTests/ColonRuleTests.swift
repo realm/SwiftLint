@@ -74,7 +74,12 @@ class ColonRuleTests: XCTestCase {
                 "func abc(↓def:Void) {}\n": "func abc(def: Void) {}\n",
                 "func abc(↓def :Void) {}\n": "func abc(def: Void) {}\n",
                 "func abc(↓def : Void) {}\n": "func abc(def: Void) {}\n",
-                "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
+                "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n",
+                "let abc = [Void↓:Void]()\n": "let abc = [Void: Void]()\n",
+                "let abc = [Void↓ : Void]()\n": "let abc = [Void: Void]()\n",
+                "let abc = [Void↓ :  Void]()\n": "let abc = [Void: Void]()\n",
+                "let abc = [1: [3↓ : 2], 3: 4]\n": "let abc = [1: [3: 2], 3: 4]\n",
+                "let abc = [1: [3↓ : 2], 3:  4]\n": "let abc = [1: [3: 2], 3:  4]\n"
             ]
         )
 

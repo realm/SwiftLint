@@ -54,6 +54,8 @@ fi
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
+⚠ ️This plugin will not work with Xcode 8 without diabling SIP. This is not recommended.
+
 ### AppCode
 
 To integrate SwiftLint with AppCode, install

@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 100, error: 200)
+    public var configuration = SeverityLevelsConfiguration(warning: 120, error: 200)
 
     public init() {}
 
@@ -18,14 +18,14 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "Line Length",
         description: "Lines should not span too many characters.",
         nonTriggeringExamples: [
-            String(repeating: "/", count: 100) + "\n",
-            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 100) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 100) + "\n"
+            String(repeating: "/", count: 120) + "\n",
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n"
         ],
         triggeringExamples: [
-            String(repeating: "/", count: 101) + "\n",
-            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 101) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 101) + "\n"
+            String(repeating: "/", count: 121) + "\n",
+            String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n",
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n"
         ]
     )
 

@@ -25,3 +25,4 @@ file_header:
                     \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2}\.
                     \/\/  Copyright © \d{4} Realm\. All rights reserved\.
                     \/\/
+line_length: 120

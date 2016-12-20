@@ -21,8 +21,7 @@ public struct Linter {
         return getStyleViolations(true)
     }
 
-    fileprivate func getStyleViolations(_ benchmark: Bool = false) ->
-        ([StyleViolation], [(id: String, time: Double)]) {
+    private func getStyleViolations(_ benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         if file.sourcekitdFailed {
             queuedPrintError("Most of rules are skipped because sourcekitd fails.")
         }

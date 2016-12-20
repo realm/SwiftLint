@@ -167,8 +167,7 @@ extension File {
     }
 }
 
-private func substructureForDict(_ dict: [String: SourceKitRepresentable]) ->
-                                 [[String: SourceKitRepresentable]]? {
+private func substructureForDict(_ dict: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]]? {
     return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
         $0 as? [String: SourceKitRepresentable]
     }

@@ -19,8 +19,7 @@ private func declarationOverrides(_ dictionary: [String: SourceKitRepresentable]
     return dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
 }
 
-private func inheritedMembersForDictionary(_ dictionary: [String: SourceKitRepresentable]) ->
-                                           [String] {
+private func inheritedMembersForDictionary(_ dictionary: [String: SourceKitRepresentable]) -> [String] {
     return mappedDictValues(dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
         File.allDeclarationsByType[$0] ?? []
     }
@@ -28,7 +27,7 @@ private func inheritedMembersForDictionary(_ dictionary: [String: SourceKitRepre
 
 extension File {
     fileprivate func missingDocOffsets(_ dictionary: [String: SourceKitRepresentable],
-                                   acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
+                                       acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
         if declarationOverrides(dictionary) {
             return []
         }

@@ -86,8 +86,8 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         }
     }
 
-    private func variableDeclarationsFor(_ byteOffset: Int, structure: Structure) ->
-                                                          [[String: SourceKitRepresentable]] {
+    private func variableDeclarationsFor(_ byteOffset: Int,
+                                         structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
 
         func parse(dictionary: [String: SourceKitRepresentable]) {

@@ -156,8 +156,7 @@ private extension StatementPositionRule {
     // swiftlint:disable:next force_try
     static let uncuddledRegex = try! NSRegularExpression(pattern: uncuddledPattern, options: [])
 
-    static func uncuddledMatchValidator(_ contents: String) ->
-        ((NSTextCheckingResult) -> NSTextCheckingResult?) {
+    static func uncuddledMatchValidator(_ contents: String) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
         return { match in
             if match.numberOfRanges != 5 {
                 return match
@@ -176,8 +175,8 @@ private extension StatementPositionRule {
         }
     }
 
-    static func uncuddledMatchFilter(contents: String, syntaxMap: SyntaxMap) ->
-        ((NSTextCheckingResult) -> Bool) {
+    static func uncuddledMatchFilter(contents: String,
+                                     syntaxMap: SyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
             guard let matchRange = contents.bridge().NSRangeToByteRange(start: range.location,

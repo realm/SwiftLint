@@ -84,7 +84,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 
-    fileprivate func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
+    private func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
@@ -106,8 +106,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    fileprivate func correctContents(_ contents: String, violatingRange: NSRange)
-        -> (correctedContents: String, adjustedRange: NSRange?) {
+    private func correctContents(_ contents: String,
+                                 violatingRange: NSRange) -> (correctedContents: String, adjustedRange: NSRange?) {
         guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
             return (contents, nil)
         }

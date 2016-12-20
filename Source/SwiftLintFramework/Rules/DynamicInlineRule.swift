@@ -34,7 +34,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         // Look for functions with both "inline" and "dynamic". For each of these, we can get offset
         // of the "func" keyword. We can assume that the nearest "@inline" before this offset is
         // the attribute we are interested in.

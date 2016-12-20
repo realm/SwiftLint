@@ -21,7 +21,7 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 Using [Homebrew](http://brew.sh/):
 
-```bash
+```
 brew install swiftlint
 ```
 
@@ -71,7 +71,7 @@ APM.
 
 ### Command Line
 
-```bash
+```
 $ swiftlint help
 Available commands:
 

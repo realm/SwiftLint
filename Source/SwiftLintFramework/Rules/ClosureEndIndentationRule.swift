@@ -52,7 +52,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             return []
         }
 
-        let contents = file.contents
+        let contents = file.contents.bridge()
         guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
             let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
@@ -60,7 +60,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
             bodyLength > 0,
             case let endOffset = offset + length - 1,
-            contents.bridge().substringWithByteRange(start: endOffset, length: 1) == "}",
+            contents.substringWithByteRange(start: endOffset, length: 1) == "}",
             let startOffset = startOffsetFor(dictionary: dictionary, file: file),
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
@@ -73,7 +73,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         let range = file.lines[startLine - 1].range
         let regex = ClosureEndIndentationRule.notWhitespace
         let actual = endPosition - 1
-        guard let match = regex.firstMatch(in: contents, options: [], range: range)?.range,
+        guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
             expected != actual  else {
                 return []

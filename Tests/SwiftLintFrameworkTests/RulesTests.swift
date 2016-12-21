@@ -391,6 +391,7 @@ extension RulesTests {
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),

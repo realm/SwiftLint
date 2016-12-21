@@ -28,7 +28,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let pattern = "import (\\w+)"
+        let pattern = "import\\s+\\w+"
 
         var previousMatch = ""
         return file.matchPattern(pattern).flatMap { range, kinds in

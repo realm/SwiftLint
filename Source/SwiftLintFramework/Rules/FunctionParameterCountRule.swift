@@ -23,6 +23,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?<T>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?<T: String>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
@@ -106,7 +108,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         guard let name = file.contents.bridge()
             .substringWithByteRange(start: offset, length: length),
             name.hasPrefix("init"),
-            let funcName = name.components(separatedBy: "(").first else {
+            let funcName = name
+                .components(separatedBy: CharacterSet(charactersIn: "<(")).first else {
             return false
         }
         if funcName == "init" { // fast path

@@ -6,12 +6,11 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 
 public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
-
-    private let moduleCharacterOffset = "import ".characters.count
 
     public init() {}
 
@@ -48,7 +47,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
                 return nil
             }
 
-            let characterOffset = range.location + moduleCharacterOffset
+            let characterOffset = range.location + moduleStartIndex
             let location = Location(file: file, characterOffset: characterOffset)
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity, location: location)

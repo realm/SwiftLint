@@ -6,8 +6,8 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import SourceKittenFramework
 import Foundation
+import SourceKittenFramework
 
 private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
     switch (lhs, rhs) {

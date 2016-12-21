@@ -134,7 +134,8 @@
 
 ##### Enhancements
 
-* Add check to ignore urls in `line_length` rule.  
+* Add check to ignore urls in `line_length` rule when `ignores_urls`
+  configuration is enabled.     
   [Javier Hernández](https://github.com/jaherhi)
   [#384](https://github.com/realm/SwiftLint/issues/384)
 

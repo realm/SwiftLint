@@ -135,8 +135,26 @@ class RulesTests: XCTestCase {
     }
 
     func testLineLength() {
-        verifyRule(LineLengthRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
+        verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
+
+        // Perform additional tests with the ignores_urls settings enabled
+        let url = "https://github.com/realm/SwiftLint"
+        let triggeringLines = [String(repeating: "/", count: 121) + "\(url)\n"]
+        let nonTriggeringLines = ["\(url) " + String(repeating: "/", count: 118) + " \(url)\n",
+            "\(url)/" + String(repeating: "a", count: 120)]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: triggeringExamples,
+                                          corrections: baseDescription.corrections)
+
+        verifyRule(description, ruleConfiguration: ["ignores_urls": true],
+                   commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
     func testMark() {

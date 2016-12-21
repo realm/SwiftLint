@@ -24,6 +24,7 @@
 		2E336D1B1DF08BFB00CCFE77 /* EmojiReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */; };
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
 		37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */; };
+		3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */; };
 		3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */; };
 		3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */; };
 		3B12C9C11C3209CB000B423F /* test.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B12C9BF1C3209AC000B423F /* test.yml */; };
@@ -264,6 +265,7 @@
 		2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiReporter.swift; sourceTree = "<group>"; };
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
 		37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+SwiftLint.swift"; sourceTree = "<group>"; };
+		3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineLengthConfiguration.swift; sourceTree = "<group>"; };
 		3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityConfiguration.swift; sourceTree = "<group>"; };
 		3B1150C91C31FC3F00D83B1E /* Yaml+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Yaml+SwiftLint.swift"; sourceTree = "<group>"; };
 		3B12C9BF1C3209AC000B423F /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.yml; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 				D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */,
 				D43B04671E07228D004016AF /* ColonConfiguration.swift */,
 				D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */,
+				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */,
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
 				78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */,
@@ -1120,6 +1123,7 @@
 				D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */,
 				009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */,
 				BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */,
+				3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */,
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
 				3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */,

@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 120, error: 200)
+    public var configuration = LineLengthConfiguration(warning: 120, error: 200, ignoresUrls: false)
 
     public init() {}
 
@@ -20,16 +20,12 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n",
-            "https://github.com/realm/SwiftLint " + String(repeating: "/", count: 118)
-                + " https://github.com/realm/SwiftLint\n",
-            "https://github.com/realm/SwiftLint/" + String(repeating: "a", count: 120)
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 120) + "\n"
         ],
         triggeringExamples: [
             String(repeating: "/", count: 121) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 121) + "\n",
-            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n",
-            String(repeating: "/", count: 121) + "https://github.com/realm/SwiftLint\n"
+            String(repeating: "#imageLiteral(resourceName: \"image.jpg\")", count: 121) + "\n"
         ]
     )
 
@@ -44,7 +40,9 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             }
 
             var strippedString = line.content
-            strippedString = stripUrls(fromSourceString: strippedString)
+            if configuration.ignoresUrls {
+                strippedString = stripUrls(fromSourceString: strippedString)
+            }
             strippedString = stripLiterals(fromSourceString: strippedString,
                 withDelimiter: "#colorLiteral")
             strippedString = stripLiterals(fromSourceString: strippedString,
@@ -56,7 +54,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
                 return StyleViolation(ruleDescription: type(of: self).description,
                     severity: param.severity,
                     location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.warning) characters or less: " +
+                    reason: "Line should be \(configuration.length.warning) characters or less: " +
                         "currently \(length) characters")
             }
             return nil
@@ -98,8 +96,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         guard let urlDetector = try? NSDataDetector(types: types) else {
             return sourceString
         }
-        return urlDetector.stringByReplacingMatches(in: sourceString, options: [],
-                                                    range: range, withTemplate: "")
+        return urlDetector.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
     }
 
 }

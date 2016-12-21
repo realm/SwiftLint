@@ -135,7 +135,6 @@
 
 * Add a rule that enforces alphabetical sorting of imports.  
   [Scott Berrevoets](https://github.com/sberrevoets)
-  [#991](https://github.com/realm/SwiftLint/pull/991)
   [#900](https://github.com/realm/SwiftLint/issues/900)
 
 * Now builds and passes most tests on Linux using the Swift Package Manager with

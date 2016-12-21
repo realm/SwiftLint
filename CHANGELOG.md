@@ -41,6 +41,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1021](https://github.com/realm/SwiftLint/issues/1021)
 
+* Fix false positive in `switch_case_on_newline` when switching
+  over a selector.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1020](https://github.com/realm/SwiftLint/issues/1020)
+
 ## 0.14.0: Super Awesome Retractable Drying Rack
 
 ##### Breaking

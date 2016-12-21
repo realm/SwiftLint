@@ -20,7 +20,7 @@
 * `operator_usage_whitespace` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* HTML reports now display a relative path to files.
+* HTML reports now display a relative path to files.  
   [Jamie Edge](https://github.com/JamieEdge)
 
 ##### Bug Fixes

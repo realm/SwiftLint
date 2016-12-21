@@ -54,27 +54,27 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let mark = "MARK:"
 
     private var nonSpaceOrTwoOrMoreSpace: String {
-        return "(\(nonSpace)|\(twoOrMoreSpace))"
+        return "(?:\(nonSpace)|\(twoOrMoreSpace))"
     }
 
     private var spaceStartPattern: String {
-        return "(\(nonSpaceOrTwoOrMoreSpace)\(mark))"
+        return "(?:\(nonSpaceOrTwoOrMoreSpace)\(mark))"
     }
 
     private var endNonSpacePattern: String {
-        return "(\(mark)\(nonSpace))"
+        return "(?:\(mark)\(nonSpace))"
     }
 
     private var endTwoOrMoreSpacePattern: String {
-        return "(\(mark)\(twoOrMoreSpace))"
+        return "(?:\(mark)\(twoOrMoreSpace))"
     }
 
     private var twoOrMoreSpacesAfterHyphenPattern: String {
-        return "(\(mark) -\(twoOrMoreSpace))"
+        return "(?:\(mark) -\(twoOrMoreSpace))"
     }
 
     private var nonSpaceOrNewlineAfterHyphenPattern: String {
-        return "(\(mark) -[^ \n])"
+        return "(?:\(mark) -[^ \n])"
     }
 
     private var pattern: String {

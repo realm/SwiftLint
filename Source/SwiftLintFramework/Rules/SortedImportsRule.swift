@@ -36,10 +36,15 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
                 return nil
             }
 
-            let match = file.contents.bridge().substring(with: range)
-            defer { previousMatch = match }
+            let fullMatch = file.contents.bridge().substring(with: range)
+            let moduleStartIndex = (fullMatch.lastIndexOf(" ") ?? -1) + 1
+            let moduleLength = range.length - moduleStartIndex
+            let moduleRange = NSRange(location: moduleStartIndex, length: moduleLength)
+            let moduleNameMatch = fullMatch.bridge().substring(with: moduleRange)
 
-            if match > previousMatch {
+            defer { previousMatch = moduleNameMatch }
+
+            if moduleNameMatch > previousMatch {
                 return nil
             }
 

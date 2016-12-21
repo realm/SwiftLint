@@ -33,7 +33,8 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "case let .myCase(value) where value > 10:\n return false",
             "enum Environment {\n case development\n}",
             "enum Environment {\n case development(url: URL)\n}",
-            "enum Environment {\n case development(url: URL) // staging\n}"
+            "enum Environment {\n case development(url: URL) // staging\n}",
+            "case #selector(aFunction(_:)):\n return false\n"
         ],
         triggeringExamples: [
             "↓case 1: return true",
@@ -41,7 +42,8 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "↓default: return true",
             "↓case \"a string\": return false",
             "↓case .myCase: return false // error from network",
-            "↓case let .myCase(value) where value > 10: return false"
+            "↓case let .myCase(value) where value > 10: return false",
+            "↓case #selector(aFunction(_:)): return false\n"
         ]
     )
 
@@ -123,15 +125,15 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             return false
         }
 
-        guard let firstComment = trailingCommentsTokens.first,
-            let lastComment = trailingCommentsTokens.last else {
-                return true
+        var commentsLength = 0
+        if let firstComment = trailingCommentsTokens.first,
+            let lastComment = trailingCommentsTokens.last {
+            commentsLength = (lastComment.offset + lastComment.length) - firstComment.offset
         }
 
-        let commentsLength = (lastComment.offset + lastComment.length) - firstComment.offset
         let line = contentForRange(start: line.byteRange.location,
                                    length: line.byteRange.length - commentsLength, file: file)
-        let cleaned = line.trimmingCharacters(in: .whitespaces)
+        let cleaned = line.trimmingCharacters(in: .whitespacesAndNewlines)
 
         return !cleaned.hasSuffix(":")
     }

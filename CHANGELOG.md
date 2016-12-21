@@ -25,6 +25,9 @@
 
 ##### Bug Fixes
 
+* `FunctionParameterCountRule` also ignores generic initializers.  
+  [Mauricio Hanika](https://github.com/mAu888)
+
 * Grammar checks.  
   [Michael Helmbrecht](https://github.com/mrh-is)
 

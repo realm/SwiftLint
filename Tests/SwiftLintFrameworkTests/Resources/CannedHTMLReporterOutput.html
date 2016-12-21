@@ -1,35 +1,60 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Swiftlint Report</title>
-		<style type='text/css'>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		
+		<style type="text/css">
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 0.9rem;
+			}
+			
 			table {
 				border: 1px solid gray;
 				border-collapse: collapse;
 				-moz-box-shadow: 3px 3px 4px #AAA;
 				-webkit-box-shadow: 3px 3px 4px #AAA;
 				box-shadow: 3px 3px 4px #AAA;
+				vertical-align: top;
+				height: 64px;
 			}
-		td, th {
+			
+			td, th {
 				border: 1px solid #D3D3D3;
 				padding: 5px 10px 5px 10px;
-		}
-		th {
-			border-bottom: 1px solid gray;
-			background-color: rgba(41,52,92,0.313);
-		}
-		.error, .warning {
-			background-color: #f0f099;
-		} .error{ color: #ff0000;}
-		.warning { color: #b36b00;
-		}
+			}
+			
+			th {
+				border-bottom: 1px solid gray;
+				background-color: rgba(41,52,92,0.313);
+			}
+			
+			.error, .warning {
+				text-align: center;
+			}
+			
+			.error {
+				background-color: #FF9D92;
+				color: #7F0800;
+			}
+			
+			.warning {
+				background-color: #FFF59E;
+				color: #7F7000;
+			}
 		</style>
+		
+		<title>SwiftLint Report</title>
 	</head>
 	<body>
-		<h1>Swiftlint Report</h1>
+		<h1>SwiftLint Report</h1>
+		
 		<hr />
+		
 		<h2>Violations</h2>
-		<table border="1" style="vertical-align: top; height: 64px;">
+		
+		<table>
 			<thead>
 				<tr>
 					<th style="width: 60pt;">
@@ -51,38 +76,41 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td align="right">1</td>
+					<td style="text-align: right;">1</td>
 					<td>filename</td>
-					<td align="center">1:2</td>
-					<td class='warning'>Warning</td>
+					<td style="text-align: center;">1:2</td>
+					<td class="warning">Warning</td>
 					<td>Violation Reason.</td>
 				</tr>
 				<tr>
-					<td align="right">2</td>
+					<td style="text-align: right;">2</td>
 					<td>filename</td>
-					<td align="center">1:2</td>
-					<td class='error'>Error</td>
+					<td style="text-align: center;">1:2</td>
+					<td class="error">Error</td>
 					<td>Violation Reason.</td>
 				</tr>
 				<tr>
-					<td align="right">3</td>
+					<td style="text-align: right;">3</td>
 					<td>filename</td>
-					<td align="center">1:2</td>
-					<td class='error'>Error</td>
+					<td style="text-align: center;">1:2</td>
+					<td class="error">Error</td>
 					<td>Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;.</td>
 				</tr>
 				<tr>
-					<td align="right">4</td>
+					<td style="text-align: right;">4</td>
 					<td>&lt;nopath&gt;</td>
-					<td align="center">0:0</td>
-					<td class='error'>Error</td>
+					<td style="text-align: center;">0:0</td>
+					<td class="error">Error</td>
 					<td>Colons should be next to the identifier when specifying a type.</td>
 				</tr>
 			</tbody>
 		</table>
+		
 		<br/>
+		
 		<h2>Summary</h2>
-		<table border="1" style="vertical-align: top; height: 64px;">
+		
+		<table>
 			<tbody>
 				<tr>
 					<td>Total files with violations</td>
@@ -98,9 +126,13 @@
 				</tr>
 			</tbody>
 		</table>
+		
 		<hr />
-		<p>Created with <a href="https://github.com/realm/SwiftLint">
-			<b>Swiftlint</b>
-		</a> 1.2.3 on: 13/12/2016</p>
+		
+		<p>
+			Created with
+			<a href="https://github.com/realm/SwiftLint"><b>SwiftLint</b></a>
+			1.2.3 on 13/12/2016
+		</p>
 	</body>
 </html>

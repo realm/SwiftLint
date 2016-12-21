@@ -7,6 +7,7 @@
 //
 
 import SourceKittenFramework
+import Foundation
 
 private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
     switch (lhs, rhs) {
@@ -32,7 +33,8 @@ public struct Location: CustomStringConvertible, Comparable {
         return [fileString, lineString, charString].joined()
     }
     public var relativeFile: String? {
-        return file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
+        return file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/",
+                                          with: "")
     }
 
     public init(file: String?, line: Int? = nil, character: Int? = nil) {

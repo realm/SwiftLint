@@ -25,6 +25,9 @@
 * Grammar checks.  
   [Michael Helmbrecht](https://github.com/mrh-is)
 
+* Fix the validity and styling of the HTML reporter.  
+  [Jamie Edge](https://github.com/JamieEdge)
+
 ## 0.14.0: Super Awesome Retractable Drying Rack
 
 ##### Breaking

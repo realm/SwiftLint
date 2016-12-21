@@ -219,7 +219,7 @@ variable_name:
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, emoji)
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 ```
 
 #### Defining Custom Rules

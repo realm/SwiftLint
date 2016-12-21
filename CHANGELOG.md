@@ -20,6 +20,9 @@
 * `operator_usage_whitespace` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* `implicit_getter` and `mark` rule performance improvements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 * HTML reports now display a relative path to files.  
   [Jamie Edge](https://github.com/JamieEdge)
 
@@ -30,6 +33,13 @@
 
 * Grammar checks.  
   [Michael Helmbrecht](https://github.com/mrh-is)
+
+* Fix the validity and styling of the HTML reporter.  
+  [Jamie Edge](https://github.com/JamieEdge)
+
+* Fix false positive in `empty_parentheses_with_trailing_closure` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1021](https://github.com/realm/SwiftLint/issues/1021)
 
 ## 0.14.0: Super Awesome Retractable Drying Rack
 

@@ -24,7 +24,12 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
             "[1, 2].map({ $0 + 1 })\n",
             "[1, 2].reduce(0) { $0 + $1 }",
             "[1, 2].map { number in\n number + 1 \n}\n",
-            "let isEmpty = [1, 2].isEmpty()\n"
+            "let isEmpty = [1, 2].isEmpty()\n",
+            "UIView.animateWithDuration(0.3, animations: {\n" +
+            "   self.disableInteractionRightView.alpha = 0\n" +
+            "}, completion: { _ in\n" +
+            "   ()\n" +
+            "})"
         ],
         triggeringExamples: [
             "[1, 2].map↓() { $0 + 1 }",
@@ -59,7 +64,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
         guard let range = file.contents.bridge()
                               .byteRangeToNSRange(start: rangeStart, length: rangeLength),
             let match = regex.firstMatch(in: file.contents, options: [], range: range),
-            match.range.location != NSNotFound else {
+            match.range.location == range.location else {
                 return []
         }
 

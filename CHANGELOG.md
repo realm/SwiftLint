@@ -23,6 +23,9 @@
 * `implicit_getter` and `mark` rule performance improvements.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* HTML reports now display a relative path to files.  
+  [Jamie Edge](https://github.com/JamieEdge)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

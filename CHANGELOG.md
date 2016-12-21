@@ -20,6 +20,9 @@
 * `operator_usage_whitespace` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* `implicit_getter` rule performance improvements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

@@ -46,22 +46,20 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             classScoped("var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
+            classScoped("var foo: Int {\n ↓get{\n return 20 \n} \n} \n}"),
             classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}")
         ]
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let getTokens = file.syntaxMap.tokens.filter { token -> Bool in
-            guard SyntaxKind(rawValue: token.type) == .keyword else {
-                return false
+        let pattern = "\\bget\\b"
+        let getTokens: [SyntaxToken] = file.rangesAndTokensMatching(pattern).flatMap { _, tokens in
+            guard tokens.count == 1, let token = tokens.first,
+                SyntaxKind(rawValue: token.type) == .keyword else {
+                return nil
             }
 
-            guard let tokenValue = file.contents.bridge()
-                .substringWithByteRange(start: token.offset, length: token.length) else {
-                    return false
-            }
-
-            return tokenValue == "get"
+            return token
         }
 
         let violatingTokens = getTokens.filter { token -> Bool in

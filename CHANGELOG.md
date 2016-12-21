@@ -19,8 +19,11 @@
 
 * `operator_usage_whitespace` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  
+
 ##### Bug Fixes
+
+* `FunctionParameterCountRule` also ignores generic initializers.  
+  [Mauricio Hanika](https://github.com/mAu888)
 
 * Grammar checks.  
   [Michael Helmbrecht](https://github.com/mrh-is)

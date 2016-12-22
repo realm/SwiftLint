@@ -382,7 +382,7 @@ extension RulesTests {
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
             ("testPrivateOutlet", testPrivateOutlet),
-            // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),

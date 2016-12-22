@@ -53,6 +53,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1020](https://github.com/realm/SwiftLint/issues/1020)
 
+* Fix crash in `closure_parameter_position` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1026](https://github.com/realm/SwiftLint/issues/1026)
+
 ## 0.14.0: Super Awesome Retractable Drying Rack
 
 ##### Breaking

@@ -14,6 +14,16 @@ class TrailingCommaRuleTests: XCTestCase {
     func testTrailingCommaRuleWithDefaultConfiguration() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         verifyRule(TrailingCommaRule.description)
+
+        // Ensure the rule produces the correct reason string.
+        let failingCase = "let array = [\n\t1,\n\t2,\n]\n"
+        XCTAssertEqual(trailingCommaViolations(failingCase), [
+            StyleViolation(
+                ruleDescription: TrailingCommaRule.description,
+                location: Location(file: nil, line: 3, character: 3),
+                reason: "Collection literals should not have trailing commas."
+            )]
+        )
     }
 
     func testTrailingCommaRuleWithMandatoryComma() {
@@ -46,8 +56,24 @@ class TrailingCommaRuleTests: XCTestCase {
                 "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
             ]
         )
+        let ruleConfiguration = ["mandatory_comma": true]
 
-        verifyRule(ruleDescription, ruleConfiguration: ["mandatory_comma": true])
+        verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
+
+        // Ensure the rule produces the correct reason string.
+        let failingCase = "let array = [\n\t1,\n\t2\n]\n"
+        XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration), [
+            StyleViolation(
+                ruleDescription: TrailingCommaRule.description,
+                location: Location(file: nil, line: 3, character: 2),
+                reason: "Multi-line collection literals should have trailing commas."
+            )]
+        )
+    }
+
+    private func trailingCommaViolations(_ string: String, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+        let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
+        return SwiftLintFrameworkTests.violations(string, config: config)
     }
 }
 

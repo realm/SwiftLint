@@ -31,7 +31,10 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
                 "return { migration, schemaVersion in\n" +
                     "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
                 "}\n" +
-            "}"
+            "}",
+            "let mediaView: UIView = { [weak self] index in\n" +
+            "   return UIView()\n" +
+            "}(index)\n"
         ],
         triggeringExamples: [
             "[1, 2].map {\n ↓number in\n number + 1 \n}\n",
@@ -68,7 +71,8 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them
         return parameters.flatMap { param -> StyleViolation? in
-            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }) else {
+            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
+                paramOffset > rangeStart else {
                 return nil
             }
 

@@ -32,7 +32,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let range = 1 ... 3\n",
             "let range = 1..<3\n",
             "#if swift(>=3.0)\n",
-            "array.removeAtIndex(-200)\n"
+            "array.removeAtIndex(-200)\n",
+            "let name = \"image-1\"\n",
+            "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",
@@ -105,7 +107,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
-        let kinds = SyntaxKind.commentAndStringKinds()
+        let kinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
 
         return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
                                  excludingPattern: excludingPattern).flatMap {

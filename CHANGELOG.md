@@ -63,6 +63,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1026](https://github.com/realm/SwiftLint/issues/1026)
 
+* Fix false positive in `operator_usage_whitespace` rule when
+  using image literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1028](https://github.com/realm/SwiftLint/issues/1028)
+
 ## 0.14.0: Super Awesome Retractable Drying Rack
 
 ##### Breaking

@@ -27,7 +27,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "let foo = [:]\n",
             "let foo = [1: 2, 2: 3]\n",
             "let foo = [Void]()\n",
-            "let example = [ 1,\n 2\n // 3,\n]"
+            "let example = [ 1,\n 2\n // 3,\n]",
+            "foo([1: \"\\(error)\"])\n"
         ],
         triggeringExamples: [
             "let foo = [1, 2, 3↓,]\n",
@@ -37,6 +38,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
             "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
             "let example = [ 1,\n2↓,\n // 3,\n]"
+            // "foo([1: \"\\(error)\"↓,])\n"
         ]
     )
 
@@ -66,7 +68,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             return offset + length
         }
 
-        guard let lastPosition = endPositions.max() else {
+        guard let lastPosition = endPositions.max(), bodyLength + bodyOffset >= lastPosition else {
             return []
         }
 

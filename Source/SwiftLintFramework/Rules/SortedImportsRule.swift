@@ -27,31 +27,29 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let pattern = "import\\s+\\w+"
+        let importRanges = file.matchPattern("import\\s+\\w+",
+                                             withSyntaxKinds: [.keyword, .identifier])
+        let contents = file.contents.bridge()
 
-        var previousMatch = ""
-        return file.matchPattern(pattern).flatMap { range, kinds in
-            if kinds.count != 2 || kinds[0] != .keyword || kinds[1] != .identifier {
-                return nil
-            }
+        let importLength = 6
+        let modulesAndOffsets: [(String, Int)] = importRanges.map { range in
+            let moduleRange = NSRange(location: range.location + importLength,
+                                      length: range.length - importLength)
+            let moduleName = contents.substring(with: moduleRange)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            let offset = NSMaxRange(range) - moduleName.bridge().length
+            return (moduleName, offset)
+        }
 
-            let fullMatch = file.contents.bridge().substring(with: range)
-            let moduleStartIndex = (fullMatch.lastIndexOf(" ") ?? -1) + 1
-            let moduleLength = range.length - moduleStartIndex
-            let moduleRange = NSRange(location: moduleStartIndex, length: moduleLength)
-            let moduleNameMatch = fullMatch.bridge().substring(with: moduleRange)
+        let modulePairs = zip(modulesAndOffsets, modulesAndOffsets.dropFirst())
+        let violatingOffsets = modulePairs.flatMap { previous, current in
+            return current < previous ? current.1 : nil
+        }
 
-            defer { previousMatch = moduleNameMatch }
-
-            if moduleNameMatch > previousMatch {
-                return nil
-            }
-
-            let characterOffset = range.location + moduleStartIndex
-            let location = Location(file: file, characterOffset: characterOffset)
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity, location: location)
-
+        return violatingOffsets.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0))
         }
     }
 }

@@ -39,6 +39,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1005](https://github.com/realm/SwiftLint/issues/1005)
 
+* Add more helpful reason strings to TrailingCommaRule.  
+  [Matt Rubin](https://github.com/mattrubin)
+  [#1034](https://github.com/realm/SwiftLint/pull/1034)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

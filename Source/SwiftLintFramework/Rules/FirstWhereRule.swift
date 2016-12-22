@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FirstWhereRule: ConfigurationProviderRule {
+public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

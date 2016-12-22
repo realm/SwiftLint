@@ -71,6 +71,7 @@ class ReporterTests: XCTestCase {
         let result = JSONReporter.generateReport(generateViolations())
         func jsonValue(_ jsonString: String) -> NSObject {
             let data = jsonString.data(using: .utf8)!
+            // swiftlint:disable:next force_try
             let result = try! JSONSerialization.jsonObject(with: data, options: [])
             if let dict = (result as? [String: Any])?.bridge() {
                 return dict

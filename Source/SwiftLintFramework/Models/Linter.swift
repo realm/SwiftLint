@@ -38,8 +38,8 @@ public struct Linter {
                 ruleTimes.append((id, -start.timeIntervalSinceNow))
             }
             return violations.filter { violation in
-                guard let violationRegion = regions.filter({ $0.contains(violation.location) })
-                    .first else {
+                guard let violationRegion = regions
+                    .first(where: { $0.contains(violation.location) }) else {
                         return true
                 }
                 return violationRegion.isRuleEnabled(rule)

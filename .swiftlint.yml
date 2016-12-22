@@ -15,6 +15,7 @@ opt_in_rules:
   - attributes
   - operator_usage_whitespace
   - closure_end_indentation
+  - first_where
 
 file_header:
   required_pattern: |

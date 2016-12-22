@@ -33,6 +33,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#603](https://github.com/realm/SwiftLint/issues/603)
 
+* Add `first_where` opt-in rule that warns against using
+  `.filter { /* ... */ }.first` in collections, as
+  `.first(where: { /* ... */ })` is often more efficient.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1005](https://github.com/realm/SwiftLint/issues/1005)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

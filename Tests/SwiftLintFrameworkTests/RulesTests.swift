@@ -70,6 +70,10 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false)
     }
 
+    func testFirstWhere() {
+        verifyRule(FirstWhereRule.description)
+    }
+
     func testForceCast() {
         verifyRule(ForceCastRule.description)
     }
@@ -356,6 +360,7 @@ extension RulesTests {
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
             ("testFileLength", testFileLength),
+            ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),
             // ("testForceUnwrapping", testForceUnwrapping),

@@ -47,19 +47,15 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
                 return nil
             }
 
-            let predicate = { (dictionary: [String: SourceKitRepresentable]) -> Bool in
+            return methodCallFor(bodyByteRange.location - 1,
+                                 excludingOffset: firstByteRange.location,
+                                 dictionary: structure.dictionary, predicate: { dictionary in
                 guard let name = dictionary["key.name"] as? String else {
                     return false
                 }
 
                 return name.hasSuffix(".filter")
-            }
-
-            let callOffset = methodCallFor(bodyByteRange.location - 1,
-                                           excludingOffset: firstByteRange.location,
-                                           structure: structure,
-                                           predicate: predicate)
-            return callOffset
+            })
         }
 
         return violatingLocations.map {
@@ -71,36 +67,31 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
 
     private func methodCallFor(_ byteOffset: Int,
                                excludingOffset: Int,
-                               structure: Structure,
+                               dictionary: [String: SourceKitRepresentable],
                                predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
 
-        func parse(dictionary: [String: SourceKitRepresentable],
-                   predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
+        if let kindString = (dictionary["key.kind"] as? String),
+            SwiftExpressionKind(rawValue: kindString) == .call,
+            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
-            if let kindString = (dictionary["key.kind"] as? String),
-                SwiftExpressionKind(rawValue: kindString) == .call,
-                let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-                let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-                let byteRange = NSRange(location: bodyOffset, length: bodyLength)
+            if NSLocationInRange(byteOffset, byteRange) &&
+                !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
+                return offset
+            }
+        }
 
-                if NSLocationInRange(byteOffset, byteRange) &&
-                    !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
+        if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
+            for case let dictionary as [String: SourceKitRepresentable] in subStructure {
+                if let offset = methodCallFor(byteOffset, excludingOffset: excludingOffset,
+                                              dictionary: dictionary, predicate: predicate) {
                     return offset
                 }
             }
-
-            if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-                for case let dictionary as [String: SourceKitRepresentable] in subStructure {
-                    if let offset = parse(dictionary: dictionary, predicate: predicate) {
-                        return offset
-                    }
-                }
-            }
-
-            return nil
         }
 
-        return parse(dictionary: structure.dictionary, predicate: predicate)
+        return nil
     }
 }

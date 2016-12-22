@@ -41,7 +41,6 @@
 
 * Add more helpful reason strings to TrailingCommaRule.  
   [Matt Rubin](https://github.com/mattrubin)
-  [#1034](https://github.com/realm/SwiftLint/pull/1034)
 
 ##### Bug Fixes
 

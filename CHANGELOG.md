@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `vertical_parameter_alignment` rule that checks if parameters are 
+  vertically aligned if there're line breaks in a function declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1033](https://github.com/realm/SwiftLint/issues/1033)
 
 ##### Bug Fixes
 
@@ -52,11 +55,6 @@
   `.first(where: { /* ... */ })` is often more efficient.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1005](https://github.com/realm/SwiftLint/issues/1005)
-
-* Add `vertical_parameter_alignment` rule that checks if parameters are 
-  vertically aligned if there're line breaks in a function declaration.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1033](https://github.com/realm/SwiftLint/issues/1033)
 
 ##### Bug Fixes
 

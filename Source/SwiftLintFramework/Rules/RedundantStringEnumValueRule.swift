@@ -122,8 +122,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func filterEnumInits(dictionary: [String: SourceKitRepresentable]) ->
-                                                                [[String: SourceKitRepresentable]] {
+    private func filterEnumInits(dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
         guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
             return []
         }

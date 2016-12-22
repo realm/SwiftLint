@@ -59,14 +59,14 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func measureComplexity(_ file: File,
-                                       dictionary: [String: SourceKitRepresentable]) -> Int {
+                                   dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
 
         let complexity = substructure.reduce(0) { complexity, subItem in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                      let kind = subDict["key.kind"] as? String else {
+                let kind = subDict["key.kind"] as? String else {
                 return complexity
             }
 

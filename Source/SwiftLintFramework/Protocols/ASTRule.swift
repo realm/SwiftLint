@@ -19,8 +19,7 @@ extension ASTRule where KindType.RawValue == String {
         return validateFile(file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File, dictionary: [String: SourceKitRepresentable]) ->
-                             [StyleViolation] {
+    public func validateFile(_ file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.flatMap { subItem -> [StyleViolation] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],

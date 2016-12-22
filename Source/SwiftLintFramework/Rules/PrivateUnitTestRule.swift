@@ -127,7 +127,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    fileprivate func isTestClass(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isTestClass(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
         guard let regex = configuration.regex, let superclass = superclass(dictionary) else {
             return false
         }
@@ -135,9 +135,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         return !regex.matches(in: superclass, options: [], range: range).isEmpty
     }
 
-    fileprivate func validateFunction(_ file: File, kind: SwiftDeclarationKind,
-                                      dictionary: [String: SourceKitRepresentable])
-                                      -> [StyleViolation] {
+    private func validateFunction(_ file: File, kind: SwiftDeclarationKind,
+                                  dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         assert(kind == .functionMethodInstance)
         guard let name = dictionary["key.name"] as? String, name.hasPrefix("test") else {
             return []
@@ -145,9 +144,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         return validateAccessControlLevel(file, dictionary: dictionary)
     }
 
-    fileprivate func validateAccessControlLevel(_ file: File,
-                                                dictionary: [String: SourceKitRepresentable])
-                                                -> [StyleViolation] {
+    private func validateAccessControlLevel(_ file: File,
+                                            dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let acl = AccessControlLevel(dictionary), acl.isPrivate else { return [] }
         let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
         return [StyleViolation(ruleDescription: type(of: self).description,

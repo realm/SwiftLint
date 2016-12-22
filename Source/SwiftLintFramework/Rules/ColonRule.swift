@@ -9,32 +9,22 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
+private enum ColonKind {
+    case type
+    case dictionary
+}
 
-    public var configuration = SeverityConfiguration(.warning)
+public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
+
+    public var configuration = ColonConfiguration()
 
     public init() {}
-
-    public var flexibleRightSpacing = false
-
-    public init(configuration: Any) throws {
-        let dictionary = configuration as? [String:Any]
-        if let severityString = dictionary?["severity"] as? String {
-            try self.configuration.applyConfiguration(severityString)
-        }
-
-        flexibleRightSpacing = dictionary?["flexible_right_spacing"] as? Bool == true
-    }
-
-    public var configurationDescription: String {
-        return configuration.consoleDescription +
-            ", flexible_right_spacing: \(flexibleRightSpacing)"
-    }
 
     public static let description = RuleDescription(
         identifier: "colon",
         name: "Colon",
-        description: "Colons should be next to the identifier when specifying a type.",
+        description: "Colons should be next to the identifier when specifying a type " +
+                     "and next to the key in dictionary literals.",
         nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",
@@ -46,7 +36,11 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "let abc: Enum=Enum.Value\n",
             "func abc(def: Void) {}\n",
             "func abc(def: Void, ghi: Void) {}\n",
-            "// 周斌佳年周斌佳\nlet abc: String = \"abc:\""
+            "// 周斌佳年周斌佳\nlet abc: String = \"abc:\"",
+            "let abc = [Void: Void]()\n",
+            "let abc = [1: [3: 2], 3: 4]\n",
+            "let abc = [\"string\": \"string\"]\n",
+            "let abc = [\"string:string\": \"string\"]\n"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -70,7 +64,13 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "func abc(↓def:  Void) {}\n",
             "func abc(↓def :Void) {}\n",
             "func abc(↓def : Void) {}\n",
-            "func abc(def: Void, ↓ghi :Void) {}\n"
+            "func abc(def: Void, ↓ghi :Void) {}\n",
+            "let abc = [Void↓:Void]()\n",
+            "let abc = [Void↓ : Void]()\n",
+            "let abc = [Void↓:  Void]()\n",
+            "let abc = [Void↓ :  Void]()\n",
+            "let abc = [1: [3↓ : 2], 3: 4]\n",
+            "let abc = [1: [3↓ : 2], 3↓:  4]\n"
         ],
         corrections: [
             "let ↓abc:Void\n": "let abc: Void\n",
@@ -94,29 +94,55 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "func abc(↓def:  Void) {}\n": "func abc(def: Void) {}\n",
             "func abc(↓def :Void) {}\n": "func abc(def: Void) {}\n",
             "func abc(↓def : Void) {}\n": "func abc(def: Void) {}\n",
-            "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n"
+            "func abc(def: Void, ↓ghi :Void) {}\n": "func abc(def: Void, ghi: Void) {}\n",
+            "let abc = [Void↓:Void]()\n": "let abc = [Void: Void]()\n",
+            "let abc = [Void↓ : Void]()\n": "let abc = [Void: Void]()\n",
+            "let abc = [Void↓:  Void]()\n": "let abc = [Void: Void]()\n",
+            "let abc = [Void↓ :  Void]()\n": "let abc = [Void: Void]()\n",
+            "let abc = [1: [3↓ : 2], 3: 4]\n": "let abc = [1: [3: 2], 3: 4]\n",
+            "let abc = [1: [3↓ : 2], 3↓:  4]\n": "let abc = [1: [3: 2], 3: 4]\n"
         ]
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        return violationRangesInFile(file, withPattern: pattern).flatMap { range in
+        let violations = typeColonViolationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
+                                  severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
+
+        let dictionaryViolations: [StyleViolation]
+        if configuration.applyToDictionaries {
+            dictionaryViolations = validateFile(file, dictionary: file.structure.dictionary)
+        } else {
+            dictionaryViolations = []
+        }
+
+        return (violations + dictionaryViolations).sorted { $0.location < $1.location }
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violations = violationRangesInFile(file, withPattern: pattern)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        let violations = correctionRangesInFile(file)
+        let matches = violations.filter {
+            !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty
+        }
+
         guard !matches.isEmpty else { return [] }
         let regularExpression = regex(pattern)
         let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in matches.reversed() {
-            contents = regularExpression.stringByReplacingMatches(in: contents,
-                options: [], range: range, withTemplate: "$1: $2")
+        for (range, kind) in matches.reversed() {
+            switch kind {
+            case .type:
+                contents = regularExpression.stringByReplacingMatches(in: contents,
+                                                                      options: [],
+                                                                      range: range,
+                                                                      withTemplate: "$1: $2")
+            case .dictionary:
+                contents = contents.bridge().replacingCharacters(in: range, with: ": ")
+            }
+
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
@@ -124,12 +150,35 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         return corrections
     }
 
-    // MARK: - Private
+    private typealias RangeWithKind = (range: NSRange, kind: ColonKind)
+
+    private func correctionRangesInFile(_ file: File) -> [RangeWithKind] {
+        let violations = typeColonViolationRangesInFile(file, withPattern: pattern).map {
+            (range: $0, kind: ColonKind.type)
+        }
+        let dictionary = file.structure.dictionary
+        let contents = file.contents.bridge()
+        let dictViolations: [RangeWithKind] = dictionaryColonViolationRangesInFile(file,
+                                                                                   dictionary: dictionary).flatMap {
+            guard let range = contents.byteRangeToNSRange(start: $0.location,
+                                                          length: $0.length) else {
+                return nil
+            }
+            return (range: range, kind: ColonKind.dictionary)
+        }
+
+        return (violations + dictViolations).sorted { $0.range.location < $1.range.location }
+    }
+}
+
+// MARK: Type Colon Rule
+
+extension ColonRule {
 
     fileprivate var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
-        let spacingRegex = flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
+        let spacingRegex = configuration.flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
 
         return  "(\\w)" +       // Capture an identifier
                 "(?:" +         // start group
@@ -145,7 +194,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
                 "\\S)"          // lazily to the first non-whitespace character.
     }
 
-    fileprivate func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
+    fileprivate func typeColonViolationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokensMatching(pattern).filter { _, syntaxTokens in
@@ -158,6 +207,93 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
+        }
+    }
+}
+
+// MARK: Dictionary Colon Rule
+
+extension ColonRule {
+
+    /// Only returns dictionary colon violations
+    public func validateFile(_ file: File, kind: SwiftExpressionKind,
+                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+
+        let ranges = dictionaryColonViolationRangesInFile(file, kind: kind, dictionary: dictionary)
+        return ranges.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, byteOffset: $0.location))
+        }
+    }
+
+    fileprivate func dictionaryColonViolationRangesInFile(_ file: File,
+                                                          dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        guard configuration.applyToDictionaries else {
+            return []
+        }
+
+        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
+        return substructure.flatMap { subItem -> [NSRange] in
+            guard let subDict = subItem as? [String: SourceKitRepresentable],
+                let kindString = subDict["key.kind"] as? String,
+                let kind = KindType(rawValue: kindString) else {
+                    return []
+            }
+            return dictionaryColonViolationRangesInFile(file, dictionary: subDict) +
+                dictionaryColonViolationRangesInFile(file, kind: kind, dictionary: subDict)
+        }
+    }
+
+    private func dictionaryColonViolationRangesInFile(_ file: File, kind: SwiftExpressionKind,
+                                                      dictionary: [String : SourceKitRepresentable]) -> [NSRange] {
+        guard kind == .dictionary,
+            let ranges = colonRanges(dictionary) else {
+                return []
+        }
+
+        let contents = file.contents.bridge()
+        return ranges.filter {
+            guard let colon = contents.substringWithByteRange(start: $0.location,
+                                                              length: $0.length) else {
+                                                                return false
+            }
+
+            if configuration.flexibleRightSpacing {
+                let isCorrect = colon.hasPrefix(": ") || colon.hasPrefix(":\n")
+                return !isCorrect
+            }
+
+            return colon != ": " && !colon.hasPrefix(":\n")
+        }
+    }
+
+    private func colonRanges(_ dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
+        guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
+            elements.count % 2 == 0 else {
+                return nil
+        }
+
+        let expectedKind = "source.lang.swift.structure.elem.expr"
+        let ranges: [NSRange] = elements.flatMap {
+            guard let subDict = $0 as? [String: SourceKitRepresentable],
+                subDict["key.kind"] as? String == expectedKind,
+                let offset = (subDict["key.offset"] as? Int64).map({ Int($0) }),
+                let length = (subDict["key.length"] as? Int64).map({ Int($0) }) else {
+                    return nil
+            }
+
+            return NSRange(location: offset, length: length)
+        }
+
+        let even = ranges.enumerated().flatMap { $0 % 2 == 0 ? $1 : nil }
+        let odd = ranges.enumerated().flatMap { $0 % 2 != 0 ? $1 : nil }
+
+        return zip(even, odd).map { evenRange, oddRange -> NSRange in
+            let location = NSMaxRange(evenRange)
+            let length = oddRange.location - location
+
+            return NSRange(location: location, length: length)
         }
     }
 }

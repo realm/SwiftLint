@@ -10,6 +10,6 @@
 		<error line="1" column="2" severity="error" message="Shorthand syntactic sugar should be used, i.e. [Int] instead of Array&lt;Int&gt;."/>
 	</file>
 	<file name="&lt;nopath&gt;">
-		<error line="0" column="0" severity="error" message="Colons should be next to the identifier when specifying a type."/>
+		<error line="0" column="0" severity="error" message="Colons should be next to the identifier when specifying a type and next to the key in dictionary literals."/>
 	</file>
 </checkstyle>

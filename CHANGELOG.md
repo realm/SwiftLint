@@ -28,6 +28,11 @@
 * HTML reports now display a relative path to files.  
   [Jamie Edge](https://github.com/JamieEdge)
 
+* `colon` rule now validates colon position in dictionaries too. You can disable
+  this new validation with the `apply_to_dictionaries` configuration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#603](https://github.com/realm/SwiftLint/issues/603)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

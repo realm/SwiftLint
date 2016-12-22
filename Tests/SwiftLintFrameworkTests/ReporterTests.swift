@@ -69,7 +69,17 @@ class ReporterTests: XCTestCase {
     func testJSONReporter() {
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
         let result = JSONReporter.generateReport(generateViolations())
-        XCTAssertEqual(result, expectedOutput)
+        func jsonValue(_ jsonString: String) -> NSObject {
+            let data = jsonString.data(using: .utf8)!
+            let result = try! JSONSerialization.jsonObject(with: data, options: [])
+            if let dict = (result as? [String: Any])?.bridge() {
+                return dict
+            } else if let array = (result as? [Any])?.bridge() {
+                return array
+            }
+            fatalError()
+        }
+        XCTAssertEqual(jsonValue(result), jsonValue(expectedOutput))
     }
 
     func testCSVReporter() {
@@ -107,8 +117,7 @@ extension ReporterTests {
             ("testReporterFromString", testReporterFromString),
             ("testXcodeReporter", testXcodeReporter),
             ("testEmojiReporter", testEmojiReporter),
-            // Fails on Linux
-            // ("testJSONReporter", testJSONReporter),
+            ("testJSONReporter", testJSONReporter),
             ("testCSVReporter", testCSVReporter),
             ("testCheckstyleReporter", testCheckstyleReporter),
             ("testJunitReporter", testJunitReporter),

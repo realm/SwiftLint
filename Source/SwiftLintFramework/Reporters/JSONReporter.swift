@@ -21,7 +21,7 @@ public struct JSONReporter: Reporter {
         return toJSON(violations.map(dictionaryForViolation))
     }
 
-    fileprivate static func dictionaryForViolation(_ violation: StyleViolation) -> NSDictionary {
+    fileprivate static func dictionaryForViolation(_ violation: StyleViolation) -> [String: Any] {
         return [
             "file": violation.location.file ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,

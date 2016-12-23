@@ -60,6 +60,10 @@ class RulesTests: XCTestCase {
         verifyRule(DynamicInlineRule.description)
     }
 
+    func testEducatedSorting() {
+        verifyRule(EducatedSortingRule.description)
+    }
+
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }

@@ -53,6 +53,7 @@ public let masterRuleList = RuleList(rules:
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DynamicInlineRule.self,
+    EducatedSortingRule.self,
     EmptyCountRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,

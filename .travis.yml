@@ -13,7 +13,7 @@ matrix:
       env: JOB=SPM
       os: osx
       osx_image: xcode8.2
-      before_script: bundle exec danger
+      before_script: bundle install --jobs=3 --retry=3 --without documentation --path bundle && bundle exec danger
     - script: make docker_test
       env: JOB=Linux
       sudo: required

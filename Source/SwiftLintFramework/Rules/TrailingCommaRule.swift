@@ -9,6 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
+private let missingTrailingCommaReason = "Multi-line collection literals should have trailing commas."
+private let extraTrailingCommaReason = "Collection literals should not have trailing commas."
+
 public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
 
@@ -38,8 +41,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
     )
 
     // swiftlint:disable:next force_try
-    private static let regex = try! NSRegularExpression(pattern: ",",
-                                                        options: [.ignoreMetacharacters])
+    private static let regex = try! NSRegularExpression(pattern: ",", options: [.ignoreMetacharacters])
 
     public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
@@ -77,17 +79,15 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition,
-                                                                       length: length) ?? ""
+        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition, length: length) ?? ""
 
         // if a trailing comma is not present
-        guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file,
-                                                  offset: lastPosition) else {
+        guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file, offset: lastPosition) else {
             guard configuration.mandatoryComma else {
                 return []
             }
 
-            return violations(file: file, byteOffset: lastPosition)
+            return violations(file: file, byteOffset: lastPosition, reason: missingTrailingCommaReason)
         }
 
         // trailing comma is present, which is a violation if mandatoryComma is false
@@ -96,14 +96,15 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         let violationOffset = lastPosition + commaIndex
-        return violations(file: file, byteOffset: violationOffset)
+        return violations(file: file, byteOffset: violationOffset, reason: extraTrailingCommaReason)
     }
 
-    private func violations(file: File, byteOffset: Int) -> [StyleViolation] {
+    private func violations(file: File, byteOffset: Int, reason: String) -> [StyleViolation] {
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, byteOffset: byteOffset)
+                location: Location(file: file, byteOffset: byteOffset),
+                reason: reason
             )
         ]
     }

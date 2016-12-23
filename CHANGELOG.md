@@ -11,6 +11,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1033](https://github.com/realm/SwiftLint/issues/1033)
 
+* Add more helpful reason strings to TrailingCommaRule.  
+  [Matt Rubin](https://github.com/mattrubin)
+
 ##### Bug Fixes
 
 * None.

@@ -28,27 +28,36 @@ public struct RuleList {
     }
 
     internal func configuredRules(with dictionary: [String: Any]) -> [Rule] {
-        var rules = [Rule]()
+        var rules = [String: Rule]()
 
         for (key, configuration) in dictionary {
             if let identifier = identifier(for: key), let ruleType = list[identifier] {
+
+                guard rules[identifier] == nil else {
+                    let aliases = ruleType.description.allAliases.map { "'\($0)'" }.joined(separator: ", ")
+                    queuedPrintError(
+                        "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
+                    )
+                    continue
+                }
+
                 do {
                     let configuredRule = try ruleType.init(configuration: configuration)
-                    rules.append(configuredRule)
+                    rules[identifier] = configuredRule
                 } catch {
                     queuedPrintError(
                         "Invalid configuration for '\(identifier)'. Falling back to default."
                     )
-                    rules.append(ruleType.init())
+                    rules[identifier] = ruleType.init()
                 }
             }
         }
 
-        let addedRules = Set(rules.map { type(of: $0).description.identifier })
-        for (identifier, ruleType) in list where !addedRules.contains(identifier) {
-            rules.append(ruleType.init())
+        for (identifier, ruleType) in list where rules[identifier] == nil {
+            rules[identifier] = ruleType.init()
         }
-        return rules
+
+        return Array(rules.values)
     }
 
     internal func identifier(for alias: String) -> String? {

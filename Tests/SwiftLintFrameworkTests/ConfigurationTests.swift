@@ -219,6 +219,13 @@ class ConfigurationTests: XCTestCase {
         let rules = testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
+
+    func testInitsWithDuplicatedConfiguration() {
+        let ruleConfiguration = [1, 2]
+        let config = ["severity_mock": ruleConfiguration, "severity_level_mock": [1, 3]]
+        let rules = testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    }
 }
 
 // MARK: - ProjectMock Paths

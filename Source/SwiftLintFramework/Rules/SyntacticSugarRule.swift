@@ -29,7 +29,8 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
             "let x: CustomArray<String>",
             "var currentIndex: Array<OnboardingPage>.Index?",
             "func x(a: [Int], b: Int) -> Array<Int>.Index",
-            "unsafeBitCast(nonOptionalT, to: Optional<T>.self)"
+            "unsafeBitCast(nonOptionalT, to: Optional<T>.self)",
+            "type is Optional<String>.Type"
         ],
         triggeringExamples: [
             "let x: ↓Array<String>",
@@ -66,8 +67,8 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
                     return nil
                 }
 
-                if file.matchPattern("\\s*\\.self", withSyntaxKinds: [.keyword],
-                                     range: restOfFileRange).first?.location == start {
+                if let (range, kinds) = file.matchPattern("\\s*\\.(?:self|Type)", range: restOfFileRange).first,
+                    range.location == start, kinds == [.keyword] || kinds == [.identifier] {
                     return nil
                 }
             }

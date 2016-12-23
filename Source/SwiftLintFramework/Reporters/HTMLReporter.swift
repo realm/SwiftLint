@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SourceKittenFramework
 
 private let formatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -14,7 +15,7 @@ private let formatter: DateFormatter = {
     return formatter
 }()
 
-private let swiftlintVersion = Bundle(identifier: "io.realm.SwiftLintFramework")?
+private let swiftlintVersion = Bundle.swiftLintFramework
     .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
 
 public struct HTMLReporter: Reporter {
@@ -23,6 +24,31 @@ public struct HTMLReporter: Reporter {
 
     public var description: String {
         return "Reports violations as HTML"
+    }
+
+    private static let template: String = {
+        let path = templatePath
+
+        #if os(Linux)
+            // swiftlint:disable:next force_try
+            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
+            return String(data: data, encoding: .utf8)!
+        #else
+            // swiftlint:disable:next force_try
+            return try! String(contentsOfFile: path)
+        #endif
+    }()
+
+    private static var templatePath: String {
+        #if SWIFT_PACKAGE
+            let components = Array(NSString(string: #file).pathComponents.dropLast() + ["Templates", "template.html"])
+            let path = components.joined(separator: "/")
+        #else
+            let bundle = Bundle.swiftLintFramework
+            let path = bundle.path(forResource: "template", ofType: "html")!
+        #endif
+
+        return path
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
@@ -54,40 +80,12 @@ public struct HTMLReporter: Reporter {
     }
 
     private static func generateReport(parameters: [String: String]) -> String {
-        var report = loadTemplate()
+        var report = template
         for (key, value) in parameters {
             report = report.replacingOccurrences(of: "$$\(key)$$", with: value)
         }
 
         return report
-    }
-
-    private static func loadTemplate() -> String {
-        let path = templatePath()
-
-        #if os(Linux)
-            // swiftlint:disable:next force_try
-            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
-            return String(data: data, encoding: .utf8)!
-        #else
-            // swiftlint:disable:next force_try
-            return try! String(contentsOfFile: path)
-        #endif
-    }
-
-    private static func templatePath() -> String {
-        #if SWIFT_PACKAGE
-            let components = Array(NSString(string: #file).pathComponents.dropLast() + ["Templates", "template.html"])
-            let path = components.joined(separator: "/")
-        #else
-            // swiftlint:disable:next nesting
-            class DummyClass { }
-
-            let bundle = Bundle(for: DummyClass.self)
-            let path = bundle.path(forResource: "template", ofType: "html")!
-        #endif
-
-        return path
     }
 
     private static func generateSingleRow(for violation: StyleViolation, at index: Int,

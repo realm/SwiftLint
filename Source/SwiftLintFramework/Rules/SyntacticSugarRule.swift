@@ -28,7 +28,8 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
             "extension Dictionary { \n func x() { } \n }",
             "let x: CustomArray<String>",
             "var currentIndex: Array<OnboardingPage>.Index?",
-            "func x(a: [Int], b: Int) -> Array<Int>.Index"
+            "func x(a: [Int], b: Int) -> Array<Int>.Index",
+            "unsafeBitCast(nonOptionalT, to: Optional<T>.self)"
         ],
         triggeringExamples: [
             "let x: ↓Array<String>",
@@ -50,7 +51,7 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
 
         return file.matchPattern(pattern, excludingSyntaxKinds: kinds).flatMap { range in
 
-            // avoids trigering when referring to an associatedtype
+            // avoid triggering when referring to an associatedtype
             let start = range.location + range.length
             let restOfFileRange = NSRange(location: start, length: contents.length - start)
             if regex("\\s*\\.").firstMatch(in: file.contents, options: [],
@@ -62,6 +63,11 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
 
                 let kinds = file.structure.kindsFor(byteOffset).flatMap { SwiftExpressionKind(rawValue: $0.kind) }
                 guard kinds.contains(.call) else {
+                    return nil
+                }
+
+                if file.matchPattern("\\s*\\.self", withSyntaxKinds: [.keyword],
+                                     range: restOfFileRange).first?.location == start {
                     return nil
                 }
             }

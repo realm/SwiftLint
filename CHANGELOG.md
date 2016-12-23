@@ -24,6 +24,10 @@
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1042](https://github.com/realm/SwiftLint/issues/1042)
+  
+* `syntactic_sugar` rule now doesn't flag declarations that can't be fixed.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#928](https://github.com/realm/SwiftLint/issues/928)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

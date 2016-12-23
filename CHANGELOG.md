@@ -11,6 +11,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1033](https://github.com/realm/SwiftLint/issues/1033)
 
+* Add more helpful reason strings to TrailingCommaRule.  
+  [Matt Rubin](https://github.com/mattrubin)
+
 ##### Bug Fixes
 
 * None.
@@ -55,9 +58,6 @@
   `.first(where: { /* ... */ })` is often more efficient.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1005](https://github.com/realm/SwiftLint/issues/1005)
-
-* Add more helpful reason strings to TrailingCommaRule.  
-  [Matt Rubin](https://github.com/mattrubin)
 
 ##### Bug Fixes
 

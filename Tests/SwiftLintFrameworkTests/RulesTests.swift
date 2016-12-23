@@ -292,6 +292,10 @@ class RulesTests: XCTestCase {
         verifyRule(VariableNameRule.description)
     }
 
+    func testVerticalParameterAlignment() {
+        verifyRule(VerticalParameterAlignmentRule.description)
+    }
+
     func testVoidReturn() {
         verifyRule(VoidReturnRule.description)
     }
@@ -345,7 +349,7 @@ extension RulesTests {
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
             ("testPrivateOutlet", testPrivateOutlet),
-            // ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
@@ -364,6 +368,7 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),
             // ("testVariableName", testVariableName),
+            ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)

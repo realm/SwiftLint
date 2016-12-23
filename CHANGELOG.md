@@ -2,7 +2,24 @@
 
 ##### Breaking
 
-* `file_length` rule now has a default value of `120` for warnings.  
+* None.
+
+##### Enhancements
+
+* Add `vertical_parameter_alignment` rule that checks if parameters are 
+  vertically aligned for multi-line function declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1033](https://github.com/realm/SwiftLint/issues/1033)
+
+##### Bug Fixes
+
+* None.
+
+## 0.15.0: Hand Washable Holiday Linens 🎄
+
+##### Breaking
+
+* `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
 

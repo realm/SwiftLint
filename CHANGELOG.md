@@ -16,7 +16,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Ignore close parentheses on `vertical_parameter_alignment` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1042](https://github.com/realm/SwiftLint/issues/1042)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

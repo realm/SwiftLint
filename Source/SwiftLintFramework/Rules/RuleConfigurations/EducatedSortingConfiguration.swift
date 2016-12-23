@@ -11,13 +11,17 @@ import Foundation
 public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var threshold: Float
+    private(set) var minimumItems: Int
 
     public var consoleDescription: String {
-        return ""
+        return severityConfiguration.consoleDescription +
+            ", threshold: \(threshold)" +
+            ", minimum_items: \(minimumItems)"
     }
 
-    public init(threshold: Float = 0.2) {
+    public init(threshold: Float = 0.25, minimumItems: Int = 3) {
         self.threshold = threshold
+        self.minimumItems = minimumItems
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
@@ -27,6 +31,10 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
 
         if let threshold = configuration["threshold"] as? Float {
             self.threshold = threshold
+        }
+
+        if let minimumItems = configuration["min_items"] as? Int {
+            self.minimumItems = minimumItems
         }
 
         if let severityString = configuration["severity"] as? String {

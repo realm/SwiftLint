@@ -96,12 +96,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
                         results.append(dictionary)
                     }
                 }
-
-                if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-                    for case let dictionary as [String: SourceKitRepresentable] in subStructure {
-                        parse(dictionary: dictionary)
-                    }
-                }
+                dictionary.substructure.forEach(parse)
             }
             parse(dictionary: structure.dictionary)
             return results

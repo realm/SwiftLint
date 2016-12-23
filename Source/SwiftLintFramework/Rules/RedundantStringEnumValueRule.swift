@@ -11,11 +11,10 @@ import SourceKittenFramework
 
 private func children(of dict: [String: SourceKitRepresentable],
                       matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
-    return (dict["key.substructure"] as? [SourceKitRepresentable] ?? []).flatMap { item in
-        if let subDict = item as? [String: SourceKitRepresentable],
-            let kindString = subDict["key.kind"] as? String,
+    return dict.substructure.flatMap { subDict in
+        if let kindString = subDict["key.kind"] as? String,
             SwiftDeclarationKind(rawValue: kindString) == kind {
-                return subDict
+            return subDict
         }
         return nil
     }

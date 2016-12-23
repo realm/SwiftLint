@@ -55,10 +55,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func isEnumeratedCall(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        for subItem in substructure {
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
+        for subDict in dictionary.substructure {
+            guard let kindString = subDict["key.kind"] as? String,
                 SwiftExpressionKind(rawValue: kindString) == .call,
                 let name = subDict["key.name"] as? String else {
                     continue

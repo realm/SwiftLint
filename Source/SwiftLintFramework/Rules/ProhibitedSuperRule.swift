@@ -55,11 +55,10 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
             let name = dictionary["key.name"] as? String,
-            let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]),
             kind == .functionMethodInstance &&
             configuration.resolvedMethodNames.contains(name) &&
             dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") &&
-            !extractCallsToSuper(name, substructure: substructure).isEmpty
+            !extractCallsToSuper(name, substructure: dictionary.substructure).isEmpty
             else { return [] }
 
         return [StyleViolation(ruleDescription: type(of: self).description,
@@ -69,11 +68,10 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
     }
 
     private func extractCallsToSuper(_ name: String,
-                                     substructure: [SourceKitRepresentable]) -> [String] {
+                                     substructure: [[String: SourceKitRepresentable]]) -> [String] {
         let superCall = "super.\(name)"
-        return substructure.flatMap {
-            guard let elems = $0 as? [String: SourceKitRepresentable],
-                let type = elems["key.kind"] as? String,
+        return substructure.flatMap { elems in
+            guard let type = elems["key.kind"] as? String,
                 let name = elems["key.name"] as? String,
                 type == "source.lang.swift.expr.call" && superCall.contains(name)
                 else { return nil }

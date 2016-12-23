@@ -34,4 +34,9 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             return []
         }
     }
+
+    var inheritedTypes: [String] {
+        let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        return array.flatMap { ($0 as? [String: String])?["key.name"] }
+    }
 }

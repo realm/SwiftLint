@@ -20,9 +20,7 @@ private extension AccessControlLevel {
 private func superclass(_ dictionary: [String: SourceKitRepresentable]) -> String? {
     guard let kindString = dictionary["key.kind"] as? String,
         let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
-        let inheritedTypes = dictionary["key.inheritedtypes"] as? [SourceKitRepresentable],
-        let firstInheritedTypeDict = inheritedTypes[0] as? [String: SourceKitRepresentable],
-        let className = firstInheritedTypeDict["key.name"] as? String else { return nil }
+        let className = dictionary.inheritedTypes.first else { return nil }
     return className
 }
 

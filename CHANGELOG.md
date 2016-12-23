@@ -14,6 +14,11 @@
 * Add more helpful reason strings to TrailingCommaRule.  
   [Matt Rubin](https://github.com/mattrubin)
 
+* Add `class_delegate_protocol` rule that warns against protocol declarations
+  that aren't marked as `: class` or `@objc`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1039](https://github.com/realm/SwiftLint/issues/1039)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

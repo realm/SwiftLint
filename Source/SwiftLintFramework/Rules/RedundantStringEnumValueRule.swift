@@ -52,10 +52,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if it's a String enum
-        let inheritedTypes = (dictionary["key.inheritedtypes"] as? [SourceKitRepresentable])?
-            .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
-            .flatMap({ $0["key.name"] }) ?? []
-        guard inheritedTypes.contains("String") else {
+        guard dictionary.inheritedTypes.contains("String") else {
             return []
         }
 

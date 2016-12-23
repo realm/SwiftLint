@@ -30,7 +30,11 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             "                      -> [StyleViolation]\n",
             "func validateFunction(\n" +
             "   _ file: File, kind: SwiftDeclarationKind,\n" +
-            "   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n"
+            "   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]\n",
+            "func validateFunction(\n" +
+            "   _ file: File, kind: SwiftDeclarationKind,\n" +
+            "   dictionary: [String: SourceKitRepresentable]\n" +
+            ") -> [StyleViolation]\n"
         ],
         triggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
@@ -67,14 +71,15 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         let linesRange = (startLine + 1)...endLine
         let violationLocations = linesRange.flatMap { lineIndex -> Int? in
             let line = file.lines[lineIndex - 1]
-            guard let paramLocation = regex("\\S").firstMatch(in: file.contents, options: [],
-                                                              range: line.range)?.range.location,
-                let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramLocation),
+            guard let paramRange = regex("\\S").firstMatch(in: file.contents, options: [],
+                                                           range: line.range)?.range,
+                contents.substring(with: paramRange) != ")",
+                let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramRange.location),
                 paramCharacter != startCharacter else {
                     return nil
             }
 
-            return paramLocation
+            return paramRange.location
         }
 
         return violationLocations.map {

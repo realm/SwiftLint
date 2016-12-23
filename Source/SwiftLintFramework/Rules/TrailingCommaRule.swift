@@ -79,8 +79,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         let length = bodyLength + bodyOffset - lastPosition
-        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition,
-                                                                       length: length) ?? ""
+        let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition, length: length) ?? ""
 
         // if a trailing comma is not present
         guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file, offset: lastPosition) else {

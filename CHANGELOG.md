@@ -16,7 +16,7 @@
 
 ##### Breaking
 
-* `file_length` rule now has a default value of `120` for warnings.  
+* `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
 

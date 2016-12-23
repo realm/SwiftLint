@@ -65,14 +65,20 @@ public struct HTMLReporter: Reporter {
     private static func loadTemplate() -> String {
         let path = templatePath()
 
-        // swiftlint:disable:next force_try
-        return try! String(contentsOfFile: path)
+        #if os(Linux)
+            // swiftlint:disable:next force_try
+            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
+            return String(data: data, encoding: .utf8)!
+        #else
+            // swiftlint:disable:next force_try
+            return try! String(contentsOfFile: path)
+        #endif
     }
 
     private static func templatePath() -> String {
         #if SWIFT_PACKAGE
             let components = Array(NSString(string: #file).pathComponents.dropLast() + ["Templates", "template.html"])
-            let path = NSString.path(withComponents: components)
+            let path = components.joined(separator: "/")
         #else
             // swiftlint:disable:next nesting
             class DummyClass { }

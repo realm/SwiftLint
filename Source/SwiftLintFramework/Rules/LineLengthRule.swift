@@ -66,7 +66,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     ///
     /// - returns: sourceString with the given literals replaced by `#`
     private func stripLiterals(fromSourceString sourceString: String,
-                                                withDelimiter delimiter: String) -> String {
+                               withDelimiter delimiter: String) -> String {
         var modifiedString = sourceString
 
         // While copy of content contains literal, replace with a single character

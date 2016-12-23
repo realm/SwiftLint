@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `vertical_parameter_alignment` rule that checks if parameters are 
+  vertically aligned for multi-line function declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1033](https://github.com/realm/SwiftLint/issues/1033)
 
 ##### Bug Fixes
 

@@ -24,7 +24,8 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             "protocol Foo {}\n",
             "class FooDelegate {}\n",
             "@objc protocol FooDelegate {}\n",
-            "@objc(MyFooDelegate)\n protocol FooDelegate {}\n"
+            "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
+            "protocol FooDelegate: BarDelegate {}\n"
         ],
         triggeringExamples: [
             "↓protocol FooDelegate {}\n",
@@ -40,7 +41,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if name contains "Delegate"
-        guard let name = (dictionary["key.name"] as? String), name.hasSuffix("Delegate") else {
+        guard let name = (dictionary["key.name"] as? String), isDelegateProtocol(name) else {
             return []
         }
 
@@ -49,6 +50,11 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
                                  "source.decl.attribute.objc.name")
         let isObjc = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes).isEmpty
         guard !isObjc else {
+            return []
+        }
+
+        // Check if inherits from another Delegate protocol
+        guard dictionary.inheritedTypes.filter(isDelegateProtocol).isEmpty else {
             return []
         }
 
@@ -73,6 +79,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
     private func isClassProtocol(file: File, range: NSRange) -> Bool {
         return !file.matchPattern("\\bclass\\b", withSyntaxKinds: [.keyword], range: range).isEmpty
+    }
+
+    private func isDelegateProtocol(_ name: String) -> Bool {
+        return name.hasSuffix("Delegate")
     }
 
 }

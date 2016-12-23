@@ -83,12 +83,10 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
             }
         }
 
-        if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-            for case let dictionary as [String: SourceKitRepresentable] in subStructure {
-                if let offset = methodCallFor(byteOffset, excludingOffset: excludingOffset,
-                                              dictionary: dictionary, predicate: predicate) {
-                    return offset
-                }
+        for dictionary in dictionary.substructure {
+            if let offset = methodCallFor(byteOffset, excludingOffset: excludingOffset,
+                                          dictionary: dictionary, predicate: predicate) {
+                return offset
             }
         }
 

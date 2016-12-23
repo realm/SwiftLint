@@ -124,10 +124,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
 
     private func violationRangesInFile(_ file: File,
                                        dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { subItem -> [NSRange] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
+        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+            guard let kindString = subDict["key.kind"] as? String,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }

@@ -13,13 +13,13 @@ private let arrayEducatedSortingReason = "Array elements should be sorted."
 
 extension Sequence where Iterator.Element == String {
     /// Determines how sorted the sequence is on a scale from 0.0 to 1.0.
-    fileprivate var sortedness: Float {
-        guard let originalArray = self as? [String] else {
+    fileprivate func sortedness(caseSensitive: Bool) -> Float {
+        guard let array = self as? [String] else {
             return 0.0
         }
 
-        let array = originalArray.map({ $0.trimmingCharacters(in: .whitespacesAndNewlines) })
-        let sortedArray = array.sorted()
+        let sortedArray = caseSensitive ? array.sorted() : array.sorted(by:) { $0.lowercased() < $1.lowercased() }
+        let startIndex = array.startIndex
         let maxIndex = array.endIndex - 1
         var score = 0
 
@@ -37,10 +37,8 @@ extension Sequence where Iterator.Element == String {
             }
 
             // Check the first element using direct comparison.
-            if index == array.startIndex {
-                if index == sortedIndex {
-                    score += 1
-                }
+            if index == startIndex && index == sortedIndex {
+                score += 1
             }
 
             // Require an element after the current sorted one.
@@ -65,6 +63,7 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule {
 
     public init() { }
 
+    // swiftlint:disable educated_sorting
     public static let description = RuleDescription(
         identifier: "educated_sorting",
         name: "Educated Sorting",
@@ -74,6 +73,7 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule {
             "let foo = [\"Alpha\"]\n",
             "let foo = [\"Bravo\", \"Alpha\"]\n",
             "let foo = [\"Charlie\", \"Bravo\", \"Alpha\"]\n",
+            "let foo = [Object(bravo: 1, alpha: 2, charlie: 3)]\n",
             "let foo = []\n"
         ],
         triggeringExamples: [
@@ -82,23 +82,32 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule {
             "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Foxtrot\", \"Echo\"]\n"
         ]
     )
+    // swiftlint:enable educated_sorting
 
     private static let allowedKinds: [SwiftExpressionKind] = [.array]
+    private static let expectedElementKind = "source.lang.swift.structure.elem.expr"
 
     public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
                              dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
             type(of: self).allowedKinds.contains(kind) else {
                 return []
         }
 
-        guard let contents = file.contents.substringWithByteRange(start: bodyOffset, length: bodyLength) else {
-            return []
-        }
+        let contents = file.contents
 
-        let items = contents.components(separatedBy: ",")
+        let items = elements.flatMap { element -> String? in
+            guard let dictionary = element as? [String: SourceKitRepresentable],
+                let elementOffset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+                let elementLength = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+                (dictionary["key.kind"] as? String) == type(of: self).expectedElementKind else {
+                    return nil
+            }
+
+            return contents.substringWithByteRange(start: elementOffset, length: elementLength)
+        }
 
         guard items.count >= configuration.minimumItems else {
             return []
@@ -108,7 +117,7 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func violations(items: [String], file: File, offset: Int) -> [StyleViolation] {
-        let sortedness = items.sortedness
+        let sortedness = items.sortedness(caseSensitive: configuration.caseSensitive)
 
         if sortedness < 1.0 && sortedness >= configuration.threshold {
             return [

@@ -23,6 +23,9 @@
   initializing optional variables with `nil`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1052](https://github.com/realm/SwiftLint/issues/1052)
+  
+* `redundant_nil_coalescing` rule is now correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 

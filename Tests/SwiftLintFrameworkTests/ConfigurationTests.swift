@@ -194,37 +194,73 @@ class ConfigurationTests: XCTestCase {
     func testConfiguresCorrectlyFromDict() {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = testRuleList.configuredRules(with: config)
+        // swiftlint:disable:next force_try
+        let rules = try! testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
     func testConfigureFallsBackCorrectly() {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = testRuleList.configuredRules(with: config)
+        // swiftlint:disable:next force_try
+        let rules = try! testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
 
     // MARK: - Aliases
 
-    func testInitsFromAlias() {
+    func testConfiguresCorrectlyFromAlias() {
         let ruleConfiguration = [1, 2]
         let config = ["severity_mock": ruleConfiguration]
-        let rules = testRuleList.configuredRules(with: config)
+        // swiftlint:disable:next force_try
+        let rules = try! testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    }
+
+    func testConfiguresCorrectlyFromDeprecatedAlias() {
+        let ruleConfiguration = [1, 2]
+        let config = ["mock": ruleConfiguration]
+        // swiftlint:disable:next force_try
+        let rules = try! testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    }
+
+    func testReturnsNilWithDuplicatedConfiguration() {
+        let ruleConfiguration = [1, 2]
+        let dict = ["severity_mock": ruleConfiguration, "severity_level_mock": [1, 3]]
+        let configuration = Configuration(dict: dict, ruleList: testRuleList)
+        XCTAssertNil(configuration)
     }
 
     func testInitsFromDeprecatedAlias() {
         let ruleConfiguration = [1, 2]
-        let config = ["mock": ruleConfiguration]
-        let rules = testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+        let configuration = Configuration(dict: ["mock": ruleConfiguration], ruleList: testRuleList)
+        XCTAssertNotNil(configuration)
     }
 
-    func testInitsWithDuplicatedConfiguration() {
-        let ruleConfiguration = [1, 2]
-        let config = ["severity_mock": ruleConfiguration, "severity_level_mock": [1, 3]]
-        let rules = testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+    func testWhitelistRulesFromDeprecatedAlias() {
+        let configuration = Configuration(dict: ["whitelist_rules": ["mock"]], ruleList: testRuleList)!
+        let configuredIdentifiers = configuration.rules.map {
+            type(of: $0).description.identifier
+        }
+        XCTAssertEqual(configuredIdentifiers, ["severity_level_mock"])
+    }
+
+    func testWhitelistRulesFromAlias() {
+        let configuration = Configuration(dict: ["whitelist_rules": ["severity_mock"]], ruleList: testRuleList)!
+        let configuredIdentifiers = configuration.rules.map {
+            type(of: $0).description.identifier
+        }
+        XCTAssertEqual(configuredIdentifiers, ["severity_level_mock"])
+    }
+
+    func testDisabledRulesFromDeprecatedAlias() {
+        let configuration = Configuration(dict: ["disabled_rules": ["mock"]], ruleList: testRuleList)!
+        XCTAssert(configuration.rules.isEmpty)
+    }
+
+    func testDisabledRulesFromAlias() {
+        let configuration = Configuration(dict: ["disabled_rules": ["severity_mock"]], ruleList: testRuleList)!
+        XCTAssert(configuration.rules.isEmpty)
     }
 }
 
@@ -310,9 +346,7 @@ extension ConfigurationTests {
             ("testLevel2", testLevel2),
             ("testLevel3", testLevel3),
             ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-            ("testInitsFromAlias", testInitsFromAlias),
-            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias)
+            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly)
         ]
     }
 }

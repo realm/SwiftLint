@@ -8,6 +8,10 @@
 
 import Foundation
 
+public enum RuleListError: Error {
+    case duplicatedConfigurations(rule: Rule.Type)
+}
+
 public struct RuleList {
     public let list: [String: Rule.Type]
     private let aliases: [String: String]
@@ -27,18 +31,14 @@ public struct RuleList {
         aliases = tmpAliases
     }
 
-    internal func configuredRules(with dictionary: [String: Any]) -> [Rule] {
+    internal func configuredRules(with dictionary: [String: Any]) throws -> [Rule] {
         var rules = [String: Rule]()
 
         for (key, configuration) in dictionary {
             if let identifier = identifier(for: key), let ruleType = list[identifier] {
 
                 guard rules[identifier] == nil else {
-                    let aliases = ruleType.description.allAliases.map { "'\($0)'" }.joined(separator: ", ")
-                    queuedPrintError(
-                        "Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases)."
-                    )
-                    continue
+                    throw RuleListError.duplicatedConfigurations(rule: ruleType)
                 }
 
                 do {

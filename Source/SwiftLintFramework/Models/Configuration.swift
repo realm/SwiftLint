@@ -40,27 +40,28 @@ public struct Configuration: Equatable {
                  excluded: [String] = [],
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRules(with: [:])) {
-        self.included = included.map(handleAlias)
-        self.excluded = excluded.map(handleAlias)
+                 ruleList: RuleList = masterRuleList,
+                 configuredRules: [Rule]? = nil) {
+
+        self.included = included
+        self.excluded = excluded
         self.reporter = reporter
 
-        let disabledRules = disabledRules.map(handleAlias)
-        let optInRules = optInRules.map(handleAlias)
-        let whitelistRules = whitelistRules.map(handleAlias)
+        let configuredRules = configuredRules ?? ((try? ruleList.configuredRules(with: [:])) ?? [])
+
+        let handleAliasWithRuleList: (String) -> String = { handleAlias($0, ruleList: ruleList) }
+        let disabledRules = disabledRules.map(handleAliasWithRuleList)
+        let optInRules = optInRules.map(handleAliasWithRuleList)
+        let whitelistRules = whitelistRules.map(handleAliasWithRuleList)
 
         // Validate that all rule identifiers map to a defined rule
-        let validRuleIdentifiers = configuredRules.map {
-            type(of: $0).description.identifier
-        }
+        let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
 
-        let validDisabledRules = disabledRules.filter({ validRuleIdentifiers.contains($0) })
-        let invalidRules = disabledRules.filter({ !validRuleIdentifiers.contains($0) })
+        let validDisabledRules = disabledRules.filter { validRuleIdentifiers.contains($0) }
+        let invalidRules = disabledRules.filter { !validRuleIdentifiers.contains($0) }
         if !invalidRules.isEmpty {
             for invalidRule in invalidRules {
-                queuedPrintError(
-                    "configuration error: '\(invalidRule)' is not a valid rule identifier"
-                )
+                queuedPrintError("configuration error: '\(invalidRule)' is not a valid rule identifier")
             }
             let listOfValidRuleIdentifiers = validRuleIdentifiers.joined(separator: "\n")
             queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
@@ -103,60 +104,48 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: Any]) {
-        // Deprecation warning for "enabled_rules"
-        if dict[ConfigurationKey.enabledRules.rawValue] != nil {
-            queuedPrintError("'\(ConfigurationKey.enabledRules.rawValue)' has been renamed to " +
-                "'\(ConfigurationKey.optInRules.rawValue)' and will be completely removed in a " +
-                "future release.")
-        }
-
-        // Deprecation warning for "use_nested_configs"
-        if dict[ConfigurationKey.useNestedConfigs.rawValue] != nil {
-            queuedPrintError("Support for '\(ConfigurationKey.useNestedConfigs.rawValue)' has " +
-                "been deprecated and its value is now ignored. Nested configuration files are " +
-                "now always considered.")
-        }
-
-        func defaultStringArray(_ object: Any?) -> [String] {
-            return [String].array(of: object) ?? []
-        }
-
+    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
-            dict[ConfigurationKey.optInRules.rawValue] ??
-                dict[ConfigurationKey.enabledRules.rawValue]
+            dict[ConfigurationKey.optInRules.rawValue] ?? dict[ConfigurationKey.enabledRules.rawValue]
         )
 
         // Log an error when supplying invalid keys in the configuration dictionary
-        let validKeys = [
-            ConfigurationKey.disabledRules,
-            .enabledRules,
-            .excluded,
-            .included,
-            .optInRules,
-            .reporter,
-            .useNestedConfigs,
-            .warningThreshold,
-            .whitelistRules
-        ].map({ $0.rawValue }) + masterRuleList.allValidIdentifiers()
-
-        let invalidKeys = Set(dict.keys).subtracting(validKeys)
+        let invalidKeys = Set(dict.keys).subtracting(validKeys(ruleList: ruleList))
         if !invalidKeys.isEmpty {
             queuedPrintError("Configuration contains invalid keys:\n\(invalidKeys)")
         }
 
-        self.init(
-            disabledRules: defaultStringArray(dict[ConfigurationKey.disabledRules.rawValue]),
-            optInRules: optInRules,
-            whitelistRules: defaultStringArray(dict[ConfigurationKey.whitelistRules.rawValue]),
-            included: defaultStringArray(dict[ConfigurationKey.included.rawValue]),
-            excluded: defaultStringArray(dict[ConfigurationKey.excluded.rawValue]),
-            warningThreshold: dict[ConfigurationKey.warningThreshold.rawValue] as? Int,
-            reporter: dict[ConfigurationKey.reporter.rawValue] as? String ??
-                XcodeReporter.identifier,
-            configuredRules: masterRuleList.configuredRules(with: dict)
-        )
+        let disabledRules = defaultStringArray(dict[ConfigurationKey.disabledRules.rawValue])
+        let whitelistRules = defaultStringArray(dict[ConfigurationKey.whitelistRules.rawValue])
+        let included = defaultStringArray(dict[ConfigurationKey.included.rawValue])
+        let excluded = defaultStringArray(dict[ConfigurationKey.excluded.rawValue])
+
+        warnAboutDeprecations(dict, disabledRules: disabledRules, optInRules: optInRules,
+                              whitelistRules: whitelistRules, ruleList: ruleList)
+
+        let configuredRules: [Rule]
+        do {
+            configuredRules = try ruleList.configuredRules(with: dict)
+        } catch RuleListError.duplicatedConfigurations(let ruleType) {
+            let aliases = ruleType.description.allAliases.map { "'\($0)'" }.joined(separator: ", ")
+            let identifier = ruleType.description.identifier
+            queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
+            return nil
+        } catch {
+            return nil
+        }
+
+        self.init(disabledRules: disabledRules,
+                  optInRules: optInRules,
+                  whitelistRules: whitelistRules,
+                  included: included,
+                  excluded: excluded,
+                  warningThreshold: dict[ConfigurationKey.warningThreshold.rawValue] as? Int,
+                  reporter: dict[ConfigurationKey.reporter.rawValue] as? String ??
+                    XcodeReporter.identifier,
+                  ruleList: ruleList,
+                  configuredRules: configuredRules)
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -217,8 +206,63 @@ public struct Configuration: Equatable {
     }
 }
 
-private func handleAlias(_ alias: String) -> String {
-    return masterRuleList.identifier(for: alias) ?? alias
+private func handleAlias(_ alias: String, ruleList: RuleList) -> String {
+    return ruleList.identifier(for: alias) ?? alias
+}
+
+private func defaultStringArray(_ object: Any?) -> [String] {
+    return [String].array(of: object) ?? []
+}
+
+private func validKeys(ruleList: RuleList) -> [String] {
+    return [
+        ConfigurationKey.disabledRules,
+        .enabledRules,
+        .excluded,
+        .included,
+        .optInRules,
+        .reporter,
+        .useNestedConfigs,
+        .warningThreshold,
+        .whitelistRules
+    ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
+}
+
+private func warnAboutDeprecations(_ dict: [String: Any],
+                                   disabledRules: [String] = [],
+                                   optInRules: [String] = [],
+                                   whitelistRules: [String] = [],
+                                   ruleList: RuleList) {
+
+    // Deprecation warning for "enabled_rules"
+    if dict[ConfigurationKey.enabledRules.rawValue] != nil {
+        queuedPrintError("'\(ConfigurationKey.enabledRules.rawValue)' has been renamed to " +
+            "'\(ConfigurationKey.optInRules.rawValue)' and will be completely removed in a " +
+            "future release.")
+    }
+
+    // Deprecation warning for "use_nested_configs"
+    if dict[ConfigurationKey.useNestedConfigs.rawValue] != nil {
+        queuedPrintError("Support for '\(ConfigurationKey.useNestedConfigs.rawValue)' has " +
+            "been deprecated and its value is now ignored. Nested configuration files are " +
+            "now always considered.")
+    }
+
+    // Deprecation warning for rules
+    let deprecatedRulesIdentifiers = ruleList.list.flatMap { (identifier, rule) -> [(String, String)] in
+        return rule.description.deprecatedAliases.map { ($0, identifier) }
+    }
+
+    let lists = Set(disabledRules + optInRules + whitelistRules)
+    let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
+        return dict[deprecatedIdentifier] != nil || lists.contains(deprecatedIdentifier)
+    }
+
+    for (deprecatedIdentifier, identifier) in deprecatedUsages {
+        queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to " +
+            "'\(identifier)' and will be completely removed in a " +
+            "future release.")
+    }
 }
 
 // MARK: - Nested Configurations Extension

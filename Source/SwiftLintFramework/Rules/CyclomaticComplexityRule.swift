@@ -62,11 +62,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
                                    dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-
-        let complexity = substructure.reduce(0) { complexity, subItem in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kind = subDict["key.kind"] as? String else {
+        let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
+            guard let kind = subDict["key.kind"] as? String else {
                 return complexity
             }
 

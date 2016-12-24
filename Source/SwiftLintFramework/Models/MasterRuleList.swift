@@ -42,6 +42,7 @@ public struct RuleList {
 
 public let masterRuleList = RuleList(rules:
     AttributesRule.self,
+    ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,
     ClosureEndIndentationRule.self,
     ClosureParameterPositionRule.self,

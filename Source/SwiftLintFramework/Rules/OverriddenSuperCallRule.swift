@@ -67,13 +67,12 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
               let name = dictionary["key.name"] as? String
         else { return [] }
 
-        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable]) ?? []
         guard kind == .functionMethodInstance &&
               configuration.resolvedMethodNames.contains(name) &&
               dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
         else { return [] }
 
-        let callsToSuper = extractCallsToSuper(name, substructure: substructure)
+        let callsToSuper = extractCallsToSuper(name, substructure: dictionary.substructure)
 
         if callsToSuper.isEmpty {
             return [StyleViolation(ruleDescription: type(of: self).description,

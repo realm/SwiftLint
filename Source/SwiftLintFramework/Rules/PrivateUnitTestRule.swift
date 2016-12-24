@@ -20,9 +20,7 @@ private extension AccessControlLevel {
 private func superclass(_ dictionary: [String: SourceKitRepresentable]) -> String? {
     guard let kindString = dictionary["key.kind"] as? String,
         let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
-        let inheritedTypes = dictionary["key.inheritedtypes"] as? [SourceKitRepresentable],
-        let firstInheritedTypeDict = inheritedTypes[0] as? [String: SourceKitRepresentable],
-        let className = firstInheritedTypeDict["key.name"] as? String else { return nil }
+        let className = dictionary.inheritedTypes.first else { return nil }
     return className
 }
 
@@ -116,10 +114,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         let classViolations = validateAccessControlLevel(file, dictionary: dictionary)
         guard classViolations.isEmpty else { return classViolations }
 
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { subItem -> [StyleViolation] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String,
+        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
+            guard let kindString = subDict["key.kind"] as? String,
                 let kind = KindType(rawValue: kindString), kind == .functionMethodInstance else {
                     return []
             }

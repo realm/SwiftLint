@@ -14,6 +14,11 @@
 * Add more helpful reason strings to TrailingCommaRule.  
   [Matt Rubin](https://github.com/mattrubin)
 
+* Add `class_delegate_protocol` rule that warns against protocol declarations
+  that aren't marked as `: class` or `@objc`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1039](https://github.com/realm/SwiftLint/issues/1039)
+
 * Add `educated_sorting` rule that checks the order of array elements if
   they are already partially sorted.  
   [Jamie Edge](https://github.com/JamieEdge)
@@ -21,7 +26,13 @@
 
 ##### Bug Fixes
 
-* None.
+* Ignore close parentheses on `vertical_parameter_alignment` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1042](https://github.com/realm/SwiftLint/issues/1042)
+  
+* `syntactic_sugar` rule now doesn't flag declarations that can't be fixed.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#928](https://github.com/realm/SwiftLint/issues/928)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

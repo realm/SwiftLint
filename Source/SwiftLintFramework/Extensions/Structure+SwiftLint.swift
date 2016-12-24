@@ -31,11 +31,7 @@ extension Structure {
             if let kind = dictionary["key.kind"] as? String {
                 results.append((kind: kind, byteRange: byteRange))
             }
-            if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-                for case let dictionary as [String : SourceKitRepresentable] in subStructure {
-                    parse(dictionary)
-                }
-            }
+            dictionary.substructure.forEach(parse)
         }
         parse(dictionary)
         return results

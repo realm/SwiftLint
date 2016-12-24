@@ -53,12 +53,9 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-
         let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
-        let allParameterCount = allFunctionParameterCount(substructure, offset: nameOffset,
-                                                          length: length)
+        let allParameterCount = allFunctionParameterCount(dictionary.substructure, offset: nameOffset, length: length)
         if allParameterCount < minThreshold! {
             return []
         }
@@ -78,12 +75,11 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    fileprivate func allFunctionParameterCount(_ structure: [SourceKitRepresentable],
+    fileprivate func allFunctionParameterCount(_ structure: [[String: SourceKitRepresentable]],
                                                offset: Int, length: Int) -> Int {
         var parameterCount = 0
-        for substructure in structure {
-            guard let subDict = substructure as? [String: SourceKitRepresentable],
-                let key = subDict["key.kind"] as? String,
+        for subDict in structure {
+            guard let key = subDict["key.kind"] as? String,
                 let parameterOffset = subDict["key.offset"] as? Int64 else {
                     continue
             }

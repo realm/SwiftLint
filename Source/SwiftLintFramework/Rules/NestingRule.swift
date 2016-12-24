@@ -55,10 +55,8 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                     reason: "Statements should be nested at most 5 levels deep"))
             }
         }
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-        violations.append(contentsOf: substructure.flatMap { subItem in
-            if let subDict = subItem as? [String: SourceKitRepresentable],
-                let kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
+        violations.append(contentsOf: dictionary.substructure.flatMap { subDict in
+            if let kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }
             return nil

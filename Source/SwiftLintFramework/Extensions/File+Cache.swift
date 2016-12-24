@@ -167,20 +167,15 @@ extension File {
     }
 }
 
-private func substructureForDict(_ dict: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]]? {
-    return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
-        $0 as? [String: SourceKitRepresentable]
-    }
-}
-
 private func rebuildAllDeclarationsByType() {
     let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
-        guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
+        guard let firstSubstructureDict = structure.dictionary.substructure.first,
             let name = firstSubstructureDict["key.name"] as? String,
             let kind = (firstSubstructureDict["key.kind"] as? String)
                 .flatMap(SwiftDeclarationKind.init),
             kind == .protocol,
-            let substructure = substructureForDict(firstSubstructureDict) else {
+            case let substructure = firstSubstructureDict.substructure,
+            !substructure.isEmpty else {
                 return nil
         }
         return (name, substructure.flatMap({ $0["key.name"] as? String }))

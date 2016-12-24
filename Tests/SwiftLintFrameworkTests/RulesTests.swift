@@ -13,6 +13,10 @@ import XCTest
 // swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
+    func testClassDelegateProtocol() {
+        verifyRule(ClassDelegateProtocolRule.description)
+    }
+
     func testClosingBrace() {
         verifyRule(ClosingBraceRule.description)
     }
@@ -317,6 +321,7 @@ class RulesTests: XCTestCase {
 extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
         return [
+            ("testClassDelegateProtocol", testClassDelegateProtocol),
             ("testClosingBrace", testClosingBrace),
             ("testComma", testComma),
             ("testClosureEndIndentation", testClosureEndIndentation),

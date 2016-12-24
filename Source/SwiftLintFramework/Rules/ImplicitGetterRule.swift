@@ -117,13 +117,11 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
                 .struct
             ] + allowedKinds
 
-            if let subStructure = dictionary["key.substructure"] as? [SourceKitRepresentable] {
-                for case let dictionary as [String: SourceKitRepresentable] in subStructure {
-                    if let kindString = (dictionary["key.kind"] as? String),
-                        let kind = SwiftDeclarationKind(rawValue: kindString),
-                        typeKinds.contains(kind) {
-                        parse(dictionary: dictionary)
-                    }
+            for dictionary in dictionary.substructure {
+                if let kindString = (dictionary["key.kind"] as? String),
+                    let kind = SwiftDeclarationKind(rawValue: kindString),
+                    typeKinds.contains(kind) {
+                    parse(dictionary: dictionary)
                 }
             }
         }

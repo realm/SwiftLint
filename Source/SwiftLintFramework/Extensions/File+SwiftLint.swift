@@ -69,18 +69,20 @@ extension File {
     }
 
     internal func matchPattern(_ pattern: String,
-                               withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        return matchPattern(pattern).filter({ $0.1 == syntaxKinds }).map { $0.0 }
+                               withSyntaxKinds syntaxKinds: [SyntaxKind],
+                               range: NSRange? = nil) -> [NSRange] {
+        return matchPattern(pattern, range: range).filter({ $0.1 == syntaxKinds }).map { $0.0 }
     }
 
-    internal func rangesAndTokensMatching(_ pattern: String) -> [(NSRange, [SyntaxToken])] {
-        return rangesAndTokensMatching(regex(pattern))
+    internal func rangesAndTokensMatching(_ pattern: String,
+                                          range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+        return rangesAndTokensMatching(regex(pattern), range: range)
     }
 
-    internal func rangesAndTokensMatching(_ regex: NSRegularExpression) ->
-        [(NSRange, [SyntaxToken])] {
+    internal func rangesAndTokensMatching(_ regex: NSRegularExpression,
+                                          range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
         let contents = self.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
         return regex.matches(in: self.contents, options: [], range: range).map { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
@@ -90,12 +92,12 @@ extension File {
         }
     }
 
-    internal func matchPattern(_ pattern: String) -> [(NSRange, [SyntaxKind])] {
-        return matchPattern(regex(pattern))
+    internal func matchPattern(_ pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+        return matchPattern(regex(pattern), range: range)
     }
 
-    internal func matchPattern(_ regex: NSRegularExpression) -> [(NSRange, [SyntaxKind])] {
-        return rangesAndTokensMatching(regex).map { range, tokens in
+    internal func matchPattern(_ regex: NSRegularExpression, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+        return rangesAndTokensMatching(regex, range: range).map { range, tokens in
             (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
         }
     }

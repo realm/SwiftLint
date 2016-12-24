@@ -11,8 +11,7 @@ import SourceKittenFramework
 
 extension File {
     fileprivate func invalidDocOffsets(_ dictionary: [String: SourceKitRepresentable]) -> [Int] {
-        let substructure = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
-            .flatMap { $0 as? [String: SourceKitRepresentable] } ?? []
+        let substructure = dictionary.substructure
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
         guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
             kind != .varParameter,

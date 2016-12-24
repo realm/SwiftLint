@@ -15,23 +15,29 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         return array.flatMap { ($0 as? [String: String])?["key.attribute"] }
     }
 
-    var enclosedVarParameters: [[String: SourceKitRepresentable]] {
+    var substructure: [[String: SourceKitRepresentable]] {
         let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
-        return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                let kindString = subDict["key.kind"] as? String else {
-                    return []
+        return substructure.flatMap { $0 as? [String: SourceKitRepresentable] }
+    }
+
+    var enclosedVarParameters: [[String: SourceKitRepresentable]] {
+        return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
+            guard let kindString = subDict["key.kind"] as? String else {
+                return []
             }
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
                 return [subDict]
-            }
-
-            if SwiftExpressionKind(rawValue: kindString) == .argument {
+            } else if SwiftExpressionKind(rawValue: kindString) == .argument {
                 return subDict.enclosedVarParameters
             }
 
             return []
         }
+    }
+
+    var inheritedTypes: [String] {
+        let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
+        return array.flatMap { ($0 as? [String: String])?["key.name"] }
     }
 }

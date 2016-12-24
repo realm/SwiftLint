@@ -12,6 +12,7 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var threshold: Float
     private(set) var minimumItems: Int
+    private(set) var caseSensitive: Bool
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
@@ -19,9 +20,10 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
             ", minimum_items: \(minimumItems)"
     }
 
-    public init(threshold: Float = 0.25, minimumItems: Int = 3) {
+    public init(threshold: Float = 0.25, minimumItems: Int = 3, caseSensitive: Bool = true) {
         self.threshold = threshold
         self.minimumItems = minimumItems
+        self.caseSensitive = caseSensitive
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
@@ -35,6 +37,10 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
 
         if let minimumItems = configuration["min_items"] as? Int {
             self.minimumItems = minimumItems
+        }
+
+        if let caseSensitive = configuration["case_sensitive"] as? Bool {
+            self.caseSensitive = caseSensitive
         }
 
         if let severityString = configuration["severity"] as? String {

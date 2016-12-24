@@ -19,6 +19,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1039](https://github.com/realm/SwiftLint/issues/1039)
 
+* Add correctable `redundant_optional_initialization` rule that warns against
+  initializing optional variables with `nil`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1052](https://github.com/realm/SwiftLint/issues/1052)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

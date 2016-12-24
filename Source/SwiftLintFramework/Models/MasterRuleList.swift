@@ -86,6 +86,7 @@ public let masterRuleList = RuleList(rules:
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
     RedundantNilCoalescingRule.self,
+    RedundantOptionalInitializationRule.self,
     RedundantStringEnumValueRule.self,
     ReturnArrowWhitespaceRule.self,
     StatementPositionRule.self,

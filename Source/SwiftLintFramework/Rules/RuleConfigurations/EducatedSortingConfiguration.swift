@@ -17,7 +17,8 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
             ", threshold: \(threshold)" +
-            ", minimum_items: \(minimumItems)"
+            ", minimum_items: \(minimumItems)" +
+            ", case_sensitive: \(caseSensitive)"
     }
 
     public init(threshold: Float = 0.25, minimumItems: Int = 3, caseSensitive: Bool = true) {

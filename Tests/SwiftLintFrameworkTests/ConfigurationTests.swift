@@ -89,11 +89,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
-            .filter({ !(["nesting", "todo"] + optInRules).contains($0) })
-        let configuredIdentifiers = disabledConfig.rules.map {
+        let expectedIdentifiers = Set(masterRuleList.list.keys
+            .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
+        let configuredIdentifiers = Set(disabledConfig.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
@@ -110,11 +110,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
-            .filter({ !([validRule] + optInRules).contains($0) })
-        let configuredIdentifiers = configuration.rules.map {
+        let expectedIdentifiers = Set(masterRuleList.list.keys
+            .filter({ !([validRule] + optInRules).contains($0) }))
+        let configuredIdentifiers = Set(configuration.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
@@ -346,7 +346,15 @@ extension ConfigurationTests {
             ("testLevel2", testLevel2),
             ("testLevel3", testLevel3),
             ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly)
+            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
+            ("testConfiguresCorrectlyFromAlias", testConfiguresCorrectlyFromAlias),
+            ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
+            ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
+            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
+            ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
+            ("testWhitelistRulesFromAlias", testWhitelistRulesFromAlias),
+            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias),
+            ("testDisabledRulesFromAlias", testDisabledRulesFromAlias)
         ]
     }
 }

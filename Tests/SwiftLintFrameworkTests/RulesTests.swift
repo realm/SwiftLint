@@ -195,6 +195,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 
+    func testRedundantOptionalInitialization() {
+        verifyRule(RedundantOptionalInitializationRule.description)
+    }
+
     func testRedundantStringEnumValue() {
         verifyRule(RedundantStringEnumValueRule.description)
     }
@@ -357,6 +361,7 @@ extension RulesTests {
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
             ("testStatementPosition", testStatementPosition),

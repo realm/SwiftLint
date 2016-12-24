@@ -55,3 +55,7 @@ Packages
 
 # macOS
 .DS_Store
+
+# Bundler
+.bundle/
+bundle/

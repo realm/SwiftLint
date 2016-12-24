@@ -58,7 +58,7 @@ extension Sequence where Iterator.Element == String {
     }
 }
 
-public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule {
+public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = EducatedSortingConfiguration()
 
     public init() { }

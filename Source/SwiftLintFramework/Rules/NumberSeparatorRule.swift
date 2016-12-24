@@ -18,31 +18,33 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
-        nonTriggeringExamples: [
-            "let foo = 100",
-            "let foo = 1_000",
-            "let foo = 1_000_000",
-            "let foo = 1.000_1",
-            "let foo = 1_000_000.000_000_1",
-            "let binary = 0b10000",
-            "let binary = 0b1000_0001",
-            "let hex = 0xA",
-            "let hex = 0xAA_BB",
-            "let octal = 0o21",
-            "let octal = 0o21_1",
-            "let octal = -0o21_1",
-            "let exp = 1_000_000.000_000e2",
-            "let negative = -1_000_000.000_000",
-            "let positive = +1_000_000.000_000"
-        ],
-        triggeringExamples: [
-            "let foo = ↓10_0",
-            "let foo = ↓1000",
-            "let foo = ↓1__000",
-            "let foo = ↓1.0001",
-            "let foo = ↓1_000_000.000000_1",
-            "let foo = ↓1000000.000000_1"
-        ]
+        nonTriggeringExamples: ["-", "+", ""].flatMap { (signal: String) -> [String] in
+            [
+                "let foo = \(signal)100",
+                "let foo = \(signal)1_000",
+                "let foo = \(signal)1_000_000",
+                "let foo = \(signal)1.000_1",
+                "let foo = \(signal)1_000_000.000_000_1",
+                "let binary = \(signal)0b10000",
+                "let binary = \(signal)0b1000_0001",
+                "let hex = \(signal)0xA",
+                "let hex = \(signal)0xAA_BB",
+                "let octal = \(signal)0o21",
+                "let octal = \(signal)0o21_1",
+                "let exp = \(signal)1_000_000.000_000e2"
+            ]
+        },
+        triggeringExamples: ["↓-", "+↓", "↓"].flatMap { (signal: String) -> [String] in
+            [
+                "let foo = \(signal)10_0",
+                "let foo = \(signal)1000",
+                "let foo = \(signal)1000e2",
+                "let foo = \(signal)1__000",
+                "let foo = \(signal)1.0001",
+                "let foo = \(signal)1_000_000.000000_1",
+                "let foo = \(signal)1000000.000000_1"
+            ]
+        }
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
@@ -54,7 +56,7 @@ public struct NumberSeparatorRule: OptInRule, ConfigurationProviderRule {
             }
 
             let signals = CharacterSet(charactersIn: "+-")
-            guard let nonSignal = content.components(separatedBy: signals).first,
+            guard let nonSignal = content.components(separatedBy: signals).last,
                 let nonExponential = nonSignal.components(separatedBy: "e").first else {
                 return false
             }

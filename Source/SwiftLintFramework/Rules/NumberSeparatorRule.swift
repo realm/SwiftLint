@@ -17,14 +17,14 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     private static var corrections: [String: String] {
         var result = [String: String]()
 
-        for (violation, signal) in [("↓-", "-"), ("+↓", "+"), ("↓", "")] {
-            result["let foo = \(violation)10_0"] = "let foo = \(signal)100"
-            result["let foo = \(violation)1000"] = "let foo = \(signal)1_000"
-            result["let foo = \(violation)1000e2"] = "let foo = \(signal)1_000e2"
-            result["let foo = \(violation)1__000"] = "let foo = \(signal)1_000"
-            result["let foo = \(violation)1.0001"] = "let foo = \(signal)1.000_1"
-            result["let foo = \(violation)1_000_000.000000_1"] = "let foo = \(signal)1_000_000.000_000_1"
-            result["let foo = \(violation)1000000.000000_1"] = "let foo = \(signal)1_000_000.000_000_1"
+        for (violation, sign) in [("↓-", "-"), ("+↓", "+"), ("↓", "")] {
+            result["let foo = \(violation)10_0"] = "let foo = \(sign)100"
+            result["let foo = \(violation)1000"] = "let foo = \(sign)1_000"
+            result["let foo = \(violation)1000e2"] = "let foo = \(sign)1_000e2"
+            result["let foo = \(violation)1__000"] = "let foo = \(sign)1_000"
+            result["let foo = \(violation)1.0001"] = "let foo = \(sign)1.000_1"
+            result["let foo = \(violation)1_000_000.000000_1"] = "let foo = \(sign)1_000_000.000_000_1"
+            result["let foo = \(violation)1000000.000000_1"] = "let foo = \(sign)1_000_000.000_000_1"
         }
 
         return result
@@ -34,31 +34,31 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
-        nonTriggeringExamples: ["-", "+", ""].flatMap { (signal: String) -> [String] in
+        nonTriggeringExamples: ["-", "+", ""].flatMap { (sign: String) -> [String] in
             [
-                "let foo = \(signal)100",
-                "let foo = \(signal)1_000",
-                "let foo = \(signal)1_000_000",
-                "let foo = \(signal)1.000_1",
-                "let foo = \(signal)1_000_000.000_000_1",
-                "let binary = \(signal)0b10000",
-                "let binary = \(signal)0b1000_0001",
-                "let hex = \(signal)0xA",
-                "let hex = \(signal)0xAA_BB",
-                "let octal = \(signal)0o21",
-                "let octal = \(signal)0o21_1",
-                "let exp = \(signal)1_000_000.000_000e2"
+                "let foo = \(sign)100",
+                "let foo = \(sign)1_000",
+                "let foo = \(sign)1_000_000",
+                "let foo = \(sign)1.000_1",
+                "let foo = \(sign)1_000_000.000_000_1",
+                "let binary = \(sign)0b10000",
+                "let binary = \(sign)0b1000_0001",
+                "let hex = \(sign)0xA",
+                "let hex = \(sign)0xAA_BB",
+                "let octal = \(sign)0o21",
+                "let octal = \(sign)0o21_1",
+                "let exp = \(sign)1_000_000.000_000e2"
             ]
         },
-        triggeringExamples: ["↓-", "+↓", "↓"].flatMap { (signal: String) -> [String] in
+        triggeringExamples: ["↓-", "+↓", "↓"].flatMap { (sign: String) -> [String] in
             [
-                "let foo = \(signal)10_0",
-                "let foo = \(signal)1000",
-                "let foo = \(signal)1000e2",
-                "let foo = \(signal)1__000",
-                "let foo = \(signal)1.0001",
-                "let foo = \(signal)1_000_000.000000_1",
-                "let foo = \(signal)1000000.000000_1"
+                "let foo = \(sign)10_0",
+                "let foo = \(sign)1000",
+                "let foo = \(sign)1000e2",
+                "let foo = \(sign)1__000",
+                "let foo = \(sign)1.0001",
+                "let foo = \(sign)1_000_000.000000_1",
+                "let foo = \(sign)1000000.000000_1"
             ]
         },
         corrections: NumberSeparatorRule.corrections
@@ -80,9 +80,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
                     return nil
             }
 
-            let signals = CharacterSet(charactersIn: "+-")
-            guard let nonSignal = content.components(separatedBy: signals).last,
-                case let exponentialComponents = nonSignal.components(separatedBy: "e"),
+            let signs = CharacterSet(charactersIn: "+-")
+            guard let nonSign = content.components(separatedBy: signs).last,
+                case let exponentialComponents = nonSign.components(separatedBy: "e"),
                 let nonExponential = exponentialComponents.first else {
                     return nil
             }
@@ -106,8 +106,8 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             }
 
             var corrected = ""
-            let hasSignal = content.countOfLeadingCharacters(in: signals) == 1
-            if hasSignal {
+            let hasSign = content.countOfLeadingCharacters(in: signs) == 1
+            if hasSign {
                 corrected += String(content.characters.prefix(1))
             }
 

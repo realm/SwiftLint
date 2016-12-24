@@ -51,6 +51,8 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
 }
 
 public func == (lhs: EducatedSortingConfiguration, rhs: EducatedSortingConfiguration) -> Bool {
-    return lhs.threshold == rhs.threshold &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    return lhs.severityConfiguration == rhs.severityConfiguration &&
+        lhs.threshold == rhs.threshold &&
+        lhs.minimumItems == rhs.minimumItems &&
+        lhs.caseSensitive == rhs.caseSensitive
 }

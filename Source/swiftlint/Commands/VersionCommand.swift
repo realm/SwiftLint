@@ -9,8 +9,9 @@
 import Foundation
 import Commandant
 import Result
+import SourceKittenFramework
 
-private let version = Bundle(identifier: "io.realm.SwiftLintFramework")!
+private let version = Bundle.swiftLintFramework
     .object(forInfoDictionaryKey: "CFBundleShortVersionString")!
 
 struct VersionCommand: CommandProtocol {

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SourceKittenFramework
 
 private let formatter: DateFormatter = {
     let formatter = DateFormatter()
@@ -14,7 +15,7 @@ private let formatter: DateFormatter = {
     return formatter
 }()
 
-private let swiftlintVersion = Bundle(identifier: "io.realm.SwiftLintFramework")?
+private let swiftlintVersion = Bundle.swiftLintFramework
     .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
 
 public struct HTMLReporter: Reporter {
@@ -25,149 +26,84 @@ public struct HTMLReporter: Reporter {
         return "Reports violations as HTML"
     }
 
+    private static let template: String = {
+        let path = templatePath
+
+        #if os(Linux)
+            // swiftlint:disable:next force_try
+            let data = try! Data(contentsOf: URL(fileURLWithPath: path))
+            return String(data: data, encoding: .utf8)!
+        #else
+            // swiftlint:disable:next force_try
+            return try! String(contentsOfFile: path)
+        #endif
+    }()
+
+    private static var templatePath: String {
+        #if SWIFT_PACKAGE
+            let components = Array(NSString(string: #file).pathComponents.dropLast() + ["Templates", "template.html"])
+            let path = components.joined(separator: "/")
+        #else
+            let bundle = Bundle.swiftLintFramework
+            let path = bundle.path(forResource: "template", ofType: "html")!
+        #endif
+
+        return path
+    }
+
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return generateReport(violations, swiftlintVersion: swiftlintVersion,
                               dateString: formatter.string(from: Date()))
     }
 
-    // swiftlint:disable:next function_body_length
     internal static func generateReport(_ violations: [StyleViolation], swiftlintVersion: String,
                                         dateString: String) -> String {
         let rows = violations.enumerated().reduce("") { rows, indexAndViolation in
-            return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1)
+            return rows + generateSingleRow(for: indexAndViolation.1, at: indexAndViolation.0 + 1,
+                                            initialIndentation: 16)
         }
 
         let fileCount = Set(violations.flatMap({ $0.location.file })).count
         let warningCount = violations.filter({ $0.severity == .warning }).count
         let errorCount = violations.filter({ $0.severity == .error }).count
 
-        return [
-            "<!doctype html>\n",
-            "<html>\n",
-            "\t<head>\n",
-            "\t\t<meta charset=\"utf-8\" />\n",
-            "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n",
-            "\t\t\n",
-            "\t\t<style type=\"text/css\">\n",
-            "\t\t\tbody {\n",
-            "\t\t\t\tfont-family: Arial, Helvetica, sans-serif;\n",
-            "\t\t\t\tfont-size: 0.9rem;\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\ttable {\n",
-            "\t\t\t\tborder: 1px solid gray;\n",
-            "\t\t\t\tborder-collapse: collapse;\n",
-            "\t\t\t\t-moz-box-shadow: 3px 3px 4px #AAA;\n",
-            "\t\t\t\t-webkit-box-shadow: 3px 3px 4px #AAA;\n",
-            "\t\t\t\tbox-shadow: 3px 3px 4px #AAA;\n",
-            "\t\t\t\tvertical-align: top;\n",
-            "\t\t\t\theight: 64px;\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\ttd, th {\n",
-            "\t\t\t\tborder: 1px solid #D3D3D3;\n",
-            "\t\t\t\tpadding: 5px 10px 5px 10px;\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\tth {\n",
-            "\t\t\t\tborder-bottom: 1px solid gray;\n",
-            "\t\t\t\tbackground-color: rgba(41,52,92,0.313);\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\t.error, .warning {\n",
-            "\t\t\t\ttext-align: center;\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\t.error {\n",
-            "\t\t\t\tbackground-color: #FF9D92;\n",
-            "\t\t\t\tcolor: #7F0800;\n",
-            "\t\t\t}\n",
-            "\t\t\t\n",
-            "\t\t\t.warning {\n",
-            "\t\t\t\tbackground-color: #FFF59E;\n",
-            "\t\t\t\tcolor: #7F7000;\n",
-            "\t\t\t}\n",
-            "\t\t</style>\n",
-            "\t\t\n",
-            "\t\t<title>SwiftLint Report</title>\n",
-            "\t</head>\n",
-            "\t<body>\n",
-            "\t\t<h1>SwiftLint Report</h1>\n",
-            "\t\t\n",
-            "\t\t<hr />\n",
-            "\t\t\n",
-            "\t\t<h2>Violations</h2>\n",
-            "\t\t\n",
-            "\t\t<table>\n",
-            "\t\t\t<thead>\n",
-            "\t\t\t\t<tr>\n",
-            "\t\t\t\t\t<th style=\"width: 60pt;\">\n",
-            "\t\t\t\t\t\t<b>Serial No.</b>\n",
-            "\t\t\t\t\t</th>\n",
-            "\t\t\t\t\t<th style=\"width: 500pt;\">\n",
-            "\t\t\t\t\t\t<b>File</b>\n",
-            "\t\t\t\t\t</th>\n",
-            "\t\t\t\t\t<th style=\"width: 60pt;\">\n",
-            "\t\t\t\t\t\t<b>Location</b>\n",
-            "\t\t\t\t\t</th>\n",
-            "\t\t\t\t\t<th style=\"width: 60pt;\">\n",
-            "\t\t\t\t\t\t<b>Severity</b>\n",
-            "\t\t\t\t\t</th>\n",
-            "\t\t\t\t\t<th style=\"width: 500pt;\">\n",
-            "\t\t\t\t\t\t<b>Message</b>\n",
-            "\t\t\t\t\t</th>\n",
-            "\t\t\t\t</tr>\n",
-            "\t\t\t</thead>\n",
-            "\t\t\t<tbody>\n", rows, "\t\t\t</tbody>\n",
-            "\t\t</table>\n",
-            "\t\t\n",
-            "\t\t<br/>\n",
-            "\t\t\n",
-            "\t\t<h2>Summary</h2>\n",
-            "\t\t\n",
-            "\t\t<table>\n",
-            "\t\t\t<tbody>\n",
-            "\t\t\t\t<tr>\n",
-            "\t\t\t\t\t<td>Total files with violations</td>\n",
-            "\t\t\t\t\t<td>\(fileCount)</td>\n",
-            "\t\t\t\t</tr>\n",
-            "\t\t\t\t<tr>\n",
-            "\t\t\t\t\t<td>Total warnings</td>\n",
-            "\t\t\t\t\t<td>\(warningCount)</td>\n",
-            "\t\t\t\t</tr>\n",
-            "\t\t\t\t<tr>\n",
-            "\t\t\t\t\t<td>Total errors</td>\n",
-            "\t\t\t\t\t<td>\(errorCount)</td>\n",
-            "\t\t\t\t</tr>\n",
-            "\t\t\t</tbody>\n",
-            "\t\t</table>\n",
-            "\t\t\n",
-            "\t\t<hr />\n",
-            "\t\t\n",
-            "\t\t<p>\n",
-            "\t\t\tCreated with\n",
-            "\t\t\t<a href=\"https://github.com/realm/SwiftLint\"><b>SwiftLint</b></a>\n",
-            "\t\t\t", swiftlintVersion, " on ", dateString, "\n",
-            "\t\t</p>\n",
-            "\t</body>\n",
-            "</html>"
-        ].joined()
+        let parameters = [
+            "VIOLATIONS": rows,
+            "TOTAL_VIOLATING_FILES": String(fileCount),
+            "TOTAL_WARNINGS": String(warningCount),
+            "TOTAL_ERRORS": String(errorCount),
+            "VERSION": swiftlintVersion,
+            "DATE": dateString
+        ]
+
+        return generateReport(parameters: parameters)
     }
 
-    private static func generateSingleRow(for violation: StyleViolation, at index: Int) -> String {
+    private static func generateReport(parameters: [String: String]) -> String {
+        var report = template
+        for (key, value) in parameters {
+            report = report.replacingOccurrences(of: "$$\(key)$$", with: value)
+        }
+
+        return report
+    }
+
+    private static func generateSingleRow(for violation: StyleViolation, at index: Int,
+                                          initialIndentation: Int) -> String {
         let severity: String = violation.severity.rawValue.capitalized
         let location = violation.location
         let file: String = (violation.location.relativeFile ?? "<nopath>").escapedForXML()
         let line: Int = location.line ?? 0
         let character: Int = location.character ?? 0
+        let indentation = String(repeating: " ", count: initialIndentation)
         return [
-            "\t\t\t\t<tr>\n",
-            "\t\t\t\t\t<td style=\"text-align: right;\">\(index)</td>\n",
-            "\t\t\t\t\t<td>", file, "</td>\n",
-            "\t\t\t\t\t<td style=\"text-align: center;\">\(line):\(character)</td>\n",
-            "\t\t\t\t\t<td class=\"", severity.lowercased(), "\">", severity, "</td>\n",
-            "\t\t\t\t\t<td>\(violation.reason.escapedForXML())</td>\n",
-            "\t\t\t\t</tr>\n"
-        ].joined()
+            "<tr>\n",
+            "    <td style=\"text-align: right;\">\(index)</td>\n",
+            "    <td>\(file)</td>\n",
+            "    <td style=\"text-align: center;\">\(line):\(character)</td>\n",
+            "    <td class=\"\(severity.lowercased())\">\(severity)</td>\n",
+            "    <td>\(violation.reason.escapedForXML())</td>\n",
+            "</tr>\n"
+        ].map { indentation + $0 }.joined()
     }
 }

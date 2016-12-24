@@ -27,6 +27,9 @@
 * `redundant_nil_coalescing` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Make `number_separator` rule correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

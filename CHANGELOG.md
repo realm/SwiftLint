@@ -85,6 +85,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1065](https://github.com/realm/SwiftLint/issues/1065)
 
+* Add `generic_type_name` rule that validates generic constraint type names.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#51](https://github.com/realm/SwiftLint/issues/51)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

@@ -29,6 +29,9 @@
 
 * Make `number_separator` rule correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* `empty_parentheses_with_trailing_closure` rule is now correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 

@@ -2,14 +2,14 @@
 //  EmptyParenthesesWithTrailingClosureRule.swift
 //  SwiftLint
 //
-//  Created by Marcelo Fabri on 11/12/16.
+//  Created by Marcelo Fabri on 12/11/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
-public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationProviderRule {
+public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -32,18 +32,33 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
             "})"
         ],
         triggeringExamples: [
-            "[1, 2].map↓() { $0 + 1 }",
+            "[1, 2].map↓() { $0 + 1 }\n",
             "[1, 2].map↓( ) { $0 + 1 }\n",
             "[1, 2].map↓() { number in\n number + 1 \n}\n",
             "[1, 2].map↓(  ) { number in\n number + 1 \n}\n"
+        ],
+        corrections: [
+            "[1, 2].map↓() { $0 + 1 }\n": "[1, 2].map { $0 + 1 }\n",
+            "[1, 2].map↓( ) { $0 + 1 }\n": "[1, 2].map { $0 + 1 }\n",
+            "[1, 2].map↓() { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
+            "[1, 2].map↓(  ) { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n"
         ]
     )
 
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validateFile(_ file: File, kind: SwiftExpressionKind,
+                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+        return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
+        }
+    }
+
+    private func violationRangesInFile(_ file: File,
+                                       kind: SwiftExpressionKind,
+                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .call else {
             return []
         }
@@ -61,17 +76,51 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, ConfigurationPro
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let regex = EmptyParenthesesWithTrailingClosureRule.emptyParenthesesRegex
 
-        guard let range = file.contents.bridge()
-                              .byteRangeToNSRange(start: rangeStart, length: rangeLength),
-            let match = regex.firstMatch(in: file.contents, options: [], range: range),
-            match.range.location == range.location else {
+        guard let range = file.contents.bridge().byteRangeToNSRange(start: rangeStart, length: rangeLength),
+            let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
+            match.location == range.location else {
                 return []
         }
 
-        return [
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: rangeStart))
-        ]
+        return [match]
+    }
+
+    private func violationRangesInFile(_ file: File,
+                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+            guard let kindString = subDict["key.kind"] as? String,
+                let kind = SwiftExpressionKind(rawValue: kindString) else {
+                    return []
+            }
+            return violationRangesInFile(file, dictionary: subDict) +
+                violationRangesInFile(file, kind: kind, dictionary: subDict)
+        }
+    }
+
+    private func violationRangesInFile(_ file: File) -> [NSRange] {
+        return violationRangesInFile(file, dictionary: file.structure.dictionary).sorted { lh, rh in
+            lh.location < rh.location
+        }
+    }
+
+    public func correctFile(_ file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
+                                                              forRule: self)
+        var correctedContents = file.contents
+        var adjustedLocations = [Int]()
+
+        for violatingRange in violatingRanges.reversed() {
+            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "")
+                adjustedLocations.insert(violatingRange.location, at: 0)
+            }
+        }
+
+        file.write(correctedContents)
+
+        return adjustedLocations.map {
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
+        }
     }
 }

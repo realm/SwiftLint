@@ -78,6 +78,7 @@ public let masterRuleList = RuleList(rules:
     NestingRule.self,
     NimbleOperatorRule.self,
     NumberSeparatorRule.self,
+    ObjectLiteralRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,

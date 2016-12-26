@@ -23,7 +23,7 @@ public struct Linter {
 
     private func getStyleViolations(_ benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         if file.sourcekitdFailed {
-            queuedPrintError("Most of rules are skipped because sourcekitd fails.")
+            queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()

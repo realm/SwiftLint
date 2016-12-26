@@ -347,7 +347,7 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCountRule", testFunctionParameterCountRule),
             ("testImplicitGetterRule", testImplicitGetterRule),
-            // ("testLeadingWhitespace", testLeadingWhitespace),
+            ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),

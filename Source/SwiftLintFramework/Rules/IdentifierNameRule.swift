@@ -80,13 +80,12 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let nameCharacterSet = CharacterSet(fixedCharactersIn: name)
             let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
             let description = type(of: self).description
 
             let type = typeForKind(kind)
             if !isFunction {
-                if !CharacterSet.alphanumerics.isSuperset(of: nameCharacterSet) {
+                if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,

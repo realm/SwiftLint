@@ -33,6 +33,11 @@
 * `empty_parentheses_with_trailing_closure` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add correctable `redundant_void_return` rule that warns against
+  explicitly adding `-> Void` to functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1066](https://github.com/realm/SwiftLint/issues/1066)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

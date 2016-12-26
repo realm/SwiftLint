@@ -12,7 +12,7 @@ extension CharacterSet {
     func isSuperset(ofCharactersIn string: String) -> Bool {
         #if os(Linux)
             // workaround for https://bugs.swift.org/browse/SR-3485
-            let chars = Set(Array(string.characters))
+            let chars = Set(string.characters)
             for char in chars where !contains(char.unicodeScalar) {
                 return false
             }

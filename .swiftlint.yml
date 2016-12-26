@@ -16,6 +16,7 @@ opt_in_rules:
   - operator_usage_whitespace
   - closure_end_indentation
   - first_where
+  - sorted_imports
 
 file_header:
   required_pattern: |

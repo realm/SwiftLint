@@ -21,13 +21,11 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         description: "Files should not contain leading whitespace.",
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "\n", " //\n" ],
-        corrections: ["\n": ""]
+        corrections: ["\n //": "//"]
     )
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(
-            in: CharacterSet.whitespacesAndNewlines
-        )
+        let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []
         }
@@ -41,15 +39,12 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
     public func correctFile(_ file: File) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
-        if spaceCount == 0 {
-            return []
+        guard spaceCount > 0,
+            let firstLineRange = file.lines.first?.range,
+            !file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty else {
+                return []
         }
-        guard let firstLineRange = file.lines.first?.range else {
-            return []
-        }
-        if file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty {
-            return []
-        }
+
         let indexEnd = file.contents.index(
             file.contents.startIndex,
             offsetBy:spaceCount,

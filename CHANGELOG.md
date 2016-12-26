@@ -56,6 +56,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
 
+* Fixing `variable_name` and `type_name` rules on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Enhancements
 
 * Add `closure_end_indentation` opt-in rule that validates closure closing

@@ -138,8 +138,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let nameCharacterSet = CharacterSet(charactersIn: name)
-        if !CharacterSet.alphanumerics.isSuperset(of: nameCharacterSet) {
+        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,

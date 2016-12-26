@@ -113,6 +113,7 @@
 		D4B0228E1E0CC608007E5297 /* ClassDelegateProtocolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */; };
 		D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
+		D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */; };
 		D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */; };
 		D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
 		D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
@@ -356,6 +357,7 @@
 		D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassDelegateProtocolRule.swift; sourceTree = "<group>"; };
 		D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantOptionalInitializationRule.swift; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
+		D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+LinuxHack.swift"; sourceTree = "<group>"; };
 		D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesConfiguration.swift; sourceTree = "<group>"; };
 		D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRule.swift; sourceTree = "<group>"; };
 		D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderConfiguration.swift; sourceTree = "<group>"; };
@@ -831,6 +833,7 @@
 		E8A541811BF94604006BA322 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
@@ -1099,6 +1102,7 @@
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */,
+				D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */,
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
 				D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */,
 				E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */,

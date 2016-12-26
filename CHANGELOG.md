@@ -38,6 +38,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1066](https://github.com/realm/SwiftLint/issues/1066)
 
+* Add an opt-in rule that enforces alphabetical sorting of imports.  
+  [Scott Berrevoets](https://github.com/sberrevoets)
+  [#900](https://github.com/realm/SwiftLint/issues/900)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

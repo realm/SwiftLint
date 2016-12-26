@@ -6,9 +6,9 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import XCTest
 import SourceKittenFramework
 @testable import SwiftLintFramework
+import XCTest
 
 struct RuleWithLevelsMock: ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)

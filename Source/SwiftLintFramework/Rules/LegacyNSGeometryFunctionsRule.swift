@@ -6,8 +6,8 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-import SourceKittenFramework
 import Foundation
+import SourceKittenFramework
 
 public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)

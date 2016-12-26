@@ -7,8 +7,8 @@
 //
 
 import Foundation
-@testable import SwiftLintFramework
 import SourceKittenFramework
+@testable import SwiftLintFramework
 import XCTest
 
 private let violationMarker = "↓"

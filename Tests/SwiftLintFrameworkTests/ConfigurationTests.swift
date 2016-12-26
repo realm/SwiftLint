@@ -7,14 +7,14 @@
 //
 
 import Foundation
-@testable import SwiftLintFramework
 import SourceKittenFramework
+@testable import SwiftLintFramework
 import XCTest
 
-let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
+private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 extension Configuration {
-    var disabledRules: [String] {
+    fileprivate var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
             !($0.init() is OptInRule)
@@ -207,7 +207,7 @@ class ConfigurationTests: XCTestCase {
 
 // MARK: - ProjectMock Paths
 
-extension String {
+fileprivate extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
     }
@@ -221,6 +221,9 @@ extension XCTestCase {
             return Bundle(for: type(of: self)).resourcePath!
         #endif
     }
+}
+
+fileprivate extension XCTestCase {
 
     var projectMockPathLevel0: String {
         return bundlePath.stringByAppendingPathComponent("ProjectMock")

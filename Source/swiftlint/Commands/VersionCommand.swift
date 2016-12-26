@@ -6,8 +6,8 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import Foundation
 import Commandant
+import Foundation
 import Result
 
 private let version = Bundle(identifier: "io.realm.SwiftLintFramework")!

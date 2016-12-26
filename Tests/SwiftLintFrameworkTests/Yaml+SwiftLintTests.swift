@@ -7,9 +7,9 @@
 //
 
 import Foundation
+@testable import SwiftLintFramework
 import XCTest
 import Yaml
-@testable import SwiftLintFramework
 
 class YamlSwiftLintTests: XCTestCase {
 

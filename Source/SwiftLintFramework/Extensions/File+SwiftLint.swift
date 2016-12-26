@@ -157,8 +157,9 @@ extension File {
      file contents.
      */
     internal func matchPattern(_ pattern: String,
-                               excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        return matchPattern(pattern).filter {
+                               excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                               range: NSRange? = nil) -> [NSRange] {
+        return matchPattern(pattern, range: range).filter {
             $0.1.filter(syntaxKinds.contains).isEmpty
         }.map { $0.0 }
     }

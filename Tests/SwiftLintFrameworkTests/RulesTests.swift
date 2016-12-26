@@ -203,6 +203,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 
+    func testRedundantVoidReturn() {
+        verifyRule(RedundantVoidReturnRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
@@ -363,6 +367,7 @@ extension RulesTests {
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+            ("testRedundantVoidReturn", testRedundantVoidReturn),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),

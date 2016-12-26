@@ -24,15 +24,20 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
             "let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)",
             "let image = UIImage(named: aVariable)",
             "let image = UIImage(named: \"interpolated \\(variable)\")",
-            "let color = UIColor(red: value, green: value, blue: value, alpha: 1)"
+            "let color = UIColor(red: value, green: value, blue: value, alpha: 1)",
+            "let image = NSImage(named: aVariable)",
+            "let image = NSImage(named: \"interpolated \\(variable)\")",
+            "let color = NSColor(red: value, green: value, blue: value, alpha: 1)"
         ],
-        triggeringExamples: ["", ".init"].flatMap { method in
-            [
-                "let image = ↓UIImage\(method)(named: \"foo\")",
-                "let color = ↓UIColor\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)",
-                "let color = ↓UIColor\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)",
-                "let color = ↓UIColor\(method)(white: 0.5, alpha: 1)"
-            ]
+        triggeringExamples: ["", ".init"].flatMap { (method: String) -> [String] in
+            ["UI", "NS"].flatMap { (prefix: String) -> [String] in
+                [
+                    "let image = ↓\(prefix)Image\(method)(named: \"foo\")",
+                    "let color = ↓\(prefix)Color\(method)(red: 0.3, green: 0.3, blue: 0.3, alpha: 1)",
+                    "let color = ↓\(prefix)Color\(method)(red: 100 / 255.0, green: 50 / 255.0, blue: 0, alpha: 1)",
+                    "let color = ↓\(prefix)Color\(method)(white: 0.5, alpha: 1)"
+                ]
+            }
         }
     )
 
@@ -53,7 +58,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
     private func isImageNamedInit(_ dictionary: [String : SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
-            ["UIImage", "UIImage.init"].contains(name),
+            initsForClasses(["UIImage", "NSImage"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
             arguments.flatMap({ $0["key.name"] as? String }) == ["named"],
             let argument = arguments.first,
@@ -67,7 +72,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
     private func isColorInit(_ dictionary: [String : SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
-            ["UIColor", "UIColor.init"].contains(name),
+            initsForClasses(["UIColor", "NSColor"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
             case let argumentsNames = arguments.flatMap({ $0["key.name"] as? String }),
             argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"],
@@ -76,6 +81,15 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
 
         return true
+    }
+
+    private func initsForClasses(_ names: [String]) -> [String] {
+        return names.flatMap { name in
+            [
+                name,
+                name + ".init"
+            ]
+        }
     }
 
     private func validateColorKinds(arguments: [[String: SourceKitRepresentable]], file: File) -> Bool {

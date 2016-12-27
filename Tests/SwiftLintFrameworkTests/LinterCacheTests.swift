@@ -22,13 +22,28 @@ class LinterCacheTests: XCTestCase {
     func testInitThrowsWhenUsingInvalidCacheFormat() {
         let cache = [["version": "0.1.0"]]
         checkError(LinterCacheError.invalidFormat) {
-            _ = try LinterCache(cache: cache, currentVersion: Version(value: "0.2.0"))
+            _ = try LinterCache(cache: cache, currentVersion: Version(value: "0.1.0"))
+        }
+    }
+
+    func testInitThrowsWhenUsingDifferentConfiguration() {
+        let cache = ["version": "0.1.0", "configuration_hash": 1] as [String : Any]
+        checkError(LinterCacheError.differentConfiguration) {
+            _ = try LinterCache(cache: cache, currentVersion: Version(value: "0.1.0"),
+                                configurationHash: 2)
         }
     }
 
     func testInitSucceeds() {
         let cache = ["version": "0.2.0"]
         let linterCache = try? LinterCache(cache: cache, currentVersion: Version(value: "0.2.0"))
+        XCTAssertNotNil(linterCache)
+    }
+
+    func testInitSucceedsWithConfigurationHash() {
+        let cache = ["version": "0.2.0", "configuration_hash": 1] as [String : Any]
+        let linterCache = try? LinterCache(cache: cache, currentVersion: Version(value: "0.2.0"),
+                                           configurationHash: 1)
         XCTAssertNotNil(linterCache)
     }
 

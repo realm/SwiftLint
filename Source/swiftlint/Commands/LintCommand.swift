@@ -43,7 +43,14 @@ struct LintCommand: CommandProtocol {
         )
 
         let cacheUrl = URL(fileURLWithPath: "swiftlint.json")
-        var cache = (try? LinterCache(contentsOf: cacheUrl)) ?? LinterCache()
+        let configurationHash = configuration.hash
+        var cache: LinterCache
+        do {
+            cache = try LinterCache(contentsOf: cacheUrl, configurationHash: configurationHash)
+        } catch {
+            cache = LinterCache(configurationHash: configurationHash)
+        }
+
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in

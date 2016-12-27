@@ -12,17 +12,19 @@ import SourceKittenFramework
 public enum LinterCacheError: Error {
     case invalidFormat
     case differentVersion
+    case differentConfiguration
 }
 
 public struct LinterCache {
     private var cache: [String: Any]
 
-    public init(currentVersion: Version = .current) {
+    public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
         cache = [String: Any]()
         cache["version"] = currentVersion.value
+        cache["configuration_hash"] = configurationHash
     }
 
-    public init(cache: Any, currentVersion: Version = .current) throws {
+    public init(cache: Any, currentVersion: Version = .current, configurationHash: Int? = nil) throws {
         guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
         }
@@ -31,13 +33,19 @@ public struct LinterCache {
             throw LinterCacheError.differentVersion
         }
 
+        if dictionary["configuration_hash"] as? Int != configurationHash {
+            throw LinterCacheError.differentConfiguration
+        }
+
         self.cache = dictionary
     }
 
-    public init(contentsOf url: URL, currentVersion: Version = .current) throws {
+    public init(contentsOf url: URL, currentVersion: Version = .current,
+                configurationHash: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
-        try self.init(cache: json, currentVersion: currentVersion)
+        try self.init(cache: json, currentVersion: currentVersion,
+                      configurationHash: configurationHash)
     }
 
     public mutating func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {

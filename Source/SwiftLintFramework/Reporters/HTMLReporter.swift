@@ -14,8 +14,7 @@ private let formatter: DateFormatter = {
     return formatter
 }()
 
-private let swiftlintVersion = Bundle(identifier: "io.realm.SwiftLintFramework")?
-    .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0"
+private let swiftlintVersion = Version.current.value
 
 public struct HTMLReporter: Reporter {
     public static let identifier = "html"

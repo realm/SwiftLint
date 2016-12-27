@@ -9,17 +9,31 @@
 import Foundation
 import SourceKittenFramework
 
+public enum LinterCacheError: Error {
+    case invalidFormat
+    case differentVersion
+}
+
 public struct LinterCache {
-    private var cache = [String: [String: Any]]()
+    private var cache: [String: Any]
 
-    public init() { }
+    public init(currentVersion: Version = .current) {
+        cache = [String: Any]()
+        cache["version"] = currentVersion.value
+    }
 
-    public init(contentsOf url: URL) throws {
+    public init(contentsOf url: URL, currentVersion: Version = .current) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
-        if let json = json as? [String: [String: Any]] {
-            cache = json
+        guard let dictionary = json as? [String: Any] else {
+            throw LinterCacheError.invalidFormat
         }
+
+        guard let version = dictionary["version"] as? String, version == currentVersion.value else {
+            throw LinterCacheError.differentVersion
+        }
+
+        cache = dictionary
     }
 
     public mutating func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {
@@ -37,7 +51,7 @@ public struct LinterCache {
     }
 
     public func violations(for file: String, hash: Int) -> [StyleViolation]? {
-        guard let entry = cache[file],
+        guard let entry = cache[file] as? [String: Any],
             let cacheHash = entry["hash"] as? Int,
             cacheHash == hash,
             let violations = entry["violations"] as? [[String: Any]] else {

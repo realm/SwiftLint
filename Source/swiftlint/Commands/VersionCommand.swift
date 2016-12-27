@@ -9,9 +9,9 @@
 import Commandant
 import Foundation
 import Result
+import SwiftLintFramework
 
-private let version = Bundle(identifier: "io.realm.SwiftLintFramework")!
-    .object(forInfoDictionaryKey: "CFBundleShortVersionString")!
+private let version = Version.current.value
 
 struct VersionCommand: CommandProtocol {
     let verb = "version"

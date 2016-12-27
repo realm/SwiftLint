@@ -22,6 +22,7 @@ public struct LinterCache {
         cache = [String: Any]()
         cache["version"] = currentVersion.value
         cache["configuration_hash"] = configurationHash
+        cache["files"] = [:]
     }
 
     public init(cache: Any, currentVersion: Version = .current, configurationHash: Int? = nil) throws {
@@ -49,7 +50,6 @@ public struct LinterCache {
     }
 
     public mutating func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {
-
         var entry = [String: Any]()
         var fileViolations = entry["violations"] as? [[String: Any]] ?? []
 
@@ -59,11 +59,15 @@ public struct LinterCache {
 
         entry["violations"] = fileViolations
         entry["hash"] = hash
-        cache[file] = entry
+
+        var filesCache = (cache["files"] as? [String: Any]) ?? [:]
+        filesCache[file] = entry
+        cache["files"] = filesCache
     }
 
     public func violations(for file: String, hash: Int) -> [StyleViolation]? {
-        guard let entry = cache[file] as? [String: Any],
+        guard let filesCache = cache["files"] as? [String: Any],
+            let entry = filesCache[file] as? [String: Any],
             let cacheHash = entry["hash"] as? Int,
             cacheHash == hash,
             let violations = entry["violations"] as? [[String: Any]] else {

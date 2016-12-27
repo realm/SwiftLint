@@ -12,9 +12,11 @@ public struct Version {
     public let value: String
 
     public static let current: Version = {
-        let value = Bundle(identifier: "io.realm.SwiftLintFramework")!
-            .object(forInfoDictionaryKey: "CFBundleShortVersionString")!
-        // swiftlint:disable:next force_cast
-        return Version(value: value as! String)
+        if let value = Bundle(identifier: "io.realm.SwiftLintFramework")?
+            .object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            return Version(value: value)
+        }
+
+        return Version(value: "0.15.0")
     }()
 }

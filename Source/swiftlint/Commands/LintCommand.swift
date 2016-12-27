@@ -40,12 +40,23 @@ struct LintCommand: CommandProtocol {
         let reporter = reporterFromString(
             options.reporter.isEmpty ? configuration.reporter : options.reporter
         )
+
+        let cacheUrl = URL(fileURLWithPath: "swiftlint.json")
+        var cache = (try? LinterCache(contentsOf: cacheUrl)) ?? LinterCache()
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
             var currentViolations: [StyleViolation] = []
+            var readFromCache = false
+            var fileHash: Int?
             autoreleasepool {
-                if options.benchmark {
+                if let file = linter.file.path,
+                    case let hash = linter.file.contents.hash,
+                    let cachedViolations = cache.violations(for: file, hash: hash) {
+                    currentViolations = cachedViolations
+                    readFromCache = true
+                    fileHash = hash
+                } else if options.benchmark {
                     let start = Date()
                     let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                     currentViolations = _currentViolations
@@ -58,6 +69,10 @@ struct LintCommand: CommandProtocol {
             }
             violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
+            if !readFromCache, let file = linter.file.path {
+                let hash = fileHash ?? linter.file.contents.hash
+                cache.cacheFile(file, violations: currentViolations, hash: hash)
+            }
         }.flatMap { files in
             if isWarningThresholdBroken(configuration, violations: violations) {
                 violations.append(createThresholdViolation(configuration.warningThreshold!))
@@ -73,6 +88,9 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
+
+            try? cache.save(to: cacheUrl)
+
             if numberOfSeriousViolations > 0 {
                 exit(2)
             } else if options.strict && !violations.isEmpty {

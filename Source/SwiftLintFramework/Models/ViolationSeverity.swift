@@ -9,6 +9,10 @@
 public enum ViolationSeverity: String, Comparable {
     case warning
     case error
+
+    public init?(identifier: String) {
+        self.init(rawValue: identifier)
+    }
 }
 
 // MARK: Comparable

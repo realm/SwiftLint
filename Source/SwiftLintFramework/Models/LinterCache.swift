@@ -80,7 +80,7 @@ public struct LinterCache {
 
 extension StyleViolation {
     fileprivate static func fromCache(_ cache: [String: Any], file: String) -> StyleViolation? {
-        guard let severity = (cache["severity"] as? String).flatMap(ViolationSeverity.init),
+        guard let severity = (cache["severity"] as? String).flatMap(ViolationSeverity.init(identifier:)),
             let name = cache["type"] as? String,
             let ruleId = cache["rule_id"] as? String,
             let reason = cache["reason"] as? String else {

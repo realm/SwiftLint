@@ -22,10 +22,8 @@ public struct LinterCache {
         cache["version"] = currentVersion.value
     }
 
-    public init(contentsOf url: URL, currentVersion: Version = .current) throws {
-        let data = try Data(contentsOf: url)
-        let json = try JSONSerialization.jsonObject(with: data, options: [])
-        guard let dictionary = json as? [String: Any] else {
+    public init(cache: Any, currentVersion: Version = .current) throws {
+        guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
         }
 
@@ -33,7 +31,13 @@ public struct LinterCache {
             throw LinterCacheError.differentVersion
         }
 
-        cache = dictionary
+        self.cache = dictionary
+    }
+
+    public init(contentsOf url: URL, currentVersion: Version = .current) throws {
+        let data = try Data(contentsOf: url)
+        let json = try JSONSerialization.jsonObject(with: data, options: [])
+        try self.init(cache: json, currentVersion: currentVersion)
     }
 
     public mutating func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {

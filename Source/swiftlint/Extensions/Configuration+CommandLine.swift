@@ -63,6 +63,7 @@ extension Configuration {
 
     func visitLintableFiles(_ path: String, action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool,
+                            cache: LinterCache? = nil,
                             visitorBlock: (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
@@ -79,7 +80,7 @@ extension Configuration {
                     let filename = path.bridge().lastPathComponent
                     queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
                 }
-                visitorBlock(Linter(file: file, configuration: configurationForFile(file)))
+                visitorBlock(Linter(file: file, configuration: configurationForFile(file), cache: cache))
             }
             return .success(files)
         }

@@ -15,7 +15,7 @@ public enum LinterCacheError: Error {
     case differentConfiguration
 }
 
-public struct LinterCache {
+public class LinterCache {
     private var cache: [String: Any]
 
     public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
@@ -41,15 +41,15 @@ public struct LinterCache {
         self.cache = dictionary
     }
 
-    public init(contentsOf url: URL, currentVersion: Version = .current,
-                configurationHash: Int? = nil) throws {
+    public convenience init(contentsOf url: URL, currentVersion: Version = .current,
+                            configurationHash: Int? = nil) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
         try self.init(cache: json, currentVersion: currentVersion,
                       configurationHash: configurationHash)
     }
 
-    public mutating func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {
+    public func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {
         var entry = [String: Any]()
         var fileViolations = entry["violations"] as? [[String: Any]] ?? []
 

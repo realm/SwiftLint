@@ -48,7 +48,7 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testParsesViolations() {
-        var cache = LinterCache(currentVersion: Version(value: "0.2.0"))
+        let cache = LinterCache(currentVersion: Version(value: "0.2.0"))
         let file = "foo.swift"
         let ruleDescription = RuleDescription(identifier: "rule", name: "Some rule",
                                               description: "Validates stuff")
@@ -71,7 +71,7 @@ class LinterCacheTests: XCTestCase {
     }
 
     func testParsesViolationsWithModifiedHash() {
-        var cache = LinterCache(currentVersion: Version(value: "0.2.0"))
+        let cache = LinterCache(currentVersion: Version(value: "0.2.0"))
         let file = "foo.swift"
         cache.cacheFile(file, violations: [], hash: 1)
         let cachedViolations = cache.violations(for: file, hash: 2)

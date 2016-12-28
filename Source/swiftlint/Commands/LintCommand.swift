@@ -31,40 +31,21 @@ struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
 
-    // swiftlint:disable:next function_body_length
     func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileBenchmark = Benchmark(name: "files")
         var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
         let configuration = Configuration(commandLinePath: options.configurationFile,
                                           rootPath: options.path, quiet: options.quiet)
-        let reporter = reporterFromString(
-            options.reporter.isEmpty ? configuration.reporter : options.reporter
-        )
-
-        let cacheUrl = URL(fileURLWithPath: "swiftlint.json")
-        let configurationHash = configuration.hash
-        var cache: LinterCache
-        do {
-            cache = try LinterCache(contentsOf: cacheUrl, configurationHash: configurationHash)
-        } catch {
-            cache = LinterCache(configurationHash: configurationHash)
-        }
+        let reporter = makeReporter(options: options, configuration: configuration)
+        let cache = makeCache(options: options, configuration: configuration)
 
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
-            useScriptInputFiles: options.useScriptInputFiles) { linter in
-            var currentViolations: [StyleViolation] = []
-            var readFromCache = false
-            var fileHash: Int?
+            useScriptInputFiles: options.useScriptInputFiles, cache: cache) { linter in
+            var currentViolations = [StyleViolation]()
             autoreleasepool {
-                if let file = linter.file.path,
-                    case let hash = linter.file.contents.hash,
-                    let cachedViolations = cache.violations(for: file, hash: hash) {
-                    currentViolations = cachedViolations
-                    readFromCache = true
-                    fileHash = hash
-                } else if options.benchmark {
+                if options.benchmark {
                     let start = Date()
                     let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                     currentViolations = _currentViolations
@@ -77,10 +58,6 @@ struct LintCommand: CommandProtocol {
             }
             violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
-            if !readFromCache, let file = linter.file.path {
-                let hash = fileHash ?? linter.file.contents.hash
-                cache.cacheFile(file, violations: currentViolations, hash: hash)
-            }
         }.flatMap { files in
             if isWarningThresholdBroken(configuration, violations: violations) {
                 violations.append(createThresholdViolation(configuration.warningThreshold!))
@@ -89,15 +66,14 @@ struct LintCommand: CommandProtocol {
             reporter.reportViolations(violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
-                LintCommand.printStatus(violations: violations, files: files,
-                    serious: numberOfSeriousViolations)
+                LintCommand.printStatus(violations: violations, files: files, serious: numberOfSeriousViolations)
             }
             if options.benchmark {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
 
-            try? cache.save(to: cacheUrl)
+            saveCache(cache: cache, options: options, configuration: configuration)
 
             if numberOfSeriousViolations > 0 {
                 exit(2)
@@ -106,6 +82,33 @@ struct LintCommand: CommandProtocol {
             }
             return .success()
         }
+    }
+
+    private func cacheUrl(options: LintOptions, configuration: Configuration) -> URL {
+        return  URL(fileURLWithPath: "swiftlint.json")
+    }
+
+    private func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache? {
+        let url = cacheUrl(options: options, configuration: configuration)
+        let configurationHash = configuration.hash
+        let cache: LinterCache
+        do {
+            cache = try LinterCache(contentsOf: url, configurationHash: configurationHash)
+        } catch {
+            cache = LinterCache(configurationHash: configurationHash)
+        }
+
+        return cache
+    }
+
+    private func saveCache(cache: LinterCache?, options: LintOptions, configuration: Configuration) {
+        let url = cacheUrl(options: options, configuration: configuration)
+        try? cache?.save(to: url)
+    }
+
+    private func makeReporter(options: LintOptions, configuration: Configuration) -> Reporter.Type {
+        let identifier = options.reporter.isEmpty ? configuration.reporter : options.reporter
+        return reporterFromString(identifier)
     }
 
     static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {

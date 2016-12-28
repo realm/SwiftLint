@@ -21,6 +21,7 @@ private enum ConfigurationKey: String {
     case useNestedConfigs = "use_nested_configs" // deprecated
     case whitelistRules = "whitelist_rules"
     case warningThreshold = "warning_threshold"
+    case cachePath = "cache_path"
 }
 
 public struct Configuration: Equatable {
@@ -33,6 +34,7 @@ public struct Configuration: Equatable {
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
     public var hash: Int?
+    public let cachePath: String?
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -41,10 +43,12 @@ public struct Configuration: Equatable {
                  excluded: [String] = [],
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
-                 configuredRules: [Rule] = masterRuleList.configuredRules(with: [:])) {
+                 configuredRules: [Rule] = masterRuleList.configuredRules(with: [:]),
+                 cachePath: String? = nil) {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.cachePath = cachePath
 
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = configuredRules.map {
@@ -152,7 +156,8 @@ public struct Configuration: Equatable {
             warningThreshold: dict[ConfigurationKey.warningThreshold.rawValue] as? Int,
             reporter: dict[ConfigurationKey.reporter.rawValue] as? String ??
                 XcodeReporter.identifier,
-            configuredRules: masterRuleList.configuredRules(with: dict)
+            configuredRules: masterRuleList.configuredRules(with: dict),
+            cachePath: dict[ConfigurationKey.cachePath.rawValue] as? String
         )
     }
 

@@ -84,12 +84,19 @@ struct LintCommand: CommandProtocol {
         }
     }
 
-    private func cacheUrl(options: LintOptions, configuration: Configuration) -> URL {
-        return  URL(fileURLWithPath: "swiftlint.json")
+    private func cacheUrl(options: LintOptions, configuration: Configuration) -> URL? {
+        guard !options.ignoreCache else {
+            return nil
+        }
+        let path = (options.cachePath.isEmpty ? configuration.cachePath : options.cachePath) ?? ".swiftlint_cache.json"
+        return URL(fileURLWithPath: path)
     }
 
     private func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache? {
-        let url = cacheUrl(options: options, configuration: configuration)
+        guard let url = cacheUrl(options: options, configuration: configuration) else {
+            return nil
+        }
+
         let configurationHash = configuration.hash
         let cache: LinterCache
         do {
@@ -102,8 +109,9 @@ struct LintCommand: CommandProtocol {
     }
 
     private func saveCache(cache: LinterCache?, options: LintOptions, configuration: Configuration) {
-        let url = cacheUrl(options: options, configuration: configuration)
-        try? cache?.save(to: url)
+        if let url = cacheUrl(options: options, configuration: configuration) {
+            try? cache?.save(to: url)
+        }
     }
 
     private func makeReporter(options: LintOptions, configuration: Configuration) -> Reporter.Type {
@@ -130,12 +138,14 @@ struct LintOptions: OptionsProtocol {
     let benchmark: Bool
     let reporter: String
     let quiet: Bool
+    let cachePath: String
+    let ignoreCache: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet)
-        }}}}}}}
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache)
+        }}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -154,6 +164,10 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "reporter", defaultValue: "",
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
+            <*> mode <| Option(key: "cache-path", defaultValue: "",
+                               usage: "the cache that should be used when linting")
+            <*> mode <| Option(key: "no-cache", defaultValue: false,
+                               usage: "ignore cache when linting")
     }
 }
 

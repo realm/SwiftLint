@@ -27,12 +27,14 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
-                let nestedParameters = subDict.enclosedVarParameters
-                // on Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
-                if nestedParameters.isEmpty {
+                switch SwiftVersion.current {
+                case .two:
+                    // with Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
+                    return (subDict.enclosedVarParameters + [subDict]).filter {
+                        $0[SwiftVersion.two.nameKey] != nil
+                    }
+                case .three:
                     return [subDict]
-                } else {
-                    return nestedParameters
                 }
             } else if SwiftExpressionKind(rawValue: kindString) == .argument {
                 return subDict.enclosedVarParameters

@@ -23,4 +23,11 @@ enum SwiftVersion {
 
         fatalError("Unexpected Swift version")
     }()
+
+    var nameKey: String {
+        switch self {
+        case .two: return "key.typename"
+        case .three: return "key.name"
+        }
+    }
 }

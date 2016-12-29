@@ -30,7 +30,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
                 switch SwiftVersion.current {
                 case .two:
                     // with Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
-                    return (subDict.enclosedVarParameters + [subDict]).filter {
+                    let parameters = subDict.enclosedVarParameters + [subDict]
+                    return parameters.filter {
                         $0["key.typename"] != nil
                     }
                 case .three:

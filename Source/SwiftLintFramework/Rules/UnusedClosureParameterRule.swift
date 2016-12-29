@@ -68,11 +68,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     private func violationRangesInFile(_ file: File,
                                        dictionary: [String: SourceKitRepresentable],
                                        kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
-        guard kind == .call else {
-            return []
-        }
-
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+        guard kind == .call,
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
             let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
@@ -89,7 +86,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         return parameters.flatMap { param -> (NSRange, String)? in
             guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
                 let paramLength = (param["key.length"] as? Int64).flatMap({ Int($0) }),
-                let name = param["key.name"] as? String,
+                let name = param[nameKey(for: .current)] as? String,
+                name != "_",
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),
                 let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
@@ -119,6 +117,13 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 return (range, name)
             }
             return nil
+        }
+    }
+
+    private func nameKey(for version: SwiftVersion) -> String {
+        switch version {
+        case .two: return "key.typename"
+        case .three: return "key.name"
         }
     }
 

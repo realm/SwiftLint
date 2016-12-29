@@ -31,7 +31,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
                 case .two:
                     // with Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
                     return (subDict.enclosedVarParameters + [subDict]).filter {
-                        $0[SwiftVersion.two.nameKey] != nil
+                        $0["key.typename"] != nil
                     }
                 case .three:
                     return [subDict]

@@ -68,11 +68,14 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         let rangeStart = nameOffset + nameLength
         let regex = ClosureParameterPositionRule.openBraceRegex
 
+        let nameKey = SwiftVersion.current == .two ? "key.typename" : "key.name"
+
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them
         return parameters.flatMap { param -> StyleViolation? in
             guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                paramOffset > rangeStart else {
+                paramOffset > rangeStart,
+                param[nameKey] != nil else {
                 return nil
             }
 

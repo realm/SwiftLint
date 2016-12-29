@@ -52,6 +52,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#928](https://github.com/realm/SwiftLint/issues/928)
 
+* Fix false positives on `closure_parameter_position` and 
+  `unused_closure_parameter` rules on Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1019](https://github.com/realm/SwiftLint/issues/1019)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

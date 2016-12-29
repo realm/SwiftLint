@@ -27,7 +27,13 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
-                return [subDict]
+                let nestedParameters = subDict.enclosedVarParameters
+                // on Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
+                if nestedParameters.isEmpty {
+                    return [subDict]
+                } else {
+                    return nestedParameters
+                }
             } else if SwiftExpressionKind(rawValue: kindString) == .argument {
                 return subDict.enclosedVarParameters
             }

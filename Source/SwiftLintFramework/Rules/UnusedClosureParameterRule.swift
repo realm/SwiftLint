@@ -86,10 +86,12 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         let parameters = dictionary.enclosedVarParameters
         let contents = file.contents.bridge()
 
+        let nameKey = SwiftVersion.current == .two ? "key.typename" : "key.name"
         return parameters.flatMap { param -> (NSRange, String)? in
             guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
                 let paramLength = (param["key.length"] as? Int64).flatMap({ Int($0) }),
-                let name = param["key.name"] as? String,
+                let name = param[nameKey] as? String,
+                name != "_",
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),
                 let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)

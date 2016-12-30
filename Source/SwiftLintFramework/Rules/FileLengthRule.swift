@@ -18,10 +18,10 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "File Line Length",
         description: "Files should not span too many lines.",
         nonTriggeringExamples: [
-            repeatElement("//\n", count: 400).joined(separator: "")
+            repeatElement("//\n", count: 400).joined()
         ],
         triggeringExamples: [
-            repeatElement("//\n", count: 401).joined(separator: "")
+            repeatElement("//\n", count: 401).joined()
         ]
     )
 

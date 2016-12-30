@@ -34,12 +34,15 @@ if has_app_changes
     'realm/realm-cocoa'
   ]
 
+  @commits = {}
+
   def generate_reports(clone, branch)
     Dir.chdir('osscheck') do
       @repos.each do |repo|
         `git clone "https://github.com/#{repo}" --depth 1` if clone
         repo_name = repo.partition('/').last
         Dir.chdir(repo_name) do
+          @commits[repo] = `git rev-parse HEAD`
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             file.puts `../../.build/debug/swiftlint`
           end
@@ -65,17 +68,24 @@ if has_app_changes
   generate_reports(false, 'master')
   # Diff and report changes to Danger
   @repos.each do |repo|
-    repo_name = repo.partition('/').last
+    @repo_name = repo.partition('/').last
     def non_empty_lines(path)
       File.read(path).split(/\n+/).reject { |c| c.empty? }
     end
-    branch = non_empty_lines("osscheck/branch_reports/#{repo_name}.txt")
-    master = non_empty_lines("osscheck/master_reports/#{repo_name}.txt")
+    branch = non_empty_lines("osscheck/branch_reports/#{@repo_name}.txt")
+    master = non_empty_lines("osscheck/master_reports/#{@repo_name}.txt")
+    @repo = repo
+    def convert_to_link(string)
+      string.sub!("/Users/travis/build/realm/SwiftLint/osscheck/#{@repo_name}", '')
+      string.sub!('.swift:', '.swift#L')
+      string = string.partition(': warning:').first.partition(': error:').first
+      "https://github.com/#{@repo}/blob/#{@commits[@repo]}#{string}"
+    end
     (master - branch).each do |fixed|
-      message "This PR fixed a violation in #{repo_name}: #{fixed}"
+      message "This PR fixed a violation in #{@repo_name}: [#{fixed}](#{convert_to_link(fixed)})"
     end
     (branch - master).each do |violation|
-      warn "This PR introduced a violation in #{repo_name}: #{violation}"
+      warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
     end
   end
   # Clean up

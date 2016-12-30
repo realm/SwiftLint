@@ -47,6 +47,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1090](https://github.com/realm/SwiftLint/issues/1090)
 
+* Make `weak_delegate` rule ignore computed properties.  
+  [Rafael Machado](https://github.com/rakaramos/)
+  [#1089](https://github.com/realm/SwiftLint/issues/1089)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

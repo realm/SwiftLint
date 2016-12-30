@@ -76,7 +76,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             var ranges = [NSRange]()
             var bracesAsString = validBraces.map({
                 file.contents.substring($0.location, length: $0.length)
-            }).joined(separator: "")
+            }).joined()
             while let foundRange = bracesAsString.range(of: "{}") {
                 let startIndex = bracesAsString.distance(from: bracesAsString.startIndex,
                                                          to: foundRange.lowerBound)

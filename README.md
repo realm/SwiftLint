@@ -19,18 +19,34 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
-Using [Homebrew](http://brew.sh/):
+### Using [Homebrew](http://brew.sh/):
 
 ```
 brew install swiftlint
 ```
 
+### Using [CocoaPods](https://cocoapods.org):
+
+Simply add the following line to your Podfile:
+
+```ruby
+pod 'SwiftLint'
+```
+
+This will download the SwiftLint binaries and dependencies in Pods/ during your next 
+`pod install` execution and will allow you to invoke it via `${PODS_ROOT}/SwiftLint/swiftlint` 
+in your Script Build Phases.
+
+### Using a pre-built package:
+
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and
 running it.
 
+### Compiling from source:
+
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 8.0 or later).
+`git submodule update --init --recursive; make install` (Xcode 8.2 or later).
 
 ## Usage
 

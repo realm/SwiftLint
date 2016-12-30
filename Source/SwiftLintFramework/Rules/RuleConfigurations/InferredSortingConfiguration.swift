@@ -1,5 +1,5 @@
 //
-//  EducatedSortingConfiguration.swift
+//  InferredSortingConfiguration.swift
 //  SwiftLint
 //
 //  Created by Jamie Edge on 23/12/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
+public struct InferredSortingConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var threshold: Float
     private(set) var minimumItems: Int
@@ -50,7 +50,7 @@ public struct EducatedSortingConfiguration: RuleConfiguration, Equatable {
     }
 }
 
-public func == (lhs: EducatedSortingConfiguration, rhs: EducatedSortingConfiguration) -> Bool {
+public func == (lhs: InferredSortingConfiguration, rhs: InferredSortingConfiguration) -> Bool {
     return lhs.severityConfiguration == rhs.severityConfiguration &&
         lhs.threshold == rhs.threshold &&
         lhs.minimumItems == rhs.minimumItems &&

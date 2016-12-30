@@ -60,10 +60,6 @@ class RulesTests: XCTestCase {
         verifyRule(DynamicInlineRule.description)
     }
 
-    func testEducatedSorting() {
-        verifyRule(EducatedSortingRule.description)
-    }
-
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }
@@ -143,6 +139,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitReturn() {
         verifyRule(ImplicitReturnRule.description)
+    }
+
+    func testInferredSortingRule() {
+        verifyRule(InferredSortingRule.description)
     }
 
     func testLargeTuple() {
@@ -361,4 +361,79 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
+<<<<<<< HEAD
+=======
+
+}
+
+extension RulesTests {
+    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
+        return [
+            ("testClassDelegateProtocol", testClassDelegateProtocol),
+            ("testClosingBrace", testClosingBrace),
+            ("testComma", testComma),
+            ("testClosureEndIndentation", testClosureEndIndentation),
+            ("testClosureParameterPosition", testClosureParameterPosition),
+            ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
+            ("testControlStatement", testControlStatement),
+            ("testCyclomaticComplexity", testCyclomaticComplexity),
+            ("testDynamicInline", testDynamicInline),
+            ("testEmptyCount", testEmptyCount),
+            ("testEmptyParameters", testEmptyParameters),
+            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
+            ("testExplicitInit", testExplicitInit),
+            ("testFileLength", testFileLength),
+            ("testFirstWhere", testFirstWhere),
+            ("testForceCast", testForceCast),
+            ("testForceTry", testForceTry),
+            // ("testForceUnwrapping", testForceUnwrapping),
+            ("testFunctionBodyLength", testFunctionBodyLength),
+            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
+            ("testImplicitGetterRule", testImplicitGetterRule),
+            ("testInferredSortingRule", testInferredSortingRule),
+            ("testLeadingWhitespace", testLeadingWhitespace),
+            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
+            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
+            ("testLegacyConstant", testLegacyConstant),
+            ("testLegacyConstructor", testLegacyConstructor),
+            ("testLineLength", testLineLength),
+            ("testMark", testMark),
+            ("testNesting", testNesting),
+            ("testNimbleOperator", testNimbleOperator),
+            ("testNumberSeparator", testNumberSeparator),
+            ("testVerticalWhitespace", testVerticalWhitespace),
+            ("testOpeningBrace", testOpeningBrace),
+            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+            ("testPrivateOutlet", testPrivateOutlet),
+            ("testPrivateUnitTest", testPrivateUnitTest),
+            ("testProhibitedSuper", testProhibitedSuper),
+            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
+            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+            ("testRedundantVoidReturn", testRedundantVoidReturn),
+            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testSortedImports", testSortedImports),
+            ("testStatementPosition", testStatementPosition),
+            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
+            ("testSyntacticSugar", testSyntacticSugar),
+            ("testTodo", testTodo),
+            ("testTrailingNewline", testTrailingNewline),
+            ("testTrailingSemicolon", testTrailingSemicolon),
+            ("testTrailingWhitespace", testTrailingWhitespace),
+            ("testTypeBodyLength", testTypeBodyLength),
+            ("testTypeName", testTypeName),
+            ("testUnusedClosureParameter", testUnusedClosureParameter),
+            ("testUnusedEnumerated", testUnusedEnumerated),
+            ("testValidIBInspectable", testValidIBInspectable),
+            ("testVariableName", testVariableName),
+            ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
+            ("testVoidReturn", testVoidReturn),
+            ("testSuperCall", testSuperCall),
+            ("testWeakDelegate", testWeakDelegate)
+        ]
+    }
+>>>>>>> Rename EducatedSorting to InferredSorting.
 }

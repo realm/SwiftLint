@@ -63,6 +63,7 @@ if has_app_changes
   `swift build`
   # Generate master reports
   generate_reports(false, 'master')
+  # Diff and report changes to Danger
   @repos.each do |repo|
     repo_name = repo.partition('/').last
     branch = File.read("osscheck/branch_reports/#{repo_name}.txt").split(/\n+/).reject { |c| c.empty? }
@@ -74,5 +75,6 @@ if has_app_changes
       warn "This PR introduced a violation in #{repo_name}: #{violation}"
     end
   end
+  # Clean up
   FileUtils.rm_rf('osscheck')
 end

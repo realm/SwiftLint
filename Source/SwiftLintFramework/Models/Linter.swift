@@ -28,9 +28,10 @@ public struct Linter {
         }
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
-        let mutationQueue: DispatchQueue! = benchmark ?
-            DispatchQueue(label: "io.realm.SwiftLintFramework.getStyleViolationsMutation")
-            : nil
+        let mutationQueue = DispatchQueue(label: "io.realm.SwiftLintFramework.getStyleViolationsMutation")
+        var deprecatedIdentifiers = Set<String>()
+        var deprecatedToValidIdentifier = [String: String]()
+
         let violations = rules.parallelFlatMap { rule -> [StyleViolation] in
             if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
                 return []
@@ -43,14 +44,33 @@ public struct Linter {
                     ruleTimes.append((id, -start.timeIntervalSinceNow))
                 }
             }
+
             return violations.filter { violation in
                 guard let violationRegion = regions
                     .first(where: { $0.contains(violation.location) }) else {
                         return true
                 }
-                return violationRegion.isRuleEnabled(rule)
+                let enabled = violationRegion.isRuleEnabled(rule)
+                if !enabled {
+                    let identifiers = violationRegion.deprecatedAliasesDisablingRule(rule)
+                    mutationQueue.sync {
+                        deprecatedIdentifiers.formUnion(identifiers)
+                        for deprecatedIdentifier in identifiers {
+                            deprecatedToValidIdentifier[deprecatedIdentifier] = type(of: rule).description.identifier
+                        }
+                    }
+                }
+
+                return enabled
             }
         }
+
+        for deprecatedIdentifier in deprecatedIdentifiers {
+            guard let identifier = deprecatedToValidIdentifier[deprecatedIdentifier] else { continue }
+            queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
+                "completely removed in a future release.")
+        }
+
         return (violations, ruleTimes)
     }
 

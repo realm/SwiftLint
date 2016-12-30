@@ -41,8 +41,8 @@ bootstrap:
 	script/bootstrap
 
 test: clean bootstrap
-	$(BUILD_TOOL) $(XCODEFLAGS) test
 	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) test
+	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"

@@ -27,7 +27,12 @@ end
 
 # Run OSSCheck if there were app changes
 if has_app_changes
-  @repos = ['realm/realm-cocoa', 'jpsim/SourceKitten']
+  @repos = [
+    'JohnCoates/Aerial',
+    'jpsim/SourceKitten',
+    'Moya/Moya',
+    'realm/realm-cocoa'
+  ]
 
   def generate_reports(clone, branch)
     Dir.chdir('osscheck') do

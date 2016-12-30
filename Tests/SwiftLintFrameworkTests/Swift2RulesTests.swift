@@ -24,6 +24,18 @@ class Swift2RulesTests: XCTestCase {
         verifyRule(description)
     }
 
+    func testIdentifierName() {
+        let description = RuleDescription(
+            identifier: IdentifierNameRule.description.identifier,
+            name: IdentifierNameRule.description.name,
+            description: IdentifierNameRule.description.description,
+            nonTriggeringExamples: IdentifierNameRuleExamples.swift2NonTriggeringExamples,
+            triggeringExamples: IdentifierNameRuleExamples.swift2TriggeringExamples
+        )
+
+        verifyRule(description)
+    }
+
     func testNumberSeparator() {
         let description = RuleDescription(
             identifier: NumberSeparatorRule.description.identifier,

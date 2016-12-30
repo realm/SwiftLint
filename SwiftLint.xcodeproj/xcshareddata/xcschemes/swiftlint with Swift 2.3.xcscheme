@@ -46,6 +46,9 @@
                   Identifier = "IntegrationTests">
                </Test>
                <Test
+                  Identifier = "RulesTests/testIdentifierName()">
+               </Test>
+               <Test
                   Identifier = "NumberSeparatorRuleTests/testNumberSeparatorWithDefaultConfiguration()">
                </Test>
                <Test

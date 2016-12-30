@@ -26,33 +26,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             "In an exception to the above, variable names may start with a capital letter " +
             "when they are declared static and immutable. Variable names should not be too " +
             "long or too short.",
-        nonTriggeringExamples: [
-            "let myLet = 0",
-            "var myVar = 0",
-            "private let _myLet = 0",
-            "class Abc { static let MyLet = 0 }",
-            "let URL: NSURL? = nil",
-            "let XMLString: String? = nil",
-            "override var i = 0",
-            "enum Foo { case myEnum }",
-            "func isOperator(name: String) -> Bool",
-            "func typeForKind(_ kind: SwiftDeclarationKind) -> String",
-            "func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool",
-            "override func IsOperator(name: String) -> Bool"
-        ],
-        triggeringExamples: [
-            "↓let MyLet = 0",
-            "↓let _myLet = 0",
-            "private ↓let myLet_ = 0",
-            "↓let myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-            "↓var myExtremelyVeryVeryVeryVeryVeryVeryLongVar = 0",
-            "private ↓let _myExtremelyVeryVeryVeryVeryVeryVeryLongLet = 0",
-            "↓let i = 0",
-            "↓var id = 0",
-            "private ↓let _i = 0",
-            "enum Foo { case ↓MyEnum }",
-            "↓func IsOperator(name: String) -> Bool"
-        ]
+        nonTriggeringExamples: IdentifierNameRuleExamples.swift3NonTriggeringExamples,
+        triggeringExamples: IdentifierNameRuleExamples.swift3TriggeringExamples
     )
 
     private func nameIsViolatingCase(_ name: String) -> Bool {
@@ -129,8 +104,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateName(_ dictionary: [String: SourceKitRepresentable],
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        let kinds = SwiftDeclarationKind.variableKinds() +
-            SwiftDeclarationKind.functionKinds() + [.enumelement]
+        let kinds = kindsForSwiftVersion(.current)
 
         guard let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
@@ -139,6 +113,16 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+    }
+
+    private func kindsForSwiftVersion(_ version: SwiftVersion) -> [SwiftDeclarationKind] {
+        let common = SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds()
+        switch version {
+        case .two:
+            return common
+        case .three:
+            return common + [.enumelement]
+        }
     }
 
     private func typeForKind(_ kind: SwiftDeclarationKind) -> String {

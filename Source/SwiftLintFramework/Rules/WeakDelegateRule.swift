@@ -30,7 +30,8 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  var delegateNotified: Bool?\n}\n",
             // There's no way to declare a property weak in a protocol
             "protocol P {\n var delegate: AnyObject? { get set }\n}\n",
-            "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"
+            "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n",
+            "class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"
         ],
         triggeringExamples: [
             "class Foo {\n  ↓var delegate: SomeProtocol?\n}\n",
@@ -60,6 +61,10 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             !protocolDeclarationsFor(offset, structure: file.structure).isEmpty {
             return []
         }
+
+        // Check if non-computed
+        let isComputed = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) ?? 0 > 0
+        guard !isComputed else { return [] }
 
         // Violation found!
         let location: Location

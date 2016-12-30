@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Make `weak_delegate` ignore computed properties  
+  [Rafael Machado](https://github.com/rakaramos/)
+  [#1089](https://github.com/realm/SwiftLint/issues/1089)
+
 * Add `vertical_parameter_alignment` rule that checks if parameters are 
   vertically aligned for multi-line function declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

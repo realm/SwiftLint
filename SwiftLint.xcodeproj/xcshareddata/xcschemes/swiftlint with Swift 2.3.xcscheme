@@ -48,6 +48,9 @@
                <Test
                   Identifier = "RulesTests/testNumberSeparator()">
                </Test>
+               <Test
+                  Identifier = "RulesTests/testTypeName()">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

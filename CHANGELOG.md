@@ -42,6 +42,11 @@
   [Scott Berrevoets](https://github.com/sberrevoets)
   [#900](https://github.com/realm/SwiftLint/issues/900)
 
+* `type_name` rule forces enum values to be UpperCamelCase again
+  when used with Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1090](https://github.com/realm/SwiftLint/issues/1090)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

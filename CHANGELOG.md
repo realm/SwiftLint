@@ -42,7 +42,7 @@
   [Scott Berrevoets](https://github.com/sberrevoets)
   [#900](https://github.com/realm/SwiftLint/issues/900)
 
-* Add `educated_sorting` rule that checks the order of array elements if
+* Add `inferred_sorting` rule that checks the order of array elements if
   they are already partially sorted.  
   [Jamie Edge](https://github.com/JamieEdge)
   [#1038](https://github.com/realm/SwiftLint/issues/1038)

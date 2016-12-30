@@ -42,6 +42,15 @@
   [Scott Berrevoets](https://github.com/sberrevoets)
   [#900](https://github.com/realm/SwiftLint/issues/900)
 
+* `type_name` rule forces enum values to be UpperCamelCase again
+  when used with Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1090](https://github.com/realm/SwiftLint/issues/1090)
+
+* Make `weak_delegate` rule ignore computed properties.  
+  [Rafael Machado](https://github.com/rakaramos/)
+  [#1089](https://github.com/realm/SwiftLint/issues/1089)
+
 * Add `inferred_sorting` rule that checks the order of array elements if
   they are already partially sorted.  
   [Jamie Edge](https://github.com/JamieEdge)

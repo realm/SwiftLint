@@ -25,7 +25,7 @@ public struct JUnitReporter: Reporter {
                 let reason = violation.reason.escapedForXML()
                 return ["\n\t<testcase classname='Formatting Test' name='\(fileName)\'>\n",
                     "<failure message='\(reason)\'>" + message + "</failure>",
-                    "\t</testcase>"].joined(separator: "")
-            }).joined(separator: "") + "\n</testsuite></testsuites>"
+                    "\t</testcase>"].joined()
+            }).joined() + "\n</testsuite></testsuites>"
     }
 }

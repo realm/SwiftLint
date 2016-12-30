@@ -93,11 +93,8 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
     }
 
     private func validateColorKinds(arguments: [[String: SourceKitRepresentable]], file: File) -> Bool {
-        for dictionary in arguments {
-            let kinds = kindsFor(dictionary, file: file)
-            if kinds != Set(arrayLiteral: .number) {
-                return false
-            }
+        for dictionary in arguments where kindsFor(dictionary, file: file) != [.number] {
+            return false
         }
 
         return true

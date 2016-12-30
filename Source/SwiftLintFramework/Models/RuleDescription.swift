@@ -29,16 +29,16 @@ public struct RuleDescription: Equatable {
     public init(identifier: String, name: String, description: String,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
-                aliases: [String] = [],
-                deprecatedAliases: [String] = []) {
+                aliases: Set<String> = [],
+                deprecatedAliases: Set<String> = []) {
         self.identifier = identifier
         self.name = name
         self.description = description
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
         self.corrections = corrections
-        self.aliases = Set(aliases)
-        self.deprecatedAliases = Set(deprecatedAliases)
+        self.aliases = aliases
+        self.deprecatedAliases = deprecatedAliases
     }
 }
 

@@ -12,13 +12,13 @@ import SourceKittenFramework
 extension File {
     fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
         return matchPattern(
-            "\\?\\?\\s*nil\\b", // ?? {whitespace} nil {word boundary}
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
+            "\\s*\\?\\?\\s*nil\\b", // {whitespace} ?? {whitespace} nil {word boundary}
+            withSyntaxKinds: [.keyword]
         )
     }
 }
 
-public struct RedundantNilCoalescingRule: OptInRule, ConfigurationProviderRule {
+public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -30,10 +30,15 @@ public struct RedundantNilCoalescingRule: OptInRule, ConfigurationProviderRule {
         description: "nil coalescing operator is only evaluated if the lhs is nil " +
             ", coalescing operator with nil as rhs is redundant",
         nonTriggeringExamples: [
-            "var myVar: Int?; myVar ?? 0"
+            "var myVar: Int?; myVar ?? 0\n"
         ],
         triggeringExamples: [
-            "var myVar = nil; myVar ↓?? nil"
+            "var myVar: Int? = nil; myVar↓ ?? nil\n",
+            "var myVar: Int? = nil; myVar↓??nil\n"
+        ],
+        corrections: [
+            "var myVar: Int? = nil; let foo = myVar↓ ?? nil\n": "var myVar: Int? = nil; let foo = myVar\n",
+            "var myVar: Int? = nil; let foo = myVar↓??nil\n": "var myVar: Int? = nil; let foo = myVar\n"
         ]
     )
 
@@ -45,4 +50,29 @@ public struct RedundantNilCoalescingRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
+    public func correctFile(_ file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabledViolatingRanges(file.violatingRedundantNilCoalescingRanges(),
+                                                              forRule: self)
+        return writeToFile(file, violatingRanges: violatingRanges)
+    }
+
+    private func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
+        var correctedContents = file.contents
+        var adjustedLocations = [Int]()
+
+        for violatingRange in violatingRanges.reversed() {
+            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
+                correctedContents = correctedContents
+                    .replacingCharacters(in: indexRange, with: "")
+                adjustedLocations.insert(violatingRange.location, at: 0)
+            }
+        }
+
+        file.write(correctedContents)
+
+        return adjustedLocations.map {
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
+        }
+    }
 }

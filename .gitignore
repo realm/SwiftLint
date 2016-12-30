@@ -48,6 +48,7 @@ SwiftLint.pkg
 SwiftLintFramework.framework.zip
 benchmark_*
 portable_swiftlint.zip
+osscheck/
 
 # SPM
 .build
@@ -55,3 +56,7 @@ Packages
 
 # macOS
 .DS_Store
+
+# Bundler
+.bundle/
+bundle/

@@ -199,12 +199,24 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantNilCoalescingRule.description)
     }
 
+    func testRedundantOptionalInitialization() {
+        verifyRule(RedundantOptionalInitializationRule.description)
+    }
+
     func testRedundantStringEnumValue() {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 
+    func testRedundantVoidReturn() {
+        verifyRule(RedundantVoidReturnRule.description)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
+    }
+
+    func testSortedImports() {
+        verifyRule(SortedImportsRule.description)
     }
 
     func testStatementPosition() {
@@ -343,7 +355,7 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCountRule", testFunctionParameterCountRule),
             ("testImplicitGetterRule", testImplicitGetterRule),
-            // ("testLeadingWhitespace", testLeadingWhitespace),
+            ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),
@@ -361,8 +373,11 @@ extension RulesTests {
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+            ("testRedundantVoidReturn", testRedundantVoidReturn),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
@@ -372,11 +387,11 @@ extension RulesTests {
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
-            // ("testTypeName", testTypeName),
+            ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),
-            // ("testVariableName", testVariableName),
+            ("testVariableName", testVariableName),
             ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),

@@ -7,12 +7,18 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
+SWIFT_2_XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
+	-scheme 'swiftlint with Swift 2.3' \
+	DSTROOT=$(TEMPORARY_FOLDER) \
+	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
+
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework
 SWIFTLINT_EXECUTABLE=$(BUILT_BUNDLE)/Contents/MacOS/swiftlint
 
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
+LICENSE_PATH="$(shell pwd)/LICENSE"
 
 OUTPUT_PACKAGE=SwiftLint.pkg
 
@@ -36,6 +42,7 @@ bootstrap:
 	script/bootstrap
 
 test: clean bootstrap
+	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) test
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 clean:
@@ -44,6 +51,9 @@ clean:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
+	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Debug clean
+	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Release clean
+	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Test clean
 
 install: uninstall package
 	sudo installer -pkg SwiftLint.pkg -target /
@@ -74,6 +84,7 @@ portable_zip: installables
 	install_name_tool -rpath "/Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks" "@executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks" "$(TEMPORARY_FOLDER)/swiftlint"
 	install_name_tool -rpath "/Library/Frameworks" "@executable_path" "$(TEMPORARY_FOLDER)/swiftlint"
 	rm -f "./portable_swiftlint.zip"
+	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "SwiftLintFramework.framework" "LICENSE") > "./portable_swiftlint.zip"
 
 package: installables

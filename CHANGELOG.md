@@ -19,6 +19,29 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1039](https://github.com/realm/SwiftLint/issues/1039)
 
+* Add correctable `redundant_optional_initialization` rule that warns against
+  initializing optional variables with `nil`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1052](https://github.com/realm/SwiftLint/issues/1052)
+  
+* `redundant_nil_coalescing` rule is now correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Make `number_separator` rule correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* `empty_parentheses_with_trailing_closure` rule is now correctable.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add correctable `redundant_void_return` rule that warns against
+  explicitly adding `-> Void` to functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1066](https://github.com/realm/SwiftLint/issues/1066)
+
+* Add an opt-in rule that enforces alphabetical sorting of imports.  
+  [Scott Berrevoets](https://github.com/sberrevoets)
+  [#900](https://github.com/realm/SwiftLint/issues/900)
+
 * Add `educated_sorting` rule that checks the order of array elements if
   they are already partially sorted.  
   [Jamie Edge](https://github.com/JamieEdge)
@@ -34,6 +57,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#928](https://github.com/realm/SwiftLint/issues/928)
 
+* Fix false positives on `closure_parameter_position` and 
+  `unused_closure_parameter` rules with Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1019](https://github.com/realm/SwiftLint/issues/1019)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking
@@ -41,6 +69,9 @@
 * `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
+
+* Fixing `variable_name` and `type_name` rules on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

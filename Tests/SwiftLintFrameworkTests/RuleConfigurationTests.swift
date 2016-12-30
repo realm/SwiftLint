@@ -6,9 +6,9 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-import XCTest
-@testable import SwiftLintFramework
 import SourceKittenFramework
+@testable import SwiftLintFramework
+import XCTest
 
 class RuleConfigurationsTests: XCTestCase {
 

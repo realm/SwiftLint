@@ -21,7 +21,7 @@ public struct InferredSortingConfiguration: RuleConfiguration, Equatable {
             ", case_sensitive: \(caseSensitive)"
     }
 
-    public init(threshold: Float = 0.25, minimumItems: Int = 3, caseSensitive: Bool = true) {
+    public init(threshold: Float = 0.75, minimumItems: Int = 8, caseSensitive: Bool = true) {
         self.threshold = threshold
         self.minimumItems = minimumItems
         self.caseSensitive = caseSensitive

@@ -68,17 +68,19 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
         name: "Inferred Sorting",
         description: "Elements should be sorted in alphabetical and numerical order.",
         nonTriggeringExamples: [
-            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\"]\n",
             "let foo = [\"Alpha\"]\n",
+            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\"]\n",
+            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\", \"Hotel\"]\n",
+            "let foo = [\"Hotel\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\", \"Alpha\"]\n",
             "let foo = [\"Bravo\", \"Alpha\"]\n",
+            "let foo = [\"Charlie\", \"Alpha\", \"Bravo\"]\n",
             "let foo = [\"Charlie\", \"Bravo\", \"Alpha\"]\n",
-            "let foo = [Object(bravo: 1, alpha: 2, charlie: 3)]\n",
             "let foo = []\n"
         ],
         triggeringExamples: [
-            "let foo = [\"Charlie\", \"Alpha\", \"Bravo\"]\n",
-            "let foo = [\"Bravo\", \"Charlie\", \"Alpha\", \"Delta\"]\n",
-            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Foxtrot\", \"Echo\"]\n"
+            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Hotel\", \"Golf\"]\n",
+            "let foo = [\"Lima\", \"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\"," +
+                        "\"Hotel\", \"India\", \"Juliet\", \"Kilo\"]\n"
         ]
     )
 

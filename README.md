@@ -33,9 +33,16 @@ Simply add the following line to your Podfile:
 pod 'SwiftLint'
 ```
 
-This will download the SwiftLint binaries and dependencies in Pods/ during your next 
+This will download the SwiftLint binaries and dependencies in `Pods/` during your next 
 `pod install` execution and will allow you to invoke it via `${PODS_ROOT}/SwiftLint/swiftlint` 
 in your Script Build Phases.
+
+This is the recommended way to install a specific version of SwiftLint since it supports 
+installing a pinned version rather than simply the latest (which is the case with Homebrew).
+
+Note that this will add the SwiftLint binaries, its dependencies' binaries and the Swift binary 
+library distribution to the `Pods/` directory, so checking in this directory to SCM such as 
+git is discouraged.
 
 ### Using a pre-built package:
 
@@ -46,7 +53,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 8.2 or later).
+`git submodule update --init --recursive; make install` (Xcode 8.0 or later).
 
 ## Usage
 
@@ -64,6 +71,12 @@ fi
 ```
 
 ![](assets/runscript.png)
+
+Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
+
+```bash
+${PODS_ROOT}/SwiftLint/swiftlint
+```
 
 #### Format on Save Xcode Plugin
 

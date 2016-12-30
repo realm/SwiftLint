@@ -66,8 +66,11 @@ if has_app_changes
   # Diff and report changes to Danger
   @repos.each do |repo|
     repo_name = repo.partition('/').last
-    branch = File.read("osscheck/branch_reports/#{repo_name}.txt").split(/\n+/).reject { |c| c.empty? }
-    master = File.read("osscheck/master_reports/#{repo_name}.txt").split(/\n+/).reject { |c| c.empty? }
+    def non_empty_lines(path)
+      File.read(path).split(/\n+/).reject { |c| c.empty? }
+    end
+    branch = non_empty_lines("osscheck/branch_reports/#{repo_name}.txt")
+    master = non_empty_lines("osscheck/master_reports/#{repo_name}.txt")
     (master - branch).each do |fixed|
       message "This PR fixed a violation in #{repo_name}: #{fixed}"
     end

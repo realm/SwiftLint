@@ -63,7 +63,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if non-computed
-        let isComputed = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) ?? 0 > 0
+        let isComputed = dictionary["key.bodylength"] as? Int64 ?? 0 > 0
         guard !isComputed else { return [] }
 
         // Violation found!

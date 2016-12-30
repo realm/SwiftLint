@@ -184,11 +184,10 @@ extension XCTestCase {
             )
         }
 
-        var commands = [String]()
-        // "disable"s command doesn't violate
-        for identifier in ruleDescription.allIdentifiers {
-            let command = "// swiftlint:disable \(identifier)\n"
-            commands.append(command)
+        let disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+
+        // "disable"s commands doesn't violate
+        for command in disableCommands {
             XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
         }
 
@@ -201,9 +200,9 @@ extension XCTestCase {
             testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
         }
 
-        // "disable" command do not correct
+        // "disable" commands do not correct
         ruleDescription.corrections.forEach { before, _ in
-            for command in commands {
+            for command in disableCommands {
                 let beforeDisabled = command + before
                 let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
                 config.assertCorrection(expectedCleaned, expected: expectedCleaned)

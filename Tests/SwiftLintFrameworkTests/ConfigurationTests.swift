@@ -191,36 +191,32 @@ class ConfigurationTests: XCTestCase {
 
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
-    func testConfiguresCorrectlyFromDict() {
+    func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        // swiftlint:disable:next force_try
-        let rules = try! testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
-    func testConfigureFallsBackCorrectly() {
+    func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        // swiftlint:disable:next force_try
-        let rules = try! testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
     }
 
     // MARK: - Aliases
 
-    func testConfiguresCorrectlyFromAlias() {
+    func testConfiguresCorrectlyFromAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["severity_mock": ruleConfiguration]
-        // swiftlint:disable:next force_try
-        let rules = try! testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 
-    func testConfiguresCorrectlyFromDeprecatedAlias() {
+    func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["mock": ruleConfiguration]
-        // swiftlint:disable:next force_try
-        let rules = try! testRuleList.configuredRules(with: config)
+        let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
     }
 

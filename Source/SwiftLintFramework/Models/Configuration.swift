@@ -47,7 +47,9 @@ public struct Configuration: Equatable {
         self.excluded = excluded
         self.reporter = reporter
 
-        let configuredRules = configuredRules ?? ((try? ruleList.configuredRules(with: [:])) ?? [])
+        let configuredRules = configuredRules
+            ?? (try? ruleList.configuredRules(with: [:]))
+            ?? []
 
         let handleAliasWithRuleList: (String) -> String = { handleAlias($0, ruleList: ruleList) }
         let disabledRules = disabledRules.map(handleAliasWithRuleList)
@@ -55,28 +57,12 @@ public struct Configuration: Equatable {
         let whitelistRules = whitelistRules.map(handleAliasWithRuleList)
 
         // Validate that all rule identifiers map to a defined rule
-        let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
-
+        let validRuleIdentifiers = validateRuleIdentifiers(configuredRules: configuredRules,
+                                                           disabledRules: disabledRules)
         let validDisabledRules = disabledRules.filter { validRuleIdentifiers.contains($0) }
-        let invalidRules = disabledRules.filter { !validRuleIdentifiers.contains($0) }
-        if !invalidRules.isEmpty {
-            for invalidRule in invalidRules {
-                queuedPrintError("configuration error: '\(invalidRule)' is not a valid rule identifier")
-            }
-            let listOfValidRuleIdentifiers = validRuleIdentifiers.joined(separator: "\n")
-            queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
-        }
 
         // Validate that rule identifiers aren't listed multiple times
-        if Set(validDisabledRules).count != validDisabledRules.count {
-            let duplicateRules = validDisabledRules.reduce([String: Int]()) { accu, element in
-                var accu = accu
-                accu[element] = (accu[element] ?? 0) + 1
-                return accu
-            }.filter { $0.1 > 1 }
-            queuedPrintError(duplicateRules.map { rule in
-                "configuration error: '\(rule.0)' is listed \(rule.1) times"
-            }.joined(separator: "\n"))
+        if containsDuplicatedRuleIdentifiers(validDisabledRules) {
             return nil
         }
 
@@ -206,6 +192,39 @@ public struct Configuration: Equatable {
     }
 }
 
+private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [String]) -> [String] {
+    // Validate that all rule identifiers map to a defined rule
+    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+
+    let invalidRules = disabledRules.filter { !validRuleIdentifiers.contains($0) }
+    if !invalidRules.isEmpty {
+        for invalidRule in invalidRules {
+            queuedPrintError("configuration error: '\(invalidRule)' is not a valid rule identifier")
+        }
+        let listOfValidRuleIdentifiers = validRuleIdentifiers.joined(separator: "\n")
+        queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
+    }
+
+    return validRuleIdentifiers
+}
+
+private func containsDuplicatedRuleIdentifiers(_ validDisabledRules: [String]) -> Bool {
+    // Validate that rule identifiers aren't listed multiple times
+    if Set(validDisabledRules).count != validDisabledRules.count {
+        let duplicateRules = validDisabledRules.reduce([String: Int]()) { accu, element in
+            var accu = accu
+            accu[element] = (accu[element] ?? 0) + 1
+            return accu
+        }.filter { $0.1 > 1 }
+        queuedPrintError(duplicateRules.map { rule in
+            "configuration error: '\(rule.0)' is listed \(rule.1) times"
+        }.joined(separator: "\n"))
+        return true
+    }
+
+    return false
+}
+
 private func handleAlias(_ alias: String, ruleList: RuleList) -> String {
     return ruleList.identifier(for: alias) ?? alias
 }
@@ -253,15 +272,14 @@ private func warnAboutDeprecations(_ dict: [String: Any],
         return rule.description.deprecatedAliases.map { ($0, identifier) }
     }
 
-    let lists = Set(disabledRules + optInRules + whitelistRules)
+    let userProvidedRuleIDs = Set(disabledRules + optInRules + whitelistRules)
     let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
-        return dict[deprecatedIdentifier] != nil || lists.contains(deprecatedIdentifier)
+        return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
     }
 
     for (deprecatedIdentifier, identifier) in deprecatedUsages {
-        queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to " +
-            "'\(identifier)' and will be completely removed in a " +
-            "future release.")
+        queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
+            "completely removed in a future release.")
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  NumberSeparatorExamples.swift
+//  NumberSeparatorRuleExamples.swift
 //  SwiftLint
 //
 //  Created by Marcelo Fabri on 12/29/16.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-internal struct NumberSeparatorExamples {
+internal struct NumberSeparatorRuleExamples {
 
-    static func nonTriggeringExamples() -> [String] {
+    static let nonTriggeringExamples: [String] = {
         return ["-", "+", ""].flatMap { (sign: String) -> [String] in
             [
                 "let foo = \(sign)100",
@@ -27,7 +27,15 @@ internal struct NumberSeparatorExamples {
                 "let exp = \(sign)1_000_000.000_000e2"
             ]
         }
-    }
+    }()
+
+    static let swift3TriggeringExamples = triggeringExamples(signs: ["↓-", "+↓", "↓"])
+
+    static let swift2TriggeringExamples = triggeringExamples(signs: ["-↓", "+↓", "↓"])
+
+    static let swift3Corrections = corrections(signs: [("↓-", "-"), ("+↓", "+"), ("↓", "")])
+
+    static let swift2Corrections = corrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
 
     private static func triggeringExamples(signs: [String]) -> [String] {
         return signs.flatMap { (sign: String) -> [String] in
@@ -41,14 +49,6 @@ internal struct NumberSeparatorExamples {
                 "let foo = \(sign)1000000.000000_1"
             ]
         }
-    }
-
-    static func triggeringExamples() -> [String] {
-        return triggeringExamples(signs: ["↓-", "+↓", "↓"])
-    }
-
-    static func swift2TriggeringExamples() -> [String] {
-        return triggeringExamples(signs: ["-↓", "+↓", "↓"])
     }
 
     private static func corrections(signs: [(String, String)]) -> [String: String] {
@@ -67,11 +67,4 @@ internal struct NumberSeparatorExamples {
         return result
     }
 
-    static func corrections() -> [String: String] {
-        return corrections(signs: [("↓-", "-"), ("+↓", "+"), ("↓", "")])
-    }
-
-    static func swift2Corrections() -> [String: String] {
-        return corrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
-    }
 }

@@ -17,9 +17,9 @@ class Swift2RulesTests: XCTestCase {
             identifier: NumberSeparatorRule.description.identifier,
             name: NumberSeparatorRule.description.name,
             description: NumberSeparatorRule.description.description,
-            nonTriggeringExamples: NumberSeparatorExamples.nonTriggeringExamples(),
-            triggeringExamples: NumberSeparatorExamples.swift2TriggeringExamples(),
-            corrections: NumberSeparatorExamples.swift2Corrections()
+            nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
+            triggeringExamples: NumberSeparatorRuleExamples.swift2TriggeringExamples,
+            corrections: NumberSeparatorRuleExamples.swift2Corrections
         )
 
         verifyRule(description)
@@ -30,8 +30,8 @@ class Swift2RulesTests: XCTestCase {
             identifier: AttributesRule.description.identifier,
             name: AttributesRule.description.name,
             description: AttributesRule.description.description,
-            nonTriggeringExamples: AttributesRuleExamples.swift2NonTriggeringExamples(),
-            triggeringExamples: AttributesRuleExamples.swift2TriggeringExamples()
+            nonTriggeringExamples: AttributesRuleExamples.swift2NonTriggeringExamples,
+            triggeringExamples: AttributesRuleExamples.swift2TriggeringExamples
         )
 
         verifyRule(description)

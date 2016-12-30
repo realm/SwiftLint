@@ -40,12 +40,6 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AttributesRuleTests/testSwift2Attributes()">
-               </Test>
-               <Test
-                  Identifier = "RulesTests/testNumberSeparatorWithSwift2()">
-               </Test>
-               <Test
                   Identifier = "Swift2RulesTests">
                </Test>
             </SkippedTests>

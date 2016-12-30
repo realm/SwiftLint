@@ -1,5 +1,5 @@
 //
-//  EducatedSortingRule.swift
+//  InferredSortingRule.swift
 //  SwiftLint
 //
 //  Created by Jamie Edge on 23/12/16.
@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-private let arrayEducatedSortingReason = "Array elements should be sorted."
+private let arrayInferredSortingReason = "Array elements should be sorted."
 
 extension Sequence where Iterator.Element == String {
     /// Determines how sorted the sequence is on a scale from 0.0 to 1.0.
@@ -58,15 +58,14 @@ extension Sequence where Iterator.Element == String {
     }
 }
 
-public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule, OptInRule {
-    public var configuration = EducatedSortingConfiguration()
+public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule {
+    public var configuration = InferredSortingConfiguration()
 
     public init() { }
 
-    // swiftlint:disable educated_sorting
     public static let description = RuleDescription(
-        identifier: "educated_sorting",
-        name: "Educated Sorting",
+        identifier: "inferred_sorting",
+        name: "Inferred Sorting",
         description: "Elements should be sorted in alphabetical and numerical order.",
         nonTriggeringExamples: [
             "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\"]\n",
@@ -82,7 +81,6 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
             "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Foxtrot\", \"Echo\"]\n"
         ]
     )
-    // swiftlint:enable educated_sorting
 
     private static let allowedKinds: [SwiftExpressionKind] = [.array]
     private static let expectedElementKind = "source.lang.swift.structure.elem.expr"
@@ -125,7 +123,7 @@ public struct EducatedSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: arrayEducatedSortingReason + String(format: " (%.1f%% sorted)", sortedness * 100.0)
+                    reason: arrayInferredSortingReason + String(format: " (%.1f%% sorted)", sortedness * 100.0)
                 )
             ]
         } else {

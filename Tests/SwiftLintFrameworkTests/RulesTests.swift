@@ -53,10 +53,6 @@ class RulesTests: XCTestCase {
         verifyRule(DynamicInlineRule.description)
     }
 
-    func testEducatedSorting() {
-        verifyRule(EducatedSortingRule.description)
-    }
-
     func testEmptyCount() {
         verifyRule(EmptyCountRule.description)
     }
@@ -104,6 +100,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitGetterRule() {
         verifyRule(ImplicitGetterRule.description)
+    }
+
+    func testInferredSortingRule() {
+        verifyRule(InferredSortingRule.description)
     }
 
     func testLeadingWhitespace() {
@@ -355,6 +355,7 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCountRule", testFunctionParameterCountRule),
             ("testImplicitGetterRule", testImplicitGetterRule),
+            ("testInferredSortingRule", testInferredSortingRule),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),

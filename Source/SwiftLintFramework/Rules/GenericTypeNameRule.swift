@@ -29,6 +29,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "func foo<T: Hashable, U: Rule>(param: U) -> T {}\n",
             "struct Foo<T> {}\n",
             "class Foo<T> {}\n",
+            "enum Foo<T> {}\n",
             "func run(_ options: NoOptions<CommandantError<()>>) {}\n",
             "func foo(_ options: Set<type>) {}\n",
             "func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool\n",
@@ -39,7 +40,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n",
             "func foo<↓\(String(repeating: "T", count: 21))>() {}\n",
             "func foo<↓type>() {}\n"
-        ] + ["class", "struct"].flatMap { type in
+        ] + ["class", "struct", "enum"].flatMap { type in
             [
                 "\(type) Foo<↓T_Foo> {}\n",
                 "\(type) Foo<T, ↓U_Foo> {}\n",
@@ -64,7 +65,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     private func genericTypesForType(_ file: File,
                                      kind: SwiftDeclarationKind,
                                      dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
-        guard kind == .class || kind == .struct,
+        guard SwiftDeclarationKind.typeKinds().contains(kind),
             let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
             let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),

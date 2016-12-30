@@ -119,6 +119,7 @@
 		D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
 		D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
+		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
 		D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */; };
 		D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
 		D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
@@ -368,6 +369,7 @@
 		D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantOptionalInitializationRule.swift; sourceTree = "<group>"; };
 		D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+LinuxHack.swift"; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
+		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
 		D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesConfiguration.swift; sourceTree = "<group>"; };
 		D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRule.swift; sourceTree = "<group>"; };
 		D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderConfiguration.swift; sourceTree = "<group>"; };
@@ -775,6 +777,7 @@
 				D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */,
 				D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */,
 				D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */,
+				D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */,
 				692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */,
 				E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */,
 				D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */,
@@ -1131,6 +1134,7 @@
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
+				D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */,
 				2E336D1B1DF08BFB00CCFE77 /* EmojiReporter.swift in Sources */,
 				E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */,
 				006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */,

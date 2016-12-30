@@ -51,6 +51,12 @@
   [Rafael Machado](https://github.com/rakaramos/)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
+* Add `object_literal` opt-in rule that warns agains using image and color
+  inits that can be replaced for `#imageLiteral` or `#colorLiteral` in
+  Swift 3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1060](https://github.com/realm/SwiftLint/issues/1060)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

@@ -40,10 +40,13 @@
             </BuildableReference>
             <SkippedTests>
                <Test
-                  Identifier = "AttributesRuleTests/testSwift2Attributes()">
+                  Identifier = "AttributesRuleTests/testAttributesWithDefaultConfiguration()">
                </Test>
                <Test
-                  Identifier = "RulesTests/testNumberSeparatorWithSwift2()">
+                  Identifier = "IntegrationTests">
+               </Test>
+               <Test
+                  Identifier = "RulesTests/testNumberSeparator()">
                </Test>
             </SkippedTests>
          </TestableReference>
@@ -90,7 +93,7 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "TOOLCHAINS"
-            value = "${TOOLCHAINS}"
+            value = "com.apple.dt.toolchain.Swift_2_3"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

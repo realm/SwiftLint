@@ -8,9 +8,8 @@
 
 internal struct AttributesRuleExamples {
 
-    // swiftlint:disable:next function_body_length
-    static func nonTriggeringExamples() -> [String] {
-        let common = [
+    private static func commonNonTriggeringExamples() -> [String] {
+        return [
             "@objc var x: String",
             "@objc private var x: String",
             "@nonobjc var x: String",
@@ -42,34 +41,35 @@ internal struct AttributesRuleExamples {
             "extension Property {\n\n @available(*, unavailable, renamed: \"isOptional\")\n" +
             "public var optional: Bool { fatalError() }\n}"
         ]
+    }
 
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable var maxSpeed: Float",
-                "@discardableResult\n func a() -> Int",
-                "@objc\n @discardableResult\n func a() -> Int",
-                "func increase(f: @autoclosure () -> Int) -> Int",
-                "func foo(completionHandler: @escaping () -> Void)"
-            ]
+    static func nonTriggeringExamples() -> [String] {
+        let swift3Only = [
+            "@GKInspectable var maxSpeed: Float",
+            "@discardableResult\n func a() -> Int",
+            "@objc\n @discardableResult\n func a() -> Int",
+            "func increase(f: @autoclosure () -> Int) -> Int",
+            "func foo(completionHandler: @escaping () -> Void)"
+        ]
 
-            return common + swift3Only
-        #else
-            let swift2Only = [
+        return commonNonTriggeringExamples() + swift3Only
+    }
+
+    static func swift2NonTriggeringExamples() -> [String] {
+        let swift2Only = [
             "@warn_unused_result\n func a() -> Int",
             "@objc\n @warn_unused_result\n func a() -> Int",
             "func increase(@autoclosure f: () -> Int ) -> Int",
             "func foo(@noescape x: Int -> Int)",
             "@noreturn\n func exit(_: Int)",
             "func exit(_: Int) -> @noreturn Int"
-            ]
+        ]
 
-            return common + swift2Only
-        #endif
+        return commonNonTriggeringExamples() + swift2Only
     }
 
-    // swiftlint:disable:next function_body_length
-    static func triggeringExamples() -> [String] {
-        let common = [
+    private static func commonTriggeringExamples() -> [String] {
+        return [
             "@objc\n ↓var x: String",
             "@objc\n\n ↓var x: String",
             "@objc\n private ↓var x: String",
@@ -99,26 +99,28 @@ internal struct AttributesRuleExamples {
             "@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)",
             "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing"
         ]
+    }
 
-        #if swift(>=3.0)
-            let swift3Only = [
-                "@GKInspectable\n ↓var maxSpeed: Float",
-                "@discardableResult ↓func a() -> Int",
-                "@objc\n @discardableResult ↓func a() -> Int",
-                "@objc\n\n @discardableResult\n ↓func a() -> Int"
-            ]
+    static func triggeringExamples() -> [String] {
+        let swift3Only = [
+            "@GKInspectable\n ↓var maxSpeed: Float",
+            "@discardableResult ↓func a() -> Int",
+            "@objc\n @discardableResult ↓func a() -> Int",
+            "@objc\n\n @discardableResult\n ↓func a() -> Int"
+        ]
 
-            return common + swift3Only
-        #else
-            let swift2Only = [
+        return commonTriggeringExamples() + swift3Only
+    }
+
+    static func swift2TriggeringExamples() -> [String] {
+        let swift2Only = [
             "@warn_unused_result ↓func a() -> Int",
             "@warn_unused_result(message=\"You should use this\") ↓func a() -> Int",
             "@objc\n @warn_unused_result ↓func a() -> Int",
             "@objc\n\n @warn_unused_result\n ↓func a() -> Int",
             "@noreturn ↓func exit(_: Int)"
-            ]
+        ]
 
-            return common + swift2Only
-        #endif
+        return commonTriggeringExamples() + swift2Only
     }
 }

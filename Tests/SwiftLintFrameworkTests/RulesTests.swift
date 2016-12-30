@@ -6,7 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
@@ -147,6 +147,19 @@ class RulesTests: XCTestCase {
 
     func testNumberSeparator() {
         verifyRule(NumberSeparatorRule.description)
+    }
+
+    func testNumberSeparatorWithSwift2() {
+        let description = RuleDescription(
+            identifier: NumberSeparatorRule.description.identifier,
+            name: NumberSeparatorRule.description.name,
+            description: NumberSeparatorRule.description.description,
+            nonTriggeringExamples: NumberSeparatorExamples.nonTriggeringExamples(),
+            triggeringExamples: NumberSeparatorExamples.swift2TriggeringExamples(),
+            corrections: NumberSeparatorExamples.swift2Corrections()
+        )
+
+        verifyRule(description)
     }
 
     func testVerticalWhitespace() {

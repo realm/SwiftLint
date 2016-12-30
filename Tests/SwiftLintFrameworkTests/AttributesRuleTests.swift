@@ -6,7 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class AttributesRuleTests: XCTestCase {
@@ -63,6 +63,18 @@ class AttributesRuleTests: XCTestCase {
 
         verifyRule(alwaysOnNewLineDescription,
                    ruleConfiguration: ["always_on_line_above": ["@objc"]])
+    }
+
+    func testSwift2Attributes() {
+        let description = RuleDescription(
+            identifier: AttributesRule.description.identifier,
+            name: AttributesRule.description.name,
+            description: AttributesRule.description.description,
+            nonTriggeringExamples: AttributesRuleExamples.swift2NonTriggeringExamples(),
+            triggeringExamples: AttributesRuleExamples.swift2TriggeringExamples()
+        )
+
+        verifyRule(description)
     }
 }
 

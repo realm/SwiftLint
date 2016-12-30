@@ -78,9 +78,10 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
             "let foo = []\n"
         ],
         triggeringExamples: [
-            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Hotel\", \"Golf\"]\n",
-            "let foo = [\"Lima\", \"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\"," +
-                        "\"Hotel\", \"India\", \"Juliet\", \"Kilo\"]\n"
+            "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\", \"Hotel\"," +
+                        "\"Juliet\", \"India\"]\n",
+            "let foo = [\"November\" \"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\"," +
+                        "\"Hotel\", \"India\", \"Juliet\", \"Kilo\", \"Lima\", \"Mike\"]\n"
         ]
     )
 

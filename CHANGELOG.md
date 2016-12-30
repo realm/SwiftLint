@@ -51,6 +51,11 @@
   [Rafael Machado](https://github.com/rakaramos/)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
+* Add `inferred_sorting` rule that checks the order of array elements if
+  they are already partially sorted.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1038](https://github.com/realm/SwiftLint/issues/1038)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

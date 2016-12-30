@@ -17,6 +17,7 @@ opt_in_rules:
   - closure_end_indentation
   - first_where
   - sorted_imports
+  - inferred_sorting
 
 file_header:
   required_pattern: |

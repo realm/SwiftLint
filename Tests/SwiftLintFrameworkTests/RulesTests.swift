@@ -102,6 +102,10 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitGetterRule.description)
     }
 
+    func testInferredSortingRule() {
+        verifyRule(InferredSortingRule.description)
+    }
+
     func testLeadingWhitespace() {
         verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false)
     }
@@ -331,10 +335,10 @@ extension RulesTests {
         return [
             ("testClassDelegateProtocol", testClassDelegateProtocol),
             ("testClosingBrace", testClosingBrace),
-            ("testComma", testComma),
             ("testClosureEndIndentation", testClosureEndIndentation),
             ("testClosureParameterPosition", testClosureParameterPosition),
             ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testComma", testComma),
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
@@ -351,17 +355,17 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCountRule", testFunctionParameterCountRule),
             ("testImplicitGetterRule", testImplicitGetterRule),
+            ("testInferredSortingRule", testInferredSortingRule),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),
             ("testLegacyConstructor", testLegacyConstructor),
+            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLineLength", testLineLength),
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
             ("testNumberSeparator", testNumberSeparator),
-            ("testVerticalWhitespace", testVerticalWhitespace),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
@@ -376,6 +380,7 @@ extension RulesTests {
             ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+            ("testSuperCall", testSuperCall),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
             ("testSyntacticSugar", testSyntacticSugar),
             ("testTodo", testTodo),
@@ -388,9 +393,9 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVariableName", testVariableName),
-            ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
+            ("testVerticalParameterAlignmentRule", testVerticalParameterAlignment),
+            ("testVerticalWhitespace", testVerticalWhitespace),
             ("testVoidReturn", testVoidReturn),
-            ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)
         ]
     }

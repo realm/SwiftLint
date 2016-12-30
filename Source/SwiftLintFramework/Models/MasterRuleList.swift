@@ -67,6 +67,7 @@ public let masterRuleList = RuleList(rules:
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
     ImplicitGetterRule.self,
+    InferredSortingRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
     LegacyConstantRule.self,

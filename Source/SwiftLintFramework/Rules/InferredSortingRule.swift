@@ -96,7 +96,7 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
                 return []
         }
 
-        let contents = file.contents
+        let contents = file.contents.bridge()
 
         let items = elements.flatMap { element -> String? in
             guard let dictionary = element as? [String: SourceKitRepresentable],

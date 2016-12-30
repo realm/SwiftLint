@@ -18,58 +18,24 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public init() {}
 
-    private static func nonTriggeringExamples() -> [String] {
-        let types = ["class", "struct", "enum"]
-        let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
-            [
-                "\(type) MyType {}",
-                "private \(type) _MyType {}",
-                "enum MyType {\ncase value\n}",
-                "\(type) \(repeatElement("A", count: 40).joined()) {}"
-            ]
-        }
-        let typeAliasAndAssociatedTypeExamples = [
-            "typealias Foo = Void",
-            "private typealias Foo = Void",
-            "protocol Foo {\n associatedtype Bar\n }",
-            "protocol Foo {\n associatedtype Bar: Equatable\n }"
-        ]
-
-        return typeExamples + typeAliasAndAssociatedTypeExamples
-    }
-
-    private static func triggeringExamples() -> [String] {
-        let types = ["class", "struct", "enum"]
-        let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
-            [
-                "↓\(type) myType {}",
-                "↓\(type) _MyType {}",
-                "private ↓\(type) MyType_ {}",
-                "↓\(type) My {}",
-                "↓\(type) \(repeatElement("A", count: 41).joined()) {}"
-            ]
-        }
-        let typeAliasAndAssociatedTypeExamples: [String] = [
-            "typealias ↓X = Void",
-            "private typealias ↓Foo_Bar = Void",
-            "private typealias ↓foo = Void",
-            "typealias ↓\(repeatElement("A", count: 41).joined()) = Void",
-            "protocol Foo {\n associatedtype ↓X\n }",
-            "protocol Foo {\n associatedtype ↓Foo_Bar: Equatable\n }",
-            "protocol Foo {\n associatedtype ↓\(repeatElement("A", count: 41).joined())\n }"
-        ]
-
-        return typeExamples + typeAliasAndAssociatedTypeExamples
-    }
-
     public static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: TypeNameRule.nonTriggeringExamples(),
-        triggeringExamples: TypeNameRule.triggeringExamples()
+        nonTriggeringExamples: TypeNameRuleExamples.swift3NonTriggeringExamples,
+        triggeringExamples: TypeNameRuleExamples.swift3TriggeringExamples
     )
+
+    private let typeKinds: [SwiftDeclarationKind] = {
+        let common = SwiftDeclarationKind.typeKinds()
+        switch SwiftVersion.current {
+        case .two:
+            return common + [.enumelement]
+        case .three:
+            return common
+        }
+    }()
 
     public func validateFile(_ file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(file) +
@@ -80,7 +46,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                              kind: SwiftDeclarationKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard SwiftDeclarationKind.typeKinds().contains(kind),
+        guard typeKinds.contains(kind),
             let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
                 return []

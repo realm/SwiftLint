@@ -18,7 +18,18 @@ extension Sequence where Iterator.Element == String {
             return 0.0
         }
 
-        let sortedArray = caseSensitive ? array.sorted() : array.sorted(by:) { $0.lowercased() < $1.lowercased() }
+        let sortedArray: [String] = {
+            // Due to a bug in Swift, String.sorted() is case-insensitive on Linux.
+            // https://bugs.swift.org/browse/SR-530
+            #if os(Linux)
+                return array.sorted(by:) {
+                    let x = $0.bridge()
+                    return (caseSensitive ? x.compare($1) : x.caseInsensitiveCompare($1)) == .orderedAscending
+                }
+            #else
+                return caseSensitive ? array.sorted() : array.sorted(by:) { $0.lowercased() < $1.lowercased() }
+            #endif
+        }()
         let startIndex = array.startIndex
         let maxIndex = array.endIndex - 1
         var score = 0

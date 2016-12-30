@@ -99,6 +99,7 @@
 		D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */; };
 		D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */; };
 		D462021F1E15F52D0027AAD1 /* NumberSeparatorExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462021E1E15F52D0027AAD1 /* NumberSeparatorExamples.swift */; };
+		D46202211E16002A0027AAD1 /* Swift2RulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46202201E16002A0027AAD1 /* Swift2RulesTests.swift */; };
 		D46252541DF63FB200BE2CA1 /* NumberSeparatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */; };
 		D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */; };
 		D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */; };
@@ -346,6 +347,7 @@
 		D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntacticSugarRule.swift; sourceTree = "<group>"; };
 		D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstructorRule.swift; sourceTree = "<group>"; };
 		D462021E1E15F52D0027AAD1 /* NumberSeparatorExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorExamples.swift; sourceTree = "<group>"; };
+		D46202201E16002A0027AAD1 /* Swift2RulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swift2RulesTests.swift; sourceTree = "<group>"; };
 		D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRule.swift; sourceTree = "<group>"; };
 		D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRule.swift; sourceTree = "<group>"; };
 		D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyParenthesesWithTrailingClosureRule.swift; sourceTree = "<group>"; };
@@ -681,6 +683,7 @@
 				3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */,
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
+				D46202201E16002A0027AAD1 /* Swift2RulesTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Tests/SwiftLintFrameworkTests;
@@ -1222,6 +1225,7 @@
 				3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */,
 				D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */,
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
+				D46202211E16002A0027AAD1 /* Swift2RulesTests.swift in Sources */,
 				C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,

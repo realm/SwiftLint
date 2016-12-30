@@ -45,6 +45,9 @@
                <Test
                   Identifier = "RulesTests/testNumberSeparatorWithSwift2()">
                </Test>
+               <Test
+                  Identifier = "Swift2RulesTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

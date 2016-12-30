@@ -47,9 +47,19 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var enclosedArguments: [[String: SourceKitRepresentable]] {
         return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
-            guard let kindString = subDict["key.kind"] as? String,
-                SwiftExpressionKind(rawValue: kindString) == .argument else {
+            guard let kindString = subDict["key.kind"] as? String else {
                 return []
+            }
+
+            switch SwiftVersion.current {
+            case .two:
+                guard SwiftDeclarationKind(rawValue: kindString) == .varParameter else {
+                    return []
+                }
+            case .three:
+                guard SwiftExpressionKind(rawValue: kindString) == .argument else {
+                    return []
+                }
             }
 
             return [subDict]

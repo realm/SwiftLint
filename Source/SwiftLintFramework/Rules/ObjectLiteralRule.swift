@@ -63,7 +63,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
             arguments.flatMap({ $0["key.name"] as? String }) == ["named"],
             let argument = arguments.first,
             case let kinds = kindsFor(argument, file: file),
-            kinds == Set(arrayLiteral: .string) else {
+            kinds == [.string] else {
                 return false
         }
 

@@ -28,7 +28,7 @@ struct Benchmark {
     }
 
     mutating func record(file: File, from start: Date) {
-        record(id: file.path ?? "<no path>", time: -start.timeIntervalSinceNow)
+        record(id: file.path ?? "<nopath>", time: -start.timeIntervalSinceNow)
     }
 
     func save() {

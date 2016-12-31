@@ -33,13 +33,19 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "func run(_ options: NoOptions<CommandantError<()>>) {}\n",
             "func foo(_ options: Set<type>) {}\n",
             "func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool\n",
-            "func configureWith(data: Either<MessageThread, (project: Project, backing: Backing)>)\n"
+            "func configureWith(data: Either<MessageThread, (project: Project, backing: Backing)>)\n",
+            "typealias StringDictionary<T> = Dictionary<String, T>\n",
+            "typealias BackwardTriple<T1, T2, T3> = (T3, T2, T1)\n",
+            "typealias DictionaryOfStrings<T : Hashable> = Dictionary<T, String>\n"
         ],
         triggeringExamples: [
             "func foo<↓T_Foo>() {}\n",
             "func foo<T, ↓U_Foo>(param: U_Foo) -> T {}\n",
             "func foo<↓\(String(repeating: "T", count: 21))>() {}\n",
-            "func foo<↓type>() {}\n"
+            "func foo<↓type>() {}\n",
+            "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
+            "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
+            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>\n"
         ] + ["class", "struct", "enum"].flatMap { type in
             [
                 "\(type) Foo<↓T_Foo> {}\n",
@@ -51,7 +57,15 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     )
 
-    private let pattern = regex("<(\\s*\\w.*?)>")
+    private let genericTypePattern = "<(\\s*\\w.*?)>"
+    private var genericTypeRegex: NSRegularExpression {
+        return regex(genericTypePattern)
+    }
+
+    public func validateFile(_ file: File) -> [StyleViolation] {
+        return validateFile(file, dictionary: file.structure.dictionary) +
+            validateGenericTypeAliases(file)
+    }
 
     public func validateFile(_ file: File,
                              kind: SwiftDeclarationKind,
@@ -60,6 +74,21 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
                     genericTypesForFunction(file, kind: kind, dictionary: dictionary)
 
         return types.flatMap { validateName(name: $0.0, file: file, offset: $0.1) }
+    }
+
+    private func validateGenericTypeAliases(_ file: File) -> [StyleViolation] {
+        let pattern = "typealias\\s+.+?" + genericTypePattern + "\\s*="
+        return file.matchPattern(pattern).flatMap { (range, tokens) -> [(String, Int)] in
+            guard tokens.count > 1, tokens.first == .keyword,
+                Set(tokens.dropFirst()) == [.identifier],
+                let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
+                                                        range: range)?.rangeAt(1) else {
+                    return []
+            }
+
+            let genericConstraint = file.contents.bridge().substring(with: match)
+            return extractTypesFromGenericConstraint(genericConstraint, offset: match.location, file: file)
+        }.flatMap { validateName(name: $0.0, file: file, offset: $0.1) }
     }
 
     private func genericTypesForType(_ file: File,
@@ -73,7 +102,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
             let range = contents.byteRangeToNSRange(start: start, length: length),
-            let match = pattern.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1) else {
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1) else {
                 return []
         }
 
@@ -89,7 +118,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             let length = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = pattern.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1),
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1),
             match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file) else {
             return []
         }

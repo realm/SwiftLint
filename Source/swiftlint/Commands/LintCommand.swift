@@ -67,7 +67,7 @@ struct LintCommand: CommandProtocol {
             let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,
-                    serious: numberOfSeriousViolations)
+                                        serious: numberOfSeriousViolations)
             }
             if options.benchmark {
                 fileBenchmark.save()

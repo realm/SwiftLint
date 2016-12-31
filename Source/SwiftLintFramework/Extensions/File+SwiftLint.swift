@@ -132,16 +132,11 @@ extension File {
     }
 
     internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
-
-        if sourcekitdFailed {
-            return nil
-        }
-        guard let tokens = syntaxTokensByLine() else {
+        guard !sourcekitdFailed, let tokens = syntaxTokensByLine() else {
             return nil
         }
 
         return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
-
     }
 
     //Added by S2dent

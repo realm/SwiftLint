@@ -57,6 +57,15 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1060](https://github.com/realm/SwiftLint/issues/1060)
 
+* Make many operations in SwiftLintFramework safe to call in multithreaded
+  scenarios, including accessing `Linter.styleViolations`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1077](https://github.com/realm/SwiftLint/issues/1077)
+
+* Speed up linting by processing multiple files and rules concurrently.  
+  [JP Simard](https://github.com/jpsim)
+  [#1077](https://github.com/realm/SwiftLint/issues/1077)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

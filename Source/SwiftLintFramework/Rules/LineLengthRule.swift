@@ -92,12 +92,24 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     }
 
     private func stripUrls(fromSourceString sourceString: String) -> String {
-        let types = NSTextCheckingResult.CheckingType.link.rawValue
         let range = NSRange(location: 0, length: sourceString.bridge().length)
-        guard let urlDetector = try? NSDataDetector(types: types) else {
-            return sourceString
-        }
-        return urlDetector.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+        // Workaround for Linux until NSDataDetector is available
+        #if os(Linux)
+            // Regex pattern from http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+            let pattern = "(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)" +
+                "(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*" +
+                "\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))"
+            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
+                return sourceString
+            }
+            return regex.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+        #else
+            let types = NSTextCheckingResult.CheckingType.link.rawValue
+            guard let urlDetector = try? NSDataDetector(types: types) else {
+                return sourceString
+            }
+            return urlDetector.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+        #endif
     }
 
 }

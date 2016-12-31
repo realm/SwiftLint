@@ -22,7 +22,7 @@ struct LintCommand: CommandProtocol {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
-        let cache = makeCache(options: options, configuration: configuration)
+        let cache = LinterCache.makeCache(options: options, configuration: configuration)
         return configuration.visitLintableFiles(options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
@@ -53,40 +53,10 @@ struct LintCommand: CommandProtocol {
                 ruleBenchmark.save()
             }
 
-            saveCache(cache: cache, options: options, configuration: configuration)
+            cache?.save(options: options, configuration: configuration)
 
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                              strictWithViolations: options.strict && !violations.isEmpty)
-        }
-    }
-
-    private func cacheUrl(options: LintOptions, configuration: Configuration) -> URL? {
-        guard !options.ignoreCache else {
-            return nil
-        }
-        let path = (options.cachePath.isEmpty ? configuration.cachePath : options.cachePath) ?? ".swiftlint_cache.json"
-        return URL(fileURLWithPath: path)
-    }
-
-    private func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache? {
-        guard let url = cacheUrl(options: options, configuration: configuration) else {
-            return nil
-        }
-
-        let configurationHash = configuration.hash
-        let cache: LinterCache
-        do {
-            cache = try LinterCache(contentsOf: url, configurationHash: configurationHash)
-        } catch {
-            cache = LinterCache(configurationHash: configurationHash)
-        }
-
-        return cache
-    }
-
-    private func saveCache(cache: LinterCache?, options: LintOptions, configuration: Configuration) {
-        if let url = cacheUrl(options: options, configuration: configuration) {
-            try? cache?.save(to: url)
         }
     }
 

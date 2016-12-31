@@ -303,20 +303,21 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let blacklist = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
-                              "source.decl.attribute.mutating",
-                              "source.decl.attribute.nonmutating",
-                              "source.decl.attribute.lazy",
-                              "source.decl.attribute.dynamic",
-                              "source.decl.attribute.final",
-                              "source.decl.attribute.infix",
-                              "source.decl.attribute.optional",
-                              "source.decl.attribute.override",
-                              "source.decl.attribute.postfix",
-                              "source.decl.attribute.prefix",
-                              "source.decl.attribute.required",
-                              "source.decl.attribute.weak"
-                              )
+        let blacklist: Set<String> = [
+            "source.decl.attribute.__raw_doc_comment",
+            "source.decl.attribute.mutating",
+            "source.decl.attribute.nonmutating",
+            "source.decl.attribute.lazy",
+            "source.decl.attribute.dynamic",
+            "source.decl.attribute.final",
+            "source.decl.attribute.infix",
+            "source.decl.attribute.optional",
+            "source.decl.attribute.override",
+            "source.decl.attribute.postfix",
+            "source.decl.attribute.prefix",
+            "source.decl.attribute.required",
+            "source.decl.attribute.weak"
+        ]
         return attributes.filter { !blacklist.contains($0) }
     }
 }

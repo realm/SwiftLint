@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
+private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file).failableSend()
     } catch let error as Request.Error {
@@ -37,7 +37,6 @@ private var _allDeclarationsByType = [String: [String]]()
 private var queueForRebuild = [Structure]()
 
 private struct Cache<T> {
-
     fileprivate var values = [String: T]()
     fileprivate var factory: (File) -> T
 

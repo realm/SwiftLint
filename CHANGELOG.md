@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* Add `vertical_parameter_alignment` rule that checks if parameters are 
+* Add `vertical_parameter_alignment` rule that checks if parameters are
   vertically aligned for multi-line function declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1033](https://github.com/realm/SwiftLint/issues/1033)
@@ -23,13 +23,13 @@
   initializing optional variables with `nil`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1052](https://github.com/realm/SwiftLint/issues/1052)
-  
+
 * `redundant_nil_coalescing` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Make `number_separator` rule correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  
+
 * `empty_parentheses_with_trailing_closure` rule is now correctable.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -62,12 +62,12 @@
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1042](https://github.com/realm/SwiftLint/issues/1042)
-  
+
 * `syntactic_sugar` rule now doesn't flag declarations that can't be fixed.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#928](https://github.com/realm/SwiftLint/issues/928)
 
-* Fix false positives on `closure_parameter_position` and 
+* Fix false positives on `closure_parameter_position` and
   `unused_closure_parameter` rules with Swift 2.3.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1019](https://github.com/realm/SwiftLint/issues/1019)

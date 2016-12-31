@@ -111,4 +111,15 @@ extension Configuration {
         }
         return .success(lintableFilesForPath(path))
     }
+
+    init(options: LintOptions) {
+        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
+    }
+
+    func visitLintableFiles(_ options: LintOptions, cache: LinterCache? = nil,
+                            visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
+        return visitLintableFiles(options.path, action: "Linting", useSTDIN: options.useSTDIN, quiet: options.quiet,
+                                  useScriptInputFiles: options.useScriptInputFiles, cache: cache,
+                                  visitorBlock: visitorBlock)
+    }
 }

@@ -56,8 +56,8 @@ struct LintCommand: CommandProtocol {
         }
     }
 
-    static func successOrExit(numberOfSeriousViolations: Int,
-                              strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
+    private static func successOrExit(numberOfSeriousViolations: Int,
+                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
         if numberOfSeriousViolations > 0 {
             exit(2)
         } else if strictWithViolations {

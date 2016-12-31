@@ -23,10 +23,6 @@ extension Reporter {
     }
 }
 
-#if os(Linux)
-private func autoreleasepool(block: () -> Void) { block() }
-#endif
-
 struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
@@ -43,19 +39,17 @@ struct LintCommand: CommandProtocol {
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
-            var currentViolations: [StyleViolation] = []
-            autoreleasepool {
-                if options.benchmark {
-                    let start = Date()
-                    let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                    currentViolations = _currentViolations
-                    fileBenchmark.record(file: linter.file, from: start)
-                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
-                } else {
-                    currentViolations = linter.styleViolations
-                }
-                linter.file.invalidateCache()
+            let currentViolations: [StyleViolation]
+            if options.benchmark {
+                let start = Date()
+                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                currentViolations = _currentViolations
+                fileBenchmark.record(file: linter.file, from: start)
+                currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+            } else {
+                currentViolations = linter.styleViolations
             }
+            linter.file.invalidateCache()
             violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in

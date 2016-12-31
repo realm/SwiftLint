@@ -55,6 +55,10 @@ extension File {
     }
 }
 
+#if os(Linux)
+private func autoreleasepool(block: () -> Void) { block() }
+#endif
+
 extension Configuration {
     init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
         self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
@@ -79,7 +83,9 @@ extension Configuration {
                     let filename = path.bridge().lastPathComponent
                     queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
                 }
-                visitorBlock(Linter(file: file, configuration: configurationForFile(file)))
+                autoreleasepool {
+                    visitorBlock(Linter(file: file, configuration: configurationForFile(file)))
+                }
             }
             return .success(files)
         }

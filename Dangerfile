@@ -12,7 +12,7 @@ if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
 ```markdown
-* #{github.pr_title}#{'  '}
+* #{github.pr_title}.#{'  '}
   [#{github.pr_author}](https://github.com/#{github.pr_author})
   [#issue_number](https://github.com/realm/SwiftLint/issues/issue_number)
 ```

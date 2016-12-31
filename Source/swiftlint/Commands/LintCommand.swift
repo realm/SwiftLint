@@ -32,8 +32,8 @@ struct LintCommand: CommandProtocol {
     let function = "Print lint warnings and errors (default command)"
 
     func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
-        var fileTimes = [(id: String, time: Double)]()
-        var ruleTimes = [(id: String, time: Double)]()
+        var fileBenchmark = Benchmark(name: "files")
+        var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
         let configuration = Configuration(commandLinePath: options.configurationFile,
                                           rootPath: options.path, quiet: options.quiet)
@@ -43,14 +43,14 @@ struct LintCommand: CommandProtocol {
         return configuration.visitLintableFiles(options.path, action: "Linting",
             useSTDIN: options.useSTDIN, quiet: options.quiet,
             useScriptInputFiles: options.useScriptInputFiles) { linter in
-            let start: NSDate! = options.benchmark ? NSDate() : nil
             var currentViolations: [StyleViolation] = []
             autoreleasepool {
                 if options.benchmark {
+                    let start = Date()
                     let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                     currentViolations = _currentViolations
-                    fileTimes.append((linter.file.path ?? "<nopath>", -start.timeIntervalSinceNow))
-                    ruleTimes.append(contentsOf: currentRuleTimes)
+                    fileBenchmark.record(file: linter.file, from: start)
+                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
                 } else {
                     currentViolations = linter.styleViolations
                 }
@@ -70,8 +70,8 @@ struct LintCommand: CommandProtocol {
                     serious: numberOfSeriousViolations)
             }
             if options.benchmark {
-                saveBenchmark("files", times: fileTimes)
-                saveBenchmark("rules", times: ruleTimes)
+                fileBenchmark.save()
+                ruleBenchmark.save()
             }
             if numberOfSeriousViolations > 0 {
                 exit(2)

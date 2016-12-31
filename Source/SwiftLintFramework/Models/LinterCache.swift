@@ -15,7 +15,7 @@ public enum LinterCacheError: Error {
     case differentConfiguration
 }
 
-public class LinterCache {
+public final class LinterCache {
     private var cache: [String: Any]
 
     public init(currentVersion: Version = .current, configurationHash: Int? = nil) {

@@ -118,10 +118,9 @@
 		D4B0228E1E0CC608007E5297 /* ClassDelegateProtocolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */; };
 		D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
 		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
+		D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
 		D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
-		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
-		D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
 		D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */; };
 		D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
 		D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
@@ -374,10 +373,9 @@
 		D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassDelegateProtocolRule.swift; sourceTree = "<group>"; };
 		D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantOptionalInitializationRule.swift; sourceTree = "<group>"; };
 		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
+		D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTypeNameRule.swift; sourceTree = "<group>"; };
 		D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+LinuxHack.swift"; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
-		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
-		D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTypeNameRule.swift; sourceTree = "<group>"; };
 		D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesConfiguration.swift; sourceTree = "<group>"; };
 		D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRule.swift; sourceTree = "<group>"; };
 		D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderConfiguration.swift; sourceTree = "<group>"; };

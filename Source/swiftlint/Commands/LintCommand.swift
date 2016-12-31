@@ -12,17 +12,6 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-extension Reporter {
-    static func reportViolations(_ violations: [StyleViolation], realtimeCondition: Bool) {
-        if isRealtime == realtimeCondition {
-            let report = generateReport(violations)
-            if !report.isEmpty {
-                queuedPrint(report)
-            }
-        }
-    }
-}
-
 struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
@@ -31,14 +20,9 @@ struct LintCommand: CommandProtocol {
         var fileBenchmark = Benchmark(name: "files")
         var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
-        let configuration = Configuration(commandLinePath: options.configurationFile,
-                                          rootPath: options.path, quiet: options.quiet)
-        let reporter = reporterFromString(
-            options.reporter.isEmpty ? configuration.reporter : options.reporter
-        )
-        return configuration.visitLintableFiles(options.path, action: "Linting",
-            useSTDIN: options.useSTDIN, quiet: options.quiet,
-            useScriptInputFiles: options.useScriptInputFiles) { linter in
+        let configuration = Configuration(options: options)
+        let reporter = reporterFrom(options: options, configuration: configuration)
+        return configuration.visitLintableFiles(options) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
@@ -53,8 +37,8 @@ struct LintCommand: CommandProtocol {
             violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if isWarningThresholdBroken(configuration, violations: violations) {
-                violations.append(createThresholdViolation(configuration.warningThreshold!))
+            if LintCommand.isWarningThresholdBroken(configuration, violations: violations) {
+                violations.append(LintCommand.createThresholdViolation(configuration.warningThreshold!))
                 reporter.reportViolations([violations.last!], realtimeCondition: true)
             }
             reporter.reportViolations(violations, realtimeCondition: false)
@@ -67,22 +51,49 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
-            if numberOfSeriousViolations > 0 {
-                exit(2)
-            } else if options.strict && !violations.isEmpty {
-                exit(3)
-            }
-            return .success()
+            return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
+                                             strictWithViolations: options.strict && !violations.isEmpty)
         }
     }
 
-    static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {
-        let violationSuffix = (violations.count != 1 ? "s" : "")
-        let fileCount = files.count
-        let filesSuffix = (fileCount != 1 ? "s." : ".")
-        let message = "Done linting! Found \(violations.count) violation\(violationSuffix), " +
-            "\(serious) serious in \(fileCount) file\(filesSuffix)"
-        queuedPrintError(message)
+    private static func successOrExit(numberOfSeriousViolations: Int,
+                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
+        if numberOfSeriousViolations > 0 {
+            exit(2)
+        } else if strictWithViolations {
+            exit(3)
+        }
+        return .success()
+    }
+
+    private static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {
+        let pluralSuffix = { (collection: [Any]) -> String in
+            return collection.count != 1 ? "s" : ""
+        }
+        queuedPrintError(
+            "Done linting! Found \(violations.count) violation\(pluralSuffix(violations)), " +
+            "\(serious) serious in \(files.count) file\(pluralSuffix(files))."
+        )
+    }
+
+    private static func isWarningThresholdBroken(_ configuration: Configuration,
+                                                 violations: [StyleViolation]) -> Bool {
+        guard let warningThreshold = configuration.warningThreshold else { return false }
+        let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
+        return numberOfWarningViolations >= warningThreshold
+    }
+
+    private static func createThresholdViolation(_ threshold: Int) -> StyleViolation {
+        let description = RuleDescription(
+            identifier: "warning_threshold",
+            name: "Warning Threshold",
+            description: "Number of warnings thrown is above the threshold."
+        )
+        return StyleViolation(
+            ruleDescription: description,
+            severity: .error,
+            location: Location(file: "", line: 0, character: 0),
+            reason: "Number of warnings exceeded threshold of \(threshold).")
     }
 }
 
@@ -120,24 +131,4 @@ struct LintOptions: OptionsProtocol {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
     }
-}
-
-private func isWarningThresholdBroken(_ configuration: Configuration,
-                                      violations: [StyleViolation]) -> Bool {
-    guard let warningThreshold = configuration.warningThreshold else { return false }
-    let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
-    return numberOfWarningViolations >= warningThreshold
-}
-
-private func createThresholdViolation(_ threshold: Int) -> StyleViolation {
-    let description = RuleDescription(
-        identifier: "warning_threshold",
-        name: "Warning Threshold",
-        description: "Number of warnings thrown is above the threshold."
-    )
-    return StyleViolation(
-        ruleDescription: description,
-        severity: .error,
-        location: Location(file: "", line: 0, character: 0),
-        reason: "Number of warnings exceeded threshold of \(threshold).")
 }

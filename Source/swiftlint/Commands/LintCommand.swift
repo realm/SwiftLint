@@ -7,6 +7,7 @@
 //
 
 import Commandant
+import Dispatch
 import Foundation
 import Result
 import SourceKittenFramework
@@ -15,6 +16,8 @@ import SwiftLintFramework
 struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
+
+    private static let violationsAccumulatorQueue = DispatchQueue(label: "io.realm.swiftlint.violationsAccumulator")
 
     func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileBenchmark = Benchmark(name: "files")
@@ -34,7 +37,9 @@ struct LintCommand: CommandProtocol {
                 currentViolations = linter.styleViolations
             }
             linter.file.invalidateCache()
-            violations += currentViolations
+            LintCommand.violationsAccumulatorQueue.sync {
+                violations += currentViolations
+            }
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration, violations: violations) {

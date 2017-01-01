@@ -32,7 +32,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo(bar: String) -> (Int, Int)\n",
             "func foo(bar: String) -> (Int, Int) {}\n",
             "func foo() throws -> (Int, Int)\n",
-            "func foo() throws -> (Int, Int) {}\n"
+            "func foo() throws -> (Int, Int) {}\n",
+            "let foo: (Int, Int, Int) -> Void\n"
         ],
         triggeringExamples: [
             "↓let foo: (Int, Int, Int)\n",
@@ -173,7 +174,17 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             throw LargeTupleRuleError.unbalencedParentheses
         }
 
-        return ranges
+        let arrowRegex = regex("\\s*->")
+        return ranges.filter { range in
+            let start = NSMaxRange(range)
+            let restOfStringRange = NSRange(location: start, length: length - start)
+            if let match = arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange)?.range,
+                match.location == start {
+                return false
+            }
+
+            return true
+        }
     }
 
 }

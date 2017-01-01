@@ -72,6 +72,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1019](https://github.com/realm/SwiftLint/issues/1019)
 
+* Fix crash on `trailing_comma` rule with Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#921](https://github.com/realm/SwiftLint/issues/921)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

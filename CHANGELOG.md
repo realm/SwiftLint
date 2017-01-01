@@ -76,6 +76,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#921](https://github.com/realm/SwiftLint/issues/921)
 
+* Fix out of range exception in `AttributesRule`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1105](https://github.com/realm/SwiftLint/issues/1105)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

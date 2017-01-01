@@ -146,12 +146,19 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         var ranges = [NSRange]()
 
         let nsText = text.bridge()
-        let fullRange = NSRange(location: 0, length: nsText.length)
-        let options = NSString.EnumerationOptions.byComposedCharacterSequences
-        nsText.enumerateSubstrings(in: fullRange, options: options) { (substring, range, _, stop) in
-            guard let symbol = substring, ["(", ")"].contains(symbol) else {
-                return
+        let parentheses = CharacterSet(charactersIn: "()")
+        var index = 0
+        let length = nsText.length
+
+        while balanced {
+            let searchRange = NSRange(location: index, length: length - index)
+            let range = nsText.rangeOfCharacter(from: parentheses, options: [], range: searchRange)
+            if range.location == NSNotFound {
+                break
             }
+
+            index = NSMaxRange(range)
+            let symbol = nsText.substring(with: range)
 
             if symbol == "(" {
                 stack.append(range.location)
@@ -159,7 +166,6 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
                 ranges.append(NSRange(location: startIdx, length: range.location - startIdx + 1))
             } else {
                 balanced = false
-                stop.pointee = true
             }
         }
 

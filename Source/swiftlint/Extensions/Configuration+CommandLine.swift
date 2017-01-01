@@ -97,7 +97,9 @@ extension Configuration {
                 visitorBlock(Linter(file: file, configuration: self.configurationForFile(file)))
             }
             if parallel {
-                files.parallelForEach(block: visit)
+                DispatchQueue.concurrentPerform(iterations: files.count) { index in
+                    visit(files[index])
+                }
             } else {
                 files.forEach(visit)
             }

@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Dispatch
 import Foundation
 import SourceKittenFramework
 
@@ -27,6 +28,9 @@ public struct Linter {
         }
         let regions = file.regions()
         var ruleTimes = [(id: String, time: Double)]()
+        let mutationQueue: DispatchQueue! = benchmark ?
+            DispatchQueue(label: "io.realm.SwiftLintFramework.getStyleViolationsMutation")
+            : nil
         let violations = rules.parallelFlatMap { rule -> [StyleViolation] in
             if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
                 return []
@@ -35,7 +39,9 @@ public struct Linter {
             let violations = rule.validateFile(self.file)
             if benchmark {
                 let id = type(of: rule).description.identifier
-                ruleTimes.append((id, -start.timeIntervalSinceNow))
+                mutationQueue.sync {
+                    ruleTimes.append((id, -start.timeIntervalSinceNow))
+                }
             }
             return violations.filter { violation in
                 guard let violationRegion = regions

@@ -80,6 +80,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1096](https://github.com/realm/SwiftLint/issues/1096)
 
+* Add `large_tuple` configurable rule that validates that tuples shouldn't
+  have more than 2 members.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1065](https://github.com/realm/SwiftLint/issues/1065)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

@@ -125,6 +125,7 @@
 		D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
 		D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
 		D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */; };
+		D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */; };
 		D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */; };
 		D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */; };
 		DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */; };
@@ -378,6 +379,7 @@
 		D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderConfiguration.swift; sourceTree = "<group>"; };
 		D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorConfiguration.swift; sourceTree = "<group>"; };
 		D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerProtocolInitRule.swift; sourceTree = "<group>"; };
+		D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTupleRule.swift; sourceTree = "<group>"; };
 		D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NimbleOperatorRule.swift; sourceTree = "<group>"; };
 		D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorUsageWhitespaceRule.swift; sourceTree = "<group>"; };
 		DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -773,6 +775,7 @@
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
 				2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */,
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
+				D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
 				4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */,
 				006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */,
@@ -1129,6 +1132,7 @@
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,
 				E88198601BEA98F000333A11 /* VariableNameRule.swift in Sources */,
 				E88DEA791B098D4400A66CB0 /* RuleParameter.swift in Sources */,
+				D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */,
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */,
 				D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */,

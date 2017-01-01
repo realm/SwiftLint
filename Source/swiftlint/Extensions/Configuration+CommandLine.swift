@@ -94,7 +94,9 @@ extension Configuration {
                         increment()
                     }
                 }
-                visitorBlock(Linter(file: file, configuration: self.configurationForFile(file)))
+                autoreleasepool {
+                    visitorBlock(Linter(file: file, configuration: self.configurationForFile(file)))
+                }
             }
             if parallel {
                 DispatchQueue.concurrentPerform(iterations: files.count) { index in

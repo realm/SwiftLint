@@ -13,7 +13,42 @@ import SourceKittenFramework
 private struct LintResult {
     let violations: [StyleViolation]
     let ruleTime: (id: String, time: Double)?
-    let deprecatedToValidIdentifier: [(String, String)]
+    let deprecatedToValidIDPairs: [(String, String)]
+}
+
+extension Rule {
+    fileprivate func performLint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
+        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+            return nil
+        }
+
+        let violations: [StyleViolation]
+        let ruleTime: (String, Double)?
+        if benchmark {
+            let start = Date()
+            violations = validateFile(file)
+            let id = type(of: self).description.identifier
+            ruleTime = (id, -start.timeIntervalSinceNow)
+        } else {
+            violations = validateFile(file)
+            ruleTime = nil
+        }
+
+        let (enabledViolationsAndRegions, disabledViolationsAndRegions) = violations.map { violation in
+            return (violation, regions.first(where: { $0.contains(violation.location) }))
+        }.partitioned { _, region in
+            return region?.isRuleEnabled(self) ?? true
+        }
+
+        let enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
+            let identifiers = region?.deprecatedAliasesDisablingRule(self) ?? []
+            return identifiers.map { ($0, type(of: self).description.identifier) }
+        }
+
+        return LintResult(violations: enabledViolations, ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
 }
 
 public struct Linter {
@@ -33,50 +68,13 @@ public struct Linter {
             queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
-
-        let result = rules.parallelFlatMap { rule -> LintResult? in
-            if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
-                return nil
-            }
-
-            let violations: [StyleViolation]
-            let benchmarkValue: (String, Double)?
-            if benchmark {
-                let start = Date()
-                violations = rule.validateFile(self.file)
-                let id = type(of: rule).description.identifier
-                benchmarkValue = (id, -start.timeIntervalSinceNow)
-            } else {
-                violations = rule.validateFile(self.file)
-                benchmarkValue = nil
-            }
-
-            let violationsAndRegions = violations.map { violation in
-                return (violation, regions.first(where: { $0.contains(violation.location) }))
-            }
-
-            let (disabledViolationsAndRegions, enabledViolations) = violationsAndRegions.partitioned { _, region in
-                return region?.isRuleEnabled(rule) ?? true
-            }
-
-            let deprecatedToValidIdentifier = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
-                let identifiers = region?.deprecatedAliasesDisablingRule(rule) ?? []
-                return identifiers.map { ($0, type(of: rule).description.identifier) }
-            }
-
-            return LintResult(violations: enabledViolations.map { $0.0 }, ruleTime: benchmarkValue,
-                              deprecatedToValidIdentifier: deprecatedToValidIdentifier)
+        let validationResults = rules.parallelFlatMap {
+            $0.performLint(file: self.file, regions: regions, benchmark: benchmark)
         }
-
-        let violations = result.flatMap { subResult in
-            return subResult.violations
-        }
-        let ruleTimes = result.flatMap { subResult in
-            return subResult.ruleTime
-        }
-
+        let violations = validationResults.flatMap { $0.violations }
+        let ruleTimes = validationResults.flatMap { $0.ruleTime }
         var deprecatedToValidIdentifier = [String: String]()
-        for (key, value) in result.flatMap({ $0.deprecatedToValidIdentifier }) {
+        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
             deprecatedToValidIdentifier[key] = value
         }
 

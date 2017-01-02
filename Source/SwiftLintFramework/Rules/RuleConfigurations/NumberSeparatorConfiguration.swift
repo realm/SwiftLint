@@ -25,7 +25,9 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        minimumLength = configuration["minimum_length"] as? Int ?? 0
+        if let minimumLength = configuration["minimum_length"] as? Int {
+            self.minimumLength = minimumLength
+        }
 
         if let severityString = configuration["severity"] as? String {
             try severityConfiguration.applyConfiguration(severityString)

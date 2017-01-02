@@ -51,7 +51,7 @@
   [Rafael Machado](https://github.com/rakaramos/)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
-* Add `object_literal` opt-in rule that warns agains using image and color
+* Add `object_literal` opt-in rule that warns against using image and color
   inits that can be replaced for `#imageLiteral` or `#colorLiteral` in
   Swift 3.  
   [Marcelo Fabri](https://github.com/marcelofabri)

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = NumberSeparatorConfiguration(minimumLength: 0)
 
     public init() {}
 
@@ -26,7 +26,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     public func validateFile(_ file: File) -> [StyleViolation] {
         return violatingRanges(file).map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
+                                  severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }
@@ -120,10 +120,11 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     private func isValid(number: String, reversed: Bool) -> (Bool, String) {
         var correctComponents = [String]()
         let clean = number.replacingOccurrences(of: "_", with: "")
+        let shouldAddSeparators = clean.characters.count >= configuration.minimumLength
 
         for (idx, char) in reversedIfNeeded(Array(clean.characters),
                                             reversed: reversed).enumerated() {
-            if idx % 3 == 0 && idx > 0 {
+            if idx % 3 == 0 && idx > 0 && shouldAddSeparators {
                 correctComponents.append("_")
             }
 

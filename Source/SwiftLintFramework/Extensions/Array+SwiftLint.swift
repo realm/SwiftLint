@@ -6,6 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
+import Dispatch
 import Foundation
 
 extension Array where Element: NSTextCheckingResult {
@@ -41,5 +42,24 @@ extension Array {
             dictionary[key] = (dictionary[key] ?? []) + [element]
             return dictionary
         }
+    }
+
+    func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
+        return parallelMap(transform: transform).flatMap { $0 }
+    }
+
+    func parallelMap<T>(transform: @escaping ((Element) -> T)) -> [T] {
+        var result = [(Int, T)]()
+        result.reserveCapacity(count)
+
+        let queueLabelPrefix = "io.realm.SwiftLintFramework.map.\(NSUUID().uuidString)"
+        let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            let jobIndexAndResults = (index, transform(self[index]))
+            resultAccumulatorQueue.sync {
+                result.append(jobIndexAndResults)
+            }
+        }
+        return result.sorted { $0.0 < $1.0 }.map { $0.1 }
     }
 }

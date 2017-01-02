@@ -83,13 +83,9 @@ extension TextTable {
         let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule: Rule? = {
-                for rule in configuration.rules
-                    where type(of: rule).description.identifier == ruleID {
-                        return rule
-                }
-                return nil
-            }()
+            let configuredRule = configuration.rules.first { rule in
+                return type(of: rule).description.identifier == ruleID
+            }
             addRow(values: [
                 ruleID,
                 (rule is OptInRule) ? "yes" : "no",

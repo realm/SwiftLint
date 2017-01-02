@@ -31,3 +31,5 @@ file_header:
                     \/\/  Copyright © \d{4} Realm\. All rights reserved\.
                     \/\/
 line_length: 120
+number_separator:
+  minimum_length: 5

@@ -73,10 +73,10 @@
   [JP Simard](https://github.com/jpsim)
   [#1077](https://github.com/realm/SwiftLint/issues/1077)
 
-* Add `expressible_by_array_literal_init` rule that flags usage of the
-  initializer declared in `ExpressibleByArrayLiteral` which shouldn't be
-  called directly. Instead, you should use an array literal anywhere a
-  concrete type conforming to the protocol is expected by the context.  
+* Add `compiler_protocol_init` rule that flags usage of initializers 
+  declared in protocols used by compiler such as `ExpressibleByArrayLiteral`
+  that shouldn't be called directly. Instead, you should use a literal anywhere
+  a concrete type conforming to the protocol is expected by the context.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1096](https://github.com/realm/SwiftLint/issues/1096)
 

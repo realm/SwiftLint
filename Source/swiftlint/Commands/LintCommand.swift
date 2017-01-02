@@ -7,6 +7,7 @@
 //
 
 import Commandant
+import Dispatch
 import Foundation
 import Result
 import SourceKittenFramework
@@ -22,19 +23,25 @@ struct LintCommand: CommandProtocol {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
+        let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         return configuration.visitLintableFiles(options) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
                 let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
                 currentViolations = _currentViolations
-                fileBenchmark.record(file: linter.file, from: start)
-                currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+                visitorMutationQueue.sync {
+                    fileBenchmark.record(file: linter.file, from: start)
+                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+                    violations += currentViolations
+                }
             } else {
                 currentViolations = linter.styleViolations
+                visitorMutationQueue.sync {
+                    violations += currentViolations
+                }
             }
             linter.file.invalidateCache()
-            violations += currentViolations
             reporter.reportViolations(currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration, violations: violations) {

@@ -7,6 +7,7 @@
 //
 
 import Commandant
+import Dispatch
 import Foundation
 import Result
 import SourceKittenFramework
@@ -66,8 +67,8 @@ extension Configuration {
     }
 
     func visitLintableFiles(_ path: String, action: String, useSTDIN: Bool = false,
-                            quiet: Bool = false, useScriptInputFiles: Bool,
-                            visitorBlock: (Linter) -> Void) -> Result<[File], CommandantError<()>> {
+                            quiet: Bool = false, useScriptInputFiles: Bool, parallel: Bool = false,
+                            visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
         .flatMap { files -> Result<[File], CommandantError<()>> in
@@ -77,15 +78,32 @@ extension Configuration {
             }
             return .success(files)
         }.flatMap { files in
+            let queue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
+            var index = 0
             let fileCount = files.count
-            for (index, file) in files.enumerated() {
+            let visit = { (file: File) -> Void in
                 if !quiet, let path = file.path {
-                    let filename = path.bridge().lastPathComponent
-                    queuedPrintError("\(action) '\(filename)' (\(index + 1)/\(fileCount))")
+                    let increment = {
+                        index += 1
+                        let filename = path.bridge().lastPathComponent
+                        queuedPrintError("\(action) '\(filename)' (\(index)/\(fileCount))")
+                    }
+                    if parallel {
+                        queue.sync(execute: increment)
+                    } else {
+                        increment()
+                    }
                 }
                 autoreleasepool {
-                    visitorBlock(Linter(file: file, configuration: configurationForFile(file)))
+                    visitorBlock(Linter(file: file, configuration: self.configurationForFile(file)))
                 }
+            }
+            if parallel {
+                DispatchQueue.concurrentPerform(iterations: files.count) { index in
+                    visit(files[index])
+                }
+            } else {
+                files.forEach(visit)
             }
             return .success(files)
         }
@@ -118,6 +136,7 @@ extension Configuration {
     func visitLintableFiles(_ options: LintOptions, visitorBlock: @escaping (Linter) -> Void) ->
                             Result<[File], CommandantError<()>> {
         return visitLintableFiles(options.path, action: "Linting", useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                  useScriptInputFiles: options.useScriptInputFiles, visitorBlock: visitorBlock)
+                                  useScriptInputFiles: options.useScriptInputFiles, parallel: true,
+                                  visitorBlock: visitorBlock)
     }
 }

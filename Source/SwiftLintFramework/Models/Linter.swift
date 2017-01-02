@@ -46,17 +46,19 @@ public struct Linter {
             }
 
             return violations.filter { violation in
-                guard let violationRegion = regions
-                    .first(where: { $0.contains(violation.location) }) else {
-                        return true
+                guard let violationRegion = regions.first(where: { $0.contains(violation.location) }) else {
+                    return true
                 }
                 let enabled = violationRegion.isRuleEnabled(rule)
                 if !enabled {
                     let identifiers = violationRegion.deprecatedAliasesDisablingRule(rule)
-                    mutationQueue.sync {
-                        deprecatedIdentifiers.formUnion(identifiers)
-                        for deprecatedIdentifier in identifiers {
-                            deprecatedToValidIdentifier[deprecatedIdentifier] = type(of: rule).description.identifier
+                    if !identifiers.isEmpty {
+                        mutationQueue.sync {
+                            deprecatedIdentifiers.formUnion(identifiers)
+                            for deprecatedIdentifier in identifiers {
+                                let identifier = type(of: rule).description.identifier
+                                deprecatedToValidIdentifier[deprecatedIdentifier] = identifier
+                            }
                         }
                     }
                 }

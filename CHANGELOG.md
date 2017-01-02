@@ -57,6 +57,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1060](https://github.com/realm/SwiftLint/issues/1060)
 
+* Now `number_separator` rule can be configured with a minimum length.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1109](https://github.com/realm/SwiftLint/issues/1109)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

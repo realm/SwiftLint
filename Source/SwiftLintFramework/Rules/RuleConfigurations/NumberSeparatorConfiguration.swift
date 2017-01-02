@@ -6,8 +6,6 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
-import Foundation
-
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int

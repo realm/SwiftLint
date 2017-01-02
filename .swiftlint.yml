@@ -18,6 +18,8 @@ opt_in_rules:
   - first_where
   - sorted_imports
   - object_literal
+  - number_separator
+  - prohibited_super_call
 
 file_header:
   required_pattern: |

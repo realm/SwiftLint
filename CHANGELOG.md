@@ -51,11 +51,15 @@
   [Rafael Machado](https://github.com/rakaramos/)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
-* Add `object_literal` opt-in rule that warns agains using image and color
+* Add `object_literal` opt-in rule that warns against using image and color
   inits that can be replaced for `#imageLiteral` or `#colorLiteral` in
   Swift 3.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1060](https://github.com/realm/SwiftLint/issues/1060)
+
+* Now `number_separator` rule can be configured with a minimum length.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1109](https://github.com/realm/SwiftLint/issues/1109)
 
 * Make many operations in SwiftLintFramework safe to call in multithreaded
   scenarios, including accessing `Linter.styleViolations`.  
@@ -80,6 +84,14 @@
   `unused_closure_parameter` rules with Swift 2.3.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1019](https://github.com/realm/SwiftLint/issues/1019)
+
+* Fix crash on `trailing_comma` rule with Swift 2.3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#921](https://github.com/realm/SwiftLint/issues/921)
+
+* Fix out of range exception in `AttributesRule`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1105](https://github.com/realm/SwiftLint/issues/1105)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

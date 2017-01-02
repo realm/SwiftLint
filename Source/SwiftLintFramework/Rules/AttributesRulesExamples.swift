@@ -35,6 +35,7 @@ internal struct AttributesRuleExamples {
         "@objc(ABCThing)\n @available(iOS 9.0, *)\n class Thing",
         "class Foo: NSObject {\n override var description: String { return \"\" }\n}",
         "class Foo: NSObject {\n\n override func setUp() {}\n}",
+        "@objc\nclass ⽺ {}\n",
 
         // attribute with allowed empty new line above
         "extension Property {\n\n @available(*, unavailable, renamed: \"isOptional\")\n" +

@@ -258,13 +258,12 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let restOfLineOffset = attributeRange.location + attributeRange.length
         let restOfLineLength = line.byteRange.location + line.byteRange.length - restOfLineOffset
 
-        let range = NSRange(location: 0, length: restOfLineLength)
         let regex = AttributesRule.regularExpression
         let contents = file.contents.bridge()
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`
-        guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset,
-                                                               length: restOfLineLength),
+        guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset, length: restOfLineLength),
+            case let range = NSRange(location: 0, length: restOfLine.bridge().length),
             regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
 
             return false

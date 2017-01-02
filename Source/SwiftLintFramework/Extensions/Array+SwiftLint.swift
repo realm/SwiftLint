@@ -60,6 +60,6 @@ extension Array {
                 result.append(jobIndexAndResults)
             }
         }
-        return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
+        return result.sorted { $0.0 < $1.0 }.map { $0.1 }
     }
 }

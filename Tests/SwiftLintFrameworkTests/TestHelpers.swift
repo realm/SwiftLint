@@ -186,7 +186,7 @@ extension XCTestCase {
 
         let disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
 
-        // "disable"s commands doesn't violate
+        // "disable" commands doesn't violate
         for command in disableCommands {
             XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
         }

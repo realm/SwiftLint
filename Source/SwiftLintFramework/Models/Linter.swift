@@ -10,6 +10,12 @@ import Dispatch
 import Foundation
 import SourceKittenFramework
 
+private struct LintResult {
+    let violations: [StyleViolation]
+    let ruleTime: (id: String, time: Double)?
+    let deprecatedToValidIdentifier: [(String, String)]
+}
+
 public struct Linter {
     public let file: File
     fileprivate let rules: [Rule]
@@ -27,48 +33,54 @@ public struct Linter {
             queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
-        var ruleTimes = [(id: String, time: Double)]()
-        let mutationQueue = DispatchQueue(label: "io.realm.SwiftLintFramework.getStyleViolationsMutation")
-        var deprecatedIdentifiers = Set<String>()
-        var deprecatedToValidIdentifier = [String: String]()
 
-        let violations = rules.parallelFlatMap { rule -> [StyleViolation] in
+        let result = rules.parallelFlatMap { rule -> LintResult? in
             if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
-                return []
+                return nil
             }
-            let start: Date! = benchmark ? Date() : nil
-            let violations = rule.validateFile(self.file)
+
+            let violations: [StyleViolation]
+            let benchmarkValue: (String, Double)?
             if benchmark {
+                let start = Date()
+                violations = rule.validateFile(self.file)
                 let id = type(of: rule).description.identifier
-                mutationQueue.sync {
-                    ruleTimes.append((id, -start.timeIntervalSinceNow))
-                }
+                benchmarkValue = (id, -start.timeIntervalSinceNow)
+            } else {
+                violations = rule.validateFile(self.file)
+                benchmarkValue = nil
             }
 
-            return violations.filter { violation in
-                guard let violationRegion = regions.first(where: { $0.contains(violation.location) }) else {
-                    return true
-                }
-                let enabled = violationRegion.isRuleEnabled(rule)
-                if !enabled {
-                    let identifiers = violationRegion.deprecatedAliasesDisablingRule(rule)
-                    if !identifiers.isEmpty {
-                        mutationQueue.sync {
-                            deprecatedIdentifiers.formUnion(identifiers)
-                            for deprecatedIdentifier in identifiers {
-                                let identifier = type(of: rule).description.identifier
-                                deprecatedToValidIdentifier[deprecatedIdentifier] = identifier
-                            }
-                        }
-                    }
-                }
-
-                return enabled
+            let violationsAndRegions = violations.map { violation in
+                return (violation, regions.first(where: { $0.contains(violation.location) }))
             }
+
+            let (disabledViolationsAndRegions, enabledViolations) = violationsAndRegions.partitioned { _, region in
+                return region?.isRuleEnabled(rule) ?? true
+            }
+
+            let deprecatedToValidIdentifier = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
+                let identifiers = region?.deprecatedAliasesDisablingRule(rule) ?? []
+                return identifiers.map { ($0, type(of: rule).description.identifier) }
+            }
+
+            return LintResult(violations: enabledViolations.map { $0.0 }, ruleTime: benchmarkValue,
+                              deprecatedToValidIdentifier: deprecatedToValidIdentifier)
         }
 
-        for deprecatedIdentifier in deprecatedIdentifiers {
-            guard let identifier = deprecatedToValidIdentifier[deprecatedIdentifier] else { continue }
+        let violations = result.flatMap { subResult in
+            return subResult.violations
+        }
+        let ruleTimes = result.flatMap { subResult in
+            return subResult.ruleTime
+        }
+
+        var deprecatedToValidIdentifier = [String: String]()
+        for (key, value) in result.flatMap({ $0.deprecatedToValidIdentifier }) {
+            deprecatedToValidIdentifier[key] = value
+        }
+
+        for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
             queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
                 "completely removed in a future release.")
         }

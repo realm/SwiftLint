@@ -34,7 +34,7 @@ extension Rule {
             ruleTime = nil
         }
 
-        let (enabledViolationsAndRegions, disabledViolationsAndRegions) = violations.map { violation in
+        let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             return (violation, regions.first(where: { $0.contains(violation.location) }))
         }.partitioned { _, region in
             return region?.isRuleEnabled(self) ?? true
@@ -53,7 +53,7 @@ extension Rule {
 
 public struct Linter {
     public let file: File
-    fileprivate let rules: [Rule]
+    private let rules: [Rule]
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0

@@ -91,13 +91,12 @@ private struct Cache<T> {
     fileprivate mutating func get(_ file: File) -> T {
         let key = file.cacheKey
         lock.lock()
+        defer { lock.unlock() }
         if let cachedValue = values[key] {
-            lock.unlock()
             return cachedValue
         }
-        lock.unlock()
         let value = factory(file)
-        set(key: key, value: value)
+        values[key] = value
         return value
     }
 

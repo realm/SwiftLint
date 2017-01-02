@@ -17,6 +17,7 @@ public enum LinterCacheError: Error {
 
 public final class LinterCache {
     private var cache: [String: Any]
+    private let lock = NSLock()
 
     public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
         cache = [String: Any]()
@@ -60,25 +61,33 @@ public final class LinterCache {
         entry["violations"] = fileViolations
         entry["hash"] = hash
 
+        lock.lock()
         var filesCache = (cache["files"] as? [String: Any]) ?? [:]
         filesCache[file] = entry
         cache["files"] = filesCache
+        lock.unlock()
     }
 
     public func violations(for file: String, hash: Int) -> [StyleViolation]? {
+        lock.lock()
+
         guard let filesCache = cache["files"] as? [String: Any],
             let entry = filesCache[file] as? [String: Any],
             let cacheHash = entry["hash"] as? Int,
             cacheHash == hash,
             let violations = entry["violations"] as? [[String: Any]] else {
-            return nil
+                lock.unlock()
+                return nil
         }
 
+        lock.unlock()
         return violations.flatMap { StyleViolation.fromCache($0, file: file) }
     }
 
     public func save(to url: URL) throws {
+        lock.lock()
         let json = toJSON(cache)
+        lock.unlock()
         try json.write(to: url, atomically: true, encoding: .utf8)
     }
 

@@ -114,7 +114,7 @@ public struct Configuration: Equatable {
         do {
             configuredRules = try ruleList.configuredRules(with: dict)
         } catch RuleListError.duplicatedConfigurations(let ruleType) {
-            let aliases = ruleType.description.allAliases.map { "'\($0)'" }.joined(separator: ", ")
+            let aliases = ruleType.description.deprecatedAliases.map { "'\($0)'" }.joined(separator: ", ")
             let identifier = ruleType.description.identifier
             queuedPrintError("Multiple configurations found for '\(identifier)'. Check for any aliases: \(aliases).")
             return nil

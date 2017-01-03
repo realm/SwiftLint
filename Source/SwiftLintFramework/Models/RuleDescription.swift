@@ -13,23 +13,17 @@ public struct RuleDescription: Equatable {
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
     public let corrections: [String: String]
-    public let aliases: Set<String>
     public let deprecatedAliases: Set<String>
 
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
-    public var allAliases: Set<String> {
-        return aliases.union(deprecatedAliases)
-    }
-
     public var allIdentifiers: [String] {
-        return Array(allAliases) + [identifier]
+        return Array(deprecatedAliases) + [identifier]
     }
 
     public init(identifier: String, name: String, description: String,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
-                aliases: Set<String> = [],
                 deprecatedAliases: Set<String> = []) {
         self.identifier = identifier
         self.name = name
@@ -37,7 +31,6 @@ public struct RuleDescription: Equatable {
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
         self.corrections = corrections
-        self.aliases = aliases
         self.deprecatedAliases = deprecatedAliases
     }
 }

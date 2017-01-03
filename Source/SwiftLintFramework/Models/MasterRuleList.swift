@@ -22,7 +22,7 @@ public struct RuleList {
         for rule in rules {
             let identifier = rule.description.identifier
             tmpList[identifier] = rule
-            for alias in rule.description.allAliases {
+            for alias in rule.description.deprecatedAliases {
                 tmpAliases[alias] = identifier
             }
             tmpAliases[identifier] = identifier
@@ -65,8 +65,8 @@ public struct RuleList {
     }
 
     internal func allValidIdentifiers() -> [String] {
-        return list.flatMap { (identifier, rule) -> [String] in
-            Array(rule.description.allAliases) + [identifier]
+        return list.flatMap { (_, rule) -> [String] in
+            rule.description.allIdentifiers
         }
     }
 }

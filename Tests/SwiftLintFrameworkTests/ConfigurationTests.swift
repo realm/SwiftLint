@@ -206,13 +206,6 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Aliases
 
-    func testConfiguresCorrectlyFromAlias() throws {
-        let ruleConfiguration = [1, 2]
-        let config = ["severity_mock": ruleConfiguration]
-        let rules = try testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
-    }
-
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["mock": ruleConfiguration]
@@ -221,8 +214,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testReturnsNilWithDuplicatedConfiguration() {
-        let ruleConfiguration = [1, 2]
-        let dict = ["severity_mock": ruleConfiguration, "severity_level_mock": [1, 3]]
+        let dict = ["mock": [1, 2], "severity_level_mock": [1, 3]]
         let configuration = Configuration(dict: dict, ruleList: testRuleList)
         XCTAssertNil(configuration)
     }
@@ -241,23 +233,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuredIdentifiers, ["severity_level_mock"])
     }
 
-    func testWhitelistRulesFromAlias() {
-        let configuration = Configuration(dict: ["whitelist_rules": ["severity_mock"]], ruleList: testRuleList)!
-        let configuredIdentifiers = configuration.rules.map {
-            type(of: $0).description.identifier
-        }
-        XCTAssertEqual(configuredIdentifiers, ["severity_level_mock"])
-    }
-
     func testDisabledRulesFromDeprecatedAlias() {
         let configuration = Configuration(dict: ["disabled_rules": ["mock"]], ruleList: testRuleList)!
         XCTAssert(configuration.rules.isEmpty)
     }
 
-    func testDisabledRulesFromAlias() {
-        let configuration = Configuration(dict: ["disabled_rules": ["severity_mock"]], ruleList: testRuleList)!
-        XCTAssert(configuration.rules.isEmpty)
-    }
 }
 
 // MARK: - ProjectMock Paths
@@ -343,14 +323,11 @@ extension ConfigurationTests {
             ("testLevel3", testLevel3),
             ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
             ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-            ("testConfiguresCorrectlyFromAlias", testConfiguresCorrectlyFromAlias),
             ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
             ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
             ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
             ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-            ("testWhitelistRulesFromAlias", testWhitelistRulesFromAlias),
-            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias),
-            ("testDisabledRulesFromAlias", testDisabledRulesFromAlias)
+            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
         ]
     }
 }

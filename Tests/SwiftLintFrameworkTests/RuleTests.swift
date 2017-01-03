@@ -16,7 +16,6 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
     static let description = RuleDescription(identifier: "severity_level_mock",
                                              name: "",
                                              description: "",
-                                             aliases: ["severity_mock"],
                                              deprecatedAliases: ["mock"])
     func validateFile(_ file: File) -> [StyleViolation] { return [] }
 }

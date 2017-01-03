@@ -89,11 +89,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Set(masterRuleList.list.keys
+        let expectedIdentifiers = Array(masterRuleList.list.keys
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
-        let configuredIdentifiers = Set(disabledConfig.rules.map {
+        let configuredIdentifiers = disabledConfig.rules.map {
             type(of: $0).description.identifier
-        })
+        }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
@@ -110,11 +110,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Set(masterRuleList.list.keys
-            .filter({ !([validRule] + optInRules).contains($0) }))
-        let configuredIdentifiers = Set(configuration.rules.map {
+        let expectedIdentifiers = Array(masterRuleList.list.keys)
+            .filter({ !([validRule] + optInRules).contains($0) })
+        let configuredIdentifiers = configuration.rules.map {
             type(of: $0).description.identifier
-        })
+        }
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
@@ -195,13 +195,13 @@ class ConfigurationTests: XCTestCase {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
         let rules = try testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
         let rules = try testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
+        XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
 
     // MARK: - Aliases
@@ -210,14 +210,14 @@ class ConfigurationTests: XCTestCase {
         let ruleConfiguration = [1, 2]
         let config = ["severity_mock": ruleConfiguration]
         let rules = try testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
         let ruleConfiguration = [1, 2]
         let config = ["mock": ruleConfiguration]
         let rules = try testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
     func testReturnsNilWithDuplicatedConfiguration() {

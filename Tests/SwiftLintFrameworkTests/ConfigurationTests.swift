@@ -89,11 +89,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys
+        let expectedIdentifiers = Set(masterRuleList.list.keys
             .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
-        let configuredIdentifiers = disabledConfig.rules.map {
+        let configuredIdentifiers = Set(disabledConfig.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
@@ -110,11 +110,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
-            .filter({ !([validRule] + optInRules).contains($0) })
-        let configuredIdentifiers = configuration.rules.map {
+        let expectedIdentifiers = Set(masterRuleList.list.keys
+            .filter({ !([validRule] + optInRules).contains($0) }))
+        let configuredIdentifiers = Set(configuration.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 

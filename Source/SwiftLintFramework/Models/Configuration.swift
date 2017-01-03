@@ -51,7 +51,10 @@ public struct Configuration: Equatable {
             ?? (try? ruleList.configuredRules(with: [:]))
             ?? []
 
-        let handleAliasWithRuleList: (String) -> String = { handleAlias($0, ruleList: ruleList) }
+        let handleAliasWithRuleList = { (alias: String) -> String in
+            return ruleList.identifier(for: alias) ?? alias
+        }
+
         let disabledRules = disabledRules.map(handleAliasWithRuleList)
         let optInRules = optInRules.map(handleAliasWithRuleList)
         let whitelistRules = whitelistRules.map(handleAliasWithRuleList)
@@ -223,10 +226,6 @@ private func containsDuplicatedRuleIdentifiers(_ validDisabledRules: [String]) -
     }
 
     return false
-}
-
-private func handleAlias(_ alias: String, ruleList: RuleList) -> String {
-    return ruleList.identifier(for: alias) ?? alias
 }
 
 private func defaultStringArray(_ object: Any?) -> [String] {

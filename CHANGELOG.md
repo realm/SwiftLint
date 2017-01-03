@@ -6,6 +6,9 @@
 
 ##### Enhancements
 
+* Make `nimble_operator` rule correctable.  
+  [Vojta Stavik](https://github.com/VojtaStavik)
+
 * Add `vertical_parameter_alignment` rule that checks if parameters are
   vertically aligned for multi-line function declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

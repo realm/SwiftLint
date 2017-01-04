@@ -2,7 +2,10 @@
 
 ##### Breaking
 
-* None.
+* Change the signature of `Configuration` initializers to support
+  rule aliases.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#973](https://github.com/realm/SwiftLint/issues/973)
 
 ##### Enhancements
 

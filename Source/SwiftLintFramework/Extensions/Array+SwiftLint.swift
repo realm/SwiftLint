@@ -44,7 +44,18 @@ extension Array {
         }
     }
 
+    func partitioned(by belongsInSecondPartition: (Element) throws -> Bool) rethrows ->
+        (first: ArraySlice<Element>, second: ArraySlice<Element>) {
+            var copy = self
+            let pivot = try copy.partition(by: belongsInSecondPartition)
+            return (copy[0..<pivot], copy[pivot..<count])
+    }
+
     func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
+        return parallelMap(transform: transform).flatMap { $0 }
+    }
+
+    func parallelFlatMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 

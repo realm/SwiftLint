@@ -77,6 +77,7 @@ public let masterRuleList = RuleList(rules:
     ClosureSpacingRule.self,
     ColonRule.self,
     CommaRule.self,
+    CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewline.self,
     ControlStatementRule.self,
     CustomRules.self,

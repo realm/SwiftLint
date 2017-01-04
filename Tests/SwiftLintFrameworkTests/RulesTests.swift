@@ -21,10 +21,6 @@ class RulesTests: XCTestCase {
         verifyRule(ClosingBraceRule.description)
     }
 
-    func testComma() {
-        verifyRule(CommaRule.description)
-    }
-
     func testClosureEndIndentation() {
         verifyRule(ClosureEndIndentationRule.description)
     }
@@ -35,6 +31,14 @@ class RulesTests: XCTestCase {
 
     func testClosureSpacingRule() {
         verifyRule(ClosureSpacingRule.description)
+    }
+
+    func testComma() {
+        verifyRule(CommaRule.description)
+    }
+
+    func testCompilerProtocolInit() {
+        verifyRule(CompilerProtocolInitRule.description)
     }
 
     func testConditionalReturnsOnNewline() {
@@ -336,6 +340,7 @@ extension RulesTests {
             ("testClassDelegateProtocol", testClassDelegateProtocol),
             ("testClosingBrace", testClosingBrace),
             ("testComma", testComma),
+            ("testCompilerProtocolInit", testCompilerProtocolInit),
             ("testClosureEndIndentation", testClosureEndIndentation),
             ("testClosureParameterPosition", testClosureParameterPosition),
             ("testClosureSpacingRule", testClosureSpacingRule),

@@ -64,7 +64,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 }
 
 private struct ExpressibleByCompiler {
-    let protocolName: String
+    private let protocolName: String
     let initCallNames: Set<String>
     private let arguments: [[String]]
 

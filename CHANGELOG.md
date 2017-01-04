@@ -74,7 +74,7 @@
   [#1077](https://github.com/realm/SwiftLint/issues/1077)
 
 * Add `compiler_protocol_init` rule that flags usage of initializers 
-  declared in protocols used by compiler such as `ExpressibleByArrayLiteral`
+  declared in protocols used by the compiler such as `ExpressibleByArrayLiteral`
   that shouldn't be called directly. Instead, you should use a literal anywhere
   a concrete type conforming to the protocol is expected by the context.  
   [Marcelo Fabri](https://github.com/marcelofabri)

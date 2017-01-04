@@ -27,7 +27,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             "when they are declared static and immutable. Variable names should not be too " +
             "long or too short.",
         nonTriggeringExamples: IdentifierNameRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: IdentifierNameRuleExamples.swift3TriggeringExamples
+        triggeringExamples: IdentifierNameRuleExamples.swift3TriggeringExamples,
+        deprecatedAliases: ["variable_name"]
     )
 
     private func nameIsViolatingCase(_ name: String) -> Bool {

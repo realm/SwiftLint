@@ -69,7 +69,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     ]
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let matches = violationMatchesRanges(inFile: file)
+        let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -77,7 +77,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         }
     }
 
-    private func violationMatchesRanges(inFile file: File) -> [NSRange] {
+    private func violationMatchesRanges(in file: File) -> [NSRange] {
         let operatorNames = operatorsMapping.keys
         let operatorsPattern = "(" + operatorNames.joined(separator: "|") + ")"
 
@@ -93,7 +93,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let matches = violationMatchesRanges(inFile: file)
+        let matches = violationMatchesRanges(in: file)
             .filter { file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty == false }
         guard matches.isEmpty == false else { return [] }
 

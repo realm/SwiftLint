@@ -103,6 +103,9 @@
   [JP Simard](https://github.com/jpsim)
   [#1105](https://github.com/realm/SwiftLint/issues/1105)
 
+* Fix `variable_name` and `type_name` rules on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking
@@ -110,9 +113,6 @@
 * `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
-
-* Fixing `variable_name` and `type_name` rules on Linux.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

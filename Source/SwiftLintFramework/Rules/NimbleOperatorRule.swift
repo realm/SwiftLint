@@ -45,44 +45,112 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             "↓expect(\"Hi!\").to(equal(\"Hi!\"))\n": "expect(\"Hi!\") == \"Hi!\"\n",
             "↓expect(12).toNot(equal(10))\n": "expect(12) != 10\n",
             "↓expect(value1).to(equal(value2))\n": "expect(value1) == value2\n",
+            "↓expect(   value1  ).to(equal(  value2.foo))\n": "expect(value1) == value2.foo\n",
             "↓expect(value1).to(equal(10))\n": "expect(value1) == 10\n",
             "↓expect(10).to(beGreaterThan(8))\n": "expect(10) > 8\n",
             "↓expect(10).to(beGreaterThanOrEqualTo(10))\n": "expect(10) >= 10\n",
             "↓expect(10).to(beLessThan(11))\n": "expect(10) < 11\n",
             "↓expect(10).to(beLessThanOrEqualTo(10))\n": "expect(10) <= 10\n",
-            "↓expect(x).to(beIdenticalTo(x))\n": "expect(x) === x\n"
+            "↓expect(x).to(beIdenticalTo(x))\n": "expect(x) === x\n",
+            "expect(10) > 2\n ↓expect(10).to(beGreaterThan(2))\n": "expect(10) > 2\n expect(10) > 2\n"
         ]
     )
+
+    typealias Operators = (to: String?, toNot: String?)
+    typealias MatcherFunction = String
+
+    fileprivate let operatorsMapping: [MatcherFunction: Operators] = [
+        "equal": (to: "==", toNot: "!="),
+        "beIdenticalTo": (to: "===", toNot: "!=="),
+        "beGreaterThan": (to: ">", toNot: nil),
+        "beGreaterThanOrEqualTo": (to: ">=", toNot: nil),
+        "beLessThan": (to: "<", toNot: nil),
+        "beLessThanOrEqualTo": (to: "<=", toNot: nil)
+    ]
+
     public func validateFile(_ file: File) -> [StyleViolation] {
-        let operators = ["equal", "beIdenticalTo", "beGreaterThan",
-                         "beGreaterThanOrEqualTo", "beLessThan", "beLessThanOrEqualTo"]
-        let operatorsPattern = "(" + operators.joined(separator: "|") + ")"
-        let pattern = "expect\\((.(?!expect\\())+?\\)\\.to(Not)?\\(\(operatorsPattern)\\("
-        let excludingKinds = SyntaxKind.commentKinds()
-
-        let matches = file.matchPattern(pattern).filter { _, kinds in
-            // excluding comment kinds and making sure first token (`expect`) is an identifier
-            kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
-        }
-
+        let matches = violationMatchesRanges(inFile: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.0.location))
+                location: Location(file: file, characterOffset: $0.location))
         }
     }
+
+    private func violationMatchesRanges(inFile file: File) -> [NSRange] {
+        let operatorNames = operatorsMapping.keys
+        let operatorsPattern = "(" + operatorNames.joined(separator: "|") + ")"
+
+        let variablePattern = "(.(?!expect\\())+?"
+        let pattern = "expect\\(\(variablePattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\(\(variablePattern)\\)\\)"
+
+        let excludingKinds = SyntaxKind.commentKinds()
+
+        return file.matchPattern(pattern)
+            .filter { _, kinds in
+                kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
+            }.map { $0.0 }
+    }
+
     public func correctFile(_ file: File) -> [Correction] {
-        let variable = "\\s*(.*?)\\s*"
-        let patterns = [
-            "expect\\(\(variable)\\)\\.to\\(equal\\(\(variable)\\)\\)": "expect($1) == $2",
-            "expect\\(\(variable)\\)\\.toNot\\(equal\\(\(variable)\\)\\)": "expect($1) != $2",
-            "expect\\(\(variable)\\)\\.to\\(beIdenticalTo\\(\(variable)\\)\\)": "expect($1) === $2",
-            "expect\\(\(variable)\\)\\.toNot\\(beIdenticalTo\\(\(variable)\\)\\)": "expect($1) !== $2",
-            "expect\\(\(variable)\\)\\.to\\(beGreaterThan\\(\(variable)\\)\\)": "expect($1) > $2",
-            "expect\\(\(variable)\\)\\.to\\(beGreaterThanOrEqualTo\\(\(variable)\\)\\)": "expect($1) >= $2",
-            "expect\\(\(variable)\\)\\.to\\(beLessThan\\(\(variable)\\)\\)": "expect($1) < $2",
-            "expect\\(\(variable)\\)\\.to\\(beLessThanOrEqualTo\\(\(variable)\\)\\)": "expect($1) <= $2"
-        ]
-        return file.correctLegacyRule(self, patterns: patterns)
+        let matches = violationMatchesRanges(inFile: file)
+            .filter { file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty == false }
+        guard matches.isEmpty == false else { return [] }
+
+        let description = type(of: self).description
+        var corrections: [Correction] = []
+        var contents = file.contents
+
+        matchesLoop: for range in matches.sorted(by: { $0.location > $1.location }) {
+            for (functionName, operatorCorrections) in operatorsMapping {
+                guard let correctedString = contents.replace(function: functionName,
+                                                             with: operatorCorrections,
+                                                             in: range)
+                else {
+                    continue
+                }
+
+                contents = correctedString
+                corrections.append(Correction(ruleDescription: description,
+                                              location:  Location(file: file, characterOffset: range.location)))
+                break matchesLoop
+            }
+        }
+
+        file.write(contents)
+        return corrections
+    }
+}
+
+extension String {
+    /// Returns corrected string if the correction is possible, otherwise returns nil.
+    fileprivate func replace(function name: NimbleOperatorRule.MatcherFunction,
+                             with operators: NimbleOperatorRule.Operators,
+                             in range: NSRange) -> String? {
+
+        let anything = "\\s*(.*?)\\s*"
+
+        let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", operators.to)
+        let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", operators.toNot)
+
+        var correctedString: String? = nil
+
+        for (pattern, operatorString) in [toPattern, toNotPattern] {
+            guard let operatorString = operatorString else {
+                continue
+            }
+
+            let expression = regex(pattern)
+            if let _ = expression.matches(in: self, options: [], range: range).first {
+                correctedString = expression.stringByReplacingMatches(in: self,
+                                                                      options: [],
+                                                                      range: range,
+                                                                      withTemplate: "expect($1) \(operatorString) $2")
+
+                break
+            }
+        }
+
+        return correctedString
     }
 }

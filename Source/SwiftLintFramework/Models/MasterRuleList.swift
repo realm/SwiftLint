@@ -35,21 +35,18 @@ public struct RuleList {
         var rules = [String: Rule]()
 
         for (key, configuration) in dictionary {
-            if let identifier = identifier(for: key), let ruleType = list[identifier] {
-
-                guard rules[identifier] == nil else {
-                    throw RuleListError.duplicatedConfigurations(rule: ruleType)
-                }
-
-                do {
-                    let configuredRule = try ruleType.init(configuration: configuration)
-                    rules[identifier] = configuredRule
-                } catch {
-                    queuedPrintError(
-                        "Invalid configuration for '\(identifier)'. Falling back to default."
-                    )
-                    rules[identifier] = ruleType.init()
-                }
+            guard let identifier = identifier(for: key), let ruleType = list[identifier] else {
+                continue
+            }
+            guard rules[identifier] == nil else {
+                throw RuleListError.duplicatedConfigurations(rule: ruleType)
+            }
+            do {
+                let configuredRule = try ruleType.init(configuration: configuration)
+                rules[identifier] = configuredRule
+            } catch {
+                queuedPrintError("Invalid configuration for '\(identifier)'. Falling back to default.")
+                rules[identifier] = ruleType.init()
             }
         }
 

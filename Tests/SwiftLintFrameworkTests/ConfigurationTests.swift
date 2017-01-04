@@ -89,11 +89,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(disabledConfig.disabledRules,
                        ["nesting", "todo"],
                        "initializing Configuration with valid rules in Dictionary should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
-            .filter({ !(["nesting", "todo"] + optInRules).contains($0) })
-        let configuredIdentifiers = disabledConfig.rules.map {
+        let expectedIdentifiers = Set(masterRuleList.list.keys
+            .filter({ !(["nesting", "todo"] + optInRules).contains($0) }))
+        let configuredIdentifiers = Set(disabledConfig.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
 
         // Duplicate
@@ -110,11 +110,11 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.disabledRules,
                        [validRule],
                        "initializing Configuration with valid rules in YAML string should succeed")
-        let expectedIdentifiers = Array(masterRuleList.list.keys)
-            .filter({ !([validRule] + optInRules).contains($0) })
-        let configuredIdentifiers = configuration.rules.map {
+        let expectedIdentifiers = Set(masterRuleList.list.keys
+            .filter({ !([validRule] + optInRules).contains($0) }))
+        let configuredIdentifiers = Set(configuration.rules.map {
             type(of: $0).description.identifier
-        }
+        })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
@@ -191,18 +191,53 @@ class ConfigurationTests: XCTestCase {
 
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
-    func testConfiguresCorrectlyFromDict() {
+    func testConfiguresCorrectlyFromDict() throws {
         let ruleConfiguration = [1, 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
-        let rules = testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration) as Rule])
+        let rules = try testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
     }
 
-    func testConfigureFallsBackCorrectly() {
+    func testConfigureFallsBackCorrectly() throws {
         let config = [RuleWithLevelsMock.description.identifier: ["a", "b"]]
-        let rules = testRuleList.configuredRules(with: config)
-        XCTAssertTrue(rules == [RuleWithLevelsMock() as Rule])
+        let rules = try testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [RuleWithLevelsMock()])
     }
+
+    // MARK: - Aliases
+
+    func testConfiguresCorrectlyFromDeprecatedAlias() throws {
+        let ruleConfiguration = [1, 2]
+        let config = ["mock": ruleConfiguration]
+        let rules = try testRuleList.configuredRules(with: config)
+        XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
+    }
+
+    func testReturnsNilWithDuplicatedConfiguration() {
+        let dict = ["mock": [1, 2], "severity_level_mock": [1, 3]]
+        let configuration = Configuration(dict: dict, ruleList: testRuleList)
+        XCTAssertNil(configuration)
+    }
+
+    func testInitsFromDeprecatedAlias() {
+        let ruleConfiguration = [1, 2]
+        let configuration = Configuration(dict: ["mock": ruleConfiguration], ruleList: testRuleList)
+        XCTAssertNotNil(configuration)
+    }
+
+    func testWhitelistRulesFromDeprecatedAlias() {
+        let configuration = Configuration(dict: ["whitelist_rules": ["mock"]], ruleList: testRuleList)!
+        let configuredIdentifiers = configuration.rules.map {
+            type(of: $0).description.identifier
+        }
+        XCTAssertEqual(configuredIdentifiers, ["severity_level_mock"])
+    }
+
+    func testDisabledRulesFromDeprecatedAlias() {
+        let configuration = Configuration(dict: ["disabled_rules": ["mock"]], ruleList: testRuleList)!
+        XCTAssert(configuration.rules.isEmpty)
+    }
+
 }
 
 // MARK: - ProjectMock Paths
@@ -287,7 +322,12 @@ extension ConfigurationTests {
             ("testLevel2", testLevel2),
             ("testLevel3", testLevel3),
             ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly)
+            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
+            ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
+            ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
+            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
+            ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
+            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
         ]
     }
 }

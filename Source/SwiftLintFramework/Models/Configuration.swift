@@ -62,7 +62,7 @@ public struct Configuration: Equatable {
         // Validate that all rule identifiers map to a defined rule
         let validRuleIdentifiers = validateRuleIdentifiers(configuredRules: configuredRules,
                                                            disabledRules: disabledRules)
-        let validDisabledRules = disabledRules.filter { validRuleIdentifiers.contains($0) }
+        let validDisabledRules = disabledRules.filter(validRuleIdentifiers.contains)
 
         // Validate that rule identifiers aren't listed multiple times
         if containsDuplicatedRuleIdentifiers(validDisabledRules) {

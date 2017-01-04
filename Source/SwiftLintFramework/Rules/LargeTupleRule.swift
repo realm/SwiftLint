@@ -22,7 +22,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "large_tuple",
         name: "Large Tuple",
-        description: "Tuples shouldn't have many members. Create a custom type instead.",
+        description: "Tuples shouldn't have too many members. Create a custom type instead.",
         nonTriggeringExamples: [
             "let foo: (Int, Int)\n",
             "let foo: (start: Int, end: Int)\n",
@@ -51,7 +51,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     )
 
     public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let offsets = violationOffsetsForTypes(file, dictionary: dictionary, kind: kind) +
             violationOffsetsForFunctions(file, dictionary: dictionary, kind: kind)
 
@@ -84,7 +84,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         for range in ranges {
             let substring = text.substring(with: range)
             let size = substring.components(separatedBy: ",").count
-            maxSize = max(size, maxSize ?? Int.min)
+            maxSize = max(size, maxSize ?? .min)
 
             let replacement = String(repeating: " ", count: substring.bridge().length)
             text = text.replacingCharacters(in: range, with: replacement).bridge()

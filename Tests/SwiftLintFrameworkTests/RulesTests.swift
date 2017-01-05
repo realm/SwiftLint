@@ -405,6 +405,7 @@ extension RulesTests {
             ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
+            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVariableName", testVariableName),
             ("VerticalParameterAlignment", testVerticalParameterAlignment),

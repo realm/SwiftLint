@@ -29,7 +29,7 @@ class RulesTests: XCTestCase {
         verifyRule(ClosureParameterPositionRule.description)
     }
 
-    func testClosureSpacingRule() {
+    func testClosureSpacing() {
         verifyRule(ClosureSpacingRule.description)
     }
 
@@ -98,12 +98,16 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
-    func testFunctionParameterCountRule() {
+    func testFunctionParameterCount() {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testImplicitGetterRule() {
+    func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
+    }
+
+    func testLargeTuple() {
+        verifyRule(LargeTupleRule.description)
     }
 
     func testLeadingWhitespace() {
@@ -343,7 +347,7 @@ extension RulesTests {
             ("testCompilerProtocolInit", testCompilerProtocolInit),
             ("testClosureEndIndentation", testClosureEndIndentation),
             ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testClosureSpacing", testClosureSpacing),
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
@@ -358,8 +362,9 @@ extension RulesTests {
             ("testForceTry", testForceTry),
             // ("testForceUnwrapping", testForceUnwrapping),
             ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
-            ("testImplicitGetterRule", testImplicitGetterRule),
+            ("testFunctionParameterCount", testFunctionParameterCount),
+            ("testImplicitGetter", testImplicitGetter),
+            ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
@@ -398,7 +403,7 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVariableName", testVariableName),
-            ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
+            ("VerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)

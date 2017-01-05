@@ -98,6 +98,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#769](https://github.com/realm/SwiftLint/issues/769)
 
+* Add `unused_optional_binding` that will check for optional bindings not being used.  
+  [Rafael Machado](https://github.com/rakaramos/)
+  [#1116](https://github.com/realm/SwiftLint/issues/1116)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

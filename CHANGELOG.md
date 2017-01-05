@@ -89,6 +89,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#51](https://github.com/realm/SwiftLint/issues/51)
 
+* Update `vertical_whitespace` rule to allow configuration of the number of 
+  consecutive empty lines before a violation using `max_empty_lines`.
+  The default value is still 1 line.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#769](https://github.com/realm/SwiftLint/issues/769)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

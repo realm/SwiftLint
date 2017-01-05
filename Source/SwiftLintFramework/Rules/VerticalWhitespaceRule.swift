@@ -14,7 +14,7 @@ private let descriptionReason = "Limit vertical whitespace to a single empty lin
 public struct VerticalWhitespaceRule: CorrectableRule,
                                       ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
     public init() {}
 
@@ -51,7 +51,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             // Skips violations for areas where the rule is disabled
             if !file.ruleEnabledViolatingRanges([eachLastLine.range], forRule: self).isEmpty {
                 let violation = StyleViolation(ruleDescription: type(of: self).description,
-                                           severity: configuration.severity,
+                                           severity: configuration.severityConfiguration.severity,
                                            location: Location(file: file.path,
                                             line: eachLastLine.index ),
                                            reason: descriptionReason
@@ -100,7 +100,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             }
         }
 
-        return result
+        return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }
 
     }
 

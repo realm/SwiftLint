@@ -198,29 +198,19 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 }
 
 extension String {
-    fileprivate func split(separator: Character) -> [(String, NSRange)] {
-        var offsets = [0]
-        var ends = [Int]()
-        var currentOffset = 0
-        let components = characters.split { character in
-            currentOffset += 1
-            if character == separator {
-                offsets.append(currentOffset)
-                ends.append(currentOffset - 1)
-                return true
-            }
+    fileprivate func split(separator: String) -> [(String, NSRange)] {
+        let separatorLength = separator.bridge().length
+        var previousEndOffset = 0
+        var result = [(String, NSRange)]()
 
-            return false
-        }.map(String.init)
-
-        ends.append(characters.count)
-
-        let ranges = offsets.enumerated().map { index, offset -> NSRange in
-            let next = ends[index]
-            return NSRange(location: offset, length: next - offset)
+        for component in components(separatedBy: separator) {
+            let length = component.bridge().length
+            let range = NSRange(location: previousEndOffset, length: length)
+            result.append((component, range))
+            previousEndOffset += length + separatorLength
         }
 
-        return Array(zip(components, ranges))
+        return result
     }
 
     fileprivate func trimmingWhitespaces() -> (String, NSRange) {

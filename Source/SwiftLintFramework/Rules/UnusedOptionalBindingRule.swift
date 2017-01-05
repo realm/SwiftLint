@@ -1,0 +1,68 @@
+//
+//  UnusedOptionalBindingRule.swift
+//  SwiftLint
+//
+//  Created by Rafael Machado on 1/5/17.
+//  Copyright © 2017 Realm. All rights reserved.
+//
+
+import Foundation
+import SourceKittenFramework
+
+public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
+
+    public var configuration = SeverityConfiguration(.warning)
+
+    public init() {}
+
+    public static let description = RuleDescription(
+        identifier: "unused_optional_binding",
+        name: "Unused Optional Binding",
+        description: "Prefer `!= nil` over `let _ =`",
+        nonTriggeringExamples: [
+            "if let bar = Foo.optionalValue {\n" +
+            "}\n"
+        ],
+        triggeringExamples: [
+            "if let ↓_ = Foo.optionalValue {\n" +
+            "}\n",
+            "if let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n",
+            "guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n"
+        ]
+    )
+
+    public func validateFile(_ file: File,
+                             kind: StatementKind,
+                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard kind == .if || kind == .guard,
+            let offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
+            let length = (dictionary["key.length"] as? Int64).map({ Int($0) }) else {
+                return []
+        }
+
+        // get the statement length
+        let range = NSRange(location: offset, length: length)
+        let tokens = file.syntaxMap.tokensIn(range)
+
+        // try to find any "_" inside the statement clause
+        let violatingTokens = tokens.filter {
+            isUnderscore(file: file, token: $0)
+        }
+
+        return violatingTokens.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: $0.offset))
+        }
+    }
+
+    private func isUnderscore(file: File, token: SyntaxToken) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .keyword else {
+            return false
+        }
+        let contents = file.contents.bridge()
+        return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
+    }
+}

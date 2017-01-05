@@ -306,6 +306,10 @@ class RulesTests: XCTestCase {
         verifyRule(UnusedEnumeratedRule.description)
     }
 
+    func testUnusedOptionalBinding() {
+        verifyRule(UnusedOptionalBindingRule.description)
+    }
+
 // swiftlint:disable:next todo
 // FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testValidDocs() {

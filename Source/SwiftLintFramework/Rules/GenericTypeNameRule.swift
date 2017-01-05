@@ -189,7 +189,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
                                severity: severity,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should be between \(configuration.minLengthThreshold) and " +
-                    "\(configuration.maxLengthThreshold) characters long: '\(name)'")
+                                        "\(configuration.maxLengthThreshold) characters long: '\(name)'")
             ]
         }
 
@@ -214,13 +214,14 @@ extension String {
     }
 
     fileprivate func trimmingWhitespaces() -> (String, NSRange) {
-        let range = NSRange(location: 0, length: bridge().length)
+        let bridged = bridge()
+        let range = NSRange(location: 0, length: bridged.length)
         guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),
             NSEqualRanges(range, match.range) else {
             return (self, range)
         }
 
         let trimmedRange = match.rangeAt(1)
-        return (bridge().substring(with: trimmedRange), trimmedRange)
+        return (bridged.substring(with: trimmedRange), trimmedRange)
     }
 }

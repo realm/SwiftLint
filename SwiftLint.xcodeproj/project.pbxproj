@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */; };
+		006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006204DD1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift */; };
 		006ECFC41C44E99E00EF6364 /* LegacyConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */; };
 		009E09281DFEE4C200B588A7 /* ProhibitedSuperRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */; };
 		009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */; };
@@ -124,9 +126,9 @@
 		D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */; };
 		D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
 		D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
-		D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
 		D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */; };
 		D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */; };
+		D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
 		D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */; };
 		D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */; };
 		DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */; };
@@ -245,6 +247,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceConfiguration.swift; sourceTree = "<group>"; };
+		006204DD1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRuleTests.swift; sourceTree = "<group>"; };
 		006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstantRule.swift; sourceTree = "<group>"; };
 		009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperRule.swift; sourceTree = "<group>"; };
 		009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperConfiguration.swift; sourceTree = "<group>"; };
@@ -379,9 +383,9 @@
 		D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesConfiguration.swift; sourceTree = "<group>"; };
 		D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRule.swift; sourceTree = "<group>"; };
 		D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderConfiguration.swift; sourceTree = "<group>"; };
-		D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorConfiguration.swift; sourceTree = "<group>"; };
 		D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerProtocolInitRule.swift; sourceTree = "<group>"; };
 		D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTupleRule.swift; sourceTree = "<group>"; };
+		D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorConfiguration.swift; sourceTree = "<group>"; };
 		D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NimbleOperatorRule.swift; sourceTree = "<group>"; };
 		D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorUsageWhitespaceRule.swift; sourceTree = "<group>"; };
 		DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRuleConfiguration.swift; sourceTree = "<group>"; };
@@ -520,6 +524,7 @@
 				725094881D0855760039B353 /* StatementPositionConfiguration.swift */,
 				D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */,
 				BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */,
+				006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */,
 			);
 			path = RuleConfigurations;
 			sourceTree = "<group>";
@@ -699,6 +704,7 @@
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				D46202201E16002A0027AAD1 /* Swift2RulesTests.swift */,
+				006204DD1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Tests/SwiftLintFrameworkTests;
@@ -1150,6 +1156,7 @@
 				D42D2B381E09CC0D00CD7A2E /* FirstWhereRule.swift in Sources */,
 				D4B0226F1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift in Sources */,
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
+				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */,
@@ -1241,6 +1248,7 @@
 				3B12C9C31C320A53000B423F /* Yaml+SwiftLintTests.swift in Sources */,
 				E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */,
 				D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */,
+				006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */,
 				02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */,
 				D4348EEA1C46122C007707FB /* FunctionBodyLengthRuleTests.swift in Sources */,
 				6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */,

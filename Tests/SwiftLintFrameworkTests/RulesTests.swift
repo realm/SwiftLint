@@ -324,10 +324,6 @@ class RulesTests: XCTestCase {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
 
-    func testVerticalWhitespace() {
-        verifyRule(VerticalWhitespaceRule.description)
-    }
-
     func testVoidReturn() {
         verifyRule(VoidReturnRule.description)
     }
@@ -381,7 +377,6 @@ extension RulesTests {
             ("testNimbleOperator", testNimbleOperator),
             ("testNumberSeparator", testNumberSeparator),
             ("testObjectLiteral", testObjectLiteral),
-            ("testVerticalWhitespace", testVerticalWhitespace),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),

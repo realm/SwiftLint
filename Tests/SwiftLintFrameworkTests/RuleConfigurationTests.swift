@@ -18,39 +18,39 @@ class RuleConfigurationsTests: XCTestCase {
         let warning = 100
         let error = 150
         let length1 = SeverityLevelsConfiguration(warning: warning, error: error)
-        let configuration1 = LineLengthConfiguration(warning: warning, error: error, ignoresUrls: true)
+        let configuration1 = LineLengthConfiguration(warning: warning, error: error, ignoresURLs: true)
         XCTAssertEqual(configuration1.length, length1)
 
         let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
-        let configuration2 = LineLengthConfiguration(warning: warning, error: nil, ignoresUrls: true)
+        let configuration2 = LineLengthConfiguration(warning: warning, error: nil, ignoresURLs: true)
         XCTAssertEqual(configuration2.length, length2)
     }
 
     func testLineLengthConfigurationInitialiserSetsIgnoresUrls() {
-        let configuration1 = LineLengthConfiguration(warning: 100, error: 150, ignoresUrls: true)
-        XCTAssertTrue(configuration1.ignoresUrls)
+        let configuration1 = LineLengthConfiguration(warning: 100, error: 150, ignoresURLs: true)
+        XCTAssertTrue(configuration1.ignoresURLs)
 
-        let configuration2 = LineLengthConfiguration(warning: 100, error: 150, ignoresUrls: false)
-        XCTAssertFalse(configuration2.ignoresUrls)
+        let configuration2 = LineLengthConfiguration(warning: 100, error: 150, ignoresURLs: false)
+        XCTAssertFalse(configuration2.ignoresURLs)
     }
 
     func testLineLengthConfigurationParams() {
         let warning = 13
         let error = 10
-        let configuration = LineLengthConfiguration(warning: warning, error: error, ignoresUrls: true)
+        let configuration = LineLengthConfiguration(warning: warning, error: error, ignoresURLs: true)
         let params = [RuleParameter(severity: .error, value: error), RuleParameter(severity: .warning, value: warning)]
         XCTAssertEqual(configuration.params, params)
     }
 
     func testLineLengthConfigurationPartialParams() {
         let warning = 13
-        let configuration = LineLengthConfiguration(warning: warning, error: nil, ignoresUrls: true)
+        let configuration = LineLengthConfiguration(warning: warning, error: nil, ignoresURLs: true)
         XCTAssertEqual(configuration.params, [RuleParameter(severity: .warning, value: 13)])
     }
 
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
-        var configuration = LineLengthConfiguration(warning: 100, error: 150, ignoresUrls: true)
+        var configuration = LineLengthConfiguration(warning: 100, error: 150, ignoresURLs: true)
 
         checkError(ConfigurationError.unknownConfiguration) {
             try configuration.applyConfiguration(config)
@@ -58,7 +58,7 @@ class RuleConfigurationsTests: XCTestCase {
     }
 
     func testLineLengthConfigurationApplyConfigurationWithArray() {
-        var configuration = LineLengthConfiguration(warning: 0, error: 0, ignoresUrls: false)
+        var configuration = LineLengthConfiguration(warning: 0, error: 0, ignoresURLs: false)
 
         let warning1 = 100
         let error1 = 100
@@ -81,7 +81,7 @@ class RuleConfigurationsTests: XCTestCase {
     }
 
     func testLineLengthConfigurationApplyConfigurationWithDictionary() {
-        var configuration = LineLengthConfiguration(warning: 0, error: 0, ignoresUrls: false)
+        var configuration = LineLengthConfiguration(warning: 0, error: 0, ignoresURLs: false)
 
         let warning1 = 100
         let error1 = 100
@@ -99,35 +99,35 @@ class RuleConfigurationsTests: XCTestCase {
         do {
             try configuration.applyConfiguration(config1)
             XCTAssertEqual(configuration.length, length1)
-            XCTAssertTrue(configuration.ignoresUrls)
+            XCTAssertTrue(configuration.ignoresURLs)
 
             try configuration.applyConfiguration(config2)
             XCTAssertEqual(configuration.length, length2)
-            XCTAssertTrue(configuration.ignoresUrls)
+            XCTAssertTrue(configuration.ignoresURLs)
 
             try configuration.applyConfiguration(config3)
             XCTAssertEqual(configuration.length, length3)
-            XCTAssertFalse(configuration.ignoresUrls)
+            XCTAssertFalse(configuration.ignoresURLs)
         } catch {
             XCTFail()
         }
     }
 
     func testLineLengthConfigurationCompares() {
-        let configuration1 = LineLengthConfiguration(warning: 100, error: 100, ignoresUrls: true)
-        let configuration2 = LineLengthConfiguration(warning: 100, error: 100, ignoresUrls: false)
+        let configuration1 = LineLengthConfiguration(warning: 100, error: 100, ignoresURLs: true)
+        let configuration2 = LineLengthConfiguration(warning: 100, error: 100, ignoresURLs: false)
         XCTAssertFalse(configuration1 == configuration2)
 
-        let configuration3 = LineLengthConfiguration(warning: 100, error: 200, ignoresUrls: true)
+        let configuration3 = LineLengthConfiguration(warning: 100, error: 200, ignoresURLs: true)
         XCTAssertFalse(configuration1 == configuration3)
 
-        let configuration4 = LineLengthConfiguration(warning: 200, error: 100, ignoresUrls: true)
+        let configuration4 = LineLengthConfiguration(warning: 200, error: 100, ignoresURLs: true)
         XCTAssertFalse(configuration1 == configuration4)
 
-        let configuration5 = LineLengthConfiguration(warning: 100, error: 100, ignoresUrls: true)
+        let configuration5 = LineLengthConfiguration(warning: 100, error: 100, ignoresURLs: true)
         XCTAssertTrue(configuration1 == configuration5)
 
-        let configuration6 = LineLengthConfiguration(warning: 100, error: 100, ignoresUrls: false)
+        let configuration6 = LineLengthConfiguration(warning: 100, error: 100, ignoresURLs: false)
         XCTAssertTrue(configuration2 == configuration6)
     }
 

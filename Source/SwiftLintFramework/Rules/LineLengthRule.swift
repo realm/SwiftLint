@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = LineLengthConfiguration(warning: 120, error: 200, ignoresUrls: false)
+    public var configuration = LineLengthConfiguration(warning: 120, error: 200, ignoresURLs: false)
 
     public init() {}
 
@@ -41,8 +41,8 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             }
 
             var strippedString = line.content
-            if configuration.ignoresUrls {
-                strippedString = stripUrls(fromSourceString: strippedString)
+            if configuration.ignoresURLs {
+                strippedString = strippedString.strippingURLs
             }
             strippedString = stripLiterals(fromSourceString: strippedString,
                 withDelimiter: "#colorLiteral")
@@ -91,8 +91,11 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         return modifiedString
     }
 
-    private func stripUrls(fromSourceString sourceString: String) -> String {
-        let range = NSRange(location: 0, length: sourceString.bridge().length)
+}
+
+fileprivate extension String {
+    var strippingURLs: String {
+        let range = NSRange(location: 0, length: bridge().length)
         // Workaround for Linux until NSDataDetector is available
         #if os(Linux)
             // Regex pattern from http://daringfireball.net/2010/07/improved_regex_for_matching_urls
@@ -100,14 +103,13 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
                 "(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*" +
                 "\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))"
             let urlRegex = regex(pattern)
-            return urlRegex.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+            return urlRegex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
         #else
             let types = NSTextCheckingResult.CheckingType.link.rawValue
             guard let urlDetector = try? NSDataDetector(types: types) else {
-                return sourceString
+                return self
             }
-            return urlDetector.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+            return urlDetector.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
         #endif
     }
-
 }

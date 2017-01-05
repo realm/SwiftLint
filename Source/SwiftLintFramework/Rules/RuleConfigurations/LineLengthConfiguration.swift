@@ -10,19 +10,19 @@ import Foundation
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return length.consoleDescription + ", ignores urls: \(ignoresUrls)"
+        return length.consoleDescription + ", ignores urls: \(ignoresURLs)"
     }
 
     var length: SeverityLevelsConfiguration
-    var ignoresUrls: Bool
+    var ignoresURLs: Bool
 
     var params: [RuleParameter<Int>] {
         return length.params
     }
 
-    public init(warning: Int, error: Int?, ignoresUrls: Bool) {
+    public init(warning: Int, error: Int?, ignoresURLs: Bool) {
         length = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.ignoresUrls = ignoresUrls
+        self.ignoresURLs = ignoresURLs
     }
 
     public mutating func applyConfiguration(_ configuration: Any) throws {
@@ -35,7 +35,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
             let warning = configDict["warning"] as? Int ?? length.warning
             let error = configDict["error"] as? Int
             length = SeverityLevelsConfiguration(warning: warning, error: error)
-            ignoresUrls = configDict["ignores_urls"] as? Bool ?? ignoresUrls
+            ignoresURLs = configDict["ignores_urls"] as? Bool ?? ignoresURLs
         } else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -44,5 +44,5 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
 }
 
 public func == (lhs: LineLengthConfiguration, rhs: LineLengthConfiguration) -> Bool {
-    return lhs.length == rhs.length && lhs.ignoresUrls == rhs.ignoresUrls
+    return lhs.length == rhs.length && lhs.ignoresURLs == rhs.ignoresURLs
 }

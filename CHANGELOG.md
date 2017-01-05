@@ -98,6 +98,11 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#769](https://github.com/realm/SwiftLint/issues/769)
 
+* Add check to ignore urls in `line_length` rule when `ignores_urls`
+  configuration is enabled.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#384](https://github.com/realm/SwiftLint/issues/384)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
@@ -133,11 +138,6 @@
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
 
 ##### Enhancements
-
-* Add check to ignore urls in `line_length` rule when `ignores_urls`
-  configuration is enabled.     
-  [Javier Hernández](https://github.com/jaherhi)
-  [#384](https://github.com/realm/SwiftLint/issues/384)
 
 * Add `closure_end_indentation` opt-in rule that validates closure closing
   braces according to these rules:

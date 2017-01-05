@@ -57,8 +57,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         ]
     )
 
-    typealias Operators = (to: String?, toNot: String?)
-    typealias MatcherFunction = String
+    fileprivate typealias Operators = (to: String?, toNot: String?)
+    fileprivate typealias MatcherFunction = String
 
     fileprivate let operatorsMapping: [MatcherFunction: Operators] = [
         "equal": (to: "==", toNot: "!="),
@@ -95,14 +95,14 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
     public func correctFile(_ file: File) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
-            .filter { file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty == false }
-        guard matches.isEmpty == false else { return [] }
+            .filter { !file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty }
+        guard !matches.isEmpty else { return [] }
 
         let description = type(of: self).description
         var corrections: [Correction] = []
         var contents = file.contents
 
-        matchesLoop: for range in matches.sorted(by: { $0.location > $1.location }) {
+        for range in matches.sorted(by: { $0.location > $1.location }) {
             for (functionName, operatorCorrections) in operatorsMapping {
                 guard let correctedString = contents.replace(function: functionName,
                                                              with: operatorCorrections,
@@ -112,9 +112,10 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
                 }
 
                 contents = correctedString
-                corrections.append(Correction(ruleDescription: description,
-                                              location:  Location(file: file, characterOffset: range.location)))
-                break matchesLoop
+                let correction = Correction(ruleDescription: description,
+                                            location: Location(file: file, characterOffset: range.location))
+                corrections.insert(correction, at: 0)
+                break
             }
         }
 
@@ -134,7 +135,7 @@ extension String {
         let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", operators.to)
         let toNotPattern = ("expect\\(\(anything)\\)\\.toNot\\(\(name)\\(\(anything)\\)\\)", operators.toNot)
 
-        var correctedString: String? = nil
+        var correctedString: String?
 
         for (pattern, operatorString) in [toPattern, toNotPattern] {
             guard let operatorString = operatorString else {
@@ -142,12 +143,11 @@ extension String {
             }
 
             let expression = regex(pattern)
-            if let _ = expression.matches(in: self, options: [], range: range).first {
+            if !expression.matches(in: self, options: [], range: range).isEmpty {
                 correctedString = expression.stringByReplacingMatches(in: self,
                                                                       options: [],
                                                                       range: range,
                                                                       withTemplate: "expect($1) \(operatorString) $2")
-
                 break
             }
         }

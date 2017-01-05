@@ -21,10 +21,6 @@ class RulesTests: XCTestCase {
         verifyRule(ClosingBraceRule.description)
     }
 
-    func testComma() {
-        verifyRule(CommaRule.description)
-    }
-
     func testClosureEndIndentation() {
         verifyRule(ClosureEndIndentationRule.description)
     }
@@ -33,8 +29,16 @@ class RulesTests: XCTestCase {
         verifyRule(ClosureParameterPositionRule.description)
     }
 
-    func testClosureSpacingRule() {
+    func testClosureSpacing() {
         verifyRule(ClosureSpacingRule.description)
+    }
+
+    func testComma() {
+        verifyRule(CommaRule.description)
+    }
+
+    func testCompilerProtocolInit() {
+        verifyRule(CompilerProtocolInitRule.description)
     }
 
     func testConditionalReturnsOnNewline() {
@@ -94,12 +98,20 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
-    func testFunctionParameterCountRule() {
+    func testFunctionParameterCount() {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testImplicitGetterRule() {
+    func testGenericTypeName() {
+        verifyRule(GenericTypeNameRule.description)
+    }
+
+    func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
+    }
+
+    func testLargeTuple() {
+        verifyRule(LargeTupleRule.description)
     }
 
     func testLeadingWhitespace() {
@@ -312,10 +324,6 @@ class RulesTests: XCTestCase {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
 
-    func testVerticalWhitespace() {
-        verifyRule(VerticalWhitespaceRule.description)
-    }
-
     func testVoidReturn() {
         verifyRule(VoidReturnRule.description)
     }
@@ -336,9 +344,10 @@ extension RulesTests {
             ("testClassDelegateProtocol", testClassDelegateProtocol),
             ("testClosingBrace", testClosingBrace),
             ("testComma", testComma),
+            ("testCompilerProtocolInit", testCompilerProtocolInit),
             ("testClosureEndIndentation", testClosureEndIndentation),
             ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacingRule", testClosureSpacingRule),
+            ("testClosureSpacing", testClosureSpacing),
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
@@ -353,8 +362,10 @@ extension RulesTests {
             ("testForceTry", testForceTry),
             // ("testForceUnwrapping", testForceUnwrapping),
             ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
-            ("testImplicitGetterRule", testImplicitGetterRule),
+            ("testFunctionParameterCount", testFunctionParameterCount),
+            ("testGenericTypeName", testGenericTypeName),
+            ("testImplicitGetter", testImplicitGetter),
+            ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
@@ -366,7 +377,6 @@ extension RulesTests {
             ("testNimbleOperator", testNimbleOperator),
             ("testNumberSeparator", testNumberSeparator),
             ("testObjectLiteral", testObjectLiteral),
-            ("testVerticalWhitespace", testVerticalWhitespace),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
@@ -393,7 +403,7 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVariableName", testVariableName),
-            ("VerticalParameterAlignmentRule", testVerticalParameterAlignment),
+            ("VerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)

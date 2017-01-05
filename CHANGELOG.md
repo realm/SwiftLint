@@ -73,6 +73,28 @@
   [JP Simard](https://github.com/jpsim)
   [#1077](https://github.com/realm/SwiftLint/issues/1077)
 
+* Add `compiler_protocol_init` rule that flags usage of initializers 
+  declared in protocols used by the compiler such as `ExpressibleByArrayLiteral`
+  that shouldn't be called directly. Instead, you should use a literal anywhere
+  a concrete type conforming to the protocol is expected by the context.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1096](https://github.com/realm/SwiftLint/issues/1096)
+
+* Add `large_tuple` configurable rule that validates that tuples shouldn't
+  have too many members.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1065](https://github.com/realm/SwiftLint/issues/1065)
+
+* Add `generic_type_name` rule that validates generic constraint type names.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#51](https://github.com/realm/SwiftLint/issues/51)
+
+* Update `vertical_whitespace` rule to allow configuration of the number of 
+  consecutive empty lines before a violation using `max_empty_lines`.
+  The default value is still 1 line.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#769](https://github.com/realm/SwiftLint/issues/769)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
@@ -96,6 +118,9 @@
   [JP Simard](https://github.com/jpsim)
   [#1105](https://github.com/realm/SwiftLint/issues/1105)
 
+* Fix `variable_name` and `type_name` rules on Linux.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking
@@ -103,9 +128,6 @@
 * `line_length` rule now has a default value of `120` for warnings.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1008](https://github.com/realm/SwiftLint/issues/1008)
-
-* Fixing `variable_name` and `type_name` rules on Linux.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

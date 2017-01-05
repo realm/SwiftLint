@@ -99,10 +99,8 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             let pattern = "(?i)\\b((?:[a-z][\\w-]+:(?:/{1,3}|[a-z0-9%])|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)" +
                 "(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*" +
                 "\\)|[^\\s`!()\\[\\]{};:'\".,<>?«»“”‘’]))"
-            guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
-                return sourceString
-            }
-            return regex.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
+            let urlRegex = regex(pattern)
+            return urlRegex.stringByReplacingMatches(in: sourceString, options: [], range: range, withTemplate: "")
         #else
             let types = NSTextCheckingResult.CheckingType.link.rawValue
             guard let urlDetector = try? NSDataDetector(types: types) else {

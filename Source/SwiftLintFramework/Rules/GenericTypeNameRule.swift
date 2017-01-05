@@ -79,7 +79,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     private func validateGenericTypeAliases(_ file: File) -> [StyleViolation] {
         let pattern = "typealias\\s+.+?" + genericTypePattern + "\\s*="
         return file.matchPattern(pattern).flatMap { (range, tokens) -> [(String, Int)] in
-            guard tokens.count > 1, tokens.first == .keyword,
+            guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
                                                         range: range)?.rangeAt(1) else {
@@ -128,13 +128,14 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
-        let offsets = parameters.flatMap {
-            ($0["key.offset"] as? Int64).flatMap({ Int($0) })
-        }.flatMap {
-            file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
+        let offsets = parameters.flatMap { param -> Int? in
+            let offset = (param["key.offset"] as? Int64).flatMap { Int($0) }
+            return offset.flatMap {
+                file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
+            }
         }
 
-        return offsets.min() ?? Int.max
+        return offsets.min() ?? .max
     }
 
     private func extractTypesFromGenericConstraint(_ constraint: String, offset: Int, file: File) -> [(String, Int)] {

@@ -28,6 +28,7 @@ end
 # Run OSSCheck if there were app changes
 if has_app_changes
   @repos = [
+    'Alamofire/Alamofire',
     'JohnCoates/Aerial',
     'jpsim/SourceKitten',
     'Moya/Moya',

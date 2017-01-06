@@ -9,12 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-internal func regex(_ pattern: String) -> NSRegularExpression {
+internal func regex(_ pattern: String,
+                    options: NSRegularExpression.Options? = nil) -> NSRegularExpression {
     // all patterns used for regular expressions in SwiftLint are string literals which have been
     // confirmed to work, so it's ok to force-try here.
 
+    let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
     // swiftlint:disable:next force_try
-    return try! .cached(pattern: pattern)
+    return try! .cached(pattern: pattern, options: options)
 }
 
 extension File {

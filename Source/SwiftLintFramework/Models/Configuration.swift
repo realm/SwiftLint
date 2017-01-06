@@ -9,6 +9,20 @@
 import Foundation
 import SourceKittenFramework
 
+extension String {
+    fileprivate var isFile: Bool {
+        var isDirectoryObjC: ObjCBool = false
+        if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
+#if os(Linux)
+            return !isDirectoryObjC
+#else
+            return !isDirectoryObjC.boolValue
+#endif
+        }
+        return false
+    }
+}
+
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
@@ -176,7 +190,7 @@ public struct Configuration: Equatable {
     public func lintablePathsForPath(_ path: String,
                                      fileManager: LintableFileManager = fileManager) -> [String] {
         // If path is a Swift file, skip filtering with excluded/included paths
-        if path.bridge().isSwiftFile() {
+        if path.bridge().isSwiftFile() && path.isFile {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path, rootDirectory: nil) : []

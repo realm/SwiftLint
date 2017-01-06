@@ -9,6 +9,9 @@
 
 ##### Enhancements
 
+* Make `nimble_operator` rule correctable.  
+  [Vojta Stavik](https://github.com/VojtaStavik)
+
 * Add `vertical_parameter_alignment` rule that checks if parameters are
   vertically aligned for multi-line function declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -95,6 +98,16 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#769](https://github.com/realm/SwiftLint/issues/769)
 
+* Add check to ignore urls in `line_length` rule when `ignores_urls`
+  configuration is enabled.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#384](https://github.com/realm/SwiftLint/issues/384)
+
+* Add `shorthand_operator` rule that validates that shorthand operators should
+  be used when possible.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#902](https://github.com/realm/SwiftLint/issues/902)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
@@ -120,6 +133,9 @@
 
 * Fix `variable_name` and `type_name` rules on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix linting directories with names ending with `.swift`.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

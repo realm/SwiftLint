@@ -1,3 +1,5 @@
+require 'open3'
+
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
@@ -40,12 +42,19 @@ if has_app_changes
   def generate_reports(clone, branch)
     Dir.chdir('osscheck') do
       @repos.each do |repo|
-        `git clone "https://github.com/#{repo}" --depth 1` if clone
         repo_name = repo.partition('/').last
+        if clone
+          puts "Cloning #{repo_name}"
+          `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
+        end
         Dir.chdir(repo_name) do
+          print "Linting #{repo_name} with #{branch}"
           @commits[repo] = `git rev-parse HEAD`
+          command = '../../.build/debug/swiftlint'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
-            file.puts `../../.build/debug/swiftlint`
+            Open3.popen3(command) do |_, stdout, _, _|
+              file << stdout.read.chomp
+            end
           end
         end
       end
@@ -57,12 +66,14 @@ if has_app_changes
     FileUtils.mkdir_p(dir)
   end
   # Build branch
+  puts 'Building branch'
   `swift build`
   # Generate branch reports
   generate_reports(true, 'branch')
   # Build master
   `git checkout master`
   `git pull`
+  puts 'Building master'
   `swift build`
   # Generate master reports
   generate_reports(false, 'master')

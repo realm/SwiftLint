@@ -217,6 +217,10 @@ class RulesTests: XCTestCase {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 
+    func testShorthandOperator() {
+        verifyRule(ShorthandOperatorRule.description)
+    }
+
     func testSortedImports() {
         verifyRule(SortedImportsRule.description)
     }
@@ -381,6 +385,7 @@ extension RulesTests {
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testRedundantVoidReturn", testRedundantVoidReturn),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testShorthandOperator", testShorthandOperator),
             ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),

@@ -103,6 +103,11 @@
   [Javier Hernández](https://github.com/jaherhi)
   [#384](https://github.com/realm/SwiftLint/issues/384)
 
+* Add `shorthand_operator` rule that validates that shorthand operators should
+  be used when possible.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#902](https://github.com/realm/SwiftLint/issues/902)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  

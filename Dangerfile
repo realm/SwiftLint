@@ -38,6 +38,8 @@ if has_app_changes
   ]
 
   @commits = {}
+  @branch_durations = {}
+  @master_durations = {}
 
   def generate_reports(clone, branch)
     Dir.chdir('osscheck') do
@@ -48,13 +50,30 @@ if has_app_changes
           `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
         end
         Dir.chdir(repo_name) do
-          print "Linting #{repo_name} with #{branch}"
+          iterations = 5
+          print "Linting #{iterations} iterations of #{repo_name} with #{branch}: 1"
           @commits[repo] = `git rev-parse HEAD`
+          durations = []
+          start = Time.now
           command = '../../.build/debug/swiftlint'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             Open3.popen3(command) do |_, stdout, _, _|
               file << stdout.read.chomp
             end
+          end
+          durations += [Time.now - start]
+          for i in 2..iterations
+            print "..#{i}"
+            start = Time.now
+            Open3.popen3(command) { |_, stdout, _, _| stdout.read }
+            durations += [Time.now - start]
+          end
+          puts ''
+          average_duration = (durations.reduce(:+) / iterations).round(2)
+          if branch == 'branch'
+            @branch_durations[repo] = average_duration
+          else
+            @master_durations[repo] = average_duration
           end
         end
       end
@@ -98,6 +117,20 @@ if has_app_changes
     (branch - master).each do |violation|
       warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
     end
+  end
+  @branch_durations.each do |repo, branch_duration|
+    master_duration = @master_durations[repo]
+    percent_change = 100 * (master_duration - branch_duration) / master_duration
+    faster_slower = nil
+    if branch_duration < master_duration
+      faster_slower = 'faster'
+    else
+      faster_slower = 'slower'
+      percent_change *= -1
+    end
+    repo_name = repo.partition('/').last
+    message "Linting #{repo_name} with this PR took #{branch_duration}s " \
+            "vs #{master_duration}s on master (#{percent_change.to_i}\% #{faster_slower})"
   end
   # Clean up
   FileUtils.rm_rf('osscheck')

@@ -18,27 +18,11 @@ extension FileManager: LintableFileManager {
         let absolutePath = path.bridge()
             .absolutePathRepresentation(rootDirectory: rootPath).bridge()
             .standardizingPath
-        var isDirectoryObjC: ObjCBool = false
-        guard fileExists(atPath: absolutePath, isDirectory: &isDirectoryObjC) else {
-            return []
-        }
-        #if os(Linux)
-        let isDirectory = isDirectoryObjC
-        #else
-        let isDirectory = isDirectoryObjC.boolValue
-        #endif
-        if isDirectory {
-            do {
-                return try subpathsOfDirectory(atPath: absolutePath)
-                    .map(absolutePath.bridge().appendingPathComponent).filter {
-                        $0.bridge().isSwiftFile()
-                    }
-            } catch {
-                fatalError("Couldn't find files in \(absolutePath): \(error)")
+        return enumerator(atPath: absolutePath)?.flatMap { element in
+            if let element = element as? String, element.bridge().isSwiftFile() {
+                return absolutePath.bridge().appendingPathComponent(element)
             }
-        } else if absolutePath.bridge().isSwiftFile() {
-            return [absolutePath]
-        }
-        return []
+            return nil
+        } ?? []
     }
 }

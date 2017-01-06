@@ -19,7 +19,7 @@ extension FileManager: LintableFileManager {
             .absolutePathRepresentation(rootDirectory: rootPath).bridge()
             .standardizingPath
         return enumerator(atPath: absolutePath)?.flatMap { element in
-            if let element = element as? String, element.hasSuffix(".swift") {
+            if let element = element as? String, element.bridge().isSwiftFile() {
                 return absolutePath.bridge().appendingPathComponent(element)
             }
             return nil

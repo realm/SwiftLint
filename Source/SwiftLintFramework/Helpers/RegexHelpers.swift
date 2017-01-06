@@ -8,7 +8,7 @@
 
 struct RegexHelpers {
     // A single variable
-    static let varName = "[a-zA-Z_][a-zA-Z0-9_]+"
+    static let varName = "[a-zA-Z_\.][a-zA-Z0-9_\.]+"
 
     // A single variable in a group (capturable)
     static let varNameGroup = "\\s*(\(varName))\\s*"

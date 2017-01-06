@@ -82,8 +82,11 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 return nil
             }
 
-            let kindsInCaptureGroups = byteRanges.map { range in
-                range.flatMap { file.syntaxMap.tokensIn($0).flatMap { SyntaxKind(rawValue: $0.type) } } ?? []
+            let kindsInCaptureGroups = byteRanges.map { range -> [SyntaxKind] in
+                range.flatMap {
+                    let tokens = file.syntaxMap.tokensIn($0)
+                    return tokens.flatMap { SyntaxKind(rawValue: $0.type) }
+                } ?? []
             }
 
             let groupIndexes: [Int]

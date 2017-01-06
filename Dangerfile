@@ -69,7 +69,7 @@ if has_app_changes
   @repos.each do |repo|
     @repo_name = repo.partition('/').last
     def non_empty_lines(path)
-      File.read(path).split(/\n+/).reject { |c| c.empty? }
+      File.read(path).split(/\n+/).reject(&:empty?)
     end
     branch = non_empty_lines("osscheck/branch_reports/#{@repo_name}.txt")
     master = non_empty_lines("osscheck/master_reports/#{@repo_name}.txt")

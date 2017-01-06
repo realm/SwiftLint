@@ -165,6 +165,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1005](https://github.com/realm/SwiftLint/issues/1005)
 
+* Add a rule that enforces alphabetical sorting of imports.  
+  [Scott Berrevoets](https://github.com/sberrevoets)
+  [#900](https://github.com/realm/SwiftLint/issues/900)
+
 ##### Bug Fixes
 
 * `FunctionParameterCountRule` also ignores generic initializers.  

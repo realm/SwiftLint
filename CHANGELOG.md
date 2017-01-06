@@ -98,6 +98,11 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#769](https://github.com/realm/SwiftLint/issues/769)
 
+* Add check to ignore urls in `line_length` rule when `ignores_urls`
+  configuration is enabled.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#384](https://github.com/realm/SwiftLint/issues/384)
+
 * Add `unused_optional_binding` that will check for optional bindings not being used.  
   [Rafael Machado](https://github.com/rakaramos/)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
@@ -127,6 +132,9 @@
 
 * Fix `variable_name` and `type_name` rules on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix linting directories with names ending with `.swift`.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

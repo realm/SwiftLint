@@ -124,6 +124,9 @@
 * Fix `variable_name` and `type_name` rules on Linux.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix linting directories with names ending with `.swift`.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

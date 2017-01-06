@@ -10,7 +10,6 @@ import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
     func testClassDelegateProtocol() {
@@ -132,11 +131,6 @@ class RulesTests: XCTestCase {
 
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
-    }
-
-    func testLineLength() {
-        verifyRule(LineLengthRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
     }
 
     func testMark() {
@@ -371,7 +365,6 @@ extension RulesTests {
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),
             ("testLegacyConstructor", testLegacyConstructor),
-            ("testLineLength", testLineLength),
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),

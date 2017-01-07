@@ -32,7 +32,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n",
             "guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
             "}\n",
-            "if let (first, second), let ↓_ = Foo.optionalValue2 = getOptionalTuple() {\n" +
+            "if let (first, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue2 = getOptionalTuple() {\n" +
             "}\n"
         ]
     )

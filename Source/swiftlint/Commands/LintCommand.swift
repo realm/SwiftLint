@@ -144,7 +144,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the cache that should be used when linting")
+                               usage: "the location of the cache used when linting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
                                usage: "ignore cache when linting")
     }

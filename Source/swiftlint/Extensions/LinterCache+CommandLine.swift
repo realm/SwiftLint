@@ -12,7 +12,7 @@ import SwiftLintFramework
 extension LinterCache {
 
     class func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache? {
-        guard let url = cacheUrl(options: options, configuration: configuration) else {
+        guard let url = cacheURL(options: options, configuration: configuration) else {
             return nil
         }
 
@@ -28,14 +28,14 @@ extension LinterCache {
     }
 
     func save(options: LintOptions, configuration: Configuration) {
-        if let url = cacheUrl(options: options, configuration: configuration) {
+        if let url = cacheURL(options: options, configuration: configuration) {
             try? save(to: url)
         }
     }
 
 }
 
-private func cacheUrl(options: LintOptions, configuration: Configuration) -> URL? {
+private func cacheURL(options: LintOptions, configuration: Configuration) -> URL? {
     guard !options.ignoreCache else {
         return nil
     }

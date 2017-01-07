@@ -111,6 +111,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#902](https://github.com/realm/SwiftLint/issues/902)
 
+* Allow specifying a `swiftlint_version` configuration key which will log a
+  warning if the current running version of SwiftLint is different than this
+  value.  
+  [JP Simard](https://github.com/jpsim)
+  [#221](https://github.com/realm/SwiftLint/issues/221)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
@@ -139,6 +145,10 @@
 
 * Fix linting directories with names ending with `.swift`.  
   [JP Simard](https://github.com/jpsim)
+
+* Fix running `swiftlint version` when building with Swift Package Manager.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1045](https://github.com/realm/SwiftLint/issues/1045)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

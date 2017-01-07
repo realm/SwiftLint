@@ -27,14 +27,15 @@ private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
     case disabledRules = "disabled_rules"
-    case enabledRules = "enabled_rules" // deprecated in favor of OptInRules
+    case enabledRules = "enabled_rules" // deprecated in favor of optInRules
     case excluded = "excluded"
     case included = "included"
     case optInRules = "opt_in_rules"
     case reporter = "reporter"
+    case swiftlintVersion = "swiftlint_version"
     case useNestedConfigs = "use_nested_configs" // deprecated
-    case whitelistRules = "whitelist_rules"
     case warningThreshold = "warning_threshold"
+    case whitelistRules = "whitelist_rules"
 }
 
 public struct Configuration: Equatable {
@@ -55,7 +56,13 @@ public struct Configuration: Equatable {
                  warningThreshold: Int? = nil,
                  reporter: String = XcodeReporter.identifier,
                  ruleList: RuleList = masterRuleList,
-                 configuredRules: [Rule]? = nil) {
+                 configuredRules: [Rule]? = nil,
+                 swiftlintVersion: String? = nil) {
+
+        if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
+            queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
+                "configuration specified version \(pinnedVersion).")
+        }
 
         self.included = included
         self.excluded = excluded
@@ -148,7 +155,8 @@ public struct Configuration: Equatable {
                   reporter: dict[ConfigurationKey.reporter.rawValue] as? String ??
                     XcodeReporter.identifier,
                   ruleList: ruleList,
-                  configuredRules: configuredRules)
+                  configuredRules: configuredRules,
+                  swiftlintVersion: dict[ConfigurationKey.swiftlintVersion.rawValue] as? String)
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -254,6 +262,7 @@ private func validKeys(ruleList: RuleList) -> [String] {
         .included,
         .optInRules,
         .reporter,
+        .swiftlintVersion,
         .useNestedConfigs,
         .warningThreshold,
         .whitelistRules

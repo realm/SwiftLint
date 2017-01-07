@@ -35,9 +35,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    // swiftlint:disable:next force_try
-    private static let defaultRegex = try! NSRegularExpression(pattern: "\\bCopyright\\b",
-                                                               options: [.caseInsensitive])
+    private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", required_string: \(requiredString)" +

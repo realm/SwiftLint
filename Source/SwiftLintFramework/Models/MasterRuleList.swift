@@ -122,6 +122,7 @@ public let masterRuleList = RuleList(rules:
     RedundantStringEnumValueRule.self,
     RedundantVoidReturnRule.self,
     ReturnArrowWhitespaceRule.self,
+    ShorthandOperatorRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,

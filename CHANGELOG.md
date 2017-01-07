@@ -9,6 +9,9 @@
 
 ##### Enhancements
 
+* Permit unsigned and explicitly-sized integer types in `valid_ibinspectable`  
+  [Daniel Duan](https://github.com/dduan)
+
 * Make `nimble_operator` rule correctable.  
   [Vojta Stavik](https://github.com/VojtaStavik)
 
@@ -103,6 +106,17 @@
   [Javier Hernández](https://github.com/jaherhi)
   [#384](https://github.com/realm/SwiftLint/issues/384)
 
+* Add `shorthand_operator` rule that validates that shorthand operators should
+  be used when possible.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#902](https://github.com/realm/SwiftLint/issues/902)
+
+* Allow specifying a `swiftlint_version` configuration key which will log a
+  warning if the current running version of SwiftLint is different than this
+  value.  
+  [JP Simard](https://github.com/jpsim)
+  [#221](https://github.com/realm/SwiftLint/issues/221)
+
 * Add `unused_optional_binding` that will check for optional bindings not being used.  
   [Rafael Machado](https://github.com/rakaramos/)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
@@ -135,6 +149,10 @@
 
 * Fix linting directories with names ending with `.swift`.  
   [JP Simard](https://github.com/jpsim)
+
+* Fix running `swiftlint version` when building with Swift Package Manager.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1045](https://github.com/realm/SwiftLint/issues/1045)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

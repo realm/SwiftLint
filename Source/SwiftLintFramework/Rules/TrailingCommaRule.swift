@@ -42,8 +42,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    // swiftlint:disable:next force_try
-    private static let regex = try! NSRegularExpression(pattern: ",", options: [.ignoreMetacharacters])
+    private static let commaRegex = regex(",", options: [.ignoreMetacharacters])
 
     public func validateFile(_ file: File,
                              kind: SwiftExpressionKind,
@@ -113,8 +112,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
     private func trailingCommaIndex(_ contents: String, file: File, offset: Int) -> Int? {
         let range = NSRange(location: 0, length: contents.bridge().length)
-        let ranges = TrailingCommaRule.regex
-            .matches(in: contents, options: [], range: range).map { $0.range }
+        let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments
         return ranges.filter {

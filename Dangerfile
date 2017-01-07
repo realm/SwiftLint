@@ -1,3 +1,5 @@
+require 'open3'
+
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
@@ -28,6 +30,7 @@ end
 # Run OSSCheck if there were app changes
 if has_app_changes
   @repos = [
+    'Alamofire/Alamofire',
     'JohnCoates/Aerial',
     'jpsim/SourceKitten',
     'Moya/Moya',
@@ -35,16 +38,42 @@ if has_app_changes
   ]
 
   @commits = {}
+  @branch_durations = {}
+  @master_durations = {}
 
   def generate_reports(clone, branch)
     Dir.chdir('osscheck') do
       @repos.each do |repo|
-        `git clone "https://github.com/#{repo}" --depth 1` if clone
         repo_name = repo.partition('/').last
+        if clone
+          puts "Cloning #{repo_name}"
+          `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
+        end
         Dir.chdir(repo_name) do
+          iterations = 5
+          print "Linting #{iterations} iterations of #{repo_name} with #{branch}: 1"
           @commits[repo] = `git rev-parse HEAD`
+          durations = []
+          start = Time.now
+          command = '../../.build/debug/swiftlint'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
-            file.puts `../../.build/debug/swiftlint`
+            Open3.popen3(command) do |_, stdout, _, _|
+              file << stdout.read.chomp
+            end
+          end
+          durations += [Time.now - start]
+          for i in 2..iterations
+            print "..#{i}"
+            start = Time.now
+            Open3.popen3(command) { |_, stdout, _, _| stdout.read }
+            durations += [Time.now - start]
+          end
+          puts ''
+          average_duration = (durations.reduce(:+) / iterations).round(2)
+          if branch == 'branch'
+            @branch_durations[repo] = average_duration
+          else
+            @master_durations[repo] = average_duration
           end
         end
       end
@@ -56,13 +85,14 @@ if has_app_changes
     FileUtils.mkdir_p(dir)
   end
   # Build branch
+  puts 'Building branch'
   `swift build`
   # Generate branch reports
   generate_reports(true, 'branch')
   # Build master
   `git checkout master`
   `git pull`
-  `git submodule update --init --recursive`
+  puts 'Building master'
   `swift build`
   # Generate master reports
   generate_reports(false, 'master')
@@ -70,13 +100,13 @@ if has_app_changes
   @repos.each do |repo|
     @repo_name = repo.partition('/').last
     def non_empty_lines(path)
-      File.read(path).split(/\n+/).reject { |c| c.empty? }
+      File.read(path).split(/\n+/).reject(&:empty?)
     end
     branch = non_empty_lines("osscheck/branch_reports/#{@repo_name}.txt")
     master = non_empty_lines("osscheck/master_reports/#{@repo_name}.txt")
     @repo = repo
     def convert_to_link(string)
-      string.sub!("/Users/travis/build/realm/SwiftLint/osscheck/#{@repo_name}", '')
+      string.sub!("/Users/distiller/SwiftLint/osscheck/#{@repo_name}", '')
       string.sub!('.swift:', '.swift#L')
       string = string.partition(': warning:').first.partition(': error:').first
       "https://github.com/#{@repo}/blob/#{@commits[@repo]}#{string}"
@@ -87,6 +117,20 @@ if has_app_changes
     (branch - master).each do |violation|
       warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
     end
+  end
+  @branch_durations.each do |repo, branch_duration|
+    master_duration = @master_durations[repo]
+    percent_change = 100 * (master_duration - branch_duration) / master_duration
+    faster_slower = nil
+    if branch_duration < master_duration
+      faster_slower = 'faster'
+    else
+      faster_slower = 'slower'
+      percent_change *= -1
+    end
+    repo_name = repo.partition('/').last
+    message "Linting #{repo_name} with this PR took #{branch_duration}s " \
+            "vs #{master_duration}s on master (#{percent_change.to_i}\% #{faster_slower})"
   end
   # Clean up
   FileUtils.rm_rf('osscheck')

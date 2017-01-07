@@ -9,6 +9,9 @@
 
 ##### Enhancements
 
+* Permit unsigned and explicitly-sized integer types in `valid_ibinspectable`  
+  [Daniel Duan](https://github.com/dduan)
+
 * Make `nimble_operator` rule correctable.  
   [Vojta Stavik](https://github.com/VojtaStavik)
 

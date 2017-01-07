@@ -40,33 +40,29 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(_ file: File,
                              kind: StatementKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .if || kind == .guard else {
-                return []
+        guard kind == .if || kind == .guard,
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            return []
         }
 
-        return violationRanges(file: file).map {
+        return violationRanges(file: file, in: range).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRanges(file: File) -> [NSRange] {
+    private func violationRanges(file: File, in range: NSRange) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
         let underscorePattern = "\\b_\\b"
         let parenthesesPattern = "\\([^)]*\\)"
-        let pattern = underscorePattern + "|" + parenthesesPattern
+        let pattern = underscorePattern
 
         return file.matchPattern(pattern,
                                  excludingSyntaxKinds: kinds,
-                                 excludingPattern: parenthesesPattern)
-    }
-
-    private func isUnderscore(file: File, token: SyntaxToken) -> Bool {
-        guard SyntaxKind(rawValue: token.type) == .keyword else {
-            return false
-        }
-        let contents = file.contents.bridge()
-        return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
+                                 excludingPattern: parenthesesPattern,
+                                 range: range)
     }
 }

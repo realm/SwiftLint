@@ -53,7 +53,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
     private func violationRanges(file: File) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
-        let underscorePattern = "(\\b_\\b)"
+        let underscorePattern = "\\b_\\b"
         let parenthesesPattern = "\\([^)]*\\)"
         let pattern = underscorePattern + "|" + parenthesesPattern
 

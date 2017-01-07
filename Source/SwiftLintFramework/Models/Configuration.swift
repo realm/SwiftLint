@@ -262,6 +262,7 @@ private func validKeys(ruleList: RuleList) -> [String] {
         .included,
         .optInRules,
         .reporter,
+        .swiftlintVersion,
         .useNestedConfigs,
         .warningThreshold,
         .whitelistRules

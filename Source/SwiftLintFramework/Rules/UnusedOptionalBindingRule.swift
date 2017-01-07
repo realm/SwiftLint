@@ -58,9 +58,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         let kinds = SyntaxKind.commentAndStringKinds()
         let underscorePattern = "\\b_\\b"
         let parenthesesPattern = "\\([^)]*\\)"
-        let pattern = underscorePattern
 
-        return file.matchPattern(pattern,
+        return file.matchPattern(underscorePattern,
                                  excludingSyntaxKinds: kinds,
                                  excludingPattern: parenthesesPattern,
                                  range: range)

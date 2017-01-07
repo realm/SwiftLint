@@ -58,14 +58,13 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         return "\(pattern1)|\(pattern2)"
     }()
 
-    // swiftlint:disable:next force_try
-    private static let regex = try! NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
+    private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
 
     public func validateFile(_ file: File) -> [StyleViolation] {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 
-        let matches = ShorthandOperatorRule.regex.matches(in: file.contents, options: [], range: range)
+        let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
         return matches.flatMap { match -> StyleViolation? in
 
             // byteRanges will have the ranges of captured groups

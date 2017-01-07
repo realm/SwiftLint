@@ -153,8 +153,7 @@ private extension StatementPositionRule {
     // followed by newline and the same amount of whitespace then 'else' or 'catch' literals
     static let uncuddledPattern = "([ \t]*)\\}(\\n+)?([ \t]*)\\b(else|catch)\\b"
 
-    // swiftlint:disable:next force_try
-    static let uncuddledRegex = try! NSRegularExpression(pattern: uncuddledPattern, options: [])
+    static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
     static func uncuddledMatchValidator(_ contents: String) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
         return { match in

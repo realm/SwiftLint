@@ -45,7 +45,6 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         }
 
         return violationRanges(file: file).map {
-            print((file.contents as NSString).substring(with: $0))
             return StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))

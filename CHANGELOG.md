@@ -150,6 +150,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1045](https://github.com/realm/SwiftLint/issues/1045)
 
+* Fix false positive on `vertical_parameter_alignment` rule when breaking line
+  in a default parameter declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1129](https://github.com/realm/SwiftLint/issues/1129)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

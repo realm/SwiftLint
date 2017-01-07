@@ -117,7 +117,7 @@
   [JP Simard](https://github.com/jpsim)
   [#221](https://github.com/realm/SwiftLint/issues/221)
 
-* Add `unused_optional_binding` that will check for optional bindings not being used.  
+* Add `unused_optional_binding` rule that will check for optional bindings not being used.  
   [Rafael Machado](https://github.com/rakaramos/)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
 

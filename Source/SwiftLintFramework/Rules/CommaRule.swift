@@ -71,7 +71,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     // captures spaces and comma only
     // http://userguide.icu-project.org/strings/regexp
 
-    fileprivate static let mainPatternGroups =
+    private static let mainPatternGroups =
         "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
         "," +                  // to the left of a comma
@@ -83,20 +83,18 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ")" +                  // end capture
         "(\\S)"                // second capture is not whitespace.
 
-    fileprivate static let pattern =
+    private static let pattern =
         "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
         "|" +                       // or
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
-    // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern,
-                                                                        options: [])
-    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
+    private static let regularExpression = regex(pattern, options: [])
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
         .map { $0.rawValue }
 
-    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
+    private func violationRangesInFile(_ file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap

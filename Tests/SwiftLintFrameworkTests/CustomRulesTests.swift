@@ -22,7 +22,7 @@ class CustomRulesTests: XCTestCase {
         var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = .forcePattern("regex")
+        comp.regex = regex("regex")
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.matchKinds = Set([SyntaxKind.comment])
         var compRules = CustomRulesConfiguration()

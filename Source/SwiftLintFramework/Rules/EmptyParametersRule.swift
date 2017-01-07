@@ -58,7 +58,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         return file.matchPattern(pattern,
                                  excludingSyntaxKinds: kinds,
                                  excludingPattern: excludingPattern).flatMap {
-            let voidRegex = NSRegularExpression.forcePattern(voidPattern)
+            let voidRegex = regex(voidPattern)
             return voidRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
         }
     }

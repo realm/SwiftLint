@@ -21,6 +21,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         description: "Prefer `!= nil` over `let _ =`",
         nonTriggeringExamples: [
             "if let bar = Foo.optionalValue {\n" +
+            "}\n",
+            "if let (_, second) = getOptionalTuple() {\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -29,6 +31,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "if let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
             "}\n",
             "guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n",
+            "if let (first, second), let ↓_ = Foo.optionalValue2 = getOptionalTuple() {\n" +
             "}\n"
         ]
     )
@@ -36,26 +40,27 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public func validateFile(_ file: File,
                              kind: StatementKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .if || kind == .guard,
-            let offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).map({ Int($0) }) else {
+        guard kind == .if || kind == .guard else {
                 return []
         }
 
-        // get the statement length
-        let range = NSRange(location: offset, length: length)
-        let tokens = file.syntaxMap.tokensIn(range)
-
-        // try to find any "_" inside the statement clause
-        let violatingTokens = tokens.filter {
-            isUnderscore(file: file, token: $0)
-        }
-
-        return violatingTokens.map {
-            StyleViolation(ruleDescription: type(of: self).description,
+        return violationRanges(file: file).map {
+            print((file.contents as NSString).substring(with: $0))
+            return StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0.offset))
+                           location: Location(file: file, characterOffset: $0.location))
         }
+    }
+
+    private func violationRanges(file: File) -> [NSRange] {
+        let kinds = SyntaxKind.commentAndStringKinds()
+        let underscorePattern = "(\\b_\\b)"
+        let parenthesesPattern = "\\([^)]*\\)"
+        let pattern = underscorePattern + "|" + parenthesesPattern
+
+        return file.matchPattern(pattern,
+                                 excludingSyntaxKinds: kinds,
+                                 excludingPattern: parenthesesPattern)
     }
 
     private func isUnderscore(file: File, token: SyntaxToken) -> Bool {

@@ -76,7 +76,7 @@ if has_app_changes
     master = non_empty_lines("osscheck/master_reports/#{@repo_name}.txt")
     @repo = repo
     def convert_to_link(string)
-      string.sub!("/Users/travis/build/realm/SwiftLint/osscheck/#{@repo_name}", '')
+      string.sub!("/Users/distiller/SwiftLint/osscheck/#{@repo_name}", '')
       string.sub!('.swift:', '.swift#L')
       string = string.partition(': warning:').first.partition(': error:').first
       "https://github.com/#{@repo}/blob/#{@commits[@repo]}#{string}"

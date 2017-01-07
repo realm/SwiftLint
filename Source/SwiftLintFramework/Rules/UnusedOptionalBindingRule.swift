@@ -10,7 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -44,12 +43,11 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
             let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
-            return []
+                return []
         }
 
         return violationRanges(file: file, in: range).map {
-            return StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+            StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }

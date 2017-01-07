@@ -26,7 +26,8 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  @IBInspectable private var x: String!\n}\n",
             "class Foo {\n  @IBInspectable private var count: Int = 0\n}\n",
             "class Foo {\n  private var notInspectable = 0\n}\n",
-            "class Foo {\n  private let notInspectable: Int\n}\n"
+            "class Foo {\n  private let notInspectable: Int\n}\n",
+            "class Foo {\n  private let notInspectable: UInt8\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  @IBInspectable private ↓let count: Int\n}\n",
@@ -87,7 +88,6 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         ]
 
         let types = [
-            "Int",
             "CGFloat",
             "Float",
             "Double",
@@ -100,10 +100,16 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "NSRect"
         ]
 
+        let intTypes = ["", "8", "16", "32", "64"].flatMap { size in
+            ["U", ""].flatMap { (sign: String) -> String in
+                "\(sign)Int\(size)"
+            }
+        }
+
         let expandToIncludeOptionals: (String) -> [String] = { [$0, $0 + "!", $0 + "?"] }
 
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
-        return referenceTypes.flatMap(expandToIncludeOptionals) + types
+        return referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes
     }
 
     private func violation(_ dictionary: [String: SourceKitRepresentable],

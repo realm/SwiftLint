@@ -11,14 +11,12 @@ import Foundation
 import Result
 import SwiftLintFramework
 
-private let version = Version.current.value
-
 struct VersionCommand: CommandProtocol {
     let verb = "version"
     let function = "Display the current version of SwiftLint"
 
     func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        print(version)
+        print(Version.current.value)
         return .success()
     }
 }

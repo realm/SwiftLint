@@ -14,8 +14,6 @@ private let formatter: DateFormatter = {
     return formatter
 }()
 
-private let swiftlintVersion = Version.current.value
-
 public struct HTMLReporter: Reporter {
     public static let identifier = "html"
     public static let isRealtime = false
@@ -25,7 +23,7 @@ public struct HTMLReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return generateReport(violations, swiftlintVersion: swiftlintVersion,
+        return generateReport(violations, swiftlintVersion: Version.current.value,
                               dateString: formatter.string(from: Date()))
     }
 

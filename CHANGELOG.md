@@ -140,6 +140,10 @@
 * Fix linting directories with names ending with `.swift`.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix running `swiftlint version` when building with Swift Package Manager.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1045](https://github.com/realm/SwiftLint/issues/1045)
+
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 
 ##### Breaking

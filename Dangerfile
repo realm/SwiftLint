@@ -62,7 +62,6 @@ if has_app_changes
   # Build master
   `git checkout master`
   `git pull`
-  `git submodule update --init --recursive`
   `swift build`
   # Generate master reports
   generate_reports(false, 'master')

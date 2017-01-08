@@ -15,6 +15,7 @@ public enum RuleListError: Error {
 public struct RuleList {
     public let list: [String: Rule.Type]
     private let aliases: [String: String]
+
     public init(rules: Rule.Type...) {
         var tmpList = [String: Rule.Type]()
         var tmpAliases = [String: String]()

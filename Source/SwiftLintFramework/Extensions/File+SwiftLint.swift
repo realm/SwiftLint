@@ -164,12 +164,12 @@ extension File {
     internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
 
     internal func matchPattern(_ pattern: String,
+                               range: NSRange? = nil,
                                excludingSyntaxKinds: [SyntaxKind],
                                excludingPattern: String,
-                               range: NSRange? = nil,
                                exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let contents = self.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds, range: range)
         if matches.isEmpty {
             return []

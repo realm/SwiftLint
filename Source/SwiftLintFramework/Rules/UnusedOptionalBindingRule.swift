@@ -58,8 +58,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         let parenthesesPattern = "\\([^)]*\\)"
 
         return file.matchPattern(underscorePattern,
+                                 range: range,
                                  excludingSyntaxKinds: kinds,
-                                 excludingPattern: parenthesesPattern,
-                                 range: range)
+                                 excludingPattern: parenthesesPattern)
     }
 }

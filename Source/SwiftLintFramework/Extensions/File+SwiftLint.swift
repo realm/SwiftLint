@@ -156,6 +156,7 @@ extension File {
     internal func matchPattern(_ pattern: String,
                                excludingSyntaxKinds syntaxKinds: [SyntaxKind],
                                range: NSRange? = nil) -> [NSRange] {
+        // dummy change
         return matchPattern(pattern, range: range).filter {
             $0.1.filter(syntaxKinds.contains).isEmpty
         }.map { $0.0 }

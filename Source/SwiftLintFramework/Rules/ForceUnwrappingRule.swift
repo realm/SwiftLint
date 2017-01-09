@@ -53,19 +53,17 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // capture previous and next of "!"
     // http://userguide.icu-project.org/strings/regexp
-    fileprivate static let pattern = "(\\S)(!)(.?)"
+    private static let pattern = "(\\S)(!)(.?)"
 
-    // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern,
-        options: [.dotMatchesLineSeparators])
-    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind
+    private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind
         .commentKeywordStringAndTypeidentifierKinds().map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind
         .commentAndStringKinds().map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
+    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
 
     // swiftlint:disable:next function_body_length
-    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
+    private func violationRangesInFile(_ file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: contents.utf16.count)
@@ -139,7 +137,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // Returns if range should generate violation
     // check deepest kind matching range in structure
-    fileprivate func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
+    private func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
         let nsstring = file.contents.bridge()
         let kinds = file.structure.kindsFor(byteRange.location)
         if let lastKind = kinds.last {

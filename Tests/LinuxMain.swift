@@ -18,6 +18,8 @@ XCTMain([
     testCase(FileHeaderRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(IntegrationTests.allTests),
+    testCase(LineLengthConfigurationTests.allTests),
+    testCase(LineLengthRuleTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),
     testCase(RuleTests.allTests),

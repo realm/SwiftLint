@@ -113,8 +113,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
                                  excludingPattern: excludingPattern).flatMap {
 
             let spacesPattern = oneSpace + "*"
-            let rangeRegex = NSRegularExpression
-                .forcePattern(spacesPattern + rangePattern + spacesPattern)
+            let rangeRegex = regex(spacesPattern + rangePattern + spacesPattern)
 
             // if it's a range operator, the correction shouldn't have spaces
             if let range = rangeRegex.firstMatch(in: file.contents,
@@ -124,7 +123,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             }
 
             let pattern = spacesPattern + operators + spacesPattern
-            let operatorsRegex = NSRegularExpression.forcePattern(pattern)
+            let operatorsRegex = regex(pattern)
 
             guard let range = operatorsRegex.firstMatch(in: file.contents,
                                                         options: [], range: $0)?.range else {

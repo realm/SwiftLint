@@ -10,7 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -21,6 +20,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         description: "Prefer `!= nil` over `let _ =`",
         nonTriggeringExamples: [
             "if let bar = Foo.optionalValue {\n" +
+            "}\n",
+            "if let (_, second) = getOptionalTuple() {\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -29,6 +30,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "if let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
             "}\n",
             "guard let a = Foo.optionalValue, let ↓_ = Foo.optionalValue2 {\n" +
+            "}\n",
+            "if let (first, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue2 = getOptionalTuple() {\n" +
             "}\n"
         ]
     )
@@ -37,32 +40,26 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                              kind: StatementKind,
                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .if || kind == .guard,
-            let offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).map({ Int($0) }) else {
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }
 
-        // get the statement length
-        let range = NSRange(location: offset, length: length)
-        let tokens = file.syntaxMap.tokensIn(range)
-
-        // try to find any "_" inside the statement clause
-        let violatingTokens = tokens.filter {
-            isUnderscore(file: file, token: $0)
-        }
-
-        return violatingTokens.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0.offset))
+        return violationRanges(file: file, in: range).map {
+            StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func isUnderscore(file: File, token: SyntaxToken) -> Bool {
-        guard SyntaxKind(rawValue: token.type) == .keyword else {
-            return false
-        }
-        let contents = file.contents.bridge()
-        return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
+    private func violationRanges(file: File, in range: NSRange) -> [NSRange] {
+        let kinds = SyntaxKind.commentAndStringKinds()
+        let underscorePattern = "\\b_\\b"
+        let parenthesesPattern = "\\([^)]*\\)"
+
+        return file.matchPattern(underscorePattern,
+                                 excludingSyntaxKinds: kinds,
+                                 excludingPattern: parenthesesPattern,
+                                 range: range)
     }
 }

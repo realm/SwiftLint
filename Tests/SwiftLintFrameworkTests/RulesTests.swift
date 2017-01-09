@@ -10,7 +10,6 @@ import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 class RulesTests: XCTestCase {
 
     func testClassDelegateProtocol() {
@@ -134,11 +133,6 @@ class RulesTests: XCTestCase {
         verifyRule(LegacyConstructorRule.description)
     }
 
-    func testLineLength() {
-        verifyRule(LineLengthRule.description, commentDoesntViolate: false,
-                   stringDoesntViolate: false)
-    }
-
     func testMark() {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
@@ -221,6 +215,10 @@ class RulesTests: XCTestCase {
 
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
+    }
+
+    func testShorthandOperator() {
+        verifyRule(ShorthandOperatorRule.description)
     }
 
     func testSortedImports() {
@@ -375,7 +373,6 @@ extension RulesTests {
             ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),
             ("testLegacyConstructor", testLegacyConstructor),
-            ("testLineLength", testLineLength),
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
@@ -392,6 +389,7 @@ extension RulesTests {
             ("testRedundantStringEnumValue", testRedundantStringEnumValue),
             ("testRedundantVoidReturn", testRedundantVoidReturn),
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
+            ("testShorthandOperator", testShorthandOperator),
             ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),

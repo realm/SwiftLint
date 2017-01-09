@@ -18,10 +18,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
-
-    // swiftlint:disable:next force_try
-    private static let regularExpression = try! NSRegularExpression(pattern: parametersPattern,
-                                                                    options: [])
+    private static let regularExpression = regex(parametersPattern, options: [])
 
     public init() {}
 

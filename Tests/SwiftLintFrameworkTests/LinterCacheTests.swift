@@ -87,3 +87,18 @@ class LinterCacheTests: XCTestCase {
         XCTAssertNil(cachedViolations)
     }
 }
+
+extension LinterCacheTests {
+    static var allTests: [(String, (LinterCacheTests) -> () throws -> Void)] {
+        return [
+            ("testInitThrowsWhenUsingDifferentVersion", testInitThrowsWhenUsingDifferentVersion),
+            ("testInitThrowsWhenUsingInvalidCacheFormat", testInitThrowsWhenUsingInvalidCacheFormat),
+            ("testInitThrowsWhenUsingDifferentConfiguration", testInitThrowsWhenUsingDifferentConfiguration),
+            ("testInitSucceeds", testInitSucceeds),
+            ("testInitSucceedsWithConfigurationHash", testInitSucceedsWithConfigurationHash),
+            ("testParsesViolations", testParsesViolations),
+            ("testParsesViolationsWithModifiedHash", testParsesViolationsWithModifiedHash),
+            ("testParsesViolationsWithEmptyViolations", testParsesViolationsWithEmptyViolations)
+        ]
+    }
+}

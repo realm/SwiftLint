@@ -20,13 +20,14 @@ XCTMain([
     testCase(IntegrationTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
+    testCase(LinterCacheTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),
-    testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
+    testCase(RuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
-    testCase(YamlSwiftLintTests.allTests),
-    testCase(YamlParserTests.allTests)
+    testCase(YamlParserTests.allTests),
+    testCase(YamlSwiftLintTests.allTests)
 ])

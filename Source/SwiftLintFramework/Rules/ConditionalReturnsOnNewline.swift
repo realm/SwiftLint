@@ -46,8 +46,8 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
                         return false
             }
 
-            return ["if", "guard"].contains(contentForToken(token: firstToken, file: file)) &&
-                contentForToken(token: lastToken, file: file) == "return"
+            return ["if", "guard"].contains(content(for: firstToken, file: file)) &&
+                content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -55,8 +55,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         }
     }
 
-    private func contentForToken(token: SyntaxToken, file: File) -> String {
-        return file.contents.bridge().substringWithByteRange(start: token.offset,
-                                                             length: token.length) ?? ""
+    private func content(for token: SyntaxToken, file: File) -> String {
+        return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
 }

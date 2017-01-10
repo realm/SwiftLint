@@ -38,7 +38,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     }()
 
     public func validate(file: File) -> [StyleViolation] {
-        return validateTypeAliasesAndAssociatedTypes(file) +
+        return validateTypeAliasesAndAssociatedTypes(in: file) +
             validate(file: file, dictionary: file.structure.dictionary)
     }
 
@@ -51,10 +51,10 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 return []
         }
 
-        return validateName(name: name, dictionary: dictionary, file: file, offset: offset)
+        return validate(name: name, dictionary: dictionary, file: file, offset: offset)
     }
 
-    private func validateTypeAliasesAndAssociatedTypes(_ file: File) -> [StyleViolation] {
+    private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
         let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
         return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
             guard tokens.count == 2,
@@ -71,14 +71,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            return validateName(name: name, file: file, offset: nameToken.offset)
+            return validate(name: name, file: file, offset: nameToken.offset)
         }
     }
 
-    private func validateName(name: String,
-                              dictionary: [String: SourceKitRepresentable] = [:],
-                              file: File,
-                              offset: Int) -> [StyleViolation] {
+    private func validate(name: String, dictionary: [String: SourceKitRepresentable] = [:], file: File,
+                          offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }

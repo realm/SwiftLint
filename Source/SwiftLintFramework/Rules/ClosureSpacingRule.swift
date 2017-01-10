@@ -33,7 +33,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
     // this helps cut down the time to search through a file by
     // skipping lines that do not have at least one { and one } brace
-    private func lineContainsBracesIn(_ range: NSRange, content: NSString) -> NSRange? {
+    private func lineContainsBraces(in range: NSRange, content: NSString) -> NSRange? {
         let start = content.range(of: "{", options: [.literal], range: range)
         guard start.length != 0 else { return nil }
         let end = content.range(of: "}", options: [.literal, .backwards], range: range)
@@ -43,7 +43,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
     }
 
     // returns ranges of braces { or } in the same line
-    private func validBraces(_ file: File) -> [NSRange] {
+    private func validBraces(in file: File) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
@@ -52,7 +52,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         // find all lines and accurences of open { and closed } braces
         var linesWithBraces = [[NSRange]]()
         for eachLine in file.lines {
-            guard let nsrange = lineContainsBracesIn(eachLine.range, content: nsstring) else {
+            guard let nsrange = lineContainsBraces(in: eachLine.range, content: nsstring) else {
                 continue
             }
 
@@ -70,7 +70,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
     public func validate(file: File) -> [StyleViolation] {
         // match open braces to corresponding closing braces
-        func matchBraces(_ validBraceLocations: [NSRange]) -> [NSRange] {
+        func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
             var validBraces = validBraceLocations
             var ranges = [NSRange]()
@@ -90,7 +90,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         }
 
         // matching ranges of {}
-        let matchedUpBraces = matchBraces(validBraces(file))
+        let matchedUpBraces = matchBraces(validBraceLocations: validBraces(in: file))
 
         var violationRanges = matchedUpBraces.filter {
             // removes enclosing brances to just content

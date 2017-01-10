@@ -11,8 +11,7 @@ import SourceKittenFramework
 
 private let descriptionReason = "Limit vertical whitespace to a single empty line."
 
-public struct VerticalWhitespaceRule: CorrectableRule,
-                                      ConfigurationProviderRule {
+public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
@@ -42,7 +41,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
 
     public func validate(file: File) -> [StyleViolation] {
 
-        let linesSections = validate(file)
+        let linesSections = internalValidate(file: file)
         if linesSections.isEmpty { return [] }
 
         var violations = [StyleViolation]()
@@ -62,7 +61,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         return violations
     }
 
-    func validate(_ file: File) -> [(lastLine: Line, linesToRemove: Int)] {
+    private func internalValidate(file: File) -> [(lastLine: Line, linesToRemove: Int)] {
 
         let filteredLines = file.lines.filter {
             $0.content.trimmingCharacters(in: .whitespaces).isEmpty
@@ -105,7 +104,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
     }
 
     public func correct(file: File) -> [Correction] {
-        let linesSections = validate(file)
+        let linesSections = internalValidate(file: file)
         if linesSections.isEmpty { return [] }
 
         var indexOfLinesToDelete = [Int]()

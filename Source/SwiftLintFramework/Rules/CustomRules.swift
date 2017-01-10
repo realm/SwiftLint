@@ -70,10 +70,17 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
             }
         }
 
-        return configurations.flatMap {
-            validate(file, configuration: $0).filter { eachViolation in
+        return configurations.flatMap { configuration -> [StyleViolation] in
+            let pattern = configuration.regex.pattern
+            let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtracting(configuration.matchKinds))
+            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map({
+                StyleViolation(ruleDescription: configuration.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: $0.location),
+                               reason: configuration.message)
+            }).filter { violation in
                 let regions = file.regions().filter {
-                    $0.contains(eachViolation.location)
+                    $0.contains(violation.location)
                 }
                 guard let region = regions.first else { return true }
 
@@ -83,18 +90,6 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
                 }
                 return true
             }
-        }
-    }
-
-    fileprivate func validate(_ file: File, configuration: RegexConfiguration) -> [StyleViolation] {
-        let pattern = configuration.regex.pattern
-        let excludingKinds = Array(Set(SyntaxKind.allKinds())
-            .subtracting(configuration.matchKinds))
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: configuration.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location),
-                reason: configuration.message)
         }
     }
 }

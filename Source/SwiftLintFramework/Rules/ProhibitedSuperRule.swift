@@ -11,7 +11,7 @@ import SourceKittenFramework
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = ProhibitedSuperConfiguration()
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "prohibited_super_call",
@@ -58,7 +58,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
             kind == .functionMethodInstance &&
             configuration.resolvedMethodNames.contains(name) &&
             dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") &&
-            !extractCallsToSuper(name, substructure: dictionary.substructure).isEmpty
+            !extractCalls(toSuper: name, substructure: dictionary.substructure).isEmpty
             else { return [] }
 
         return [StyleViolation(ruleDescription: type(of: self).description,
@@ -67,8 +67,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                                reason: "Method '\(name)' should not call to super function")]
     }
 
-    private func extractCallsToSuper(_ name: String,
-                                     substructure: [[String: SourceKitRepresentable]]) -> [String] {
+    private func extractCalls(toSuper name: String, substructure: [[String: SourceKitRepresentable]]) -> [String] {
         let superCall = "super.\(name)"
         return substructure.flatMap { elems in
             guard let type = elems["key.kind"] as? String,

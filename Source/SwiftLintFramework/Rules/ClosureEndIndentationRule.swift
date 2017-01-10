@@ -60,7 +60,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             bodyLength > 0,
             case let endOffset = offset + length - 1,
             contents.substringWithByteRange(start: endOffset, length: 1) == "}",
-            let startOffset = startOffsetFor(dictionary: dictionary, file: file),
+            let startOffset = startOffset(forDictionary: dictionary, file: file),
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
             case let nameEndPosition = nameOffset + nameLength,
@@ -88,8 +88,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     }
 
-    private func startOffsetFor(dictionary: [String: SourceKitRepresentable],
-                                file: File) -> Int? {
+    private func startOffset(forDictionary dictionary: [String: SourceKitRepresentable], file: File) -> Int? {
         guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }) else {
             return nil

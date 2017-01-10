@@ -57,7 +57,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
         // if the declaration is inside a protocol
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            !protocolDeclarationsFor(offset, structure: file.structure).isEmpty {
+            !protocolDeclarations(forByteOffset: offset, structure: file.structure).isEmpty {
             return []
         }
 
@@ -82,27 +82,27 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func protocolDeclarationsFor(_ byteOffset: Int, structure: Structure) ->
-        [[String: SourceKitRepresentable]] {
-            var results = [[String: SourceKitRepresentable]]()
+    private func protocolDeclarations(forByteOffset byteOffset: Int,
+                                      structure: Structure) -> [[String: SourceKitRepresentable]] {
+        var results = [[String: SourceKitRepresentable]]()
 
-            func parse(dictionary: [String: SourceKitRepresentable]) {
+        func parse(dictionary: [String: SourceKitRepresentable]) {
 
-                // Only accepts protocols declarations which contains a body and contains the
-                // searched byteOffset
-                if let kindString = (dictionary["key.kind"] as? String),
-                    SwiftDeclarationKind(rawValue: kindString) == .protocol,
-                    let offset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                    let length = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-                    let byteRange = NSRange(location: offset, length: length)
+            // Only accepts protocols declarations which contains a body and contains the
+            // searched byteOffset
+            if let kindString = (dictionary["key.kind"] as? String),
+                SwiftDeclarationKind(rawValue: kindString) == .protocol,
+                let offset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+                let length = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
+                let byteRange = NSRange(location: offset, length: length)
 
-                    if NSLocationInRange(byteOffset, byteRange) {
-                        results.append(dictionary)
-                    }
+                if NSLocationInRange(byteOffset, byteRange) {
+                    results.append(dictionary)
                 }
-                dictionary.substructure.forEach(parse)
             }
-            parse(dictionary: structure.dictionary)
-            return results
+            dictionary.substructure.forEach(parse)
+        }
+        parse(dictionary: structure.dictionary)
+        return results
     }
 }

@@ -12,7 +12,7 @@ import SourceKittenFramework
 public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "switch_case_on_newline",
@@ -54,7 +54,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
                 return false
             }
 
-            let tokenString = contentForToken(token: firstToken, file: file)
+            let tokenString = content(for: firstToken, file: file)
             guard ["case", "default"].contains(tokenString) else {
                 return false
             }
@@ -74,7 +74,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
                 return false
             }
 
-            let firstTokenInLineString = contentForToken(token: firstLineToken, file: file)
+            let firstTokenInLineString = content(for: firstLineToken, file: file)
             guard firstTokenInLineString == tokenString else {
                 return false
             }
@@ -99,7 +99,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         return SyntaxKind.commentKinds().contains(kind)
     }
 
-    private func contentForToken(token: SyntaxToken, file: File) -> String {
+    private func content(for token: SyntaxToken, file: File) -> String {
         return contentForRange(start: token.offset, length: token.length, file: file)
     }
 
@@ -121,7 +121,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     private func isViolation(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
         let trailingCommentsTokens = trailingComments(tokens: lineTokens)
 
-        guard let firstToken = lineTokens.first, !isEnumCase(file, token: firstToken) else {
+        guard let firstToken = lineTokens.first, !isEnumCase(file: file, token: firstToken) else {
             return false
         }
 
@@ -138,7 +138,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         return !cleaned.hasSuffix(":")
     }
 
-    private func isEnumCase(_ file: File, token: SyntaxToken) -> Bool {
+    private func isEnumCase(file: File, token: SyntaxToken) -> Bool {
         let kinds = file.structure.kinds(forByteOffset: token.offset).flatMap {
             SwiftDeclarationKind(rawValue: $0.kind)
         }

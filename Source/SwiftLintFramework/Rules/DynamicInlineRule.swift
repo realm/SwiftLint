@@ -53,8 +53,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
             case let attributeRange = NSRange(location: inlineMatch.range.location,
                 length: funcOffset - inlineMatch.range.location),
             case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
-            alwaysInlinePattern.firstMatch(in: file.contents, options: [],
-                                           range: attributeRange) != nil
+            alwaysInlinePattern.firstMatch(in: file.contents, options: [], range: attributeRange) != nil
         else {
             return []
         }

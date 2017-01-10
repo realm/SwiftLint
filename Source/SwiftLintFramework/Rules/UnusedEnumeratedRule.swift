@@ -37,8 +37,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard kind == .forEach,
-            isEnumeratedCall(dictionary),
-            let byteRange = byteRangeForVariables(dictionary),
+            isEnumeratedCall(dictionary: dictionary),
+            let byteRange = byteRangeForVariables(dictionary: dictionary),
             let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
             firstToken.length == 1,
             SyntaxKind(rawValue: firstToken.type) == .keyword,
@@ -53,7 +53,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func isEnumeratedCall(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+    private func isEnumeratedCall(dictionary: [String: SourceKitRepresentable]) -> Bool {
         for subDict in dictionary.substructure {
             guard let kindString = subDict["key.kind"] as? String,
                 SwiftExpressionKind(rawValue: kindString) == .call,
@@ -69,7 +69,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         return false
     }
 
-    private func byteRangeForVariables(_ dictionary: [String: SourceKitRepresentable]) -> NSRange? {
+    private func byteRangeForVariables(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
         guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
             return nil
         }

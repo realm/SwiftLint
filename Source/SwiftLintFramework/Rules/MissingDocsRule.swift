@@ -8,37 +8,37 @@
 
 import SourceKittenFramework
 
-private func mappedDictValues(_ dictionary: [String: SourceKitRepresentable], key: String,
+private func mappedDictValues(fromDictionary dictionary: [String: SourceKitRepresentable], key: String,
                               subKey: String) -> [String] {
     return (dictionary[key] as? [SourceKitRepresentable])?.flatMap({
         ($0 as? [String: SourceKitRepresentable]) as? [String: String]
     }).flatMap({ $0[subKey] }) ?? []
 }
 
-private func declarationOverrides(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
+private func declarationOverrides(in dictionary: [String: SourceKitRepresentable]) -> Bool {
     return dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
 }
 
-private func inheritedMembersForDictionary(_ dictionary: [String: SourceKitRepresentable]) -> [String] {
-    return mappedDictValues(dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
+private func inheritedMembers(for dictionary: [String: SourceKitRepresentable]) -> [String] {
+    return mappedDictValues(fromDictionary: dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
         File.allDeclarationsByType[$0] ?? []
     }
 }
 
 extension File {
-    fileprivate func missingDocOffsets(_ dictionary: [String: SourceKitRepresentable],
+    fileprivate func missingDocOffsets(in dictionary: [String: SourceKitRepresentable],
                                        acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
-        if declarationOverrides(dictionary) {
+        if declarationOverrides(in: dictionary) {
             return []
         }
         if let name = dictionary["key.name"] as? String, skipping.contains(name) {
             return []
         }
-        let inheritedMembers = inheritedMembersForDictionary(dictionary)
+        let inherited = inheritedMembers(for: dictionary)
         let substructureOffsets = dictionary.substructure.flatMap {
-            missingDocOffsets($0, acl: acl, skipping: inheritedMembers)
+            missingDocOffsets(in: $0, acl: acl, skipping: inherited)
         }
-        guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
+        guard (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) != nil,
             let offset = dictionary["key.offset"] as? Int64,
             let accessibility = dictionary["key.accessibility"] as? String,
             acl.map({ $0.rawValue }).contains(accessibility) else {
@@ -156,7 +156,7 @@ public struct MissingDocsRule: OptInRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let acl = parameters.map { $0.value }
-        return file.missingDocOffsets(file.structure.dictionary, acl: acl).map {
+        return file.missingDocOffsets(in: file.structure.dictionary, acl: acl).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 location: Location(file: file, byteOffset: $0))
         }

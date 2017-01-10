@@ -11,7 +11,7 @@ import SourceKittenFramework
 public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = OverridenSuperCallConfiguration()
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "overridden_super_call",
@@ -63,15 +63,13 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
-              let name = dictionary["key.name"] as? String
+            let name = dictionary["key.name"] as? String,
+            kind == .functionMethodInstance,
+            configuration.resolvedMethodNames.contains(name),
+            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
         else { return [] }
 
-        guard kind == .functionMethodInstance &&
-              configuration.resolvedMethodNames.contains(name) &&
-              dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
-        else { return [] }
-
-        let callsToSuper = extractCallsToSuper(name, substructure: dictionary.substructure)
+        let callsToSuper = extractCalls(toSuper: name, substructure: dictionary.substructure)
 
         if callsToSuper.isEmpty {
             return [StyleViolation(ruleDescription: type(of: self).description,
@@ -87,8 +85,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         return []
     }
 
-    private func extractCallsToSuper(_ name: String,
-                                     substructure: [SourceKitRepresentable]) -> [String] {
+    private func extractCalls(toSuper name: String, substructure: [SourceKitRepresentable]) -> [String] {
         let superCall = "super.\(name)"
         return substructure.flatMap {
             guard let elems = $0 as? [String: SourceKitRepresentable],

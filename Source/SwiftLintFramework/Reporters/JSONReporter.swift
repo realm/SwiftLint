@@ -18,10 +18,10 @@ public struct JSONReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(violations.map(dictionaryForViolation))
+        return toJSON(violations.map(dictionary(for:)))
     }
 
-    fileprivate static func dictionaryForViolation(_ violation: StyleViolation) -> [String: Any] {
+    fileprivate static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "file": violation.location.file ?? NSNull() as Any,
             "line": violation.location.line ?? NSNull() as Any,

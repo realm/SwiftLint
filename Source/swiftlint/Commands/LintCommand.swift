@@ -25,7 +25,7 @@ struct LintCommand: CommandProtocol {
         let reporter = reporterFrom(options: options, configuration: configuration)
         let cache = LinterCache.makeCache(options: options, configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        return configuration.visitLintableFiles(options, cache: cache) { linter in
+        return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
@@ -43,13 +43,13 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
-            reporter.reportViolations(currentViolations, realtimeCondition: true)
+            reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if LintCommand.isWarningThresholdBroken(configuration, violations: violations) {
-                violations.append(LintCommand.createThresholdViolation(configuration.warningThreshold!))
-                reporter.reportViolations([violations.last!], realtimeCondition: true)
+            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) {
+                violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
+                reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
-            reporter.reportViolations(violations, realtimeCondition: false)
+            reporter.report(violations: violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,
@@ -87,14 +87,14 @@ struct LintCommand: CommandProtocol {
         )
     }
 
-    private static func isWarningThresholdBroken(_ configuration: Configuration,
+    private static func isWarningThresholdBroken(configuration: Configuration,
                                                  violations: [StyleViolation]) -> Bool {
         guard let warningThreshold = configuration.warningThreshold else { return false }
         let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
         return numberOfWarningViolations >= warningThreshold
     }
 
-    private static func createThresholdViolation(_ threshold: Int) -> StyleViolation {
+    private static func createThresholdViolation(threshold: Int) -> StyleViolation {
         let description = RuleDescription(
             identifier: "warning_threshold",
             name: "Warning Threshold",

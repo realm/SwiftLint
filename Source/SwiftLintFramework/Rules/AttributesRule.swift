@@ -108,7 +108,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
 
         do {
-            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber - 1,
+            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber: lineNumber - 1,
                                                                                    file: file)
             let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
 
@@ -118,7 +118,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             let alwaysOnSameLineAttributes = configuration.alwaysOnSameLine
             let alwaysOnNewLineAttributes =
-                createAlwaysOnNewLineAttributes(previousAttributesWithParameters,
+                createAlwaysOnNewLineAttributes(previousAttributes: previousAttributesWithParameters,
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
@@ -146,7 +146,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func createAlwaysOnNewLineAttributes(_ previousAttributes: [(String, Bool)],
+    private func createAlwaysOnNewLineAttributes(previousAttributes: [(String, Bool)],
                                                  attributesTokens: [(String, NSRange)],
                                                  line: Line, file: File) -> Set<String> {
         let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
@@ -189,7 +189,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     // returns an array with the token itself (i.e. "@objc") and whether it's parameterized
     // note: the parameter is not contained in the token
-    private func attributesFromPreviousLines(_ lineNumber: Int,
+    private func attributesFromPreviousLines(lineNumber: Int,
                                              file: File) throws -> [(String, Bool)] {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()

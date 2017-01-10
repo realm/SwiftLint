@@ -55,9 +55,8 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
         let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"
 
-        return file.match(pattern: pattern, excludingSyntaxKinds: kinds,
-                                 excludingPattern: excludingPattern,
-                                 exclusionMapping: { $0.rangeAt(1) }).flatMap {
+        return file.match(pattern: pattern, excludingSyntaxKinds: kinds, excludingPattern: excludingPattern,
+                          exclusionMapping: { $0.rangeAt(1) }).flatMap {
             let parensRegex = regex(parensPattern)
             return parensRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
         }
@@ -65,10 +64,6 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
 
     public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

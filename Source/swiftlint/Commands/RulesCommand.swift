@@ -11,7 +11,21 @@ import Result
 import SwiftLintFramework
 import SwiftyTextTable
 
-private let violationMarker = "↓"
+private func print(ruleDescription desc: RuleDescription) {
+    print("\(desc.consoleDescription)")
+
+    if !desc.triggeringExamples.isEmpty {
+        func indent(_ string: String) -> String {
+            return string.components(separatedBy: "\n")
+                .map { "    \($0)" }
+                .joined(separator: "\n")
+        }
+        print("\nTriggering Examples (violation is marked with '↓'):")
+        for (index, example) in desc.triggeringExamples.enumerated() {
+            print("\nExample #\(index + 1)\n\n\(indent(example))")
+        }
+    }
+}
 
 struct RulesCommand: CommandProtocol {
     let verb = "rules"
@@ -23,29 +37,13 @@ struct RulesCommand: CommandProtocol {
                 return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
             }
 
-            printRuleDescript(rule.description)
+            print(ruleDescription: rule.description)
             return .success()
         }
 
         let configuration = Configuration(commandLinePath: options.configurationFile)
         print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
         return .success()
-    }
-
-    fileprivate func printRuleDescript(_ desc: RuleDescription) {
-        print("\(desc.consoleDescription)")
-
-        if !desc.triggeringExamples.isEmpty {
-            func indent(_ string: String) -> String {
-                return string.components(separatedBy: "\n")
-                    .map { "    \($0)" }
-                    .joined(separator: "\n")
-            }
-            print("\nTriggering Examples (violation is marked with '\(violationMarker)'):")
-            for (index, example) in desc.triggeringExamples.enumerated() {
-                print("\nExample #\(index + 1)\n\n\(indent(example))")
-            }
-        }
     }
 }
 

@@ -55,19 +55,35 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        // if key.setter_accessibility is nil, it's a `let` declaration
+        let shouldMakeViolation: Bool
         if dictionary["key.setter_accessibility"] == nil {
-            return violation(dictionary, file: file)
+            // if key.setter_accessibility is nil, it's a `let` declaration
+            shouldMakeViolation = true
+        } else if let type = dictionary["key.typename"] as? String,
+            ValidIBInspectableRule.supportedTypes.contains(type) {
+            shouldMakeViolation = false
+        } else {
+            // Variable should have explicit type or IB won't recognize it
+            // Variable should be of one of the supported types
+            shouldMakeViolation = true
         }
 
-        // Variable should have explicit type or IB won't recognize it
-        // Variable should be of one of the supported types
-        guard let type = dictionary["key.typename"] as? String,
-            ValidIBInspectableRule.supportedTypes.contains(type) else {
-                return violation(dictionary, file: file)
+        guard shouldMakeViolation else {
+            return []
         }
 
-        return []
+        let location: Location
+        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            location = Location(file: file, byteOffset: offset)
+        } else {
+            location = Location(file: file.path)
+        }
+
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: location)
+        ]
     }
 
     private static func createSupportedTypes() -> [String] {
@@ -109,23 +125,5 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
 
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
         return referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes
-    }
-
-    private func violation(_ dictionary: [String: SourceKitRepresentable],
-                           file: File) -> [StyleViolation] {
-        let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
-        }
-
-        return [
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: location
-            )
-        ]
     }
 }

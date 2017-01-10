@@ -146,10 +146,6 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [(NSRange, String)]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

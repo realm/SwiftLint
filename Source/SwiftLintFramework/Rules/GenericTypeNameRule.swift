@@ -64,18 +64,18 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structure.dictionary) +
-            validateGenericTypeAliases(file)
+            validateGenericTypeAliases(in: file)
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let types = genericTypesForType(file, kind: kind, dictionary: dictionary) +
-                    genericTypesForFunction(file, kind: kind, dictionary: dictionary)
+        let types = genericTypesForType(in: file, kind: kind, dictionary: dictionary) +
+                genericTypesForFunction(in: file, kind: kind, dictionary: dictionary)
 
-        return types.flatMap { validateName(name: $0.0, file: file, offset: $0.1) }
+        return types.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
     }
 
-    private func validateGenericTypeAliases(_ file: File) -> [StyleViolation] {
+    private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
         let pattern = "typealias\\s+.+?" + genericTypePattern + "\\s*="
         return file.match(pattern: pattern).flatMap { (range, tokens) -> [(String, Int)] in
             guard tokens.first == .keyword,
@@ -86,12 +86,11 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let genericConstraint = file.contents.bridge().substring(with: match)
-            return extractTypesFromGenericConstraint(genericConstraint, offset: match.location, file: file)
-        }.flatMap { validateName(name: $0.0, file: file, offset: $0.1) }
+            return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
+        }.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
     }
 
-    private func genericTypesForType(_ file: File,
-                                     kind: SwiftDeclarationKind,
+    private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
                                      dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
         guard SwiftDeclarationKind.typeKinds().contains(kind),
             let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
@@ -106,11 +105,10 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let genericConstraint = contents.substring(with: match)
-        return extractTypesFromGenericConstraint(genericConstraint, offset: match.location, file: file)
+        return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
-    private func genericTypesForFunction(_ file: File,
-                                         kind: SwiftDeclarationKind,
+    private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
                                          dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
             let offset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
@@ -123,7 +121,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let genericConstraint = contents.substring(with: match)
-        return extractTypesFromGenericConstraint(genericConstraint, offset: match.location, file: file)
+        return extractTypes(fromGenericConstraint: genericConstraint, offset: match.location, file: file)
     }
 
     private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
@@ -137,7 +135,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         return offsets.min() ?? .max
     }
 
-    private func extractTypesFromGenericConstraint(_ constraint: String, offset: Int, file: File) -> [(String, Int)] {
+    private func extractTypes(fromGenericConstraint constraint: String, offset: Int, file: File) -> [(String, Int)] {
         guard let beforeWhere = constraint.components(separatedBy: "where").first else {
             return []
         }
@@ -164,7 +162,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func validateName(name: String, file: File, offset: Int) -> [StyleViolation] {
+    private func validate(name: String, file: File, offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }

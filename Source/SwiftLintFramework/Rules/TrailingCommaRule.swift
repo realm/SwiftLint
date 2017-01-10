@@ -82,7 +82,8 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         let contentsAfterLastElement = contents.substringWithByteRange(start: lastPosition, length: length) ?? ""
 
         // if a trailing comma is not present
-        guard let commaIndex = trailingCommaIndex(contentsAfterLastElement, file: file, offset: lastPosition) else {
+        guard let commaIndex = trailingCommaIndex(contents: contentsAfterLastElement, file: file,
+                                                  offset: lastPosition) else {
             guard configuration.mandatoryComma else {
                 return []
             }
@@ -109,7 +110,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func trailingCommaIndex(_ contents: String, file: File, offset: Int) -> Int? {
+    private func trailingCommaIndex(contents: String, file: File, offset: Int) -> Int? {
         let range = NSRange(location: 0, length: contents.bridge().length)
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 

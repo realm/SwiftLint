@@ -51,7 +51,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRangesInFile(file, skipParentheses: true).map {
+        return violationRanges(in: file, skipParentheses: true).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -59,7 +59,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }
 
     public func correct(file: File) -> [Correction] {
-        let violationsRanges = violationRangesInFile(file, skipParentheses: false)
+        let violationsRanges = violationRanges(in: file, skipParentheses: false)
         let matches = file.ruleEnabled(violatingRanges: violationsRanges, for: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(pattern)
@@ -113,7 +113,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     }()
 
-    private func violationRangesInFile(_ file: File, skipParentheses: Bool) -> [NSRange] {
+    private func violationRanges(in file: File, skipParentheses: Bool) -> [NSRange] {
         let matches = file.match(pattern: pattern, with: [.typeidentifier])
         guard skipParentheses else {
             return matches

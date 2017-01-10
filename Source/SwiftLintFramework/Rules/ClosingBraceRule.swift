@@ -51,10 +51,6 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
     public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingClosingBraceRanges(), for: self)
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    fileprivate func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

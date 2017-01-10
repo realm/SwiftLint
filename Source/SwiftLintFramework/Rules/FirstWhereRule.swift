@@ -21,7 +21,7 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",
-            "matchPattern(pattern).filter { $0.first == .identifier }\n"
+            "match(pattern: pattern).filter { $0.first == .identifier }\n"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",
@@ -47,9 +47,8 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
                 return nil
             }
 
-            return methodCallFor(bodyByteRange.location - 1,
-                                 excludingOffset: firstByteRange.location,
-                                 dictionary: structure.dictionary, predicate: { dictionary in
+            return methodCall(forByteOffset: bodyByteRange.location - 1, excludingOffset: firstByteRange.location,
+                              dictionary: structure.dictionary, predicate: { dictionary in
                 guard let name = dictionary["key.name"] as? String else {
                     return false
                 }
@@ -65,10 +64,9 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func methodCallFor(_ byteOffset: Int,
-                               excludingOffset: Int,
-                               dictionary: [String: SourceKitRepresentable],
-                               predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
+    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
+                            dictionary: [String: SourceKitRepresentable],
+                            predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
 
         if let kindString = (dictionary["key.kind"] as? String),
             SwiftExpressionKind(rawValue: kindString) == .call,
@@ -84,8 +82,8 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         }
 
         for dictionary in dictionary.substructure {
-            if let offset = methodCallFor(byteOffset, excludingOffset: excludingOffset,
-                                          dictionary: dictionary, predicate: predicate) {
+            if let offset = methodCall(forByteOffset: byteOffset, excludingOffset: excludingOffset,
+                                       dictionary: dictionary, predicate: predicate) {
                 return offset
             }
         }

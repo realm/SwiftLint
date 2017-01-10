@@ -88,7 +88,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRangesInFile(file, withPattern: pattern).map {
+        return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -98,24 +98,24 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public func correct(file: File) -> [Correction] {
         var result = [Correction]()
 
-        result.append(contentsOf: correctFile(file,
+        result.append(contentsOf: correct(file: file,
             pattern: spaceStartPattern,
             replaceString: "// MARK:"))
 
-        result.append(contentsOf: correctFile(file,
+        result.append(contentsOf: correct(file: file,
             pattern: endNonSpacePattern,
             replaceString: "// MARK: ",
             keepLastChar: true))
 
-        result.append(contentsOf: correctFile(file,
+        result.append(contentsOf: correct(file: file,
             pattern: endTwoOrMoreSpacePattern,
             replaceString: "// MARK: "))
 
-        result.append(contentsOf: correctFile(file,
+        result.append(contentsOf: correct(file: file,
             pattern: twoOrMoreSpacesAfterHyphenPattern,
             replaceString: "// MARK: - "))
 
-        result.append(contentsOf: correctFile(file,
+        result.append(contentsOf: correct(file: file,
             pattern: nonSpaceOrNewlineAfterHyphenPattern,
             replaceString: "// MARK: - ",
             keepLastChar: true))
@@ -123,11 +123,11 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return result
     }
 
-    private func correctFile(_ file: File,
-                             pattern: String,
-                             replaceString: String,
-                             keepLastChar: Bool = false) -> [Correction] {
-        let violations = violationRangesInFile(file, withPattern: pattern)
+    private func correct(file: File,
+                         pattern: String,
+                         replaceString: String,
+                         keepLastChar: Bool = false) -> [Correction] {
+        let violations = violationRanges(in: file, matching: pattern)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
 
@@ -146,7 +146,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         return corrections
     }
 
-    private func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
+    private func violationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment

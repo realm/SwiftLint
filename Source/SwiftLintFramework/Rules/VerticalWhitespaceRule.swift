@@ -40,29 +40,27 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     )
 
     public func validate(file: File) -> [StyleViolation] {
-
-        let linesSections = internalValidate(file: file)
+        let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 
         var violations = [StyleViolation]()
         for (eachLastLine, eachSectionCount) in linesSections {
-
             // Skips violations for areas where the rule is disabled
             if !file.ruleEnabled(violatingRanges: [eachLastLine.range], for: self).isEmpty {
-                let violation = StyleViolation(ruleDescription: type(of: self).description,
-                                           severity: configuration.severityConfiguration.severity,
-                                           location: Location(file: file.path,
-                                            line: eachLastLine.index ),
-                                           reason: descriptionReason
-                                            + " Currently \(eachSectionCount + 1)." )
-                violations.append(violation)
+                violations.append(StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severityConfiguration.severity,
+                    location: Location(file: file.path, line: eachLastLine.index),
+                    reason: descriptionReason + " Currently \(eachSectionCount + 1)."
+                ))
             }
         }
         return violations
     }
 
-    private func internalValidate(file: File) -> [(lastLine: Line, linesToRemove: Int)] {
+    private typealias LineSection = (lastLine: Line, linesToRemove: Int)
 
+    private func violatingLineSections(in file: File) -> [LineSection] {
         let filteredLines = file.lines.filter {
             $0.content.trimmingCharacters(in: .whitespaces).isEmpty
         }
@@ -104,7 +102,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     }
 
     public func correct(file: File) -> [Correction] {
-        let linesSections = internalValidate(file: file)
+        let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 
         var indexOfLinesToDelete = [Int]()
@@ -143,7 +141,5 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             return corrections
         }
         return []
-
     }
-
 }

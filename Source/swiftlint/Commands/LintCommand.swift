@@ -24,7 +24,7 @@ struct LintCommand: CommandProtocol {
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
-        return configuration.visitLintableFiles(options) { linter in
+        return configuration.visitLintableFiles(options: options) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
@@ -42,13 +42,13 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
-            reporter.reportViolations(currentViolations, realtimeCondition: true)
+            reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) {
                 violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
-                reporter.reportViolations([violations.last!], realtimeCondition: true)
+                reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
-            reporter.reportViolations(violations, realtimeCondition: false)
+            reporter.report(violations: violations, realtimeCondition: false)
             let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
                 LintCommand.printStatus(violations: violations, files: files,

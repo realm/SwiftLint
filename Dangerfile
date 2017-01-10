@@ -55,7 +55,7 @@ if has_app_changes
           @commits[repo] = `git rev-parse HEAD`
           durations = []
           start = Time.now
-          command = '../../.build/debug/swiftlint'
+          command = '../../.build/release/swiftlint'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             Open3.popen3(command) do |_, stdout, _, _|
               file << stdout.read.chomp
@@ -86,14 +86,14 @@ if has_app_changes
   end
   # Build branch
   puts 'Building branch'
-  `swift build`
+  `swift build -c release`
   # Generate branch reports
   generate_reports(true, 'branch')
   # Build master
   `git checkout master`
   `git pull`
   puts 'Building master'
-  `swift build`
+  `swift build -c release`
   # Generate master reports
   generate_reports(false, 'master')
   # Diff and report changes to Danger

@@ -21,32 +21,27 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
+        guard SwiftDeclarationKind.functionKinds().contains(kind),
+            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            case let contentsNSString = file.contents.bridge(),
+            let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
+            let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
+        else {
             return []
         }
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-            let contentsNSString = file.contents.bridge()
-            let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)
-            let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)
-
-            if let startLine = startLine?.line, let endLine = endLine?.line {
-                for parameter in configuration.params {
-                    let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                        startLine, endLine, parameter.value
-                    )
-                    if exceeds {
-                        return [StyleViolation(ruleDescription: type(of: self).description,
-                            severity: parameter.severity,
-                            location: Location(file: file, byteOffset: offset),
-                            reason: "Function body should span \(parameter.value) lines or less " +
-                            "excluding comments and whitespace: currently spans \(lineCount) " +
-                            "lines")]
-                    }
-
-                }
-            }
+        for parameter in configuration.params {
+            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
+                startLine, endLine, parameter.value
+            )
+            guard exceeds else { continue }
+            return [StyleViolation(ruleDescription: type(of: self).description,
+                                   severity: parameter.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Function body should span \(parameter.value) lines or less " +
+                                           "excluding comments and whitespace: currently spans \(lineCount) " +
+                                           "lines")]
         }
         return []
     }

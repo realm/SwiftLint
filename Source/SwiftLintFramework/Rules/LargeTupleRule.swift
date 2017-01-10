@@ -52,8 +52,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let offsets = violationOffsetsForTypes(file, dictionary: dictionary, kind: kind) +
-            violationOffsetsForFunctions(file, dictionary: dictionary, kind: kind)
+        let offsets = violationOffsetsForTypes(in: file, dictionary: dictionary, kind: kind) +
+            violationOffsetsForFunctions(in: file, dictionary: dictionary, kind: kind)
 
         return offsets.flatMap { location, size in
             for parameter in configuration.params where size > parameter.value {
@@ -68,14 +68,13 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func violationOffsetsForTypes(_ file: File,
-                                          dictionary: [String: SourceKitRepresentable],
+    private func violationOffsetsForTypes(in file: File, dictionary: [String: SourceKitRepresentable],
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let kinds = SwiftDeclarationKind.variableKinds().filter { $0 != .varLocal }
         guard kinds.contains(kind),
             let type = dictionary["key.typename"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let ranges = try? parenthesesRanges(type) else {
+            let ranges = try? parenthesesRanges(in: type) else {
                 return []
         }
 
@@ -93,15 +92,14 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         return maxSize.flatMap { [(offset: offset, size: $0)] } ?? []
     }
 
-    private func violationOffsetsForFunctions(_ file: File,
-                                              dictionary: [String: SourceKitRepresentable],
+    private func violationOffsetsForFunctions(in file: File, dictionary: [String: SourceKitRepresentable],
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let contents = file.contents.bridge()
         guard SwiftDeclarationKind.functionKinds().contains(kind),
-            let returnRange = returnRangeForFunction(dictionary),
+            let returnRange = returnRangeForFunction(dictionary: dictionary),
             let returnSubstring = contents.substringWithByteRange(start: returnRange.location,
                                                                   length: returnRange.length),
-            let ranges = try? parenthesesRanges(returnSubstring) else {
+            let ranges = try? parenthesesRanges(in: returnSubstring) else {
                 return []
         }
 
@@ -123,7 +121,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         return offsets.sorted(by: { $0.offset < $1.offset })
     }
 
-    private func returnRangeForFunction(_ dictionary: [String: SourceKitRepresentable]) -> NSRange? {
+    private func returnRangeForFunction(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
         guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
@@ -141,7 +139,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         return NSRange(location: start, length: end - start)
     }
 
-    private func parenthesesRanges(_ text: String) throws -> [NSRange] {
+    private func parenthesesRanges(in text: String) throws -> [NSRange] {
         var stack = [Int]()
         var balanced = true
         var ranges = [NSRange]()

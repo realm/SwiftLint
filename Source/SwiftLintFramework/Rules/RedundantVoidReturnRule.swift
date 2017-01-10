@@ -45,16 +45,15 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
+        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRangesInFile(_ file: File,
-                                       kind: SwiftDeclarationKind,
-                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func violationRanges(in file: File, kind: SwiftDeclarationKind,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
             let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
             let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
@@ -77,26 +76,25 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         return SyntaxKind.allKinds().filter { $0 != .typeidentifier }
     }
 
-    private func violationRangesInFile(_ file: File,
-                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
             guard let kindString = subDict["key.kind"] as? String,
                 let kind = SwiftDeclarationKind(rawValue: kindString) else {
                     return []
             }
-            return violationRangesInFile(file, dictionary: subDict) +
-                violationRangesInFile(file, kind: kind, dictionary: subDict)
+            return violationRanges(in: file, dictionary: subDict) +
+                violationRanges(in: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func violationRangesInFile(_ file: File) -> [NSRange] {
-        return violationRangesInFile(file, dictionary: file.structure.dictionary).sorted { lh, rh in
+    private func violationRanges(in file: File) -> [NSRange] {
+        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lh, rh in
             lh.location < rh.location
         }
     }
 
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

@@ -64,10 +64,6 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
 
     public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

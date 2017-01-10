@@ -11,7 +11,7 @@ import SourceKittenFramework
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = ProhibitedSuperConfiguration()
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "prohibited_super_call",
@@ -55,27 +55,15 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
             let name = dictionary["key.name"] as? String,
-            kind == .functionMethodInstance &&
-            configuration.resolvedMethodNames.contains(name) &&
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") &&
-            !extractCallsToSuper(name, substructure: dictionary.substructure).isEmpty
+            kind == .functionMethodInstance,
+            configuration.resolvedMethodNames.contains(name),
+            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
+            !dictionary.extractCallsToSuper(methodName: name).isEmpty
             else { return [] }
 
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: Int(offset)),
                                reason: "Method '\(name)' should not call to super function")]
-    }
-
-    private func extractCallsToSuper(_ name: String,
-                                     substructure: [[String: SourceKitRepresentable]]) -> [String] {
-        let superCall = "super.\(name)"
-        return substructure.flatMap { elems in
-            guard let type = elems["key.kind"] as? String,
-                let name = elems["key.name"] as? String,
-                type == "source.lang.swift.expr.call" && superCall.contains(name)
-                else { return nil }
-            return name
-        }
     }
 }

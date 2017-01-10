@@ -44,7 +44,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRangesInFile(file).map {
+        return violationRanges(in: file).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -63,7 +63,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
 
     // swiftlint:disable:next function_body_length
-    private func violationRangesInFile(_ file: File) -> [NSRange] {
+    private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: contents.utf16.count)
@@ -127,7 +127,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 }
 
                 // check structure
-                if checkStructure(file, byteRange: matchByteFirstRange) {
+                if checkStructure(in: file, byteRange: matchByteFirstRange) {
                     return violationRange
                 } else {
                     return nil
@@ -137,7 +137,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // Returns if range should generate violation
     // check deepest kind matching range in structure
-    private func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
+    private func checkStructure(in file: File, byteRange: NSRange) -> Bool {
         let nsstring = file.contents.bridge()
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
         if let lastKind = kinds.last {

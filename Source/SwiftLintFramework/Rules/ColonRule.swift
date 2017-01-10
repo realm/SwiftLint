@@ -105,7 +105,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let violations = typeColonViolationRangesInFile(file, withPattern: pattern).flatMap { range in
+        let violations = typeColonViolationRanges(in: file, matching: pattern).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
@@ -122,7 +122,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correct(file: File) -> [Correction] {
-        let violations = correctionRangesInFile(file)
+        let violations = correctionRanges(in: file)
         let matches = violations.filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }
@@ -152,16 +152,14 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     private typealias RangeWithKind = (range: NSRange, kind: ColonKind)
 
-    private func correctionRangesInFile(_ file: File) -> [RangeWithKind] {
-        let violations = typeColonViolationRangesInFile(file, withPattern: pattern).map {
+    private func correctionRanges(in file: File) -> [RangeWithKind] {
+        let violations = typeColonViolationRanges(in: file, matching: pattern).map {
             (range: $0, kind: ColonKind.type)
         }
         let dictionary = file.structure.dictionary
         let contents = file.contents.bridge()
-        let dictViolations: [RangeWithKind] = dictionaryColonViolationRangesInFile(file,
-                                                                                   dictionary: dictionary).flatMap {
-            guard let range = contents.byteRangeToNSRange(start: $0.location,
-                                                          length: $0.length) else {
+        let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file, dictionary: dictionary).flatMap {
+            guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {
                 return nil
             }
             return (range: range, kind: ColonKind.dictionary)
@@ -180,21 +178,21 @@ extension ColonRule {
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
         let spacingRegex = configuration.flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
 
-        return  "(\\w)" +       // Capture an identifier
-                "(?:" +         // start group
-                "\\s+" +        // followed by whitespace
-                ":" +           // to the left of a colon
-                "\\s*" +        // followed by any amount of whitespace.
-                "|" +           // or
-                ":" +           // immediately followed by a colon
-                spacingRegex +  // followed by right spacing regex
-                ")" +           // end group
-                "(" +           // Capture a type identifier
-                "[\\[|\\(]*" +  // which may begin with a series of nested parenthesis or brackets
-                "\\S)"          // lazily to the first non-whitespace character.
+        return "(\\w)" +       // Capture an identifier
+               "(?:" +         // start group
+               "\\s+" +        // followed by whitespace
+               ":" +           // to the left of a colon
+               "\\s*" +        // followed by any amount of whitespace.
+               "|" +           // or
+               ":" +           // immediately followed by a colon
+               spacingRegex +  // followed by right spacing regex
+               ")" +           // end group
+               "(" +           // Capture a type identifier
+               "[\\[|\\(]*" +  // which may begin with a series of nested parenthesis or brackets
+               "\\S)"          // lazily to the first non-whitespace character.
     }
 
-    fileprivate func typeColonViolationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
+    fileprivate func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
@@ -219,7 +217,7 @@ extension ColonRule {
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        let ranges = dictionaryColonViolationRangesInFile(file, kind: kind, dictionary: dictionary)
+        let ranges = dictionaryColonViolationRanges(in: file, kind: kind, dictionary: dictionary)
         return ranges.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severityConfiguration.severity,
@@ -227,8 +225,8 @@ extension ColonRule {
         }
     }
 
-    fileprivate func dictionaryColonViolationRangesInFile(_ file: File,
-                                                          dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    fileprivate func dictionaryColonViolationRanges(in file: File,
+                                                    dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard configuration.applyToDictionaries else {
             return []
         }
@@ -238,15 +236,15 @@ extension ColonRule {
                 let kind = KindType(rawValue: kindString) else {
                     return []
             }
-            return dictionaryColonViolationRangesInFile(file, dictionary: subDict) +
-                dictionaryColonViolationRangesInFile(file, kind: kind, dictionary: subDict)
+            return dictionaryColonViolationRanges(in: file, dictionary: subDict) +
+                dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
         }
     }
 
-    private func dictionaryColonViolationRangesInFile(_ file: File, kind: SwiftExpressionKind,
-                                                      dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,
+                                                dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .dictionary,
-            let ranges = colonRanges(dictionary) else {
+            let ranges = colonRanges(dictionary: dictionary) else {
                 return []
         }
 
@@ -266,7 +264,7 @@ extension ColonRule {
         }
     }
 
-    private func colonRanges(_ dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
+    private func colonRanges(dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
         guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
             elements.count % 2 == 0 else {
                 return nil

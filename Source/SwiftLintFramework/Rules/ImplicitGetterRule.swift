@@ -64,13 +64,12 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
 
         let violatingTokens = getTokens.filter { token -> Bool in
             // the last element is the deepest structure
-            guard let dictionary =
-                variableDeclarationsFor(token.offset, structure: file.structure).last else {
-                    return false
+            guard let dict = variableDeclarations(forByteOffset: token.offset, structure: file.structure).last else {
+                return false
             }
 
             // If there's a setter, `get` is allowed
-            return dictionary["key.setter_accessibility"] == nil
+            return dict["key.setter_accessibility"] == nil
         }
 
         return violatingTokens.map { token in
@@ -84,8 +83,8 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         }
     }
 
-    private func variableDeclarationsFor(_ byteOffset: Int,
-                                         structure: Structure) -> [[String: SourceKitRepresentable]] {
+    private func variableDeclarations(forByteOffset byteOffset: Int,
+                                      structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
 
         func parse(dictionary: [String: SourceKitRepresentable]) {

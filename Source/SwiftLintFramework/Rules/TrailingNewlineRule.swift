@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
-    fileprivate func countOfTrailingCharactersInSet(_ characterSet: CharacterSet) -> Int {
+    private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {
         var count = 0
         for char in unicodeScalars.lazy.reversed() {
             if !characterSet.contains(char) {
@@ -22,7 +22,7 @@ extension String {
     }
 
     fileprivate func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharactersInSet(CharacterSet.newlines)
+        return countOfTrailingCharacters(in: .newlines)
     }
 }
 

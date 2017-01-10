@@ -13,11 +13,11 @@ extension SyntaxKind {
     public var isCommentLike: Bool {
         return [
             SyntaxKind.comment,
-            SyntaxKind.commentMark,
-            SyntaxKind.commentURL,
-            SyntaxKind.docComment,
-            SyntaxKind.docCommentField
-            ].contains(self)
+            .commentMark,
+            .commentURL,
+            .docComment,
+            .docCommentField
+        ].contains(self)
     }
 }
 
@@ -47,7 +47,7 @@ public struct TodoRule: ConfigurationProviderRule {
         ]
     )
 
-    private func customMessage(_ lines: [Line], location: Location) -> String {
+    private func customMessage(lines: [Line], location: Location) -> String {
         var reason = type(of: self).description.description
 
         guard let lineIndex = location.line,
@@ -88,7 +88,7 @@ public struct TodoRule: ConfigurationProviderRule {
                 return nil
             }
             let location = Location(file: file, characterOffset: range.location)
-            let reason = customMessage(file.lines, location: location)
+            let reason = customMessage(lines: file.lines, location: location)
 
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,

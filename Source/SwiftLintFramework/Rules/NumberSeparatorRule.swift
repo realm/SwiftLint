@@ -24,14 +24,14 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violatingRanges(file).map { range, _ in
+        return violatingRanges(in: file).map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }
 
-    private func violatingRanges(_ file: File) -> [(NSRange, String)] {
+    private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
         return numberTokens.flatMap { token in
             guard let content = contentFrom(file: file, token: token),
@@ -84,14 +84,10 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     }
 
     public func correct(file: File) -> [Correction] {
-        let ranges = violatingRanges(file).filter { range, _ in
+        let violatingRanges = self.violatingRanges(in: file).filter { range, _ in
             return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
-        return writeToFile(file, violatingRanges: ranges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [(NSRange, String)]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

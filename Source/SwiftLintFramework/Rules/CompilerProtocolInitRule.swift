@@ -31,16 +31,15 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
+        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRangesInFile(_ file: File,
-                                       kind: SwiftExpressionKind,
-                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func violationRanges(in file: File, kind: SwiftExpressionKind,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .call,
             let name = dictionary["key.name"] as? String else {
                 return []
@@ -49,7 +48,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         for compilerProtocol in ExpressibleByCompiler.allProtocols {
             guard compilerProtocol.initCallNames.contains(name),
                 case let arguments = dictionary.enclosedArguments.flatMap({ $0["key.name"] as? String }),
-                compilerProtocol.matchArguments(arguments),
+                compilerProtocol.match(arguments: arguments),
                 let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
                 let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
                 let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
@@ -80,7 +79,7 @@ private struct ExpressibleByCompiler {
                                byExtendedGraphemeClusterLiteral, byStringLiteral,
                                byStringInterpolation, byDictionaryLiteral]
 
-    func matchArguments(_ arguments: [String]) -> Bool {
+    func match(arguments: [String]) -> Bool {
         for item in self.arguments {
             if item == arguments {
                 return true

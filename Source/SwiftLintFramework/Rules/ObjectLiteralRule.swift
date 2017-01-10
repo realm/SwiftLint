@@ -45,7 +45,8 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            isImageNamedInit(dictionary, file: file) || isColorInit(dictionary, file: file) else {
+            isImageNamedInit(dictionary: dictionary, file: file) ||
+                isColorInit(dictionary: dictionary, file: file) else {
             return []
         }
 
@@ -56,13 +57,13 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         ]
     }
 
-    private func isImageNamedInit(_ dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isImageNamedInit(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
-            initsForClasses(["UIImage", "NSImage"]).contains(name),
+            inits(forClasses: ["UIImage", "NSImage"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
             arguments.flatMap({ $0["key.name"] as? String }) == ["named"],
             let argument = arguments.first,
-            case let kinds = kindsFor(argument, file: file),
+            case let kinds = kinds(forArgument: argument, file: file),
             kinds == [.string] else {
                 return false
         }
@@ -70,9 +71,9 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         return true
     }
 
-    private func isColorInit(_ dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isColorInit(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
-            initsForClasses(["UIColor", "NSColor"]).contains(name),
+            inits(forClasses: ["UIColor", "NSColor"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
             case let argumentsNames = arguments.flatMap({ $0["key.name"] as? String }),
             argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"],
@@ -83,7 +84,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         return true
     }
 
-    private func initsForClasses(_ names: [String]) -> [String] {
+    private func inits(forClasses names: [String]) -> [String] {
         return names.flatMap { name in
             [
                 name,
@@ -93,14 +94,14 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
     }
 
     private func validateColorKinds(arguments: [[String: SourceKitRepresentable]], file: File) -> Bool {
-        for dictionary in arguments where kindsFor(dictionary, file: file) != [.number] {
+        for dictionary in arguments where kinds(forArgument: dictionary, file: file) != [.number] {
             return false
         }
 
         return true
     }
 
-    private func kindsFor(_ argument: [String: SourceKitRepresentable], file: File) -> Set<SyntaxKind> {
+    private func kinds(forArgument argument: [String: SourceKitRepresentable], file: File) -> Set<SyntaxKind> {
         guard let offset = (argument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
             let length = (argument["key.bodylength"] as? Int64).flatMap({ Int($0) }) else {
                 return Set()

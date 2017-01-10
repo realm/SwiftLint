@@ -18,8 +18,8 @@ class YamlSwiftLintTests: XCTestCase {
             let yaml = try Yaml.load(getTestYaml())
             let yamlDict = yaml.flatDictionary!
 
-            let dict1 = (yamlDict["dictionary1"] as? [Swift.String : Any])!
-            let dict2 = (yamlDict["dictionary2"] as? [Swift.String : Any])!
+            let dict1 = (yamlDict["dictionary1"] as? [Swift.String: Any])!
+            let dict2 = (yamlDict["dictionary2"] as? [Swift.String: Any])!
             XCTAssertTrue(dict1["bool"] as? Bool == true && dict2["bool"] as? Bool == true)
             XCTAssertTrue(dict1["int"] as? Int == 1 && dict2["int"] as? Int == 1)
             XCTAssertTrue(dict1["double"] as? Double == 1.0 && dict2["double"] as? Double == 1.0)

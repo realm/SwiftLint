@@ -4,4 +4,4 @@ machine:
 
 test:
   override:
-    - bundle exec danger --verbose || true
+    - bundle exec danger --verbose

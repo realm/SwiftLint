@@ -267,7 +267,8 @@ private func defaultStringArray(_ object: Any?) -> [String] {
 
 private func validKeys(ruleList: RuleList) -> [String] {
     return [
-        ConfigurationKey.disabledRules,
+        ConfigurationKey.cachePath,
+        .disabledRules,
         .enabledRules,
         .excluded,
         .included,
@@ -277,7 +278,6 @@ private func validKeys(ruleList: RuleList) -> [String] {
         .useNestedConfigs,
         .warningThreshold,
         .whitelistRules,
-        .cachePath
     ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
 }
 

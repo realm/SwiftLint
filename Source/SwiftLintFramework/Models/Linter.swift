@@ -120,9 +120,7 @@ public struct Linter {
         return (cachedViolations, ruleTimes)
     }
 
-    public init(file: File,
-                configuration: Configuration = Configuration()!,
-                cache: LinterCache? = nil) {
+    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil) {
         self.file = file
         self.cache = cache
         rules = configuration.rules

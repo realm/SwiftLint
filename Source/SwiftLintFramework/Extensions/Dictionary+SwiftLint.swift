@@ -70,4 +70,15 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         let array = self["key.inheritedtypes"] as? [SourceKitRepresentable] ?? []
         return array.flatMap { ($0 as? [String: String])?["key.name"] }
     }
+
+    internal func extractCallsToSuper(methodName: String) -> [String] {
+        let superCall = "super.\(methodName)"
+        return substructure.flatMap { elems in
+            guard let type = (elems["key.kind"] as? String).flatMap({ SwiftExpressionKind(rawValue: $0) }),
+                let name = elems["key.name"] as? String,
+                type == .call && superCall.contains(name)
+                else { return nil }
+            return name
+        }
+    }
 }

@@ -277,7 +277,7 @@ private func validKeys(ruleList: RuleList) -> [String] {
         .swiftlintVersion,
         .useNestedConfigs,
         .warningThreshold,
-        .whitelistRules,
+        .whitelistRules
     ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
 }
 

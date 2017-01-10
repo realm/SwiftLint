@@ -55,7 +55,7 @@ if has_app_changes
           @commits[repo] = `git rev-parse HEAD`
           durations = []
           start = Time.now
-          command = '../../.build/release/swiftlint'
+          command = '../../.build/release/swiftlint lint --no-cache'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             Open3.popen3(command) do |_, stdout, _, _|
               file << stdout.read.chomp

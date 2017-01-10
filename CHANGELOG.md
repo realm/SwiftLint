@@ -7,6 +7,19 @@
 
 ##### Enhancements
 
+* Speed up linting by caching linter results across invocations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#868](https://github.com/realm/SwiftLint/issues/868)
+
+* Speed up linting by processing multiple files and rules concurrently.  
+  [JP Simard](https://github.com/jpsim)
+  [#1077](https://github.com/realm/SwiftLint/issues/1077)
+
+* Make many operations in SwiftLintFramework safe to call in multithreaded
+  scenarios, including accessing `Linter.styleViolations`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1077](https://github.com/realm/SwiftLint/issues/1077)
+
 * Permit unsigned and explicitly-sized integer types in `valid_ibinspectable`  
   [Daniel Duan](https://github.com/dduan)
 
@@ -67,15 +80,6 @@
 * Now `number_separator` rule can be configured with a minimum length.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1109](https://github.com/realm/SwiftLint/issues/1109)
-
-* Make many operations in SwiftLintFramework safe to call in multithreaded
-  scenarios, including accessing `Linter.styleViolations`.  
-  [JP Simard](https://github.com/jpsim)
-  [#1077](https://github.com/realm/SwiftLint/issues/1077)
-
-* Speed up linting by processing multiple files and rules concurrently.  
-  [JP Simard](https://github.com/jpsim)
-  [#1077](https://github.com/realm/SwiftLint/issues/1077)
 
 * Add `compiler_protocol_init` rule that flags usage of initializers 
   declared in protocols used by the compiler such as `ExpressibleByArrayLiteral`

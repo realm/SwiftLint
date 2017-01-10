@@ -37,8 +37,8 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         return validate(file: file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
-                  level: Int) -> [StyleViolation] {
+    private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
+                          level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds()
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {

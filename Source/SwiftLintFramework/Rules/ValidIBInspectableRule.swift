@@ -68,21 +68,22 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             shouldMakeViolation = true
         }
 
-        if shouldMakeViolation {
-            let location: Location
-            if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-                location = Location(file: file, byteOffset: offset)
-            } else {
-                location = Location(file: file.path)
-            }
-
-            return [
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
-                               location: location)
-            ]
+        guard shouldMakeViolation else {
+            return []
         }
-        return []
+
+        let location: Location
+        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            location = Location(file: file, byteOffset: offset)
+        } else {
+            location = Location(file: file.path)
+        }
+
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: location)
+        ]
     }
 
     private static func createSupportedTypes() -> [String] {

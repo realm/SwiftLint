@@ -118,7 +118,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         var corrections = [Correction]()
         for currentLine in file.lines {
 
-            // Doesnt correct lines where rule is disabled
+            // Doesn't correct lines where rule is disabled
             if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)
                 continue

@@ -17,7 +17,7 @@ private struct LintResult {
 }
 
 extension Rule {
-    fileprivate func performLint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
+    fileprivate func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }
@@ -42,7 +42,7 @@ extension Rule {
 
         let enabledViolations = enabledViolationsAndRegions.map { $0.0 }
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
-            let identifiers = region?.deprecatedAliasesDisablingRule(self) ?? []
+            let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
             return identifiers.map { ($0, type(of: self).description.identifier) }
         }
 
@@ -60,16 +60,16 @@ public struct Linter {
     }
 
     public var styleViolationsAndRuleTimes: ([StyleViolation], [(id: String, time: Double)]) {
-        return getStyleViolations(true)
+        return getStyleViolations(benchmark: true)
     }
 
-    private func getStyleViolations(_ benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+    private func getStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
         if file.sourcekitdFailed {
             queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
         let validationResults = rules.parallelFlatMap {
-            $0.performLint(file: self.file, regions: regions, benchmark: benchmark)
+            $0.lint(file: self.file, regions: regions, benchmark: benchmark)
         }
         let violations = validationResults.flatMap { $0.violations }
         let ruleTimes = validationResults.flatMap { $0.ruleTime }

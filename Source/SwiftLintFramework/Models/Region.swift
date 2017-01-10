@@ -33,7 +33,7 @@ public struct Region {
         return !disabledRuleIdentifiers.intersection(identifiers).isEmpty
     }
 
-    public func deprecatedAliasesDisablingRule(_ rule: Rule) -> Set<String> {
+    public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
         let identifiers = type(of: rule).description.deprecatedAliases
         return disabledRuleIdentifiers.intersection(identifiers)
     }

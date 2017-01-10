@@ -40,7 +40,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
 
         let linesSections = validate(file)
         if linesSections.isEmpty { return [] }
@@ -49,7 +49,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         for (eachLastLine, eachSectionCount) in linesSections {
 
             // Skips violations for areas where the rule is disabled
-            if !file.ruleEnabledViolatingRanges([eachLastLine.range], forRule: self).isEmpty {
+            if !file.ruleEnabled(violatingRanges: [eachLastLine.range], for: self).isEmpty {
                 let violation = StyleViolation(ruleDescription: type(of: self).description,
                                            severity: configuration.severityConfiguration.severity,
                                            location: Location(file: file.path,
@@ -93,8 +93,8 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         var result = [(lastLine: Line, linesToRemove: Int)]()
         for eachSection in blankLinesSections {
             guard let lastLine = eachSection.last else { continue }
-            let kindInSection = syntaxMap.tokensIn(lastLine.byteRange)
-                                        .flatMap { SyntaxKind(rawValue: $0.type) }
+            let kindInSection = syntaxMap.tokens(inByteRange: lastLine.byteRange)
+                                         .flatMap { SyntaxKind(rawValue: $0.type) }
             if stringAndComments.isDisjoint(with: kindInSection) {
                 result.append((lastLine, eachSection.count))
             }
@@ -104,7 +104,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
 
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let linesSections = validate(file)
         if linesSections.isEmpty { return [] }
 
@@ -120,7 +120,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         for currentLine in file.lines {
 
             // Doesnt correct lines where rule is disabled
-            if file.ruleEnabledViolatingRanges([currentLine.range], forRule: self).isEmpty {
+            if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)
                 continue
             }

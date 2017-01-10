@@ -38,9 +38,8 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         })
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }

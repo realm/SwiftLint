@@ -33,7 +33,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -50,7 +50,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
             self.message = message
         }
         if let severityString = configurationDict["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

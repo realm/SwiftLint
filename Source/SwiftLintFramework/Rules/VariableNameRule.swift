@@ -61,8 +61,8 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
         return false
     }
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             if configuration.excluded.contains(name) {
                 return []

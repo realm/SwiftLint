@@ -41,7 +41,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
         XCTAssertEqual(config.reporter, "xcode")
-        XCTAssertEqual(reporterFromString(config.reporter).identifier, "xcode")
+        XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
     }
 
     func testWhitelistRules() {
@@ -119,7 +119,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     private class TestFileManager: LintableFileManager {
-        func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
+        func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
                                       "directory/excluded/Excluded.swift",
@@ -137,7 +137,7 @@ class ConfigurationTests: XCTestCase {
         let configuration = Configuration(included: ["directory"],
                                           excluded: ["directory/excluded",
                                                      "directory/ExcludedFile.swift"])!
-        let paths = configuration.lintablePathsForPath("", fileManager: TestFileManager())
+        let paths = configuration.lintablePaths(inPath: "", fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
@@ -164,27 +164,27 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Nested Configurations
 
     func testMerge() {
-        XCTAssertEqual(projectMockConfig0.merge(projectMockConfig2), projectMockConfig2)
+        XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig2), projectMockConfig2)
     }
 
     func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift0)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift0)!),
                        projectMockConfig0)
     }
 
     func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift1)!),
+        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift1)!),
                        projectMockConfig0)
     }
 
     func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift2)!),
-                       projectMockConfig0.merge(projectMockConfig2))
+        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift2)!),
+                       projectMockConfig0.merge(with: projectMockConfig2))
     }
 
     func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configurationForFile(File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(projectMockConfig2))
+        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
+                       projectMockConfig0.merge(with: projectMockConfig2))
     }
 
     // MARK: - Testing Rules from config dictionary

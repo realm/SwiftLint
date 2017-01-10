@@ -87,7 +87,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         ].joined(separator: "|")
     }
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRangesInFile(file, withPattern: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -95,7 +95,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         var result = [Correction]()
 
         result.append(contentsOf: correctFile(file,
@@ -128,7 +128,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
                              replaceString: String,
                              keepLastChar: Bool = false) -> [Correction] {
         let violations = violationRangesInFile(file, withPattern: pattern)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
 
         var nsstring = file.contents.bridge()
@@ -148,7 +148,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private func violationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
-        return file.rangesAndTokensMatching(pattern).filter { _, syntaxTokens in
+        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring

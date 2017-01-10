@@ -96,7 +96,7 @@ extension Configuration {
                     }
                 }
                 autoreleasepool {
-                    visitorBlock(Linter(file: file, configuration: self.configurationForFile(file), cache: cache))
+                    visitorBlock(Linter(file: file, configuration: self.configuration(for: file), cache: cache))
                 }
             }
             if parallel {
@@ -127,7 +127,7 @@ extension Configuration {
                     (path.isEmpty ? "in current working directory" : "at path \(path)")
             )
         }
-        return .success(lintableFilesForPath(path))
+        return .success(lintableFiles(inPath: path))
     }
 
     init(options: LintOptions) {

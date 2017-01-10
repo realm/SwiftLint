@@ -226,7 +226,7 @@ public struct ValidDocsRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.invalidDocOffsets(file.structure.dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,

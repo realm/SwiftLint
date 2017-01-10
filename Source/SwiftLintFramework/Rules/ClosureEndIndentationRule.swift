@@ -24,7 +24,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "       print(number)\n" +
             "   }\n",
             "[1, 2].map { $0 + 1 }\n",
-            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
             "   return Command(string: contents, range: range)\n" +
             "}.flatMap { command in\n" +
             "   return command.expand()\n" +
@@ -35,7 +35,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "   .startWithNext { number in\n" +
             "       print(number)\n" +
             "↓}\n",
-            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
             "   return Command(string: contents, range: range)\n" +
             "   ↓}.flatMap { command in\n" +
             "   return command.expand()\n" +
@@ -45,9 +45,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
 
     private static let notWhitespace = regex("[^\\s]")
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else {
             return []
         }

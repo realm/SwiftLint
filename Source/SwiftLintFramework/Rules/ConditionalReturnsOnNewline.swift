@@ -37,9 +37,9 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return"
-        return file.rangesAndTokensMatching(pattern).filter { _, tokens in
+        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
                 SyntaxKind(rawValue: firstToken.type) == .keyword &&
                     SyntaxKind(rawValue: lastToken.type) == .keyword else {

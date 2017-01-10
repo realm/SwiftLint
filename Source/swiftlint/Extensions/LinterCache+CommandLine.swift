@@ -39,6 +39,28 @@ private func cacheURL(options: LintOptions, configuration: Configuration) -> URL
     guard !options.ignoreCache else {
         return nil
     }
-    let path = (options.cachePath.isEmpty ? configuration.cachePath : options.cachePath) ?? ".swiftlint_cache.json"
-    return URL(fileURLWithPath: path)
+
+    let path = options.cachePath.isEmpty ? configuration.cachePath : options.cachePath
+    return path.map(URL.init(fileURLWithPath:)) ?? defaultCacheURL(options: options)
+}
+
+private func defaultCacheURL(options: LintOptions) -> URL {
+    let rootPath = options.path.bridge().absolutePathRepresentation()
+
+    #if os(Linux)
+        let baseURL = URL(fileURLWithPath: "/var/tmp/")
+    #else
+        let baseURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+    #endif
+
+    let fileName = String(rootPath.hash) + ".json"
+    let folder = baseURL.appendingPathComponent("SwiftLint")
+
+    do {
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
+    } catch {
+        queuedPrintError("Error while creating cache: " + error.localizedDescription)
+    }
+
+    return folder.appendingPathComponent(fileName)
 }

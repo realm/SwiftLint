@@ -13,9 +13,7 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 extension File {
     fileprivate func violatingClosingBraceRanges() -> [NSRange] {
-        return match(pattern: "(\\}[ \\t]+\\))",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
-        )
+        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
 
@@ -52,10 +50,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabled(violatingRanges:
-            file.violatingClosingBraceRanges(),
-            for: self
-        )
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingClosingBraceRanges(), for: self)
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 

@@ -39,7 +39,7 @@ extension String {
         return self
     }
 
-    internal subscript (range: Range<Int>) -> String {
+    private subscript (range: Range<Int>) -> String {
         let nsrange = NSRange(location: range.lowerBound,
                               length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
@@ -48,7 +48,7 @@ extension String {
         fatalError("invalid range")
     }
 
-    internal func substring(_ from: Int, length: Int? = nil) -> String {
+    internal func substring(from: Int, length: Int? = nil) -> String {
         if let length = length {
             return self[from..<from + length]
         }
@@ -56,7 +56,7 @@ extension String {
         return substring(from: index)
     }
 
-    internal func lastIndexOf(_ search: String) -> Int? {
+    internal func lastIndex(of search: String) -> Int? {
         if let range = range(of: search, options: [.literal, .backwards]) {
             return characters.distance(from: startIndex, to: range.lowerBound)
         }

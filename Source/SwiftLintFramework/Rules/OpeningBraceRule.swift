@@ -13,11 +13,9 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 extension File {
     fileprivate func violatingOpeningBraceRanges() -> [NSRange] {
-        return matchPattern(
-            "((?:[^( ]|[\\s(][\\s]+)\\{)",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
-            excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"
-        )
+        return match(pattern: "((?:[^( ]|[\\s(][\\s]+)\\{)",
+                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+                     excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{")
     }
 }
 
@@ -68,7 +66,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -76,11 +74,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
-            file.violatingOpeningBraceRanges(),
-            forRule: self
-        )
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingOpeningBraceRanges(), for: self)
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 

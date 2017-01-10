@@ -9,11 +9,11 @@
 import Foundation
 
 public protocol LintableFileManager {
-    func filesToLintAtPath(_ path: String, rootDirectory: String?) -> [String]
+    func filesToLint(inPath: String, rootDirectory: String?) -> [String]
 }
 
 extension FileManager: LintableFileManager {
-    public func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
+    public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
         let rootPath = rootDirectory ?? currentDirectoryPath
         let absolutePath = path.bridge()
             .absolutePathRepresentation(rootDirectory: rootPath).bridge()

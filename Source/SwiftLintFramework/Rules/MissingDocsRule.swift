@@ -154,7 +154,7 @@ public struct MissingDocsRule: OptInRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let acl = parameters.map { $0.value }
         return file.missingDocOffsets(file.structure.dictionary, acl: acl).map {
             StyleViolation(ruleDescription: type(of: self).description,

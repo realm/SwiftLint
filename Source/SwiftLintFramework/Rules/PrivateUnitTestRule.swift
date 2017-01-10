@@ -24,8 +24,6 @@ private func superclass(_ dictionary: [String: SourceKitRepresentable]) -> Strin
     return className
 }
 
-open class FooTest: NSObject {}
-
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration: PrivateUnitTestConfiguration = {
@@ -97,8 +95,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .class && isTestClass(dictionary) else { return [] }
 
         /* It's not strictly necessary to check for `private` on classes because a

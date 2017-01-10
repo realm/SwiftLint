@@ -31,14 +31,13 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         triggeringExamples: AttributesRuleExamples.swift3TriggeringExamples
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return validateTestableImport(file: file) +
-            validateFile(file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let attributeShouldBeOnSameLine: Bool?
         if SwiftDeclarationKind.variableKinds().contains(kind) {
@@ -62,7 +61,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        return file.matchPattern(pattern).flatMap { range, kinds -> StyleViolation? in
+        return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
             guard kinds.count == 2 &&
                 kinds.first == .attributeBuiltin && kinds.last == .keyword else {
                     return nil
@@ -70,7 +69,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             let contents = file.contents.bridge()
             let match = contents.substring(with: range)
-            let idx = match.lastIndexOf("import") ?? 0
+            let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
 
             return StyleViolation(ruleDescription: type(of: self).description,
@@ -103,7 +102,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                              attributeShouldBeOnSameLine: Bool) -> Bool {
         let line = file.lines[lineNumber - 1]
 
-        let tokens = file.syntaxMap.tokensIn(line.byteRange)
+        let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
         let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
@@ -203,7 +202,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
 
             let line = file.lines[currentLine]
-            let tokens = file.syntaxMap.tokensIn(line.byteRange)
+            let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
 
             if tokens.isEmpty {
                 foundEmptyLine = true

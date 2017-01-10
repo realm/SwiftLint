@@ -19,7 +19,7 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
         self.severity = severity
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         let configString = configuration as? String
         let configDict = configuration as? [String: Any]
         guard let severityString: String = configString ?? configDict?["severity"] as? String,

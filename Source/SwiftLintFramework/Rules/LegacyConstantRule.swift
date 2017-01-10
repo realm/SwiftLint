@@ -51,20 +51,20 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let constants = ["CGRectInfinite", "CGPointZero", "CGRectZero", "CGSizeZero",
                          "NSZeroPoint", "NSZeroRect", "NSZeroSize", "CGRectNull"]
 
         let pattern = "\\b(" + constants.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
+        return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let patterns = [
             "CGRectInfinite": "CGRect.infinite",
             "CGPointZero": "CGPoint.zero",
@@ -75,6 +75,6 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "NSZeroSize": "NSSize.zero",
             "CGRectNull": "CGRect.null"
         ]
-        return file.correctLegacyRule(self, patterns: patterns)
+        return file.correct(legacyRule: self, patterns: patterns)
     }
 }

@@ -43,7 +43,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -51,9 +51,9 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violations = violationRangesInFile(file)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
 
         var contents = file.contents.bridge()
@@ -115,7 +115,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // first captured range won't match tokens if it is not comment neither string
-                let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
+                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
                     .filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
 
                 // If not empty, first captured range is comment or string
@@ -136,7 +136,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // second captured range won't match tokens if it is not comment
-                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
+                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
                     .filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
 
                 // If not empty, second captured range is comment

@@ -32,9 +32,9 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "[\\s\\}\\)]*\\.first"
-        let firstRanges = file.matchPattern(pattern, withSyntaxKinds: [.identifier])
+        let firstRanges = file.match(pattern: pattern, with: [.identifier])
         let contents = file.contents.bridge()
         let structure = file.structure
 

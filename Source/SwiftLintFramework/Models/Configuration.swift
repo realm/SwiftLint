@@ -86,7 +86,7 @@ public struct Configuration: Equatable {
         let validDisabledRules = disabledRules.filter(validRuleIdentifiers.contains)
 
         // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicatedRuleIdentifiers(validDisabledRules) {
+        if containsDuplicateIdentifiers(validDisabledRules) {
             return nil
         }
 
@@ -131,7 +131,7 @@ public struct Configuration: Equatable {
         let included = defaultStringArray(dict[ConfigurationKey.included.rawValue])
         let excluded = defaultStringArray(dict[ConfigurationKey.excluded.rawValue])
 
-        warnAboutDeprecations(dict, disabledRules: disabledRules, optInRules: optInRules,
+        warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules, optInRules: optInRules,
                               whitelistRules: whitelistRules, ruleList: ruleList)
 
         let configuredRules: [Rule]
@@ -189,29 +189,33 @@ public struct Configuration: Equatable {
         self.init()!
     }
 
-    public func lintablePathsForPath(_ path: String,
-                                     fileManager: LintableFileManager = fileManager) -> [String] {
+    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
+        self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
+                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet)
+    }
+
+    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = fileManager) -> [String] {
         // If path is a Swift file, skip filtering with excluded/included paths
         if path.bridge().isSwiftFile() && path.isFile {
             return [path]
         }
-        let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path, rootDirectory: nil) : []
+        let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let excludedPaths = excluded.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
+            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }
         let includedPaths = included.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
+            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }
         return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
     }
 
-    public func lintableFilesForPath(_ path: String) -> [File] {
-        return lintablePathsForPath(path).flatMap { File(path: $0) }
+    public func lintableFiles(inPath path: String) -> [File] {
+        return lintablePaths(inPath: path).flatMap { File(path: $0) }
     }
 
-    public func configurationForFile(_ file: File) -> Configuration {
+    public func configuration(for file: File) -> Configuration {
         if let containingDir = file.path?.bridge().deletingLastPathComponent {
-            return configurationForPath(containingDir)
+            return configuration(forPath: containingDir)
         }
         return self
     }
@@ -233,10 +237,10 @@ private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [St
     return validRuleIdentifiers
 }
 
-private func containsDuplicatedRuleIdentifiers(_ validDisabledRules: [String]) -> Bool {
+private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
     // Validate that rule identifiers aren't listed multiple times
-    if Set(validDisabledRules).count != validDisabledRules.count {
-        let duplicateRules = validDisabledRules.reduce([String: Int]()) { accu, element in
+    if Set(identifiers).count != identifiers.count {
+        let duplicateRules = identifiers.reduce([String: Int]()) { accu, element in
             var accu = accu
             accu[element] = (accu[element] ?? 0) + 1
             return accu
@@ -269,7 +273,7 @@ private func validKeys(ruleList: RuleList) -> [String] {
     ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
 }
 
-private func warnAboutDeprecations(_ dict: [String: Any],
+private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
                                    disabledRules: [String] = [],
                                    optInRules: [String] = [],
                                    whitelistRules: [String] = [],
@@ -308,20 +312,20 @@ private func warnAboutDeprecations(_ dict: [String: Any],
 // MARK: - Nested Configurations Extension
 
 extension Configuration {
-    fileprivate func configurationForPath(_ path: String) -> Configuration {
+    fileprivate func configuration(forPath path: String) -> Configuration {
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
-            return merge(Configuration(path: configurationSearchPath, rootPath: rootPath,
+            return merge(with: Configuration(path: configurationSearchPath, rootPath: rootPath,
                 optional: false, quiet: true))
         }
 
         // If we are not at the root path, continue down the tree
         if path != rootPath && path != "/" {
-            return configurationForPath(pathNSString.deletingLastPathComponent)
+            return configuration(forPath: pathNSString.deletingLastPathComponent)
         }
 
         // If nothing else, return self
@@ -331,7 +335,7 @@ extension Configuration {
     // Currently merge simply overrides the current configuration with the new configuration.
     // This requires that all configuration files be fully specified. In the future this should be
     // improved to do a more intelligent merge allowing for partial nested configurations.
-    internal func merge(_ configuration: Configuration) -> Configuration {
+    internal func merge(with configuration: Configuration) -> Configuration {
         return configuration
     }
 }

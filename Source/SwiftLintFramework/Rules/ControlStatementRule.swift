@@ -55,14 +55,14 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while"]
         return statements.flatMap { statementKind -> [StyleViolation] in
             let pattern = statementKind == "guard"
                 ? "\(statementKind)\\s*\\([^,{]*\\)\\s*else\\s*\\{"
                 : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
-            return file.matchPattern(pattern).flatMap { match, syntaxKinds in
-                let matchString = file.contents.substring(match.location, length: match.length)
+            return file.match(pattern: pattern).flatMap { match, syntaxKinds in
+                let matchString = file.contents.substring(from: match.location, length: match.length)
                 if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
                     return nil
                 }
@@ -79,7 +79,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             return true
         }
 
-        guard let lastClosingParenthesePosition = content.lastIndexOf(")") else {
+        guard let lastClosingParenthesePosition = content.lastIndex(of: ")") else {
             return false
         }
 

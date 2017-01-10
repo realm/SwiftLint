@@ -37,14 +37,13 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     }()
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(file) +
-            validateFile(file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard typeKinds.contains(kind),
             let name = dictionary["key.name"] as? String,
@@ -56,7 +55,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validateTypeAliasesAndAssociatedTypes(_ file: File) -> [StyleViolation] {
-        let rangesAndTokens = file.rangesAndTokensMatching("(typealias|associatedtype)\\s+.+?\\b")
+        let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
         return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
             guard tokens.count == 2,
                 let keywordToken = tokens.first,

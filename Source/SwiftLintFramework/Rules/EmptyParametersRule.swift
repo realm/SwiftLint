@@ -41,7 +41,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRanges(file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -50,22 +50,20 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds()
         let voidPattern = "Void"
         let pattern = voidPattern + "\\s*(throws\\s+)?->"
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
 
-        return file.matchPattern(pattern,
-                                 excludingSyntaxKinds: kinds,
-                                 excludingPattern: excludingPattern).flatMap {
+        return file.match(pattern: pattern,
+                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+                          excludingPattern: excludingPattern).flatMap { range in
             let voidRegex = regex(voidPattern)
-            return voidRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
+            return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRanges(file: file),
-                                                              forRule: self)
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 

@@ -36,7 +36,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         var firstToken: SyntaxToken?
         var lastToken: SyntaxToken?
 
@@ -95,7 +95,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                                        file: File) -> [StyleViolation] {
         let locations: [Int] = violationsOffsets.flatMap {
             let ranges = [NSRange(location: $0.0, length: 0)]
-            guard !file.ruleEnabledViolatingRanges(ranges, forRule: self).isEmpty else {
+            guard !file.ruleEnabled(violatingRanges: ranges, for: self).isEmpty else {
                 return nil
             }
 

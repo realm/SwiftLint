@@ -50,8 +50,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let offsets = violationOffsetsForTypes(file, dictionary: dictionary, kind: kind) +
             violationOffsetsForFunctions(file, dictionary: dictionary, kind: kind)
 

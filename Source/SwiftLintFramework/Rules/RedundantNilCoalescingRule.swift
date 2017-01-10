@@ -11,10 +11,8 @@ import SourceKittenFramework
 
 extension File {
     fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
-        return matchPattern(
-            "\\s*\\?\\?\\s*nil\\b", // {whitespace} ?? {whitespace} nil {word boundary}
-            withSyntaxKinds: [.keyword]
-        )
+        // {whitespace} ?? {whitespace} nil {word boundary}
+        return match(pattern: "\\s*\\?\\?\\s*nil\\b", with: [.keyword])
     }
 }
 
@@ -42,7 +40,7 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.violatingRedundantNilCoalescingRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -50,9 +48,8 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(file.violatingRedundantNilCoalescingRanges(),
-                                                              forRule: self)
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRedundantNilCoalescingRanges(), for: self)
         return writeToFile(file, violatingRanges: violatingRanges)
     }
 

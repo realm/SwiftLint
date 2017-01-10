@@ -44,8 +44,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private let pattern = "\\s*=\\s*nil\\b"
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -64,7 +64,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = file.matchPattern(pattern, withSyntaxKinds: [.keyword], range: range).first else {
+            let match = file.match(pattern: pattern, with: [.keyword], range: range).first else {
                 return []
         }
 
@@ -89,9 +89,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
-                                                              forRule: self)
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

@@ -33,14 +33,13 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: StatementKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: StatementKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard kind == .forEach,
             isEnumeratedCall(dictionary),
             let byteRange = byteRangeForVariables(dictionary),
-            let firstToken = file.syntaxMap.tokensIn(byteRange).first,
+            let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
             firstToken.length == 1,
             SyntaxKind(rawValue: firstToken.type) == .keyword,
             isUnderscore(file: file, token: firstToken) else {

@@ -23,7 +23,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         corrections: NumberSeparatorRuleExamples.swift3Corrections
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violatingRanges(file).map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
@@ -83,9 +83,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let ranges = violatingRanges(file).filter { range, _ in
-            return !file.ruleEnabledViolatingRanges([range], forRule: self).isEmpty
+            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
         return writeToFile(file, violatingRanges: ranges)

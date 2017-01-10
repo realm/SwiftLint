@@ -29,21 +29,16 @@ internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
 // MARK: - YamlParser
 
 public struct YamlParser {
-    public static func parse(_ contents: String) throws -> [String: Any] {
+    public static func parse(_ yaml: String) throws -> [String: Any] {
         do {
-            if let dict = try loadYaml(contents).flatDictionary {
+            if let dict = try Yaml.load(yaml).flatDictionary {
                 return dict
-            } else {
-                throw YamlParserError.yamlFlattening
             }
-        }
-    }
-
-    fileprivate static func loadYaml(_ yaml: String) throws -> Yaml {
-        do {
-            return try Yaml.load(yaml)
+            throw YamlParserError.yamlFlattening
         } catch Yaml.ResultError.message(let message) {
-            throw YamlParserError.yamlParsing(message ?? "Unknown Yaml Error")
+            throw YamlParserError.yamlParsing(message ?? "Unknown YAML Error")
+        } catch {
+            throw error
         }
     }
 }

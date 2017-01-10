@@ -29,8 +29,8 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftExpressionKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,

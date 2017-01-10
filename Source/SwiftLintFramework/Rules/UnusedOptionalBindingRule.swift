@@ -40,9 +40,9 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: StatementKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File,
+                         kind: StatementKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .if || kind == .guard,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
@@ -50,20 +50,20 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                 return []
         }
 
-        return violationRanges(file: file, in: range).map {
+        return violations(in: range, of: file).map {
             StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRanges(file: File, in range: NSRange) -> [NSRange] {
+    private func violations(in range: NSRange, of file: File) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
         let underscorePattern = "\\b_\\b"
         let parenthesesPattern = "\\([^)]*\\)"
 
-        return file.matchPattern(underscorePattern,
-                                 range: range,
-                                 excludingSyntaxKinds: kinds,
-                                 excludingPattern: parenthesesPattern)
+        return file.match(pattern: underscorePattern,
+                          range: range,
+                          excludingSyntaxKinds: kinds,
+                          excludingPattern: parenthesesPattern)
     }
 }

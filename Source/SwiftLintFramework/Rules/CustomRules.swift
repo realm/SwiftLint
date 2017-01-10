@@ -23,14 +23,14 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
 
     public init() {}
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
 
         for (key, value) in configurationDict {
             var ruleConfiguration = RegexConfiguration(identifier: key)
-            try ruleConfiguration.applyConfiguration(value)
+            try ruleConfiguration.apply(configuration: value)
             customRuleConfigurations.append(ruleConfiguration)
         }
     }
@@ -55,7 +55,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
     public init() {}
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         if configurations.isEmpty {
@@ -90,7 +90,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         let pattern = configuration.regex.pattern
         let excludingKinds = Array(Set(SyntaxKind.allKinds())
             .subtracting(configuration.matchKinds))
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location),

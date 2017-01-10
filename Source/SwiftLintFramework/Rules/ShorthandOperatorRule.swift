@@ -60,7 +60,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
 
     private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 
@@ -83,7 +83,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
 
             let kindsInCaptureGroups = byteRanges.map { range -> [SyntaxKind] in
                 range.flatMap {
-                    let tokens = file.syntaxMap.tokensIn($0)
+                    let tokens = file.syntaxMap.tokens(inByteRange: $0)
                     return tokens.flatMap { SyntaxKind(rawValue: $0.type) }
                 } ?? []
             }

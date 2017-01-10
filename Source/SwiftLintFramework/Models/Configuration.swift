@@ -86,7 +86,7 @@ public struct Configuration: Equatable {
         let validDisabledRules = disabledRules.filter(validRuleIdentifiers.contains)
 
         // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicatedRuleIdentifiers(validDisabledRules: validDisabledRules) {
+        if containsDuplicateIdentifiers(validDisabledRules) {
             return nil
         }
 
@@ -131,7 +131,7 @@ public struct Configuration: Equatable {
         let included = defaultStringArray(dict[ConfigurationKey.included.rawValue])
         let excluded = defaultStringArray(dict[ConfigurationKey.excluded.rawValue])
 
-        warnAboutDeprecations(dict: dict, disabledRules: disabledRules, optInRules: optInRules,
+        warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules, optInRules: optInRules,
                               whitelistRules: whitelistRules, ruleList: ruleList)
 
         let configuredRules: [Rule]
@@ -237,10 +237,10 @@ private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [St
     return validRuleIdentifiers
 }
 
-private func containsDuplicatedRuleIdentifiers(validDisabledRules: [String]) -> Bool {
+private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
     // Validate that rule identifiers aren't listed multiple times
-    if Set(validDisabledRules).count != validDisabledRules.count {
-        let duplicateRules = validDisabledRules.reduce([String: Int]()) { accu, element in
+    if Set(identifiers).count != identifiers.count {
+        let duplicateRules = identifiers.reduce([String: Int]()) { accu, element in
             var accu = accu
             accu[element] = (accu[element] ?? 0) + 1
             return accu
@@ -273,7 +273,7 @@ private func validKeys(ruleList: RuleList) -> [String] {
     ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
 }
 
-private func warnAboutDeprecations(dict: [String: Any],
+private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
                                    disabledRules: [String] = [],
                                    optInRules: [String] = [],
                                    whitelistRules: [String] = [],

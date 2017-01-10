@@ -63,8 +63,8 @@ class LinterCacheTests: XCTestCase {
                            reason: "Something is wrong.")
         ]
 
-        cache.cacheFile(file, violations: violations, hash: 1)
-        let cachedViolations = cache.violations(for: file, hash: 1)
+        cache.cache(violations: violations, forFile: file, fileHash: 1)
+        let cachedViolations = cache.violations(forFile: file, hash: 1)
 
         XCTAssertNotNil(cachedViolations)
         XCTAssertEqual(cachedViolations!, violations)
@@ -73,8 +73,8 @@ class LinterCacheTests: XCTestCase {
     func testParsesViolationsWithModifiedHash() {
         let cache = LinterCache(currentVersion: Version(value: "0.2.0"))
         let file = "foo.swift"
-        cache.cacheFile(file, violations: [], hash: 1)
-        let cachedViolations = cache.violations(for: file, hash: 2)
+        cache.cache(violations: [], forFile: file, fileHash: 1)
+        let cachedViolations = cache.violations(forFile: file, hash: 2)
 
         XCTAssertNil(cachedViolations)
     }
@@ -82,7 +82,7 @@ class LinterCacheTests: XCTestCase {
     func testParsesViolationsWithEmptyViolations() {
         let cache = LinterCache(currentVersion: Version(value: "0.2.0"))
         let file = "foo.swift"
-        let cachedViolations = cache.violations(for: file, hash: 2)
+        let cachedViolations = cache.violations(forFile: file, hash: 2)
 
         XCTAssertNil(cachedViolations)
     }

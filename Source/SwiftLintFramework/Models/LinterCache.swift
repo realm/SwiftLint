@@ -20,10 +20,11 @@ public final class LinterCache {
     private let lock = NSLock()
 
     public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
-        cache = [String: Any]()
-        cache["version"] = currentVersion.value
+        cache = [
+            "version": currentVersion.value,
+            "files": [:]
+        ]
         cache["configuration_hash"] = configurationHash
-        cache["files"] = [:]
     }
 
     public init(cache: Any, currentVersion: Version = .current, configurationHash: Int? = nil) throws {
@@ -50,25 +51,18 @@ public final class LinterCache {
                       configurationHash: configurationHash)
     }
 
-    public func cacheFile(_ file: String, violations: [StyleViolation], hash: Int) {
-        var entry = [String: Any]()
-        var fileViolations = entry["violations"] as? [[String: Any]] ?? []
-
-        for violation in violations {
-            fileViolations.append(dictionaryForViolation(violation))
-        }
-
-        entry["violations"] = fileViolations
-        entry["hash"] = hash
-
+    public func cache(violations: [StyleViolation], forFile file: String, fileHash: Int) {
         lock.lock()
         var filesCache = (cache["files"] as? [String: Any]) ?? [:]
-        filesCache[file] = entry
+        filesCache[file] = [
+            "violations": violations.map(dictionary(for:)),
+            "hash": fileHash
+        ]
         cache["files"] = filesCache
         lock.unlock()
     }
 
-    public func violations(for file: String, hash: Int) -> [StyleViolation]? {
+    public func violations(forFile file: String, hash: Int) -> [StyleViolation]? {
         lock.lock()
 
         guard let filesCache = cache["files"] as? [String: Any],
@@ -81,7 +75,7 @@ public final class LinterCache {
         }
 
         lock.unlock()
-        return violations.flatMap { StyleViolation.fromCache($0, file: file) }
+        return violations.flatMap { StyleViolation.from(cache: $0, file: file) }
     }
 
     public func save(to url: URL) throws {
@@ -91,7 +85,7 @@ public final class LinterCache {
         try json.write(to: url, atomically: true, encoding: .utf8)
     }
 
-    private func dictionaryForViolation(_ violation: StyleViolation) -> [String: Any] {
+    private func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "line": violation.location.line ?? NSNull() as Any,
             "character": violation.location.character ?? NSNull() as Any,
@@ -104,7 +98,7 @@ public final class LinterCache {
 }
 
 extension StyleViolation {
-    fileprivate static func fromCache(_ cache: [String: Any], file: String) -> StyleViolation? {
+    fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
         guard let severity = (cache["severity"] as? String).flatMap({ ViolationSeverity(rawValue: $0) }),
             let name = cache["type"] as? String,
             let ruleId = cache["rule_id"] as? String,

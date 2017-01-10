@@ -66,7 +66,7 @@ public struct Linter {
 
     private func getStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
 
-        if let cached = cachedStyleViolations(benchmark) {
+        if let cached = cachedStyleViolations(benchmark: benchmark) {
             return cached
         }
 
@@ -84,9 +84,9 @@ public struct Linter {
             deprecatedToValidIdentifier[key] = value
         }
 
-        if let cache = cache, let file = file.path {
-            let hash = self.file.contents.hash
-            cache.cacheFile(file, violations: violations, hash: hash)
+        if let cache = cache, let path = file.path {
+            let hash = file.contents.hash
+            cache.cache(violations: violations, forFile: path, fileHash: hash)
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
@@ -97,12 +97,12 @@ public struct Linter {
         return (violations, ruleTimes)
     }
 
-    private func cachedStyleViolations(_ benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
+    private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
         let start: Date! = benchmark ? Date() : nil
         guard let cache = cache,
             let file = file.path,
             case let hash = self.file.contents.hash,
-            let cachedViolations = cache.violations(for: file, hash: hash) else {
+            let cachedViolations = cache.violations(forFile: file, hash: hash) else {
                 return nil
         }
 

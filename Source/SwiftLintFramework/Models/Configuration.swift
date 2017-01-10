@@ -26,6 +26,7 @@ extension String {
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
+    case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
     case enabledRules = "enabled_rules" // deprecated in favor of optInRules
     case excluded = "excluded"
@@ -35,7 +36,6 @@ private enum ConfigurationKey: String {
     case swiftlintVersion = "swiftlint_version"
     case useNestedConfigs = "use_nested_configs" // deprecated
     case warningThreshold = "warning_threshold"
-    case cachePath = "cache_path"
     case whitelistRules = "whitelist_rules"
 }
 

@@ -85,7 +85,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         }
 
         if hasSwitchStatements {
-            return reduceSwitchComplexity(initial: complexity, file: file, dictionary: dictionary)
+            return reduceSwitchComplexity(initialComplexity: complexity, file: file, dictionary: dictionary)
         }
 
         return complexity
@@ -93,7 +93,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    private func reduceSwitchComplexity(initial complexity: Int, file: File,
+    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
         let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
         let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)

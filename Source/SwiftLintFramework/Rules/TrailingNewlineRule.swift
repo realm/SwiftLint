@@ -66,7 +66,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         guard let lastLineRange = file.lines.last?.range else {
             return []
         }
-        if file.ruleEnabledViolatingRanges([lastLineRange], forRule: self).isEmpty {
+        if file.ruleEnabled(violatingRanges: [lastLineRange], for: self).isEmpty {
             return []
         }
         if count < 1 {

@@ -60,7 +60,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
     public func correctFile(_ file: File) -> [Correction] {
         let violationsRanges = violationRangesInFile(file, skipParentheses: false)
-        let matches = file.ruleEnabledViolatingRanges(violationsRanges, forRule: self)
+        let matches = file.ruleEnabled(violatingRanges: violationsRanges, for: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(pattern)
         let description = type(of: self).description
@@ -114,7 +114,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     }()
 
     private func violationRangesInFile(_ file: File, skipParentheses: Bool) -> [NSRange] {
-        let matches = file.matchPattern(pattern, withSyntaxKinds: [.typeidentifier])
+        let matches = file.match(pattern: pattern, with: [.typeidentifier])
         guard skipParentheses else {
             return matches
         }

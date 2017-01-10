@@ -124,7 +124,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public func correctFile(_ file: File) -> [Correction] {
         let violations = correctionRangesInFile(file)
         let matches = violations.filter {
-            !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty
+            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }
 
         guard !matches.isEmpty else { return [] }
@@ -197,7 +197,7 @@ extension ColonRule {
     fileprivate func typeColonViolationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
-        return file.rangesAndTokensMatching(pattern).filter { _, syntaxTokens in
+        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
             if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {
                 return false

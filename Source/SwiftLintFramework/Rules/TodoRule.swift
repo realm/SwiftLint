@@ -83,7 +83,7 @@ public struct TodoRule: ConfigurationProviderRule {
     }
 
     public func validateFile(_ file: File) -> [StyleViolation] {
-        return file.matchPattern("\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
+        return file.match(pattern: "\\b(TODO|FIXME)\\b").flatMap { range, syntaxKinds in
             if !syntaxKinds.filter({ !$0.isCommentLike }).isEmpty {
                 return nil
             }

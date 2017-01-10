@@ -110,7 +110,7 @@ private extension StatementPositionRule {
     }
 
     func defaultViolationRangesInFile(_ file: File, withPattern pattern: String) -> [NSRange] {
-        return file.matchPattern(pattern).filter { _, syntaxKinds in
+        return file.match(pattern: pattern).filter { _, syntaxKinds in
             return syntaxKinds.starts(with: [.keyword])
         }.flatMap { $0.0 }
     }
@@ -118,7 +118,7 @@ private extension StatementPositionRule {
     func defaultCorrectFile(_ file: File) -> [Correction] {
         let violations = defaultViolationRangesInFile(file,
                                                       withPattern: type(of: self).defaultPattern)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
         let regularExpression = regex(type(of: self).defaultPattern)
         let description = type(of: self).description
@@ -165,8 +165,8 @@ private extension StatementPositionRule {
             }
             let range1 = match.rangeAt(1)
             let range2 = match.rangeAt(3)
-            let whitespace1 = contents.substring(range1.location, length: range1.length)
-            let whitespace2 = contents.substring(range2.location, length: range2.length)
+            let whitespace1 = contents.substring(from: range1.location, length: range1.length)
+            let whitespace2 = contents.substring(from: range2.location, length: range2.length)
             if whitespace1 == whitespace2 {
                 return nil
             }
@@ -182,7 +182,7 @@ private extension StatementPositionRule {
                                                                         length: range.length) else {
                 return false
             }
-            let tokens = syntaxMap.tokensIn(matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
+            let tokens = syntaxMap.tokens(inByteRange: matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
             return tokens == [.keyword]
         }
     }
@@ -215,7 +215,7 @@ private extension StatementPositionRule {
                                                                syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
-                  .filter { !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty }
+                  .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
         if validMatches.isEmpty { return [] }
         let description = type(of: self).uncuddledDescription
         var corrections = [Correction]()

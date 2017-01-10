@@ -90,7 +90,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
         let pattern = configuration.regex.pattern
         let excludingKinds = Array(Set(SyntaxKind.allKinds())
             .subtracting(configuration.matchKinds))
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: configuration.description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location),

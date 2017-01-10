@@ -119,7 +119,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     private class TestFileManager: LintableFileManager {
-        func filesToLintAtPath(_ path: String, rootDirectory: String? = nil) -> [String] {
+        func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
                                       "directory/excluded/Excluded.swift",

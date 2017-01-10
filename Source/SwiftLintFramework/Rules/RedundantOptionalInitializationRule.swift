@@ -64,7 +64,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = file.matchPattern(pattern, withSyntaxKinds: [.keyword], range: range).first else {
+            let match = file.match(pattern: pattern, with: [.keyword], range: range).first else {
                 return []
         }
 
@@ -90,8 +90,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
-                                                              forRule: self)
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

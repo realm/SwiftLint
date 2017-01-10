@@ -85,7 +85,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     public func correctFile(_ file: File) -> [Correction] {
         let ranges = violatingRanges(file).filter { range, _ in
-            return !file.ruleEnabledViolatingRanges([range], forRule: self).isEmpty
+            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
         return writeToFile(file, violatingRanges: ranges)

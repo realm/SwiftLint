@@ -50,7 +50,7 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
         let kinds = SyntaxKind.commentAndStringKinds()
         let contents = file.contents.bridge()
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: kinds).flatMap { range in
+        return file.match(pattern: pattern, excludingSyntaxKinds: kinds).flatMap { range in
 
             // avoid triggering when referring to an associatedtype
             let start = range.location + range.length
@@ -62,12 +62,13 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
                     return nil
                 }
 
-                let kinds = file.structure.kindsFor(byteOffset).flatMap { SwiftExpressionKind(rawValue: $0.kind) }
+                let kinds = file.structure.kinds(forByteOffset: byteOffset)
+                    .flatMap { SwiftExpressionKind(rawValue: $0.kind) }
                 guard kinds.contains(.call) else {
                     return nil
                 }
 
-                if let (range, kinds) = file.matchPattern("\\s*\\.(?:self|Type)", range: restOfFileRange).first,
+                if let (range, kinds) = file.match(pattern: "\\s*\\.(?:self|Type)", range: restOfFileRange).first,
                     range.location == start, kinds == [.keyword] || kinds == [.identifier] {
                     return nil
                 }

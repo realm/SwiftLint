@@ -117,7 +117,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         // skip commas in comments
         return ranges.filter {
             let range = NSRange(location: $0.location + offset, length: $0.length)
-            let kinds = file.syntaxMap.tokensIn(range).flatMap { SyntaxKind(rawValue: $0.type) }
+            let kinds = file.syntaxMap.tokens(inByteRange: range).flatMap { SyntaxKind(rawValue: $0.type) }
             return kinds.filter(SyntaxKind.commentKinds().contains).isEmpty
         }.last.flatMap {
             contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)

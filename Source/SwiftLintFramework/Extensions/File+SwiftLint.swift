@@ -31,7 +31,7 @@ extension File {
             case .enable: disabledRules.subtract(command.ruleIdentifiers)
             }
             let start = Location(file: path, line: command.line, character: command.character)
-            let end = endOfNextCommand(nextCommand)
+            let end = endOf(next: nextCommand)
             regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
         }
         return regions
@@ -43,15 +43,15 @@ extension File {
         }
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in
+        return match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
     }
 
-    fileprivate func endOfNextCommand(_ nextCommand: Command?) -> Location {
-        guard let nextCommand = nextCommand else {
+    fileprivate func endOf(next command: Command?) -> Location {
+        guard let nextCommand = command else {
             return Location(file: path, line: .max, character: .max)
         }
         let nextLine: Int
@@ -70,36 +70,27 @@ extension File {
         return Location(file: path, line: nextLine, character: nextCharacter)
     }
 
-    internal func matchPattern(_ pattern: String,
-                               withSyntaxKinds syntaxKinds: [SyntaxKind],
-                               range: NSRange? = nil) -> [NSRange] {
-        return matchPattern(pattern, range: range).filter({ $0.1 == syntaxKinds }).map { $0.0 }
+    internal func match(pattern: String, with syntaxKinds: [SyntaxKind], range: NSRange? = nil) -> [NSRange] {
+        return match(pattern: pattern, range: range)
+            .filter { $0.1 == syntaxKinds }
+            .map { $0.0 }
     }
 
-    internal func rangesAndTokensMatching(_ pattern: String,
-                                          range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
-        return rangesAndTokensMatching(regex(pattern), range: range)
-    }
-
-    internal func rangesAndTokensMatching(_ regex: NSRegularExpression,
-                                          range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+    internal func rangesAndTokens(matching pattern: String,
+                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
-        return regex.matches(in: self.contents, options: [], range: range).map { match in
+        return regex(pattern).matches(in: self.contents, options: [], range: range).map { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
-                length: match.range.length) ?? match.range
-            let tokensInRange = syntax.tokensIn(matchByteRange)
+                                                             length: match.range.length) ?? match.range
+            let tokensInRange = syntax.tokens(inByteRange: matchByteRange)
             return (match.range, tokensInRange)
         }
     }
 
-    internal func matchPattern(_ pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
-        return matchPattern(regex(pattern), range: range)
-    }
-
-    internal func matchPattern(_ regex: NSRegularExpression, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
-        return rangesAndTokensMatching(regex, range: range).map { range, tokens in
+    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+        return rangesAndTokens(matching: pattern, range: range).map { range, tokens in
             (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
         }
     }
@@ -153,29 +144,28 @@ extension File {
      - returns: An array of [NSRange] objects consisting of regex matches inside
      file contents.
      */
-    internal func matchPattern(_ pattern: String,
-                               excludingSyntaxKinds syntaxKinds: [SyntaxKind],
-                               range: NSRange? = nil) -> [NSRange] {
-        return matchPattern(pattern, range: range).filter {
-            $0.1.filter(syntaxKinds.contains).isEmpty
-        }.map { $0.0 }
+    internal func match(pattern: String,
+                        excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                        range: NSRange? = nil) -> [NSRange] {
+        return match(pattern: pattern, range: range)
+            .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
+            .map { $0.0 }
     }
 
     internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
 
-    internal func matchPattern(_ pattern: String,
-                               excludingSyntaxKinds: [SyntaxKind],
-                               excludingPattern: String,
-                               exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
-        let contents = self.contents.bridge()
-        let range = NSRange(location: 0, length: contents.length)
-        let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
+    internal func match(pattern: String,
+                        excludingSyntaxKinds: [SyntaxKind],
+                        excludingPattern: String,
+                        exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
+        let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
             return []
         }
-        let exclusionRanges = regex(excludingPattern).matches(in: self.contents, options: [],
+        let range = NSRange(location: 0, length: contents.bridge().length)
+        let exclusionRanges = regex(excludingPattern).matches(in: contents, options: [],
                                                               range: range).map(exclusionMapping)
-        return matches.filter { !$0.intersectsRanges(exclusionRanges) }
+        return matches.filter { !$0.intersects(exclusionRanges) }
     }
 
     internal func validateVariableName(_ dictionary: [String: SourceKitRepresentable],
@@ -221,8 +211,7 @@ extension File {
         lines = contents.bridge().lines()
     }
 
-    internal func ruleEnabledViolatingRanges(_ violatingRanges: [NSRange],
-                                             forRule rule: Rule) -> [NSRange] {
+    internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
@@ -234,7 +223,7 @@ extension File {
         return violatingRanges
     }
 
-    fileprivate func numberOfCommentAndWhitespaceOnlyLines(_ startLine: Int, endLine: Int) -> Int {
+    fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = Set(SyntaxKind.commentKinds())
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
             kinds.filter { !commentKinds.contains($0) }.isEmpty
@@ -243,28 +232,27 @@ extension File {
 
     internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
                                                                  _ limit: Int) -> (Bool, Int) {
-        if end - start <= limit {
+        guard end - start > limit else {
             return (false, end - start)
         }
 
-        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(start, endLine: end)
+        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
         return (count > limit, count)
     }
 
-    internal func correctLegacyRule<R: Rule>(_ rule: R,
-                                             patterns: [String: String]) -> [Correction] {
+    internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
         typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
         matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return matchPattern(pattern).filter { range, kinds in
+            return match(pattern: pattern).filter { range, kinds in
                 return kinds.first == .identifier &&
-                    !ruleEnabledViolatingRanges([range], forRule: rule).isEmpty
+                    !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
             }.map { ($0.0, pattern, template) }
         }).sorted { $0.0.location > $1.0.location } // reversed
 
-        if matches.isEmpty { return [] }
+        guard !matches.isEmpty else { return [] }
 
-        let description = type(of: rule).description
+        let description = type(of: legacyRule).description
         var corrections = [Correction]()
         var contents = self.contents
 

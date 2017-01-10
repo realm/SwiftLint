@@ -60,7 +60,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
 
     private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 

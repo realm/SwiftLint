@@ -104,7 +104,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let violations = typeColonViolationRangesInFile(file, withPattern: pattern).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
@@ -113,7 +113,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
         let dictionaryViolations: [StyleViolation]
         if configuration.applyToDictionaries {
-            dictionaryViolations = validateFile(file, dictionary: file.structure.dictionary)
+            dictionaryViolations = validate(file: file, dictionary: file.structure.dictionary)
         } else {
             dictionaryViolations = []
         }
@@ -121,7 +121,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
         return (violations + dictionaryViolations).sorted { $0.location < $1.location }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violations = correctionRangesInFile(file)
         let matches = violations.filter {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
@@ -216,8 +216,8 @@ extension ColonRule {
 extension ColonRule {
 
     /// Only returns dictionary colon violations
-    public func validateFile(_ file: File, kind: SwiftExpressionKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let ranges = dictionaryColonViolationRangesInFile(file, kind: kind, dictionary: dictionary)
         return ranges.map {
@@ -244,7 +244,7 @@ extension ColonRule {
     }
 
     private func dictionaryColonViolationRangesInFile(_ file: File, kind: SwiftExpressionKind,
-                                                      dictionary: [String : SourceKitRepresentable]) -> [NSRange] {
+                                                      dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .dictionary,
             let ranges = colonRanges(dictionary) else {
                 return []

@@ -44,8 +44,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private let pattern = "\\s*=\\s*nil\\b"
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -89,7 +89,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

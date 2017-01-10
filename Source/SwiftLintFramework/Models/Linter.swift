@@ -26,11 +26,11 @@ extension Rule {
         let ruleTime: (String, Double)?
         if benchmark {
             let start = Date()
-            violations = validateFile(file)
+            violations = validate(file: file)
             let id = type(of: self).description.identifier
             ruleTime = (id, -start.timeIntervalSinceNow)
         } else {
-            violations = validateFile(file)
+            violations = validate(file: file)
             ruleTime = nil
         }
 
@@ -94,7 +94,7 @@ public struct Linter {
     public func correct() -> [Correction] {
         var corrections = [Correction]()
         for rule in rules.flatMap({ $0 as? CorrectableRule }) {
-            let newCorrections = rule.correctFile(file)
+            let newCorrections = rule.correct(file: file)
             corrections += newCorrections
             if !newCorrections.isEmpty {
                 file.invalidateCache()

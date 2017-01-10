@@ -38,7 +38,7 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
         self.severity = severity
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -46,7 +46,7 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
             try statementMode = StatementModeConfiguration(value: statementModeConfiguration)
         }
         if let severityConfiguration = configurationDict["severity"] {
-            try severity.applyConfiguration(severityConfiguration)
+            try severity.apply(configuration: severityConfiguration)
         }
     }
 }

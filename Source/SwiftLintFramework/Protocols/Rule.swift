@@ -12,7 +12,7 @@ public protocol Rule {
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
     static var description: RuleDescription { get }
-    func validateFile(_ file: File) -> [StyleViolation]
+    func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
     var configurationDescription: String { get }
 }
@@ -31,7 +31,7 @@ public protocol ConfigurationProviderRule: Rule {
 }
 
 public protocol CorrectableRule: Rule {
-    func correctFile(_ file: File) -> [Correction]
+    func correct(file: File) -> [Correction]
 }
 
 public protocol SourceKitFreeRule: Rule {}
@@ -41,7 +41,7 @@ public protocol SourceKitFreeRule: Rule {}
 public extension ConfigurationProviderRule {
     public init(configuration: Any) throws {
         self.init()
-        try self.configuration.applyConfiguration(configuration)
+        try self.configuration.apply(configuration: configuration)
     }
 
     public func isEqualTo(_ rule: Rule) -> Bool {

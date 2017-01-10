@@ -68,7 +68,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         return linesWithBraces.flatMap { $0 }
     }
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         // match open braces to corresponding closing braces
         func matchBraces(_ validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }

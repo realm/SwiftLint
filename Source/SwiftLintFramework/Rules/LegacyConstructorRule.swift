@@ -97,7 +97,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
                             "NSMakePoint", "NSMakeSize", "NSMakeRect", "NSMakeRange",
                             "UIEdgeInsetsMake", "NSEdgeInsetsMake"]
@@ -111,7 +111,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
         let patterns = [
             "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",

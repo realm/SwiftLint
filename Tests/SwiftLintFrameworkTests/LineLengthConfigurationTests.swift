@@ -51,7 +51,7 @@ class LineLengthConfigurationTests: XCTestCase {
         var configuration = LineLengthConfiguration(warning: 100, error: 150, ignoresURLs: true)
 
         checkError(ConfigurationError.unknownConfiguration) {
-            try configuration.applyConfiguration(config)
+            try configuration.apply(configuration: config)
         }
     }
 
@@ -68,10 +68,10 @@ class LineLengthConfigurationTests: XCTestCase {
         let config2 = [warning2]
 
         do {
-            try configuration.applyConfiguration(config1)
+            try configuration.apply(configuration: config1)
             XCTAssertEqual(configuration.length, length1)
 
-            try configuration.applyConfiguration(config2)
+            try configuration.apply(configuration: config2)
             XCTAssertEqual(configuration.length, length2)
         } catch {
             XCTFail()
@@ -95,15 +95,15 @@ class LineLengthConfigurationTests: XCTestCase {
         let config3: [String: Bool] = ["ignores_urls": false]
 
         do {
-            try configuration.applyConfiguration(config1)
+            try configuration.apply(configuration: config1)
             XCTAssertEqual(configuration.length, length1)
             XCTAssertTrue(configuration.ignoresURLs)
 
-            try configuration.applyConfiguration(config2)
+            try configuration.apply(configuration: config2)
             XCTAssertEqual(configuration.length, length2)
             XCTAssertTrue(configuration.ignoresURLs)
 
-            try configuration.applyConfiguration(config3)
+            try configuration.apply(configuration: config3)
             XCTAssertEqual(configuration.length, length3)
             XCTAssertFalse(configuration.ignoresURLs)
         } catch {

@@ -87,7 +87,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         ].joined(separator: "|")
     }
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRangesInFile(file, withPattern: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -95,7 +95,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         var result = [Correction]()
 
         result.append(contentsOf: correctFile(file,

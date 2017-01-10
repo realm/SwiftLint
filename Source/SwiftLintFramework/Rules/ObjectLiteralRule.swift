@@ -41,8 +41,8 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
     )
 
-    public func validateFile(_ file: File, kind: SwiftExpressionKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
             isImageNamedInit(dictionary, file: file) || isColorInit(dictionary, file: file) else {
@@ -56,7 +56,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         ]
     }
 
-    private func isImageNamedInit(_ dictionary: [String : SourceKitRepresentable], file: File) -> Bool {
+    private func isImageNamedInit(_ dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
             initsForClasses(["UIImage", "NSImage"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
@@ -70,7 +70,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         return true
     }
 
-    private func isColorInit(_ dictionary: [String : SourceKitRepresentable], file: File) -> Bool {
+    private func isColorInit(_ dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let name = dictionary["key.name"] as? String,
             initsForClasses(["UIColor", "NSColor"]).contains(name),
             case let arguments = dictionary.enclosedArguments,

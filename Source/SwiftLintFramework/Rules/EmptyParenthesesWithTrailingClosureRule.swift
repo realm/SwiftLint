@@ -47,8 +47,8 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
 
     private static let emptyParenthesesRegex = regex("^\\s*\\(\\s*\\)")
 
-    public func validateFile(_ file: File, kind: SwiftExpressionKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -103,7 +103,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

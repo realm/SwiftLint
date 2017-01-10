@@ -31,14 +31,13 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         triggeringExamples: AttributesRuleExamples.swift3TriggeringExamples
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return validateTestableImport(file: file) +
-            validateFile(file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let attributeShouldBeOnSameLine: Bool?
         if SwiftDeclarationKind.variableKinds().contains(kind) {

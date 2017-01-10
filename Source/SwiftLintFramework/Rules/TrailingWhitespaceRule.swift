@@ -27,7 +27,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             "/* */ let name: String \n": "/* */ let name: String\n"]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let filteredLines = file.lines.filter {
             guard $0.content.hasTrailingWhitespace() else { return false }
 
@@ -50,7 +50,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let whitespaceCharacterSet = CharacterSet.whitespaces
         var correctedLines = [String]()
         var corrections = [Correction]()

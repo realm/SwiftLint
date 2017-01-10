@@ -24,7 +24,7 @@ class ReporterTests: XCTestCase {
             EmojiReporter.self
         ]
         for reporter in reporters {
-            XCTAssertEqual(reporter.identifier, reporterFromString(reporter.identifier).identifier)
+            XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
         }
     }
 

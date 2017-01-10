@@ -41,7 +41,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRanges(file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -62,7 +62,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
         return writeToFile(file, violatingRanges: violatingRanges)
     }

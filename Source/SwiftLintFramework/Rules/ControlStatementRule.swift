@@ -55,7 +55,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while"]
         return statements.flatMap { statementKind -> [StyleViolation] in
             let pattern = statementKind == "guard"

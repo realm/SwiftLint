@@ -25,7 +25,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         self.ignoresURLs = ignoresURLs
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
             let warning = configurationArray[0]
             let error = (configurationArray.count > 1) ? configurationArray[1] : nil

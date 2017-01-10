@@ -69,7 +69,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         "beLessThanOrEqualTo": (to: "<=", toNot: nil)
     ]
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -93,7 +93,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             }.map { $0.0 }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
             .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
         guard !matches.isEmpty else { return [] }

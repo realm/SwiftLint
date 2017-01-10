@@ -47,7 +47,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]"
         return file.rangesAndTokens(matching: pattern).filter { range, tokens in
             guard let firstToken = tokens.first, tokenIsKeyword(token: firstToken) else {

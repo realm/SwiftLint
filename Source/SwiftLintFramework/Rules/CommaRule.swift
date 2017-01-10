@@ -43,7 +43,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -51,7 +51,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violations = violationRangesInFile(file)
         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }

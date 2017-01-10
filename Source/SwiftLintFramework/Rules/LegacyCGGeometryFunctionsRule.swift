@@ -89,7 +89,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let functions = ["CGRectGetWidth", "CGRectGetHeight", "CGRectGetMinX", "CGRectGetMidX",
                          "CGRectGetMaxX", "CGRectGetMinY", "CGRectGetMidY", "CGRectGetMaxY",
                          "CGRectIsNull", "CGRectIsEmpty", "CGRectIsInfinite", "CGRectStandardize",
@@ -106,7 +106,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber

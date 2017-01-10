@@ -41,7 +41,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
         XCTAssertEqual(config.reporter, "xcode")
-        XCTAssertEqual(reporterFromString(config.reporter).identifier, "xcode")
+        XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
     }
 
     func testWhitelistRules() {

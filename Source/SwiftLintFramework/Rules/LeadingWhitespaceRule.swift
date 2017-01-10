@@ -41,7 +41,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,
             let firstLineRange = file.lines.first?.range,
-            !file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty else {
+            !file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isEmpty else {
                 return []
         }
 

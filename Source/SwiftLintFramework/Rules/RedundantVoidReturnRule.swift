@@ -65,8 +65,8 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: start, length: end - start),
             case let kinds = excludingKinds(),
-            file.matchPattern("->", excludingSyntaxKinds: kinds, range: range).count == 1,
-            let match = file.matchPattern(pattern, excludingSyntaxKinds: kinds, range: range).first else {
+            file.match(pattern: "->", excludingSyntaxKinds: kinds, range: range).count == 1,
+            let match = file.match(pattern: pattern, excludingSyntaxKinds: kinds, range: range).first else {
                 return []
         }
 
@@ -96,8 +96,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
-                                                              forRule: self)
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

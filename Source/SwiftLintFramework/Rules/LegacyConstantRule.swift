@@ -57,7 +57,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
         let pattern = "\\b(" + constants.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
+        return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -75,6 +75,6 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
             "NSZeroSize": "NSSize.zero",
             "CGRectNull": "CGRect.null"
         ]
-        return file.correctLegacyRule(self, patterns: patterns)
+        return file.correct(legacyRule: self, patterns: patterns)
     }
 }

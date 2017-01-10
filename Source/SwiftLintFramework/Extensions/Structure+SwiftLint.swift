@@ -16,10 +16,10 @@ extension Structure {
     ///
     /// - Parameter byteOffset: Int
     // swiftlint:disable:next valid_docs
-    internal func kindsFor(_ byteOffset: Int) -> [(kind: String, byteRange: NSRange)] {
+    internal func kinds(forByteOffset byteOffset: Int) -> [(kind: String, byteRange: NSRange)] {
         var results = [(kind: String, byteRange: NSRange)]()
 
-        func parse(_ dictionary: [String : SourceKitRepresentable]) {
+        func parse(_ dictionary: [String: SourceKitRepresentable]) {
             guard let
                 offset = (dictionary["key.offset"] as? Int64).map({ Int($0) }),
                 let byteRange = (dictionary["key.length"] as? Int64)

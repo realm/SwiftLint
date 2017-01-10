@@ -84,8 +84,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
-                let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
-                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
+                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
+                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
 
                 // check first captured range
                 // If not empty, first captured range is comment, string, keyword or typeidentifier.
@@ -118,7 +118,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                         else { return nil }
 
-                    let tokensInThirdRange = syntaxMap.tokensIn(matchByteThirdRange).filter {
+                    let tokensInThirdRange = syntaxMap.tokens(inByteRange: matchByteThirdRange).filter {
                         ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains($0.type)
                     }
                     // If not empty, third captured range is identifier.
@@ -139,7 +139,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // check deepest kind matching range in structure
     private func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
         let nsstring = file.contents.bridge()
-        let kinds = file.structure.kindsFor(byteRange.location)
+        let kinds = file.structure.kinds(forByteOffset: byteRange.location)
         if let lastKind = kinds.last {
             switch lastKind.kind {
             // range is in some "source.lang.swift.decl.var.*"

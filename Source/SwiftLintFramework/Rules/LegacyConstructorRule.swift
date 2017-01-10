@@ -104,7 +104,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
 
         let pattern = "\\b(" + constructors.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
+        return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -129,6 +129,6 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
         ]
-        return file.correctLegacyRule(self, patterns: patterns)
+        return file.correct(legacyRule: self, patterns: patterns)
     }
 }

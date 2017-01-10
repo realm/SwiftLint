@@ -13,8 +13,7 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 extension File {
     fileprivate func violatingOpeningBraceRanges() -> [NSRange] {
-        return matchPattern(
-            "((?:[^( ]|[\\s(][\\s]+)\\{)",
+        return match(pattern: "((?:[^( ]|[\\s(][\\s]+)\\{)",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
             excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{"
         )
@@ -77,9 +76,9 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
+        let violatingRanges = file.ruleEnabled(violatingRanges:
             file.violatingOpeningBraceRanges(),
-            forRule: self
+            for: self
         )
         return writeToFile(file, violatingRanges: violatingRanges)
     }

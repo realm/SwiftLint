@@ -109,8 +109,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
         let kinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
 
-        return file.matchPattern(pattern, excludingSyntaxKinds: kinds,
-                                 excludingPattern: excludingPattern).flatMap {
+        return file.match(pattern: pattern, excludingSyntaxKinds: kinds,
+                          excludingPattern: excludingPattern).flatMap {
 
             let spacesPattern = oneSpace + "*"
             let rangeRegex = regex(spacesPattern + rangePattern + spacesPattern)
@@ -143,7 +143,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
     public func correctFile(_ file: File) -> [Correction] {
         let violatingRanges = violationRanges(file: file).filter { range, _ in
-            return !file.ruleEnabledViolatingRanges([range], forRule: self).isEmpty
+            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
         return writeToFile(file, violatingRanges: violatingRanges)

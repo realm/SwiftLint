@@ -76,7 +76,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 continue
             }
 
-            if file.ruleEnabledViolatingRanges([line.range], forRule: self).isEmpty {
+            if file.ruleEnabled(violatingRanges: [line.range], for: self).isEmpty {
                 correctedLines.append(line.content)
                 continue
             }

@@ -29,8 +29,7 @@ private struct RegexCacheKey: Hashable {
 }
 
 extension NSRegularExpression {
-    internal static func cached(pattern: String,
-                                options: Options? = nil) throws -> NSRegularExpression {
+    internal static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
         let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
         let key = RegexCacheKey(pattern: pattern, options: options)
         if let result = regexCache[key] {

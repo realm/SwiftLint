@@ -49,7 +49,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
 
     public func validateFile(_ file: File) -> [StyleViolation] {
         let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]"
-        return file.rangesAndTokensMatching(pattern).filter { range, tokens in
+        return file.rangesAndTokens(matching: pattern).filter { range, tokens in
             guard let firstToken = tokens.first, tokenIsKeyword(token: firstToken) else {
                 return false
             }
@@ -67,7 +67,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             }
 
             let line = file.lines[lineNumber - 1]
-            let allLineTokens = file.syntaxMap.tokensIn(line.byteRange)
+            let allLineTokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
             let lineTokens = allLineTokens.filter(tokenIsKeyword)
 
             guard let firstLineToken = lineTokens.first else {
@@ -139,7 +139,7 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
     }
 
     private func isEnumCase(_ file: File, token: SyntaxToken) -> Bool {
-        let kinds = file.structure.kindsFor(token.offset).flatMap {
+        let kinds = file.structure.kinds(forByteOffset: token.offset).flatMap {
             SwiftDeclarationKind(rawValue: $0.kind)
         }
 

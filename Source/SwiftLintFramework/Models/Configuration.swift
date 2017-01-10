@@ -195,12 +195,12 @@ public struct Configuration: Equatable {
         if path.bridge().isSwiftFile() && path.isFile {
             return [path]
         }
-        let pathsForPath = included.isEmpty ? fileManager.filesToLintAtPath(path, rootDirectory: nil) : []
+        let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let excludedPaths = excluded.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
+            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }
         let includedPaths = included.flatMap {
-            fileManager.filesToLintAtPath($0, rootDirectory: rootPath)
+            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }
         return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
     }

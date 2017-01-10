@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 extension File {
     fileprivate func violatingTrailingSemicolonRanges() -> [NSRange] {
-        return matchPattern("(;+([^\\S\\n]?)*)+;?$",
-                            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
+        return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
+                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
 
@@ -52,9 +52,9 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
+        let violatingRanges = file.ruleEnabled(violatingRanges:
             file.violatingTrailingSemicolonRanges(),
-            forRule: self
+            for: self
         )
         let adjustedRanges = violatingRanges.reduce([NSRange]()) { adjustedRanges, element in
             let adjustedLocation = element.location - adjustedRanges.count

@@ -87,7 +87,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
         let excludingKinds = SyntaxKind.commentKinds()
 
-        return file.matchPattern(pattern)
+        return file.match(pattern: pattern)
             .filter { _, kinds in
                 kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
             }.map { $0.0 }
@@ -95,7 +95,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
 
     public func correctFile(_ file: File) -> [Correction] {
         let matches = violationMatchesRanges(in: file)
-            .filter { !file.ruleEnabledViolatingRanges([$0], forRule: self).isEmpty }
+            .filter { !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty }
         guard !matches.isEmpty else { return [] }
 
         let description = type(of: self).description

@@ -63,7 +63,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             let tokenRanges = tokens.flatMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0.offset, length: $0.length)
             }
-            linesWithBraces.append(braces.filter({ !$0.intersectsRanges(tokenRanges) }))
+            linesWithBraces.append(braces.filter({ !$0.intersects(tokenRanges) }))
         }
         return linesWithBraces.flatMap { $0 }
     }
@@ -75,7 +75,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             var validBraces = validBraceLocations
             var ranges = [NSRange]()
             var bracesAsString = validBraces.map({
-                file.contents.substring($0.location, length: $0.length)
+                file.contents.substring(from: $0.location, length: $0.length)
             }).joined()
             while let foundRange = bracesAsString.range(of: "{}") {
                 let startIndex = bracesAsString.distance(from: bracesAsString.startIndex,
@@ -94,7 +94,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
 
         var violationRanges = matchedUpBraces.filter {
             // removes enclosing brances to just content
-            let content = file.contents.substring($0.location + 1, length: $0.length - 2)
+            let content = file.contents.substring(from: $0.location + 1, length: $0.length - 2)
             if content.isEmpty || content == " " {
                 // case when {} is not a closure
                 return false
@@ -104,7 +104,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         }
 
         // filter out ranges where rule is disabled
-        violationRanges = file.ruleEnabledViolatingRanges(violationRanges, forRule: self)
+        violationRanges = file.ruleEnabled(violatingRanges: violationRanges, for: self)
 
         return violationRanges.flatMap {
             StyleViolation(ruleDescription: type(of: self).description,

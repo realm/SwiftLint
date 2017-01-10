@@ -13,8 +13,7 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 extension File {
     fileprivate func violatingClosingBraceRanges() -> [NSRange] {
-        return matchPattern(
-            "(\\}[ \\t]+\\))",
+        return match(pattern: "(\\}[ \\t]+\\))",
             excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
         )
     }
@@ -53,9 +52,9 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
+        let violatingRanges = file.ruleEnabled(violatingRanges:
             file.violatingClosingBraceRanges(),
-            forRule: self
+            for: self
         )
         return writeToFile(file, violatingRanges: violatingRanges)
     }
@@ -66,8 +65,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         for violatingRange in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "})")
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "})")
                 adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }
@@ -76,7 +74,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         return adjustedLocations.map {
             Correction(ruleDescription: type(of: self).description,
-                location: Location(file: file, characterOffset: $0))
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 }

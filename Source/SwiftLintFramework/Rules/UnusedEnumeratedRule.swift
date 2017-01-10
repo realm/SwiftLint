@@ -40,7 +40,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         guard kind == .forEach,
             isEnumeratedCall(dictionary),
             let byteRange = byteRangeForVariables(dictionary),
-            let firstToken = file.syntaxMap.tokensIn(byteRange).first,
+            let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
             firstToken.length == 1,
             SyntaxKind(rawValue: firstToken.type) == .keyword,
             isUnderscore(file: file, token: firstToken) else {

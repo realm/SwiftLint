@@ -101,7 +101,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                                                                   length: range.length),
                     // if it's the parameter declaration itself, we should skip
                     byteRange.location != paramOffset,
-                    case let tokens = file.syntaxMap.tokensIn(byteRange),
+                    case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
                     // a parameter usage should be only one token
                     tokens.count == 1 else {
                     continue
@@ -146,8 +146,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     }
 
     public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
-                                                              forRule: self)
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

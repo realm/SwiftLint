@@ -155,6 +155,7 @@ extension File {
     internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
 
     internal func match(pattern: String,
+                        range: NSRange? = nil,
                         excludingSyntaxKinds: [SyntaxKind],
                         excludingPattern: String,
                         exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
@@ -162,7 +163,7 @@ extension File {
         if matches.isEmpty {
             return []
         }
-        let range = NSRange(location: 0, length: contents.bridge().length)
+        let range = range ?? NSRange(location: 0, length: contents.bridge().length)
         let exclusionRanges = regex(excludingPattern).matches(in: contents, options: [],
                                                               range: range).map(exclusionMapping)
         return matches.filter { !$0.intersects(exclusionRanges) }

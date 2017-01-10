@@ -1,7 +1,7 @@
 machine:
   xcode:
-    version: "8.1"
+    version: "8.2"
 
 test:
   override:
-    - bundle exec danger --verbose || true
+    - bundle exec danger --verbose

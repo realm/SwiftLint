@@ -34,7 +34,10 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             "func validateFunction(\n" +
             "   _ file: File, kind: SwiftDeclarationKind,\n" +
             "   dictionary: [String: SourceKitRepresentable]\n" +
-            ") -> [StyleViolation]\n"
+            ") -> [StyleViolation]\n",
+            "func regex(_ pattern: String,\n" +
+            "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
+            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n"
         ],
         triggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
@@ -68,12 +71,13 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
                 return []
         }
 
+        let paramRegex = regex("^\\s*(.*?):", options: [.anchorsMatchLines])
+
         let linesRange = (startLine + 1)...endLine
         let violationLocations = linesRange.flatMap { lineIndex -> Int? in
             let line = file.lines[lineIndex - 1]
-            guard let paramRange = regex("\\S").firstMatch(in: file.contents, options: [],
-                                                           range: line.range)?.range,
-                contents.substring(with: paramRange) != ")",
+            guard let paramRange = paramRegex.firstMatch(in: file.contents, options: [],
+                                                         range: line.range)?.rangeAt(1),
                 let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramRange.location),
                 paramCharacter != startCharacter else {
                     return nil

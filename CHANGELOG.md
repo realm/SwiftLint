@@ -2,10 +2,8 @@
 
 ##### Breaking
 
-* Change the signature of `Configuration` initializers to support
-  rule aliases.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#973](https://github.com/realm/SwiftLint/issues/973)
+* Several API breaking changes were made to conform to the Swift 3 API Design
+  Guidelines. We apologize for any inconvenience this may have caused.
 
 ##### Enhancements
 
@@ -117,6 +115,10 @@
   [JP Simard](https://github.com/jpsim)
   [#221](https://github.com/realm/SwiftLint/issues/221)
 
+* Add internal support for deprecated rule aliases.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#973](https://github.com/realm/SwiftLint/issues/973)
+
 ##### Bug Fixes
 
 * Ignore close parentheses on `vertical_parameter_alignment` rule.  
@@ -149,6 +151,11 @@
 * Fix running `swiftlint version` when building with Swift Package Manager.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1045](https://github.com/realm/SwiftLint/issues/1045)
+
+* Fix false positive on `vertical_parameter_alignment` rule when breaking line
+  in a default parameter declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1129](https://github.com/realm/SwiftLint/issues/1129)
 
 ## 0.15.0: Hand Washable Holiday Linens 🎄
 

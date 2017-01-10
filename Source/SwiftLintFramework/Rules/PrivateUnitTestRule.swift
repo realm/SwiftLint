@@ -24,8 +24,6 @@ private func superclass(_ dictionary: [String: SourceKitRepresentable]) -> Strin
     return className
 }
 
-open class FooTest: NSObject {}
-
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration: PrivateUnitTestConfiguration = {

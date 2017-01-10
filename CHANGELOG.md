@@ -2,10 +2,8 @@
 
 ##### Breaking
 
-* Change the signature of `Configuration` initializers to support
-  rule aliases.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#973](https://github.com/realm/SwiftLint/issues/973)
+* Several API breaking changes were made to conform to the Swift 3 API Design
+  Guidelines. We apologize for any inconvenience this may have caused.
 
 ##### Enhancements
 
@@ -116,6 +114,10 @@
   value.  
   [JP Simard](https://github.com/jpsim)
   [#221](https://github.com/realm/SwiftLint/issues/221)
+
+* Add internal support for deprecated rule aliases.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#973](https://github.com/realm/SwiftLint/issues/973)
 
 ##### Bug Fixes
 

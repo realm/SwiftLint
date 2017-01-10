@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 extension File {
     fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
-        return match(pattern: "\\s*\\?\\?\\s*nil\\b", // {whitespace} ?? {whitespace} nil {word boundary}
-            with: [.keyword])
+        // {whitespace} ?? {whitespace} nil {word boundary}
+        return match(pattern: "\\s*\\?\\?\\s*nil\\b", with: [.keyword])
     }
 }
 

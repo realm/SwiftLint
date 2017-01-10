@@ -304,6 +304,10 @@ class RulesTests: XCTestCase {
         verifyRule(UnusedEnumeratedRule.description)
     }
 
+    func testUnusedOptionalBinding() {
+        verifyRule(UnusedOptionalBindingRule.description)
+    }
+
 // swiftlint:disable:next todo
 // FIXME: https://github.com/jpsim/SourceKitten/issues/269
 //    func testValidDocs() {
@@ -399,6 +403,7 @@ extension RulesTests {
             ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
+            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVariableName", testVariableName),
             ("VerticalParameterAlignment", testVerticalParameterAlignment),

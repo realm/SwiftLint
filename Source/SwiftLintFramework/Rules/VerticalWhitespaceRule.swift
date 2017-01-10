@@ -40,7 +40,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
 
         let linesSections = validate(file)
         if linesSections.isEmpty { return [] }
@@ -104,7 +104,7 @@ public struct VerticalWhitespaceRule: CorrectableRule,
 
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let linesSections = validate(file)
         if linesSections.isEmpty { return [] }
 

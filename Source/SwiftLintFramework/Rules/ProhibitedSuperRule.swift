@@ -51,8 +51,8 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard let offset = dictionary["key.bodyoffset"] as? Int64,
             let name = dictionary["key.name"] as? String,
             kind == .functionMethodInstance &&

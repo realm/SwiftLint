@@ -32,14 +32,13 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return validateFile(file, kind: kind, dictionary: dictionary, level: 0)
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        return validate(file: file, kind: kind, dictionary: dictionary, level: 0)
     }
 
-    func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                      dictionary: [String: SourceKitRepresentable],
-                      level: Int) -> [StyleViolation] {
+    private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
+                          level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds()
         if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
@@ -61,7 +60,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
             }
             return nil
         }.flatMap { kind, subDict in
-            return validateFile(file, kind: kind, dictionary: subDict, level: level + 1)
+            return validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
         })
         return violations
     }

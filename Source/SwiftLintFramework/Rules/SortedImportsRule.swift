@@ -26,7 +26,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
         let contents = file.contents.bridge()
 

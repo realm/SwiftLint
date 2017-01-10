@@ -62,14 +62,13 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         return regex(genericTypePattern)
     }
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        return validateFile(file, dictionary: file.structure.dictionary) +
+    public func validate(file: File) -> [StyleViolation] {
+        return validate(file: file, dictionary: file.structure.dictionary) +
             validateGenericTypeAliases(file)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let types = genericTypesForType(file, kind: kind, dictionary: dictionary) +
                     genericTypesForFunction(file, kind: kind, dictionary: dictionary)
 

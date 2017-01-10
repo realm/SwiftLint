@@ -24,7 +24,7 @@ public struct ForceCastRule: ConfigurationProviderRule {
         triggeringExamples: [ "NSNumber() ↓as! Int\n" ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.match(pattern: "as!", with: [.keyword]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,

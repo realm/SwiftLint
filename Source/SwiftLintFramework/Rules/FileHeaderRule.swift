@@ -36,7 +36,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         var firstToken: SyntaxToken?
         var lastToken: SyntaxToken?
 

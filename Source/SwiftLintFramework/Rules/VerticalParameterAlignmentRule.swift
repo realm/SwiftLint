@@ -50,9 +50,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }

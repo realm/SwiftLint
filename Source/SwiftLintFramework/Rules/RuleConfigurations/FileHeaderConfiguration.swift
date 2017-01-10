@@ -45,7 +45,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     public init() {}
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: String] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -69,7 +69,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
 
         if let severityString = configuration["severity"] {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

@@ -30,7 +30,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "count\\s*(==|!=|<|<=|>|>=)\\s*0"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {

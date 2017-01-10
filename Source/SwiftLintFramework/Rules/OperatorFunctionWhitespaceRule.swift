@@ -33,7 +33,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
             .map({ "\\\($0)" }).joined()
         let operators = "\(escapedOperators)%<>&"

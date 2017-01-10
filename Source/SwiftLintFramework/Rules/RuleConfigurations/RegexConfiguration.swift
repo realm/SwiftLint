@@ -34,7 +34,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
             let regexString = configurationDict["regex"] as? String else {
                 throw ConfigurationError.unknownConfiguration
@@ -56,7 +56,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
         }
         if let severityString = configurationDict["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

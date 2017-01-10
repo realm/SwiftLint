@@ -53,9 +53,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRangesInFile(file, dictionary: dictionary, kind: kind).map { range, name in
             let reason = "Unused parameter \"\(name)\" in a closure should be replaced with _."
             return StyleViolation(ruleDescription: type(of: self).description,
@@ -145,7 +144,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRangesInFile(file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

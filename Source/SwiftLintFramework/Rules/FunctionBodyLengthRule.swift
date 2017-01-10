@@ -19,9 +19,8 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         description: "Functions bodies should not span too many lines."
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }

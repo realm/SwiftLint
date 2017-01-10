@@ -72,7 +72,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRanges(file: file).map { range, _ in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -141,7 +141,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         return file.contents.bridge().substring(with: range).trimmingCharacters(in: .whitespaces)
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let violatingRanges = violationRanges(file: file).filter { range, _ in
             return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }

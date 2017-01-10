@@ -71,7 +71,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         switch configuration.statementMode {
         case .default:
             return defaultValidateFile(file)
@@ -80,7 +80,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         switch configuration.statementMode {
         case .default:
             return defaultCorrectFile(file)

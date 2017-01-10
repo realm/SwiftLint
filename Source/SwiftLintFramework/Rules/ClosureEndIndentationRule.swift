@@ -45,9 +45,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
 
     private static let notWhitespace = regex("[^\\s]")
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else {
             return []
         }

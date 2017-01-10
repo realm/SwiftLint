@@ -51,7 +51,7 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\bget\\b"
         let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).flatMap { _, tokens in
             guard tokens.count == 1, let token = tokens.first,

@@ -88,7 +88,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let functions = ["NSWidth", "NSHeight", "NSMinX", "NSMidX",
                          "NSMaxX", "NSMinY", "NSMidY", "NSMaxY",
                          "NSEqualRects", "NSEqualSizes", "NSEqualPoints", "NSEdgeInsetsEqual",
@@ -105,7 +105,7 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let varName = RegexHelpers.varNameGroup
         let twoVars = RegexHelpers.twoVars
         let twoVariableOrNumber = RegexHelpers.twoVariableOrNumber

@@ -43,7 +43,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRangesInFile(file).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,

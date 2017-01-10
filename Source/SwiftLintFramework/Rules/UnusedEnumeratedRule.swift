@@ -33,9 +33,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: StatementKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: StatementKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard kind == .forEach,
             isEnumeratedCall(dictionary),

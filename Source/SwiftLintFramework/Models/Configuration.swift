@@ -185,7 +185,7 @@ public struct Configuration: Equatable {
             }
             self.init(dict: dict)!
             configurationPath = fullPath
-            hash = dict.bridge().hashValue
+            hash = dict.description.hashValue
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {

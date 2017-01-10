@@ -13,7 +13,7 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
+private func scriptInputFiles() -> Result<[File], CommandantError<()>> {
     func getEnvironmentVariable(_ variable: String) -> Result<String, CommandantError<()>> {
         let environment = ProcessInfo.processInfo.environment
         if let value = environment[variable] {
@@ -34,10 +34,13 @@ private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     }()
 
     return count.flatMap { count in
-        let inputFiles = (0..<count).flatMap { fileNumber -> String? in
+        let inputFiles = (0..<count).flatMap { fileNumber -> File? in
             switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
             case let .success(path):
-                return path
+                if let file = File(path: path), path.bridge().isSwiftFile() {
+                    return file
+                }
+                return nil
             case let .failure(error):
                 queuedPrintError(String(describing: error))
                 return nil
@@ -47,29 +50,15 @@ private func scriptInputFiles() -> Result<[String], CommandantError<()>> {
     }
 }
 
-extension File {
-    fileprivate static func maybeSwiftFile(_ path: String) -> File? {
-        if let file = File(path: path), path.bridge().isSwiftFile() {
-            return file
-        }
-        return nil
-    }
-}
-
 #if os(Linux)
 private func autoreleasepool(block: () -> Void) { block() }
 #endif
 
 extension Configuration {
-    init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
-        self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
-                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet)
-    }
-
-    func visitLintableFiles(_ path: String, action: String, useSTDIN: Bool = false,
+    func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool, parallel: Bool = false,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
-        return getFiles(path, action: action, useSTDIN: useSTDIN, quiet: quiet,
+        return getFiles(path: path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
         .flatMap { files -> Result<[File], CommandantError<()>> in
             if files.isEmpty {
@@ -109,7 +98,7 @@ extension Configuration {
         }
     }
 
-    fileprivate func getFiles(_ path: String, action: String, useSTDIN: Bool, quiet: Bool,
+    fileprivate func getFiles(path: String, action: String, useSTDIN: Bool, quiet: Bool,
                               useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
@@ -118,25 +107,31 @@ extension Configuration {
             }
             return .failure(.usageError(description: "stdin isn't a UTF8-encoded string"))
         } else if useScriptInputFiles {
-            return scriptInputFiles().map { $0.flatMap(File.maybeSwiftFile) }
+            return scriptInputFiles()
         }
         if !quiet {
-            queuedPrintError(
-                "\(action) Swift files " +
-                    (path.isEmpty ? "in current working directory" : "at path \(path)")
-            )
+            let message = "\(action) Swift files " + (path.isEmpty ? "in current working directory" : "at path \(path)")
+            queuedPrintError(message)
         }
         return .success(lintableFiles(inPath: path))
     }
+
+    // MARK: Lint Command
 
     init(options: LintOptions) {
         self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
     }
 
-    func visitLintableFiles(_ options: LintOptions, visitorBlock: @escaping (Linter) -> Void) ->
-                            Result<[File], CommandantError<()>> {
-        return visitLintableFiles(options.path, action: "Linting", useSTDIN: options.useSTDIN, quiet: options.quiet,
-                                  useScriptInputFiles: options.useScriptInputFiles, parallel: true,
-                                  visitorBlock: visitorBlock)
+    func visitLintableFiles(options: LintOptions,
+                            visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
+        return visitLintableFiles(path: options.path, action: "Linting", useSTDIN: options.useSTDIN,
+                                  quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
+                                  parallel: true, visitorBlock: visitorBlock)
+    }
+
+    // MARK: AutoCorrect Command
+
+    init(options: AutoCorrectOptions) {
+        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
     }
 }

@@ -9,7 +9,7 @@
 import SwiftLintFramework
 
 extension Reporter {
-    static func reportViolations(_ violations: [StyleViolation], realtimeCondition: Bool) {
+    static func report(violations: [StyleViolation], realtimeCondition: Bool) {
         if isRealtime == realtimeCondition {
             let report = generateReport(violations)
             if !report.isEmpty {

@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positive on `shorthand_operator` rule with non-commutative
+  operations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1156](https://github.com/realm/SwiftLint/issues/1156)
 
 ## 0.16.0: Maximum Energy Efficiency Setting
 

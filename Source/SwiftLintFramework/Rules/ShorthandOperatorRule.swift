@@ -33,27 +33,37 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "↓foo = foo \(operation) 1\n",
                 "↓foo = foo \(operation) aVariable\n",
                 "↓foo = foo \(operation) bar.method()\n",
+                "↓foo.aProperty = foo.aProperty \(operation) 1\n",
+                "↓self.aProperty = self.aProperty \(operation) 1\n"
+            ]
+
+        } + commutativeOperators.flatMap { operation in
+            [
                 "↓foo = 1 \(operation) foo\n",
                 "↓foo = aVariable \(operation) foo\n",
                 "↓foo = bar.method() \(operation) foo\n",
-                "↓foo = bar.method(param: 1, otherParam: 2) \(operation) foo\n",
-                "↓foo.aProperty = foo.aProperty \(operation) 1\n",
-                "↓self.aProperty = self.aProperty \(operation) 1\n"
+                "↓foo = bar.method(param: 1, otherParam: 2) \(operation) foo\n"
             ]
         }
     )
 
-    private static let allOperators = ["+", "-", "/", "*"]
+    private static let allOperators = ["-", "/"] + commutativeOperators
+    private static let commutativeOperators = ["+", "*"]
 
     private static let pattern: String = {
-        let escapedOperators = allOperators.map { "\\\($0)" }.joined()
-        let operators = "[\(escapedOperators)]"
+        let escaped = { (operators: [String]) -> String in
+            return "[\(operators.map { "\\\($0)" }.joined())]"
+        }
+
+        let escapedCommutativeOperators = escaped(commutativeOperators)
+        let escapedOperators = escaped(allOperators)
+
         let operand = "[\\w\\d\\.]+?"
         let spaces = "[^\\S\\r\\n]*?"
         let otherOperand = "\(spaces).+?\(spaces)"
 
-        let pattern1 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(operators)"
-        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(otherOperand)\(operators)\(spaces)(\\3)"
+        let pattern1 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
+        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(otherOperand)\(escapedCommutativeOperators)\(spaces)(\\3)"
 
         return "\(pattern1)|\(pattern2)"
     }()

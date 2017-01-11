@@ -10,10 +10,10 @@
 
 ##### Bug Fixes
 
-* Fix false positive on `shorthand_operator` rule with non-commutative
-  operations.  
+* Fix false positives on `shorthand_operator` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1156](https://github.com/realm/SwiftLint/issues/1156)
+  [#1163](https://github.com/realm/SwiftLint/issues/1163)
 
 * Fix false positive on `redundant_optional_initialization` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)

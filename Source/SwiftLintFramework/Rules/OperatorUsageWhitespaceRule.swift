@@ -34,7 +34,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "#if swift(>=3.0)\n",
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
-            "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n"
+            "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
+            "let doubleValue = -9e-11\n"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",
@@ -107,34 +108,47 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
-        let kinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
+        let excludingKinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
 
-        return file.match(pattern: pattern, excludingSyntaxKinds: kinds,
-                          excludingPattern: excludingPattern).flatMap {
+        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
+                          excludingPattern: excludingPattern).flatMap { range in
+
+            // if it's only a number (i.e. -9e-11), it shouldn't trigger
+            guard kinds(in: range, file: file) != [.number] else {
+                return nil
+            }
 
             let spacesPattern = oneSpace + "*"
             let rangeRegex = regex(spacesPattern + rangePattern + spacesPattern)
 
             // if it's a range operator, the correction shouldn't have spaces
-            if let range = rangeRegex.firstMatch(in: file.contents,
-                                                 options: [], range: $0)?.range {
-                let correction = operatorInRange(file: file, range: range)
-                return (range, correction)
+            if let matchRange = rangeRegex.firstMatch(in: file.contents, options: [], range: range)?.range {
+                let correction = operatorInRange(file: file, range: matchRange)
+                return (matchRange, correction)
             }
 
             let pattern = spacesPattern + operators + spacesPattern
             let operatorsRegex = regex(pattern)
 
-            guard let range = operatorsRegex.firstMatch(in: file.contents,
-                                                        options: [], range: $0)?.range else {
+            guard let matchRange = operatorsRegex.firstMatch(in: file.contents,
+                                                             options: [], range: range)?.range else {
                 return nil
             }
 
-            let operatorContent = operatorInRange(file: file, range: range)
+            let operatorContent = operatorInRange(file: file, range: matchRange)
             let correction = " " + operatorContent + " "
 
-            return (range, correction)
+            return (matchRange, correction)
         }
+    }
+
+    private func kinds(in range: NSRange, file: File) -> [SyntaxKind] {
+        let contents = file.contents.bridge()
+        guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
+            return []
+        }
+
+        return file.syntaxMap.tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
     }
 
     private func operatorInRange(file: File, range: NSRange) -> String {

@@ -19,6 +19,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1159](https://github.com/realm/SwiftLint/issues/1159)
 
+* Fix false positive on `operator_usage_whitespace` rule with decimal
+  literals in exponent format.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1153](https://github.com/realm/SwiftLint/issues/1153)
+
 ## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking

@@ -31,27 +31,13 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
-    private func nameIsViolatingCase(_ name: String) -> Bool {
-        let secondIndex = name.characters.index(after: name.startIndex)
-        let firstCharacter = name.substring(to: secondIndex)
-        guard firstCharacter.isUppercase() else {
-            return false
-        }
-        guard name.characters.count > 1 else {
-            return true
-        }
-        let range = secondIndex..<name.characters.index(after: secondIndex)
-        let secondCharacter = name.substring(with: range)
-        return secondCharacter.isLowercase()
-    }
-
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") else {
             return []
         }
 
-        return validateName(dictionary, kind: kind).map { name, offset in
+        return validateName(dictionary: dictionary, kind: kind).map { name, offset in
             guard !configuration.excluded.contains(name) else {
                 return []
             }
@@ -59,7 +45,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
             let description = type(of: self).description
 
-            let type = typeForKind(kind)
+            let type = self.type(for: kind)
             if !isFunction {
                 if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
                     return [
@@ -84,7 +70,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
-            if kind != .varStatic && nameIsViolatingCase(name) && !isOperator(name: name) {
+            if kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"
                 return [
                     StyleViolation(ruleDescription: description,
@@ -98,25 +84,19 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         } ?? []
     }
 
-    private func isOperator(name: String) -> Bool {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return !operators.filter(name.hasPrefix).isEmpty
-    }
-
-    private func validateName(_ dictionary: [String: SourceKitRepresentable],
+    private func validateName(dictionary: [String: SourceKitRepresentable],
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        let kinds = kindsForSwiftVersion(.current)
-
         guard let name = dictionary["key.name"] as? String,
             let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            kinds.contains(kind) && !name.hasPrefix("$") else {
+            kinds(for: .current).contains(kind),
+            !name.hasPrefix("$") else {
                 return nil
         }
 
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private func kindsForSwiftVersion(_ version: SwiftVersion) -> [SwiftDeclarationKind] {
+    private func kinds(for version: SwiftVersion) -> [SwiftDeclarationKind] {
         let common = SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds()
         switch version {
         case .two:
@@ -126,7 +106,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         }
     }
 
-    private func typeForKind(_ kind: SwiftDeclarationKind) -> String {
+    private func type(for kind: SwiftDeclarationKind) -> String {
         if SwiftDeclarationKind.functionKinds().contains(kind) {
             return "Function"
         } else if kind == .enumelement {
@@ -134,5 +114,26 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         } else {
             return "Variable"
         }
+    }
+}
+
+fileprivate extension String {
+    var isViolatingCase: Bool {
+        let secondIndex = characters.index(after: startIndex)
+        let firstCharacter = substring(to: secondIndex)
+        guard firstCharacter.isUppercase() else {
+            return false
+        }
+        guard characters.count > 1 else {
+            return true
+        }
+        let range = secondIndex..<characters.index(after: secondIndex)
+        let secondCharacter = substring(with: range)
+        return secondCharacter.isLowercase()
+    }
+
+    var isOperator: Bool {
+        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
+        return !operators.filter(hasPrefix).isEmpty
     }
 }

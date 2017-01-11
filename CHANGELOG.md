@@ -15,6 +15,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1156](https://github.com/realm/SwiftLint/issues/1156)
 
+* Fix false positive on `redundant_optional_initialization` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1159](https://github.com/realm/SwiftLint/issues/1159)
+
 ## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking

@@ -1,3 +1,17 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
 ## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking

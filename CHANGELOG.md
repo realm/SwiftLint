@@ -318,11 +318,6 @@
   [JP Simard](https://github.com/jpsim)
   [Norio Nomura](https://github.com/norio-nomura)
 
-* `variable_name` rule is now `identifier_name` as it validates other
-  identifiers as well.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#663](https://github.com/realm/SwiftLint/issues/663)
-
 ##### Enhancements
 
 * Now builds and passes most tests on Linux using the Swift Package Manager with
@@ -921,7 +916,10 @@ This release has seen a phenomenal uptake in community contributions!
 
 ##### Enhancements
 
-* None.
+* `variable_name` rule is now `identifier_name` as it validates other
+  identifiers as well.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#663](https://github.com/realm/SwiftLint/issues/663)
 
 ##### Bug Fixes
 

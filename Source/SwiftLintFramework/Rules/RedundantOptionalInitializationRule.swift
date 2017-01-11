@@ -26,7 +26,17 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "func foo(bar: Int? = 0) { }\n",
             "var myVar: Optional<Int>\n",
             "let myVar: Optional<Int> = nil\n",
-            "var myVar: Optional<Int> = 0\n"
+            "var myVar: Optional<Int> = 0\n",
+            // properties with body should be ignored
+            "var foo: Int? {\n" +
+            "   if bar != nil { }\n" +
+            "   return 0\n" +
+            "}\n",
+            // properties with a closure call
+            "var foo: Int? = {\n" +
+            "   if bar != nil { }\n" +
+            "   return 0\n" +
+            "}()\n"
         ],
         triggeringExamples: [
             "var myVar: Int?↓ = nil\n",
@@ -59,15 +69,27 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             dictionary["key.setter_accessibility"] != nil,
             let type = dictionary["key.typename"] as? String,
             typeIsOptional(type),
-            case let contents = file.contents.bridge(),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = file.match(pattern: pattern, with: [.keyword], range: range).first else {
+            let range = range(for: dictionary, file: file),
+            let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
+            match.location == range.location + range.length - match.length else {
                 return []
         }
 
         return [match]
+    }
+
+    private func range(for dictionary: [String: SourceKitRepresentable], file: File) -> NSRange? {
+        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
+                return nil
+        }
+
+        let contents = file.contents.bridge()
+        if let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }) {
+            return contents.byteRangeToNSRange(start: offset, length: bodyOffset - offset)
+        } else {
+            return contents.byteRangeToNSRange(start: offset, length: length)
+        }
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {

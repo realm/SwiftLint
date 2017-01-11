@@ -25,7 +25,10 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "foo \(operation)= variable",
                 "foo \(operation)= bar.method()",
                 "self.foo = foo \(operation) 1",
-                "foo = self.foo \(operation) 1"
+                "foo = self.foo \(operation) 1",
+                "page = ceilf(currentOffset \(operation) pageWidth)",
+                "foo = aMethod(foo \(operation) bar)",
+                "foo = aMethod(bar \(operation) foo)"
             ]
         },
         triggeringExamples: allOperators.flatMap { operation in
@@ -63,7 +66,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         let otherOperand = "\(spaces).+?\(spaces)"
 
         let pattern1 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
-        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(otherOperand)\(escapedCommutativeOperators)\(spaces)(\\3)"
+        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(otherOperand)\(escapedCommutativeOperators)\(spaces)(\\3)$"
 
         return "\(pattern1)|\(pattern2)"
     }()

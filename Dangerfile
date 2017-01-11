@@ -31,6 +31,7 @@ end
 if has_app_changes
   @repos = [
     'Alamofire/Alamofire',
+    'apple/swift',
     'JohnCoates/Aerial',
     'jpsim/SourceKitten',
     'Moya/Moya',
@@ -48,6 +49,11 @@ if has_app_changes
         if clone
           puts "Cloning #{repo_name}"
           `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
+          if repo_name == 'swift'
+            File.open("swift/.swiftlint.yml", 'w') do |file|
+              file << 'included: stdlib'
+            end
+          end
         end
         Dir.chdir(repo_name) do
           iterations = 5
@@ -55,10 +61,7 @@ if has_app_changes
           @commits[repo] = `git rev-parse HEAD`
           durations = []
           start = Time.now
-          command = '../../.build/release/swiftlint'
-          if `#{command} help lint`.include? '--no-cache'
-            command += ' lint --no-cache'
-          end
+          command = '../../.build/release/swiftlint lint --no-cache'
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             Open3.popen3(command) do |_, stdout, _, _|
               file << stdout.read.chomp

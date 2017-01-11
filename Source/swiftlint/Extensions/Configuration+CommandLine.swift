@@ -55,8 +55,10 @@ private func autoreleasepool(block: () -> Void) { block() }
 #endif
 
 extension Configuration {
+
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
-                            quiet: Bool = false, useScriptInputFiles: Bool, parallel: Bool = false,
+                            quiet: Bool = false, useScriptInputFiles: Bool,
+                            cache: LinterCache? = nil, parallel: Bool = false,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return getFiles(path: path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
@@ -84,7 +86,7 @@ extension Configuration {
                     }
                 }
                 autoreleasepool {
-                    visitorBlock(Linter(file: file, configuration: self.configuration(for: file)))
+                    visitorBlock(Linter(file: file, configuration: self.configuration(for: file), cache: cache))
                 }
             }
             if parallel {
@@ -122,11 +124,11 @@ extension Configuration {
         self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
     }
 
-    func visitLintableFiles(options: LintOptions,
+    func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return visitLintableFiles(path: options.path, action: "Linting", useSTDIN: options.useSTDIN,
                                   quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
-                                  parallel: true, visitorBlock: visitorBlock)
+                                  cache: cache, parallel: true, visitorBlock: visitorBlock)
     }
 
     // MARK: AutoCorrect Command

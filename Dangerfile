@@ -56,6 +56,9 @@ if has_app_changes
           durations = []
           start = Time.now
           command = '../../.build/release/swiftlint'
+          if `#{command} help lint`.include? '--no-cache'
+            command += ' lint --no-cache'
+          end
           File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
             Open3.popen3(command) do |_, stdout, _, _|
               file << stdout.read.chomp
@@ -90,10 +93,23 @@ if has_app_changes
   # Generate branch reports
   generate_reports(true, 'branch')
   # Build master
-  `git checkout master`
-  `git pull`
+  `git fetch`
+  `git checkout origin/master`
   puts 'Building master'
   `swift build -c release`
+  unless $?.success?
+    # Couldn't build, start fresh
+    FileUtils.rm_rf %w(Packages .build)
+    return_value = nil
+    Open3.popen3('swift build -c release') do |_, stdout, _, wait_thr|
+      puts stdout.read.chomp
+      return_value = wait_thr.value
+    end
+    unless return_value.success?
+      fail 'Could not build master'
+      return
+    end
+  end
   # Generate master reports
   generate_reports(false, 'master')
   # Diff and report changes to Danger

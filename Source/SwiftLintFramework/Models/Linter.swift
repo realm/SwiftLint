@@ -54,6 +54,7 @@ extension Rule {
 public struct Linter {
     public let file: File
     private let rules: [Rule]
+    private let cache: LinterCache?
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -64,6 +65,11 @@ public struct Linter {
     }
 
     private func getStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+
+        if let cached = cachedStyleViolations(benchmark: benchmark) {
+            return cached
+        }
+
         if file.sourcekitdFailed {
             queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
@@ -78,6 +84,11 @@ public struct Linter {
             deprecatedToValidIdentifier[key] = value
         }
 
+        if let cache = cache, let path = file.path {
+            let hash = file.contents.hash
+            cache.cache(violations: violations, forFile: path, fileHash: hash)
+        }
+
         for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
             queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
                 "completely removed in a future release.")
@@ -86,8 +97,32 @@ public struct Linter {
         return (violations, ruleTimes)
     }
 
-    public init(file: File, configuration: Configuration = Configuration()!) {
+    private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
+        let start: Date! = benchmark ? Date() : nil
+        guard let cache = cache,
+            let file = file.path,
+            case let hash = self.file.contents.hash,
+            let cachedViolations = cache.violations(forFile: file, hash: hash) else {
+                return nil
+        }
+
+        var ruleTimes = [(id: String, time: Double)]()
+        if benchmark {
+            // let's assume that all rules should have the same duration and split the duration among them
+            let totalTime = -start.timeIntervalSinceNow
+            let fractionedTime = totalTime / TimeInterval(rules.count)
+            ruleTimes = rules.flatMap { rule in
+                let id = type(of: rule).description.identifier
+                return (id, fractionedTime)
+            }
+        }
+
+        return (cachedViolations, ruleTimes)
+    }
+
+    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil) {
         self.file = file
+        self.cache = cache
         rules = configuration.rules
     }
 

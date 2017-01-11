@@ -26,6 +26,7 @@ extension String {
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
+    case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
     case enabledRules = "enabled_rules" // deprecated in favor of optInRules
     case excluded = "excluded"
@@ -47,6 +48,8 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
+    public var hash: Int?
+    public let cachePath: String?
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -57,7 +60,8 @@ public struct Configuration: Equatable {
                  reporter: String = XcodeReporter.identifier,
                  ruleList: RuleList = masterRuleList,
                  configuredRules: [Rule]? = nil,
-                 swiftlintVersion: String? = nil) {
+                 swiftlintVersion: String? = nil,
+                 cachePath: String? = nil) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
@@ -67,6 +71,7 @@ public struct Configuration: Equatable {
         self.included = included
         self.excluded = excluded
         self.reporter = reporter
+        self.cachePath = cachePath
 
         let configuredRules = configuredRules
             ?? (try? ruleList.configuredRules(with: [:]))
@@ -156,7 +161,8 @@ public struct Configuration: Equatable {
                     XcodeReporter.identifier,
                   ruleList: ruleList,
                   configuredRules: configuredRules,
-                  swiftlintVersion: dict[ConfigurationKey.swiftlintVersion.rawValue] as? String)
+                  swiftlintVersion: dict[ConfigurationKey.swiftlintVersion.rawValue] as? String,
+                  cachePath: dict[ConfigurationKey.cachePath.rawValue] as? String)
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -179,6 +185,7 @@ public struct Configuration: Equatable {
             }
             self.init(dict: dict)!
             configurationPath = fullPath
+            hash = dict.description.hashValue
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {
@@ -260,7 +267,8 @@ private func defaultStringArray(_ object: Any?) -> [String] {
 
 private func validKeys(ruleList: RuleList) -> [String] {
     return [
-        ConfigurationKey.disabledRules,
+        ConfigurationKey.cachePath,
+        .disabledRules,
         .enabledRules,
         .excluded,
         .included,

@@ -1,4 +1,4 @@
-## Master
+## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking
 

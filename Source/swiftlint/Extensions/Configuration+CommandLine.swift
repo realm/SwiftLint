@@ -121,7 +121,8 @@ extension Configuration {
     // MARK: Lint Command
 
     init(options: LintOptions) {
-        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
+        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet,
+                  enableAllRules: options.enableAllRules)
     }
 
     func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,

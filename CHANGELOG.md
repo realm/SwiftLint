@@ -623,7 +623,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `--enable-all-rules` CLI option to `lint` command to facilitate running
+  all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.
+  [JP Simard](https://github.com/jpsim)
+  [#1170](https://github.com/realm/SwiftLint/issues/1170)
 
 ##### Bug Fixes
 

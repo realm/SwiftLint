@@ -27,7 +27,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "redundant_string_enum_value",
-        name: "Redudant String Enum Value",
+        name: "Redundant String Enum Value",
         description: "String enum values can be omitted when they are equal to the enumcase name.",
         nonTriggeringExamples: [
             "enum Numbers: String {\n case one\n case two\n}\n",

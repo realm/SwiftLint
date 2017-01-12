@@ -22,6 +22,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "if let bar = Foo.optionalValue {\n" +
             "}\n",
             "if let (_, second) = getOptionalTuple() {\n" +
+            "}\n",
+            "if let (_, asd, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -35,7 +37,9 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n",
             "if let (first, _) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
             "}\n",
-            "if let (_, _) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
+            "if let (_, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
+            "}\n",
+            "if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
             "}\n"
         ]
     )
@@ -58,12 +62,12 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
     private func violations(in range: NSRange, of file: File) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
-        let underscorePattern = "\\b_\\b"
-        let parenthesesPattern = "\\([^)]*\\)"
 
-        return file.match(pattern: underscorePattern,
-                          range: range,
+        let underlineOutsideParenthesis = "(?<=[^(]\\s)_(?=\\s[^)])"
+        let underlineInsideParenthesis = "\\((\\s*[_,]\\s*)+\\)"
+        let pattern = underlineOutsideParenthesis + "|" + underlineInsideParenthesis
+        return file.match(pattern: pattern,
                           excludingSyntaxKinds: kinds,
-                          excludingPattern: parenthesesPattern)
+                          range: range)
     }
 }

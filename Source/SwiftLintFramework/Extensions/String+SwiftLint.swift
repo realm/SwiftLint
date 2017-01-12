@@ -80,4 +80,16 @@ extension String {
     public func absolutePathStandardized() -> String {
         return bridge().absolutePathRepresentation().bridge().standardizingPath
     }
+
+    internal var isFile: Bool {
+        var isDirectoryObjC: ObjCBool = false
+        if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
+            #if os(Linux)
+                return !isDirectoryObjC
+            #else
+                return !isDirectoryObjC.boolValue
+            #endif
+        }
+        return false
+    }
 }

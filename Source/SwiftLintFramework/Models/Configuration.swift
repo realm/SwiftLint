@@ -9,20 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-extension String {
-    fileprivate var isFile: Bool {
-        var isDirectoryObjC: ObjCBool = false
-        if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
-#if os(Linux)
-            return !isDirectoryObjC
-#else
-            return !isDirectoryObjC.boolValue
-#endif
-        }
-        return false
-    }
-}
-
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {

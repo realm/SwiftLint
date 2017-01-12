@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Improve `unused_optional_binding` rule on tuples check.  
+  [Rafael Machado](https://github.com/rakaramos/)
 
 ##### Bug Fixes
 

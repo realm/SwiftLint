@@ -18,6 +18,12 @@ extension FileManager: LintableFileManager {
         let absolutePath = path.bridge()
             .absolutePathRepresentation(rootDirectory: rootPath).bridge()
             .standardizingPath
+
+        // if path is a file, it won't be returned in `enumerator(atPath:)`
+        if absolutePath.bridge().isSwiftFile() && absolutePath.isFile {
+            return [absolutePath]
+        }
+
         return enumerator(atPath: absolutePath)?.flatMap { element in
             if let element = element as? String, element.bridge().isSwiftFile() {
                 return absolutePath.bridge().appendingPathComponent(element)

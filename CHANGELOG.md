@@ -24,6 +24,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1153](https://github.com/realm/SwiftLint/issues/1153)
 
+* Fix `excluded` configuration not excluding files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1166](https://github.com/realm/SwiftLint/issues/1166)
+
 ## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking

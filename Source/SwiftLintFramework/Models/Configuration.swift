@@ -39,6 +39,7 @@ public struct Configuration: Equatable {
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
+                 enableAllRules: Bool = false,
                  whitelistRules: [String] = [],
                  included: [String] = [],
                  excluded: [String] = [],
@@ -84,8 +85,10 @@ public struct Configuration: Equatable {
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
 
-        // white_list rules take precendence over all else.
-        if !whitelistRules.isEmpty {
+        // Precedence is enableAllRules > whitelistRules > everything else
+        if enableAllRules {
+            rules = configuredRules
+        } else if !whitelistRules.isEmpty {
             if !disabledRules.isEmpty || !optInRules.isEmpty {
                 queuedPrintError("'\(ConfigurationKey.disabledRules.rawValue)' or " +
                     "'\(ConfigurationKey.optInRules.rawValue)' cannot be used in combination " +
@@ -105,7 +108,7 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList) {
+    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
             dict[ConfigurationKey.optInRules.rawValue] ?? dict[ConfigurationKey.enabledRules.rawValue]
@@ -139,6 +142,7 @@ public struct Configuration: Equatable {
 
         self.init(disabledRules: disabledRules,
                   optInRules: optInRules,
+                  enableAllRules: enableAllRules,
                   whitelistRules: whitelistRules,
                   included: included,
                   excluded: excluded,
@@ -152,14 +156,14 @@ public struct Configuration: Equatable {
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false) {
+                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false) {
         let fullPath = path.bridge().absolutePathRepresentation()
         let fail = { (msg: String) in
             fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
         }
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
-            self.init()!
+            self.init(enableAllRules: enableAllRules)!
             self.rootPath = rootPath
             return
         }
@@ -169,7 +173,7 @@ public struct Configuration: Equatable {
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
-            self.init(dict: dict)!
+            self.init(dict: dict, enableAllRules: enableAllRules)!
             configurationPath = fullPath
             hash = dict.description.hashValue
             self.rootPath = rootPath
@@ -179,12 +183,12 @@ public struct Configuration: Equatable {
         } catch {
             fail("\(error)")
         }
-        self.init()!
+        self.init(enableAllRules: enableAllRules)!
     }
 
-    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false) {
+    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false, enableAllRules: Bool = false) {
         self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
-                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet)
+                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet, enableAllRules: enableAllRules)
     }
 
     public func lintablePaths(inPath path: String, fileManager: LintableFileManager = fileManager) -> [String] {

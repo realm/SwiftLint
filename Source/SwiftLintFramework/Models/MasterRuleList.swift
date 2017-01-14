@@ -83,6 +83,7 @@ public let masterRuleList = RuleList(rules:
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
+    DiscardedNotificationCenterObserverRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyParametersRule.self,

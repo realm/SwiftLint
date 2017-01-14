@@ -52,6 +52,10 @@ class RulesTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
+    func testDiscardedNotificationCenterObserver() {
+        verifyRule(DiscardedNotificationCenterObserverRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }
@@ -349,6 +353,7 @@ extension RulesTests {
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
+            ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
             ("testEmptyParameters", testEmptyParameters),

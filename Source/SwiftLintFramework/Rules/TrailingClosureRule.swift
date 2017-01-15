@@ -22,7 +22,10 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             "foo.map { $0 + 1 }\n",
             "foo.bar()\n",
             "foo.reduce(0) { $0 + 1 }\n",
-            "if let foo = bar.map({ $0 + 1 }) { }\n"
+            "if let foo = bar.map({ $0 + 1 }) { }\n",
+            "foo.something(0, { $0 + 1 })\n",
+            "foo.something(param1: { $0 }, param2: { $0 + 1 })\n",
+            "offsets.sorted(by: { $0.offset < $1.offset })\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 + 1 })\n",
@@ -71,13 +74,9 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
 
         // check if last parameter should be trailing closure
         if arguments.count > 1,
-            let lastArgument = dictionary.enclosedArguments.last,
-            (lastArgument["key.name"] as? String) != nil,
-            let offset = (lastArgument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let length = (lastArgument["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
-            let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-            match.location == range.location {
+            case let closureArguments = filterClosureArguments(arguments, file: file),
+            closureArguments.count == 1,
+            closureArguments.last?.bridge() == arguments.last?.bridge() {
             return true
         }
 
@@ -96,5 +95,21 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         }
 
         return false
+    }
+
+    private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
+                                        file: File) -> [[String: SourceKitRepresentable]] {
+        return arguments.filter { argument in
+            guard (argument["key.name"] as? String) != nil,
+                let offset = (argument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+                let length = (argument["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                match.location == range.location else {
+                    return false
+            }
+
+            return true
+        }
     }
 }

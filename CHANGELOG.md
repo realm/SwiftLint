@@ -930,7 +930,10 @@ This release has seen a phenomenal uptake in community contributions!
 
 ##### Enhancements
 
-* None.
+* Add `notification_center_detachment` rule that warns against an object
+  removing itself from `NotificationCenter` in an unsafe location.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1061](https://github.com/realm/SwiftLint/issues/1061)
 
 ##### Bug Fixes
 

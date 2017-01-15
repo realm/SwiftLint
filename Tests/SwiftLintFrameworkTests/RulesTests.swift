@@ -284,6 +284,10 @@ class RulesTests: XCTestCase {
         verifyRule(SyntacticSugarRule.description)
     }
 
+    func testTrailingClosure() {
+        verifyRule(TrailingClosureRule.description)
+    }
+
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)

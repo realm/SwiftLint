@@ -77,6 +77,10 @@
 * Improve `file_header` rule description.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1492](https://github.com/realm/SwiftLint/issues/1492)
+* Add `trailing_closure` opt-in rule that validates that trailing
+  closure syntax should be used whenever possible.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#54](https://github.com/realm/SwiftLint/issues/54)
 
 ##### Bug Fixes
 

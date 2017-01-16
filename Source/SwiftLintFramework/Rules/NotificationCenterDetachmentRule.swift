@@ -18,25 +18,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
         description: "An object should only remove itself as an observer in `deinit`.",
-        nonTriggeringExamples: [
-            "class Foo { \n" +
-            "   deinit {\n" +
-            "       NotificationCenter.default.removeObserver(self)\n" +
-            "   }\n" +
-            "}\n",
-            "class Foo { \n" +
-            "   func bar() {\n" +
-            "       NotificationCenter.default.removeObserver(otherObject)\n" +
-            "   }\n" +
-            "}\n"
-        ],
-        triggeringExamples: [
-            "class Foo { \n" +
-            "   func bar() {\n" +
-            "       ↓NotificationCenter.default.removeObserver(self)\n" +
-            "   }\n" +
-            "}\n"
-        ]
+        nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.swift3NonTriggeringExamples,
+        triggeringExamples: NotificationCenterDetachmentRuleExamples.swift3TriggeringExamples
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -66,7 +49,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
                 return []
             }
 
-            if kind == .call, subDict["key.name"] as? String == "NotificationCenter.default.removeObserver",
+            if kind == .call, subDict["key.name"] as? String == methodName,
                 parameterIsSelf(dictionary: subDict, file: file),
                 let offset = (subDict["key.offset"] as? Int64).flatMap({ Int($0) }) {
                 return [offset]
@@ -75,6 +58,15 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
             return violationOffsets(file: file, dictionary: subDict)
         }
     }
+
+    private var methodName: String = {
+        switch SwiftVersion.current {
+        case .two:
+            return "NSNotificationCenter.defaultCenter.removeObserver"
+        case .three:
+            return "NotificationCenter.default.removeObserver"
+        }
+    }()
 
     private func parameterIsSelf(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),

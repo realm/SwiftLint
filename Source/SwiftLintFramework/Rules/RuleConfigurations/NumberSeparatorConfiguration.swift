@@ -13,7 +13,7 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         let minimumFractionLengthDescription: String
-        if let minimumFractionLength = self.minimumFractionLength {
+        if let minimumFractionLength = minimumFractionLength {
             minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
         } else {
             minimumFractionLengthDescription = ""

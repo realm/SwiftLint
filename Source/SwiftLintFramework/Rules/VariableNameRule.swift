@@ -32,7 +32,8 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
             "private let _myLet = 0",
             "class Abc { static let MyLet = 0 }",
             "let URL: NSURL? = nil",
-            "let XMLString: String? = nil"
+            "let XMLString: String? = nil",
+            "override var i = 0"
         ],
         triggeringExamples: [
             "↓let MyLet = 0",
@@ -63,6 +64,10 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") else {
+            return []
+        }
+
         return file.validateVariableName(dictionary, kind: kind).map { name, offset in
             if configuration.excluded.contains(name) {
                 return []

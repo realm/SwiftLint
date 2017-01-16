@@ -9,6 +9,10 @@
 * Improve `unused_optional_binding` rule on tuples check.  
   [Rafael Machado](https://github.com/rakaramos/)
 
+* Updated `variable_name` to ignore overrides.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#1169](https://github.com/realm/SwiftLint/issues/1169)
+
 ##### Bug Fixes
 
 * Fix false positives on `shorthand_operator` rule.  

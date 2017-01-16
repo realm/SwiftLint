@@ -13,6 +13,11 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#1169](https://github.com/realm/SwiftLint/issues/1169)
 
+* Update `number_separator` rule to allow for specifying
+  minimum length of fraction.
+  [Bjarke Søndergaard](https://github.com/bjarkehs)
+  [#1200](https://github.com/realm/SwiftLint/issues/1200)
+
 ##### Bug Fixes
 
 * Fix false positives on `shorthand_operator` rule.  

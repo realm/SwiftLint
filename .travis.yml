@@ -8,7 +8,7 @@ matrix:
       os: osx
       osx_image: xcode8.2
       before_install:
-        - pod repo update
+        - pod repo update --silent
     - script: swift test
       env: JOB=SPM
       os: osx

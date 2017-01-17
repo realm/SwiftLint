@@ -151,49 +151,6 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
-    func testNumberSeparator() {
-        verifyRule(NumberSeparatorRule.description)
-
-        let baseDescription1 = NumberSeparatorRule.description
-        let nonTriggeringExamples1 = [
-            "let foo = 10_000",
-            "let foo = 1000",
-            "let foo = 1000.0001",
-            "let foo = 10_000.0001",
-            "let foo = 1000.000_01"
-        ]
-        let triggeringExamples1 = [
-            "let foo = 1_000",
-            "let foo = 1.000_1",
-            "let foo = 1_000.000_1"
-        ]
-        let description1 = RuleDescription(identifier: baseDescription1.identifier,
-                                          name: baseDescription1.name,
-                                          description: baseDescription1.description,
-                                          nonTriggeringExamples: nonTriggeringExamples1,
-                                          triggeringExamples: triggeringExamples1)
-        verifyRule(description1, ruleConfiguration: ["minimum_length": 5])
-
-        let baseDescription2 = NumberSeparatorRule.description
-        let nonTriggeringExamples2 = [
-            "let foo = 1_000.000_000_1",
-            "let foo = 1.000_001",
-            "let foo = 100.0001",
-            "let foo = 1_000.000_01"
-            ]
-        let triggeringExamples2 = [
-            "let foo = 1000",
-            "let foo = 1.000_1",
-            "let foo = 1_000.000_1"
-            ]
-        let description2 = RuleDescription(identifier: baseDescription2.identifier,
-                                           name: baseDescription2.name,
-                                           description: baseDescription2.description,
-                                           nonTriggeringExamples: nonTriggeringExamples2,
-                                           triggeringExamples: triggeringExamples2)
-        verifyRule(description2, ruleConfiguration: ["minimum_fraction_length": 5])
-    }
-
     func testObjectLiteral() {
         verifyRule(ObjectLiteralRule.description)
     }
@@ -415,7 +372,6 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
-            ("testNumberSeparator", testNumberSeparator),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),

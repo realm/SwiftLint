@@ -15,16 +15,32 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     public init() {}
 
-    public static let description = RuleDescription(
-        identifier: "legacy_constant",
-        name: "Legacy Constant",
-        description: "Struct-scoped constants are preferred over legacy global constants.",
-        nonTriggeringExamples: LegacyConstantRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: LegacyConstantRuleExamples.swift3TriggeringExamples,
-        corrections: LegacyConstantRuleExamples.swift3Corrections
-    )
+    public static let description: RuleDescription = {
+        let nonTriggeringExamples: [String]
+        let triggeringExampes: [String]
+        let corrections: [String: String]
+        switch SwiftVersion.current {
+        case .two:
+            nonTriggeringExamples = LegacyConstantRuleExamples.swift2NonTriggeringExamples
+            triggeringExampes = LegacyConstantRuleExamples.swift2TriggeringExamples
+            corrections = LegacyConstantRuleExamples.swift2Corrections
+        case .three:
+            nonTriggeringExamples = LegacyConstantRuleExamples.swift3NonTriggeringExamples
+            triggeringExampes = LegacyConstantRuleExamples.swift3TriggeringExamples
+            corrections = LegacyConstantRuleExamples.swift3Corrections
+        }
 
-    private let legacyConstants: [String] = {
+        return RuleDescription(
+            identifier: "legacy_constant",
+            name: "Legacy Constant",
+            description: "Struct-scoped constants are preferred over legacy global constants.",
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: triggeringExampes,
+            corrections: corrections
+        )
+    }()
+
+    private static let legacyConstants: [String] = {
         switch SwiftVersion.current {
         case .two:
             return Array(LegacyConstantRuleExamples.swift2Patterns.keys)
@@ -33,7 +49,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         }
     }()
 
-    private let legacyPatterns: [String: String] = {
+    private static let legacyPatterns: [String: String] = {
         switch SwiftVersion.current {
         case .two:
             return LegacyConstantRuleExamples.swift2Patterns
@@ -43,7 +59,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }()
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\b(" + legacyConstants.joined(separator: "|") + ")"
+        let pattern = "\\b(" + LegacyConstantRule.legacyConstants.joined(separator: "|") + ")"
 
         return file.match(pattern: pattern, range: nil)
             .filter { Set($0.1).isSubset(of: [.identifier]) }
@@ -56,6 +72,6 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correct(file: File) -> [Correction] {
-        return file.correct(legacyRule: self, patterns: legacyPatterns)
+        return file.correct(legacyRule: self, patterns: LegacyConstantRule.legacyPatterns)
     }
 }

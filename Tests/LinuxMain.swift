@@ -21,6 +21,7 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(NumberSeparatorRuleTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),
     testCase(RulesTests.allTests),

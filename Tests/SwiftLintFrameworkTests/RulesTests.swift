@@ -151,10 +151,6 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
-    func testNumberSeparator() {
-        verifyRule(NumberSeparatorRule.description)
-    }
-
     func testObjectLiteral() {
         verifyRule(ObjectLiteralRule.description)
     }
@@ -376,7 +372,6 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
-            ("testNumberSeparator", testNumberSeparator),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = NumberSeparatorConfiguration(minimumLength: 0)
+    public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
 
     public init() {}
 
@@ -51,13 +51,13 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             var validFraction = true
             var expectedFraction: String?
             if components.count == 2, let fractionSubstring = components.last {
-                let result = isValid(number: fractionSubstring, reversed: false)
+                let result = isValid(number: fractionSubstring, isFraction: true)
                 validFraction = result.0
                 expectedFraction = result.1
             }
 
             guard let integerSubstring = components.first,
-                case let (valid, expected) = isValid(number: integerSubstring, reversed: true),
+                case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
                 !valid || !validFraction,
                 let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
                                                                       length: token.length) else {
@@ -113,13 +113,21 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
     }
 
-    private func isValid(number: String, reversed: Bool) -> (Bool, String) {
+    private func isValid(number: String, isFraction: Bool) -> (Bool, String) {
         var correctComponents = [String]()
         let clean = number.replacingOccurrences(of: "_", with: "")
-        let shouldAddSeparators = clean.characters.count >= configuration.minimumLength
+
+        let minimumLength: Int
+        if isFraction {
+            minimumLength = configuration.minimumFractionLength ?? configuration.minimumLength
+        } else {
+            minimumLength = configuration.minimumLength
+        }
+
+        let shouldAddSeparators = clean.characters.count >= minimumLength
 
         for (idx, char) in reversedIfNeeded(Array(clean.characters),
-                                            reversed: reversed).enumerated() {
+                                            reversed: !isFraction).enumerated() {
             if idx % 3 == 0 && idx > 0 && shouldAddSeparators {
                 correctComponents.append("_")
             }
@@ -127,7 +135,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             correctComponents.append(String(char))
         }
 
-        let expected = reversedIfNeeded(correctComponents, reversed: reversed).joined()
+        let expected = reversedIfNeeded(correctComponents, reversed: !isFraction).joined()
         return (expected == number, expected)
     }
 

@@ -9,13 +9,23 @@
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int
+    private(set) var minimumFractionLength: Int?
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", minimum_length: \(minimumLength)"
+        let minimumFractionLengthDescription: String
+        if let minimumFractionLength = minimumFractionLength {
+            minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
+        } else {
+            minimumFractionLengthDescription = ""
+        }
+        return severityConfiguration.consoleDescription
+            + ", minimum_length: \(minimumLength)"
+            + minimumFractionLengthDescription
     }
 
-    public init(minimumLength: Int) {
+    public init(minimumLength: Int, minimumFractionLength: Int?) {
         self.minimumLength = minimumLength
+        self.minimumFractionLength = minimumFractionLength
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -27,6 +37,10 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
             self.minimumLength = minimumLength
         }
 
+        if let minimumFractionLength = configuration["minimum_fraction_length"] as? Int {
+            self.minimumFractionLength = minimumFractionLength
+        }
+
         if let severityString = configuration["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
@@ -35,6 +49,7 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
     public static func == (lhs: NumberSeparatorConfiguration,
                            rhs: NumberSeparatorConfiguration) -> Bool {
         return lhs.minimumLength == rhs.minimumLength &&
+            lhs.minimumFractionLength == rhs.minimumFractionLength &&
             lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

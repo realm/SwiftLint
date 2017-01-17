@@ -24,6 +24,19 @@ class Swift2RulesTests: XCTestCase {
         verifyRule(description)
     }
 
+    func testLegacyConstant() {
+        let description = RuleDescription(
+            identifier: LegacyConstantRule.description.identifier,
+            name: LegacyConstantRule.description.name,
+            description: LegacyConstantRule.description.description,
+            nonTriggeringExamples: LegacyConstantRuleExamples.swift2NonTriggeringExamples,
+            triggeringExamples: LegacyConstantRuleExamples.swift2TriggeringExamples,
+            corrections: LegacyConstantRuleExamples.swift2Corrections
+        )
+
+        verifyRule(description)
+    }
+
     func testNumberSeparator() {
         let description = RuleDescription(
             identifier: NumberSeparatorRule.description.identifier,

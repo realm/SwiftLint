@@ -82,7 +82,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        if !configuration.allowedCharacters.isSuperset(ofCharactersIn: name) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                severity: .error,
                location: Location(file: file, byteOffset: offset),

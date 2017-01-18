@@ -296,10 +296,6 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
-    }
-
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -320,10 +316,6 @@ class RulesTests: XCTestCase {
 
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
-    }
-
-    func testVariableName() {
-        verifyRule(VariableNameRule.description)
     }
 
     func testVerticalParameterAlignment() {
@@ -405,12 +397,10 @@ extension RulesTests {
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
-            ("testVariableName", testVariableName),
             ("VerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),

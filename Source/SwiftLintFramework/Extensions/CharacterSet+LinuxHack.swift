@@ -20,7 +20,11 @@ extension CharacterSet {
             return true
         #else
             let otherSet = CharacterSet(charactersIn: string)
-            return isSuperset(of: otherSet)
+
+            // swiftlint:disable force_cast
+            return CFCharacterSetIsSupersetOfSet(self as CFCharacterSet,
+                                                 (otherSet as NSCharacterSet).copy() as! CFCharacterSet)
+            // swiftlint:enable force_cast
         #endif
     }
 }

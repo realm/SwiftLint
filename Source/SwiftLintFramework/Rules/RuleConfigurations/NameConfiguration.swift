@@ -26,14 +26,26 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         return min(maxLength.warning, maxLength.error ?? maxLength.warning)
     }
 
+    var allowedCharacters: CharacterSet {
+        guard !additionalAllowedCharacters.isEmpty else {
+            return CharacterSet.alphanumerics
+        }
+
+        return CharacterSet.alphanumerics.union(CharacterSet(charactersIn: self.additionalAllowedCharacters))
+    }
+
+    private var additionalAllowedCharacters: String = ""
+
     public init(minLengthWarning: Int,
                 minLengthError: Int,
                 maxLengthWarning: Int,
                 maxLengthError: Int,
-                excluded: [String] = []) {
+                excluded: [String] = [],
+                additionalAllowedCharacters: String = "") {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
+        self.additionalAllowedCharacters = additionalAllowedCharacters
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -49,6 +61,9 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
+        }
+        if let additionalAllowedCharacters = configurationDict["additional_allowed_characters"] as? String {
+            self.additionalAllowedCharacters = additionalAllowedCharacters
         }
     }
 }

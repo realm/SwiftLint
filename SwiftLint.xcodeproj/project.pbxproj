@@ -13,6 +13,8 @@
 		009E09281DFEE4C200B588A7 /* ProhibitedSuperRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */; };
 		009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */; };
 		00B8D9791E2D1223004E0EEC /* LegacyConstantRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B8D9771E2D0FBD004E0EEC /* LegacyConstantRuleExamples.swift */; };
+		00ACCEA11E2F7294008574FE /* VariableNameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ACCEA01E2F7294008574FE /* VariableNameRuleTests.swift */; };
+		00FBB4821E2F8A530067464A /* TypeNameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FBB4811E2F8A530067464A /* TypeNameRuleTests.swift */; };
 		02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */; };
 		094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094384FF1D5D2382009168CF /* WeakDelegateRule.swift */; };
 		094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
@@ -267,6 +269,8 @@
 		009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperRule.swift; sourceTree = "<group>"; };
 		009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProhibitedSuperConfiguration.swift; sourceTree = "<group>"; };
 		00B8D9771E2D0FBD004E0EEC /* LegacyConstantRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstantRuleExamples.swift; sourceTree = "<group>"; };
+		00ACCEA01E2F7294008574FE /* VariableNameRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VariableNameRuleTests.swift; sourceTree = "<group>"; };
+		00FBB4811E2F8A530067464A /* TypeNameRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRuleTests.swift; sourceTree = "<group>"; };
 		02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNSStringTests.swift; sourceTree = "<group>"; };
 		094384FF1D5D2382009168CF /* WeakDelegateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakDelegateRule.swift; sourceTree = "<group>"; };
 		094385021D5D4F78009168CF /* PrivateOutletRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRule.swift; sourceTree = "<group>"; };
@@ -737,6 +741,8 @@
 				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				D46202201E16002A0027AAD1 /* Swift2RulesTests.swift */,
 				C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */,
+				00FBB4811E2F8A530067464A /* TypeNameRuleTests.swift */,
+				00ACCEA01E2F7294008574FE /* VariableNameRuleTests.swift */,
 				006204DD1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
@@ -1300,6 +1306,7 @@
 				E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */,
 				D4C27C001E12DFF500DF713E /* LinterCacheTests.swift in Sources */,
 				D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */,
+				00FBB4821E2F8A530067464A /* TypeNameRuleTests.swift in Sources */,
 				006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */,
 				02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */,
 				D4CA758F1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift in Sources */,
@@ -1312,6 +1319,7 @@
 				D43B04661E071ED3004016AF /* ColonRuleTests.swift in Sources */,
 				3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */,
 				3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */,
+				00ACCEA11E2F7294008574FE /* VariableNameRuleTests.swift in Sources */,
 				D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */,
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
 				D46202211E16002A0027AAD1 /* Swift2RulesTests.swift in Sources */,

@@ -74,7 +74,7 @@ public struct VariableNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let description = type(of: self).description
-            if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+            if !configuration.allowedCharacters.isSuperset(ofCharactersIn: name) {
                 return [StyleViolation(ruleDescription: description,
                     severity: .error,
                     location: Location(file: file, byteOffset: offset),

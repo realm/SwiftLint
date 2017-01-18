@@ -15,66 +15,63 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     public init() {}
 
-    public static let description = RuleDescription(
-        identifier: "legacy_constant",
-        name: "Legacy Constant",
-        description: "Struct-scoped constants are preferred over legacy global constants.",
-        nonTriggeringExamples: [
-            "CGRect.infinite",
-            "CGPoint.zero",
-            "CGRect.zero",
-            "CGSize.zero",
-            "NSPoint.zero",
-            "NSRect.zero",
-            "NSSize.zero",
-            "CGRect.null"
-        ],
-        triggeringExamples: [
-            "↓CGRectInfinite",
-            "↓CGPointZero",
-            "↓CGRectZero",
-            "↓CGSizeZero",
-            "↓NSZeroPoint",
-            "↓NSZeroRect",
-            "↓NSZeroSize",
-            "↓CGRectNull"
-        ],
-        corrections: [
-            "↓CGRectInfinite\n": "CGRect.infinite\n",
-            "↓CGPointZero\n": "CGPoint.zero\n",
-            "↓CGRectZero\n": "CGRect.zero\n",
-            "↓CGSizeZero\n": "CGSize.zero\n",
-            "↓NSZeroPoint\n": "NSPoint.zero\n",
-            "↓NSZeroRect\n": "NSRect.zero\n",
-            "↓NSZeroSize\n": "NSSize.zero\n",
-            "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n"
-        ]
-    )
+    public static let description: RuleDescription = {
+        let nonTriggeringExamples: [String]
+        let triggeringExampes: [String]
+        let corrections: [String: String]
+        switch SwiftVersion.current {
+        case .two:
+            nonTriggeringExamples = LegacyConstantRuleExamples.swift2NonTriggeringExamples
+            triggeringExampes = LegacyConstantRuleExamples.swift2TriggeringExamples
+            corrections = LegacyConstantRuleExamples.swift2Corrections
+        case .three:
+            nonTriggeringExamples = LegacyConstantRuleExamples.swift3NonTriggeringExamples
+            triggeringExampes = LegacyConstantRuleExamples.swift3TriggeringExamples
+            corrections = LegacyConstantRuleExamples.swift3Corrections
+        }
+
+        return RuleDescription(
+            identifier: "legacy_constant",
+            name: "Legacy Constant",
+            description: "Struct-scoped constants are preferred over legacy global constants.",
+            nonTriggeringExamples: nonTriggeringExamples,
+            triggeringExamples: triggeringExampes,
+            corrections: corrections
+        )
+    }()
+
+    private static let legacyConstants: [String] = {
+        return Array(LegacyConstantRule.legacyPatterns.keys)
+    }()
+
+    private static let legacyPatterns: [String: String] = {
+        switch SwiftVersion.current {
+        case .two:
+            return LegacyConstantRuleExamples.swift2Patterns
+        case .three:
+            return LegacyConstantRuleExamples.swift3Patterns
+        }
+    }()
 
     public func validate(file: File) -> [StyleViolation] {
-        let constants = ["CGRectInfinite", "CGPointZero", "CGRectZero", "CGSizeZero",
-                         "NSZeroPoint", "NSZeroRect", "NSZeroSize", "CGRectNull"]
+        let pattern = "\\b" + LegacyConstantRule.legacyConstants.joined(separator: "|")
 
-        let pattern = "\\b(" + constants.joined(separator: "|") + ")\\b"
-
-        return file.match(pattern: pattern, with: [.identifier]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
-        }
+        return file.match(pattern: pattern, range: nil)
+            .filter { Set($0.1).isSubset(of: [.identifier]) }
+            .map { $0.0 }
+            .map {
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: $0.location))
+            }
     }
 
     public func correct(file: File) -> [Correction] {
-        let patterns = [
-            "CGRectInfinite": "CGRect.infinite",
-            "CGPointZero": "CGPoint.zero",
-            "CGRectZero": "CGRect.zero",
-            "CGSizeZero": "CGSize.zero",
-            "NSZeroPoint": "NSPoint.zero",
-            "NSZeroRect": "NSRect.zero",
-            "NSZeroSize": "NSSize.zero",
-            "CGRectNull": "CGRect.null"
-        ]
-        return file.correct(legacyRule: self, patterns: patterns)
+        var wordBoundPatterns: [String: String] = [:]
+        LegacyConstantRule.legacyPatterns.forEach { key, value in
+            wordBoundPatterns["\\b" + key] = value
+        }
+
+        return file.correct(legacyRule: self, patterns: wordBoundPatterns)
     }
 }

@@ -18,6 +18,10 @@
   [Bjarke Søndergaard](https://github.com/bjarkehs)
   [#1200](https://github.com/realm/SwiftLint/issues/1200)
 
+* Updated `legacy_constant` to support `CGFloat.pi` and `Float.pi`.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#1198](https://github.com/realm/SwiftLint/issues/1198)
+
 ##### Bug Fixes
 
 * Fix false positives on `shorthand_operator` rule.  

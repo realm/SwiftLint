@@ -245,7 +245,7 @@ extension File {
         typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
         matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return match(pattern: "\\b" + pattern).filter { range, kinds in
+            return match(pattern: pattern).filter { range, kinds in
                 return kinds.first == .identifier &&
                     !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
             }.map { ($0.0, pattern, template) }

@@ -41,12 +41,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }()
 
     private static let legacyConstants: [String] = {
-        switch SwiftVersion.current {
-        case .two:
-            return Array(LegacyConstantRuleExamples.swift2Patterns.keys)
-        case .three:
-            return Array(LegacyConstantRuleExamples.swift3Patterns.keys)
-        }
+        return Array(LegacyConstantRule.legacyPatterns.keys)
     }()
 
     private static let legacyPatterns: [String: String] = {
@@ -59,7 +54,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }()
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\b(" + LegacyConstantRule.legacyConstants.joined(separator: "|") + ")"
+        let pattern = "\\b" + LegacyConstantRule.legacyConstants.joined(separator: "|")
 
         return file.match(pattern: pattern, range: nil)
             .filter { Set($0.1).isSubset(of: [.identifier]) }
@@ -72,6 +67,11 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     }
 
     public func correct(file: File) -> [Correction] {
-        return file.correct(legacyRule: self, patterns: LegacyConstantRule.legacyPatterns)
+        var wordBoundPatterns: [String: String] = [:]
+        LegacyConstantRule.legacyPatterns.forEach { key, value in
+            wordBoundPatterns["\\b" + key] = value
+        }
+
+        return file.correct(legacyRule: self, patterns: wordBoundPatterns)
     }
 }

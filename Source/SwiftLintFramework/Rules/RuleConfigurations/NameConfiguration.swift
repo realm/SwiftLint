@@ -31,10 +31,10 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
             return CharacterSet.alphanumerics
         }
 
-        return CharacterSet.alphanumerics.union(CharacterSet(charactersIn: self.additionalAllowedCharacters))
+        return CharacterSet.alphanumerics.union(CharacterSet(charactersIn: additionalAllowedCharacters))
     }
 
-    private var additionalAllowedCharacters: String = ""
+    private var additionalAllowedCharacters = ""
 
     public init(minLengthWarning: Int,
                 minLengthError: Int,

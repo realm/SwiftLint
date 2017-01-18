@@ -32,7 +32,7 @@ class TypeNameRuleTests: XCTestCase {
 
         verifyRule(typeNameDescription,
                    ruleConfiguration: ["min_length": ["warning": 3, "error": 0],
-                                       "max_length": ["warning": 40, "error": 1_000],
+                                       "max_length": ["warning": 40, "error": 1000],
                                        "additional_allowed_characters": "_"])
     }
 }

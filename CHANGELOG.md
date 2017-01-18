@@ -9,7 +9,7 @@
 * Improve `unused_optional_binding` rule on tuples check.  
   [Rafael Machado](https://github.com/rakaramos/)
 
-* Updated `variable_name` to ignore overrides.  
+* Update `variable_name` to ignore overrides.  
   [Aaron McTavish](https://github.com/aamctustwo)
   [#1169](https://github.com/realm/SwiftLint/issues/1169)
 
@@ -18,7 +18,7 @@
   [Bjarke Søndergaard](https://github.com/bjarkehs)
   [#1200](https://github.com/realm/SwiftLint/issues/1200)
 
-* Updated `legacy_constant` to support `CGFloat.pi` and `Float.pi`.  
+* Update `legacy_constant` rule to support `CGFloat.pi` and `Float.pi`.  
   [Aaron McTavish](https://github.com/aamctustwo)
   [#1198](https://github.com/realm/SwiftLint/issues/1198)
 

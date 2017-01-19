@@ -40,35 +40,22 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "↓self.aProperty = self.aProperty \(operation) 1\n"
             ]
 
-        } + commutativeOperators.flatMap { operation in
-            [
-                "↓foo = 1 \(operation) foo\n",
-                "↓foo = aVariable \(operation) foo\n",
-                "↓foo = bar.method() \(operation) foo\n",
-                "↓foo = bar.method(param: 1, otherParam: 2) \(operation) foo\n"
-            ]
         }
     )
 
-    private static let allOperators = ["-", "/"] + commutativeOperators
-    private static let commutativeOperators = ["+", "*"]
+    private static let allOperators = ["-", "/", "+", "*"]
 
     private static let pattern: String = {
         let escaped = { (operators: [String]) -> String in
             return "[\(operators.map { "\\\($0)" }.joined())]"
         }
 
-        let escapedCommutativeOperators = escaped(commutativeOperators)
         let escapedOperators = escaped(allOperators)
-
         let operand = "[\\w\\d\\.]+?"
         let spaces = "[^\\S\\r\\n]*?"
-        let otherOperand = "\(spaces).+?\(spaces)"
 
-        let pattern1 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
-        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(otherOperand)\(escapedCommutativeOperators)\(spaces)(\\3)$"
-
-        return "\(pattern1)|\(pattern2)"
+        let pattern = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
+        return pattern
     }()
 
     private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
@@ -90,7 +77,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 return contents.NSRangeToByteRange(start: range.location, length: range.length)
             }
 
-            guard byteRanges[0] != nil || byteRanges[2] != nil else {
+            guard let byteRange = byteRanges[0] else {
                 return nil
             }
 
@@ -101,23 +88,18 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 } ?? []
             }
 
-            let groupIndexes: [Int]
-            if byteRanges[0] != nil {
-                // it's a match from pattern1
-                groupIndexes = [0, 1]
-            } else {
-                // it's a match from pattern2
-                groupIndexes = [2, 3]
+            guard kindsAreValid(kindsInCaptureGroups[0]) &&
+                kindsAreValid(kindsInCaptureGroups[1]) else {
+                    return nil
             }
 
-            for idx in groupIndexes where !Set(kindsInCaptureGroups[idx]).isSubset(of: [.identifier, .keyword]) {
-                return nil
-            }
-
-            let byteRange = byteRanges[groupIndexes[0]]!
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: byteRange.location))
         }
+    }
+
+    private func kindsAreValid(_ kinds: [SyntaxKind]) -> Bool {
+        return Set(kinds).isSubset(of: [.identifier, .keyword])
     }
 }

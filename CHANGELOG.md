@@ -42,6 +42,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1166](https://github.com/realm/SwiftLint/issues/1166)
 
+* Disable commutative operations on `shorthand_operator` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1182](https://github.com/realm/SwiftLint/issues/1182)
+  [#1183](https://github.com/realm/SwiftLint/issues/1183)
+  [#1211](https://github.com/realm/SwiftLint/issues/1211)
+
 ## 0.16.0: Maximum Energy Efficiency Setting
 
 ##### Breaking

@@ -30,7 +30,10 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "foo = aMethod(foo \(operation) bar)",
                 "foo = aMethod(bar \(operation) foo)"
             ]
-        },
+        } + [
+            "var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld",
+            "angle = someCheck ? angle : -angle"
+        ],
         triggeringExamples: allOperators.flatMap { operation in
             [
                 "↓foo = foo \(operation) 1\n",

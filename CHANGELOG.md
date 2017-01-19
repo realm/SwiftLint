@@ -7,6 +7,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#663](https://github.com/realm/SwiftLint/issues/663)
 
+* Fix `sorted_imports` rule to sort ignoring case.  
+  [Keith Smiley](https://github.com/keith)
+  [#1185](https://github.com/realm/SwiftLint/issues/1185)
+
 ##### Enhancements
 
 * Performance improvements to `generic_type_name`,

@@ -17,6 +17,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1234](https://github.com/realm/SwiftLint/issues/1234)
 
+* Fix `force_unwrap` false positive for bool negation.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#918](https://github.com/realm/SwiftLint/issues/918)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

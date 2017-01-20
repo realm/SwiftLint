@@ -1,4 +1,4 @@
-## Master
+## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking
 
@@ -47,6 +47,12 @@
   [#1182](https://github.com/realm/SwiftLint/issues/1182)
   [#1183](https://github.com/realm/SwiftLint/issues/1183)
   [#1211](https://github.com/realm/SwiftLint/issues/1211)
+
+* Fix crash when running in a Sandboxed environment, which also fixes Homebrew
+  distribution. Set the `SWIFTLINT_SWIFT_VERSION` environment variable to either
+  `2` or `3` to force that operation mode, bypassing the Swift version
+  determined from SourceKit.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.16.0: Maximum Energy Efficiency Setting
 

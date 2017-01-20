@@ -57,9 +57,9 @@
   [Bjarke Søndergaard](https://github.com/bjarkehs)
   [#1200](https://github.com/realm/SwiftLint/issues/1200)
   
-* Updated `variable_name` and `type_name` to allow configuration of allowed characters.
-  Use the new `additional_allowed_characters` configuration parameter to pass in a string
-  of the characters to allow in addition to alphanumerics.  
+* Updated `variable_name`, `type_name`, and `generic_type_name` to allow configuration of
+  allowed characters. Use the new `additional_allowed_characters` configuration parameter
+  to pass in a string of the characters to allow in addition to alphanumerics.  
   [Aaron McTavish](https://github.com/aamctustwo)
   [#628](https://github.com/realm/SwiftLint/issues/628)
 

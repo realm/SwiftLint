@@ -19,13 +19,8 @@ extension CharacterSet {
 
             return true
         #else
-            let otherSet = CharacterSet(charactersIn: string)
-
             // workaround for https://bugs.swift.org/browse/SR-3667
-            // swiftlint:disable force_cast
-            return CFCharacterSetIsSupersetOfSet(self as CFCharacterSet,
-                                                 (otherSet as NSCharacterSet).copy() as! CFCharacterSet)
-            // swiftlint:enable force_cast
+            return string.rangeOfCharacter(from: inverted) == nil
         #endif
     }
 }

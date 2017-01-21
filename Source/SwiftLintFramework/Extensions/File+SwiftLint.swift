@@ -252,9 +252,9 @@ extension File {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
-            let region = fileRegions.first(where: {
+            let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
-            })
+            }
             return region?.isRuleEnabled(rule) ?? true
         }
         return violatingRanges

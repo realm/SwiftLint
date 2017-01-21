@@ -25,11 +25,12 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             "if let foo = bar.map({ $0 + 1 }) { }\n",
             "foo.something(0, { $0 + 1 })\n",
             "foo.something(param1: { $0 }, param2: { $0 + 1 })\n",
-            "offsets.sorted(by: { $0.offset < $1.offset })\n"
+            "offsets.sorted { $0.offset < $1.offset }\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 + 1 })\n",
-            "↓foo.reduce(0, combine: { $0 + 1 })\n"
+            "↓foo.reduce(0, combine: { $0 + 1 })\n",
+            "↓offsets.sorted(by: { $0.offset < $1.offset })\n"
         ]
     )
 
@@ -73,7 +74,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
         let arguments = dictionary.enclosedArguments
 
         // check if last parameter should be trailing closure
-        if arguments.count > 1,
+        if !arguments.isEmpty,
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
             closureArguments.last?.bridge() == arguments.last?.bridge() {

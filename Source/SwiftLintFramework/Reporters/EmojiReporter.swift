@@ -24,12 +24,12 @@ public struct EmojiReporter: Reporter {
     }
 
     private static func report(for file: String, with violations: [StyleViolation]) -> String {
-        let lines = [file] + violations.sorted(by: { lhs, rhs in
+        let lines = [file] + violations.sorted { lhs, rhs in
             guard lhs.severity == rhs.severity else {
                 return lhs.severity > rhs.severity
             }
             return lhs.location > rhs.location
-        }).map { violation in
+        }.map { violation in
             let emoji = (violation.severity == .error) ? "⛔️" : "⚠️"
             let lineString: String
             if let line = violation.location.line {

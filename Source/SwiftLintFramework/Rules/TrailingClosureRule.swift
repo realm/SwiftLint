@@ -23,14 +23,14 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             "foo.bar()\n",
             "foo.reduce(0) { $0 + 1 }\n",
             "if let foo = bar.map({ $0 + 1 }) { }\n",
-            "foo.something(0, { $0 + 1 })\n",
             "foo.something(param1: { $0 }, param2: { $0 + 1 })\n",
             "offsets.sorted { $0.offset < $1.offset }\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 + 1 })\n",
             "↓foo.reduce(0, combine: { $0 + 1 })\n",
-            "↓offsets.sorted(by: { $0.offset < $1.offset })\n"
+            "↓offsets.sorted(by: { $0.offset < $1.offset })\n",
+            "↓foo.something(0, { $0 + 1 })\n"
         ]
     )
 
@@ -71,6 +71,10 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func shouldBeTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+        func isTrailingClosure() -> Bool {
+            return isAlreadyTrailingClosure(dictionary: dictionary, file: file)
+        }
+
         let arguments = dictionary.enclosedArguments
 
         // check if last parameter should be trailing closure
@@ -78,7 +82,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             case let closureArguments = filterClosureArguments(arguments, file: file),
             closureArguments.count == 1,
             closureArguments.last?.bridge() == arguments.last?.bridge() {
-            return true
+            return !isTrailingClosure()
         }
 
         // check if there's only one unnamed parameter that is a closure
@@ -92,7 +96,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
             let range = file.contents.bridge().byteRangeToNSRange(start: start, length: length),
             let match = regex("\\s*\\(\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
             match.location == range.location {
-            return true
+            return !isTrailingClosure()
         }
 
         return false
@@ -101,8 +105,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
                                         file: File) -> [[String: SourceKitRepresentable]] {
         return arguments.filter { argument in
-            guard (argument["key.name"] as? String) != nil,
-                let offset = (argument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+            guard let offset = (argument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
                 let length = (argument["key.bodylength"] as? Int64).flatMap({ Int($0) }),
                 let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
                 let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
@@ -112,5 +115,15 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
 
             return true
         }
+    }
+
+    private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+                return false
+        }
+
+        return !text.hasSuffix(")")
     }
 }

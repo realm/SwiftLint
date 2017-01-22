@@ -45,17 +45,17 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func violationOffsets(for dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
         var results = [Int]()
 
-        if (dictionary["key.kind"] as? String).flatMap(SwiftExpressionKind.init) == .call,
+        if dictionary.kind.flatMap(SwiftExpressionKind.init) == .call,
             shouldBeTrailingClosure(dictionary: dictionary, file: file),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            let offset = dictionary.offset {
 
             results = [offset]
         }
 
-        if let kind = (dictionary["key.kind"] as? String).flatMap(StatementKind.init), kind != .brace {
+        if let kind = dictionary.kind.flatMap(StatementKind.init), kind != .brace {
             // trailing closures are not allowed in `if`, `guard`, etc
             results += dictionary.substructure.flatMap { subDict -> [Int] in
-                guard (subDict["key.kind"] as? String).flatMap(StatementKind.init) == .brace else {
+                guard subDict.kind.flatMap(StatementKind.init) == .brace else {
                     return []
                 }
 
@@ -87,10 +87,10 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
 
         // check if there's only one unnamed parameter that is a closure
         if arguments.isEmpty,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let totalLength = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
+            let totalLength = dictionary.length,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             case let start = nameOffset + nameLength,
             case let length = totalLength + offset - start,
             let range = file.contents.bridge().byteRangeToNSRange(start: start, length: length),
@@ -105,8 +105,8 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
                                         file: File) -> [[String: SourceKitRepresentable]] {
         return arguments.filter { argument in
-            guard let offset = (argument["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                let length = (argument["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            guard let offset = argument.bodyOffset,
+                let length = argument.bodyLength,
                 let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
                 let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
                 match.location == range.location else {
@@ -118,8 +118,8 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
             let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
                 return false
         }

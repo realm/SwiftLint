@@ -37,7 +37,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
 
     func violationOffsets(file: File, dictionary: [String: SourceKitRepresentable]) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }
@@ -45,13 +45,13 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
             // complete detachment is allowed on `deinit`
             if kind == .other,
                 SwiftDeclarationKind(rawValue: kindString) == .functionMethodInstance,
-                subDict["key.name"] as? String == "deinit" {
+                subDict.name == "deinit" {
                 return []
             }
 
-            if kind == .call, subDict["key.name"] as? String == methodName,
+            if kind == .call, subDict.name == methodName,
                 parameterIsSelf(dictionary: subDict, file: file),
-                let offset = (subDict["key.offset"] as? Int64).flatMap({ Int($0) }) {
+                let offset = subDict.offset {
                 return [offset]
             }
 
@@ -69,8 +69,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
     }()
 
     private func parameterIsSelf(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
-        guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) else {
+        guard let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength else {
                 return false
         }
 

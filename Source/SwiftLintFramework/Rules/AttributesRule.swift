@@ -62,9 +62,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
         return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
-            guard kinds.count == 2 &&
-                kinds.first == .attributeBuiltin && kinds.last == .keyword else {
-                    return nil
+            guard kinds == [.attributeBuiltin, .keyword] else {
+                return nil
             }
 
             let contents = file.contents.bridge()

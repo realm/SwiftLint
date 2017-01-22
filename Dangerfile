@@ -144,7 +144,8 @@ if has_app_changes || has_dangerfile_changes
       warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
     end
   end
-  @branch_durations.each do |repo, branch_duration|
+  @repos.each do |repo|
+    branch_duration = @branch_durations[repo]
     master_duration = @master_durations[repo]
     percent_change = 100 * (master_duration - branch_duration) / master_duration
     faster_slower = nil

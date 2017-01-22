@@ -76,7 +76,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
-        let pattern = "typealias\\s+.+?" + genericTypePattern + "\\s*="
+        let pattern = "typealias\\s+\\w+?\\s*" + genericTypePattern + "\\s*="
         return file.match(pattern: pattern).flatMap { (range, tokens) -> [(String, Int)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],

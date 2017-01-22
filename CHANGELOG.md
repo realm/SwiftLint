@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Performance improvements to `generic_type_name` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 

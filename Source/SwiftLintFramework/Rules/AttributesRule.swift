@@ -62,9 +62,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
         return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
-            guard kinds.count == 2 &&
-                kinds.first == .attributeBuiltin && kinds.last == .keyword else {
-                    return nil
+            guard kinds == [.attributeBuiltin, .keyword] else {
+                return nil
             }
 
             let contents = file.contents.bridge()
@@ -84,7 +83,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let attributes = parseAttributes(dictionary: dictionary)
 
         guard !attributes.isEmpty,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
             let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset) else {
             return []
         }
@@ -174,7 +173,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func violation(dictionary: [String: SourceKitRepresentable],
                            file: File) -> [StyleViolation] {
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)

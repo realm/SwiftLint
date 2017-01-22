@@ -43,9 +43,9 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset,
+            let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength {
             let startLine = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset)
             let endLine = file.contents.bridge()
                 .lineAndCharacter(forByteOffset: bodyOffset + bodyLength)

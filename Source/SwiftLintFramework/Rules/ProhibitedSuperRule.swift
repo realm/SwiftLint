@@ -53,8 +53,8 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let offset = dictionary["key.bodyoffset"] as? Int64,
-            let name = dictionary["key.name"] as? String,
+        guard let offset = dictionary.bodyOffset,
+            let name = dictionary.name,
             kind == .functionMethodInstance,
             configuration.resolvedMethodNames.contains(name),
             dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
@@ -63,7 +63,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
 
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: Int(offset)),
+                               location: Location(file: file, byteOffset: offset),
                                reason: "Method '\(name)' should not call to super function")]
     }
 }

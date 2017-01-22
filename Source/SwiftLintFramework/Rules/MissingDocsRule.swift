@@ -31,23 +31,23 @@ extension File {
         if declarationOverrides(in: dictionary) {
             return []
         }
-        if let name = dictionary["key.name"] as? String, skipping.contains(name) {
+        if let name = dictionary.name, skipping.contains(name) {
             return []
         }
         let inherited = inheritedMembers(for: dictionary)
         let substructureOffsets = dictionary.substructure.flatMap {
             missingDocOffsets(in: $0, acl: acl, skipping: inherited)
         }
-        guard (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) != nil,
-            let offset = dictionary["key.offset"] as? Int64,
-            let accessibility = dictionary["key.accessibility"] as? String,
+        guard (dictionary.kind).flatMap(SwiftDeclarationKind.init) != nil,
+            let offset = dictionary.offset,
+            let accessibility = dictionary.accessibility,
             acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
         if parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
             return substructureOffsets
         }
-        return substructureOffsets + [Int(offset)]
+        return substructureOffsets + [offset]
     }
 }
 

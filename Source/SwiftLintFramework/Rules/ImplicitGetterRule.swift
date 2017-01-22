@@ -69,7 +69,7 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             }
 
             // If there's a setter, `get` is allowed
-            return dict["key.setter_accessibility"] == nil
+            return dict.setterAccessibility == nil
         }
 
         return violatingTokens.map { token in
@@ -93,10 +93,10 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
 
             // Only accepts variable declarations which contains a body and contains the
             // searched byteOffset
-            if let kindString = (dictionary["key.kind"] as? String),
+            if let kindString = (dictionary.kind),
                 let kind = SwiftDeclarationKind(rawValue: kindString),
-                let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+                let bodyOffset = dictionary.bodyOffset,
+                let bodyLength = dictionary.bodyLength,
                 allowedKinds.contains(kind) {
                 let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
@@ -117,7 +117,7 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             ] + allowedKinds
 
             for dictionary in dictionary.substructure {
-                if let kindString = (dictionary["key.kind"] as? String),
+                if let kindString = (dictionary.kind),
                     let kind = SwiftDeclarationKind(rawValue: kindString),
                     typeKinds.contains(kind) {
                     parse(dictionary: dictionary)

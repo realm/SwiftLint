@@ -46,8 +46,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
-        let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
+        let nameOffset = dictionary.nameOffset ?? 0
+        let length = dictionary.nameLength ?? 0
 
         if functionIsInitializer(file: file, byteOffset: nameOffset, byteLength: length) {
             return []
@@ -65,7 +65,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             defaultFunctionParameterCount(file: file, byteOffset: nameOffset, byteLength: length)
 
         for parameter in configuration.params where parameterCount > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            let offset = dictionary.offset ?? 0
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
@@ -80,12 +80,12 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
                                                offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for subDict in structure {
-            guard let key = subDict["key.kind"] as? String,
-                let parameterOffset = subDict["key.offset"] as? Int64 else {
+            guard let key = subDict.kind,
+                let parameterOffset = subDict.offset else {
                     continue
             }
 
-            guard offset..<(offset + length) ~= Int(parameterOffset) else {
+            guard offset..<(offset + length) ~= parameterOffset else {
                 return parameterCount
             }
 

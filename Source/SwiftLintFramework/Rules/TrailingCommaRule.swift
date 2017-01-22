@@ -49,17 +49,16 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
         let allowedKinds: [SwiftExpressionKind] = [.array, .dictionary]
 
-        guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
+        guard let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength,
+            let elements = dictionary.elements,
             allowedKinds.contains(kind) else {
                 return []
         }
 
-        let endPositions = elements.flatMap { element -> Int? in
-            guard let dictionary = element as? [String: SourceKitRepresentable],
-                let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
+        let endPositions = elements.flatMap { dictionary -> Int? in
+            guard let offset = dictionary.offset,
+                let length = dictionary.length else {
                     return nil
             }
 

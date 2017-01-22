@@ -49,7 +49,7 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
 
             return methodCall(forByteOffset: bodyByteRange.location - 1, excludingOffset: firstByteRange.location,
                               dictionary: structure.dictionary, predicate: { dictionary in
-                guard let name = dictionary["key.name"] as? String else {
+                guard let name = dictionary.name else {
                     return false
                 }
 
@@ -68,11 +68,11 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
                             dictionary: [String: SourceKitRepresentable],
                             predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
 
-        if let kindString = (dictionary["key.kind"] as? String),
+        if let kindString = (dictionary.kind),
             SwiftExpressionKind(rawValue: kindString) == .call,
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength,
+            let offset = dictionary.offset {
             let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
             if NSLocationInRange(byteOffset, byteRange) &&

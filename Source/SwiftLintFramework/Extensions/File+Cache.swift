@@ -56,14 +56,14 @@ private struct RebuildQueue {
         guard !queue.isEmpty else { return }
         let allDeclarationsByType = queue.flatMap { structure -> (String, [String])? in
             guard let firstSubstructureDict = structure.dictionary.substructure.first,
-                let name = firstSubstructureDict["key.name"] as? String,
-                let kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
+                let name = firstSubstructureDict.name,
+                let kind = (firstSubstructureDict.kind).flatMap(SwiftDeclarationKind.init),
                 kind == .protocol,
                 case let substructure = firstSubstructureDict.substructure,
                 !substructure.isEmpty else {
                     return nil
             }
-            return (name, substructure.flatMap({ $0["key.name"] as? String }))
+            return (name, substructure.flatMap({ $0.name }))
         }
         allDeclarationsByType.forEach { self.allDeclarationsByType[$0.0] = $0.1 }
         queue.removeAll(keepingCapacity: false)

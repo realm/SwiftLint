@@ -232,7 +232,7 @@ extension ColonRule {
         }
 
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = KindType(rawValue: kindString) else {
                     return []
             }
@@ -252,7 +252,7 @@ extension ColonRule {
         return ranges.filter {
             guard let colon = contents.substringWithByteRange(start: $0.location,
                                                               length: $0.length) else {
-                                                                return false
+                return false
             }
 
             if configuration.flexibleRightSpacing {
@@ -265,17 +265,16 @@ extension ColonRule {
     }
 
     private func colonRanges(dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
-        guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
+        guard let elements = dictionary.elements,
             elements.count % 2 == 0 else {
                 return nil
         }
 
         let expectedKind = "source.lang.swift.structure.elem.expr"
-        let ranges: [NSRange] = elements.flatMap {
-            guard let subDict = $0 as? [String: SourceKitRepresentable],
-                subDict["key.kind"] as? String == expectedKind,
-                let offset = (subDict["key.offset"] as? Int64).map({ Int($0) }),
-                let length = (subDict["key.length"] as? Int64).map({ Int($0) }) else {
+        let ranges: [NSRange] = elements.flatMap { subDict in
+            guard subDict.kind == expectedKind,
+                let offset = subDict.offset,
+                let length = subDict.length else {
                     return nil
             }
 

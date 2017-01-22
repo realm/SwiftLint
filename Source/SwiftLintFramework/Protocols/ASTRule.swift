@@ -20,7 +20,7 @@ extension ASTRule where KindType.RawValue == String {
 
     public func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = KindType(rawValue: kindString) else {
                     return []
             }

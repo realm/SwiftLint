@@ -40,17 +40,16 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
     private func violationRanges(in file: File, kind: SwiftExpressionKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard kind == .call,
-            let name = dictionary["key.name"] as? String else {
-                return []
+        guard kind == .call, let name = dictionary.name else {
+            return []
         }
 
         for compilerProtocol in ExpressibleByCompiler.allProtocols {
             guard compilerProtocol.initCallNames.contains(name),
-                case let arguments = dictionary.enclosedArguments.flatMap({ $0["key.name"] as? String }),
+                case let arguments = dictionary.enclosedArguments.flatMap({ $0.name }),
                 compilerProtocol.match(arguments: arguments),
-                let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+                let offset = dictionary.offset,
+                let length = dictionary.length,
                 let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
                     continue
             }

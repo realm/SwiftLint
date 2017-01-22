@@ -41,7 +41,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                           level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds()
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             if level > 1 && typeKinds.contains(kind) {
                 violations.append(StyleViolation(ruleDescription: type(of: self).description,
                     severity: configuration.severity,
@@ -55,7 +55,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
             }
         }
         violations.append(contentsOf: dictionary.substructure.flatMap { subDict in
-            if let kind = (subDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) {
+            if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }
             return nil

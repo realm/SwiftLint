@@ -55,9 +55,9 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
 
     private func isEnumeratedCall(dictionary: [String: SourceKitRepresentable]) -> Bool {
         for subDict in dictionary.substructure {
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 SwiftExpressionKind(rawValue: kindString) == .call,
-                let name = subDict["key.name"] as? String else {
+                let name = subDict.name else {
                     continue
             }
 
@@ -70,16 +70,15 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func byteRangeForVariables(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
-        guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
+        guard let elements = dictionary.elements else {
             return nil
         }
 
         let expectedKind = "source.lang.swift.structure.elem.id"
-        for element in elements {
-            guard let subDict = element as? [String: SourceKitRepresentable],
-                subDict["key.kind"] as? String == expectedKind,
-                let offset = (subDict["key.offset"] as? Int64).map({ Int($0) }),
-                let length = (subDict["key.length"] as? Int64).map({ Int($0) }) else {
+        for subDict in elements {
+            guard subDict.kind == expectedKind,
+                let offset = subDict.offset,
+                let length = subDict.length else {
                 continue
             }
 

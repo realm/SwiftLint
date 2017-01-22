@@ -67,11 +67,11 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable],
                                  kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
         guard kind == .call,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
+            let length = dictionary.length,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyLength = dictionary.bodyLength,
             bodyLength > 0 else {
                 return []
         }
@@ -82,8 +82,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         let contents = file.contents.bridge()
 
         return parameters.flatMap { param -> (NSRange, String)? in
-            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let paramLength = (param["key.length"] as? Int64).flatMap({ Int($0) }),
+            guard let paramOffset = param.offset,
+                let paramLength = param.length,
                 let name = param[nameKey(for: .current)] as? String,
                 name != "_",
                 let regex = try? NSRegularExpression(pattern: name,
@@ -128,7 +128,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }

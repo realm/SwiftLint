@@ -66,8 +66,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard SwiftDeclarationKind.variableKinds().contains(kind),
-            dictionary["key.setter_accessibility"] != nil,
-            let type = dictionary["key.typename"] as? String,
+            dictionary.setterAccessibility != nil,
+            let type = dictionary.typeName,
             typeIsOptional(type),
             let range = range(for: dictionary, file: file),
             let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
@@ -79,13 +79,13 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     }
 
     private func range(for dictionary: [String: SourceKitRepresentable], file: File) -> NSRange? {
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
+        guard let offset = dictionary.offset,
+            let length = dictionary.length else {
                 return nil
         }
 
         let contents = file.contents.bridge()
-        if let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }) {
+        if let bodyOffset = dictionary.bodyOffset {
             return contents.byteRangeToNSRange(start: offset, length: bodyOffset - offset)
         } else {
             return contents.byteRangeToNSRange(start: offset, length: length)
@@ -94,7 +94,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftDeclarationKind(rawValue: kindString) else {
                     return []
             }

@@ -86,8 +86,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateName(dictionary: [String: SourceKitRepresentable],
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        guard let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+        guard let name = dictionary.name,
+            let offset = dictionary.offset,
             kinds(for: .current).contains(kind),
             !name.hasPrefix("$") else {
                 return nil

@@ -12,7 +12,7 @@ import SourceKittenFramework
 extension File {
     fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
         // {whitespace} ?? {whitespace} nil {word boundary}
-        return match(pattern: "\\s*\\?\\?\\s*nil\\b", with: [.keyword])
+        return match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
     }
 }
 
@@ -25,7 +25,7 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
     public static let description = RuleDescription(
         identifier: "redundant_nil_coalescing",
         name: "Redundant Nil Coalescing",
-        description: "nil coalescing operator is only evaluated if the lhs is nil " +
+        description: "nil coalescing operator is only evaluated if the lhs is nil" +
             ", coalescing operator with nil as rhs is redundant",
         nonTriggeringExamples: [
             "var myVar: Int?; myVar ?? 0\n"

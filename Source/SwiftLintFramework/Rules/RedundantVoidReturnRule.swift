@@ -55,12 +55,12 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let length = dictionary.length,
+            let offset = dictionary.offset,
             case let start = nameOffset + nameLength,
-            case let end = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }) ?? offset + length,
+            case let end = dictionary.bodyOffset ?? offset + length,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: start, length: end - start),
             case let kinds = excludingKinds(),
@@ -78,7 +78,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftDeclarationKind(rawValue: kindString) else {
                     return []
             }

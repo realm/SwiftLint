@@ -46,8 +46,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         guard typeKinds.contains(kind),
-            let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
+            let name = dictionary.name,
+            let offset = dictionary.offset else {
                 return []
         }
 

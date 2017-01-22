@@ -93,9 +93,9 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
                                      dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
         guard SwiftDeclarationKind.typeKinds().contains(kind),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyOffset = dictionary.bodyOffset,
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
@@ -111,8 +111,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
                                          dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
-            let offset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.nameOffset,
+            let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
             let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1),
@@ -126,8 +126,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
         let offsets = parameters.flatMap { param -> Int? in
-            let offset = (param["key.offset"] as? Int64).flatMap { Int($0) }
-            return offset.flatMap {
+            return param.offset.flatMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
             }
         }

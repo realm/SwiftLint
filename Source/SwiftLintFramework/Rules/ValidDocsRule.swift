@@ -13,16 +13,16 @@ extension File {
     fileprivate func invalidDocOffsets(in dictionary: [String: SourceKitRepresentable]) -> [Int] {
         let substructure = dictionary.substructure
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
-        guard let kind = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
+        guard let kind = (dictionary.kind).flatMap(SwiftDeclarationKind.init),
             kind != .varParameter,
-            let offset = dictionary["key.offset"] as? Int64,
-            let bodyOffset = dictionary["key.bodyoffset"] as? Int64,
+            let offset = dictionary.offset,
+            let bodyOffset = dictionary.bodyOffset,
             let comment = parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap),
             !comment.contains(":nodoc:") else {
                 return substructureOffsets
         }
         let declaration = contents.bridge()
-            .substringWithByteRange(start: Int(offset), length: Int(bodyOffset - offset))!
+            .substringWithByteRange(start: offset, length: bodyOffset - offset)!
         let hasViolation = missingReturnDocumentation(declaration, comment: comment) ||
             superfluousReturnDocumentation(declaration, comment: comment, kind: kind) ||
             superfluousOrMissingThrowsDocumentation(declaration, comment: comment) ||
@@ -30,7 +30,7 @@ extension File {
                                                        offset: offset, bodyOffset: bodyOffset,
                                                        comment: comment)
 
-        return substructureOffsets + (hasViolation ? [Int(offset)] : [])
+        return substructureOffsets + (hasViolation ? [offset] : [])
     }
 }
 
@@ -96,16 +96,16 @@ func superfluousReturnDocumentation(_ declaration: String, comment: String,
 
 func superfluousOrMissingParameterDocumentation(_ declaration: String,
                                                 substructure: [[String: SourceKitRepresentable]],
-                                                offset: Int64, bodyOffset: Int64,
+                                                offset: Int, bodyOffset: Int,
                                                 comment: String) -> Bool {
     // This function doesn't handle batched parameters, so skip those.
     if commentHasBatchedParameters(comment) { return false }
     let parameterNames = substructure.filter {
-        ($0["key.kind"] as? String).flatMap(SwiftDeclarationKind.init) == .varParameter
+        ($0.kind).flatMap(SwiftDeclarationKind.init) == .varParameter
     }.filter { subDict in
-        return (subDict["key.offset"] as? Int64).map({ $0 < bodyOffset }) ?? false
+        return subDict.offset.map({ $0 < bodyOffset }) ?? false
     }.flatMap {
-        $0["key.name"] as? String
+        $0.name
     }
     let labelsAndParams = parameterNames.map { parameter -> (label: String, parameter: String) in
         let fullRange = NSRange(location: 0, length: declaration.utf16.count)

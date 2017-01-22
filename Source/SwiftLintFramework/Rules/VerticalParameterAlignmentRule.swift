@@ -59,8 +59,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         let contents = file.contents.bridge()
         let pattern = "\\(\\s*(\\S)"
 
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             let nameRange = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let paramStart = regex(pattern).firstMatch(in: file.contents,
                                                        options: [], range: nameRange)?.rangeAt(1).location,

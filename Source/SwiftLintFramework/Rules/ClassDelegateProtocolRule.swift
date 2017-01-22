@@ -40,7 +40,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if name contains "Delegate"
-        guard let name = (dictionary["key.name"] as? String), isDelegateProtocol(name) else {
+        guard let name = dictionary.name, isDelegateProtocol(name) else {
             return []
         }
 
@@ -58,10 +58,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if : class
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyOffset = dictionary.bodyOffset,
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),

@@ -72,8 +72,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let kinds = SwiftDeclarationKind.variableKinds().filter { $0 != .varLocal }
         guard kinds.contains(kind),
-            let type = dictionary["key.typename"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let type = dictionary.typeName,
+            let offset = dictionary.offset,
             let ranges = try? parenthesesRanges(in: type) else {
                 return []
         }
@@ -122,15 +122,15 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func returnRangeForFunction(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let length = dictionary.length,
+            let offset = dictionary.offset else {
                 return nil
         }
 
         let start = nameOffset + nameLength
-        let end = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }) ?? length + offset
+        let end = dictionary.bodyOffset ?? length + offset
 
         guard end - start > 0 else {
             return nil

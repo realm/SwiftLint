@@ -42,7 +42,7 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
             case let attributes = dictionary.enclosedSwiftAttributes,
             attributes.contains("source.decl.attribute.dynamic"),
             attributes.contains("source.decl.attribute.inline"),
-            let funcByteOffset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let funcByteOffset = dictionary.offset,
             let funcOffset = file.contents.bridge()
                 .byteRangeToNSRange(start: funcByteOffset, length: 0)?.location,
             case let inlinePattern = regex("@inline"),

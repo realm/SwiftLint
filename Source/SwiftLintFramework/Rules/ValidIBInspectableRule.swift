@@ -56,10 +56,10 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         let shouldMakeViolation: Bool
-        if dictionary["key.setter_accessibility"] == nil {
+        if dictionary.setterAccessibility == nil {
             // if key.setter_accessibility is nil, it's a `let` declaration
             shouldMakeViolation = true
-        } else if let type = dictionary["key.typename"] as? String,
+        } else if let type = dictionary.typeName,
             ValidIBInspectableRule.supportedTypes.contains(type) {
             shouldMakeViolation = false
         } else {
@@ -73,7 +73,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)

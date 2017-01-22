@@ -22,9 +22,9 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
+            let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength,
             case let contentsNSString = file.contents.bridge(),
             let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
             let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line

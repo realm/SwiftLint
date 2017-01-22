@@ -57,18 +57,18 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         let length = ".init".utf8.count
 
         guard kind == .call,
-            let name = dictionary["key.name"] as? String, isExpected(name),
-            let nameOffset = dictionary["key.nameoffset"] as? Int64,
-            let nameLength = dictionary["key.namelength"] as? Int64,
+            let name = dictionary.name, isExpected(name),
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             let range = file.contents.bridge()
-                .byteRangeToNSRange(start: Int(nameOffset + nameLength) - length, length: length)
+                .byteRangeToNSRange(start: nameOffset + nameLength - length, length: length)
             else { return [] }
         return [range]
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }

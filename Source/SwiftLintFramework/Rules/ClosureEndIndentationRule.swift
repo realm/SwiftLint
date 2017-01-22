@@ -52,11 +52,11 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         }
 
         let contents = file.contents.bridge()
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let bodyLength = dictionary.bodyLength,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             bodyLength > 0,
             case let endOffset = offset + length - 1,
             contents.substringWithByteRange(start: endOffset, length: 1) == "}",
@@ -89,8 +89,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
     }
 
     private func startOffset(forDictionary dictionary: [String: SourceKitRepresentable], file: File) -> Int? {
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }) else {
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength else {
             return nil
         }
 

@@ -12,7 +12,7 @@ import SourceKittenFramework
 private func children(of dict: [String: SourceKitRepresentable],
                       matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
     return dict.substructure.flatMap { subDict in
-        if let kindString = subDict["key.kind"] as? String,
+        if let kindString = subDict.kind,
             SwiftDeclarationKind(rawValue: kindString) == kind {
             return subDict
         }
@@ -86,7 +86,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
 
     private func violatingOffsetsForEnumCase(dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
         return children(of: dictionary, matching: .enumelement).flatMap { element -> [Int] in
-            guard let name = element["key.name"] as? String else {
+            guard let name = element.name else {
                 return []
             }
             return violatingOffsetsForEnumElement(dictionary: element, name: name, file: file)
@@ -98,8 +98,8 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
         return enumInits.flatMap { dictionary -> Int? in
-            guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }) else {
+            guard let offset = dictionary.offset,
+                let length = dictionary.length else {
                     return nil
             }
 
@@ -115,18 +115,8 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func filterEnumInits(dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
-        guard let elements = dictionary["key.elements"] as? [SourceKitRepresentable] else {
-            return []
-        }
-
-        let enumInitKind = "source.lang.swift.structure.elem.init_expr"
-        return elements.flatMap { element in
-            guard let dict = element as? [String: SourceKitRepresentable],
-                dict["key.kind"] as? String == enumInitKind else {
-                    return nil
-            }
-
-            return dict
+        return (dictionary.elements ?? []).filter {
+            $0.kind == "source.lang.swift.structure.elem.init_expr"
         }
     }
 }

@@ -48,8 +48,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .if || kind == .guard,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
+            let length = dictionary.length,
             let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
                 return []
         }

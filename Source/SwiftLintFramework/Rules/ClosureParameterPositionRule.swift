@@ -56,9 +56,9 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyLength = dictionary.bodyLength,
             bodyLength > 0 else {
                 return []
         }
@@ -70,8 +70,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them
         return parameters.flatMap { param -> StyleViolation? in
-            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                paramOffset > rangeStart else {
+            guard let paramOffset = param.offset, paramOffset > rangeStart else {
                 return nil
             }
 

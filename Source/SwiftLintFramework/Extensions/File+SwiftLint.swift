@@ -171,8 +171,8 @@ extension File {
 
     internal func validateVariableName(_ dictionary: [String: SourceKitRepresentable],
                                        kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        guard let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+        guard let name = dictionary.name,
+            let offset = dictionary.offset,
             SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
                 return nil
         }

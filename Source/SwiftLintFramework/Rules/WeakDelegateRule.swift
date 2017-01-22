@@ -46,7 +46,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if name contains "delegate"
-        guard let name = (dictionary["key.name"] as? String),
+        guard let name = dictionary.name,
             name.lowercased().hasSuffix("delegate") else {
                 return []
         }
@@ -56,18 +56,18 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         guard !isWeak else { return [] }
 
         // if the declaration is inside a protocol
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+        if let offset = dictionary.offset,
             !protocolDeclarations(forByteOffset: offset, structure: file.structure).isEmpty {
             return []
         }
 
         // Check if non-computed
-        let isComputed = dictionary["key.bodylength"] as? Int64 ?? 0 > 0
+        let isComputed = dictionary.bodyLength ?? 0 > 0
         guard !isComputed else { return [] }
 
         // Violation found!
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)
@@ -90,10 +90,10 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
 
             // Only accepts protocols declarations which contains a body and contains the
             // searched byteOffset
-            if let kindString = (dictionary["key.kind"] as? String),
+            if let kindString = (dictionary.kind),
                 SwiftDeclarationKind(rawValue: kindString) == .protocol,
-                let offset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                let length = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
+                let offset = dictionary.bodyOffset,
+                let length = dictionary.bodyLength {
                 let byteRange = NSRange(location: offset, length: length)
 
                 if NSLocationInRange(byteOffset, byteRange) {

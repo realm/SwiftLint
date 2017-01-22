@@ -47,7 +47,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let complexity = measureComplexity(in: file, dictionary: dictionary)
 
         for parameter in configuration.params where complexity > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            let offset = dictionary.offset ?? 0
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
@@ -62,7 +62,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         var hasSwitchStatements = false
 
         let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
-            guard let kind = subDict["key.kind"] as? String else {
+            guard let kind = subDict.kind else {
                 return complexity
             }
 
@@ -95,8 +95,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     private func reduceSwitchComplexity(initialComplexity complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
-        let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
-        let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
+        let bodyOffset = dictionary.bodyOffset ?? 0
+        let bodyLength = dictionary.bodyLength ?? 0
 
         let c = file.contents.bridge()
             .substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""

@@ -62,11 +62,11 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
             return []
         }
 
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyLength = dictionary.bodyLength,
             bodyLength > 0 else {
                 return []
         }
@@ -86,7 +86,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }

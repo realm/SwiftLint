@@ -23,6 +23,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1061](https://github.com/realm/SwiftLint/issues/1061)
 
+* Update `variable_name`, `type_name`, and `generic_type_name` to allow configuration of
+  allowed characters. Use the new `additional_allowed_characters` configuration parameter
+  to pass in a string of the characters to allow in addition to alphanumerics.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#628](https://github.com/realm/SwiftLint/issues/628)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -56,12 +62,6 @@
   minimum length of fraction.  
   [Bjarke Søndergaard](https://github.com/bjarkehs)
   [#1200](https://github.com/realm/SwiftLint/issues/1200)
-  
-* Updated `variable_name`, `type_name`, and `generic_type_name` to allow configuration of
-  allowed characters. Use the new `additional_allowed_characters` configuration parameter
-  to pass in a string of the characters to allow in addition to alphanumerics.  
-  [Aaron McTavish](https://github.com/aamctustwo)
-  [#628](https://github.com/realm/SwiftLint/issues/628)
 
 * Update `legacy_constant` rule to support `CGFloat.pi` and `Float.pi`.  
   [Aaron McTavish](https://github.com/aamctustwo)

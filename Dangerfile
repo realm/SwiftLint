@@ -7,6 +7,7 @@ warn('Big PR') if git.lines_of_code > 500
 # including in a CHANGELOG for example
 has_app_changes = !git.modified_files.grep(/Source/).empty?
 has_test_changes = !git.modified_files.grep(/Tests/).empty?
+has_dangerfile_changes = !git.modified_files.grep(/Dangerfile/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
@@ -28,14 +29,20 @@ if git.lines_of_code > 50 && has_app_changes && !has_test_changes
 end
 
 # Run OSSCheck if there were app changes
-if has_app_changes
+if has_app_changes || has_dangerfile_changes
   @repos = [
     'Alamofire/Alamofire',
     'apple/swift',
     'JohnCoates/Aerial',
     'jpsim/SourceKitten',
+    'krzysztofzablocki/Sourcery',
+    'kickstarter/ios-oss',
     'Moya/Moya',
-    'realm/realm-cocoa'
+    'mozilla-mobile/firefox-ios',
+    'Quick/Nimble',
+    'Quick/Quick',
+    'realm/realm-cocoa',
+    'wordpress-mobile/WordPress-iOS'
   ]
 
   @commits = {}
@@ -137,7 +144,8 @@ if has_app_changes
       warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
     end
   end
-  @branch_durations.each do |repo, branch_duration|
+  @repos.each do |repo|
+    branch_duration = @branch_durations[repo]
     master_duration = @master_durations[repo]
     percent_change = 100 * (master_duration - branch_duration) / master_duration
     faster_slower = nil

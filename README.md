@@ -132,6 +132,29 @@ following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
 
+### Working With Multiple Swift Versions
+
+SwiftLint hooks into SourceKit so it continues working even as Swift evolves!
+
+This also keeps SwiftLint lean, as it doesn't need to ship with a full Swift
+compiler, it just communicates with the official one you already have installed
+on your machine.
+
+If you have more than one Swift toolchain installed, here's the order in which
+SwiftLint will determine which one it should use:
+
+* `$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE`
+* `$TOOLCHAIN_DIR`
+* `xcrun -find swift`
+* `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+
+On Linux, SourceKit is expected to be located in
+`/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
+environment variable.
+
 ## Rules
 
 There are only a small number of rules currently implemented, but we hope the

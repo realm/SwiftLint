@@ -28,12 +28,13 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
             "↓myList.filter({ $0 % 2 == 0 }).first\n",
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first\n",
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()\n",
-            "↓myList.filter(someFunction).first\n"
+            "↓myList.filter(someFunction).first\n",
+            "↓myList.filter({ $0 % 2 == 0 })\n.first\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "[\\s\\}\\)]*\\.first"
+        let pattern = "[\\}\\)]\\s*\\.first"
         let firstRanges = file.match(pattern: pattern, with: [.identifier])
         let contents = file.contents.bridge()
         let structure = file.structure

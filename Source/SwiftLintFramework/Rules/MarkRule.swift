@@ -9,6 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
+private let nonSpace = "[^ ]"
+private let twoOrMoreSpace = " {2,}"
+private let mark = "MARK:"
+private let nonSpaceOrTwoOrMoreSpace = "(?:\(nonSpace)|\(twoOrMoreSpace))"
+private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"
+
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
@@ -49,41 +55,23 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    private let nonSpace = "[^ ]"
-    private let twoOrMoreSpace = " {2,}"
-    private let mark = "MARK:"
+    private let spaceStartPattern = "(?:\(nonSpaceOrTwoOrMoreSpace)\(mark))"
 
-    private var nonSpaceOrTwoOrMoreSpace: String {
-        return "(?:\(nonSpace)|\(twoOrMoreSpace))"
-    }
+    private let endNonSpacePattern = "(?:\(mark)\(nonSpace))"
+    private let endTwoOrMoreSpacePattern = "(?:\(mark)\(twoOrMoreSpace))"
 
-    private var spaceStartPattern: String {
-        return "(?:\(nonSpaceOrTwoOrMoreSpace)\(mark))"
-    }
+    private let invalidEndSpacesPattern = "(?:\(mark)\(nonSpaceOrTwoOrMoreSpace))"
 
-    private var endNonSpacePattern: String {
-        return "(?:\(mark)\(nonSpace))"
-    }
+    private let twoOrMoreSpacesAfterHyphenPattern = "(?:\(mark) -\(twoOrMoreSpace))"
+    private let nonSpaceOrNewlineAfterHyphenPattern = "(?:\(mark) -[^ \n])"
 
-    private var endTwoOrMoreSpacePattern: String {
-        return "(?:\(mark)\(twoOrMoreSpace))"
-    }
-
-    private var twoOrMoreSpacesAfterHyphenPattern: String {
-        return "(?:\(mark) -\(twoOrMoreSpace))"
-    }
-
-    private var nonSpaceOrNewlineAfterHyphenPattern: String {
-        return "(?:\(mark) -[^ \n])"
-    }
+    private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
 
     private var pattern: String {
         return [
             spaceStartPattern,
-            endNonSpacePattern,
-            endTwoOrMoreSpacePattern,
-            twoOrMoreSpacesAfterHyphenPattern,
-            nonSpaceOrNewlineAfterHyphenPattern
+            invalidEndSpacesPattern,
+            invalidSpacesAfterHyphenPattern
         ].joined(separator: "|")
     }
 

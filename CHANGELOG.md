@@ -6,8 +6,8 @@
 
 ##### Enhancements
 
-* Performance improvements to `generic_type_name`, 
-  `redundant_nil_coalescing` and `mark` rules.  
+* Performance improvements to `generic_type_name`,
+  `redundant_nil_coalescing`, `mark` and `first_where` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes

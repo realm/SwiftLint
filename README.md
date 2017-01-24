@@ -173,18 +173,15 @@ environment variable.
 
 ## Rules
 
-There are only a small number of rules currently implemented, but we hope the
-Swift community (that's you!) will contribute more over time.
+Over 75 rules are included in SwiftLint and the Swift community (that's you!)
+continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
-
-The rules that *are* currently implemented are mostly there as a starting point
-and are subject to change.
 
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
-`opt_in_rules` are disabled by default (i.e., you have to explicitly enable them in
-your configuration file).
+`opt_in_rules` are disabled by default (i.e., you have to explicitly enable them
+in your configuration file).
 
 Guidelines on when to implement a rule as opt-in:
 

@@ -132,6 +132,45 @@ following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
 
+### Working With Multiple Swift Versions
+
+SwiftLint hooks into SourceKit so it continues working even as Swift evolves!
+
+This also keeps SwiftLint lean, as it doesn't need to ship with a full Swift
+compiler, it just communicates with the official one you already have installed
+on your machine.
+
+You should always run SwiftLint with the same toolchain you use to compile your
+code.
+
+You may want to override SwiftLint's default Swift toolchain if you have
+multiple toolchains or Xcodes installed, or if you're using legacy Swift
+versions (e.g. Swift 2.3 with Xcode 8).
+
+Here's the order in which SwiftLint determines which Swift toolchain to use:
+
+* `$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE`
+* `$TOOLCHAIN_DIR` or `$TOOLCHAINS`
+* `xcrun -find swift`
+* `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+
+`sourcekitd.framework` is expected to be found in the `usr/lib/` subdirectory of
+the value passed in the paths above.
+
+You may also set the `TOOLCHAINS` environment variable to the reverse-DNS
+notation that identifies a Swift toolchain version:
+
+```shell
+$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+```
+
+On Linux, SourceKit is expected to be located in
+`/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
+environment variable.
+
 ## Rules
 
 There are only a small number of rules currently implemented, but we hope the

@@ -12,7 +12,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix a false positive on `large_tuple` rule when using closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1234](https://github.com/realm/SwiftLint/issues/1234)
 
 ## 0.16.1: Commutative Fabric Sheets
 

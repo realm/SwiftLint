@@ -106,7 +106,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 return nil
             }
 
-            let paramLength = name.characters.count
+            let paramLength = name.bridge().length
 
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {

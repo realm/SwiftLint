@@ -37,6 +37,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1242](https://github.com/realm/SwiftLint/issues/1242)
 
+* Retain closure parameter types when they are specified during autocorrect.  
+  [Allen Zeng](https://github.com/allen-zeng)
+  [#1175](https://github.com/realm/SwiftLint/issues/1175)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

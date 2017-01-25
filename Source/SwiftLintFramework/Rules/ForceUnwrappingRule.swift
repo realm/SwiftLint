@@ -31,7 +31,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 "navigationBarHidden, animated: true)",
             "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
                 "self.searchBar?.text?.isEmpty == false) {}",
-            "print(\"\\(xVar)!\")"
+            "print(\"\\(xVar)!\")",
+            "var test = (!bar)"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -53,7 +54,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // capture previous and next of "!"
     // http://userguide.icu-project.org/strings/regexp
-    private static let pattern = "(\\S)(!)(.?)"
+    private static let pattern = "([^\\s\\p{Ps}])(!)(.?)"
 
     private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind

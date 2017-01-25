@@ -52,6 +52,10 @@ class RulesTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description)
     }
 
+    func testDiscardedNotificationCenterObserver() {
+        verifyRule(DiscardedNotificationCenterObserverRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }
@@ -149,6 +153,10 @@ class RulesTests: XCTestCase {
 
     func testNesting() {
         verifyRule(NestingRule.description)
+    }
+
+    func testNotificationCenterDetachment() {
+        verifyRule(NotificationCenterDetachmentRule.description)
     }
 
     func testNimbleOperator() {
@@ -349,6 +357,7 @@ extension RulesTests {
             ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
+            ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
             ("testEmptyParameters", testEmptyParameters),
@@ -373,6 +382,7 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
+            ("testNotificationCenterDetachment", testNotificationCenterDetachment),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),

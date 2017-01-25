@@ -6,13 +6,36 @@
 
 ##### Enhancements
 
-* Performance improvements to `generic_type_name` and 
-  `redundant_nil_coalescing` rules.  
+* Performance improvements to `generic_type_name`,
+  `redundant_nil_coalescing`, `mark`, `first_where` and 
+  `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `discarded_notification_center_observer` rule
+  that warns when the result of
+  `NotificationCenter.addObserver(forName:object:queue:using:)`
+  is not stored so it can be removed later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1062](https://github.com/realm/SwiftLint/issues/1062)
+
+* Add `notification_center_detachment` rule that warns against an object
+  removing itself from `NotificationCenter` in an unsafe location.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1061](https://github.com/realm/SwiftLint/issues/1061)
 
 ##### Bug Fixes
 
-* None.
+* Fix a false positive on `large_tuple` rule when using closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1234](https://github.com/realm/SwiftLint/issues/1234)
+
+* Fix `force_unwrap` false positive for bool negation.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#918](https://github.com/realm/SwiftLint/issues/918)
+
+* Fix false positive and wrong correction on `number_separator` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1242](https://github.com/realm/SwiftLint/issues/1242)
 
 ## 0.16.1: Commutative Fabric Sheets
 

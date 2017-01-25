@@ -43,6 +43,7 @@ internal struct NumberSeparatorRuleExamples {
                 "let foo = \(sign)10_0",
                 "let foo = \(sign)1000",
                 "let foo = \(sign)1000e2",
+                "let foo = \(sign)1000E2",
                 "let foo = \(sign)1__000",
                 "let foo = \(sign)1.0001",
                 "let foo = \(sign)1_000_000.000000_1",
@@ -58,6 +59,7 @@ internal struct NumberSeparatorRuleExamples {
             result["let foo = \(violation)10_0"] = "let foo = \(sign)100"
             result["let foo = \(violation)1000"] = "let foo = \(sign)1_000"
             result["let foo = \(violation)1000e2"] = "let foo = \(sign)1_000e2"
+            result["let foo = \(violation)1000E2"] = "let foo = \(sign)1_000E2"
             result["let foo = \(violation)1__000"] = "let foo = \(sign)1_000"
             result["let foo = \(violation)1.0001"] = "let foo = \(sign)1.000_1"
             result["let foo = \(violation)1_000_000.000000_1"] = "let foo = \(sign)1_000_000.000_000_1"

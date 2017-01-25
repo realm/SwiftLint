@@ -41,7 +41,9 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     public func validate(file: File) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
-        if linesSections.isEmpty { return [] }
+        guard !linesSections.isEmpty else {
+            return []
+        }
 
         var violations = [StyleViolation]()
         for (eachLastLine, eachSectionCount) in linesSections {
@@ -61,19 +63,44 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     private typealias LineSection = (lastLine: Line, linesToRemove: Int)
 
     private func violatingLineSections(in file: File) -> [LineSection] {
+        let nonSpaceRegex = regex("\\S", options: [])
         let filteredLines = file.lines.filter {
-            $0.content.trimmingCharacters(in: .whitespaces).isEmpty
+            nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
         }
 
-        if filteredLines.isEmpty { return [] }
+        guard !filteredLines.isEmpty else {
+            return []
+        }
 
+        let blankLinesSections = extractSections(from: filteredLines)
+
+        // filtering out violations in comments and strings
+        let stringAndComments = Set(SyntaxKind.commentAndStringKinds())
+        let syntaxMap = file.syntaxMap
+        let result = blankLinesSections.flatMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
+            guard let lastLine = eachSection.last else {
+                return nil
+            }
+            let kindInSection = syntaxMap.tokens(inByteRange: lastLine.byteRange)
+                                         .flatMap { SyntaxKind(rawValue: $0.type) }
+            if stringAndComments.isDisjoint(with: kindInSection) {
+                return (lastLine, eachSection.count)
+            }
+
+            return nil
+        }
+
+        return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }
+    }
+
+    private func extractSections(from lines: [Line]) -> [[Line]] {
         var blankLinesSections = [[Line]]()
         var lineSection = [Line]()
 
         var previousIndex = 0
-        for index in 0..<filteredLines.count {
-            if filteredLines[previousIndex].index + 1 == filteredLines[index].index {
-                lineSection.append(filteredLines[index])
+        for (index, line) in lines.enumerated() {
+            if lines[previousIndex].index + 1 == line.index {
+                lineSection.append(line)
             } else if !lineSection.isEmpty {
                 blankLinesSections.append(lineSection)
                 lineSection.removeAll()
@@ -84,21 +111,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             blankLinesSections.append(lineSection)
         }
 
-        // filtering out violations in comments and strings
-        let stringAndComments = Set(SyntaxKind.commentAndStringKinds())
-        let syntaxMap = file.syntaxMap
-        var result = [(lastLine: Line, linesToRemove: Int)]()
-        for eachSection in blankLinesSections {
-            guard let lastLine = eachSection.last else { continue }
-            let kindInSection = syntaxMap.tokens(inByteRange: lastLine.byteRange)
-                                         .flatMap { SyntaxKind(rawValue: $0.type) }
-            if stringAndComments.isDisjoint(with: kindInSection) {
-                result.append((lastLine, eachSection.count))
-            }
-        }
-
-        return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }
-
+        return blankLinesSections
     }
 
     public func correct(file: File) -> [Correction] {

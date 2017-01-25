@@ -33,7 +33,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo(bar: String) -> (Int, Int) {}\n",
             "func foo() throws -> (Int, Int)\n",
             "func foo() throws -> (Int, Int) {}\n",
-            "let foo: (Int, Int, Int) -> Void\n"
+            "let foo: (Int, Int, Int) -> Void\n",
+            "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!"
         ],
         triggeringExamples: [
             "↓let foo: (Int, Int, Int)\n",
@@ -82,8 +83,11 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         var maxSize: Int?
         for range in ranges {
             let substring = text.substring(with: range)
-            let size = substring.components(separatedBy: ",").count
-            maxSize = max(size, maxSize ?? .min)
+
+            if !containsReturnArrow(in: text.bridge(), range: range) {
+                let size = substring.components(separatedBy: ",").count
+                maxSize = max(size, maxSize ?? .min)
+            }
 
             let replacement = String(repeating: " ", count: substring.bridge().length)
             text = text.replacingCharacters(in: range, with: replacement).bridge()
@@ -108,7 +112,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
         for range in ranges {
             let substring = text.substring(with: range)
-            if let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length) {
+            if let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length),
+                !containsReturnArrow(in: text.bridge(), range: range) {
+
                 let size = substring.components(separatedBy: ",").count
                 let offset = byteRange.location + returnRange.location
                 offsets.append((offset: offset, size: size))
@@ -172,17 +178,18 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             throw LargeTupleRuleError.unbalencedParentheses
         }
 
-        let arrowRegex = regex("\\s*->")
-        return ranges.filter { range in
-            let start = NSMaxRange(range)
-            let restOfStringRange = NSRange(location: start, length: length - start)
-            if let match = arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange)?.range,
-                match.location == start {
-                return false
-            }
+        return ranges
+    }
 
-            return true
+    private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
+        let arrowRegex = regex("\\s*->")
+        let start = NSMaxRange(range)
+        let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
+        guard let match = arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange)?.range else {
+            return false
         }
+
+        return match.location == start
     }
 
 }

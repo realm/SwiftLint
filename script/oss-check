@@ -4,18 +4,19 @@ require 'fileutils'
 require 'open3'
 
 def message(str)
-  puts('Message: ' + str)
+  $stderr.puts('Message: ' + str)
 end
 
 def warn(str)
-  puts('Warning: ' + str)
+  $stderr.puts('Warning: ' + str)
 end
 
 def fail(str)
-  puts('Error: ' + str)
+  $stderr.puts('Error: ' + str)
   exit
 end
 
+$stdout.sync = true
 repo_clean = `git status --porcelain`.empty?
 
 unless repo_clean

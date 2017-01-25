@@ -30,16 +30,24 @@ end
 
 # Run OSSCheck if there were app changes
 if has_app_changes || has_dangerfile_changes
-  def non_empty_lines(path)
-    File.read(path).split(/\n+/).reject(&:empty?)
+  def non_empty_lines(lines)
+    lines.split(/\n+/).reject(&:empty?)
   end
 
   def parse_line(line)
     line.split(':', 2).last.strip
   end
 
-  lines = non_empty_lines(`script/oss-check`)
-  lines.each do |line|
+  lines = nil
+  Open3.popen3('script/oss-check') do |_, stdout, stderr, _|
+    while char = stdout.getc
+      print char
+    end
+
+    lines = stderr.read.chomp
+  end
+
+  non_empty_lines(lines).each do |line|
     if line.start_with? 'Message:'
       message parse_line(line)
     elsif line.start_with? 'Warning:'

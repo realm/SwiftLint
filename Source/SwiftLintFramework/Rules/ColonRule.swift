@@ -265,8 +265,8 @@ extension ColonRule {
     }
 
     private func colonRanges(dictionary: [String: SourceKitRepresentable]) -> [NSRange]? {
-        guard let elements = dictionary.elements,
-            elements.count % 2 == 0 else {
+        let elements = dictionary.elements
+        guard elements.count % 2 == 0 else {
                 return nil
         }
 

@@ -49,6 +49,9 @@
                   Identifier = "NumberSeparatorRuleTests/testNumberSeparatorWithDefaultConfiguration()">
                </Test>
                <Test
+                  Identifier = "RulesTests/testNotificationCenterDetachment()">
+               </Test>
+               <Test
                   Identifier = "RulesTests/testTypeName()">
                </Test>
             </SkippedTests>

@@ -24,6 +24,18 @@ class Swift2RulesTests: XCTestCase {
         verifyRule(description)
     }
 
+    func testNotificationCenterDetachment() {
+        let description = RuleDescription(
+            identifier: NotificationCenterDetachmentRule.description.identifier,
+            name: NotificationCenterDetachmentRule.description.name,
+            description: NotificationCenterDetachmentRule.description.description,
+            nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.swift2NonTriggeringExamples,
+            triggeringExamples: NotificationCenterDetachmentRuleExamples.swift2TriggeringExamples
+        )
+
+        verifyRule(description)
+    }
+
     func testNumberSeparator() {
         let description = RuleDescription(
             identifier: NumberSeparatorRule.description.identifier,

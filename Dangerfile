@@ -39,12 +39,14 @@ if has_app_changes || has_dangerfile_changes
   end
 
   lines = nil
-  Open3.popen3('script/oss-check') do |_, stdout, stderr, _|
-    while char = stdout.getc
-      print char
-    end
+  Bundler.with_clean_env do
+    Open3.popen3('script/oss-check') do |_, stdout, stderr, _|
+      while char = stdout.getc
+        print char
+      end
 
-    lines = stderr.read.chomp
+      lines = stderr.read.chomp
+    end
   end
 
   non_empty_lines(lines).each do |line|

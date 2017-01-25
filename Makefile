@@ -48,6 +48,7 @@ test: clean bootstrap
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
+	rm -rf "./.build"
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
@@ -102,7 +103,7 @@ archive:
 
 release: package archive portable_zip
 
-docker_test:
+docker_test: clean
 	docker run -v `pwd`:/SwiftLint norionomura/sourcekit:302 bash -c "cd /SwiftLint && swift test"
 
 # http://irace.me/swift-profiling/

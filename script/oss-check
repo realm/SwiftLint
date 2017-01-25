@@ -74,7 +74,7 @@ def generate_reports(clone, branch)
         @commits[repo] = `git rev-parse HEAD`
         durations = []
         start = Time.now
-        command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules'
+        command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
         File.open("../#{branch}_reports/#{repo_name}.txt", 'w') do |file|
           Open3.popen3(command) do |_, stdout, _, _|
             file << stdout.read.chomp

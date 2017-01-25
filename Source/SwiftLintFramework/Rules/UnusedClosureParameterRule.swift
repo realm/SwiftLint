@@ -97,7 +97,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
 
         return parameters.flatMap { param -> (NSRange, String)? in
             guard let paramOffset = param.offset,
-                let name = param["key.name"] as? String,
+                let name = param.name,
                 name != "_",
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),

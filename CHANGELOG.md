@@ -11,6 +11,13 @@
   `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `discarded_notification_center_observer` rule
+  that warns when the result of
+  `NotificationCenter.addObserver(forName:object:queue:using:)`
+  is not stored so it can be removed later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1062](https://github.com/realm/SwiftLint/issues/1062)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

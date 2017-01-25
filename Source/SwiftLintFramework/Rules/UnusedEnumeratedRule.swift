@@ -92,12 +92,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func byteRangeForVariables(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
-        guard let elements = dictionary.elements else {
-            return nil
-        }
-
         let expectedKind = "source.lang.swift.structure.elem.id"
-        for subDict in elements where subDict.kind == expectedKind {
+        for subDict in dictionary.elements where subDict.kind == expectedKind {
             guard let offset = subDict.offset,
                 let length = subDict.length else {
                 continue

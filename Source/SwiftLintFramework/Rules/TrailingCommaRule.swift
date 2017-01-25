@@ -51,12 +51,11 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
         guard let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
-            let elements = dictionary.elements,
             allowedKinds.contains(kind) else {
                 return []
         }
 
-        let endPositions = elements.flatMap { dictionary -> Int? in
+        let endPositions = dictionary.elements.flatMap { dictionary -> Int? in
             guard let offset = dictionary.offset,
                 let length = dictionary.length else {
                     return nil

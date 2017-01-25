@@ -51,11 +51,11 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let conditionKind = "source.lang.swift.structure.elem.condition_expr"
-        guard kind == .if || kind == .guard,
-            let elements = dictionary.elements?.filter({ $0.kind == conditionKind }) else {
-                return []
+        guard kind == .if || kind == .guard else {
+            return []
         }
 
+        let elements = dictionary.elements.filter { $0.kind == conditionKind }
         return elements.flatMap { element -> [StyleViolation] in
             guard let offset = element.offset,
                 let length = element.length,

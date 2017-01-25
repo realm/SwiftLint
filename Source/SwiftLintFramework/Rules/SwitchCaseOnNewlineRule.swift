@@ -61,7 +61,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         guard kind == .case,
             let offset = dictionary.offset,
             let length = dictionary.length,
-            let lastElement = dictionary.elements?.last,
+            let lastElement = dictionary.elements.last,
             let lastElementOffset = lastElement.offset,
             let lastElementLength = lastElement.length,
             case let start = lastElementOffset + lastElementLength,

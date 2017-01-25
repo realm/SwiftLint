@@ -18,6 +18,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1062](https://github.com/realm/SwiftLint/issues/1062)
 
+* Add `notification_center_detachment` rule that warns against an object
+  removing itself from `NotificationCenter` in an unsafe location.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1061](https://github.com/realm/SwiftLint/issues/1061)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -930,10 +935,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ##### Enhancements
 
-* Add `notification_center_detachment` rule that warns against an object
-  removing itself from `NotificationCenter` in an unsafe location.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1061](https://github.com/realm/SwiftLint/issues/1061)
+* None.
 
 ##### Bug Fixes
 

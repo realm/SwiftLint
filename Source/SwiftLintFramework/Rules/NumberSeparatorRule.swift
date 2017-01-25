@@ -40,8 +40,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             }
 
             let signs = CharacterSet(charactersIn: "+-")
+            let exponential = CharacterSet(charactersIn: "eE")
             guard let nonSign = content.components(separatedBy: signs).last,
-                case let exponentialComponents = nonSign.components(separatedBy: "e"),
+                case let exponentialComponents = nonSign.components(separatedBy: exponential),
                 let nonExponential = exponentialComponents.first else {
                     return nil
             }
@@ -76,7 +77,8 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             }
 
             if exponentialComponents.count == 2, let exponential = exponentialComponents.last {
-                corrected += "e" + exponential
+                let exponentialSymbol = content.contains("e") ? "e" : "E"
+                corrected += exponentialSymbol + exponential
             }
 
             return (range, corrected)

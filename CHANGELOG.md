@@ -28,6 +28,10 @@
   [Aaron McTavish](https://github.com/aamctustwo)
   [#918](https://github.com/realm/SwiftLint/issues/918)
 
+* Fix false positive and wrong correction on `number_separator` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1242](https://github.com/realm/SwiftLint/issues/1242)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

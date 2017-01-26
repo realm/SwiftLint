@@ -42,7 +42,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         ]
     )
 
-    private let pattern = "\\s*->\\s*(?:Void(?=\\b)|\\(\\s*\\))"
+    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))"
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {

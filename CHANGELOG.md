@@ -41,6 +41,9 @@
   [Allen Zeng](https://github.com/allen-zeng)
   [#1175](https://github.com/realm/SwiftLint/issues/1175)
 
+* Fix `redundant_void_return` matches if return type starts with Void~.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+
 * Ignore `unused_closure_parameter` rule on closures that are called inline.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1161](https://github.com/realm/SwiftLint/issues/1161)

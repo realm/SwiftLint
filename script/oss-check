@@ -166,5 +166,5 @@ end
 
 # Clean up
 `git reset --hard HEAD`
-`git clean -qfd`
+FileUtils.rm_rf('osscheck')
 `git checkout #{@branch_name}`

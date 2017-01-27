@@ -80,9 +80,17 @@ fi
 ![](assets/runscript.png)
 
 Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
-
 ```bash
-${PODS_ROOT}/SwiftLint/swiftlint
+"${PODS_ROOT}/SwiftLint/swiftlint"
+```
+
+or if you don't want the build to fail if `pod install` hasn't been run:
+```bash
+if [ -x "${PODS_ROOT}/SwiftLint/swiftlint" ]; then
+    "${PODS_ROOT}/SwiftLint/swiftlint"
+else
+    echo "SwiftLint does not exist, download from https://github.com/realm/SwiftLint"
+fi
 ```
 
 #### Format on Save Xcode Plugin

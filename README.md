@@ -89,7 +89,7 @@ or if you don't want the build to fail if `pod install` hasn't been run:
 if [ -x "${PODS_ROOT}/SwiftLint/swiftlint" ]; then
     "${PODS_ROOT}/SwiftLint/swiftlint"
 else
-    echo "SwiftLint does not exist, download from https://github.com/realm/SwiftLint"
+    echo "SwiftLint does not exist, run pod install to get swiftlint"
 fi
 ```
 

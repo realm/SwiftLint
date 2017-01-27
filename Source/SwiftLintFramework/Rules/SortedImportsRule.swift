@@ -10,7 +10,8 @@ import Foundation
 import SourceKittenFramework
 
 public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = SeverityConfiguration(.warning)
+
+    public var configuration = SortedImportsConfiguration(ignoreCase: false)
 
     public init() {}
 
@@ -21,36 +22,42 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
         nonTriggeringExamples: [
             "import AAA\nimport BBB\nimport CCC\nimport DDD",
             "import Alamofire\nimport API",
-            "import labc\nimport Ldef"
+            "import labc\nimport Ldef",
+            "import AAA\nimport enum AAA.Enum\nimport struct AAA.Struct\n@testable import AAA",
+            "import AAA\nimport bbb\nimport CCC\nimport @testable DDD",
+            "@testable import AAA\nenum AAA { }",
+            "import AAA\nimport bbb\n" +
+                "import enum AAA.Enum\n" +
+                "import enum bbb.Enum\n" +
+                "import func AAA.Func\n" +
+                "import protocol bbb.Protocol\n" +
+                "import struct AAA.Struct\n" +
+                "import typealias AAA.Typealias\n" +
+                "import var CCC.var\n" +
+                "@testable import bbb\n" +
+                "@testable import CCC"
         ],
         triggeringExamples: [
-            "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"
+            "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC",
+            "@testable import AAA\nimport ↓BBB",
+            "import enum AAA.Class\nimport ↓DDD"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
-        let contents = file.contents.bridge()
-
-        let importLength = 6
-        let modulesAndOffsets: [(String, Int)] = importRanges.map { range in
-            let moduleRange = NSRange(location: range.location + importLength,
-                                      length: range.length - importLength)
-            let moduleName = contents.substring(with: moduleRange)
-                .trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-            let offset = NSMaxRange(range) - moduleName.bridge().length
-            return (moduleName, offset)
-        }
-
-        let modulePairs = zip(modulesAndOffsets, modulesAndOffsets.dropFirst())
-        let violatingOffsets = modulePairs.flatMap { previous, current in
-            return current < previous ? current.1 : nil
-        }
-
-        return violatingOffsets.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0))
+        let imports = file.parseImports()
+        let importPairs = zip(imports, imports.dropFirst())
+        return importPairs.flatMap { previous, current in
+            let ignoreCase = configuration.ignoreCase
+            if current.isLessThan(previous, ignoringCase: ignoreCase) {
+                return StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: current.offset)
+                )
+            }
+            return nil
         }
     }
+
 }

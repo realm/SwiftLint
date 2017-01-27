@@ -56,6 +56,10 @@ class RulesTests: XCTestCase {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 
+    func testDuplicatedImports() {
+        verifyRule(DuplicatedImportsRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }
@@ -131,6 +135,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitlyUnwrappedOptional() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    }
+
+    func testImportsAtTop() {
+        verifyRule(ImportsAtTopRule.description)
     }
 
     func testLargeTuple() {
@@ -373,6 +381,7 @@ extension RulesTests {
             ("testControlStatement", testControlStatement),
             ("testCyclomaticComplexity", testCyclomaticComplexity),
             ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
+            ("testDuplicatedImports", testDuplicatedImports),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
             ("testEmptyParameters", testEmptyParameters),
@@ -392,6 +401,7 @@ extension RulesTests {
             ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
+            ("testImportsAtTop", testImportsAtTop),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),

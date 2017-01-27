@@ -312,6 +312,67 @@ class RuleConfigurationsTests: XCTestCase {
     }
 }
 
+// MARK: - ImportsConfiguration tests
+
+extension RuleConfigurationsTests {
+
+    func testSortedImportsConfigurationSetsCorrectly() {
+        let data: [String: Any] = ["ignore_case": true]
+
+        var config1 = SortedImportsConfiguration(ignoreCase: false)
+        let config2 = SortedImportsConfiguration(ignoreCase: true)
+
+        do {
+            try config1.apply(configuration: data)
+            XCTAssertEqual(config1, config2)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+    }
+
+    func testSortedImportsConfigurationThrowsOnBadConfig() {
+        var config1 = SortedImportsConfiguration(ignoreCase: false)
+        checkError(ConfigurationError.unknownConfiguration) {
+            try config1.apply(configuration: [true])
+        }
+    }
+
+    func testSortedImportsConfigurationIgnoreCase() {
+        let config1 = SortedImportsConfiguration(ignoreCase: true)
+        XCTAssertEqual(config1.ignoreCase, true)
+
+        let config2 = SortedImportsConfiguration(ignoreCase: false)
+        XCTAssertEqual(config2.ignoreCase, false)
+
+        var config3 = SortedImportsConfiguration(ignoreCase: false)
+        do {
+            try config3.apply(configuration: ["ignore_case": true])
+            XCTAssertEqual(config3.ignoreCase, true)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+
+        var config4 = SortedImportsConfiguration(ignoreCase: false)
+        do {
+            try config4.apply(configuration: ["ignore_case": false])
+            XCTAssertEqual(config4.ignoreCase, false)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+    }
+
+    func testSortedImportsConfigurationEquality() {
+        let possibleTests: [Bool] = [false, true]
+
+        possibleTests.enumerated().forEach { index, data in
+            let config1 = SortedImportsConfiguration(ignoreCase: data)
+            let config2 = SortedImportsConfiguration(ignoreCase: data)
+            XCTAssertEqual(config1, config2, "Failed imports configuration equality test data #\(index)")
+        }
+    }
+
+}
+
 extension RuleConfigurationsTests {
     static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
         return [
@@ -337,10 +398,10 @@ extension RuleConfigurationsTests {
                 testSeverityLevelConfigParams),
             ("testSeverityLevelConfigPartialParams",
                 testSeverityLevelConfigPartialParams),
-            ("testRegexConfigurationThrows",
-                testRegexConfigurationThrows),
-            ("testRegexRuleDescription",
-                testRegexRuleDescription),
+            ("testSortedImportsConfigurationSetsCorrectly",
+                testSortedImportsConfigurationSetsCorrectly),
+            ("testSortedImportsConfigurationThrowsOnBadConfig",
+                testSortedImportsConfigurationThrowsOnBadConfig),
             ("testTrailingWhitespaceConfigurationThrowsOnBadConfig",
                 testTrailingWhitespaceConfigurationThrowsOnBadConfig),
             ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines",

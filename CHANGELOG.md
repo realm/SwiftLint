@@ -92,6 +92,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1268](https://github.com/realm/SwiftLint/issues/1268)
 
+* Fix `closure_end_indentation` rule false positive when using single-line
+  closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1216](https://github.com/realm/SwiftLint/issues/1216)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

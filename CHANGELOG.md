@@ -44,6 +44,10 @@
 * Fix `redundant_void_return` matches if return type starts with Void~.  
   [Hayashi Tatsuya](https://github.com/sora0077)
 
+* Fix `valid_ibinspectable` false positive by allowing font types.
+  [zwaldowski](https://github.com/zwaldowski)
+  [#1258](https://github.com/realm/SwiftLint/issues/1258)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

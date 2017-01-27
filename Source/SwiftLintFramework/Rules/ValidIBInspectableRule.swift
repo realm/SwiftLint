@@ -99,7 +99,9 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "UIColor",
             "NSColor",
             "UIImage",
-            "NSImage"
+            "NSImage",
+            "UIFont",
+            "NSFont"
         ]
 
         let types = [

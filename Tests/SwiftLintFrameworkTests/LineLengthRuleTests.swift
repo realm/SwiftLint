@@ -38,7 +38,7 @@ class LineLengthRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_function_declarations": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
-    
+
     func testLineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
         let triggeringExamples = [longFunctionDeclaration]
@@ -51,8 +51,6 @@ class LineLengthRuleTests: XCTestCase {
                                           corrections: baseDescription.corrections)
         verifyRule(description, ruleConfiguration: ["ignores_comments": true],
                    commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
-        
-        
     }
 
     func testLineLengthWithIgnoreURLsEnabled() {

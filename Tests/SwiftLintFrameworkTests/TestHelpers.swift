@@ -170,8 +170,9 @@ extension XCTestCase {
 
         // Comment doesn't violate
         if !skipCommentTests {
+            let commentTriggers =  triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) })
             XCTAssertEqual(
-                triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
+                commentTriggers.count,
                 commentDoesntViolate ? 0 : triggers.count
             )
         }

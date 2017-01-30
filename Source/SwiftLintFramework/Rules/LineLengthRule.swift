@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = LineLengthConfiguration(warning: 120, error: 200, ignoresURLs: false)
+    public var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
     public init() {}
 
@@ -31,13 +31,35 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min(by: <)
+        let minValue = configuration.params.map({ $0.value }).min(by: <) ?? Int.max
+        let swiftDeclarationKindsByLine: [[SwiftDeclarationKind]] = file.swiftDeclarationKindsByLine() ?? []
+        let syntaxKindsByLine: [[SyntaxKind]] = file.syntaxKindsByLine() ?? []
         return file.lines.flatMap { line in
             // `line.content.characters.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
             // for avoiding using heavy `line.content.characters.count`.
-            if line.range.length < minValue! {
+            if line.range.length < minValue {
                 return nil
+            }
+
+            if configuration.ignoresFunctionDeclarations &&
+                line.index < swiftDeclarationKindsByLine.count {
+                let functionKinds = swiftDeclarationKindsByLine[line.index].filter { kind in
+                    SwiftDeclarationKind.functionKinds().contains(kind)
+                }
+                if !functionKinds.isEmpty {
+                    return nil
+                }
+            }
+
+            if configuration.ignoresComments &&
+                line.index < syntaxKindsByLine.count {
+                let lineCommentKinds = syntaxKindsByLine[line.index].filter {
+                    return SyntaxKind.commentKinds().contains($0)
+                }
+                if !lineCommentKinds.isEmpty {
+                    return nil
+                }
             }
 
             var strippedString = line.content

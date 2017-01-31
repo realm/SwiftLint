@@ -11,33 +11,33 @@ import SourceKittenFramework
 import XCTest
 
 class LineLengthConfigurationTests: XCTestCase {
-    let allFlags = LineLengthConfigurationFlag.allFlags()
+    let allFlags = LineLengthRuleOptions.all
     func testLineLengthConfigurationInitializerSetsLength() {
         let warning = 100
         let error = 150
         let length1 = SeverityLevelsConfiguration(warning: warning, error: error)
         let configuration1 = LineLengthConfiguration(warning: warning,
                                                      error: error,
-                                                     flags: allFlags)
+                                                     options: allFlags)
         XCTAssertEqual(configuration1.length, length1)
 
         let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
         let configuration2 = LineLengthConfiguration(warning: warning,
                                                      error: nil,
-                                                     flags: allFlags)
+                                                     options: allFlags)
         XCTAssertEqual(configuration2.length, length2)
     }
 
     func testLineLengthConfigurationInitialiserSetsIgnoresUrls() {
         let configuration1 = LineLengthConfiguration(warning: 100,
                                                      error: 150,
-                                                     flags: [.ignoreUrls])
+                                                     options: [.ignoreUrls])
 
         XCTAssertTrue(configuration1.ignoresURLs)
 
         let configuration2 = LineLengthConfiguration(warning: 100,
                                                      error: 150,
-                                                     flags: nil)
+                                                     options: nil)
         XCTAssertFalse(configuration2.ignoresURLs)
     }
 
@@ -46,7 +46,7 @@ class LineLengthConfigurationTests: XCTestCase {
         let error = 10
         let configuration = LineLengthConfiguration(warning: warning,
                                                     error: error,
-                                                    flags: [.ignoreFunctionDeclarations])
+                                                    options: [.ignoreFunctionDeclarations])
         let params = [RuleParameter(severity: .error, value: error), RuleParameter(severity: .warning, value: warning)]
         XCTAssertEqual(configuration.params, params)
     }
@@ -55,20 +55,20 @@ class LineLengthConfigurationTests: XCTestCase {
         let warning = 13
         let configuration = LineLengthConfiguration(warning: warning,
                                                     error: nil,
-                                                    flags: [.ignoreFunctionDeclarations])
+                                                    options: [.ignoreFunctionDeclarations])
         XCTAssertEqual(configuration.params, [RuleParameter(severity: .warning, value: 13)])
     }
 
     func testLineLengthConfigurationThrowsOnBadConfig() {
         let config = "unknown"
-        var configuration = LineLengthConfiguration(warning: 100, error: 150, flags: allFlags)
+        var configuration = LineLengthConfiguration(warning: 100, error: 150, options: allFlags)
         checkError(ConfigurationError.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }
     }
 
     func testLineLengthConfigurationApplyConfigurationWithArray() {
-        var configuration = LineLengthConfiguration(warning: 0, error: 0, flags: nil)
+        var configuration = LineLengthConfiguration(warning: 0, error: 0, options: nil)
 
         let warning1 = 100
         let error1 = 100
@@ -136,25 +136,25 @@ class LineLengthConfigurationTests: XCTestCase {
     }
 
     func testLineLengthConfigurationCompares() {
-        let configuration1 = LineLengthConfiguration(warning: 100, error: 100, flags: allFlags)
+        let configuration1 = LineLengthConfiguration(warning: 100, error: 100, options: allFlags)
         let configuration2 = LineLengthConfiguration(warning: 100,
                                                      error: 100,
-                                                     flags: [.ignoreFunctionDeclarations,
+                                                     options: [.ignoreFunctionDeclarations,
                                                                .ignoreComments])
         XCTAssertFalse(configuration1 == configuration2)
 
-        let configuration3 = LineLengthConfiguration(warning: 100, error: 200, flags: allFlags)
+        let configuration3 = LineLengthConfiguration(warning: 100, error: 200, options: allFlags)
         XCTAssertFalse(configuration1 == configuration3)
 
-        let configuration4 = LineLengthConfiguration(warning: 200, error: 100, flags: allFlags)
+        let configuration4 = LineLengthConfiguration(warning: 200, error: 100, options: allFlags)
         XCTAssertFalse(configuration1 == configuration4)
 
-        let configuration5 = LineLengthConfiguration(warning: 100, error: 100, flags: allFlags)
+        let configuration5 = LineLengthConfiguration(warning: 100, error: 100, options: allFlags)
         XCTAssertTrue(configuration1 == configuration5)
 
         let configuration6 = LineLengthConfiguration(warning: 100,
                                                      error: 100,
-                                                     flags: [.ignoreFunctionDeclarations,
+                                                     options: [.ignoreFunctionDeclarations,
                                                                .ignoreComments])
         XCTAssertTrue(configuration2 == configuration6)
     }

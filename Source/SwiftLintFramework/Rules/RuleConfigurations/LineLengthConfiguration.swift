@@ -8,13 +8,16 @@
 
 import Foundation
 
-public enum LineLengthConfigurationFlag {
-    case ignoreUrls
-    case ignoreFunctionDeclarations
-    case ignoreComments
-    static func allFlags() -> [LineLengthConfigurationFlag] {
-        return [.ignoreUrls, .ignoreFunctionDeclarations, .ignoreComments]
-    }
+public struct LineLengthRuleOptions: OptionSet {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+    public init() { self.rawValue = 0 }
+
+    static let ignoreUrls = LineLengthRuleOptions(rawValue: 1 << 0)
+    static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
+    static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
+
+    static let all: LineLengthRuleOptions = [.ignoreUrls, .ignoreFunctionDeclarations, .ignoreComments]
 }
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
@@ -31,12 +34,12 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         return length.params
     }
 
-    public init(warning: Int, error: Int?, flags: [LineLengthConfigurationFlag]? = []) {
+    public init(warning: Int, error: Int?, options: LineLengthRuleOptions? = []) {
         length = SeverityLevelsConfiguration(warning: warning, error: error)
-        if let flags = flags {
-            self.ignoresURLs = flags.contains(.ignoreUrls)
-            self.ignoresFunctionDeclarations = flags.contains(.ignoreFunctionDeclarations)
-            self.ignoresComments = flags.contains(.ignoreComments)
+        if let options = options {
+            self.ignoresURLs = options.contains(.ignoreUrls)
+            self.ignoresFunctionDeclarations = options.contains(.ignoreFunctionDeclarations)
+            self.ignoresComments = options.contains(.ignoreComments)
         } else {
             self.ignoresURLs = false
             self.ignoresFunctionDeclarations = false

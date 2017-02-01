@@ -23,7 +23,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1061](https://github.com/realm/SwiftLint/issues/1061)
   
-* Accept `AnyObject` and `NSObjectProtocol` in `class_delegate_protocol`.
+* Accept `AnyObject` and `NSObjectProtocol` in `class_delegate_protocol`.  
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 

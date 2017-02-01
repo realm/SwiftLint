@@ -67,7 +67,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
-            !(isClassProtocol(file: file, range: range) || isReferenceProtocol(file: file, range: range)) else {
+            !(isClassProtocol(file: file, range: range) || !Set(["AnyObject", "NSObjectProtocol"]).isDisjoint(with: dictionary.inheritedTypes)) else {
             return []
         }
 
@@ -80,10 +80,6 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
     private func isClassProtocol(file: File, range: NSRange) -> Bool {
         return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
-    }
-    
-    private func isReferenceProtocol(file: File, range: NSRange) -> Bool {
-        return !file.match(pattern: "\\b(AnyObject|NSObjectProtocol)\\b", with: [.typeidentifier], range: range).isEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {

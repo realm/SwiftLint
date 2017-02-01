@@ -25,7 +25,9 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             "class FooDelegate {}\n",
             "@objc protocol FooDelegate {}\n",
             "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
-            "protocol FooDelegate: BarDelegate {}\n"
+            "protocol FooDelegate: BarDelegate {}\n",
+            "protocol FooDelegate: AnyObject {}\n",
+            "protocol FooDelegate: NSObjectProtocol {}\n"
         ],
         triggeringExamples: [
             "↓protocol FooDelegate {}\n",
@@ -65,7 +67,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
-            !isClassProtocol(file: file, range: range) else {
+            !(isClassProtocol(file: file, range: range) || !Set(["AnyObject", "NSObjectProtocol"]).isDisjoint(with: dictionary.inheritedTypes)) else {
             return []
         }
 

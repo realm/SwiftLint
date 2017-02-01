@@ -25,7 +25,7 @@
 
 * Add 'ignores_function_declarations' and 'ignores_comments' as options
   to LineLengthRule.
-  [Michael Welles](https://github.com/mlwelles)
+  [Michael L. Welles](https://github.com/mlwelles)
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
 

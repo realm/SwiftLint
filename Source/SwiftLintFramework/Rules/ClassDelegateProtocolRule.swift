@@ -25,7 +25,9 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             "class FooDelegate {}\n",
             "@objc protocol FooDelegate {}\n",
             "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
-            "protocol FooDelegate: BarDelegate {}\n"
+            "protocol FooDelegate: BarDelegate {}\n",
+            "protocol FooDelegate: AnyObject {}\n",
+            "protocol FooDelegate: NSObjectProtocol {}\n"
         ],
         triggeringExamples: [
             "↓protocol FooDelegate {}\n",
@@ -65,7 +67,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
-            !isClassProtocol(file: file, range: range) else {
+            !(isClassProtocol(file: file, range: range) || isReferenceProtocol(file: file, range: range)) else {
             return []
         }
 
@@ -78,6 +80,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
     private func isClassProtocol(file: File, range: NSRange) -> Bool {
         return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
+    }
+    
+    private func isReferenceProtocol(file: File, range: NSRange) -> Bool {
+        return !file.match(pattern: "\\b(AnyObject|NSObjectProtocol)\\b", with: [.typeidentifier], range: range).isEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {

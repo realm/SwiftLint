@@ -35,6 +35,8 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
+    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol"]
+
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .protocol else {
@@ -59,6 +61,11 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        // Check if inherits from a known reference type protocol
+        guard dictionary.inheritedTypes.filter(isReferenceTypeProtocol).isEmpty else {
+            return []
+        }
+
         // Check if : class
         guard let offset = dictionary.offset,
             let nameOffset = dictionary.nameOffset,
@@ -67,7 +74,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
-            !(isClassProtocol(file: file, range: range) || !Set(["AnyObject", "NSObjectProtocol"]).isDisjoint(with: dictionary.inheritedTypes)) else {
+            !isClassProtocol(file: file, range: range) else {
             return []
         }
 
@@ -84,6 +91,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
     private func isDelegateProtocol(_ name: String) -> Bool {
         return name.hasSuffix("Delegate")
+    }
+
+    private func isReferenceTypeProtocol(_ name: String) -> Bool {
+        return referenceTypeProtocols.contains(name)
     }
 
 }

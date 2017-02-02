@@ -71,7 +71,7 @@ def generate_reports(clone, branch)
       Dir.chdir(repo_name) do
         iterations = 5
         print "Linting #{iterations} iterations of #{repo_name} with #{branch}: 1"
-        @commits[repo] = `git rev-parse HEAD`
+        @commits[repo] = `git rev-parse HEAD`.strip
         durations = []
         start = Time.now
         command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'

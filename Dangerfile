@@ -161,4 +161,5 @@ if has_app_changes || has_dangerfile_changes
   end
   # Clean up
   FileUtils.rm_rf('osscheck')
+  warn "Testing"
 end

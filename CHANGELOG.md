@@ -53,7 +53,7 @@
   [#1161](https://github.com/realm/SwiftLint/issues/1161)
 
 * Disable `valid_docs` and `missing_docs` rules when running in Swift 2.3 or
-  later as it has not been updated to work with those versions of Swift.  
+  later as they have not been updated to work with those versions of Swift.  
   [JP Simard](https://github.com/jpsim)
   [#728](https://github.com/realm/SwiftLint/issues/728)
 

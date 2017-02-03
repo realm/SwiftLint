@@ -22,7 +22,7 @@
   removing itself from `NotificationCenter` in an unsafe location.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1061](https://github.com/realm/SwiftLint/issues/1061)
-  
+
 * Accept `AnyObject` and `NSObjectProtocol` in `class_delegate_protocol`.  
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
@@ -51,6 +51,11 @@
 * Ignore `unused_closure_parameter` rule on closures that are called inline.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1161](https://github.com/realm/SwiftLint/issues/1161)
+
+* Disable `valid_docs` and `missing_docs` rules when running in Swift 2.3 or
+  later as they have not been updated to work with those versions of Swift.  
+  [JP Simard](https://github.com/jpsim)
+  [#728](https://github.com/realm/SwiftLint/issues/728)
 
 ## 0.16.1: Commutative Fabric Sheets
 

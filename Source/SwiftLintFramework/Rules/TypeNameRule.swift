@@ -30,7 +30,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     private let typeKinds: [SwiftDeclarationKind] = {
         let common = SwiftDeclarationKind.typeKinds()
         switch SwiftVersion.current {
-        case .two:
+        case .two, .twoPointThree:
             return common + [.enumelement]
         case .three:
             return common

@@ -20,7 +20,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         let triggeringExampes: [String]
         let corrections: [String: String]
         switch SwiftVersion.current {
-        case .two:
+        case .two, .twoPointThree:
             nonTriggeringExamples = LegacyConstantRuleExamples.swift2NonTriggeringExamples
             triggeringExampes = LegacyConstantRuleExamples.swift2TriggeringExamples
             corrections = LegacyConstantRuleExamples.swift2Corrections
@@ -46,7 +46,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     private static let legacyPatterns: [String: String] = {
         switch SwiftVersion.current {
-        case .two:
+        case .two, .twoPointThree:
             return LegacyConstantRuleExamples.swift2Patterns
         case .three:
             return LegacyConstantRuleExamples.swift3Patterns

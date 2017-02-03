@@ -27,6 +27,11 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
+* Add `for_where` rule that validates that `where` is used in a `for` loop 
+  instead of a single `if` expression inside the loop.
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1228](https://github.com/realm/SwiftLint/issues/1228)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

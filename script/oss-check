@@ -25,6 +25,11 @@ end
 
 @branch_name = `git symbolic-ref HEAD --short`.strip
 
+if @branch_name == 'master'
+  fail "can't run osscheck from 'master' as the script compares "\
+       "the performance of this branch against 'master'"
+end
+
 @repos = [
   'Alamofire/Alamofire',
   'apple/swift',

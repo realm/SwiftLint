@@ -7,7 +7,7 @@ warn('Big PR') if git.lines_of_code > 500
 # including in a CHANGELOG for example
 has_app_changes = !git.modified_files.grep(/Source/).empty?
 has_test_changes = !git.modified_files.grep(/Tests/).empty?
-has_dangerfile_changes = !git.modified_files.grep(/Dangerfile/).empty?
+has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
@@ -29,7 +29,7 @@ if git.lines_of_code > 50 && has_app_changes && !has_test_changes
 end
 
 # Run OSSCheck if there were app changes
-if has_app_changes || has_dangerfile_changes
+if has_app_changes || has_danger_changes
   def non_empty_lines(lines)
     lines.split(/\n+/).reject(&:empty?)
   end

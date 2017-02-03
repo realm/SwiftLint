@@ -27,6 +27,9 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
+* Disable automatic caching  
+  [Ben Asher](https://github.com/benasher44)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

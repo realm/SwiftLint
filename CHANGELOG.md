@@ -27,6 +27,12 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
+* Update `variable_name`, `type_name`, and `generic_type_name` to allow configuration of
+  allowed characters. Use the new `additional_allowed_characters` configuration parameter
+  to pass in a string of the characters to allow in addition to alphanumerics.  
+  [Aaron McTavish](https://github.com/aamctustwo)
+  [#628](https://github.com/realm/SwiftLint/issues/628)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

@@ -19,8 +19,8 @@ extension CharacterSet {
 
             return true
         #else
-            let otherSet = CharacterSet(charactersIn: string)
-            return isSuperset(of: otherSet)
+            // workaround for https://bugs.swift.org/browse/SR-3667
+            return string.rangeOfCharacter(from: inverted) == nil
         #endif
     }
 }

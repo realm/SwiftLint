@@ -166,7 +166,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        if !configuration.allowedCharacters.isSuperset(ofCharactersIn: name) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,

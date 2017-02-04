@@ -41,6 +41,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1228](https://github.com/realm/SwiftLint/issues/1228)
 
+* `unused_enumerated` rule now warns when only the index is being used.
+  You should use `.indices` instead of `.enumerated()` in this case.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1278](https://github.com/realm/SwiftLint/issues/1278)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

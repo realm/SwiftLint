@@ -83,6 +83,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1237](https://github.com/realm/SwiftLint/issues/1237)
 
+* Reimplement `switch_case_on_newline` rule to be an `ASTRule` and be more
+  reliable, fixing some false negatives and false positives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1268](https://github.com/realm/SwiftLint/issues/1268)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

@@ -50,7 +50,7 @@ private func defaultCacheURL(options: LintOptions) -> URL {
     #if os(Linux)
         let baseURL = URL(fileURLWithPath: "/var/tmp/")
     #else
-        let baseURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
     #endif
 
     let fileName = String(rootPath.hash) + ".json"

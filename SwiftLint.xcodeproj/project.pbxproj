@@ -1002,6 +1002,7 @@
 				D0AAAB5319FB0960007B24B3 /* Embed Frameworks */,
 				6CCFCF291CFEF6D3003239EB /* Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */,
+				E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -1122,6 +1123,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = ". script/extract-tool";
+		};
+		E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

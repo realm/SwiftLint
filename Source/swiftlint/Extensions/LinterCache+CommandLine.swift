@@ -16,12 +16,12 @@ extension LinterCache {
             return nil
         }
 
-        let configurationHash = configuration.hash
+        let configurationDescription = configuration.cacheDescription
         let cache: LinterCache
         do {
-            cache = try LinterCache(contentsOf: url, configurationHash: configurationHash)
+            cache = try LinterCache(contentsOf: url, configurationDescription: configurationDescription)
         } catch {
-            cache = LinterCache(configurationHash: configurationHash)
+            cache = LinterCache(configurationDescription: configurationDescription)
         }
 
         return cache

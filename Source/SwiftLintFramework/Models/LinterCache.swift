@@ -19,24 +19,24 @@ public final class LinterCache {
     private var cache: [String: Any]
     private let lock = NSLock()
 
-    public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
+    public init(currentVersion: Version = .current, configurationDescription: String? = nil) {
         cache = [
             "version": currentVersion.value,
             "files": [:]
         ]
-        cache["configuration_hash"] = configurationHash
+        cache["configuration"] = configurationDescription
     }
 
-    public init(cache: Any, currentVersion: Version = .current, configurationHash: Int? = nil) throws {
+    public init(cache: Any, currentVersion: Version = .current, configurationDescription: String? = nil) throws {
         guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
         }
 
-        guard let version = dictionary["version"] as? String, version == currentVersion.value else {
+        guard dictionary["version"] as? String == currentVersion.value else {
             throw LinterCacheError.differentVersion
         }
 
-        if dictionary["configuration_hash"] as? Int != configurationHash {
+        guard dictionary["configuration"] as? String == configurationDescription else {
             throw LinterCacheError.differentConfiguration
         }
 
@@ -44,31 +44,37 @@ public final class LinterCache {
     }
 
     public convenience init(contentsOf url: URL, currentVersion: Version = .current,
-                            configurationHash: Int? = nil) throws {
+                            configurationDescription: String? = nil) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
         try self.init(cache: json, currentVersion: currentVersion,
-                      configurationHash: configurationHash)
+                      configurationDescription: configurationDescription)
     }
 
-    public func cache(violations: [StyleViolation], forFile file: String, fileHash: Int) {
+    public func cache(violations: [StyleViolation], forFile file: String) {
+        guard let lastModified = FileManager.default.modifiedDate(forFileAtPath: file) else {
+            return
+        }
         lock.lock()
         var filesCache = (cache["files"] as? [String: Any]) ?? [:]
         filesCache[file] = [
             "violations": violations.map(dictionary(for:)),
-            "hash": fileHash
+            "last_modified": Int(lastModified.timeIntervalSinceReferenceDate)
         ]
         cache["files"] = filesCache
         lock.unlock()
     }
 
-    public func violations(forFile file: String, hash: Int) -> [StyleViolation]? {
+    public func violations(forFile file: String) -> [StyleViolation]? {
+        guard let lastModified = FileManager.default.modifiedDate(forFileAtPath: file) else {
+            return nil
+        }
         lock.lock()
 
         guard let filesCache = cache["files"] as? [String: Any],
             let entry = filesCache[file] as? [String: Any],
-            let cacheHash = entry["hash"] as? Int,
-            cacheHash == hash,
+            let cacheLastModified = entry["last_modified"] as? Int,
+            cacheLastModified == Int(lastModified.timeIntervalSinceReferenceDate),
             let violations = entry["violations"] as? [[String: Any]] else {
                 lock.unlock()
                 return nil

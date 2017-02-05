@@ -13,7 +13,7 @@ private func classScoped(_ value: String) -> String {
     return "class Foo {\n  \(value)\n}\n"
 }
 
-public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
+public struct ImplicitGetterRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -47,7 +47,8 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         triggeringExamples: [
             classScoped("var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
             classScoped("var foo: Int {\n ↓get{\n return 20 \n} \n} \n}"),
-            classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}")
+            classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
+            "var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"
         ]
     )
 
@@ -77,54 +78,42 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             let location = Location(file: file, byteOffset: token.offset)
 
             return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: location
-            )
+                                  severity: configuration.severity,
+                                  location: location)
         }
     }
 
     private func variableDeclarations(forByteOffset byteOffset: Int,
                                       structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
+        let allowedKinds = Set(SwiftDeclarationKind.variableKinds()).subtracting([.varParameter])
 
-        func parse(dictionary: [String: SourceKitRepresentable]) {
-
-            let allowedKinds: [SwiftDeclarationKind] = [.varClass, .varInstance, .varStatic]
+        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
 
             // Only accepts variable declarations which contains a body and contains the
             // searched byteOffset
-            if let kindString = (dictionary.kind),
+            guard let kindString = dictionary.kind,
                 let kind = SwiftDeclarationKind(rawValue: kindString),
                 let bodyOffset = dictionary.bodyOffset,
                 let bodyLength = dictionary.bodyLength,
-                allowedKinds.contains(kind) {
-                let byteRange = NSRange(location: bodyOffset, length: bodyLength)
-
-                if NSLocationInRange(byteOffset, byteRange) {
-                    results.append(dictionary)
-                }
+                case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return
             }
 
-            let typeKinds: [SwiftDeclarationKind] = [
-                .class,
-                .enum,
-                .extension,
-                .extensionClass,
-                .extensionEnum,
-                .extensionProtocol,
-                .extensionStruct,
-                .struct
-            ] + allowedKinds
+            if parentKind != .protocol && allowedKinds.contains(kind) {
+                results.append(dictionary)
+            }
 
             for dictionary in dictionary.substructure {
-                if let kindString = (dictionary.kind),
-                    let kind = SwiftDeclarationKind(rawValue: kindString),
-                    typeKinds.contains(kind) {
-                    parse(dictionary: dictionary)
-                }
+                parse(dictionary: dictionary, parentKind: kind)
             }
         }
-        parse(dictionary: structure.dictionary)
+
+        for dictionary in structure.dictionary.substructure {
+            parse(dictionary: dictionary, parentKind: nil)
+        }
+
         return results
     }
 }

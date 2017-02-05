@@ -27,6 +27,10 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
+* Allow displaying only enabled rules in `RulesCommand`.  
+  [Natan Rolnik](https://github.com/NatanRolnik)
+  [#1270](https://github.com/realm/SwiftLint/issues/1270)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

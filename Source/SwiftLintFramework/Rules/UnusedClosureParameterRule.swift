@@ -33,7 +33,11 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "}",
             "genericsFunc { (a: Type, b) in\n" +
                 "a + b\n" +
-            "}\n"
+            "}\n",
+            "var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
+            "   lbl.backgroundColor = .red\n" +
+            "   return lbl\n" +
+            "}(UILabel())\n"
         ],
         triggeringExamples: [
             "[1, 2].map { ↓number in\n return 3\n}\n",
@@ -81,6 +85,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable],
                                  kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
         guard kind == .call,
+            !isClosure(dictionary: dictionary),
             let offset = dictionary.offset,
             let length = dictionary.length,
             let nameOffset = dictionary.nameOffset,
@@ -131,6 +136,14 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             }
             return nil
         }
+    }
+
+    private func isClosure(dictionary: [String: SourceKitRepresentable]) -> Bool {
+        return dictionary.name.flatMap { name -> Bool in
+            let length = name.bridge().length
+            let range = NSRange(location: 0, length: length)
+            return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
+        } ?? false
     }
 
     private func violationRanges(in file: File,

@@ -61,7 +61,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
 
     private var methodName: String = {
         switch SwiftVersion.current {
-        case .two:
+        case .two, .twoPointThree:
             return "NSNotificationCenter.defaultCenter.removeObserver"
         case .three:
             return "NotificationCenter.default.removeObserver"

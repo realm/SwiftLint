@@ -95,7 +95,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
                 switch SwiftVersion.current {
-                case .two:
+                case .two, .twoPointThree:
                     // with Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
                     let parameters = subDict.enclosedVarParameters + [subDict]
                     return parameters.filter {
@@ -119,7 +119,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
 
             switch SwiftVersion.current {
-            case .two:
+            case .two, .twoPointThree:
                 guard SwiftDeclarationKind(rawValue: kindString) == .varParameter else {
                     return []
                 }

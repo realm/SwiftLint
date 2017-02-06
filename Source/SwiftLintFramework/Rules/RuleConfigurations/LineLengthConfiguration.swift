@@ -8,6 +8,36 @@
 
 import Foundation
 
+public struct LineLengthRuleOptions: OptionSet {
+    public let rawValue: Int
+    public init(rawValue: Int) { self.rawValue = rawValue }
+    public init() { self.rawValue = 0 }
+    public static let ignoreUrls = LineLengthRuleOptions(rawValue: 1 << 0)
+    public static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
+    public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
+
+    public static let all: LineLengthRuleOptions = [.ignoreUrls, .ignoreFunctionDeclarations, .ignoreComments]
+}
+
+fileprivate enum ConfigurationKey: String {
+    case warning = "warning"
+    case error = "error"
+    case ignoresURLs = "ignores_urls"
+    case ignoresFunctionDeclarations = "ignores_function_declarations"
+    case ignoresComments = "ignores_comments"
+    static func all() -> [ConfigurationKey] {
+        return [.warning,
+            .error,
+            .ignoresURLs,
+            .ignoresFunctionDeclarations,
+            .ignoresComments]
+    }
+    static func allValues() -> [String] {
+        return all().map { $0.rawValue }
+    }
+
+}
+
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return length.consoleDescription + ", ignores urls: \(ignoresURLs)"
@@ -15,27 +45,46 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
 
     var length: SeverityLevelsConfiguration
     var ignoresURLs: Bool
+    var ignoresFunctionDeclarations: Bool
+    var ignoresComments: Bool
 
     var params: [RuleParameter<Int>] {
         return length.params
     }
 
-    public init(warning: Int, error: Int?, ignoresURLs: Bool) {
-        length = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.ignoresURLs = ignoresURLs
+    public init(warning: Int, error: Int?, options: LineLengthRuleOptions = []) {
+        self.length = SeverityLevelsConfiguration(warning: warning, error: error)
+        self.ignoresURLs = options.contains(.ignoreUrls)
+        self.ignoresFunctionDeclarations = options.contains(.ignoreFunctionDeclarations)
+        self.ignoresComments = options.contains(.ignoreComments)
     }
 
     public mutating func apply(configuration: Any) throws {
-        if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
+        if let configurationArray = [Int].array(of: configuration),
+            !configurationArray.isEmpty {
             let warning = configurationArray[0]
             let error = (configurationArray.count > 1) ? configurationArray[1] : nil
             length = SeverityLevelsConfiguration(warning: warning, error: error)
-        } else if let configDict = configuration as? [String: Any], !configDict.isEmpty
-            && Set(configDict.keys).isSubset(of: ["warning", "error", "ignores_urls"]) {
-            let warning = configDict["warning"] as? Int ?? length.warning
-            let error = configDict["error"] as? Int
-            length = SeverityLevelsConfiguration(warning: warning, error: error)
-            ignoresURLs = configDict["ignores_urls"] as? Bool ?? ignoresURLs
+        } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
+            for (string, value) in configDict {
+                guard let key = ConfigurationKey(rawValue:string) else {
+                    throw ConfigurationError.unknownConfiguration
+                }
+                switch (key, value) {
+                case (.error, let intValue as Int):
+                    length.error = intValue
+                case (.warning, let intValue as Int):
+                    length.warning = intValue
+                case (.ignoresFunctionDeclarations, let boolValue as Bool):
+                    ignoresFunctionDeclarations = boolValue
+                case (.ignoresComments, let boolValue as Bool):
+                    ignoresComments = boolValue
+                case (.ignoresURLs, let boolValue as Bool):
+                    ignoresURLs = boolValue
+                default:
+                    throw ConfigurationError.unknownConfiguration
+                }
+            }
         } else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -44,5 +93,8 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
 }
 
 public func == (lhs: LineLengthConfiguration, rhs: LineLengthConfiguration) -> Bool {
-    return lhs.length == rhs.length && lhs.ignoresURLs == rhs.ignoresURLs
+    return lhs.length == rhs.length &&
+        lhs.ignoresURLs == rhs.ignoresURLs &&
+        lhs.ignoresComments == rhs.ignoresComments &&
+        lhs.ignoresFunctionDeclarations == rhs.ignoresFunctionDeclarations
 }

@@ -27,6 +27,12 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
+* Add `ignores_function_declarations` and `ignores_comments` as options
+  to LineLengthRule.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#598](https://github.com/realm/SwiftLint/issues/598)
+  [#975](https://github.com/realm/SwiftLint/issues/975)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -1717,8 +1723,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 * The following rules now conform to `ASTRule`:
   FunctionBodyLength, Nesting, TypeBodyLength, TypeName, VariableName.  
-  [JP Simard](https://github.com/jpsim)
-
+  [JP Simard](https://github.com/jpsim)  
 ##### Bug Fixes
 
 * Trailing newline and file length violations are now displayed in Xcode.  

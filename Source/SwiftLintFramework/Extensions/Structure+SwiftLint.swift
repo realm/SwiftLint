@@ -12,26 +12,26 @@ import SourceKittenFramework
 extension Structure {
 
     /// Returns array of tuples containing "key.kind" and "byteRange" from Structure
-    /// that contains the byte offset.
+    /// that contains the byte offset. Will return all kinds if no parameter specified.
     ///
-    /// - Parameter byteOffset: Int
+    /// - Parameter byteOffset: Int?
     // swiftlint:disable:next valid_docs
-    internal func kinds(forByteOffset byteOffset: Int) -> [(kind: String, byteRange: NSRange)] {
-        return kinds().filter {
-            NSLocationInRange(byteOffset, $0.byteRange)
-        }
-    }
-
-    /// Returns complete array of tuples containing "key.kind" and "byteRange" from Structure
-    internal func kinds() -> [(kind: String, byteRange: NSRange)] {
+    internal func kinds(forByteOffset byteOffset: Int? = nil) -> [(kind: String, byteRange: NSRange)] {
         var results = [(kind: String, byteRange: NSRange)]()
+
         func parse(_ dictionary: [String: SourceKitRepresentable]) {
-            guard let offset = dictionary.offset,
-                let length = dictionary.length else {
+            guard let
+                offset = dictionary.offset,
+                let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }) else {
                     return
             }
+            if let byteOffset = byteOffset {
+                if !NSLocationInRange(byteOffset, byteRange) {
+                    return
+                }
+            }
             if let kind = dictionary.kind {
-                results.append((kind: kind, byteRange: NSRange(location: offset, length: length)))
+                results.append((kind: kind, byteRange: byteRange))
             }
             dictionary.substructure.forEach(parse)
         }

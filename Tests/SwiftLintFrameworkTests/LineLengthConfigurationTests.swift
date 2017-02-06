@@ -36,32 +36,30 @@ class LineLengthConfigurationTests: XCTestCase {
                                                      error: 150)
         XCTAssertFalse(configuration2.ignoresURLs)
     }
-    
+
     func testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations() {
         let configuration1 = LineLengthConfiguration(warning: 100,
                                                      error: 150,
                                                      options: [.ignoreFunctionDeclarations])
-        
+
         XCTAssertTrue(configuration1.ignoresFunctionDeclarations)
-        
+
         let configuration2 = LineLengthConfiguration(warning: 100,
                                                      error: 150)
         XCTAssertFalse(configuration2.ignoresFunctionDeclarations)
     }
-    
+
     func testLineLengthConfigurationInitialiserSetsIgnoresComments() {
         let configuration1 = LineLengthConfiguration(warning: 100,
                                                      error: 150,
                                                      options: [.ignoreComments])
-        
+
         XCTAssertTrue(configuration1.ignoresComments)
-        
+
         let configuration2 = LineLengthConfiguration(warning: 100,
                                                      error: 150)
         XCTAssertFalse(configuration2.ignoresComments)
     }
-
-
 
     func testLineLengthConfigurationParams() {
         let warning = 13
@@ -86,14 +84,14 @@ class LineLengthConfigurationTests: XCTestCase {
             try configuration.apply(configuration: config)
         }
     }
-    
+
     func testLineLengthConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
             ["ignores_function_declarations": 300],
             ["unsupported_key": "unsupported key is unsupported"]
         ]
-        
+
         for badConfig in badConfigs {
             var configuration = LineLengthConfiguration(warning: 100, error: 150)
             checkError(ConfigurationError.unknownConfiguration) {
@@ -101,7 +99,6 @@ class LineLengthConfigurationTests: XCTestCase {
             }
         }
     }
-
 
     func testLineLengthConfigurationApplyConfigurationWithArray() {
         var configuration = LineLengthConfiguration(warning: 0, error: 0)

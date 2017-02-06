@@ -33,7 +33,7 @@ fileprivate enum ConfigurationKey: String {
             .ignoresComments]
     }
     static func allValues() -> [String] {
-        return all().map{ $0.rawValue }
+        return all().map { $0.rawValue }
     }
 
 }
@@ -47,7 +47,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     var ignoresURLs: Bool
     var ignoresFunctionDeclarations: Bool
     var ignoresComments: Bool
-    
+
     var params: [RuleParameter<Int>] {
         return length.params
     }

@@ -124,7 +124,6 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
 }
 
-
 fileprivate extension String {
     var strippingURLs: String {
         let range = NSRange(location: 0, length: bridge().length)

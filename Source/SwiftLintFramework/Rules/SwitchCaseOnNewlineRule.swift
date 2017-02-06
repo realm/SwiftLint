@@ -15,6 +15,7 @@ private func wrapInSwitch(_ str: String) -> String {
 
 public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

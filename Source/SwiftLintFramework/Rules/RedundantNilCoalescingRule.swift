@@ -19,6 +19,7 @@ extension File {
 public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

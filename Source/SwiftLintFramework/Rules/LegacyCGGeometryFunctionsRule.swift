@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.idiomatic
 
     public init() {}
 

@@ -17,6 +17,7 @@ private enum ColonKind {
 public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = ColonConfiguration()
+    public static let kind = RuleKind.style
 
     public init() {}
 

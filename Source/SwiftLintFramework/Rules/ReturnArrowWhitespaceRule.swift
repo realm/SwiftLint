@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

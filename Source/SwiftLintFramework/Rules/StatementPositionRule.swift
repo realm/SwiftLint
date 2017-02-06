@@ -13,6 +13,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
     public var configuration = StatementConfiguration(statementMode: .default,
                                                       severity: SeverityConfiguration(.warning))
+    public static let kind = RuleKind.style
 
     public init() {}
 

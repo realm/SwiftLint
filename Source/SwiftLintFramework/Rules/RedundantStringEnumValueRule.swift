@@ -22,6 +22,7 @@ private func children(of dict: [String: SourceKitRepresentable],
 
 public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

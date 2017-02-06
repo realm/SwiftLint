@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

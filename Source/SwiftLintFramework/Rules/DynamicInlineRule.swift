@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

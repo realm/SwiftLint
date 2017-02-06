@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.idiomatic
 
     public init() {}
 

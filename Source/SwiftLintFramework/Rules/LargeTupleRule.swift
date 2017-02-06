@@ -21,6 +21,7 @@ private enum RangeKind {
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
+    public static let kind = RuleKind.metrics
 
     public init() {}
 

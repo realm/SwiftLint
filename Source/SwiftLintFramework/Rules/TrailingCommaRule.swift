@@ -18,6 +18,7 @@ private typealias CommaRuleViolation = (index: Int, reason: TrailingCommaReason)
 
 public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
+    public static let kind = RuleKind.style
 
     public init() {}
 

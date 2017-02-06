@@ -25,6 +25,7 @@ extension SyntaxKind {
 public struct TodoRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

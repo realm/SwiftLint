@@ -11,6 +11,7 @@ import SourceKittenFramework
 public struct ForceCastRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
+    public static let kind = RuleKind.idiomatic
 
     public init() {}
 

@@ -29,6 +29,7 @@ extension String {
 public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

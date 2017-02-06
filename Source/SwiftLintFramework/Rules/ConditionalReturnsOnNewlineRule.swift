@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

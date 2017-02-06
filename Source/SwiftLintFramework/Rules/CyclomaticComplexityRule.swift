@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
     public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
+    public static let kind = RuleKind.metrics
 
     public init() {}
 

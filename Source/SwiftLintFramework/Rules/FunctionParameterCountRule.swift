@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 5, error: 8)
+    public static let kind = RuleKind.metrics
 
     public init() {}
 

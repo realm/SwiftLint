@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

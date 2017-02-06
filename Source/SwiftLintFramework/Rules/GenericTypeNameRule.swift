@@ -14,6 +14,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
                                                  minLengthError: 0,
                                                  maxLengthWarning: 20,
                                                  maxLengthError: 1000)
+    public static let kind = RuleKind.style
 
     public init() {}
 

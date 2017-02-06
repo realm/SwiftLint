@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

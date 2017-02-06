@@ -11,6 +11,8 @@ import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.lint
+
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
     public init() {}

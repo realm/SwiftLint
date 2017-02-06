@@ -10,6 +10,7 @@ import SourceKittenFramework
 
 public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.error)
+    public static let kind = RuleKind.performance
 
     public init() {}
 

@@ -16,6 +16,7 @@ private enum AttributesRuleError: Error {
 
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
+    public static let kind = RuleKind.style
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
     private static let regularExpression = regex(parametersPattern, options: [])

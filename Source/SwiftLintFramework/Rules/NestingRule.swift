@@ -15,6 +15,8 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                                                     statementLevelWarning: 5,
                                                     statementLevelError: nil)
 
+    public static let kind = RuleKind.lint
+
     public init() {}
 
     public static let description = RuleDescription(

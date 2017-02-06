@@ -20,6 +20,7 @@ extension File {
 public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

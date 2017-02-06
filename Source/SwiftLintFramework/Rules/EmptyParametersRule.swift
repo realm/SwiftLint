@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

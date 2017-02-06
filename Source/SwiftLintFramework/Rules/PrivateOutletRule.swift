@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

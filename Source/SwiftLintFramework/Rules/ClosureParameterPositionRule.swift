@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

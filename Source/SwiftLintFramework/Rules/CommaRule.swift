@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

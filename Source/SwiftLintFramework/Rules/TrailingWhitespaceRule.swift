@@ -13,6 +13,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
     public var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                                ignoresComments: true)
+    public static let kind = RuleKind.style
 
     public init() {}
 

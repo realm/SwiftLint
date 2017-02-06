@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     public var configuration = FileHeaderConfiguration()
+    public static let kind = RuleKind.style
 
     public init() {}
 

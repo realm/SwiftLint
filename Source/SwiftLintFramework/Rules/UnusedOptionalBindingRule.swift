@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
+    public static let kind = RuleKind.style
 
     public init() {}
 

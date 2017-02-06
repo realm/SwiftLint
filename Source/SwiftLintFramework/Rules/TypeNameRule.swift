@@ -15,6 +15,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                                                  minLengthError: 0,
                                                  maxLengthWarning: 40,
                                                  maxLengthError: 1000)
+    public static let kind = RuleKind.lint
 
     public init() {}
 

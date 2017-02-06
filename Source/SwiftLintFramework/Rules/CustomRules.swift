@@ -59,6 +59,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
           "level, and what message to display.")
 
     public var configuration = CustomRulesConfiguration()
+    public static let kind = RuleKind.style
 
     public init() {}
 

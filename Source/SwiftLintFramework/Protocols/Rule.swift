@@ -8,10 +8,19 @@
 
 import SourceKittenFramework
 
+public enum RuleKind: String {
+    case lint
+    case idiomatic
+    case style
+    case metrics
+    case performance
+}
+
 public protocol Rule {
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
     static var description: RuleDescription { get }
+    static var kind: RuleKind { get }
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
     var configurationDescription: String { get }

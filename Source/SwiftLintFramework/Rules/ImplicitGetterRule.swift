@@ -15,6 +15,7 @@ private func classScoped(_ value: String) -> String {
 
 public struct ImplicitGetterRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

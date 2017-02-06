@@ -18,6 +18,7 @@ private func example(_ type: String,
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
+    public static let kind = RuleKind.metrics
 
     public init() {}
 

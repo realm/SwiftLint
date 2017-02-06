@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct ShorthandOperatorRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
+    public static let kind = RuleKind.style
 
     public init() {}
 

@@ -22,6 +22,7 @@ extension File {
 public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

@@ -10,6 +10,7 @@ import SourceKittenFramework
 
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = ProhibitedSuperConfiguration()
+    public static let kind = RuleKind.lint
 
     public init() {}
 

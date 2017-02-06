@@ -12,6 +12,7 @@ import SourceKittenFramework
 public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
+    public static let kind = RuleKind.style
 
     public init() {}
 

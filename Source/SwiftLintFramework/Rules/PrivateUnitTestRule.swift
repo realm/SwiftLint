@@ -49,6 +49,8 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return configuration.cacheDescription
     }
 
+    public static let kind = RuleKind.lint
+
     public init() {}
 
     public static let description = RuleDescription(

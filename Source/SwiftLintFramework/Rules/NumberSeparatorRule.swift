@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
+    public static let kind = RuleKind.style
 
     public init() {}
 

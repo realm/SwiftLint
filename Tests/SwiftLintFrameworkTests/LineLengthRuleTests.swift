@@ -12,20 +12,20 @@ import XCTest
 
 class LineLengthRuleTests: XCTestCase {
 
-    let longFunctionDeclaration = "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
+    private let longFunctionDeclaration = "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
         "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
         "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
         "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
     "x: String, y: String, z: String) {\n"
 
-    let longComment = String(repeating: "/", count: 121) + "\n"
-    let longBlockComment = "/*" + String(repeating: " ", count: 121) + "*/\n"
-
+    private let longComment = String(repeating: "/", count: 121) + "\n"
+    private let longBlockComment = "/*" + String(repeating: " ", count: 121) + "*/\n"
+    private let declarationWithTrailingLongComment = "let foo = 1 " + String(repeating: "/", count: 121) + "\n"
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
-    func testLineLengthWithIgnoreFunctionDeclaraionsEnabled() {
+    func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
         let baseDescription = LineLengthRule.description
         let triggeringExamples = baseDescription.triggeringExamples
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [longFunctionDeclaration]
@@ -41,7 +41,7 @@ class LineLengthRuleTests: XCTestCase {
 
     func testLineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
-        let triggeringExamples = [longFunctionDeclaration]
+        let triggeringExamples = [longFunctionDeclaration, declarationWithTrailingLongComment]
         let nonTriggeringExamples = [longComment, longBlockComment]
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,

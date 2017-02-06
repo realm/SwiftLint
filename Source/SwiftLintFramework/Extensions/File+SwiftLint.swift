@@ -106,8 +106,7 @@ extension File {
         var maybeLine = lineIterator.next()
         var maybeStructure = structureIterator.next()
         while let line = maybeLine, let structure = maybeStructure {
-            if NSLocationInRange(structure.byteRange.location, line.byteRange) ||
-                NSLocationInRange(line.byteRange.location, structure.byteRange) {
+            if NSLocationInRange(structure.byteRange.location, line.byteRange) {
                 if let swiftDeclarationKind = SwiftDeclarationKind(rawValue:structure.kind) {
                     results[line.index].append(swiftDeclarationKind)
                 }

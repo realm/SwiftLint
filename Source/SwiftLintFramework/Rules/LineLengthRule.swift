@@ -9,10 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct LineLengthRule: ConfigurationProviderRule {
     public var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
     public init() {}
+
+    private let commentKinds = Set(SyntaxKind.commentKinds())
+    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(Set(SyntaxKind.commentKinds()))
+    private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
 
     public static let description = RuleDescription(
         identifier: "line_length",
@@ -31,7 +35,7 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min(by: <) ?? Int.max
+        let minValue = configuration.params.map({ $0.value }).min() ?? Int.max
         let swiftDeclarationKindsByLine: [[SwiftDeclarationKind]] = file.swiftDeclarationKindsByLine() ?? []
         let syntaxKindsByLine: [[SyntaxKind]] = file.syntaxKindsByLine() ?? []
         return file.lines.flatMap { line in
@@ -43,23 +47,20 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
             }
 
             if configuration.ignoresFunctionDeclarations &&
-                line.index < swiftDeclarationKindsByLine.count {
-                let functionKinds = swiftDeclarationKindsByLine[line.index].filter { kind in
-                    SwiftDeclarationKind.functionKinds().contains(kind)
-                }
-                if !functionKinds.isEmpty {
-                    return nil
-                }
+                lineHasKinds(line: line,
+                             kinds: functionKinds,
+                             kindsByLine: swiftDeclarationKindsByLine) {
+                return nil
             }
 
             if configuration.ignoresComments &&
-                line.index < syntaxKindsByLine.count {
-                let lineCommentKinds = syntaxKindsByLine[line.index].filter {
-                    return SyntaxKind.commentKinds().contains($0)
-                }
-                if !lineCommentKinds.isEmpty {
-                    return nil
-                }
+                lineHasKinds(line: line,
+                             kinds: commentKinds,
+                             kindsByLine: syntaxKindsByLine) &&
+                !lineHasKinds(line: line,
+                              kinds: nonCommentKinds,
+                              kindsByLine: syntaxKindsByLine) {
+                return nil
             }
 
             var strippedString = line.content
@@ -113,7 +114,16 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         return modifiedString
     }
 
+    private func lineHasKinds<Kind>(line: Line, kinds: Set<Kind>, kindsByLine: [[Kind]]) -> Bool {
+        let index = line.index
+        if index >= kindsByLine.count {
+            return false
+        }
+        return !kinds.intersection(Set(kindsByLine[index])).isEmpty
+    }
+
 }
+
 
 fileprivate extension String {
     var strippingURLs: String {

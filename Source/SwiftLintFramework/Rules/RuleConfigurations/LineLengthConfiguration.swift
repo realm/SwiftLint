@@ -10,8 +10,11 @@ import Foundation
 
 public struct LineLengthRuleOptions: OptionSet {
     public let rawValue: Int
-    public init(rawValue: Int) { self.rawValue = rawValue }
-    public init() { self.rawValue = 0 }
+
+    public init(rawValue: Int = 0) {
+        self.rawValue = rawValue
+    }
+
     public static let ignoreUrls = LineLengthRuleOptions(rawValue: 1 << 0)
     public static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
     public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
@@ -19,19 +22,23 @@ public struct LineLengthRuleOptions: OptionSet {
     public static let all: LineLengthRuleOptions = [.ignoreUrls, .ignoreFunctionDeclarations, .ignoreComments]
 }
 
-fileprivate enum ConfigurationKey: String {
+private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"
     case ignoresURLs = "ignores_urls"
     case ignoresFunctionDeclarations = "ignores_function_declarations"
     case ignoresComments = "ignores_comments"
+
     static func all() -> [ConfigurationKey] {
-        return [.warning,
+        return [
+            .warning,
             .error,
             .ignoresURLs,
             .ignoresFunctionDeclarations,
-            .ignoresComments]
+            .ignoresComments
+        ]
     }
+
     static func allValues() -> [String] {
         return all().map { $0.rawValue }
     }

@@ -15,7 +15,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
     public init() {}
 
     private let commentKinds = Set(SyntaxKind.commentKinds())
-    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(Set(SyntaxKind.commentKinds()))
+    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(SyntaxKind.commentKinds())
     private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
 
     public static let description = RuleDescription(
@@ -36,8 +36,9 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let minValue = configuration.params.map({ $0.value }).min() ?? Int.max
-        let swiftDeclarationKindsByLine: [[SwiftDeclarationKind]] = file.swiftDeclarationKindsByLine() ?? []
-        let syntaxKindsByLine: [[SyntaxKind]] = file.syntaxKindsByLine() ?? []
+        let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
+        let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
+
         return file.lines.flatMap { line in
             // `line.content.characters.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
@@ -119,12 +120,12 @@ public struct LineLengthRule: ConfigurationProviderRule {
         if index >= kindsByLine.count {
             return false
         }
-        return !kinds.intersection(Set(kindsByLine[index])).isEmpty
+        return !kinds.intersection(kindsByLine[index]).isEmpty
     }
 
 }
 
-fileprivate extension String {
+private extension String {
     var strippingURLs: String {
         let range = NSRange(location: 0, length: bridge().length)
         // Workaround for Linux until NSDataDetector is available

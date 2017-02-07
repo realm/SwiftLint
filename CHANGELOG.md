@@ -63,6 +63,10 @@
   [JP Simard](https://github.com/jpsim)
   [#728](https://github.com/realm/SwiftLint/issues/728)
 
+* Fix false positive on `large_tuple` rule when using generics inside a tuple.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1257](https://github.com/realm/SwiftLint/issues/1257)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

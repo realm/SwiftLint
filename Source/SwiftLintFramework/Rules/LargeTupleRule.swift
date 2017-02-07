@@ -13,6 +13,11 @@ private enum LargeTupleRuleError: Error {
     case unbalencedParentheses
 }
 
+private enum RangeKind {
+    case tuple
+    case generic
+}
+
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
@@ -34,7 +39,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo() throws -> (Int, Int)\n",
             "func foo() throws -> (Int, Int) {}\n",
             "let foo: (Int, Int, Int) -> Void\n",
-            "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!"
+            "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!\n",
+            "func getDictionaryAndInt() -> (Dictionary<Int, String>, Int)?\n",
+            "func getGenericTypeAndInt() -> (Type<Int, String, Float>, Int)?\n"
         ],
         triggeringExamples: [
             "↓let foo: (Int, Int, Int)\n",
@@ -47,7 +54,8 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo(bar: String) -> ↓(Int, Int, Int) {}\n",
             "func foo() throws -> ↓(Int, Int, Int)\n",
             "func foo() throws -> ↓(Int, Int, Int) {}\n",
-            "func foo() throws -> ↓(Int, ↓(String, String, String), Int) {}\n"
+            "func foo() throws -> ↓(Int, ↓(String, String, String), Int) {}\n",
+            "func getDictionaryAndInt() -> (Dictionary<Int, ↓(String, String, String)>, Int)?\n"
         ]
     )
 
@@ -74,26 +82,12 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         let kinds = SwiftDeclarationKind.variableKinds().filter { $0 != .varLocal }
         guard kinds.contains(kind),
             let type = dictionary.typeName,
-            let offset = dictionary.offset,
-            let ranges = try? parenthesesRanges(in: type) else {
+            let offset = dictionary.offset else {
                 return []
         }
 
-        var text = type.bridge()
-        var maxSize: Int?
-        for range in ranges {
-            let substring = text.substring(with: range)
-
-            if !containsReturnArrow(in: text.bridge(), range: range) {
-                let size = substring.components(separatedBy: ",").count
-                maxSize = max(size, maxSize ?? .min)
-            }
-
-            let replacement = String(repeating: " ", count: substring.bridge().length)
-            text = text.replacingCharacters(in: range, with: replacement).bridge()
-        }
-
-        return maxSize.flatMap { [(offset: offset, size: $0)] } ?? []
+        let sizes = violationOffsets(for: type).map { $0.1 }
+        return sizes.max().flatMap { [(offset: offset, size: $0)] } ?? []
     }
 
     private func violationOffsetsForFunctions(in file: File, dictionary: [String: SourceKitRepresentable],
@@ -102,21 +96,30 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
             let returnRange = returnRangeForFunction(dictionary: dictionary),
             let returnSubstring = contents.substringWithByteRange(start: returnRange.location,
-                                                                  length: returnRange.length),
-            let ranges = try? parenthesesRanges(in: returnSubstring) else {
+                                                                  length: returnRange.length) else {
                 return []
         }
 
-        var text = returnSubstring.bridge()
+        let offsets = violationOffsets(for: returnSubstring, initialOffset: returnRange.location)
+        return offsets.sorted(by: { $0.offset < $1.offset })
+    }
+
+    private func violationOffsets(for text: String, initialOffset: Int = 0) -> [(offset: Int, size: Int)] {
+        guard let ranges = try? parenthesesRanges(in: text) else {
+            return []
+        }
+
+        var text = text.bridge()
         var offsets = [(offset: Int, size: Int)]()
 
-        for range in ranges {
+        for (range, kind) in ranges {
             let substring = text.substring(with: range)
-            if let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length),
+            if kind != .generic,
+                let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length),
                 !containsReturnArrow(in: text.bridge(), range: range) {
 
                 let size = substring.components(separatedBy: ",").count
-                let offset = byteRange.location + returnRange.location
+                let offset = byteRange.location + initialOffset
                 offsets.append((offset: offset, size: size))
             }
 
@@ -124,7 +127,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             text = text.replacingCharacters(in: range, with: replacement).bridge()
         }
 
-        return offsets.sorted(by: { $0.offset < $1.offset })
+        return offsets
     }
 
     private func returnRangeForFunction(dictionary: [String: SourceKitRepresentable]) -> NSRange? {
@@ -145,19 +148,20 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         return NSRange(location: start, length: end - start)
     }
 
-    private func parenthesesRanges(in text: String) throws -> [NSRange] {
-        var stack = [Int]()
+    private func parenthesesRanges(in text: String) throws -> [(NSRange, RangeKind)] {
+        var stack = [(Int, String)]()
         var balanced = true
-        var ranges = [NSRange]()
+        var ranges = [(NSRange, RangeKind)]()
 
         let nsText = text.bridge()
-        let parentheses = CharacterSet(charactersIn: "()")
+        let parenthesesAndAngleBrackets = CharacterSet(charactersIn: "()<>")
         var index = 0
         let length = nsText.length
 
         while balanced {
             let searchRange = NSRange(location: index, length: length - index)
-            let range = nsText.rangeOfCharacter(from: parentheses, options: [], range: searchRange)
+            let range = nsText.rangeOfCharacter(from: parenthesesAndAngleBrackets,
+                                                options: [.literal], range: searchRange)
             if range.location == NSNotFound {
                 break
             }
@@ -165,10 +169,21 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             index = NSMaxRange(range)
             let symbol = nsText.substring(with: range)
 
-            if symbol == "(" {
-                stack.append(range.location)
-            } else if let startIdx = stack.popLast() {
-                ranges.append(NSRange(location: startIdx, length: range.location - startIdx + 1))
+            // skip return arrows
+            if symbol == ">",
+                case let arrowRange = nsText.range(of: "->", options: [.literal], range: searchRange),
+                arrowRange.intersects(range) {
+                continue
+            }
+
+            if symbol == "(" || symbol == "<" {
+                stack.append((range.location, symbol))
+            } else if let (startIdx, previousSymbol) = stack.popLast(),
+                isBalanced(currentSymbol: symbol, previousSymbol: previousSymbol) {
+
+                let range = NSRange(location: startIdx, length: range.location - startIdx + 1)
+                let kind: RangeKind = symbol == ")" ? .tuple : .generic
+                ranges.append((range, kind))
             } else {
                 balanced = false
             }
@@ -181,15 +196,17 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         return ranges
     }
 
+    private func isBalanced(currentSymbol: String, previousSymbol: String) -> Bool {
+        return (currentSymbol == ")" && previousSymbol == "(") ||
+            (currentSymbol == ">" && previousSymbol == "<")
+    }
+
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\s*->")
+        let arrowRegex = regex("\\A\\s*->")
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
-        guard let match = arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange)?.range else {
-            return false
-        }
 
-        return match.location == start
+        return arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange) != nil
     }
 
 }

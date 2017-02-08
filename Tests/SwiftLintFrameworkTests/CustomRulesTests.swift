@@ -8,8 +8,8 @@
 
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 class CustomRulesTests: XCTestCase {
 

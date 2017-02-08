@@ -8,8 +8,8 @@
 
 import Foundation
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 

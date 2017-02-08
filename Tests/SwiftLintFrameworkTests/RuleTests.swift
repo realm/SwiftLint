@@ -7,8 +7,8 @@
 //
 
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 struct RuleWithLevelsMock: ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)

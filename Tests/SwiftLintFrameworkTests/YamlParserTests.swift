@@ -6,8 +6,8 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 class YamlParserTests: XCTestCase {
 

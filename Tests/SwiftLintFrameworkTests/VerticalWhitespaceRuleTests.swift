@@ -6,8 +6,8 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 class VerticalWhitespaceRuleTests: XCTestCase {
 

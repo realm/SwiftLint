@@ -6,8 +6,8 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-@testable import SwiftLintFrameworkTests
 import XCTest
+@testable import SwiftLintFrameworkTests
 
 XCTMain([
     testCase(AttributesRuleTests.allTests),

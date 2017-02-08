@@ -51,8 +51,14 @@
   `_ = foo()`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1232](https://github.com/realm/SwiftLint/issues/1232)
+
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only
+  display enabled rules.  
+  [Natan Rolnik](https://github.com/NatanRolnik)
+  [#1270](https://github.com/realm/SwiftLint/issues/1270)
 
 ##### Bug Fixes
 

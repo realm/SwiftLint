@@ -100,16 +100,14 @@ extension File {
             return nil
         }
         var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
-        let structureKinds = structure.kinds()
         var lineIterator = lines.makeIterator()
-        var structureIterator = structureKinds.makeIterator()
+        var structureIterator = structure.kinds().makeIterator()
         var maybeLine = lineIterator.next()
         var maybeStructure = structureIterator.next()
         while let line = maybeLine, let structure = maybeStructure {
-            if NSLocationInRange(structure.byteRange.location, line.byteRange) {
-                if let swiftDeclarationKind = SwiftDeclarationKind(rawValue:structure.kind) {
-                    results[line.index].append(swiftDeclarationKind)
-                }
+            if NSLocationInRange(structure.byteRange.location, line.byteRange),
+               let swiftDeclarationKind = SwiftDeclarationKind(rawValue: structure.kind) {
+                results[line.index].append(swiftDeclarationKind)
             }
             let lineEnd = NSMaxRange(line.byteRange)
             if structure.byteRange.location > lineEnd {
@@ -117,7 +115,6 @@ extension File {
             } else {
                 maybeStructure = structureIterator.next()
             }
-
         }
         return results
     }

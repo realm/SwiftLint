@@ -79,13 +79,7 @@ private struct ExpressibleByCompiler {
                                byStringInterpolation, byDictionaryLiteral]
 
     func match(arguments: [String]) -> Bool {
-        for item in self.arguments {
-            if item == arguments {
-                return true
-            }
-        }
-
-        return false
+        return self.arguments.contains { $0 == arguments }
     }
 
     private static let byArrayLiteral: ExpressibleByCompiler = {

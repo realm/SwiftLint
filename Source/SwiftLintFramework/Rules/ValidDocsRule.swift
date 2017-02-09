@@ -133,7 +133,7 @@ func superfluousOrMissingParameterDocumentation(_ declaration: String,
     }.isEmpty
 }
 
-public struct ValidDocsRule: ConfigurationProviderRule {
+public struct ValidDocsRule: ConfigurationProviderRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -227,6 +227,10 @@ public struct ValidDocsRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        guard SwiftVersion.current == .two else {
+            warnValidDocsRuleDisabledOnce
+            return []
+        }
         return file.invalidDocOffsets(in: file.structure.dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -234,3 +238,7 @@ public struct ValidDocsRule: ConfigurationProviderRule {
         }
     }
 }
+
+private let warnValidDocsRuleDisabledOnce: Void = {
+    queuedPrintError("Valid Docs rule is disabled in Swift 2.3 and later as it is non functional.")
+}()

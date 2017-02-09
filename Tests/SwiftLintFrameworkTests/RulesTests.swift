@@ -97,6 +97,10 @@ class RulesTests: XCTestCase {
         verifyRule(ForceUnwrappingRule.description)
     }
 
+    func testForWhere() {
+        verifyRule(ForWhereRule.description)
+    }
+
     func testFunctionBodyLength() {
         verifyRule(FunctionBodyLengthRule.description)
     }
@@ -368,6 +372,7 @@ extension RulesTests {
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),
             // ("testForceUnwrapping", testForceUnwrapping),
+            ("testForWhere", testForWhere),
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
             ("testGenericTypeName", testGenericTypeName),

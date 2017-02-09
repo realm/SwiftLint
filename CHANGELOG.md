@@ -23,6 +23,21 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1061](https://github.com/realm/SwiftLint/issues/1061)
 
+* Accept `AnyObject` and `NSObjectProtocol` in `class_delegate_protocol`.  
+  [Jon Shier](https://github.com/jshier)
+  [#1261](https://github.com/realm/SwiftLint/issues/1261)
+
+* Add `ignores_function_declarations` and `ignores_comments` as options
+  to `LineLengthRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#598](https://github.com/realm/SwiftLint/issues/598)
+  [#975](https://github.com/realm/SwiftLint/issues/975)
+
+* Add `for_where` rule that validates that `where` is used in a `for` loop
+  instead of a single `if` expression inside the loop.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1228](https://github.com/realm/SwiftLint/issues/1228)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -36,6 +51,32 @@
 * Fix false positive and wrong correction on `number_separator` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1242](https://github.com/realm/SwiftLint/issues/1242)
+
+* Retain closure parameter types when they are specified during autocorrect.  
+  [Allen Zeng](https://github.com/allen-zeng)
+  [#1175](https://github.com/realm/SwiftLint/issues/1175)
+
+* Fix `redundant_void_return` matches if return type starts with Void~.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+
+* Ignore `unused_closure_parameter` rule on closures that are called inline.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1161](https://github.com/realm/SwiftLint/issues/1161)
+
+* Disable `valid_docs` and `missing_docs` rules when running in Swift 2.3 or
+  later as they have not been updated to work with those versions of Swift.  
+  [JP Simard](https://github.com/jpsim)
+  [#728](https://github.com/realm/SwiftLint/issues/728)
+
+* Fix false positive on `large_tuple` rule when using generics inside a tuple.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1257](https://github.com/realm/SwiftLint/issues/1257)
+
+* Make `ASTRule` default implementation to navigate through the substructure
+  even if its children are from a different kind. This fixes some violations
+  not being reported in some contexts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1237](https://github.com/realm/SwiftLint/issues/1237)
 
 ## 0.16.1: Commutative Fabric Sheets
 

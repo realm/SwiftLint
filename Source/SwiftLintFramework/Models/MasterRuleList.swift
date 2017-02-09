@@ -95,6 +95,7 @@ public let masterRuleList = RuleList(rules:
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
+    ForWhereRule.self,
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,

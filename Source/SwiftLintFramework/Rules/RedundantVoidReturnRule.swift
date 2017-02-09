@@ -23,6 +23,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             "func foo() {}\n",
             "func foo() -> Int {}\n",
             "func foo() -> Int -> Void {}\n",
+            "func foo() -> VoidResponse\n",
             "let foo: Int -> Void\n",
             "func foo() -> Int -> () {}\n",
             "let foo: Int -> ()\n"
@@ -41,7 +42,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         ]
     )
 
-    private let pattern = "\\s*->\\s*(?:Void|\\(\\s*\\))"
+    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))"
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -88,8 +89,8 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
     }
 
     private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lh, rh in
-            lh.location < rh.location
+        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
+            lhs.location < rhs.location
         }
     }
 

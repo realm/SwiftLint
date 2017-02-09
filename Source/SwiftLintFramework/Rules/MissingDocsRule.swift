@@ -155,6 +155,10 @@ public struct MissingDocsRule: OptInRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        guard SwiftVersion.current == .two else {
+            warnMissingDocsRuleDisabledOnce
+            return []
+        }
         let acl = parameters.map { $0.value }
         return file.missingDocOffsets(in: file.structure.dictionary, acl: acl).map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -169,3 +173,7 @@ public struct MissingDocsRule: OptInRule {
         return false
     }
 }
+
+private let warnMissingDocsRuleDisabledOnce: Void = {
+    queuedPrintError("Missing Docs rule is disabled in Swift 2.3 and later as it is non functional.")
+}()

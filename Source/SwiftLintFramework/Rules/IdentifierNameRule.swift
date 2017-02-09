@@ -99,7 +99,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     private func kinds(for version: SwiftVersion) -> [SwiftDeclarationKind] {
         let common = SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds()
         switch version {
-        case .two:
+        case .two, .twoPointThree:
             return common
         case .three:
             return common + [.enumelement]

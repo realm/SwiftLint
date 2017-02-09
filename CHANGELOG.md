@@ -38,6 +38,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1228](https://github.com/realm/SwiftLint/issues/1228)
 
+* `variable_name` rule is now `identifier_name` as it validates other
+  identifiers as well.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#663](https://github.com/realm/SwiftLint/issues/663)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -980,10 +985,7 @@ This release has seen a phenomenal uptake in community contributions!
 
 ##### Enhancements
 
-* `variable_name` rule is now `identifier_name` as it validates other
-  identifiers as well.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#663](https://github.com/realm/SwiftLint/issues/663)
+* None.
 
 ##### Bug Fixes
 

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 10, error: 20)
+    public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
     public init() {}
 
@@ -51,7 +51,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: "Function should have complexity \(configuration.warning) or less: " +
+                reason: "Function should have complexity \(configuration.length.warning) or less: " +
                         "currently complexity equals \(complexity)")]
         }
 
@@ -78,13 +78,13 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             if statementKind == .switch {
                 hasSwitchStatements = true
             }
-
+            let score = configuration.complexityStatements.contains(statementKind) ? 1 : 0
             return complexity +
-                (complexityStatements.contains(statementKind) ? 1 : 0) +
+                score +
                 measureComplexity(in: file, dictionary: subDict)
         }
 
-        if hasSwitchStatements {
+        if hasSwitchStatements && !configuration.ignoresCaseStatements {
             return reduceSwitchComplexity(initialComplexity: complexity, file: file, dictionary: dictionary)
         }
 
@@ -104,15 +104,5 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let fallthroughCount = c.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount
     }
-
-    private let complexityStatements: [StatementKind] = [
-        .forEach,
-        .if,
-        .case,
-        .guard,
-        .for,
-        .repeatWhile,
-        .while
-    ]
 
 }

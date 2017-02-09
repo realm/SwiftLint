@@ -47,7 +47,9 @@ private enum ConfigurationKey: String {
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return length.consoleDescription + ", ignores urls: \(ignoresURLs)"
+        return length.consoleDescription + ", ignores urls: \(ignoresURLs), " +
+        "ignores function declarations: \(ignoresFunctionDeclarations), " +
+        "ignores comments: \(ignoresComments)"
     }
 
     var length: SeverityLevelsConfiguration

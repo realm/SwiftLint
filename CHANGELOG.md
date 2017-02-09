@@ -33,6 +33,10 @@
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
 
+* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#1298](https://github.com/realm/SwiftLint/issues/1298)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

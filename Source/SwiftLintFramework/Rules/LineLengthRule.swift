@@ -35,7 +35,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min() ?? Int.max
+        let minValue = configuration.params.map({ $0.value }).min() ?? .max
         let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
         let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
 

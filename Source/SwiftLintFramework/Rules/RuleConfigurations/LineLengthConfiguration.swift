@@ -15,11 +15,11 @@ public struct LineLengthRuleOptions: OptionSet {
         self.rawValue = rawValue
     }
 
-    public static let ignoreUrls = LineLengthRuleOptions(rawValue: 1 << 0)
+    public static let ignoreURLs = LineLengthRuleOptions(rawValue: 1 << 0)
     public static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
     public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
 
-    public static let all: LineLengthRuleOptions = [.ignoreUrls, .ignoreFunctionDeclarations, .ignoreComments]
+    public static let all: LineLengthRuleOptions = [.ignoreURLs, .ignoreFunctionDeclarations, .ignoreComments]
 }
 
 private enum ConfigurationKey: String {
@@ -28,26 +28,14 @@ private enum ConfigurationKey: String {
     case ignoresURLs = "ignores_urls"
     case ignoresFunctionDeclarations = "ignores_function_declarations"
     case ignoresComments = "ignores_comments"
-
-    static func all() -> [ConfigurationKey] {
-        return [
-            .warning,
-            .error,
-            .ignoresURLs,
-            .ignoresFunctionDeclarations,
-            .ignoresComments
-        ]
-    }
-
-    static func allValues() -> [String] {
-        return all().map { $0.rawValue }
-    }
-
 }
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return length.consoleDescription + ", ignores urls: \(ignoresURLs)"
+        return length.consoleDescription +
+               ", ignores urls: \(ignoresURLs)" +
+               ", ignores function declarations: \(ignoresFunctionDeclarations)" +
+               ", ignores comments: \(ignoresComments)"
     }
 
     var length: SeverityLevelsConfiguration
@@ -61,7 +49,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
 
     public init(warning: Int, error: Int?, options: LineLengthRuleOptions = []) {
         self.length = SeverityLevelsConfiguration(warning: warning, error: error)
-        self.ignoresURLs = options.contains(.ignoreUrls)
+        self.ignoresURLs = options.contains(.ignoreURLs)
         self.ignoresFunctionDeclarations = options.contains(.ignoreFunctionDeclarations)
         self.ignoresComments = options.contains(.ignoreComments)
     }
@@ -74,7 +62,7 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
             length = SeverityLevelsConfiguration(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
             for (string, value) in configDict {
-                guard let key = ConfigurationKey(rawValue:string) else {
+                guard let key = ConfigurationKey(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration
                 }
                 switch (key, value) {

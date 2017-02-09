@@ -25,10 +25,10 @@ class LineLengthConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration2.length, length2)
     }
 
-    func testLineLengthConfigurationInitialiserSetsIgnoresUrls() {
+    func testLineLengthConfigurationInitialiserSetsIgnoresURLs() {
         let configuration1 = LineLengthConfiguration(warning: 100,
                                                      error: 150,
-                                                     options: [.ignoreUrls])
+                                                     options: [.ignoreURLs])
 
         XCTAssertTrue(configuration1.ignoresURLs)
 
@@ -198,8 +198,8 @@ extension LineLengthConfigurationTests {
         return [
             ("testLineLengthConfigurationInitializerSetsLength",
              testLineLengthConfigurationInitializerSetsLength),
-            ("testLineLengthConfigurationInitialiserSetsIgnoresUrls",
-             testLineLengthConfigurationInitialiserSetsIgnoresUrls),
+            ("testLineLengthConfigurationInitialiserSetsIgnoresURLs",
+             testLineLengthConfigurationInitialiserSetsIgnoresURLs),
             ("testLineLengthConfigurationPartialParams",
              testLineLengthConfigurationPartialParams),
             ("testLineLengthConfigurationParams",

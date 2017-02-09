@@ -25,13 +25,17 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             "class FooDelegate {}\n",
             "@objc protocol FooDelegate {}\n",
             "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
-            "protocol FooDelegate: BarDelegate {}\n"
+            "protocol FooDelegate: BarDelegate {}\n",
+            "protocol FooDelegate: AnyObject {}\n",
+            "protocol FooDelegate: NSObjectProtocol {}\n"
         ],
         triggeringExamples: [
             "↓protocol FooDelegate {}\n",
             "↓protocol FooDelegate: Bar {}\n"
         ]
     )
+
+    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol"]
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -54,6 +58,11 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
         // Check if inherits from another Delegate protocol
         guard dictionary.inheritedTypes.filter(isDelegateProtocol).isEmpty else {
+            return []
+        }
+
+        // Check if inherits from a known reference type protocol
+        guard dictionary.inheritedTypes.filter(isReferenceTypeProtocol).isEmpty else {
             return []
         }
 
@@ -82,6 +91,10 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
 
     private func isDelegateProtocol(_ name: String) -> Bool {
         return name.hasSuffix("Delegate")
+    }
+
+    private func isReferenceTypeProtocol(_ name: String) -> Bool {
+        return referenceTypeProtocols.contains(name)
     }
 
 }

@@ -82,7 +82,7 @@ fi
 Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
 
 ```bash
-${PODS_ROOT}/SwiftLint/swiftlint
+"${PODS_ROOT}/SwiftLint/swiftlint"
 ```
 
 #### Format on Save Xcode Plugin

@@ -9,10 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = LineLengthConfiguration(warning: 120, error: 200, ignoresURLs: false)
+public struct LineLengthRule: ConfigurationProviderRule {
+    public var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
     public init() {}
+
+    private let commentKinds = Set(SyntaxKind.commentKinds())
+    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(SyntaxKind.commentKinds())
+    private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
 
     public static let description = RuleDescription(
         identifier: "line_length",
@@ -31,12 +35,32 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let minValue = configuration.params.map({ $0.value }).min(by: <)
+        let minValue = configuration.params.map({ $0.value }).min() ?? Int.max
+        let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
+        let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
+
         return file.lines.flatMap { line in
             // `line.content.characters.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
             // for avoiding using heavy `line.content.characters.count`.
-            if line.range.length < minValue! {
+            if line.range.length < minValue {
+                return nil
+            }
+
+            if configuration.ignoresFunctionDeclarations &&
+                lineHasKinds(line: line,
+                             kinds: functionKinds,
+                             kindsByLine: swiftDeclarationKindsByLine) {
+                return nil
+            }
+
+            if configuration.ignoresComments &&
+                lineHasKinds(line: line,
+                             kinds: commentKinds,
+                             kindsByLine: syntaxKindsByLine) &&
+                !lineHasKinds(line: line,
+                              kinds: nonCommentKinds,
+                              kindsByLine: syntaxKindsByLine) {
                 return nil
             }
 
@@ -91,9 +115,17 @@ public struct LineLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         return modifiedString
     }
 
+    private func lineHasKinds<Kind>(line: Line, kinds: Set<Kind>, kindsByLine: [[Kind]]) -> Bool {
+        let index = line.index
+        if index >= kindsByLine.count {
+            return false
+        }
+        return !kinds.intersection(kindsByLine[index]).isEmpty
+    }
+
 }
 
-fileprivate extension String {
+private extension String {
     var strippingURLs: String {
         let range = NSRange(location: 0, length: bridge().length)
         // Workaround for Linux until NSDataDetector is available

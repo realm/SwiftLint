@@ -67,6 +67,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1257](https://github.com/realm/SwiftLint/issues/1257)
 
+* Make `ASTRule` default implementation to navigate through the substructure
+  even if its children are from a different kind. This fixes some violations
+  not being reported in some contexts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1237](https://github.com/realm/SwiftLint/issues/1237)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

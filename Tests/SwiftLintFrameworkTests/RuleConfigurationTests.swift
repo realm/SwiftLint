@@ -7,8 +7,8 @@
 //
 
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 // swiftlint:disable type_body_length
 

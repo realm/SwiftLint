@@ -73,6 +73,21 @@
   You should use `.indices` instead of `.enumerated()` in this case.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
+* Fixed `sorted_imports` rule to take into account all import declaration variants.  
+  [m-revetria](https://github.com/m-revetria)
+  [#1269](https://github.com/realm/SwiftLint/issues/1269)
+
+* Added `ignore_case` property to `sort_imports` rule's configuration.
+  [m-revetria](https://github.com/m-revetria)
+  [#1185](https://github.com/realm/SwiftLint/issues/1185)
+
+* Added `duplicated_imports` rule that warns against duplicated imported modules.
+  [m-revetria](https://github.com/m-revetria)
+  [#1295](https://github.com/realm/SwiftLint/issues/1295)
+
+* Added `imports_at_top` rule that warns against imports that are not at the top of the file regardless of comments.
+  [m-revetria](https://github.com/m-revetria)
+  [#1295](https://github.com/realm/SwiftLint/issues/1295)
 
 * Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
   [Michael L. Welles](https://github.com/mlwelles)

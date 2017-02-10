@@ -36,9 +36,6 @@
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
 
-* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
-  [Michael L. Welles](https://github.com/mlwelles)
-  [#1298](https://github.com/realm/SwiftLint/issues/1298)
 * Add `for_where` rule that validates that `where` is used in a `for` loop
   instead of a single `if` expression inside the loop.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -48,6 +45,10 @@
   You should use `.indices` instead of `.enumerated()` in this case.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
+
+* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#1298](https://github.com/realm/SwiftLint/issues/1298)
 
 ##### Bug Fixes
 

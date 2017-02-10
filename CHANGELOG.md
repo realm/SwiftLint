@@ -31,6 +31,9 @@
 * Temporarily disable cache when linting. This will be re-enabled in a future
   version after important cache-related issues have been addressed.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+* `sorted_imports` (`SortedImportsRule`) is now checking order case-insensitive by default. This is configurable via `ignore_case`.
+  [m-revetria](https://github.com/m-revetria)
+  [#1269](https://github.com/realm/SwiftLint/issues/1269)
 
 ##### Enhancements
 
@@ -73,13 +76,10 @@
   You should use `.indices` instead of `.enumerated()` in this case.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
-* Fixed `sorted_imports` rule to take into account all import declaration variants.  
+
+* `sorted_imports` rule is now taking into account all import declaration variants.  
   [m-revetria](https://github.com/m-revetria)
   [#1269](https://github.com/realm/SwiftLint/issues/1269)
-
-* Added `ignore_case` property to `sort_imports` rule's configuration.
-  [m-revetria](https://github.com/m-revetria)
-  [#1185](https://github.com/realm/SwiftLint/issues/1185)
 
 * Added `duplicated_imports` rule that warns against duplicated imported modules.
   [m-revetria](https://github.com/m-revetria)

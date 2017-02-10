@@ -9,7 +9,11 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
+private func wrapInSwitch(_ str: String) -> String {
+    return "switch foo {\n  \(str)\n}\n"
+}
+
+public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -19,23 +23,26 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
         name: "Switch Case on Newline",
         description: "Cases inside a switch should always be on a newline",
         nonTriggeringExamples: [
-            "case 1:\n return true",
-            "default:\n return true",
-            "case let value:\n return true",
             "/*case 1: */return true",
             "//case 1:\n return true",
             "let x = [caseKey: value]",
             "let x = [key: .default]",
-            "if case let .someEnum(value) = aFunction([key: 2]) {",
-            "guard case let .someEnum(value) = aFunction([key: 2]) {",
-            "for case let .someEnum(value) = aFunction([key: 2]) {",
-            "case .myCase: // error from network",
-            "case let .myCase(value) where value > 10:\n return false",
+            "if case let .someEnum(value) = aFunction([key: 2]) { }",
+            "guard case let .someEnum(value) = aFunction([key: 2]) { }",
+            "for case let .someEnum(value) = aFunction([key: 2]) { }",
             "enum Environment {\n case development\n}",
             "enum Environment {\n case development(url: URL)\n}",
-            "enum Environment {\n case development(url: URL) // staging\n}",
+            "enum Environment {\n case development(url: URL) // staging\n}"
+        ] + [
+            "case 1:\n return true",
+            "default:\n return true",
+            "case let value:\n return true",
+            "case .myCase: // error from network\n return true",
+            "case let .myCase(value) where value > 10:\n return false",
+            "case let .myCase(value)\n where value > 10:\n return false",
+            "case let .myCase(code: lhsErrorCode, description: _)\n where lhsErrorCode > 10:\n return false",
             "case #selector(aFunction(_:)):\n return false\n"
-        ],
+        ].map(wrapInSwitch),
         triggeringExamples: [
             "↓case 1: return true",
             "↓case let value: return true",
@@ -43,107 +50,44 @@ public struct SwitchCaseOnNewlineRule: ConfigurationProviderRule, Rule, OptInRul
             "↓case \"a string\": return false",
             "↓case .myCase: return false // error from network",
             "↓case let .myCase(value) where value > 10: return false",
-            "↓case #selector(aFunction(_:)): return false\n"
-        ]
+            "↓case #selector(aFunction(_:)): return false\n",
+            "↓case let .myCase(value)\n where value > 10: return false",
+            "↓case .first,\n .second: return false"
+        ].map(wrapInSwitch)
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let pattern = "(case[^\n]*|default):[^\\S\n]*[^\n]"
-        return file.rangesAndTokens(matching: pattern).filter { range, tokens in
-            guard let firstToken = tokens.first, tokenIsKeyword(token: firstToken) else {
-                return false
-            }
+    public func validate(file: File, kind: StatementKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard kind == .case,
+            let offset = dictionary.offset,
+            let length = dictionary.length,
+            let lastElement = dictionary.elements?.last,
+            let lastElementOffset = lastElement.offset,
+            let lastElementLength = lastElement.length,
+            case let start = lastElementOffset + lastElementLength,
+            case let rangeLength = offset + length - start,
+            case let byteRange = NSRange(location: start, length: rangeLength),
+            let firstToken = firstNonCommentToken(inByteRange: byteRange, file: file),
+            let (tokenLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: firstToken.offset),
+            let (caseEndLine, _) = file.contents.bridge().lineAndCharacter(forByteOffset: start),
+            tokenLine == caseEndLine else {
+                return []
+        }
 
-            let tokenString = content(for: firstToken, file: file)
-            guard ["case", "default"].contains(tokenString) else {
-                return false
-            }
-
-            // check if the first token in the line is `case`
-            let lineAndCharacter = file.contents.bridge()
-                .lineAndCharacter(forCharacterOffset: range.location)
-            guard let (lineNumber, _) = lineAndCharacter else {
-                return false
-            }
-
-            let line = file.lines[lineNumber - 1]
-            let allLineTokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
-            let lineTokens = allLineTokens.filter(tokenIsKeyword)
-
-            guard let firstLineToken = lineTokens.first else {
-                return false
-            }
-
-            let firstTokenInLineString = content(for: firstLineToken, file: file)
-            guard firstTokenInLineString == tokenString else {
-                return false
-            }
-
-            return isViolation(lineTokens: allLineTokens, file: file, line: line)
-        }.map {
+        return [
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.0.location))
-        }
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
+        ]
     }
 
-    private func tokenIsKeyword(token: SyntaxToken) -> Bool {
-        return SyntaxKind(rawValue: token.type) == .keyword
-    }
-
-    private func tokenIsComment(token: SyntaxToken) -> Bool {
-        guard let kind = SyntaxKind(rawValue: token.type) else {
-            return false
-        }
-
-        return SyntaxKind.commentKinds().contains(kind)
-    }
-
-    private func content(for token: SyntaxToken, file: File) -> String {
-        return contentForRange(start: token.offset, length: token.length, file: file)
-    }
-
-    private func contentForRange(start: Int, length: Int, file: File) -> String {
-        return file.contents.bridge().substringWithByteRange(start: start, length: length) ?? ""
-    }
-
-    private func trailingComments(tokens: [SyntaxToken]) -> [SyntaxToken] {
-        var lastWasComment = true
-        return tokens.reversed().filter { token in
-            let shouldRemove = lastWasComment && tokenIsComment(token: token)
-            if !shouldRemove {
-                lastWasComment = false
+    private func firstNonCommentToken(inByteRange byteRange: NSRange, file: File) -> SyntaxToken? {
+        return file.syntaxMap.tokens(inByteRange: byteRange).first { token -> Bool in
+            guard let kind = SyntaxKind(rawValue: token.type) else {
+                return false
             }
-            return shouldRemove
-        }.reversed()
-    }
 
-    private func isViolation(lineTokens: [SyntaxToken], file: File, line: Line) -> Bool {
-        let trailingCommentsTokens = trailingComments(tokens: lineTokens)
-
-        guard let firstToken = lineTokens.first, !isEnumCase(file: file, token: firstToken) else {
-            return false
+            return !SyntaxKind.commentKinds().contains(kind)
         }
-
-        var commentsLength = 0
-        if let firstComment = trailingCommentsTokens.first,
-            let lastComment = trailingCommentsTokens.last {
-            commentsLength = (lastComment.offset + lastComment.length) - firstComment.offset
-        }
-
-        let line = contentForRange(start: line.byteRange.location,
-                                   length: line.byteRange.length - commentsLength, file: file)
-        let cleaned = line.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        return !cleaned.hasSuffix(":")
-    }
-
-    private func isEnumCase(file: File, token: SyntaxToken) -> Bool {
-        let kinds = file.structure.kinds(forByteOffset: token.offset).flatMap {
-            SwiftDeclarationKind(rawValue: $0.kind)
-        }
-
-        // it's a violation unless it's actually an enum case declaration
-        return kinds.contains(.enumcase)
     }
 }

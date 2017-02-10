@@ -193,16 +193,6 @@ extension File {
         return matches.filter { !$0.intersects(exclusionRanges) }
     }
 
-    internal func validateVariableName(_ dictionary: [String: SourceKitRepresentable],
-                                       kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        guard let name = dictionary.name,
-            let offset = dictionary.offset,
-            SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
-                return nil
-        }
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
-    }
-
     internal func append(_ string: String) {
         guard let stringData = string.data(using: .utf8) else {
             fatalError("can't encode '\(string)' with UTF8")

@@ -284,7 +284,7 @@ type_name:
     warning: 40
     error: 50
   excluded: iPhone # excluded via string
-variable_name:
+identifier_name:
   min_length: # only min_length
     error: 4 # only error
   excluded: # excluded via string array

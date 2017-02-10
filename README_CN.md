@@ -155,7 +155,7 @@ type_name:
     warning: 40
     error: 50
   excluded: iPhone # 排除某个名字
-variable_name:
+identifier_name:
   min_length: # 只有最小长度
     error: 4 # 只有错误
   excluded: # 排除某些名字

@@ -115,7 +115,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func filterEnumInits(dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
-        return (dictionary.elements ?? []).filter {
+        return dictionary.elements.filter {
             $0.kind == "source.lang.swift.structure.elem.init_expr"
         }
     }

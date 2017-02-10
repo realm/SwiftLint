@@ -46,6 +46,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
 
+* Add correctable `redundant_discardable_let` rule that warns when
+  `let _ = foo()` is used to discard a result from a function instead of
+  `_ = foo()`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1232](https://github.com/realm/SwiftLint/issues/1232)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

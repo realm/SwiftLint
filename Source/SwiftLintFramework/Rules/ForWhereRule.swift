@@ -85,7 +85,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
     private func containsLetInCondition(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
         let contents = file.contents.bridge()
-        return !(dictionary.elements ?? []).filter { element in
+        return !dictionary.elements.filter { element in
             guard element.kind == kind,
                 let offset = element.offset,
                 let length = element.length,

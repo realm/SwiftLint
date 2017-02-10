@@ -82,9 +82,9 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         return substructure.flatMap { $0 as? [String: SourceKitRepresentable] }
     }
 
-    var elements: [[String: SourceKitRepresentable]]? {
-        let elements = self["key.elements"] as? [SourceKitRepresentable]
-        return elements?.flatMap { $0 as? [String: SourceKitRepresentable] }
+    var elements: [[String: SourceKitRepresentable]] {
+        let elements = self["key.elements"] as? [SourceKitRepresentable] ?? []
+        return elements.flatMap { $0 as? [String: SourceKitRepresentable] }
     }
 
     var enclosedVarParameters: [[String: SourceKitRepresentable]] {

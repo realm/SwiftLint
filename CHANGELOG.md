@@ -2,12 +2,15 @@
 
 ##### Breaking
 
-* None.
+* `variable_name` rule (`VariableNameRule`) is now `identifier_name`
+  (`IdentifierNameRule`) as it validates other identifiers as well.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#663](https://github.com/realm/SwiftLint/issues/663)
 
 ##### Enhancements
 
 * Performance improvements to `generic_type_name`,
-  `redundant_nil_coalescing`, `mark`, `first_where` and 
+  `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -38,11 +41,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1228](https://github.com/realm/SwiftLint/issues/1228)
 
-* `variable_name` rule is now `identifier_name` as it validates other
-  identifiers as well.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#663](https://github.com/realm/SwiftLint/issues/663)
-
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -69,7 +67,8 @@
   [#1161](https://github.com/realm/SwiftLint/issues/1161)
 
 * Disable `valid_docs` and `missing_docs` rules when running in Swift 2.3 or
-  later as they have not been updated to work with those versions of Swift.  
+  later as they have not been updated to work with those versions of Swift.
+  Both rules are now opt-in because of this.  
   [JP Simard](https://github.com/jpsim)
   [#728](https://github.com/realm/SwiftLint/issues/728)
 

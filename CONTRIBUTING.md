@@ -75,7 +75,7 @@ file_length:
   warning: 800
   error: 1200
 
-variable_name:
+identifier_name:
   min_length:
     warning: 3
     error: 2

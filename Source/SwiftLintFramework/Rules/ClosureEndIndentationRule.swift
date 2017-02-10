@@ -28,7 +28,13 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "   return Command(string: contents, range: range)\n" +
             "}.flatMap { command in\n" +
             "   return command.expand()\n" +
-            "}\n"
+            "}\n",
+            "foo(foo: bar,\n" +
+            "    options: baz) { _ in }\n",
+            "someReallyLongProperty.chainingWithAnotherProperty\n" +
+            "   .foo { _ in }",
+            "foo(abc, 123)\n" +
+            "{ _ in }\n"
         ],
         triggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
@@ -65,7 +71,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
             case let nameEndPosition = nameOffset + nameLength,
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
-            startLine != endLine, bodyOffsetLine != endLine else {
+            startLine != endLine, bodyOffsetLine != endLine,
+            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file:file) else {
                 return []
         }
 
@@ -105,5 +112,48 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         }
 
         return methodByteRange.location
+    }
+
+    private func containsSingleLineClosure(dictionary: [String: SourceKitRepresentable],
+                                           endPosition: Int,
+                                           file: File) -> Bool {
+        let contents = file.contents.bridge()
+
+        guard let closure = trailingClosure(dictionary: dictionary, file: file),
+            let start = closure.bodyOffset,
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: start),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: endPosition) else {
+                return false
+        }
+
+        return startLine == endLine
+    }
+
+    private func trailingClosure(dictionary: [String: SourceKitRepresentable],
+                                 file: File) -> [String: SourceKitRepresentable]? {
+        let arguments = dictionary.enclosedArguments
+        let closureArguments = filterClosureArguments(arguments, file: file)
+
+        if closureArguments.count == 1,
+            closureArguments.last?.bridge() == arguments.last?.bridge() {
+            return closureArguments.last
+        }
+
+        return nil
+    }
+
+    private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
+                                        file: File) -> [[String: SourceKitRepresentable]] {
+        return arguments.filter { argument in
+            guard let offset = argument.bodyOffset,
+                let length = argument.bodyLength,
+                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                match.location == range.location else {
+                    return false
+            }
+
+            return true
+        }
     }
 }

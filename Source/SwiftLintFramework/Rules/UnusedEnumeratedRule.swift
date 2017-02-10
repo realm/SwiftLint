@@ -17,19 +17,22 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "unused_enumerated",
         name: "Unused Enumerated",
-        description: "When the index is not used, .enumerated() can be removed.",
+        description: "When the index or the item is not used, `.enumerated()` can be removed.",
         nonTriggeringExamples: [
             "for (idx, foo) in bar.enumerated() { }\n",
             "for (_, foo) in bar.enumerated().something() { }\n",
             "for (_, foo) in bar.something() { }\n",
             "for foo in bar.enumerated() { }\n",
             "for foo in bar { }\n",
-            "for (idx, _) in bar.enumerated() { }\n"
+            "for (idx, _) in bar.enumerated().something() { }\n",
+            "for (idx, _) in bar.something() { }\n",
+            "for idx in bar.indices { }\n"
         ],
         triggeringExamples: [
             "for (↓_, foo) in bar.enumerated() { }\n",
             "for (↓_, foo) in abc.bar.enumerated() { }\n",
-            "for (↓_, foo) in abc.something().enumerated() { }\n"
+            "for (↓_, foo) in abc.something().enumerated() { }\n",
+            "for (idx, ↓_) in bar.enumerated() { }\n"
         ]
     )
 
@@ -39,18 +42,37 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         guard kind == .forEach,
             isEnumeratedCall(dictionary: dictionary),
             let byteRange = byteRangeForVariables(dictionary: dictionary),
-            let firstToken = file.syntaxMap.tokens(inByteRange: byteRange).first,
-            firstToken.length == 1,
-            SyntaxKind(rawValue: firstToken.type) == .keyword,
-            isUnderscore(file: file, token: firstToken) else {
+            case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
+            tokens.count > 1,
+            let lastToken = tokens.last,
+            case let firstTokenIsUnderscore = isTokenUnderscore(tokens[0], file: file),
+            case let lastTokenIsUnderscore = isTokenUnderscore(lastToken, file: file),
+            firstTokenIsUnderscore || lastTokenIsUnderscore else {
             return []
+        }
+
+        let offset: Int
+        let reason: String
+        if firstTokenIsUnderscore {
+            offset = tokens[0].offset
+            reason = "When the index is not used, `.enumerated()` can be removed."
+        } else {
+            offset = lastToken.offset
+            reason = "When the item is not used, `.indices` should be used instead of `.enumerated()`."
         }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: firstToken.offset))
+                           location: Location(file: file, byteOffset: offset),
+                           reason: reason)
         ]
+    }
+
+    private func isTokenUnderscore(_ token: SyntaxToken, file: File) -> Bool {
+        return token.length == 1 &&
+            SyntaxKind(rawValue: token.type) == .keyword &&
+            isUnderscore(file: file, token: token)
     }
 
     private func isEnumeratedCall(dictionary: [String: SourceKitRepresentable]) -> Bool {
@@ -75,9 +97,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         }
 
         let expectedKind = "source.lang.swift.structure.elem.id"
-        for subDict in elements {
-            guard subDict.kind == expectedKind,
-                let offset = subDict.offset,
+        for subDict in elements where subDict.kind == expectedKind {
+            guard let offset = subDict.offset,
                 let length = subDict.length else {
                 continue
             }

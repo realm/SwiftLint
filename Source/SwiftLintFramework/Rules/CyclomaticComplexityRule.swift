@@ -40,7 +40,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !SwiftDeclarationKind.functionKinds().contains(kind) {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 

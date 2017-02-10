@@ -104,8 +104,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     }
 
     private func violationRanges(in file: File) -> [NSRange] {
-        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lh, rh in
-            lh.location < rh.location
+        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
+            lhs.location < rhs.location
         }
     }
 

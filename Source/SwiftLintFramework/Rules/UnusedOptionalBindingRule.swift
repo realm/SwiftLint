@@ -24,7 +24,9 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "if let (_, second) = getOptionalTuple() {\n" +
             "}\n",
             "if let (_, asd, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
-            "}\n"
+            "}\n",
+            "if foo() { let _ = bar() }\n",
+            "if foo() { _ = bar() }\n"
         ],
         triggeringExamples: [
             "if let ↓_ = Foo.optionalValue {\n" +
@@ -40,23 +42,31 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "if let (_, second) = getOptionalTuple(), let ↓_ = Foo.optionalValue {\n" +
             "}\n",
             "if let ↓(_, _, _) = getOptionalTuple(), let bar = Foo.optionalValue {\n" +
-            "}\n"
+            "}\n",
+            "func foo() {\nif let ↓_ = bar {\n}\n"
         ]
     )
 
     public func validate(file: File,
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        let conditionKind = "source.lang.swift.structure.elem.condition_expr"
         guard kind == .if || kind == .guard,
-            let offset = dictionary.offset,
-            let length = dictionary.length,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            let elements = dictionary.elements?.filter({ $0.kind == conditionKind }) else {
                 return []
         }
 
-        return violations(in: range, of: file).map {
-            StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+        return elements.flatMap { element -> [StyleViolation] in
+            guard let offset = element.offset,
+                let length = element.length,
+                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length) else {
+                    return []
+            }
+
+            return violations(in: range, of: file).map {
+                StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
+            }
         }
     }
 

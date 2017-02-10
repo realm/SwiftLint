@@ -70,7 +70,7 @@ class ConfigurationTests: XCTestCase {
             "whitelist_rules": whitelist
         ]
         let disabledRulesConfigDict = [
-            "disabled_rules": ["variable_name"],
+            "disabled_rules": ["identifier_name"],
             "whitelist_rules": whitelist
         ]
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {

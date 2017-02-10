@@ -97,6 +97,10 @@ class RulesTests: XCTestCase {
         verifyRule(ForceUnwrappingRule.description)
     }
 
+    func testForWhere() {
+        verifyRule(ForWhereRule.description)
+    }
+
     func testFunctionBodyLength() {
         verifyRule(FunctionBodyLengthRule.description)
     }
@@ -107,6 +111,10 @@ class RulesTests: XCTestCase {
 
     func testGenericTypeName() {
         verifyRule(GenericTypeNameRule.description)
+    }
+
+    func testIdentifierName() {
+        verifyRule(IdentifierNameRule.description)
     }
 
     func testImplicitGetter() {
@@ -322,10 +330,6 @@ class RulesTests: XCTestCase {
         verifyRule(ValidIBInspectableRule.description)
     }
 
-    func testVariableName() {
-        verifyRule(VariableNameRule.description)
-    }
-
     func testVerticalParameterAlignment() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
@@ -368,9 +372,11 @@ extension RulesTests {
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),
             // ("testForceUnwrapping", testForceUnwrapping),
+            ("testForWhere", testForWhere),
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
             ("testGenericTypeName", testGenericTypeName),
+            ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
@@ -410,8 +416,7 @@ extension RulesTests {
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
-            ("testVariableName", testVariableName),
-            ("VerticalParameterAlignment", testVerticalParameterAlignment),
+            ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)

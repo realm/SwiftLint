@@ -2,12 +2,15 @@
 
 ##### Breaking
 
-* None.
+* `variable_name` rule (`VariableNameRule`) is now `identifier_name`
+  (`IdentifierNameRule`) as it validates other identifiers as well.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#663](https://github.com/realm/SwiftLint/issues/663)
 
 ##### Enhancements
 
 * Performance improvements to `generic_type_name`,
-  `redundant_nil_coalescing`, `mark`, `first_where` and 
+  `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -36,6 +39,15 @@
 * Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
   [Michael L. Welles](https://github.com/mlwelles)
   [#1298](https://github.com/realm/SwiftLint/issues/1298)
+* Add `for_where` rule that validates that `where` is used in a `for` loop
+  instead of a single `if` expression inside the loop.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1228](https://github.com/realm/SwiftLint/issues/1228)
+
+* `unused_enumerated` rule now warns when only the index is being used.
+  You should use `.indices` instead of `.enumerated()` in this case.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1278](https://github.com/realm/SwiftLint/issues/1278)
 
 ##### Bug Fixes
 
@@ -63,13 +75,30 @@
   [#1161](https://github.com/realm/SwiftLint/issues/1161)
 
 * Disable `valid_docs` and `missing_docs` rules when running in Swift 2.3 or
-  later as they have not been updated to work with those versions of Swift.  
+  later as they have not been updated to work with those versions of Swift.
+  Both rules are now opt-in because of this.  
   [JP Simard](https://github.com/jpsim)
   [#728](https://github.com/realm/SwiftLint/issues/728)
 
 * Fix false positive on `large_tuple` rule when using generics inside a tuple.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1257](https://github.com/realm/SwiftLint/issues/1257)
+
+* Make `ASTRule` default implementation to navigate through the substructure
+  even if its children are from a different kind. This fixes some violations
+  not being reported in some contexts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1237](https://github.com/realm/SwiftLint/issues/1237)
+
+* Reimplement `switch_case_on_newline` rule to be an `ASTRule` and be more
+  reliable, fixing some false negatives and false positives.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1268](https://github.com/realm/SwiftLint/issues/1268)
+
+* Fix `closure_end_indentation` rule false positive when using single-line
+  closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1216](https://github.com/realm/SwiftLint/issues/1216)
 
 ## 0.16.1: Commutative Fabric Sheets
 

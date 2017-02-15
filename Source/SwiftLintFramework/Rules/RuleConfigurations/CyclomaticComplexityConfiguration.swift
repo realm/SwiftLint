@@ -12,17 +12,6 @@ private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"
     case ignoresCaseStatements = "ignores_case_statements"
-
-    static func all() -> [ConfigurationKey] {
-        return [
-            .warning,
-            .error,
-            .ignoresCaseStatements
-        ]
-    }
-    static func allValues() -> [String] {
-        return all().map { $0.rawValue }
-    }
 }
 
 public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
@@ -30,7 +19,7 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         return length.consoleDescription + ", ignores switch statements: \(ignoresCaseStatements)"
     }
 
-    public static let defaultComplexityStatements: Set<StatementKind> = Set([
+    public static let defaultComplexityStatements: Set<StatementKind> = [
         .forEach,
         .if,
         .guard,
@@ -38,13 +27,13 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         .repeatWhile,
         .while,
         .case
-        ])
+    ]
 
-    var length: SeverityLevelsConfiguration
+    private(set) public var length: SeverityLevelsConfiguration
 
     private(set) public var complexityStatements: Set<StatementKind>
 
-    var ignoresCaseStatements: Bool {
+    private(set) public var ignoresCaseStatements: Bool {
         didSet {
             if ignoresCaseStatements {
                 complexityStatements.remove(.case)

@@ -7,6 +7,24 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#663](https://github.com/realm/SwiftLint/issues/663)
 
+* Add `modificationDate(forFileAtPath:)` function requirement to
+  `LintableFileManager` protocol.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Replace `configurationHash` parameters in all `LinterCache` initialiazers
+  with `configurationDescription` parameters.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Remove `fileHash` parameter from `LinterCache.cache(violations:forFile:)`
+  and `LinterCache.violations(forFile:)` functions.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Remove `hash` attribute from `Configuration` struct.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Add `configurationDescription` attribute to `Configuration` struct.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
 ##### Enhancements
 
 * Performance improvements to `generic_type_name`,
@@ -51,6 +69,7 @@
   `_ = foo()`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1232](https://github.com/realm/SwiftLint/issues/1232)
+
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -104,6 +123,15 @@
   closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1216](https://github.com/realm/SwiftLint/issues/1216)
+
+* Fix stale cache by using file modification dates instead of hashing whole
+  files.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+  [#1184](https://github.com/realm/SwiftLint/issues/1184)
+
+* Move file cache from `ApplicationSupport` to `~/Library/Caches` directory.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+  [#1184](https://github.com/realm/SwiftLint/issues/1184)
 
 ## 0.16.1: Commutative Fabric Sheets
 

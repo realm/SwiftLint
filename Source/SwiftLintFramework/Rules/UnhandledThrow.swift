@@ -23,7 +23,19 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
             "func f() throws {\n throw anError \n}\n",
             "func f() throws { throw anError }\n",
             "func f() throws -> Any {\n throw anError \n}\n",
-            "func f() throws -> Any { throw anError }\n"
+            "func f() throws -> Any { throw anError }\n",
+            "func f() throws {\n try anExpression \n}\n",
+            "func f() throws { try anExpression }\n",
+            "func f() throws -> Any {\n try anExpression \n}\n",
+            "func f() throws -> Any { try anExpression }\n",
+            "func f() throws {\n try? anExpression \n}\n",
+            "func f() throws { try? anExpression }\n",
+            "func f() throws -> Any {\n try? anExpression \n}\n",
+            "func f() throws -> Any { try? anExpression }\n",
+            "func f() throws {\n try! anExpression \n}\n",
+            "func f() throws { try! anExpression }\n",
+            "func f() throws -> Any {\n try! anExpression \n}\n",
+            "func f() throws -> Any { try! anExpression }\n"
         ],
         triggeringExamples: [
             "func f() throws {}\n",
@@ -43,7 +55,7 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "(func).+(throws).+"
-        let excludingPattern = "(throw)\\s\\S"
+        let excludingPattern = "(throw|try|try\\!|try\\?)\\s\\S"
 
         let matches = file.match(pattern: pattern,
                                  excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),

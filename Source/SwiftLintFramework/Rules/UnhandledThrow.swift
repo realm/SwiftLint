@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnhandledThrowRule: OptInRule, ConfigurationProviderRule {
+public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

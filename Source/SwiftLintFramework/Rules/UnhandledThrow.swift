@@ -55,7 +55,7 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "(func).+(throws).+"
-        let excludingPattern = "(throw|try|try\\!|try\\?)\\s\\S"
+        let excludingPattern = "(throw|try|try\\!|try\\?)\\s\\S.+\\}"
 
         let matches = file.match(pattern: pattern,
                                  excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),

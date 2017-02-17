@@ -65,7 +65,7 @@ See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/Swif
 for a rule that allows severity configuration,
 [`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/FileLengthRule.swift)
 for a rule that has multiple severity levels,
-[`VariableNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/VariableNameRule.swift)
+[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/IdentifierNameRule.swift)
 for a rule that allows name evaluation configuration:
 
 ``` yaml

@@ -19,23 +19,23 @@ public struct UnhandledThrowRule: OptInRule, ConfigurationProviderRule {
         name: "Unhandled Throw",
         description: "When a throwing function does not handle a throw, the `throws` keyword can be removed.",
         nonTriggeringExamples: [
-            "func f() throws { throw .anError }",
-            "func f() throws -> Any { throw .anError }"
+            "func f() throws {\n throw anError \n}\n",
+            "func f() throws -> Any {\n throw anError \n}\n"
         ],
         triggeringExamples: [
-            "func f() throws { }\n",
-            "func f() throws -> Any { }\n"
+            "func f() throws {\n \n}\n",
+            "func f() throws -> Any {\n \n}\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "/(func).+(throws)*$.+\\}/gm"
+        let matches = file.match(pattern: "(func).+(throws).+(throw)\\s", excludingSyntaxKinds: [])
 
-        let matches = file.rangesAndTokens(matching: pattern)
-
-        print("TESTING UnhandledThrowRule", matches)
-
-        return []
+        return matches.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
+        }
     }
 
 }

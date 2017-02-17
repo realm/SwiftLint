@@ -9,9 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnhandledThrowRule: ASTRule, ConfigurationProviderRule {
-
-    public var configurations = SeverityConfiguration(.warning)
+public struct UnhandledThrowRule: OptInRule, ConfigurationProviderRule {
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -28,5 +27,15 @@ public struct UnhandledThrowRule: ASTRule, ConfigurationProviderRule {
             "func f() throws -> Any { }\n"
         ]
     )
+
+    public func validate(file: File) -> [StyleViolation] {
+        let pattern = "/(func).+(throws)*$.+\\}/gm"
+
+        let matches = file.rangesAndTokens(matching: pattern)
+
+        print("TESTING UnhandledThrowRule", matches)
+
+        return []
+    }
 
 }

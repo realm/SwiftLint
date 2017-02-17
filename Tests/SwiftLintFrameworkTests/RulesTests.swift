@@ -350,6 +350,10 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
+    func testUnhandledThrow() {
+        verifyRule(UnhandledThrowRule.description)
+    }
+
 }
 
 extension RulesTests {
@@ -424,7 +428,8 @@ extension RulesTests {
             ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
-            ("testWeakDelegate", testWeakDelegate)
+            ("testWeakDelegate", testWeakDelegate),
+            ("testUnhandledThrow", testUnhandledThrow)
         ]
     }
 }

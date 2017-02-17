@@ -54,6 +54,10 @@
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Added `unhandled_throw` rule.  
+  [ArtSabintsev](https://github.com/ArtSabintsev)
+  [#1315](https://github.com/realm/SwiftLint/issues/1315)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  
@@ -244,7 +248,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1109](https://github.com/realm/SwiftLint/issues/1109)
 
-* Add `compiler_protocol_init` rule that flags usage of initializers 
+* Add `compiler_protocol_init` rule that flags usage of initializers
   declared in protocols used by the compiler such as `ExpressibleByArrayLiteral`
   that shouldn't be called directly. Instead, you should use a literal anywhere
   a concrete type conforming to the protocol is expected by the context.  
@@ -260,7 +264,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#51](https://github.com/realm/SwiftLint/issues/51)
 
-* Update `vertical_whitespace` rule to allow configuration of the number of 
+* Update `vertical_whitespace` rule to allow configuration of the number of
   consecutive empty lines before a violation using `max_empty_lines`.
   The default value is still 1 line.  
   [Aaron McTavish](https://github.com/aamctustwo)
@@ -286,7 +290,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#973](https://github.com/realm/SwiftLint/issues/973)
 
-* Add `unused_optional_binding` rule that will check for optional bindings 
+* Add `unused_optional_binding` rule that will check for optional bindings
   not being used.  
   [Rafael Machado](https://github.com/rakaramos/)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)

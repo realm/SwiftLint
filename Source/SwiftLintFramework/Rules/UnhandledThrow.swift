@@ -45,9 +45,7 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
             "func f() throws -> Any { }",
             "func f() throws -> Any {\n}",
             "func f() throws -> Any {\n \n}",
-            "func f() throws { var x = 0 }",
             "func f() throws {\n var x = 0 \n}",
-            "func f() throws -> Any { var x = 0 }",
             "func f() throws -> Any {\n var x = 0 \n}",
             "func f() throws {\n do {\n try b() \n} catch {\n \n} \n}",
             "func f() throws -> Any{\n do {\n try b() \n} catch {\n \n} \n}"

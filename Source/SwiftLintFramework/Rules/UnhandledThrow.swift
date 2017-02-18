@@ -15,10 +15,11 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public init() {}
 
+    //
     public static let description = RuleDescription(
         identifier: "unhandled_throw",
         name: "Unhandled Throw",
-        description: "When a throwing function does not explicitly handle a throw, the `throws` keyword can be removed.",
+        description: "The throwing function does not throw. The `throws` keyword can be removed.",
         nonTriggeringExamples: [
             "func f() throws",
             "func f() throws -> Any",

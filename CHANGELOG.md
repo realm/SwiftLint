@@ -9,6 +9,9 @@
 
 ##### Enhancements
 
+* Add lowercase and missing colon checks to the `mark` rule.
+  [Jason Moore](https://github.com/xinsight)
+ 
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  

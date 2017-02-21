@@ -46,7 +46,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//Mark: bad",
             "↓// Mark: bad",
             "↓// MARK bad",
-            "↓// MARK - bad",
+            "↓// MARK - bad"
         ],
         corrections: [
             "↓//MARK: comment": "// MARK: comment",
@@ -72,7 +72,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
 
     private let invalidLowercasePattern = "(?:mark:|Mark:)"
-    
+
     private let missingColonPattern = "(?:MARK[^:])"
 
     private var pattern: String {

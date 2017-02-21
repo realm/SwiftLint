@@ -11,6 +11,9 @@
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
 
+* Add lowercase and missing colon checks to the `mark` rule.  
+  [Jason Moore](https://github.com/xinsight)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -106,9 +109,10 @@
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
   [#56](https://github.com/realm/SwiftLint/issues/56)
-
-* Performance improvements to `generic_type_name`, `redundant_nil_coalescing`,
-  `mark`, `first_where` and `vertical_whitespace` rules.  
+ 
+* Performance improvements to `generic_type_name`,
+  `redundant_nil_coalescing`, `mark`, `first_where` and
+  `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `discarded_notification_center_observer` rule that warns when the result

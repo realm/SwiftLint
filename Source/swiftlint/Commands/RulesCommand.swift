@@ -42,27 +42,53 @@ struct RulesCommand: CommandProtocol {
         }
 
         let configuration = Configuration(commandLinePath: options.configurationFile)
-        print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
+        let rules = ruleList(for: options, configuration: configuration)
+
+        print(TextTable(ruleList: rules, configuration: configuration).render())
         return .success()
+    }
+
+    private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
+        guard options.filterEnabled else {
+            return masterRuleList
+        }
+
+        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleID, ruleType in
+            let configuredRule = configuration.rules.first { rule in
+                return type(of: rule).description.identifier == ruleID
+            }
+
+            guard configuredRule != nil else {
+                return nil
+            }
+
+            return ruleType
+        }
+
+        return RuleList(rules: filtered)
     }
 }
 
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
     fileprivate let configurationFile: String
+    fileprivate let filterEnabled: Bool
 
-    static func create(_ configurationFile: String) -> (_ ruleID: String) -> RulesOptions {
-        return { ruleID in
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile)
-        }
+    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ filterEnabled: Bool) -> RulesOptions {
+        return { ruleID in { filterEnabled in
+            // swiftlint:disable:next line_length
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile, filterEnabled: filterEnabled)
+        }}
     }
 
-    // swiftlint:disable:next line_length
     static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| configOption
             <*> mode <| Argument(defaultValue: "",
                                  usage: "the rule identifier to display description for")
+            <*> mode <| Switch(flag: "e",
+                               key: "enabled",
+                               usage: "only display enabled rules")
     }
 }
 

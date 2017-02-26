@@ -258,10 +258,6 @@ class RulesTests: XCTestCase {
         verifyRule(SyntacticSugarRule.description)
     }
 
-    func testTodo() {
-        verifyRule(TodoRule.description, commentDoesntViolate: false)
-    }
-
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)
@@ -411,7 +407,6 @@ extension RulesTests {
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
             ("testSyntacticSugar", testSyntacticSugar),
-            ("testTodo", testTodo),
             ("testTrailingNewline", testTrailingNewline),
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),

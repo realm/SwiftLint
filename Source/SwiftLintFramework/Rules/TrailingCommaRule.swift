@@ -12,7 +12,7 @@ import SourceKittenFramework
 private let missingTrailingCommaReason = "Multi-line collection literals should have trailing commas."
 private let extraTrailingCommaReason = "Collection literals should not have trailing commas."
 
-public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
+public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
 
     public init() {}
@@ -46,13 +46,21 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        if let (index, reason) = violationIndexAndReason(in: file, kind: kind, dictionary: dictionary) {
+            return violations(file: file, byteOffset: index, reason: reason)
+        } else {
+            return []
+        }
+    }
 
+    private func violationIndexAndReason(in file: File, kind: SwiftExpressionKind,
+                                dictionary: [String: SourceKitRepresentable]) -> (Int, String)? {
         let allowedKinds: [SwiftExpressionKind] = [.array, .dictionary]
 
         guard let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
             allowedKinds.contains(kind) else {
-                return []
+                return nil
         }
 
         let endPositions = dictionary.elements.flatMap { dictionary -> Int? in
@@ -65,7 +73,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }
 
         guard let lastPosition = endPositions.max(), bodyLength + bodyOffset >= lastPosition else {
-            return []
+            return nil
         }
 
         let contents = file.contents.bridge()
@@ -73,7 +81,7 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: lastPosition),
             configuration.mandatoryComma && startLine == endLine {
             // shouldn't trigger if mandatory comma style and is a single-line declaration
-            return []
+            return nil
         }
 
         let length = bodyLength + bodyOffset - lastPosition
@@ -83,19 +91,19 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         guard let commaIndex = trailingCommaIndex(contents: contentsAfterLastElement, file: file,
                                                   offset: lastPosition) else {
             guard configuration.mandatoryComma else {
-                return []
+                return nil
             }
 
-            return violations(file: file, byteOffset: lastPosition, reason: missingTrailingCommaReason)
+            return (lastPosition, missingTrailingCommaReason)
         }
 
         // trailing comma is present, which is a violation if mandatoryComma is false
         guard !configuration.mandatoryComma else {
-            return []
+            return nil
         }
 
         let violationOffset = lastPosition + commaIndex
-        return violations(file: file, byteOffset: violationOffset, reason: extraTrailingCommaReason)
+        return (violationOffset, extraTrailingCommaReason)
     }
 
     private func violations(file: File, byteOffset: Int, reason: String) -> [StyleViolation] {
@@ -120,5 +128,30 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
         }.last.flatMap {
             contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
+    }
+
+    public func correct(file: File) -> [Correction] {
+        let violatingIndexes = file.structure.dictionary.substructure.flatMap { sub -> Int? in
+            guard let kind = SwiftExpressionKind(rawValue: sub.kind ?? "") else { return nil }
+            return violationIndexAndReason(in: file, kind: kind, dictionary: sub)?.0
+        }
+
+        let adjustedIndexes = violatingIndexes.reduce([Int]()) { adjustedIndexes, element in
+            return adjustedIndexes + [element - adjustedIndexes.count]
+        }
+
+        var correctedContents = file.contents
+
+        adjustedIndexes.forEach {
+            let stringIndex = correctedContents.index(correctedContents.startIndex, offsetBy: $0)
+            correctedContents.remove(at: stringIndex)
+        }
+
+        file.write(correctedContents)
+
+        return adjustedIndexes.map {
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
+        }
     }
 }

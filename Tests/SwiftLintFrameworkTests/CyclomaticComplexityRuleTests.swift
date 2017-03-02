@@ -43,7 +43,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
         verifyRule(CyclomaticComplexityRule.description, commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testignoresCaseStatementsConfigurationEnabled() {
+    func testIgnoresCaseStatementsConfigurationEnabled() {
         let baseDescription = CyclomaticComplexityRule.description
         let triggeringExamples = [complexIfExample]
         var nonTriggeringExamples = baseDescription.nonTriggeringExamples
@@ -58,7 +58,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
-    func testignoresCaseStatementsConfigurationDisabled() {
+    func testIgnoresCaseStatementsConfigurationDisabled() {
         let baseDescription = CyclomaticComplexityRule.description
         var triggeringExamples = baseDescription.triggeringExamples
         triggeringExamples.append(complexSwitchExample)
@@ -73,4 +73,17 @@ class CyclomaticComplexityRuleTests: XCTestCase {
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
+}
+
+extension CyclomaticComplexityRuleTests {
+    static var allTests: [(String, (CyclomaticComplexityRuleTests) -> () throws -> Void)] {
+        return [
+            ("testCyclomaticComplexity",
+             testCyclomaticComplexity),
+            ("testIgnoresCaseStatementsConfigurationEnabled",
+             testIgnoresCaseStatementsConfigurationEnabled),
+            ("testIgnoresCaseStatementsConfigurationDisabled",
+             testIgnoresCaseStatementsConfigurationDisabled)
+        ]
+    }
 }

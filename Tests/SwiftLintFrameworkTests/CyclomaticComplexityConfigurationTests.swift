@@ -36,7 +36,7 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         XCTAssertFalse(configuration2.ignoresCaseStatements)
     }
 
-    func testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary() {
+    func testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary() throws {
         var configuration = CyclomaticComplexityConfiguration(warning: 0, error: 0)
 
         let warning1 = 10
@@ -52,21 +52,18 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         let config2: [String: Int] = ["warning": warning2, "error": error2]
         let config3: [String: Bool] = ["ignores_case_statements": false]
 
-        do {
-            try configuration.apply(configuration: config1)
-            XCTAssertEqual(configuration.length, length1)
-            XCTAssertTrue(configuration.ignoresCaseStatements)
+        try configuration.apply(configuration: config1)
+        XCTAssertEqual(configuration.length, length1)
+        XCTAssertTrue(configuration.ignoresCaseStatements)
 
-            try configuration.apply(configuration: config2)
-            XCTAssertEqual(configuration.length, length2)
-            XCTAssertTrue(configuration.ignoresCaseStatements)
+        try configuration.apply(configuration: config2)
+        XCTAssertEqual(configuration.length, length2)
+        XCTAssertTrue(configuration.ignoresCaseStatements)
 
-            try configuration.apply(configuration: config3)
-            XCTAssertEqual(configuration.length, length2)
-            XCTAssertFalse(configuration.ignoresCaseStatements)
-        } catch {
-            XCTFail()
-        }
+        try configuration.apply(configuration: config3)
+        XCTAssertEqual(configuration.length, length2)
+        XCTAssertFalse(configuration.ignoresCaseStatements)
+
     }
 
     func testCyclomaticComplexityConfigurationThrowsOnBadConfigValues() {

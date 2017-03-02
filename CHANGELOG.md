@@ -49,6 +49,7 @@
 * Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
   [Michael L. Welles](https://github.com/mlwelles)
   [#1298](https://github.com/realm/SwiftLint/issues/1298)
+
 * Add correctable `redundant_discardable_let` rule that warns when
   `let _ = foo()` is used to discard a result from a function instead of
   `_ = foo()`.  

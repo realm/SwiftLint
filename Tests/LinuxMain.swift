@@ -30,5 +30,7 @@ XCTMain([
     testCase(TrailingCommaRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(YamlParserTests.allTests),
-    testCase(YamlSwiftLintTests.allTests)
+    testCase(YamlSwiftLintTests.allTests),
+    testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(CyclomaticComplexityConfigurationTests.allTests)
 ])

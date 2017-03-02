@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeInterfaceRule: ASTRule, ConfigurationProviderRule {
+public struct TypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -23,8 +23,8 @@ public struct TypeInterfaceRule: ASTRule, ConfigurationProviderRule {
             "let myVar: Int = 0"
         ],
         triggeringExamples: [
-            "var myVar: ↓ = 0",
-            "let myVar: ↓ = 0"
+            "var myVar↓ = 0",
+            "let myVar↓ = 0"
         ]
     )
 

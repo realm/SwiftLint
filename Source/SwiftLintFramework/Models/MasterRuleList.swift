@@ -143,6 +143,7 @@ public let masterRuleList = RuleList(rules:
     TrailingSemicolonRule.self,
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
+    TypeInterfaceRule.self,
     TypeNameRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,

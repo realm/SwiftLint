@@ -424,7 +424,7 @@ extension RulesTests {
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate),
-            ("testTypeInterface", testTypeInterface())
+            ("testTypeInterface", testTypeInterface)
         ]
     }
 }

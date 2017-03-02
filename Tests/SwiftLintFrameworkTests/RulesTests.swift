@@ -351,7 +351,7 @@ class RulesTests: XCTestCase {
     }
 
     func testTypeInterface() {
-        verifyRule(TypeInterface.description)
+        verifyRule(TypeInterfaceRule.description)
     }
 
 }

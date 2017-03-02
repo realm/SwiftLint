@@ -116,7 +116,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             guard let paramOffset = param.offset,
                 let name = param.name,
                 name != "_",
-                let paramLength = param.typeName != nil ? name.bridge().length : param.length,
+                let paramLength = paramLength(from: param, for: .current),
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),
                 let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
@@ -159,6 +159,18 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             let range = NSRange(location: 0, length: length)
             return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
+    }
+
+    private func paramLength(from param: [String: SourceKitRepresentable], for version: SwiftVersion) -> Int? {
+        guard let name = param.name else { return nil }
+        switch version {
+        case .two, .twoPointThree:
+            let typeName = param.typeName?.replacingOccurrences(of: "`", with: "")
+            let hasActualType = typeName != name
+            return hasActualType ? name.bridge().length : param.length
+        case .three:
+            return param.typeName != nil ? name.bridge().length : param.length
+        }
     }
 
     private func violationRanges(in file: File,

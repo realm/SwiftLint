@@ -10,8 +10,9 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class RuleConfigurationsTests: XCTestCase {
+// swiftlint:disable type_body_length
 
+class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
@@ -66,6 +67,41 @@ class RuleConfigurationsTests: XCTestCase {
 
         nameConfig.maxLength.error = nil
         XCTAssertEqual(nameConfig.maxLengthThreshold, 17)
+    }
+
+    func testNestingConfigurationSetsCorrectly() {
+        let config = [
+            "type_level": [
+                "warning": 7, "error": 17
+            ],
+            "statement_level": [
+                "warning": 8, "error": 18
+            ]
+        ] as [String: Any]
+        var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
+                                                 typeLevelError: nil,
+                                                 statementLevelWarning: 0,
+                                                 statementLevelError: nil)
+        do {
+            try nestingConfig.apply(configuration: config)
+            XCTAssertEqual(nestingConfig.typeLevel.warning, 7)
+            XCTAssertEqual(nestingConfig.statementLevel.warning, 8)
+            XCTAssertEqual(nestingConfig.typeLevel.error, 17)
+            XCTAssertEqual(nestingConfig.statementLevel.error, 18)
+        } catch {
+            XCTFail()
+        }
+    }
+
+    func testNestingConfigurationThrowsOnBadConfig() {
+        let config = 17
+        var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
+                                                 typeLevelError: nil,
+                                                 statementLevelWarning: 0,
+                                                 statementLevelError: nil)
+        checkError(ConfigurationError.unknownConfiguration) {
+            try nestingConfig.apply(configuration: config)
+        }
     }
 
     func testSeverityConfigurationFromString() {
@@ -287,6 +323,10 @@ extension RuleConfigurationsTests {
                 testNameConfigurationMinLengthThreshold),
             ("testNameConfigurationMaxLengthThreshold",
                 testNameConfigurationMaxLengthThreshold),
+            ("testNestingConfigurationSetsCorrectly",
+                testNestingConfigurationSetsCorrectly),
+            ("testNestingConfigurationThrowsOnBadConfig",
+                testNestingConfigurationThrowsOnBadConfig),
             ("testSeverityConfigurationFromString",
                 testSeverityConfigurationFromString),
             ("testSeverityConfigurationFromDictionary",

@@ -60,6 +60,10 @@
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
 
+* Now `nesting` rule can be configured with a type and statement level.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+  [#1318](https://github.com/realm/SwiftLint/issues/1318)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

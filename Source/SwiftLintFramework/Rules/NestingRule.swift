@@ -49,11 +49,12 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                 ? ("Types", configuration.typeLevel) : ("Statements", configuration.statementLevel)
             if let severity = configuration.severity(with: targetLevel, for: level) {
                 let threshold = configuration.threshold(with: targetLevel, for: severity)
+                let pluralSuffix = threshold > 1 ? "s" : ""
                 violations.append(StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "\(targetName) should be nested at most \(threshold) levels deep"))
+                    reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"))
             }
         }
         violations.append(contentsOf: dictionary.substructure.flatMap { subDict in

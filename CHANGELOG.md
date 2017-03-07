@@ -60,6 +60,11 @@
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
 
+* Add `spaced_type_declarations` rule that warns if either the start or end
+  of a type declaration is not enclosed by two empty lines.  
+  [Diego Ernst](https://github.com/dernster)
+  [#1345](https://github.com/realm/SwiftLint/pull/1345)
+
 ##### Bug Fixes
 
 * Fix a false positive on `large_tuple` rule when using closures.  

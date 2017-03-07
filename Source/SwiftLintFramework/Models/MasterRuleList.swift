@@ -134,6 +134,7 @@ public let masterRuleList = RuleList(rules:
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
     SortedImportsRule.self,
+    SpacedTypeDeclarationsRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,

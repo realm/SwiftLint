@@ -241,6 +241,10 @@ class RulesTests: XCTestCase {
         verifyRule(SortedImportsRule.description)
     }
 
+    func testSpacedTypeDeclarationsRule() {
+        verifyRule(SpacedTypeDeclarationsRule.description)
+    }
+
     func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
     }
@@ -407,6 +411,7 @@ extension RulesTests {
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
             ("testShorthandOperator", testShorthandOperator),
             ("testSortedImports", testSortedImports),
+            ("testSpacedTypeDeclarationsRule", testSpacedTypeDeclarationsRule),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),

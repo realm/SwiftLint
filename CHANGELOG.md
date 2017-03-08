@@ -68,6 +68,9 @@
   [Hayashi Tatsuya](https://github.com/sora0077)
   [#1318](https://github.com/realm/SwiftLint/issues/1318)
 
+* Add experimental rules for Firebase SDK compatibility.
+  [Ibrahim Ulukaya](https://github.com/iulukaya)
+
 ##### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in

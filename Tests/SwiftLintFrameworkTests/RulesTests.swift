@@ -81,6 +81,38 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false)
     }
 
+    func testFirebaseConfigActivate() {
+        verifyRule(FirebaseConfigActivateRule.description)
+    }
+
+    func testFirebaseConfigDefaults() {
+        verifyRule(FirebaseConfigDefaultsRule.description)
+    }
+
+    func testFirebaseConfigFetch() {
+        verifyRule(FirebaseConfigFetchRule.description)
+    }
+
+    func testFirebaseCore() {
+        verifyRule(FirebaseCoreRule.description)
+    }
+
+    func testFirebaseDynamicLinksCustomSchemeURL() {
+        verifyRule(FirebaseDynamicLinksCustomSchemeURLRule.description)
+    }
+
+    func testFirebaseDynamicLinksUniversalLink() {
+        verifyRule(FirebaseDynamicLinksUniversalLinkRule.description)
+    }
+
+    func testFirebaseDynamicLinksSchemeURL() {
+        verifyRule(FirebaseDynamicLinksSchemeURLRule.description)
+    }
+
+    func testFirebaseInvites() {
+        verifyRule(FirebaseInvitesRule.description)
+    }
+
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }
@@ -368,6 +400,14 @@ extension RulesTests {
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
             ("testFileLength", testFileLength),
+            ("testFirebaseConfigActivate", testFirebaseConfigActivate),
+            ("testFirebaseConfigDefaults", testFirebaseConfigDefaults),
+            ("testFirebaseConfigFetch", testFirebaseConfigFetch),
+            ("testFirebaseCore", testFirebaseCore),
+            ("testFirebaseDynamicLinksCustomSchemeURL", testFirebaseDynamicLinksCustomSchemeURL),
+            ("testFirebaseDynamicLinksUniversalLink", testFirebaseDynamicLinksUniversalLink),
+            ("testFirebaseDynamicLinksSchemeURL", testFirebaseDynamicLinksSchemeURL),
+            ("testFirebaseInvites", testFirebaseInvites),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),

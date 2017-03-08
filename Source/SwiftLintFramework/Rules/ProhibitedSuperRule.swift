@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
+
     public var configuration = ProhibitedSuperConfiguration()
 
     public init() {}
@@ -66,4 +67,5 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                                location: Location(file: file, byteOffset: offset),
                                reason: "Method '\(name)' should not call to super function")]
     }
+
 }

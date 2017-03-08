@@ -13,6 +13,7 @@ private let missingTrailingCommaReason = "Multi-line collection literals should 
 private let extraTrailingCommaReason = "Collection literals should not have trailing commas."
 
 public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = TrailingCommaConfiguration()
 
     public init() {}
@@ -121,4 +122,5 @@ public struct TrailingCommaRule: ASTRule, ConfigurationProviderRule {
             contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }
+
 }

@@ -357,6 +357,7 @@ class RulesTests: XCTestCase {
 }
 
 extension RulesTests {
+
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
         return [
             ("testClassDelegateProtocol", testClassDelegateProtocol),
@@ -432,4 +433,5 @@ extension RulesTests {
             ("testWeakDelegate", testWeakDelegate)
         ]
     }
+
 }

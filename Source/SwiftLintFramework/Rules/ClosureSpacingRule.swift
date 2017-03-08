@@ -112,4 +112,5 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
+
 }

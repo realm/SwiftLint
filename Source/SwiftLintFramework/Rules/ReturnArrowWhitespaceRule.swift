@@ -124,4 +124,5 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             NSRange(location: $0.location + 1, length: $0.length - 1)
         }
     }
+
 }

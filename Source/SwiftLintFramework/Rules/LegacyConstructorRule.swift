@@ -131,4 +131,5 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         ]
         return file.correct(legacyRule: self, patterns: patterns)
     }
+
 }

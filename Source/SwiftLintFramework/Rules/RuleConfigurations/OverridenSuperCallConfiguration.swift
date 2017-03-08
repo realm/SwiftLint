@@ -9,6 +9,7 @@
 import Foundation
 
 public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
+
     var defaultIncluded = [
         //NSObject
         "awakeFromNib()",
@@ -91,6 +92,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         names = names.filter { !excluded.contains($0) }
         return names
     }
+
 }
 
 public func == (lhs: OverridenSuperCallConfiguration,

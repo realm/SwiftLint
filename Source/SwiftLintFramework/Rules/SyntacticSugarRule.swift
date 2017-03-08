@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

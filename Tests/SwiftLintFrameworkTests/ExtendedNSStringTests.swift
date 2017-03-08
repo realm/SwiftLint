@@ -29,13 +29,16 @@ class ExtendedNSStringTests: XCTestCase {
             XCTFail("NSString.lineAndCharacterForByteOffset should return non-nil tuple.")
         }
     }
+
 }
 
 extension ExtendedNSStringTests {
+
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] {
         return [
             ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters",
                 testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
         ]
     }
+
 }

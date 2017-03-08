@@ -72,13 +72,16 @@ class LineLengthRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_urls": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
+
 }
 
 extension LineLengthRuleTests {
+
     static var allTests: [(String, (LineLengthRuleTests) -> () throws -> Void)] {
         return [
             ("testLineLength", testLineLength),
             ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled)
         ]
     }
+
 }

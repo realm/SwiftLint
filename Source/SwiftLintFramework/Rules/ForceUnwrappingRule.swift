@@ -171,4 +171,5 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         }
         return false
     }
+
 }

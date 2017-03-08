@@ -67,6 +67,7 @@ private func render(locations: [Location], in contents: String) -> String {
 }
 
 extension Configuration {
+
     fileprivate func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
@@ -105,12 +106,15 @@ extension Configuration {
             XCTFail("couldn't read file at path '\(path)': \(error)")
         }
     }
+
 }
 
 extension String {
+
     fileprivate func toStringLiteral() -> String {
         return "\"" + replacingOccurrences(of: "\n", with: "\\n") + "\""
     }
+
 }
 
 internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
@@ -273,4 +277,5 @@ extension XCTestCase {
             XCTFail("Wrong error caught")
         }
     }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
+
     public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
 
     public init() {}
@@ -153,4 +154,5 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         return file.contents.bridge().substringWithByteRange(start: token.offset,
                                                              length: token.length)
     }
+
 }

@@ -102,9 +102,11 @@ class CustomRulesTests: XCTestCase {
     func getTestTextFile() -> File {
         return File(path: "\(bundlePath)/test.txt")!
     }
+
 }
 
 extension CustomRulesTests {
+
     static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
         return [
             ("testCustomRuleConfigurationSetsCorrectly",
@@ -121,4 +123,5 @@ extension CustomRulesTests {
                 testCustomRulesIncludedExcludesFile)
         ]
     }
+
 }

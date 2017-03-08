@@ -100,9 +100,11 @@ class FileHeaderRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
                    skipCommentTests: true)
     }
+
 }
 
 extension FileHeaderRuleTests {
+
     static var allTests: [(String, (FileHeaderRuleTests) -> () throws -> Void)] {
         return [
             ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration),
@@ -112,4 +114,5 @@ extension FileHeaderRuleTests {
             ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern)
         ]
     }
+
 }

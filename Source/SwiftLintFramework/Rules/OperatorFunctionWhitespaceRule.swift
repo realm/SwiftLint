@@ -48,4 +48,5 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
                 location: Location(file: file, characterOffset: range.location))
         }
     }
+
 }

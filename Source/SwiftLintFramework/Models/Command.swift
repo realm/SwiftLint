@@ -9,7 +9,9 @@
 import Foundation
 
 #if !os(Linux)
+
 private extension Scanner {
+
     func scanUpToString(_ string: String) -> String? {
         var result: NSString? = nil
         let success = scanUpTo(string, into: &result)
@@ -27,11 +29,15 @@ private extension Scanner {
         }
         return nil
     }
+
 }
+
 #endif
 
 public struct Command {
+
     public enum Action: String {
+
         case enable
         case disable
 
@@ -41,12 +47,15 @@ public struct Command {
             case .disable: return .enable
             }
         }
+
     }
 
     public enum Modifier: String {
+
         case previous
         case this
         case next
+
     }
 
     internal let action: Action
@@ -121,4 +130,5 @@ public struct Command {
             ]
         }
     }
+
 }

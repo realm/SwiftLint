@@ -31,4 +31,5 @@ public struct ForceCastRule: ConfigurationProviderRule {
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
+
 }

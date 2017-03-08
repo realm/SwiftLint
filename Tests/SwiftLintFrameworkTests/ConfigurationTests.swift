@@ -14,6 +14,7 @@ import XCTest
 private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
 extension Configuration {
+
     fileprivate var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
@@ -21,6 +22,7 @@ extension Configuration {
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
     }
+
 }
 
 class ConfigurationTests: XCTestCase {
@@ -119,6 +121,7 @@ class ConfigurationTests: XCTestCase {
     }
 
     private class TestFileManager: LintableFileManager {
+
         func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
             case "directory": return ["directory/File1.swift", "directory/File2.swift",
@@ -131,6 +134,7 @@ class ConfigurationTests: XCTestCase {
             XCTFail("Should not be called with path \(path)")
             return []
         }
+
     }
 
     func testExcludedPaths() {
@@ -243,12 +247,15 @@ class ConfigurationTests: XCTestCase {
 // MARK: - ProjectMock Paths
 
 fileprivate extension String {
+
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
     }
+
 }
 
 extension XCTestCase {
+
     var bundlePath: String {
         #if SWIFT_PACKAGE
             return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
@@ -256,6 +263,7 @@ extension XCTestCase {
             return Bundle(for: type(of: self)).resourcePath!
         #endif
     }
+
 }
 
 fileprivate extension XCTestCase {
@@ -299,9 +307,11 @@ fileprivate extension XCTestCase {
     var projectMockSwift3: String {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
+
 }
 
 extension ConfigurationTests {
+
     static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
         return [
             ("testInit", testInit),
@@ -330,4 +340,5 @@ extension ConfigurationTests {
             ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
         ]
     }
+
 }

@@ -274,9 +274,11 @@ class RuleConfigurationsTests: XCTestCase {
             XCTFail()
         }
     }
+
 }
 
 extension RuleConfigurationsTests {
+
     static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
         return [
             ("testNameConfigurationSetsCorrectly",
@@ -319,4 +321,5 @@ extension RuleConfigurationsTests {
                 testOverridenSuperCallConfigurationFromDictionary)
         ]
     }
+
 }

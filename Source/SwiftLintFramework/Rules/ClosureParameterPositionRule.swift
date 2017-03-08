@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -92,4 +93,5 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
                                   location: Location(file: file, byteOffset: paramOffset))
         }
     }
+
 }

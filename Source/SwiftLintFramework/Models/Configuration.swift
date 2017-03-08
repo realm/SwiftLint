@@ -12,6 +12,7 @@ import SourceKittenFramework
 private let fileManager = FileManager.default
 
 private enum ConfigurationKey: String {
+
     case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
     case enabledRules = "enabled_rules" // deprecated in favor of optInRules
@@ -23,9 +24,11 @@ private enum ConfigurationKey: String {
     case useNestedConfigs = "use_nested_configs" // deprecated
     case warningThreshold = "warning_threshold"
     case whitelistRules = "whitelist_rules"
+
 }
 
 public struct Configuration: Equatable {
+
     public static let fileName = ".swiftlint.yml"
     public let included: [String]             // included
     public let excluded: [String]             // excluded
@@ -216,6 +219,7 @@ public struct Configuration: Equatable {
         }
         return self
     }
+
 }
 
 private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [String]) -> [String] {
@@ -310,6 +314,7 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 // MARK: - Nested Configurations Extension
 
 extension Configuration {
+
     fileprivate func configuration(forPath path: String) -> Configuration {
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
@@ -336,6 +341,7 @@ extension Configuration {
     internal func merge(with configuration: Configuration) -> Configuration {
         return configuration
     }
+
 }
 
 // Mark - == Implementation

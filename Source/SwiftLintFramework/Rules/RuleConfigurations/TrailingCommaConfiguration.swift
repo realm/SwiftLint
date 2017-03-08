@@ -9,6 +9,7 @@
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var mandatoryComma: Bool
 
@@ -31,6 +32,7 @@ public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
+
 }
 
 public func == (lhs: TrailingCommaConfiguration,

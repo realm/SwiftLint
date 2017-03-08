@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -91,4 +92,5 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
                            location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

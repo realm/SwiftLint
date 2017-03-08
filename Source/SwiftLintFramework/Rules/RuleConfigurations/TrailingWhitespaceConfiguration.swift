@@ -9,6 +9,7 @@
 import Foundation
 
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
+
     var severityConfiguration = SeverityConfiguration(.warning)
     var ignoresEmptyLines = false
     var ignoresComments = true
@@ -36,6 +37,7 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
+
 }
 
 public func == (lhs: TrailingWhitespaceConfiguration,

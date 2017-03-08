@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = NameConfiguration(minLengthWarning: 1,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 20,
@@ -192,9 +193,11 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
         return []
     }
+
 }
 
 extension String {
+
     fileprivate func split(separator: String) -> [(String, NSRange)] {
         let separatorLength = separator.bridge().length
         var previousEndOffset = 0
@@ -221,4 +224,5 @@ extension String {
         let trimmedRange = match.rangeAt(1)
         return (bridged.substring(with: trimmedRange), trimmedRange)
     }
+
 }

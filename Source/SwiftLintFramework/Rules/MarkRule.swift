@@ -144,4 +144,5 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }
+
 }

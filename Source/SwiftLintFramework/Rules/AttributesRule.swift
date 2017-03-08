@@ -10,11 +10,14 @@ import Foundation
 import SourceKittenFramework
 
 private enum AttributesRuleError: Error {
+
     case unexpectedBlankLine
     case moreThanOneAttributeInSameLine
+
 }
 
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
+
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
@@ -314,4 +317,5 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
         return attributes.filter { !blacklist.contains($0) }
     }
+
 }

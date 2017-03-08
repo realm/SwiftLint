@@ -86,9 +86,11 @@ class LinterCacheTests: XCTestCase {
 
         XCTAssertNil(cachedViolations)
     }
+
 }
 
 extension LinterCacheTests {
+
     static var allTests: [(String, (LinterCacheTests) -> () throws -> Void)] {
         return [
             ("testInitThrowsWhenUsingDifferentVersion", testInitThrowsWhenUsingDifferentVersion),
@@ -101,4 +103,5 @@ extension LinterCacheTests {
             ("testParsesViolationsWithEmptyViolations", testParsesViolationsWithEmptyViolations)
         ]
     }
+
 }

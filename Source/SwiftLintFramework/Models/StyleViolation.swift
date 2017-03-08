@@ -7,6 +7,7 @@
 //
 
 public struct StyleViolation: CustomStringConvertible, Equatable {
+
     public let ruleDescription: RuleDescription
     public let severity: ViolationSeverity
     public let location: Location
@@ -22,6 +23,7 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
         self.location = location
         self.reason = reason ?? ruleDescription.description
     }
+
 }
 
 // MARK: Equatable

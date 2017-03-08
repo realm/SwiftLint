@@ -10,8 +10,10 @@ import Foundation
 import SourceKittenFramework
 
 private enum ColonKind {
+
     case type
     case dictionary
+
 }
 
 public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
@@ -167,6 +169,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
         return (violations + dictViolations).sorted { $0.range.location < $1.range.location }
     }
+
 }
 
 // MARK: Type Colon Rule
@@ -207,6 +210,7 @@ extension ColonRule {
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }
+
 }
 
 // MARK: Dictionary Colon Rule
@@ -291,4 +295,5 @@ extension ColonRule {
             return NSRange(location: location, length: length)
         }
     }
+
 }

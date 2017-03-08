@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityLevelsConfiguration(warning: 40, error: 100)
 
     public init() {}
@@ -45,4 +46,5 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         }
         return []
     }
+
 }

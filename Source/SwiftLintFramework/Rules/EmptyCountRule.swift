@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
+
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -39,4 +40,5 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
+
 }

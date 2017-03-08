@@ -9,10 +9,13 @@
 import Foundation
 
 public protocol LintableFileManager {
+
     func filesToLint(inPath: String, rootDirectory: String?) -> [String]
+
 }
 
 extension FileManager: LintableFileManager {
+
     public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
         let rootPath = rootDirectory ?? currentDirectoryPath
         let absolutePath = path.bridge()
@@ -31,4 +34,5 @@ extension FileManager: LintableFileManager {
             return nil
         } ?? []
     }
+
 }

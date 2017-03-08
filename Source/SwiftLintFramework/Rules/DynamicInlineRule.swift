@@ -78,4 +78,5 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
         .functionOperator,
         .functionSubscript
     ]
+
 }

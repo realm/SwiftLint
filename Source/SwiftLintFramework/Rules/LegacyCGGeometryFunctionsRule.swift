@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -134,4 +135,5 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         ]
         return file.correct(legacyRule: self, patterns: patterns)
     }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -122,6 +123,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         file.write(contents)
         return corrections
     }
+
 }
 
 extension String {
@@ -154,4 +156,5 @@ extension String {
 
         return correctedString
     }
+
 }

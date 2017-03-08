@@ -9,6 +9,7 @@
 import Foundation
 
 extension CharacterSet {
+
     func isSuperset(ofCharactersIn string: String) -> Bool {
         #if os(Linux)
             // workaround for https://bugs.swift.org/browse/SR-3485
@@ -23,13 +24,16 @@ extension CharacterSet {
             return isSuperset(of: otherSet)
         #endif
     }
+
 }
 
 extension Character {
+
     fileprivate var unicodeScalar: UnicodeScalar {
         let characterString = String(self)
         let scalars = characterString.unicodeScalars
 
         return scalars[scalars.startIndex]
     }
+
 }

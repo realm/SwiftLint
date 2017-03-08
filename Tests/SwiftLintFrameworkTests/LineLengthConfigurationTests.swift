@@ -11,6 +11,7 @@ import SourceKittenFramework
 import XCTest
 
 class LineLengthConfigurationTests: XCTestCase {
+
     func testLineLengthConfigurationInitializerSetsLength() {
         let warning = 100
         let error = 150
@@ -191,9 +192,11 @@ class LineLengthConfigurationTests: XCTestCase {
                                                                .ignoreComments])
         XCTAssertTrue(configuration2 == configuration6)
     }
+
 }
 
 extension LineLengthConfigurationTests {
+
     static var allTests: [(String, (LineLengthConfigurationTests) -> () throws -> Void)] {
         return [
             ("testLineLengthConfigurationInitializerSetsLength",
@@ -214,4 +217,5 @@ extension LineLengthConfigurationTests {
              testLineLengthConfigurationCompares)
         ]
     }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
+
     public let configurationDescription = "N/A"
     public var configuration = SeverityConfiguration(.warning)
 
@@ -58,4 +59,5 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
     private func content(for token: SyntaxToken, file: File) -> String {
         return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
+
 }

@@ -47,9 +47,11 @@ class IntegrationTests: XCTestCase {
             }
         }
     }
+
 }
 
 extension String {
+
     func withStaticString(_ closure: (StaticString) -> Void) {
         withCString {
             let rawPointer = $0._rawValue
@@ -61,13 +63,16 @@ extension String {
             closure(staticString)
         }
     }
+
 }
 
 extension IntegrationTests {
+
     static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] {
         return [
             ("testSwiftLintLints", testSwiftLintLints),
             ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects)
         ]
     }
+
 }

@@ -10,6 +10,7 @@
 import XCTest
 
 #if !SWIFT_PACKAGE
+
 class Swift2RulesTests: XCTestCase {
 
     func testAttributes() {
@@ -72,5 +73,7 @@ class Swift2RulesTests: XCTestCase {
 
         verifyRule(description)
     }
+
 }
+
 #endif

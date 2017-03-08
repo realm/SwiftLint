@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
@@ -126,4 +127,5 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         // It seems that only reference types can be used as ImplicitlyUnwrappedOptional or Optional
         return referenceTypes.flatMap(expandToIncludeOptionals) + types + intTypes
     }
+
 }

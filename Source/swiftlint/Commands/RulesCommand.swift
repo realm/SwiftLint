@@ -28,6 +28,7 @@ private func print(ruleDescription desc: RuleDescription) {
 }
 
 struct RulesCommand: CommandProtocol {
+
     let verb = "rules"
     let function = "Display the list of rules and their identifiers"
 
@@ -67,9 +68,11 @@ struct RulesCommand: CommandProtocol {
 
         return RuleList(rules: filtered)
     }
+
 }
 
 struct RulesOptions: OptionsProtocol {
+
     fileprivate let ruleID: String?
     fileprivate let configurationFile: String
     fileprivate let filterEnabled: Bool
@@ -90,11 +93,13 @@ struct RulesOptions: OptionsProtocol {
                                key: "enabled",
                                usage: "only display enabled rules")
     }
+
 }
 
 // MARK: - SwiftyTextTable
 
 extension TextTable {
+
     init(ruleList: RuleList, configuration: Configuration) {
         let columns = [
             TextTableColumn(header: "identifier"),
@@ -119,4 +124,5 @@ extension TextTable {
             ])
         }
     }
+
 }

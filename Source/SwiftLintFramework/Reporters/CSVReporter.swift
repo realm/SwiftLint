@@ -9,6 +9,7 @@
 import Foundation
 
 extension String {
+
     fileprivate func escapedForCSV() -> String {
         let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
         if escapedString.contains(",") || escapedString.contains("\n") {
@@ -16,9 +17,11 @@ extension String {
         }
         return escapedString
     }
+
 }
 
 public struct CSVReporter: Reporter {
+
     public static let identifier = "csv"
     public static let isRealtime = false
 
@@ -50,4 +53,5 @@ public struct CSVReporter: Reporter {
             violation.ruleDescription.identifier
         ]
     }
+
 }

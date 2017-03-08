@@ -178,4 +178,5 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
                        location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

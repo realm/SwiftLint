@@ -7,6 +7,7 @@
 //
 
 public struct RuleDescription: Equatable {
+
     public let identifier: String
     public let name: String
     public let description: String
@@ -33,6 +34,7 @@ public struct RuleDescription: Equatable {
         self.corrections = corrections
         self.deprecatedAliases = deprecatedAliases
     }
+
 }
 
 // MARK: Equatable

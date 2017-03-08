@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
+
     internal func hasTrailingWhitespace() -> Bool {
         if isEmpty {
             return false
@@ -92,4 +93,5 @@ extension String {
         }
         return false
     }
+
 }

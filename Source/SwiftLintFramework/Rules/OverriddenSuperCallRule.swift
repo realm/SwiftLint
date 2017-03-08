@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
+
     public var configuration = OverridenSuperCallConfiguration()
 
     public init() {}
@@ -84,4 +85,5 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         }
         return []
     }
+
 }

@@ -10,12 +10,15 @@ import Dispatch
 import Foundation
 
 extension Array where Element: NSTextCheckingResult {
+
     func ranges() -> [NSRange] {
         return map { $0.range }
     }
+
 }
 
 extension Array where Element: Equatable {
+
     var unique: [Element] {
         var uniqueValues = [Element]()
         for item in self where !uniqueValues.contains(item) {
@@ -23,9 +26,11 @@ extension Array where Element: Equatable {
         }
         return uniqueValues
     }
+
 }
 
 extension Array {
+
     static func array(of obj: Any?) -> [Element]? {
         if let array = obj as? [Element] {
             return array
@@ -73,4 +78,5 @@ extension Array {
         }
         return result.sorted { $0.0 < $1.0 }.map { $0.1 }
     }
+
 }

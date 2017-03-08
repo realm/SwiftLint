@@ -9,6 +9,7 @@
 import SourceKittenFramework
 
 extension SyntaxKind {
+
     init(shortName: Swift.String) throws {
         let prefix = "source.lang.swift.syntaxtype."
         guard let kind = SyntaxKind(rawValue: prefix + shortName.lowercased()) else {
@@ -35,4 +36,5 @@ extension SyntaxKind {
                 .keyword, .number, .objectLiteral, .parameter, .placeholder, .string,
                 .stringInterpolationAnchor, .typeidentifier]
     }
+
 }

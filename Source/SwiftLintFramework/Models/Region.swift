@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct Region {
+
     let start: Location
     let end: Location
     let disabledRuleIdentifiers: Set<String>
@@ -37,4 +38,5 @@ public struct Region {
         let identifiers = type(of: rule).description.deprecatedAliases
         return disabledRuleIdentifiers.intersection(identifiers)
     }
+
 }

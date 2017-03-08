@@ -7,6 +7,7 @@
 //
 
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int
     private(set) var minimumFractionLength: Int?
@@ -52,4 +53,5 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
             lhs.minimumFractionLength == rhs.minimumFractionLength &&
             lhs.severityConfiguration == rhs.severityConfiguration
     }
+
 }

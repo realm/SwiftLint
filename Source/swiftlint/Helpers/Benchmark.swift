@@ -10,11 +10,14 @@ import Foundation
 import SourceKittenFramework
 
 struct BenchmarkEntry {
+
     let id: String // swiftlint:disable:this identifier_name
     let time: Double
+
 }
 
 struct Benchmark {
+
     private let name: String
     private var entries = [BenchmarkEntry]()
 
@@ -45,6 +48,7 @@ struct Benchmark {
         let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt")
         try? data?.write(to: url, options: [.atomic])
     }
+
 }
 
 private let numberFormatter: NumberFormatter = {

@@ -9,6 +9,7 @@
 import Foundation
 
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private var requiredString: String?
     private var requiredPattern: String?
@@ -72,6 +73,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
+
 }
 
 public func == (lhs: FileHeaderConfiguration,

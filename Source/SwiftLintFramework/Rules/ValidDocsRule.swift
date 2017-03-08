@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension File {
+
     fileprivate func invalidDocOffsets(in dictionary: [String: SourceKitRepresentable]) -> [Int] {
         let substructure = dictionary.substructure
         let substructureOffsets = substructure.flatMap(invalidDocOffsets)
@@ -32,6 +33,7 @@ extension File {
 
         return substructureOffsets + (hasViolation ? [offset] : [])
     }
+
 }
 
 func superfluousOrMissingThrowsDocumentation(_ declaration: String, comment: String) -> Bool {
@@ -237,6 +239,7 @@ public struct ValidDocsRule: ConfigurationProviderRule, OptInRule {
                 location: Location(file: file, byteOffset: $0))
         }
     }
+
 }
 
 private let warnValidDocsRuleDisabledOnce: Void = {

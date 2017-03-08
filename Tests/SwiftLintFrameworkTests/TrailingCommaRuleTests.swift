@@ -75,13 +75,16 @@ class TrailingCommaRuleTests: XCTestCase {
         let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
     }
+
 }
 
 extension TrailingCommaRuleTests {
+
     static var allTests: [(String, (TrailingCommaRuleTests) -> () throws -> Void)] {
         return [
             ("testTrailingCommaRuleWithDefaultConfiguration", testTrailingCommaRuleWithDefaultConfiguration),
             ("testTrailingCommaRuleWithMandatoryComma", testTrailingCommaRuleWithMandatoryComma)
         ]
     }
+
 }

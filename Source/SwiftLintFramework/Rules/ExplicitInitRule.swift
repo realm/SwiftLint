@@ -100,4 +100,5 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         file.write(contents)
         return corrections
     }
+
 }

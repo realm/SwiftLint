@@ -21,6 +21,7 @@ private func children(of dict: [String: SourceKitRepresentable],
 }
 
 public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -119,4 +120,5 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
             $0.kind == "source.lang.swift.structure.elem.init_expr"
         }
     }
+
 }

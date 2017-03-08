@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct Location: CustomStringConvertible, Comparable {
+
     public let file: String?
     public let line: Int?
     public let character: Int?
@@ -52,6 +53,7 @@ public struct Location: CustomStringConvertible, Comparable {
             character = nil
         }
     }
+
 }
 
 // MARK: Comparable

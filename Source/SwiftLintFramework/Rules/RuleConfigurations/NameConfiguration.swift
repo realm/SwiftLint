@@ -9,6 +9,7 @@
 import Foundation
 
 public struct NameConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription)"
@@ -51,6 +52,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
             self.excluded = Set(excluded)
         }
     }
+
 }
 
 public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
@@ -62,6 +64,7 @@ public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
 // MARK: - ConfigurationProviderRule extensions
 
 public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
+
     public func severity(forLength length: Int) -> ViolationSeverity? {
         if let minError = configuration.minLength.error, length < minError {
             return .error
@@ -73,4 +76,5 @@ public extension ConfigurationProviderRule where ConfigurationType == NameConfig
         }
         return nil
     }
+
 }

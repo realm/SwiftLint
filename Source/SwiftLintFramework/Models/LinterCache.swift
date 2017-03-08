@@ -10,12 +10,15 @@ import Foundation
 import SourceKittenFramework
 
 public enum LinterCacheError: Error {
+
     case invalidFormat
     case differentVersion
     case differentConfiguration
+
 }
 
 public final class LinterCache {
+
     private var cache: [String: Any]
     private let lock = NSLock()
 
@@ -95,9 +98,11 @@ public final class LinterCache {
             "reason": violation.reason
         ]
     }
+
 }
 
 extension StyleViolation {
+
     fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
         guard let severity = (cache["severity"] as? String).flatMap({ ViolationSeverity(rawValue: $0) }),
             let name = cache["type"] as? String,
@@ -116,4 +121,5 @@ extension StyleViolation {
 
         return violation
     }
+
 }

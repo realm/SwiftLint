@@ -9,6 +9,7 @@
 import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String {
         return severity.rawValue
     }
@@ -32,6 +33,7 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
     fileprivate func severity(fromString string: String) -> ViolationSeverity? {
         return ViolationSeverity(rawValue: string.lowercased())
     }
+
 }
 
 public func == (lhs: SeverityConfiguration, rhs: SeverityConfiguration) -> Bool {

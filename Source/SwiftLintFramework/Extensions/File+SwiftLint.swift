@@ -20,6 +20,7 @@ internal func regex(_ pattern: String,
 }
 
 extension File {
+
     internal func regions() -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<String>()

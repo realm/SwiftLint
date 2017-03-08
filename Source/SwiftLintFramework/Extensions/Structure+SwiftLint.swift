@@ -34,4 +34,5 @@ extension Structure {
         parse(dictionary)
         return results
     }
+
 }

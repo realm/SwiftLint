@@ -64,9 +64,11 @@ class AttributesRuleTests: XCTestCase {
         verifyRule(alwaysOnNewLineDescription,
                    ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
+
 }
 
 extension AttributesRuleTests {
+
     static var allTests: [(String, (AttributesRuleTests) -> () throws -> Void)] {
         return [
             ("testAttributesWithDefaultConfiguration", testAttributesWithDefaultConfiguration),
@@ -74,4 +76,5 @@ extension AttributesRuleTests {
             ("testAttributesWithAlwaysOnLineAbove", testAttributesWithAlwaysOnLineAbove)
         ]
     }
+
 }

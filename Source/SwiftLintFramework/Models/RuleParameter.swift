@@ -7,6 +7,7 @@
 //
 
 public struct RuleParameter<T: Equatable>: Equatable {
+
     public let severity: ViolationSeverity
     public let value: T
 
@@ -14,6 +15,7 @@ public struct RuleParameter<T: Equatable>: Equatable {
         self.severity = severity
         self.value = value
     }
+
 }
 
 // MARK: - Equatable

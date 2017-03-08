@@ -104,4 +104,5 @@ internal struct AttributesRuleExamples {
         "@objc\n\n @warn_unused_result\n ↓func a() -> Int",
         "@noreturn ↓func exit(_: Int)"
     ]
+
 }

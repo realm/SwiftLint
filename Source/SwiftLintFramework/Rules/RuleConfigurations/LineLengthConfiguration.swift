@@ -9,6 +9,7 @@
 import Foundation
 
 public struct LineLengthRuleOptions: OptionSet {
+
     public let rawValue: Int
 
     public init(rawValue: Int = 0) {
@@ -20,17 +21,21 @@ public struct LineLengthRuleOptions: OptionSet {
     public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
 
     public static let all: LineLengthRuleOptions = [.ignoreURLs, .ignoreFunctionDeclarations, .ignoreComments]
+
 }
 
 private enum ConfigurationKey: String {
+
     case warning = "warning"
     case error = "error"
     case ignoresURLs = "ignores_urls"
     case ignoresFunctionDeclarations = "ignores_function_declarations"
     case ignoresComments = "ignores_comments"
+
 }
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String {
         return length.consoleDescription +
                ", ignores urls: \(ignoresURLs)" +

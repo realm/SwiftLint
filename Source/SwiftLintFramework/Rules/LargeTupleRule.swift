@@ -10,12 +10,16 @@ import Foundation
 import SourceKittenFramework
 
 private enum LargeTupleRuleError: Error {
+
     case unbalencedParentheses
+
 }
 
 private enum RangeKind {
+
     case tuple
     case generic
+
 }
 
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {

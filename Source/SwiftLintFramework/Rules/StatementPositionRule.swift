@@ -88,6 +88,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             return uncuddledCorrect(file: file)
         }
     }
+
 }
 
 // Default Behaviors
@@ -129,10 +130,12 @@ private extension StatementPositionRule {
         file.write(contents)
         return corrections
     }
+
 }
 
 // Uncuddled Behaviors
 private extension StatementPositionRule {
+
     func uncuddledValidate(file: File) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).flatMap { range in
             return StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
@@ -229,4 +232,5 @@ private extension StatementPositionRule {
         file.write(contents)
         return corrections
     }
+
 }

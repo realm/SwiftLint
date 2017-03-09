@@ -28,6 +28,7 @@ XCTMain([
     testCase(RuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
+    testCase(TodoRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(YamlParserTests.allTests),
     testCase(YamlSwiftLintTests.allTests)

@@ -62,6 +62,11 @@
 
 ##### Bug Fixes
 
+* Fix crashes when accessing cached regular expressions when linting in
+  parallel.  
+  [JP Simard](https://github.com/jpsim)
+  [#1344](https://github.com/realm/SwiftLint/issues/1344)
+
 * Fix a false positive on `large_tuple` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1234](https://github.com/realm/SwiftLint/issues/1234)

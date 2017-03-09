@@ -14,6 +14,7 @@ public typealias NSTextCheckingResult = TextCheckingResult
 #endif
 
 private var regexCache = [RegexCacheKey: NSRegularExpression]()
+private let regexCacheLock = NSLock()
 
 private struct RegexCacheKey: Hashable {
     let pattern: String
@@ -32,6 +33,8 @@ extension NSRegularExpression {
     internal static func cached(pattern: String, options: Options? = nil) throws -> NSRegularExpression {
         let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
         let key = RegexCacheKey(pattern: pattern, options: options)
+        regexCacheLock.lock()
+        defer { regexCacheLock.unlock() }
         if let result = regexCache[key] {
             return result
         }

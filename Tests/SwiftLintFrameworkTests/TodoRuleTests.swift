@@ -39,7 +39,7 @@ extension TodoRuleTests {
     static var allTests: [(String, (TodoRuleTests) -> () throws -> Void)] {
         return [
             ("testTodo", testTodo),
-            ("testTodoMessage", testTodoMessage)
+            ("testTodoMessage", testTodoMessage),
             ("testFixMeMessage", testFixMeMessage)
         ]
     }

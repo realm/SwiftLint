@@ -28,7 +28,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",
-            "// MARK: -\n"
+            "// MARK: -\n",
+            "// BOOKMARK",
+            "//BOOKMARK",
+            "// BOOKMARKS"
         ],
         triggeringExamples: [
             "↓//MARK: bad",
@@ -46,6 +49,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//Mark: bad",
             "↓// Mark: bad",
             "↓// MARK bad",
+            "↓//MARK bad",
             "↓// MARK - bad"
         ],
         corrections: [
@@ -71,9 +75,9 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
 
-    private let invalidLowercasePattern = "(?:mark:|Mark:)"
+    private let invalidLowercasePattern = "(?:// ?[Mm]ark:)"
 
-    private let missingColonPattern = "(?:MARK[^:])"
+    private let missingColonPattern = "(?:// ?MARK[^:])"
 
     private var pattern: String {
         return [

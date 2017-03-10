@@ -98,4 +98,5 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         }
         return false
     }
+
 }

@@ -9,6 +9,7 @@
 import Foundation
 
 internal struct IdentifierNameRuleExamples {
+
     private static let commonNonTriggeringExamples = [
         "let myLet = 0",
         "var myVar = 0",
@@ -48,4 +49,5 @@ internal struct IdentifierNameRuleExamples {
     static let swift3TriggeringExamples = commonTriggeringExamples + [
         "enum Foo { case ↓MyEnum }"
     ]
+
 }

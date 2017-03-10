@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -105,4 +106,5 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         parse(dictionary: structure.dictionary)
         return results
     }
+
 }

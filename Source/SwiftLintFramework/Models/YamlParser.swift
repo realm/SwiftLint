@@ -11,8 +11,10 @@ import Yaml
 // MARK: - YamlParsingError
 
 internal enum YamlParserError: Error, Equatable {
+
     case yamlParsing(String)
     case yamlFlattening
+
 }
 
 internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
@@ -29,6 +31,7 @@ internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
 // MARK: - YamlParser
 
 public struct YamlParser {
+
     public static func parse(_ yaml: String) throws -> [String: Any] {
         do {
             if let dict = try Yaml.load(yaml).flatDictionary {
@@ -41,4 +44,5 @@ public struct YamlParser {
             throw error
         }
     }
+
 }

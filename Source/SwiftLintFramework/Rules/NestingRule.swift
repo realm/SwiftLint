@@ -64,4 +64,5 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         })
         return violations
     }
+
 }

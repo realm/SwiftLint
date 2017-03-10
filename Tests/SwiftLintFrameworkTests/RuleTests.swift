@@ -11,6 +11,7 @@ import SourceKittenFramework
 import XCTest
 
 struct RuleWithLevelsMock: ConfigurationProviderRule {
+
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "severity_level_mock",
@@ -18,11 +19,13 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
                                              description: "",
                                              deprecatedAliases: ["mock"])
     func validate(file: File) -> [StyleViolation] { return [] }
+
 }
 
 class RuleTests: XCTestCase {
 
     fileprivate struct RuleMock1: Rule {
+
         init() {}
         init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
@@ -30,9 +33,11 @@ class RuleTests: XCTestCase {
         func validate(file: File) -> [StyleViolation] {
             return []
         }
+
     }
 
     fileprivate struct RuleMock2: Rule {
+
         init() {}
         init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
@@ -40,15 +45,18 @@ class RuleTests: XCTestCase {
         func validate(file: File) -> [StyleViolation] {
             return []
         }
+
     }
 
     fileprivate struct RuleWithLevelsMock2: ConfigurationProviderRule {
+
         var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",
                                                  description: "")
         func validate(file: File) -> [StyleViolation] { return [] }
+
     }
 
     func testRuleIsEqualTo() {
@@ -125,9 +133,11 @@ class RuleTests: XCTestCase {
     func testDifferentSeverityLevelRulesNotEqual() {
         XCTAssertFalse(RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
     }
+
 }
 
 extension RuleTests {
+
     static var allTests: [(String, (RuleTests) -> () throws -> Void)] {
         return [
             ("testRuleIsEqualTo",
@@ -154,4 +164,5 @@ extension RuleTests {
                 testDifferentSeverityLevelRulesNotEqual)
         ]
     }
+
 }

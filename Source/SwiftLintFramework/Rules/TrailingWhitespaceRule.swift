@@ -95,4 +95,5 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
         return []
     }
+
 }

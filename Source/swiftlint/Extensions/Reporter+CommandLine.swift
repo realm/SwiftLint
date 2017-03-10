@@ -9,6 +9,7 @@
 import SwiftLintFramework
 
 extension Reporter {
+
     static func report(violations: [StyleViolation], realtimeCondition: Bool) {
         if isRealtime == realtimeCondition {
             let report = generateReport(violations)
@@ -17,6 +18,7 @@ extension Reporter {
             }
         }
     }
+
 }
 
 func reporterFrom(options: LintOptions, configuration: Configuration) -> Reporter.Type {

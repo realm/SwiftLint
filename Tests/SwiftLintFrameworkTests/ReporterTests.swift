@@ -110,9 +110,11 @@ class ReporterTests: XCTestCase {
         )
         XCTAssertEqual(result, expectedOutput)
     }
+
 }
 
 extension ReporterTests {
+
     static var allTests: [(String, (ReporterTests) -> () throws -> Void)] {
         return [
             ("testReporterFromString", testReporterFromString),
@@ -125,4 +127,5 @@ extension ReporterTests {
             ("testHTMLReporter", testHTMLReporter)
         ]
     }
+
 }

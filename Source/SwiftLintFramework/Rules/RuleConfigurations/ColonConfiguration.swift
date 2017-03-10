@@ -9,6 +9,7 @@
 import Foundation
 
 public struct ColonConfiguration: RuleConfiguration, Equatable {
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var flexibleRightSpacing = false
     private(set) var applyToDictionaries = true
@@ -38,4 +39,5 @@ public struct ColonConfiguration: RuleConfiguration, Equatable {
             lhs.flexibleRightSpacing == rhs.flexibleRightSpacing &&
             rhs.applyToDictionaries == rhs.applyToDictionaries
     }
+
 }

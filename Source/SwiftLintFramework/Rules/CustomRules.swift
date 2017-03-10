@@ -10,14 +10,17 @@ import Foundation
 import SourceKittenFramework
 
 private extension Region {
+
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(customRuleIdentifier)
     }
+
 }
 
 // MARK: - CustomRulesConfiguration
 
 public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String { return "user-defined" }
     public var customRuleConfigurations = [RegexConfiguration]()
 
@@ -34,6 +37,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
             customRuleConfigurations.append(ruleConfiguration)
         }
     }
+
 }
 
 public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
@@ -92,4 +96,5 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
             }
         }
     }
+
 }

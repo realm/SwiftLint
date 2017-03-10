@@ -80,9 +80,11 @@ class SourceKitCrashTests: XCTestCase {
         file.sourcekitdFailed = false
         file.assertHandler = nil
     }
+
 }
 
 extension SourceKitCrashTests {
+
     static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] {
         return [
             ("testAssertHandlerIsNotCalledOnNormalFile",
@@ -93,4 +95,5 @@ extension SourceKitCrashTests {
                 testRulesWithFileThatCrashedSourceKitService)
         ]
     }
+
 }

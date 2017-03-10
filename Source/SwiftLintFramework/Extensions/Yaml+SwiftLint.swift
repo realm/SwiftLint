@@ -10,6 +10,7 @@ import Foundation
 import Yaml
 
 extension Yaml {
+
     var flatDictionary: [Swift.String: Any]? {
         if let dict = dictionary {
             var newDict: [Swift.String: Any] = [:]
@@ -63,4 +64,5 @@ extension Yaml {
             return "Null"
         }
     }
+
 }

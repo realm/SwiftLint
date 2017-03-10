@@ -11,6 +11,7 @@ import Result
 import SwiftLintFramework
 
 struct VersionCommand: CommandProtocol {
+
     let verb = "version"
     let function = "Display the current version of SwiftLint"
 
@@ -18,4 +19,5 @@ struct VersionCommand: CommandProtocol {
         print(Version.current.value)
         return .success()
     }
+
 }

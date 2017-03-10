@@ -10,10 +10,12 @@ import Foundation
 import SourceKittenFramework
 
 extension File {
+
     fileprivate func violatingTrailingSemicolonRanges() -> [NSRange] {
         return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
+
 }
 
 public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
@@ -74,4 +76,5 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
+
 }

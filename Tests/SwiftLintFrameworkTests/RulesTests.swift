@@ -241,6 +241,10 @@ class RulesTests: XCTestCase {
         verifyRule(SortedImportsRule.description)
     }
 
+    func testSpacedTypeDeclarationsRule() {
+        verifyRule(SpacedTypeDeclarationsRule.description)
+    }
+
     func testStatementPosition() {
         verifyRule(StatementPositionRule.description)
     }
@@ -349,6 +353,7 @@ class RulesTests: XCTestCase {
 }
 
 extension RulesTests {
+
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
         return [
             ("testClassDelegateProtocol", testClassDelegateProtocol),
@@ -403,6 +408,7 @@ extension RulesTests {
             ("testReturnArrowWhitespace", testReturnArrowWhitespace),
             ("testShorthandOperator", testShorthandOperator),
             ("testSortedImports", testSortedImports),
+            ("testSpacedTypeDeclarationsRule", testSpacedTypeDeclarationsRule),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
@@ -422,4 +428,5 @@ extension RulesTests {
             ("testWeakDelegate", testWeakDelegate)
         ]
     }
+
 }

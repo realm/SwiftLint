@@ -7,6 +7,7 @@
 //
 
 public struct XcodeReporter: Reporter {
+
     public static let identifier = "xcode"
     public static let isRealtime = true
 
@@ -28,4 +29,5 @@ public struct XcodeReporter: Reporter {
             " (\(violation.ruleDescription.identifier))"
         ].joined()
     }
+
 }

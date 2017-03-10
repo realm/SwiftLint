@@ -9,6 +9,7 @@
 import Foundation
 
 public enum StatementModeConfiguration: String {
+
     case `default` = "default"
     case uncuddledElse = "uncuddled_else"
 
@@ -24,6 +25,7 @@ public enum StatementModeConfiguration: String {
 }
 
 public struct StatementConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String {
         return "(statement_mode) \(statementMode.rawValue), " +
             "(severity) \(severity.consoleDescription)"
@@ -49,6 +51,7 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
             try severity.apply(configuration: severityConfiguration)
         }
     }
+
 }
 
 public func == (lhs: StatementConfiguration, rhs: StatementConfiguration) -> Bool {

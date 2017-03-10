@@ -9,6 +9,7 @@
 import Foundation
 
 public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
+
     public var consoleDescription: String {
         let errorString: String
         if let errorValue = error {
@@ -49,6 +50,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
     }
+
 }
 
 public func == (lhs: SeverityLevelsConfiguration, rhs: SeverityLevelsConfiguration) -> Bool {

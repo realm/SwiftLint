@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -82,4 +83,5 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
                        location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

@@ -11,6 +11,7 @@ import Result
 import SwiftLintFramework
 
 struct AutoCorrectCommand: CommandProtocol {
+
     let verb = "autocorrect"
     let function = "Automatically correct warnings and errors"
 
@@ -36,9 +37,11 @@ struct AutoCorrectCommand: CommandProtocol {
             return .success()
         }
     }
+
 }
 
 struct AutoCorrectOptions: OptionsProtocol {
+
     let path: String
     let configurationFile: String
     let useScriptInputFiles: Bool
@@ -63,4 +66,5 @@ struct AutoCorrectOptions: OptionsProtocol {
                                defaultValue: false,
                                usage: "should reformat the Swift files")
     }
+
 }

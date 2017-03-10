@@ -105,4 +105,5 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
     private func kindsAreValid(_ kinds: [SyntaxKind]) -> Bool {
         return Set(kinds).isSubset(of: [.identifier, .keyword])
     }
+
 }

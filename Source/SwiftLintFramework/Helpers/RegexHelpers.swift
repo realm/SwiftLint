@@ -24,4 +24,5 @@ struct RegexHelpers {
 
     // Two 'variable or number'
     static let twoVariableOrNumber = "\(variableOrNumber),\(variableOrNumber)"
+
 }

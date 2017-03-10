@@ -7,6 +7,7 @@
 //
 
 public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var maxEmptyLines: Int
 
@@ -37,4 +38,5 @@ public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
         return lhs.maxEmptyLines == rhs.maxEmptyLines &&
             lhs.severityConfiguration == rhs.severityConfiguration
     }
+
 }

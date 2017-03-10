@@ -9,6 +9,7 @@
 import Foundation
 
 public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
+
     var severityConfiguration = SeverityConfiguration(.warning)
     var excluded = [String]()
     var included = ["*"]
@@ -65,6 +66,7 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
         names = names.filter { !excluded.contains($0) }
         return names
     }
+
 }
 
 public func == (lhs: ProhibitedSuperConfiguration,

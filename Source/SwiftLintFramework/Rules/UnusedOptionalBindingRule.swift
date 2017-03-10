@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -80,4 +81,5 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                           excludingSyntaxKinds: kinds,
                           range: range)
     }
+
 }

@@ -15,6 +15,7 @@ private let formatter: DateFormatter = {
 }()
 
 public struct HTMLReporter: Reporter {
+
     public static let identifier = "html"
     public static let isRealtime = false
 
@@ -167,4 +168,5 @@ public struct HTMLReporter: Reporter {
             "\t\t\t\t</tr>\n"
         ].joined()
     }
+
 }

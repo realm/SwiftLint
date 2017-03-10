@@ -74,4 +74,5 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
         return file.correct(legacyRule: self, patterns: wordBoundPatterns)
     }
+
 }

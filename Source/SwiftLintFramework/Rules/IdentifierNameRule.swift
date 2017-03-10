@@ -115,9 +115,11 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             return "Variable"
         }
     }
+
 }
 
 fileprivate extension String {
+
     var isViolatingCase: Bool {
         let secondIndex = characters.index(after: startIndex)
         let firstCharacter = substring(to: secondIndex)
@@ -136,4 +138,5 @@ fileprivate extension String {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
         return !operators.filter(hasPrefix).isEmpty
     }
+
 }

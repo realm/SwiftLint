@@ -9,6 +9,7 @@
 import Foundation
 
 public struct CheckstyleReporter: Reporter {
+
     public static let identifier = "checkstyle"
     public static let isRealtime = false
 
@@ -39,4 +40,5 @@ public struct CheckstyleReporter: Reporter {
             "\t</file>"
         ].joined()
     }
+
 }

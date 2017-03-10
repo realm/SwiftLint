@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -85,4 +86,5 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         let body = file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length)
         return body == "self"
     }
+
 }

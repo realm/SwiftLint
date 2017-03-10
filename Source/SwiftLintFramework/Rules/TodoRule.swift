@@ -20,6 +20,7 @@ extension SyntaxKind {
             .docCommentField
         ].contains(self)
     }
+
 }
 
 public struct TodoRule: ConfigurationProviderRule {
@@ -98,4 +99,5 @@ public struct TodoRule: ConfigurationProviderRule {
                                   reason: reason)
         }
     }
+
 }

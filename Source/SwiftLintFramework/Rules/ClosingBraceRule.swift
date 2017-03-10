@@ -12,9 +12,11 @@ import SourceKittenFramework
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 extension File {
+
     fileprivate func violatingClosingBraceRanges() -> [NSRange] {
         return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
+
 }
 
 public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
@@ -68,4 +70,5 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
                        location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

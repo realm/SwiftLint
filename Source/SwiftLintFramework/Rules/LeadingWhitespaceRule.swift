@@ -53,4 +53,5 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
+
 }

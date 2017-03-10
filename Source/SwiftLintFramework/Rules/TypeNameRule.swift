@@ -102,4 +102,5 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
         return []
     }
+
 }

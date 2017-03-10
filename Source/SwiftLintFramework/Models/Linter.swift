@@ -11,12 +11,15 @@ import Foundation
 import SourceKittenFramework
 
 private struct LintResult {
+
     let violations: [StyleViolation]
     let ruleTime: (id: String, time: Double)?
     let deprecatedToValidIDPairs: [(String, String)]
+
 }
 
 extension Rule {
+
     fileprivate func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
@@ -49,9 +52,11 @@ extension Rule {
         return LintResult(violations: enabledViolations, ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
+
 }
 
 public struct Linter {
+
     public let file: File
     private let rules: [Rule]
     private let cache: LinterCache?
@@ -137,4 +142,5 @@ public struct Linter {
         }
         return corrections
     }
+
 }

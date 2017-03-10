@@ -33,13 +33,16 @@ class VerticalWhitespaceRuleTests: XCTestCase {
         verifyRule(maxEmptyLinesDescription,
                    ruleConfiguration: ["max_empty_lines": 2])
     }
+
 }
 
 extension VerticalWhitespaceRuleTests {
+
     static var allTests: [(String, (VerticalWhitespaceRuleTests) -> () throws -> Void)] {
         return [
             ("testVerticalWhitespaceWithDefaultConfiguration", testVerticalWhitespaceWithDefaultConfiguration),
             ("testAttributesWithMaxEmptyLines", testAttributesWithMaxEmptyLines)
         ]
     }
+
 }

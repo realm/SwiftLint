@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
+
     public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
 
     public init() {}
@@ -67,4 +68,5 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func isPrivateLevel(identifier: String?) -> Bool {
         return identifier.flatMap(AccessControlLevel.init(identifier:))?.isPrivate ?? false
     }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -51,4 +52,5 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
                            location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

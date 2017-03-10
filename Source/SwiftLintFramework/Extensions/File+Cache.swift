@@ -34,6 +34,7 @@ internal typealias AssertHandler = () -> Void
 private var assertHandlers = [String: AssertHandler]()
 
 private struct RebuildQueue {
+
     private let lock = NSLock()
     private var queue = [Structure]()
     private var allDeclarationsByType = [String: [String]]()
@@ -75,11 +76,13 @@ private struct RebuildQueue {
         rebuildIfNecessary()
         return allDeclarationsByType
     }
+
 }
 
 private var queueForRebuild = RebuildQueue()
 
 private struct Cache<T> {
+
     private var values = [String: T]()
     private let factory: (File) -> T
     private let lock = NSLock()
@@ -123,6 +126,7 @@ private struct Cache<T> {
         block()
         lock.unlock()
     }
+
 }
 
 extension File {
@@ -219,4 +223,5 @@ extension File {
     internal static var allDeclarationsByType: [String: [String]] {
         return queueForRebuild.getAllDeclarationsByType()
     }
+
 }

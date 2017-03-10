@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct JSONReporter: Reporter {
+
     public static let identifier = "json"
     public static let isRealtime = false
 
@@ -32,4 +33,5 @@ public struct JSONReporter: Reporter {
             "reason": violation.reason
         ]
     }
+
 }

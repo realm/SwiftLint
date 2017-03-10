@@ -109,4 +109,5 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         let range = NSRange(location: offset, length: length)
         return Set(file.syntaxMap.tokens(inByteRange: range).flatMap({ SyntaxKind(rawValue: $0.type) }))
     }
+
 }

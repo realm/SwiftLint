@@ -10,20 +10,24 @@ import Foundation
 import SourceKittenFramework
 
 private extension AccessControlLevel {
+
     init?(_ dictionary: [String: SourceKitRepresentable]) {
         guard let accessibility = dictionary.accessibility,
             let acl = AccessControlLevel(rawValue: accessibility) else { return nil }
         self = acl
     }
+
 }
 
 private extension Dictionary where Key: ExpressibleByStringLiteral {
+
     var superclass: String? {
         guard let kindString = self.kind,
             let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
             let className = inheritedTypes.first else { return nil }
         return className
     }
+
 }
 
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
@@ -149,4 +153,5 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                                location: Location(file: file, byteOffset: offset),
                                reason: configuration.message)]
     }
+
 }

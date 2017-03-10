@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -109,4 +110,5 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         let contents = file.contents.bridge()
         return contents.substringWithByteRange(start: token.offset, length: token.length) == "_"
     }
+
 }

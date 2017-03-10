@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule {
+
     public var configuration = LineLengthConfiguration(warning: 120, error: 200)
 
     public init() {}
@@ -126,6 +127,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
 }
 
 private extension String {
+
     var strippingURLs: String {
         let range = NSRange(location: 0, length: bridge().length)
         // Workaround for Linux until NSDataDetector is available
@@ -144,4 +146,5 @@ private extension String {
             return urlDetector.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: "")
         #endif
     }
+
 }

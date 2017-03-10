@@ -155,4 +155,5 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         }
         return []
     }
+
 }

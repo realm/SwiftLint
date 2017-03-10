@@ -9,6 +9,7 @@
 import Foundation
 
 extension NSRange {
+
     func intersects(_ range: NSRange) -> Bool {
         return NSIntersectionRange(self, range).length > 0
     }
@@ -19,4 +20,5 @@ extension NSRange {
         }
         return false
     }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -59,9 +60,11 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
         return []
     }
+
 }
 
 private struct ExpressibleByCompiler {
+
     private let protocolName: String
     let initCallNames: Set<String>
     private let arguments: [[String]]
@@ -145,4 +148,5 @@ private struct ExpressibleByCompiler {
                                                                    types: ["Dictionary", "DictionaryLiteral",
                                                                            "NSDictionary", "NSMutableDictionary"],
                                                                    arguments: [["dictionaryLiteral"]])
+
 }

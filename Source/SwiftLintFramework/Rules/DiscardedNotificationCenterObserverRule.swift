@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -59,4 +60,5 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
 
         return [offset]
     }
+
 }

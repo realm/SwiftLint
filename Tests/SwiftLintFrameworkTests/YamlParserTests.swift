@@ -26,9 +26,11 @@ class YamlParserTests: XCTestCase {
             _ = try YamlParser.parse("|\na")
         }
     }
+
 }
 
 extension YamlParserTests {
+
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] {
         return [
             ("testParseEmptyString", testParseEmptyString),
@@ -36,4 +38,5 @@ extension YamlParserTests {
             ("testParseInvalidStringThrows", testParseInvalidStringThrows)
         ]
     }
+
 }

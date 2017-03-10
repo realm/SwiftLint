@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -156,4 +157,5 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             return true
         }
     }
+
 }

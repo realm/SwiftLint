@@ -9,6 +9,7 @@
 import Foundation
 
 public struct JUnitReporter: Reporter {
+
     public static let identifier = "junit"
     public static let isRealtime = false
 
@@ -28,4 +29,5 @@ public struct JUnitReporter: Reporter {
                     "\t</testcase>"].joined()
             }).joined() + "\n</testsuite></testsuites>"
     }
+
 }

@@ -9,29 +9,37 @@
 import SourceKittenFramework
 
 public protocol Rule {
+
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
     static var description: RuleDescription { get }
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
     var configurationDescription: String { get }
+
 }
 
 extension Rule {
+
     public func isEqualTo(_ rule: Rule) -> Bool {
         return type(of: self).description == type(of: rule).description
     }
+
 }
 
 public protocol OptInRule: Rule {}
 
 public protocol ConfigurationProviderRule: Rule {
+
     associatedtype ConfigurationType: RuleConfiguration
     var configuration: ConfigurationType { get set }
+
 }
 
 public protocol CorrectableRule: Rule {
+
     func correct(file: File) -> [Correction]
+
 }
 
 public protocol SourceKitFreeRule: Rule {}
@@ -39,6 +47,7 @@ public protocol SourceKitFreeRule: Rule {}
 // MARK: - ConfigurationProviderRule conformance to Configurable
 
 public extension ConfigurationProviderRule {
+
     public init(configuration: Any) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)
@@ -54,6 +63,7 @@ public extension ConfigurationProviderRule {
     public var configurationDescription: String {
         return configuration.consoleDescription
     }
+
 }
 
 // MARK: - == Implementations

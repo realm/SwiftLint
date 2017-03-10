@@ -77,9 +77,11 @@ class FunctionBodyLengthRuleTests: XCTestCase {
         let config = makeConfig(nil, FunctionBodyLengthRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
     }
+
 }
 
 extension FunctionBodyLengthRuleTests {
+
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] {
         return [
             ("testFunctionBodyLengths",
@@ -90,4 +92,5 @@ extension FunctionBodyLengthRuleTests {
                 testFunctionBodyLengthsWithMultilineComments)
         ]
     }
+
 }

@@ -14,6 +14,7 @@ import SourceKittenFramework
 import SwiftLintFramework
 
 struct LintCommand: CommandProtocol {
+
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
 
@@ -106,9 +107,11 @@ struct LintCommand: CommandProtocol {
             location: Location(file: "", line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
     }
+
 }
 
 struct LintOptions: OptionsProtocol {
+
     let path: String
     let useSTDIN: Bool
     let configurationFile: String
@@ -151,4 +154,5 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
                                usage: "run all rules, even opt-in and disabled ones, ignoring `whitelist_rules`")
     }
+
 }

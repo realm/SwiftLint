@@ -17,6 +17,7 @@ private func example(_ type: String,
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
+
     public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
 
     public init() {}
@@ -68,4 +69,5 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         }
         return []
     }
+
 }

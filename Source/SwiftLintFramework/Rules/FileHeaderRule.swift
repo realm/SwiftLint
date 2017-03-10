@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
+
     public var configuration = FileHeaderConfiguration()
 
     public init() {}
@@ -109,4 +110,5 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             )
         }
     }
+
 }

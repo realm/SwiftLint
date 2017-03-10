@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
+
     private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {
         var count = 0
         for char in unicodeScalars.lazy.reversed() {
@@ -24,6 +25,7 @@ extension String {
     fileprivate func trailingNewlineCount() -> Int? {
         return countOfTrailingCharacters(in: .newlines)
     }
+
 }
 
 public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
@@ -79,4 +81,5 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
+
 }

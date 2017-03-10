@@ -137,4 +137,5 @@ extension Configuration {
     init(options: AutoCorrectOptions) {
         self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
     }
+
 }

@@ -9,13 +9,17 @@
 import Foundation
 
 public protocol RuleConfiguration {
+
     mutating func apply(configuration: Any) throws
     func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool
     var consoleDescription: String { get }
+
 }
 
 extension RuleConfiguration where Self: Equatable {
+
     public func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
+
 }

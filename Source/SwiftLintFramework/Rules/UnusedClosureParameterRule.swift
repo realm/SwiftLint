@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -184,4 +185,5 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                        location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

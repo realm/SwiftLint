@@ -67,9 +67,11 @@ class NumberSeparatorRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["minimum_fraction_length": 5])
     }
+
 }
 
 extension NumberSeparatorRuleTests {
+
     static var allTests: [(String, (NumberSeparatorRuleTests) -> () throws -> Void)] {
         return [
             ("testNumberSeparatorWithDefaultConfiguration", testNumberSeparatorWithDefaultConfiguration),
@@ -77,4 +79,5 @@ extension NumberSeparatorRuleTests {
             ("testNumberSeparatorWithMinimumFractionLength", testNumberSeparatorWithMinimumFractionLength)
         ]
     }
+
 }

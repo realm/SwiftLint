@@ -87,6 +87,7 @@
 		B58AEED61C492C7B00E901FD /* ForceUnwrappingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */; };
 		BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */; };
 		C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */; };
+		CF151E871E417B4E004D6880 /* SpacedTypeDeclarationsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF151E861E417B4E004D6880 /* SpacedTypeDeclarationsRule.swift */; };
 		D0AAAB5019FB0960007B24B3 /* SwiftLintFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D0D1217819E87B05005E4BAA /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
@@ -342,6 +343,7 @@
 		B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForceUnwrappingRule.swift; sourceTree = "<group>"; };
 		BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingWhitespaceConfiguration.swift; sourceTree = "<group>"; };
 		C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingCommaRuleTests.swift; sourceTree = "<group>"; };
+		CF151E861E417B4E004D6880 /* SpacedTypeDeclarationsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpacedTypeDeclarationsRule.swift; sourceTree = "<group>"; };
 		D0D1211B19E87861005E4BAA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; usesTabs = 0; };
 		D0D1212419E878CC005E4BAA /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		D0D1212619E878CC005E4BAA /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
@@ -883,6 +885,7 @@
 				1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */,
 				D47079AE1DFE520000027086 /* VoidReturnRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
+				CF151E861E417B4E004D6880 /* SpacedTypeDeclarationsRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -1292,6 +1295,7 @@
 				E816194C1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift in Sources */,
 				D4DABFD71E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift in Sources */,
 				3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */,
+				CF151E871E417B4E004D6880 /* SpacedTypeDeclarationsRule.swift in Sources */,
 				D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */,
 				4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */,
 				E86396C21BADAAE5002C9E88 /* Reporter.swift in Sources */,

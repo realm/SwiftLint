@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
+
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -120,4 +121,5 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
                        location: Location(file: file, characterOffset: $0))
         }
     }
+
 }

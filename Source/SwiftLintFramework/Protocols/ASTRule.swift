@@ -9,11 +9,14 @@
 import SourceKittenFramework
 
 public protocol ASTRule: Rule {
+
     associatedtype KindType: RawRepresentable
     func validate(file: File, kind: KindType, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
+
 }
 
 extension ASTRule where KindType.RawValue == String {
+
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structure.dictionary)
     }
@@ -30,4 +33,5 @@ extension ASTRule where KindType.RawValue == String {
             return violations
         }
     }
+
 }

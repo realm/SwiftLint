@@ -9,10 +9,13 @@
 import Foundation
 
 public enum RuleListError: Error {
+
     case duplicatedConfigurations(rule: Rule.Type)
+
 }
 
 public struct RuleList {
+
     public let list: [String: Rule.Type]
     private let aliases: [String: String]
 
@@ -71,6 +74,7 @@ public struct RuleList {
             rule.description.allIdentifiers
         }
     }
+
 }
 
 public let masterRuleList = RuleList(rules:
@@ -134,6 +138,7 @@ public let masterRuleList = RuleList(rules:
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
     SortedImportsRule.self,
+    SpacedTypeDeclarationsRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,

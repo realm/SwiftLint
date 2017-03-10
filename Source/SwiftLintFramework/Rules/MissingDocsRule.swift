@@ -26,6 +26,7 @@ private func inheritedMembers(for dictionary: [String: SourceKitRepresentable]) 
 }
 
 extension File {
+
     fileprivate func missingDocOffsets(in dictionary: [String: SourceKitRepresentable],
                                        acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
         if declarationOverrides(in: dictionary) {
@@ -49,9 +50,11 @@ extension File {
         }
         return substructureOffsets + [offset]
     }
+
 }
 
 public enum AccessControlLevel: String, CustomStringConvertible {
+
     case `private` = "source.lang.swift.accessibility.private"
     case `fileprivate` = "source.lang.swift.accessibility.fileprivate"
     case `internal` = "source.lang.swift.accessibility.internal"
@@ -91,6 +94,7 @@ public enum AccessControlLevel: String, CustomStringConvertible {
 }
 
 public struct MissingDocsRule: OptInRule {
+
     public init(configuration: Any) throws {
         guard let array = [String].array(of: configuration) else {
             throw ConfigurationError.unknownConfiguration
@@ -172,6 +176,7 @@ public struct MissingDocsRule: OptInRule {
         }
         return false
     }
+
 }
 
 private let warnMissingDocsRuleDisabledOnce: Void = {

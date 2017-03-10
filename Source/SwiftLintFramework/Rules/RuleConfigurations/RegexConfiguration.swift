@@ -10,6 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct RegexConfiguration: RuleConfiguration, Equatable {
+
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
@@ -59,6 +60,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
+
 }
 
 public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {

@@ -14,6 +14,8 @@ XCTMain([
     testCase(ColonRuleTests.allTests),
     testCase(ConfigurationTests.allTests),
     testCase(CustomRulesTests.allTests),
+    testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),

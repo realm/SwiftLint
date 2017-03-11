@@ -128,6 +128,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1304](https://github.com/realm/SwiftLint/issues/1304)
 
+* Fix false negative on `unused_closure_parameter` rule.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

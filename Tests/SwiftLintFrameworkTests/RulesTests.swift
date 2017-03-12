@@ -350,8 +350,8 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
-    func testTypeInterface() {
-        verifyRule(TypeInterfaceRule.description)
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
 }
@@ -429,7 +429,7 @@ extension RulesTests {
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate),
-            ("testTypeInterface", testTypeInterface)
+            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule)
         ]
     }
 }

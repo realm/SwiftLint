@@ -1,5 +1,5 @@
 //
-//  TypeInterfaceRule.swift
+//  ExplicitTypeInterfaceRule.swift
 //  SwiftLint
 //
 //  Created by Kim de Vos on 28/02/2017.
@@ -9,14 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "type_interface",
-        name: "Type Interface",
+        identifier: "explicit_type_interface",
+        name: "Explicit Type Interface",
         description: "Properties should have a type interface",
         nonTriggeringExamples: [
             "var myVar: Int? = 0",

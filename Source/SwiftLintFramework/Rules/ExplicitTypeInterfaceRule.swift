@@ -20,23 +20,30 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         description: "Properties should have a type interface",
         nonTriggeringExamples: [
             "var myVar: Int? = 0",
-            "let myVar: Int = 0"
+            "let myVar: Int? = 0",
+            "static var myVar: Int? = 0",
+            "class var myVar: Int? = 0",
         ],
         triggeringExamples: [
-            "var myVar↓ = 0",
-            "let myVar↓ = 0"
+            "var ↓myVar = 0",
+            "let ↓myVar = 0",
+            "static var ↓myVar = 0",
+            "class var ↓myVar = 0",
         ]
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .varInstance else {
-            return []
+        guard kind == .varInstance ||
+            kind == .varStatic ||
+            kind == .varClass ||
+            kind == .varLocal else {
+                return []
         }
 
         // Check if the property have a type
         if dictionary.typeName != nil {
-                return []
+            return []
         }
 
         // Violation found!

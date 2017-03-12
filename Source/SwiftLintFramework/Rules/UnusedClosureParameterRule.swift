@@ -37,7 +37,10 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
             "   lbl.backgroundColor = .red\n" +
             "   return lbl\n" +
-            "}(UILabel())\n"
+            "}(UILabel())\n",
+            "hoge(arg: num) { num in\n" +
+            "  return num\n" +
+            "}\n"
         ],
         triggeringExamples: [
             "[1, 2].map { ↓number in\n return 3\n}\n",
@@ -45,7 +48,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].map { ↓number in\n return 3 // number\n}\n",
             "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n",
             "[1, 2].something { number, ↓idx in\n return number\n}\n",
-            "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n"
+            "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
+            "hoge(arg: num) { ↓num in\n" +
+            "}\n"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -67,7 +72,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (↓a: Type, ↓b) -> Void in\n}\n":
                 "genericsFunc { (_: Type, _) -> Void in\n}\n",
             "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
-                "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n"
+                "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
+            "hoge(arg: num) { ↓num in\n}\n":
+                "hoge(arg: num) { _ in\n}\n"
         ]
     )
 

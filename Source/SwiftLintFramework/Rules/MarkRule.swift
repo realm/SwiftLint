@@ -24,7 +24,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "mark",
         name: "Mark",
-        description: "MARK comment should be in valid format. e.g. // MARK: ok",
+        description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",

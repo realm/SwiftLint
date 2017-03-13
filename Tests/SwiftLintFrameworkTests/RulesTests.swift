@@ -75,6 +75,10 @@ class RulesTests: XCTestCase {
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }
+    
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
+    }
 
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
@@ -345,11 +349,6 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-
-    func testExplicitTypeInterfaceRule() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
-    }
-
 }
 
 extension RulesTests {
@@ -371,6 +370,7 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
@@ -423,8 +423,7 @@ extension RulesTests {
             ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
             ("testSuperCall", testSuperCall),
-            ("testWeakDelegate", testWeakDelegate),
-            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule)
+            ("testWeakDelegate", testWeakDelegate)
         ]
     }
 }

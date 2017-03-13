@@ -64,6 +64,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
 
+* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#1298](https://github.com/realm/SwiftLint/issues/1298)
+
 * Add correctable `redundant_discardable_let` rule that warns when
   `let _ = foo()` is used to discard a result from a function instead of
   `_ = foo()`.  
@@ -73,7 +77,21 @@
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only
+  display enabled rules.  
+  [Natan Rolnik](https://github.com/NatanRolnik)
+  [#1270](https://github.com/realm/SwiftLint/issues/1270)
+
+* Now `nesting` rule can be configured with a type and statement level.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+  [#1318](https://github.com/realm/SwiftLint/issues/1318)
+
 ##### Bug Fixes
+
+* Fix crashes when accessing cached regular expressions when linting in
+  parallel.  
+  [JP Simard](https://github.com/jpsim)
+  [#1344](https://github.com/realm/SwiftLint/issues/1344)
 
 * Fix a false positive on `large_tuple` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -123,6 +141,13 @@
   closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1216](https://github.com/realm/SwiftLint/issues/1216)
+
+* Fix `todo` rule messages when the comment is not on a new line.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1304](https://github.com/realm/SwiftLint/issues/1304)
+
+* Fix false negative on `unused_closure_parameter` rule.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
 
 * Fix stale cache by using file modification dates instead of hashing whole
   files.  

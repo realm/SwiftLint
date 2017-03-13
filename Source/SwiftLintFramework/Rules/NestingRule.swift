@@ -10,7 +10,10 @@ import SourceKittenFramework
 
 public struct NestingRule: ASTRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = NestingConfiguration(typeLevelWarning: 1,
+                                                    typeLevelError: nil,
+                                                    statementLevelWarning: 5,
+                                                    statementLevelError: nil)
 
     public init() {}
 
@@ -42,16 +45,16 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         var violations = [StyleViolation]()
         let typeKinds = SwiftDeclarationKind.typeKinds()
         if let offset = dictionary.offset {
-            if level > 1 && typeKinds.contains(kind) {
-                violations.append(StyleViolation(ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
+            let (targetName, targetLevel) = typeKinds.contains(kind)
+                ? ("Types", configuration.typeLevel) : ("Statements", configuration.statementLevel)
+            if let severity = configuration.severity(with: targetLevel, for: level) {
+                let threshold = configuration.threshold(with: targetLevel, for: severity)
+                let pluralSuffix = threshold > 1 ? "s" : ""
+                violations.append(StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: severity,
                     location: Location(file: file, byteOffset: offset),
-                    reason: "Types should be nested at most 1 level deep"))
-            } else if level > 5 {
-                violations.append(StyleViolation(ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Statements should be nested at most 5 levels deep"))
+                    reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"))
             }
         }
         violations.append(contentsOf: dictionary.substructure.flatMap { subDict in

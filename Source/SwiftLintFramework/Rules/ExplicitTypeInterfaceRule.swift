@@ -11,9 +11,9 @@ import SourceKittenFramework
 
 public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    
+
     public init() {}
-    
+
     public static let description = RuleDescription(
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",
@@ -31,7 +31,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
             "class Foo {\n  ↓class var myClassVar = 0\n}\n"
         ]
     )
-    
+
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance ||
@@ -40,12 +40,12 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
             kind == .varClass else {
                 return []
         }
-        
+
         // Check if the property have a type
         if dictionary.typeName != nil {
             return []
         }
-        
+
         // Violation found!
         let location: Location
         if let offset = dictionary.offset {
@@ -53,7 +53,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         } else {
             location = Location(file: file.path)
         }
-        
+
         return [
             StyleViolation(
                 ruleDescription: type(of: self).description,

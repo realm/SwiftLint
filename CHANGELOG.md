@@ -9,7 +9,7 @@
 
 ##### Enhancements
 
-* Add lowercase and missing colon checks to the `mark` rule.
+* Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
  
 * Performance improvements to `generic_type_name`,

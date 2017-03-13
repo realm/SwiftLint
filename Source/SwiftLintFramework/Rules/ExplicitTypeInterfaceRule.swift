@@ -11,41 +11,41 @@ import SourceKittenFramework
 
 public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-
+    
     public init() {}
-
+    
     public static let description = RuleDescription(
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
         nonTriggeringExamples: [
-            "var myVar: Int? = 0",
-            "let myVar: Int? = 0",
-            "static var myVar: Int? = 0",
-            "class var myVar: Int? = 0",
+            "class Foo {\n  var myVar: Int? = 0\n}\n",
+            "class Foo {\n  let myVar: Int? = 0\n}\n",
+            "class Foo {\n  static var myVar: Int? = 0\n}\n",
+            "class Foo {\n  class var myVar: Int? = 0\n}\n"
         ],
         triggeringExamples: [
-            "var ↓myVar = 0",
-            "let ↓myVar = 0",
-            "static var ↓myVar = 0",
-            "class var ↓myVar = 0",
+            "class Foo {\n  ↓var myVar = 0\n\n}\n",
+            "class Foo {\n  ↓let mylet = 0\n\n}\n",
+            "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
+            "class Foo {\n  ↓class var myClassVar = 0\n}\n"
         ]
     )
-
+    
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance ||
+            kind == .varLocal ||
             kind == .varStatic ||
-            kind == .varClass ||
-            kind == .varLocal else {
+            kind == .varClass else {
                 return []
         }
-
+        
         // Check if the property have a type
         if dictionary.typeName != nil {
             return []
         }
-
+        
         // Violation found!
         let location: Location
         if let offset = dictionary.offset {
@@ -53,7 +53,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         } else {
             location = Location(file: file.path)
         }
-
+        
         return [
             StyleViolation(
                 ruleDescription: type(of: self).description,

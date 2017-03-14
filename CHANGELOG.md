@@ -64,6 +64,10 @@
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
 
+* Add `explicit_type_interface` rule that validates that the properties 
+  have a type interface  
+  [Kim de Vos](https://github.com/kimdv)
+  
 * Now `nesting` rule can be configured with a type and statement level.  
   [Hayashi Tatsuya](https://github.com/sora0077)
   [#1318](https://github.com/realm/SwiftLint/issues/1318)

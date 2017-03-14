@@ -75,7 +75,7 @@ class RulesTests: XCTestCase {
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }
-    
+
     func testExplicitTypeInterfaceRule() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }

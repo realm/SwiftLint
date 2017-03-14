@@ -32,34 +32,36 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     )
 
+    private static let allowedKinds: Set<SwiftDeclarationKind> = [.varInstance, .varLocal,
+                                                                  .varStatic, .varClass]
+
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .varInstance ||
-            kind == .varLocal ||
-            kind == .varStatic ||
-            kind == .varClass else {
+
+        guard ExplicitTypeInterfaceRule.allowedKinds.contains(kind),
+            !containsType(dictionary: dictionary),
+            let offset = dictionary.offset else {
                 return []
         }
 
-        // Check if the property have a type
-        if dictionary.typeName != nil {
-            return []
-        }
-
-        // Violation found!
-        let location: Location
-        if let offset = dictionary.offset {
-            location = Location(file: file, byteOffset: offset)
-        } else {
-            location = Location(file: file.path)
-        }
-
         return [
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: location
-            )
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
         ]
+    }
+
+    private func containsType(dictionary: [String: SourceKitRepresentable]) -> Bool {
+        if let typeName = dictionary.typeName {
+            switch SwiftVersion.current {
+            // on Swift 2.x, `key.typename` returns the `key.name` if there's no explicit type
+            case .two, .twoPointThree:
+                return typeName != dictionary.name
+            case .three:
+                return true
+            }
+        }
+
+        return false
     }
 }

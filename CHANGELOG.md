@@ -68,7 +68,8 @@
   [Hayashi Tatsuya](https://github.com/sora0077)
   [#1318](https://github.com/realm/SwiftLint/issues/1318)
 
-* Add `--lenient` CLI option to `lint` command. Facilitates running a lint task that doesn't fail a pipeline of other tasks.
+* Add `--lenient` CLI option to `lint` command. Facilitates running a 
+  lint task that doesn't fail a pipeline of other tasks.
   [aaroncrespo](https://github.com/aaroncrespo)
   [#1322](https://github.com/realm/SwiftLint/issues/1322)
 

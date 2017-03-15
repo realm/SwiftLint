@@ -72,6 +72,10 @@
   have an explicit type interface.  
   [Kim de Vos](https://github.com/kimdv)
 
+* Add `--lenient` CLI option to `lint` command. Facilitates running a lint task that doesn't fail a pipeline of other tasks.
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1322](https://github.com/realm/SwiftLint/issues/1322)
+
 ##### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in

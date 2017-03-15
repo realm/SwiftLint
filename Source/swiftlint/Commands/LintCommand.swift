@@ -63,12 +63,17 @@ struct LintCommand: CommandProtocol {
             cache?.save(options: options, configuration: configuration)
 
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
-                                             strictWithViolations: options.strict && !violations.isEmpty)
+                                             strictWithViolations: options.strict && !violations.isEmpty,
+                                             lenient: options.lenient)
         }
     }
 
     private static func successOrExit(numberOfSeriousViolations: Int,
-                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
+                                      strictWithViolations: Bool,
+                                      lenient: Bool) -> Result<(), CommandantError<()>> {
+        guard !lenient else {
+            return .success()
+        }
         if numberOfSeriousViolations > 0 {
             exit(2)
         } else if strictWithViolations {
@@ -113,6 +118,7 @@ struct LintOptions: OptionsProtocol {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
+    let lenient: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
@@ -122,10 +128,10 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
-        }}}}}}}}}}
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { lenient in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
+            }}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -137,6 +143,8 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| configOption
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
+            <*> mode <| Option(key: "lenient", defaultValue: false,
+                               usage: "succeed on errors")
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +

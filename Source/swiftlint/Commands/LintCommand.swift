@@ -43,9 +43,17 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
+            if options.lenient {
+                violations = violations.map {
+                    $0.severity == .error ? StyleViolation(ruleDescription: $0.ruleDescription,
+                                                           severity: .warning,
+                                                           location: $0.location,
+                                                           reason: $0.reason) : $0
+                }
+            }
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) {
+            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) && !options.lenient {
                 violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
                 reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
@@ -63,17 +71,12 @@ struct LintCommand: CommandProtocol {
             cache?.save(options: options, configuration: configuration)
 
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
-                                             strictWithViolations: options.strict && !violations.isEmpty,
-                                             lenient: options.lenient)
+                                             strictWithViolations: options.strict && !violations.isEmpty)
         }
     }
 
     private static func successOrExit(numberOfSeriousViolations: Int,
-                                      strictWithViolations: Bool,
-                                      lenient: Bool) -> Result<(), CommandantError<()>> {
-        guard !lenient else {
-            return .success()
-        }
+                                      strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
         if numberOfSeriousViolations > 0 {
             exit(2)
         } else if strictWithViolations {

@@ -67,7 +67,10 @@ private func render(locations: [Location], in contents: String) -> String {
 }
 
 extension Configuration {
-	fileprivate func assertCorrection(_ before: String, expected: String, file: StaticString = #file, line: UInt = #line) {
+    fileprivate func assertCorrection(_ before: String,
+                                      expected: String,
+                                      file: StaticString = #file,
+                                      line: UInt = #line) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
                 XCTFail("couldn't generate temporary path for assertCorrection()", file: file, line: line)
@@ -275,14 +278,14 @@ extension XCTestCase {
         }
     }
 
-	func checkError<T: Error & Equatable>(
-		_ error: T,
-		file: StaticString = #file,
-		line: UInt = #line,
-		closure: () throws -> Void) {
+    func checkError<T: Error & Equatable>(
+        _ error: T,
+        file: StaticString = #file,
+        line: UInt = #line,
+        closure: () throws -> Void) {
         do {
             try closure()
-			XCTFail("No error caught", file: file, line: line)
+            XCTFail("No error caught", file: file, line: line)
         } catch let rError as T {
             if error != rError {
                 XCTFail("Wrong error caught", file: file, line: line)

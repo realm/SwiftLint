@@ -17,7 +17,7 @@ private func example(_ type: String,
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
+    public var configuration = BodyLengthConfiguration(warning: 200, error: 350)
 
     public init() {}
 
@@ -43,7 +43,8 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         guard SwiftDeclarationKind.typeKinds().contains(kind) else {
             return []
         }
-        if let offset = dictionary.offset,
+        if !configuration.isExcluded(dictionary.name),
+            let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength {
             let startLine = file.contents.bridge().lineAndCharacter(forByteOffset: bodyOffset)

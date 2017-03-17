@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 40, error: 100)
+    public var configuration = BodyLengthConfiguration(warning: 40, error: 100)
 
     public init() {}
 
@@ -22,6 +22,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind),
+            !configuration.isExcluded(dictionary.name),
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,

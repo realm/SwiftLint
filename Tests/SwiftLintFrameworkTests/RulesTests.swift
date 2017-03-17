@@ -121,6 +121,10 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitGetterRule.description)
     }
 
+    func testImplicitlyUnwrappedOptional() {
+        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    }
+
     func testLargeTuple() {
         verifyRule(LargeTupleRule.description)
     }
@@ -378,6 +382,7 @@ extension RulesTests {
             ("testGenericTypeName", testGenericTypeName),
             ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
+            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),

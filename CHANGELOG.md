@@ -11,7 +11,7 @@
 
 * Add `implicitly_unwrapped_optional` rule
   that warns when using implicitly unwrapped optional,
-  except cases when this IUO is IBOutlet.
+  except cases when this IUO is IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou/)
 
 * Performance improvements to `generic_type_name`,

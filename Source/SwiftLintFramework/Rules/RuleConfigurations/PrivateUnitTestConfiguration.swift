@@ -13,7 +13,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
-    public var regex: NSRegularExpression?
+    public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var severityConfiguration = SeverityConfiguration(.warning)
 
@@ -22,8 +22,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     }
 
     public var consoleDescription: String {
-        let regexPattern = regex?.pattern ?? ""
-        return "\(severity.rawValue): \(regexPattern)"
+        return "\(severity.rawValue): \(regex.pattern)"
     }
 
     public var description: RuleDescription {

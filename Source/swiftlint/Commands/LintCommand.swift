@@ -43,17 +43,11 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
-            if options.lenient {
-                violations = violations.map {
-                    $0.severity == .error ? StyleViolation(ruleDescription: $0.ruleDescription,
-                                                           severity: .warning,
-                                                           location: $0.location,
-                                                           reason: $0.reason) : $0
-                }
-            }
+            violations = LintCommand.applyLeniency(options: options, violations: violations)
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) && !options.lenient {
+            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)
+                && !options.lenient {
                 violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
                 reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
@@ -67,9 +61,7 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
-
             cache?.save(options: options, configuration: configuration)
-
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                              strictWithViolations: options.strict && !violations.isEmpty)
         }
@@ -113,6 +105,18 @@ struct LintCommand: CommandProtocol {
             severity: .error,
             location: Location(file: "", line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
+    }
+
+    private static func applyLeniency(options: LintOptions, violations: [StyleViolation]) -> [StyleViolation] {
+        if !options.lenient {
+            return violations
+        }
+        return violations.map {
+            $0.severity == .error ? StyleViolation(ruleDescription: $0.ruleDescription,
+                                                   severity: .warning,
+                                                   location: $0.location,
+                                                   reason: $0.reason) : $0
+        }
     }
 }
 

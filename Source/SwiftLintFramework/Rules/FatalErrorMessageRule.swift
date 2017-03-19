@@ -2,7 +2,7 @@
 //  FatalErrorMessageRule.swift
 //  SwiftLint
 //
-//  Created by Kim de Vos on 03/18/2017.
+//  Created by Kim de Vos on 03/18/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 

@@ -36,6 +36,6 @@ public struct ColonConfiguration: RuleConfiguration, Equatable {
                            rhs: ColonConfiguration) -> Bool {
         return lhs.severityConfiguration == rhs.severityConfiguration &&
             lhs.flexibleRightSpacing == rhs.flexibleRightSpacing &&
-            rhs.applyToDictionaries == rhs.applyToDictionaries
+            lhs.applyToDictionaries == rhs.applyToDictionaries
     }
 }

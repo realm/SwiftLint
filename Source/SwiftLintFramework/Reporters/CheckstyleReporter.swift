@@ -19,13 +19,22 @@ public struct CheckstyleReporter: Reporter {
     public static func generateReport(_ violations: [StyleViolation]) -> String {
         return [
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
-            violations.map(generateForSingleViolation).joined(),
+            violations
+                .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
+                .map(generateForViolationFile).joined(),
             "\n</checkstyle>"
         ].joined()
     }
 
+    private static func generateForViolationFile(_ file: String, violations: [StyleViolation]) -> String {
+        return [
+            "\n\t<file name=\"", file, "\">\n",
+            violations.map(generateForSingleViolation).joined(),
+            "\t</file>"
+        ].joined()
+    }
+
     private static func generateForSingleViolation(_ violation: StyleViolation) -> String {
-        let file: String = (violation.location.file ?? "<nopath>").escapedForXML()
         let line: Int = violation.location.line ?? 0
         let col: Int = violation.location.character ?? 0
         let severity: String = violation.severity.rawValue
@@ -33,13 +42,11 @@ public struct CheckstyleReporter: Reporter {
         let identifier: String = violation.ruleDescription.identifier
         let source: String = identifier.isEmpty ? "" : "swiftlint.rules.\(identifier)".escapedForXML()
         return [
-            "\n\t<file name=\"", file, "\">\n",
             "\t\t<error line=\"\(line)\" ",
             "column=\"\(col)\" ",
             "severity=\"", severity, "\" ",
             "message=\"", reason, "\" ",
-            "source=\"\(source)\"/>\n",
-            "\t</file>"
+            "source=\"\(source)\"/>\n"
         ].joined()
     }
 }

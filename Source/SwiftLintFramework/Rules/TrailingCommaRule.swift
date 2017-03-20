@@ -142,41 +142,50 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         }?.location
     }
 
-    public func correct(file: File) -> [Correction] {
-        let violatingIndexes = file.structure.dictionary.substructure.flatMap { sub -> CommaRuleViolation? in
-            guard let kind = SwiftExpressionKind(rawValue: sub.kind ?? "") else { return nil }
-            return violationIndexAndReason(in: file, kind: kind, dictionary: sub)
-        }
+    private func violationRanges(in file: File,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+            var violations = violationRanges(in: file, dictionary: subDict)
 
-        let adjustedIndexes = violatingIndexes.reduce([CommaRuleViolation]()) { adjustedIndexes, element in
-            let correction: Int
-            switch element.reason {
-            case .missingTrailingCommaReason:
-                correction = adjustedIndexes.count
-            case .extraTrailingCommaReason:
-                correction = -adjustedIndexes.count
+            if let kindString = subDict.kind,
+                let kind = KindType(rawValue: kindString),
+                let index = violationIndexAndReason(in: file, kind: kind, dictionary: subDict)?.index {
+                violations += [NSRange(location: index, length: 1)]
             }
 
-            return adjustedIndexes + [(element.index + correction, element.reason)]
+            return violations
         }
+    }
+
+    public func correct(file: File) -> [Correction] {
+        let violations = violationRanges(in: file, dictionary: file.structure.dictionary)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self).map { $0.location }
+        if matches.isEmpty { return [] }
 
         var correctedContents = file.contents
+        let description = type(of: self).description
 
-        adjustedIndexes.forEach {
-            let stringIndex = correctedContents.index(correctedContents.startIndex, offsetBy: $0.index)
-            switch $0.reason {
-            case .missingTrailingCommaReason:
-                correctedContents.insert(",", at: stringIndex)
-            case .extraTrailingCommaReason:
-                correctedContents.remove(at: stringIndex)
+        let adjustedIndexes = matches.map { $0 }
+
+        matches.reversed().forEach { offset in
+            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
+            let correctedIndex = index.samePosition(in: correctedContents)!
+            if configuration.mandatoryComma {
+                correctedContents.characters.insert(Character(","), at: correctedIndex)
+            } else {
+                correctedContents.characters.remove(at: correctedIndex)
             }
         }
 
         file.write(correctedContents)
 
-        return adjustedIndexes.map {
-            Correction(ruleDescription: type(of: self).description,
-                       location: Location(file: file, characterOffset: $0.index))
+        return adjustedIndexes.map { offset -> Correction in
+            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
+            let index16 = index.samePosition(in: correctedContents.utf16)!
+            let correctedCharacterOffset = correctedContents.utf16.distance(from: correctedContents.utf16.startIndex,
+                                                                            to: index16)
+            let location = Location(file: file, characterOffset: correctedCharacterOffset)
+            return Correction(ruleDescription: description, location: location)
         }
     }
 }

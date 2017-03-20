@@ -30,12 +30,15 @@ public struct CheckstyleReporter: Reporter {
         let col: Int = violation.location.character ?? 0
         let severity: String = violation.severity.rawValue
         let reason: String = violation.reason.escapedForXML()
+        let identifier: String = violation.ruleDescription.identifier
+        let source: String = identifier.isEmpty ? "" : "swiftlint.rules.\(identifier)".escapedForXML()
         return [
             "\n\t<file name=\"", file, "\">\n",
             "\t\t<error line=\"\(line)\" ",
             "column=\"\(col)\" ",
             "severity=\"", severity, "\" ",
-            "message=\"", reason, "\"/>\n",
+            "message=\"", reason, "\" ",
+            "source=\"\(source)\"/>\n",
             "\t</file>"
         ].joined()
     }

@@ -135,6 +135,9 @@
 * Fix false negative on `unused_closure_parameter` rule.  
   [Hayashi Tatsuya](https://github.com/sora0077)
 
+* Fix `checkstyle` report format.  
+  [Yuki Oya](https://github.com/YukiOya)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking

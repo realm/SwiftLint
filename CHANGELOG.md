@@ -9,7 +9,7 @@
 
 ##### Enhancements
 
-* Make `trailing_comma` rule autocorrectable.
+* Make `trailing_comma` rule autocorrectable.  
   [Samuel Susla](https://github.com/sammy-SC)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
 

@@ -209,6 +209,10 @@ class RulesTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
+    func testOutletSetter() {
+        verifyRule(OutletSetterRule.description)
+    }
+
     func testPrivateUnitTest() {
         verifyRule(PrivateUnitTestRule.description)
     }
@@ -401,6 +405,7 @@ extension RulesTests {
             ("testOpeningBrace", testOpeningBrace),
             ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
             ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+            ("testOutletSetter", testOutletSetter),
             ("testPrivateOutlet", testPrivateOutlet),
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),

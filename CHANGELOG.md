@@ -9,6 +9,11 @@
 
 ##### Enhancements
 
+* Add `outlet_setter` opt-in rule
+  that warns when IBOutlet properties are reset in code,
+  rather than set automaticaly by IB.
+  [Jeffrey Bergier](https://github.com/jeffreybergier)
+
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  

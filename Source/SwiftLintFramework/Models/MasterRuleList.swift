@@ -124,6 +124,7 @@ public let masterRuleList = RuleList(rules:
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
+    OutletSetterRule.self,
     OverriddenSuperCallRule.self,
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,

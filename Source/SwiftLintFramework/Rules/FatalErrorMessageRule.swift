@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule {
+public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

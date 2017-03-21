@@ -72,6 +72,11 @@
   have an explicit type interface.  
   [Kim de Vos](https://github.com/kimdv)
 
+* Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
+  have a message.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1348](https://github.com/realm/SwiftLint/issues/1348)
+
 ##### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in

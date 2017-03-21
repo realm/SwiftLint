@@ -165,8 +165,6 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         var correctedContents = file.contents
         let description = type(of: self).description
 
-        let adjustedIndexes = matches.map { $0 }
-
         matches.reversed().forEach { offset in
             let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
             let correctedIndex = index.samePosition(in: correctedContents)!
@@ -179,11 +177,13 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
         file.write(correctedContents)
 
-        return adjustedIndexes.map { offset -> Correction in
-            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
+        return matches.enumerated().map { index, offset -> Correction in
+            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex,
+                                                     offsetBy: offset + (configuration.mandatoryComma ? index : 0))
             let index16 = index.samePosition(in: correctedContents.utf16)!
             let correctedCharacterOffset = correctedContents.utf16.distance(from: correctedContents.utf16.startIndex,
                                                                             to: index16)
+
             let location = Location(file: file, characterOffset: correctedCharacterOffset)
             return Correction(ruleDescription: description, location: location)
         }

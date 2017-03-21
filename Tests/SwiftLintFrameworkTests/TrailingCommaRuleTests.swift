@@ -54,7 +54,15 @@ class TrailingCommaRuleTests: XCTestCase {
                 "let foo = [1: 2,\n 2: 3↓   ]\n",
                 "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
                 "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
+            ],
+            corrections: [
+                "let foo = [1, 2,\n 3↓]\n": "let foo = [1, 2,\n 3,]\n",
+                "let foo = [1: 2,\n 2: 3↓]\n": "let foo = [1: 2,\n 2: 3,]\n",
+                "let foo = [1: 2,\n 2: 3↓   ]\n": "let foo = [1: 2,\n 2: 3,   ]\n",
+                "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n": "struct Bar {\n let foo = [1: 2,\n 2: 3,]\n}\n",
+                "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n": "let foo = [1, 2,\n 3,] + [4,\n 5, 6,]\n"
             ]
+
         )
         let ruleConfiguration = ["mandatory_comma": true]
 

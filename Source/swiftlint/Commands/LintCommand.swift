@@ -112,10 +112,14 @@ struct LintCommand: CommandProtocol {
             return violations
         }
         return violations.map {
-            $0.severity == .error ? StyleViolation(ruleDescription: $0.ruleDescription,
-                                                   severity: .warning,
-                                                   location: $0.location,
-                                                   reason: $0.reason) : $0
+            if $0.severity == .error {
+                return StyleViolation(ruleDescription: $0.ruleDescription,
+                                      severity: .warning,
+                                      location: $0.location,
+                                      reason: $0.reason)
+            } else {
+                return $0
+            }
         }
     }
 }
@@ -151,7 +155,7 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
             <*> mode <| Option(key: "lenient", defaultValue: false,
-                               usage: "succeed on errors")
+                               usage: "downgrades serious violations to warnings, and any warning threshold is disabled")
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +

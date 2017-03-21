@@ -169,7 +169,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
             let correctedIndex = index.samePosition(in: correctedContents)!
             if configuration.mandatoryComma {
-                correctedContents.characters.insert(Character(","), at: correctedIndex)
+                correctedContents.characters.insert(",", at: correctedIndex)
             } else {
                 correctedContents.characters.remove(at: correctedIndex)
             }

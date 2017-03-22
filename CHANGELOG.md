@@ -13,6 +13,7 @@
   that warns when using implicitly unwrapped optional,
   except cases when this IUO is IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou/)
+  [#56](https://github.com/realm/SwiftLint/issues/56)
 
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and

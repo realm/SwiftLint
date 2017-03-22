@@ -9,7 +9,7 @@
 
 ##### Enhancements
 
-* Add `implicitly_unwrapped_optional` rule
+* Add `implicitly_unwrapped_optional` opt-in rule
   that warns when using implicitly unwrapped optional,
   except cases when this IUO is IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou/)

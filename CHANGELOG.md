@@ -73,6 +73,10 @@
   [Hayashi Tatsuya](https://github.com/sora0077)
   [#1318](https://github.com/realm/SwiftLint/issues/1318)
 
+* Add `explicit_type_interface` opt-in rule that validates that the properties
+  have an explicit type interface.  
+  [Kim de Vos](https://github.com/kimdv)
+
 ##### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in

@@ -93,6 +93,7 @@ public let masterRuleList = RuleList(rules:
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,
+    ExplicitTypeInterfaceRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
     FirstWhereRule.self,

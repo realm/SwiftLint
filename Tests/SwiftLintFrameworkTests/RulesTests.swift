@@ -76,6 +76,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
+    }
+
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false)
@@ -349,7 +353,6 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-
 }
 
 extension RulesTests {
@@ -371,6 +374,7 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),

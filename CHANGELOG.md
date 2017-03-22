@@ -77,6 +77,11 @@
   [aaroncrespo](https://github.com/aaroncrespo)
   [#1322](https://github.com/realm/SwiftLint/issues/1322)
 
+* Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
+  have a message.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1348](https://github.com/realm/SwiftLint/issues/1348)
+
 ##### Bug Fixes
 
 * Fix crashes when accessing cached regular expressions when linting in
@@ -139,6 +144,9 @@
 
 * Fix false negative on `unused_closure_parameter` rule.  
   [Hayashi Tatsuya](https://github.com/sora0077)
+
+* Fix `checkstyle` report format.  
+  [Yuki Oya](https://github.com/YukiOya)
 
 ## 0.16.1: Commutative Fabric Sheets
 

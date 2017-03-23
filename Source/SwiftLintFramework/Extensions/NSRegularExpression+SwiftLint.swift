@@ -16,7 +16,7 @@ public typealias NSTextCheckingResult = TextCheckingResult
 private var regexCache = [RegexCacheKey: NSRegularExpression]()
 private let regexCacheLock = NSLock()
 
-private struct RegexCacheKey: Hashable {
+struct RegexCacheKey: Hashable {
     let pattern: String
     let options: NSRegularExpression.Options
 

@@ -73,6 +73,22 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             "whitespace: currently spans 41 lines")])
     }
 
+    func testFunctionBodyLengthsWithExcludedPatterns() {
+        let longerFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 40).joined())
+
+        let config1 = makeConfig(["warning": 40, "error": 100, "excluded": ["abc"]],
+                                FunctionBodyLengthRule.description.identifier)!
+        XCTAssertEqual(SwiftLintFrameworkTests.violations(longerFunctionBody, config: config1), [])
+
+        let config2 = makeConfig(["warning": 40, "error": 100, "excluded": ["abcd"]],
+                                FunctionBodyLengthRule.description.identifier)!
+        XCTAssertEqual(SwiftLintFrameworkTests.violations(longerFunctionBody, config: config2), [StyleViolation(
+            ruleDescription: FunctionBodyLengthRule.description,
+            location: Location(file: nil, line: 1, character: 1),
+            reason: "Function body should span 40 lines or less excluding comments and " +
+            "whitespace: currently spans 41 lines")])
+    }
+
     private func violations(_ string: String) -> [StyleViolation] {
         let config = makeConfig(nil, FunctionBodyLengthRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
@@ -87,7 +103,9 @@ extension FunctionBodyLengthRuleTests {
             ("testFunctionBodyLengthsWithComments",
                 testFunctionBodyLengthsWithComments),
             ("testFunctionBodyLengthsWithMultilineComments",
-                testFunctionBodyLengthsWithMultilineComments)
+                testFunctionBodyLengthsWithMultilineComments),
+            ("testFunctionBodyLengthsWithExcludedPatterns",
+                testFunctionBodyLengthsWithExcludedPatterns)
         ]
     }
 }

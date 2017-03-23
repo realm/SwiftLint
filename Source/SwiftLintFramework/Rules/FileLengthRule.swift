@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 400, error: 1000)
+    public var configuration = BodyLengthConfiguration(warning: 400, error: 1000)
 
     public init() {}
 
@@ -26,6 +26,8 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
+        guard !configuration.isExcluded(file.path?.absolutePathStandardized()) else { return [] }
+
         let lineCount = file.lines.count
         for parameter in configuration.params where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: type(of: self).description,

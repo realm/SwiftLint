@@ -82,6 +82,11 @@
   have an explicit type interface.  
   [Kim de Vos](https://github.com/kimdv)
 
+* `file_length`, `type_body_length` and `function_body_length` can be configured
+  to exclude certain file names, type names and function names, respectively.
+  [Daniel Rodríguez Troitiño](https://github.com/drodriguez)
+  [#1363](https://github.com/realm/SwiftLint/issues/1363)
+
 * Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
   have a message.  
   [Kim de Vos](https://github.com/kimdv)

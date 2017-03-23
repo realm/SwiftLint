@@ -84,11 +84,6 @@ class RulesTests: XCTestCase {
         verifyRule(FatalErrorMessageRule.description)
     }
 
-    func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
-    }
-
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }
@@ -312,10 +307,6 @@ class RulesTests: XCTestCase {
                    commentDoesntViolate: false)
     }
 
-    func testTypeBodyLength() {
-        verifyRule(TypeBodyLengthRule.description)
-    }
-
     func testTypeName() {
         verifyRule(TypeNameRule.description)
     }
@@ -380,7 +371,6 @@ extension RulesTests {
             ("testExplicitInit", testExplicitInit),
             ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
             ("testFatalErrorMessageRule", testFatalErrorMessageRule),
-            ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),
@@ -424,7 +414,6 @@ extension RulesTests {
             ("testTrailingNewline", testTrailingNewline),
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),
-            ("testTypeBodyLength", testTypeBodyLength),
             ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),

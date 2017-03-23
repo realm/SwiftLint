@@ -11,6 +11,10 @@
   [Keith Smiley](https://github.com/keith)
   [#1185](https://github.com/realm/SwiftLint/issues/1185)
 
+* Temporarily disable cache when linting. This will be reverted on a
+  later version, after we fix the issues related to caching.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Enhancements
 
 * Add `implicitly_unwrapped_optional` opt-in rule

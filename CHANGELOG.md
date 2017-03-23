@@ -81,6 +81,11 @@
 * Add `explicit_type_interface` opt-in rule that validates that the properties
   have an explicit type interface.  
   [Kim de Vos](https://github.com/kimdv)
+* Add `--lenient` CLI option to `lint` command. Facilitates running a lint task that doesn't fail a pipeline of other tasks.
+* Add `--lenient` CLI option to `lint` command. Facilitates running a 
+  lint task that doesn't fail a pipeline of other tasks.
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1322](https://github.com/realm/SwiftLint/issues/1322)
 
 * Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
   have a message.  

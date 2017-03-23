@@ -155,7 +155,7 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
             <*> mode <| Option(key: "lenient", defaultValue: false,
-                               usage: "downgrades serious violations to warnings, and any warning threshold is disabled")
+                               usage: "downgrades serious violations to warnings, warning threshold is disabled")
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +

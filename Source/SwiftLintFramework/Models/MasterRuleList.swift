@@ -107,6 +107,7 @@ public let masterRuleList = RuleList(rules:
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
+    ImplicitlyUnwrappedOptionalRule.self,
     LargeTupleRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,

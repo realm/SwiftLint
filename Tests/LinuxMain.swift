@@ -19,6 +19,8 @@ XCTMain([
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
+    testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
+    testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
     testCase(IntegrationTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),

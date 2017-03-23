@@ -9,7 +9,38 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
+private extension NSRange {
+    func equals(_ other: NSRange) -> Bool {
+            return NSEqualRanges(self, other)
+        }
+//    func intersections(_ ranges: [NSRange], excludeEqualToSelf: Bool = false) -> Int {
+//        var count = 0
+//        for each in ranges {
+//            if excludeEqualToSelf && each.equals(self){ continue }
+//           count += self.intersects(each) ? 1 : 0
+//        }
+//        return count
+//    }
+//    func isUnion(with other: NSRange) -> Bool {
+//        let result = NSUnionRange(self, other)
+//        return result.equals(other) || result.equals(self)
+//    }
+    
+    func isStrictSubset(of other: NSRange) -> Bool {
+        if self.equals(other) { return false }
+        return NSUnionRange(self, other).equals(other)
+    }
+    
+    func isStrictSubset(in others:[NSRange]) -> Bool {
+        for each in others where self.isStrictSubset(of: each) {
+            return true
+        }
+        return false
+    }
+
+}
+
+public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -68,7 +99,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         return linesWithBraces.flatMap { $0 }
     }
 
-    public func validate(file: File) -> [StyleViolation] {
+    private func findViolations(file: File) -> [NSRange] {
         // match open braces to corresponding closing braces
         func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
@@ -106,10 +137,76 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         // filter out ranges where rule is disabled
         violationRanges = file.ruleEnabled(violatingRanges: violationRanges, for: self)
 
-        return violationRanges.flatMap {
+        return violationRanges
+    }
+
+    public func validate(file: File) -> [StyleViolation] {
+        return findViolations(file: file).flatMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
+    }
+
+    // this will try to avoid nested ranges {{}{}}
+    private func removeNested(_ ranges: [NSRange]) -> [NSRange] {
+        return ranges.filter({
+            current in
+            return !current.isStrictSubset(in: ranges)
+        })
+    }
+
+    public func correct(file: File) -> [Correction] {
+        let filecontents = file.contents
+        var matches = removeNested(findViolations(file: file))
+                                                .sorted(by: { $0.location < $1.location })
+        guard !matches.isEmpty else { return [] }
+
+        // Start and End of Contents. `matches` should be sorted by range.
+        let start = NSRange(location: 0, length: 0)
+        let end = NSRange(location: filecontents.utf16.count, length: 0)
+        matches.insert(start, at: 0)
+        matches.append(end)
+
+    //
+    var fixedSections = [String]()
+
+    var i = 0
+    while  i < matches.count - 1 {
+        defer { i += 1 }
+        // inverses the ranges to select content
+        let current = matches[i].location + matches[i].length
+        let next = matches[i + 1].location
+        let length = next - current
+        let nonViolationContent = filecontents.substring(from: current, length: length )
+        if !nonViolationContent.isEmpty {
+            fixedSections.append(nonViolationContent)
+        }
+        // selects violation ranges and fixes them before adding back in
+
+        if matches[i + 1].length > 1 {
+        let violation = filecontents.substring(from: matches[i + 1].location + 1, length:matches[i + 1].length - 2)
+
+        let cleaned = "{ " + violation.trimmingCharacters(in: .whitespaces) + " }"
+
+        fixedSections.append(cleaned)
+        }
+
+        // breaking out of the loop before the end
+        if next == end.location { break }
+    }
+        // removes the start and end inserted above
+        if matches.count > 2 {
+        matches.remove(at: matches.count - 1)
+        matches.remove(at: 0)
+        }
+        
+        //write changes to actual file
+        file.write(fixedSections.joined(separator: ""))
+        
+        return matches.map({
+            Correction(ruleDescription:type(of: self).description,
+                location: Location(file: file, characterOffset: $0.location))
+        })
     }
 }

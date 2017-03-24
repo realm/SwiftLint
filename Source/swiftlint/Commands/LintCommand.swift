@@ -43,9 +43,11 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
+            violations = LintCommand.applyLeniency(options: options, violations: violations)
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) {
+            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)
+                && !options.lenient {
                 violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
                 reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
@@ -59,9 +61,7 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
-
             cache?.save(options: options, configuration: configuration)
-
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                              strictWithViolations: options.strict && !violations.isEmpty)
         }
@@ -106,6 +106,22 @@ struct LintCommand: CommandProtocol {
             location: Location(file: "", line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
     }
+
+    private static func applyLeniency(options: LintOptions, violations: [StyleViolation]) -> [StyleViolation] {
+        if !options.lenient {
+            return violations
+        }
+        return violations.map {
+            if $0.severity == .error {
+                return StyleViolation(ruleDescription: $0.ruleDescription,
+                                      severity: .warning,
+                                      location: $0.location,
+                                      reason: $0.reason)
+            } else {
+                return $0
+            }
+        }
+    }
 }
 
 struct LintOptions: OptionsProtocol {
@@ -113,6 +129,7 @@ struct LintOptions: OptionsProtocol {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
+    let lenient: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
@@ -122,10 +139,10 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
-        }}}}}}}}}}
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { lenient in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: true, enableAllRules: enableAllRules)
+        }}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -137,6 +154,8 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| configOption
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
+            <*> mode <| Option(key: "lenient", defaultValue: false,
+                               usage: "downgrades serious violations to warnings, warning threshold is disabled")
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +

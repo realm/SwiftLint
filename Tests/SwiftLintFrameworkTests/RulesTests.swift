@@ -76,6 +76,14 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
+    }
+
+    func testFatalErrorMessageRule() {
+        verifyRule(FatalErrorMessageRule.description)
+    }
+
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false)
@@ -119,6 +127,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
+    }
+
+    func testImplicitlyUnwrappedOptional() {
+        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 
     func testLargeTuple() {
@@ -258,10 +270,6 @@ class RulesTests: XCTestCase {
         verifyRule(SyntacticSugarRule.description)
     }
 
-    func testTodo() {
-        verifyRule(TodoRule.description, commentDoesntViolate: false)
-    }
-
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)
@@ -349,7 +357,6 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-
 }
 
 extension RulesTests {
@@ -371,6 +378,8 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
+            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
@@ -382,6 +391,7 @@ extension RulesTests {
             ("testGenericTypeName", testGenericTypeName),
             ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
+            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
@@ -411,7 +421,6 @@ extension RulesTests {
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
             ("testSyntacticSugar", testSyntacticSugar),
-            ("testTodo", testTodo),
             ("testTrailingNewline", testTrailingNewline),
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),

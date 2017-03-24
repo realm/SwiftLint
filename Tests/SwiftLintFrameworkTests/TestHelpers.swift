@@ -254,7 +254,8 @@ extension XCTestCase {
             }
 
             XCTAssertEqual(triggerViolations.count, expectedLocations.count)
-            for (triggerViolation, expectedLocation) in zip(triggerViolations, expectedLocations) {
+            for (triggerViolation, expectedLocation) in zip(triggerViolations.sorted(by: { $0.location < $1.location }),
+            expectedLocations.sorted(by: < )) {
                 XCTAssertEqual(triggerViolation.location, expectedLocation,
                                "'\(trigger)' violation didn't match expected location.")
             }

@@ -13,31 +13,18 @@ private extension NSRange {
     func equals(_ other: NSRange) -> Bool {
             return NSEqualRanges(self, other)
         }
-//    func intersections(_ ranges: [NSRange], excludeEqualToSelf: Bool = false) -> Int {
-//        var count = 0
-//        for each in ranges {
-//            if excludeEqualToSelf && each.equals(self){ continue }
-//           count += self.intersects(each) ? 1 : 0
-//        }
-//        return count
-//    }
-//    func isUnion(with other: NSRange) -> Bool {
-//        let result = NSUnionRange(self, other)
-//        return result.equals(other) || result.equals(self)
-//    }
-    
+
     func isStrictSubset(of other: NSRange) -> Bool {
         if self.equals(other) { return false }
         return NSUnionRange(self, other).equals(other)
     }
-    
-    func isStrictSubset(in others:[NSRange]) -> Bool {
+
+    func isStrictSubset(in others: [NSRange]) -> Bool {
         for each in others where self.isStrictSubset(of: each) {
             return true
         }
         return false
     }
-
 }
 
 public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
@@ -58,7 +45,19 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         ],
         triggeringExamples: [
             "[].filter(↓{$0.contains(location)})",
-            "[].map(↓{$0})"
+            "[].map(↓{$0})",
+            "(↓{each in return result.contains(where: ↓{e in return e}) }).count",
+            "filter ↓{ sorted ↓{ $0 < $1}}"
+        ],  // Nested {} do not get corrected on the first pass. The user has to run it again.
+        corrections: [
+        "[].filter(↓{$0.contains(location)})":
+        "[].filter({ $0.contains(location) })",
+        "[].map(↓{$0})":
+        "[].map({ $0 })",
+        "filter ↓{sorted { $0 < $1}}":
+        "filter { sorted { $0 < $1} }",
+        "(↓{each in return result.contains(where: {e in return 0})}).count":
+        "({ each in return result.contains(where: {e in return 0}) }).count"
         ]
     )
 
@@ -150,8 +149,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
 
     // this will try to avoid nested ranges {{}{}}
     private func removeNested(_ ranges: [NSRange]) -> [NSRange] {
-        return ranges.filter({
-            current in
+        return ranges.filter({ current in
             return !current.isStrictSubset(in: ranges)
         })
     }
@@ -200,10 +198,10 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         matches.remove(at: matches.count - 1)
         matches.remove(at: 0)
         }
-        
+
         //write changes to actual file
         file.write(fixedSections.joined(separator: ""))
-        
+
         return matches.map({
             Correction(ruleDescription:type(of: self).description,
                 location: Location(file: file, characterOffset: $0.location))

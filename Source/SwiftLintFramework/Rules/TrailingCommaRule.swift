@@ -175,17 +175,13 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             }
         }
 
-        file.write(correctedContents)
-
-        return matches.enumerated().map { index, offset -> Correction in
-            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex,
-                                                     offsetBy: offset + (configuration.mandatoryComma ? index : 0))
-            let index16 = index.samePosition(in: correctedContents.utf16)!
-            let correctedCharacterOffset = correctedContents.utf16.distance(from: correctedContents.utf16.startIndex,
-                                                                            to: index16)
-
-            let location = Location(file: file, characterOffset: correctedCharacterOffset)
+        let corrections = matches.enumerated().map { index, offset -> Correction in
+            let location = Location(file: file, byteOffset: offset + (configuration.mandatoryComma ? index : 0))
             return Correction(ruleDescription: description, location: location)
         }
+
+        file.write(correctedContents)
+
+        return corrections
     }
 }

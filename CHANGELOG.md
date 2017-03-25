@@ -98,7 +98,7 @@
   [Kim de Vos](https://github.com/kimdv)
 
 * Add `--lenient` CLI option to `lint` command. Facilitates running a lint task
-  that doesn't fail a pipeline of other tasks.
+  that doesn't fail a pipeline of other tasks.  
   [aaroncrespo](https://github.com/aaroncrespo)
   [#1322](https://github.com/realm/SwiftLint/issues/1322)
 
@@ -108,6 +108,10 @@
   [#1348](https://github.com/realm/SwiftLint/issues/1348)
 
 ##### Bug Fixes
+
+* Fix `--lenient` reports errors before lint completion.  
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1391](https://github.com/realm/SwiftLint/issues/1391)
 
 * Fix crashes when accessing cached regular expressions when linting in
   parallel.  

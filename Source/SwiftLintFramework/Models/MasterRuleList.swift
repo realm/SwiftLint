@@ -17,6 +17,10 @@ public struct RuleList {
     private let aliases: [String: String]
 
     public init(rules: Rule.Type...) {
+        self.init(rules: rules)
+    }
+
+    public init(rules: [Rule.Type]) {
         var tmpList = [String: Rule.Type]()
         var tmpAliases = [String: String]()
 
@@ -89,6 +93,8 @@ public let masterRuleList = RuleList(rules:
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,
+    ExplicitTypeInterfaceRule.self,
+    FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
     FirstWhereRule.self,
@@ -101,6 +107,7 @@ public let masterRuleList = RuleList(rules:
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
+    ImplicitlyUnwrappedOptionalRule.self,
     LargeTupleRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,

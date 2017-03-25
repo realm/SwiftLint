@@ -2,10 +2,32 @@
 
 ##### Breaking
 
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.17.0: Extra Rinse Cycle
+
+##### Breaking
+
 * `variable_name` rule (`VariableNameRule`) is now `identifier_name`
   (`IdentifierNameRule`) as it validates other identifiers as well.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#663](https://github.com/realm/SwiftLint/issues/663)
+
+* Fix `sorted_imports` rule to sort ignoring case.  
+  [Keith Smiley](https://github.com/keith)
+  [#1185](https://github.com/realm/SwiftLint/issues/1185)
+
+* Temporarily disable cache when linting. This will be re-enabled in a future
+  version after important cache-related issues have been addressed.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 
@@ -16,12 +38,18 @@
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  
+* Add `implicitly_unwrapped_optional` opt-in rule that warns against using
+  implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.
+  [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
+  [#56](https://github.com/realm/SwiftLint/issues/56)
+
+* Performance improvements to `generic_type_name`, `redundant_nil_coalescing`,
+  `mark`, `first_where` and `vertical_whitespace` rules.
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Add `discarded_notification_center_observer` rule
-  that warns when the result of
-  `NotificationCenter.addObserver(forName:object:queue:using:)`
-  is not stored so it can be removed later.  
+* Add `discarded_notification_center_observer` rule that warns when the result
+  of `NotificationCenter.addObserver(forName:object:queue:using:)` is not stored
+  so it can be removed later.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1062](https://github.com/realm/SwiftLint/issues/1062)
 
@@ -34,8 +62,8 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
-* Add `ignores_function_declarations` and `ignores_comments` as options
-  to `LineLengthRule`.  
+* Add `ignores_function_declarations` and `ignores_comments` as options to
+  `LineLengthRule`.
   [Michael L. Welles](https://github.com/mlwelles)
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
@@ -50,15 +78,48 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
 
+* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#1298](https://github.com/realm/SwiftLint/issues/1298)
+
 * Add correctable `redundant_discardable_let` rule that warns when
   `let _ = foo()` is used to discard a result from a function instead of
   `_ = foo()`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1232](https://github.com/realm/SwiftLint/issues/1232)
+
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only display
+  enabled rules.
+  [Natan Rolnik](https://github.com/NatanRolnik)
+  [#1270](https://github.com/realm/SwiftLint/issues/1270)
+
+* Now `nesting` rule can be configured with a type and statement level.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+  [#1318](https://github.com/realm/SwiftLint/issues/1318)
+
+* Add `explicit_type_interface` opt-in rule that validates that the properties
+  have an explicit type interface.  
+  [Kim de Vos](https://github.com/kimdv)
+
+* Add `--lenient` CLI option to `lint` command. Facilitates running a lint task
+  that doesn't fail a pipeline of other tasks.
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1322](https://github.com/realm/SwiftLint/issues/1322)
+
+* Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
+  have a message.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1348](https://github.com/realm/SwiftLint/issues/1348)
+
 ##### Bug Fixes
+
+* Fix crashes when accessing cached regular expressions when linting in
+  parallel.  
+  [JP Simard](https://github.com/jpsim)
+  [#1344](https://github.com/realm/SwiftLint/issues/1344)
 
 * Fix a false positive on `large_tuple` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -94,8 +155,8 @@
   [#1257](https://github.com/realm/SwiftLint/issues/1257)
 
 * Make `ASTRule` default implementation to navigate through the substructure
-  even if its children are from a different kind. This fixes some violations
-  not being reported in some contexts.  
+  even if its children are from a different kind. This fixes some violations not
+  being reported in some contexts.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1237](https://github.com/realm/SwiftLint/issues/1237)
 
@@ -109,6 +170,16 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1216](https://github.com/realm/SwiftLint/issues/1216)
 
+* Fix `todo` rule messages when the comment is not on a new line.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1304](https://github.com/realm/SwiftLint/issues/1304)
+
+* Fix false negative on `unused_closure_parameter` rule.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+
+* Fix `checkstyle` report format.  
+  [Yuki Oya](https://github.com/YukiOya)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking
@@ -118,7 +189,7 @@
 ##### Enhancements
 
 * Improve `unused_optional_binding` rule on tuples check.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
 
 * Update `variable_name` to ignore overrides.  
   [Aaron McTavish](https://github.com/aamctustwo)
@@ -235,7 +306,7 @@
   [#1090](https://github.com/realm/SwiftLint/issues/1090)
 
 * Make `weak_delegate` rule ignore computed properties.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
 * Add `object_literal` opt-in rule that warns against using image and color
@@ -248,7 +319,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1109](https://github.com/realm/SwiftLint/issues/1109)
 
-* Add `compiler_protocol_init` rule that flags usage of initializers 
+* Add `compiler_protocol_init` rule that flags usage of initializers
   declared in protocols used by the compiler such as `ExpressibleByArrayLiteral`
   that shouldn't be called directly. Instead, you should use a literal anywhere
   a concrete type conforming to the protocol is expected by the context.  
@@ -264,7 +335,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#51](https://github.com/realm/SwiftLint/issues/51)
 
-* Update `vertical_whitespace` rule to allow configuration of the number of 
+* Update `vertical_whitespace` rule to allow configuration of the number of
   consecutive empty lines before a violation using `max_empty_lines`.
   The default value is still 1 line.  
   [Aaron McTavish](https://github.com/aamctustwo)
@@ -290,9 +361,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#973](https://github.com/realm/SwiftLint/issues/973)
 
-* Add `unused_optional_binding` rule that will check for optional bindings 
+* Add `unused_optional_binding` rule that will check for optional bindings
   not being used.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
 
 ##### Bug Fixes

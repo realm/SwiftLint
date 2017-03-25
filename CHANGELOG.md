@@ -38,7 +38,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix `--lenient` reports errors before lint completion.  
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1391](https://github.com/realm/SwiftLint/issues/1391)
 
 ## 0.17.0: Extra Rinse Cycle
 

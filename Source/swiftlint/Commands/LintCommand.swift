@@ -43,7 +43,6 @@ struct LintCommand: CommandProtocol {
                 }
             }
             linter.file.invalidateCache()
-            violations = LintCommand.applyLeniency(options: options, violations: violations)
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)

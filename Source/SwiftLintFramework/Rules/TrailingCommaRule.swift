@@ -160,14 +160,23 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     public func correct(file: File) -> [Correction] {
         let violations = violationRanges(in: file, dictionary: file.structure.dictionary)
-        let matches = file.ruleEnabled(violatingRanges: violations, for: self).map { $0.location }
+        let correctedViolations = violations.map { range -> NSRange in
+            let index = file.contents.utf8.index(file.contents.utf8.startIndex,
+                                                 offsetBy: range.location)
+            let index16 = index.samePosition(in: file.contents.utf16)!
+            let correctedCharacterOffset = file.contents.utf16.distance(from: file.contents.utf16.startIndex,
+                                                                        to: index16)
+            return NSRange(location: correctedCharacterOffset, length: range.length)
+        }
+
+        let matches = file.ruleEnabled(violatingRanges: correctedViolations, for: self).map { $0.location }
+
         if matches.isEmpty { return [] }
 
         var correctedContents = file.contents
-        let description = type(of: self).description
 
         matches.reversed().forEach { offset in
-            let index = correctedContents.utf8.index(correctedContents.utf8.startIndex, offsetBy: offset)
+            let index = correctedContents.utf16.index(correctedContents.utf16.startIndex, offsetBy: offset)
             let correctedIndex = index.samePosition(in: correctedContents)!
             if configuration.mandatoryComma {
                 correctedContents.characters.insert(",", at: correctedIndex)
@@ -176,8 +185,9 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             }
         }
 
-        let corrections = matches.enumerated().map { index, offset -> Correction in
-            let location = Location(file: file, byteOffset: offset + (configuration.mandatoryComma ? index : 0))
+        let description = type(of: self).description
+        let corrections = matches.map { offset -> Correction in
+            let location = Location(file: file, characterOffset: offset)
             return Correction(ruleDescription: description, location: location)
         }
 

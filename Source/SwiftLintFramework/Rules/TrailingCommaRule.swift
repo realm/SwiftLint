@@ -50,7 +50,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             "let foo = [1, 2, 3   ↓,]\n": "let foo = [1, 2, 3   ]\n",
             "let foo = [1: 2, 2: 3↓, ]\n": "let foo = [1: 2, 2: 3 ]\n",
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n": "struct Bar {\n let foo = [1: 2, 2: 3 ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n": "let foo = [1, 2, 3] + [4, 5, 6]\n"
+            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n": "let foo = [1, 2, 3] + [4, 5, 6]\n",
+            "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n": "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"]\n"
         ]
     )
 

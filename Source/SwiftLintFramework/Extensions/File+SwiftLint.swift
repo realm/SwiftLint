@@ -76,8 +76,8 @@ extension File {
             .map { $0.0 }
     }
 
-    internal func rangesAndTokens(matching pattern: String,
-                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+    internal func matchesAndTokens(matching pattern: String,
+                                   range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxToken])] {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
@@ -85,13 +85,25 @@ extension File {
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
                                                              length: match.range.length) ?? match.range
             let tokensInRange = syntax.tokens(inByteRange: matchByteRange)
-            return (match.range, tokensInRange)
+            return (match, tokensInRange)
         }
     }
 
+    internal func matchesAndSyntaxKinds(matching pattern: String,
+                                        range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
+        return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
+            (textCheckingResult, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
+        }
+    }
+
+    internal func rangesAndTokens(matching pattern: String,
+                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+        return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
+    }
+
     internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
-        return rangesAndTokens(matching: pattern, range: range).map { range, tokens in
-            (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
+        return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
+            (textCheckingResult.range, syntaxKinds)
         }
     }
 

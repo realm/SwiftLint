@@ -41,7 +41,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             "let foo = [1: 2, 2: 3↓, ]\n",
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
             "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
-            "let example = [ 1,\n2↓,\n // 3,\n]"
+            "let example = [ 1,\n2↓,\n // 3,\n]",
+            "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
             // "foo([1: \"\\(error)\"↓,])\n"
         ],
         corrections: [
@@ -51,6 +52,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             "let foo = [1: 2, 2: 3↓, ]\n": "let foo = [1: 2, 2: 3 ]\n",
             "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n": "struct Bar {\n let foo = [1: 2, 2: 3 ]\n}\n",
             "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n": "let foo = [1, 2, 3] + [4, 5, 6]\n",
+            "let example = [ 1,\n2↓,\n // 3,\n]": "let example = [ 1,\n2\n // 3,\n]",
             "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n": "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"]\n"
         ]
     )
@@ -160,38 +162,31 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     public func correct(file: File) -> [Correction] {
         let violations = violationRanges(in: file, dictionary: file.structure.dictionary)
-        let correctedViolations = violations.map { range -> NSRange in
-            let index = file.contents.utf8.index(file.contents.utf8.startIndex,
-                                                 offsetBy: range.location)
-            let index16 = index.samePosition(in: file.contents.utf16)!
-            let correctedCharacterOffset = file.contents.utf16.distance(from: file.contents.utf16.startIndex,
-                                                                        to: index16)
-            return NSRange(location: correctedCharacterOffset, length: range.length)
+        let correctedViolations = violations.map {
+            file.contents.bridge().byteRangeToNSRange(start: $0.location, length: $0.length)!
         }
 
-        let matches = file.ruleEnabled(violatingRanges: correctedViolations, for: self).map { $0.location }
+        let matches = file.ruleEnabled(violatingRanges: correctedViolations, for: self)
 
         if matches.isEmpty { return [] }
 
-        var correctedContents = file.contents
+        let correctedContents = NSMutableString(string: file.contents)
 
-        matches.reversed().forEach { offset in
-            let index = correctedContents.utf16.index(correctedContents.utf16.startIndex, offsetBy: offset)
-            let correctedIndex = index.samePosition(in: correctedContents)!
+        matches.reversed().forEach { range in
             if configuration.mandatoryComma {
-                correctedContents.characters.insert(",", at: correctedIndex)
+                correctedContents.insert(",", at: range.location)
             } else {
-                correctedContents.characters.remove(at: correctedIndex)
+                correctedContents.deleteCharacters(in: range)
             }
         }
 
         let description = type(of: self).description
-        let corrections = matches.map { offset -> Correction in
-            let location = Location(file: file, characterOffset: offset)
+        let corrections = matches.map { range -> Correction in
+            let location = Location(file: file, characterOffset: range.location)
             return Correction(ruleDescription: description, location: location)
         }
 
-        file.write(correctedContents)
+        file.write(correctedContents as String)
 
         return corrections
     }

@@ -58,10 +58,9 @@ private func render(locations: [Location], in contents: String) -> String {
     var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
-        var content = contents[line - 1]
-        let index = content.index(content.startIndex, offsetBy: character - 1)
-        content.insert("↓", at: index)
-        contents[line - 1] = content
+        let content = NSMutableString(string: contents[line - 1])
+        content.insert("↓", at: character - 1)
+        contents[line - 1] = content as String
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }

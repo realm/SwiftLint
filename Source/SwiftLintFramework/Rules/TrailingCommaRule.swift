@@ -186,7 +186,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             return Correction(ruleDescription: description, location: location)
         }
 
-        file.write((correctedContents.copy() as! NSString).bridge())
+        file.write("\(correctedContents)")
 
         return corrections
     }

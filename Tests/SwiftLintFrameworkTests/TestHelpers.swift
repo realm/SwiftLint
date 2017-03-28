@@ -60,7 +60,7 @@ private func render(locations: [Location], in contents: String) -> String {
         guard let line = location.line, let character = location.character else { continue }
         let content = NSMutableString(string: contents[line - 1])
         content.insert("↓", at: character - 1)
-        contents[line - 1] = (content.copy() as! NSString).bridge()
+        contents[line - 1] = "\(content)"
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }

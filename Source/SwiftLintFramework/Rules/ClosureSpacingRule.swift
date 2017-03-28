@@ -9,7 +9,25 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
+private extension NSRange {
+    private func equals(_ other: NSRange) -> Bool {
+            return NSEqualRanges(self, other)
+        }
+
+    func isStrictSubset(of other: NSRange) -> Bool {
+        if self.equals(other) { return false }
+        return NSUnionRange(self, other).equals(other)
+    }
+
+    func isStrictSubset(in others: [NSRange]) -> Bool {
+        for each in others where self.isStrictSubset(of: each) {
+            return true
+        }
+        return false
+    }
+}
+
+public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -27,12 +45,31 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         ],
         triggeringExamples: [
             "[].filter(↓{$0.contains(location)})",
-            "[].map(↓{$0})"
+            "[].map(↓{$0})",
+            "(↓{each in return result.contains(where: ↓{e in return e}) }).count",
+            "filter ↓{ sorted ↓{ $0 < $1}}"
+        ],
+        corrections: [
+        "[].filter(↓{$0.contains(location)})":
+        "[].filter({ $0.contains(location) })",
+        "[].map(↓{$0})":
+        "[].map({ $0 })",
+        // Nested braces `{ {} }` do not get corrected on the first pass.
+        "filter ↓{sorted { $0 < $1}}":
+        "filter { sorted { $0 < $1} }",
+        // The user has to run tool again to fix remaining nested violations.
+        "filter { sorted ↓{ $0 < $1} }":
+        "filter { sorted { $0 < $1 } }",
+        "(↓{each in return result.contains(where: {e in return 0})}).count":
+        "({ each in return result.contains(where: {e in return 0}) }).count",
+        // second pass example
+        "({ each in return result.contains(where: ↓{e in return 0}) }).count":
+        "({ each in return result.contains(where: { e in return 0 }) }).count"
         ]
     )
 
     // this helps cut down the time to search through a file by
-    // skipping lines that do not have at least one { and one } brace
+    // skipping lines that do not have at least one `{` and one `}` brace
     private func lineContainsBraces(in range: NSRange, content: NSString) -> NSRange? {
         let start = content.range(of: "{", options: [.literal], range: range)
         guard start.length != 0 else { return nil }
@@ -42,7 +79,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         return NSRange(location: start.location, length: end.location - start.location + 1)
     }
 
-    // returns ranges of braces { or } in the same line
+    // returns ranges of braces `{` or `}` in the same line
     private func validBraces(in file: File) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
@@ -67,8 +104,8 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         }
         return linesWithBraces.flatMap { $0 }
     }
-
-    public func validate(file: File) -> [StyleViolation] {
+    // find ranges where violation exist. Returns sorted ranges by location.
+    private func findViolations(file: File) -> [NSRange] {
         // match open braces to corresponding closing braces
         func matchBraces(validBraceLocations: [NSRange]) -> [NSRange] {
             if validBraceLocations.isEmpty { return [] }
@@ -89,7 +126,7 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
             return ranges
         }
 
-        // matching ranges of {}
+        // matching ranges of `{...}`
         let matchedUpBraces = matchBraces(validBraceLocations: validBraces(in: file))
 
         var violationRanges = matchedUpBraces.filter {
@@ -106,10 +143,72 @@ public struct ClosureSpacingRule: Rule, ConfigurationProviderRule, OptInRule {
         // filter out ranges where rule is disabled
         violationRanges = file.ruleEnabled(violatingRanges: violationRanges, for: self)
 
-        return violationRanges.flatMap {
+        // testing infrastructure expects sorted locations.
+        return violationRanges.sorted(by: { $0.location < $1.location })
+    }
+
+    public func validate(file: File) -> [StyleViolation] {
+        return findViolations(file: file).flatMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
+    }
+
+    // this will try to avoid nested ranges `{{}{}}` in single line
+    private func removeNested(_ ranges: [NSRange]) -> [NSRange] {
+        return ranges.filter({ current in
+            return !current.isStrictSubset(in: ranges)
+        })
+    }
+
+    public func correct(file: File) -> [Correction] {
+        let filecontents = file.contents
+        var matches = removeNested(findViolations(file: file))
+        guard !matches.isEmpty else { return [] }
+
+        //`matches` should be sorted by location from `findViolations`.
+        let start = NSRange(location: 0, length: 0)
+        let end = NSRange(location: filecontents.utf16.count, length: 0)
+        matches.insert(start, at: 0)
+        matches.append(end)
+
+    var fixedSections = [String]()
+
+    var i = 0
+    while  i < matches.count - 1 {
+        defer { i += 1 }
+        // inverses the ranges to select non rule violation content
+        let current = matches[i].location + matches[i].length
+        let next = matches[i + 1].location
+        let length = next - current
+        let nonViolationContent = filecontents.substring(from: current, length: length )
+        if !nonViolationContent.isEmpty {
+            fixedSections.append(nonViolationContent)
+        }
+        // selects violation ranges and fixes them before adding back in
+        if matches[i + 1].length > 1 {
+        let violation = filecontents.substring(from: matches[i + 1].location + 1, length:matches[i + 1].length - 2)
+
+        let cleaned = "{ " + violation.trimmingCharacters(in: .whitespaces) + " }"
+        fixedSections.append(cleaned)
+        }
+
+        // Catch all. Break at the end of loop.
+        if next == end.location { break }
+    }
+        // removes the start and end inserted above
+        if matches.count > 2 {
+        matches.remove(at: matches.count - 1)
+        matches.remove(at: 0)
+        }
+
+        //write changes to actual file
+        file.write(fixedSections.joined(separator: ""))
+
+        return matches.map({
+            Correction(ruleDescription:type(of: self).description,
+                location: Location(file: file, characterOffset: $0.location))
+        })
     }
 }

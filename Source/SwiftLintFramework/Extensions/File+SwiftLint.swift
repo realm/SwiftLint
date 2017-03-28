@@ -198,7 +198,7 @@ extension File {
             fatalError("can't encode '\(string)' with UTF8")
         }
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
-            fatalError("can't write to path '\(self.path)'")
+            fatalError("can't write to path '\(String(describing: self.path))'")
         }
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)

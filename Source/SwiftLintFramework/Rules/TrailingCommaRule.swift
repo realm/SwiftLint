@@ -177,7 +177,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             let utf16End = correctedContents.utf16.index(utf16Start, offsetBy: range.length)
             
             guard let scalarsStart = utf16Start.samePosition(in: correctedContents.unicodeScalars),
-                let scalarsEnd = utf16Start.samePosition(in: correctedContents.unicodeScalars) else {
+                let scalarsEnd = utf16End.samePosition(in: correctedContents.unicodeScalars) else {
                 fatalError("A UTF‐16 index is pointing at a trailing surrogate.\nThere is a bug in SwiftLint.")
             }
             let scalarRange = scalarsStart ..< scalarsEnd

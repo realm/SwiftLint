@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Fix false positives on `for_where` rule and skip violation on
+  complex conditions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
 ##### Bug Fixes
 

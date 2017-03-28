@@ -24,6 +24,9 @@
 
 ##### Enhancements
 
+* Support compiling with Xcode 8.3 and Swift 3.1.  
+  [Keith Smiley](https://github.com/keith)
+
 * Fix false positives on `for_where` rule and skip violation on
   complex conditions.  
   [Marcelo Fabri](https://github.com/marcelofabri)

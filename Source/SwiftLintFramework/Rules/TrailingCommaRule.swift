@@ -183,9 +183,9 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             let scalarRange = scalarsStart ..< scalarsEnd
             
             if configuration.mandatoryComma {
-                correctedContents.unicodeScalars.insert(",", at: range.lowerBound)
+                correctedContents.unicodeScalars.insert(",", at: scalarRange.lowerBound)
             } else {
-                correctedContents.unicodeScalars.removeSubrange(range)
+                correctedContents.unicodeScalars.removeSubrange(scalarRange)
             }
         }
 

@@ -21,6 +21,31 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     public init() {}
 
+    private static let triggeringExamples: [String] = {
+        var result = [
+            "let foo = [1, 2, 3↓,]\n",
+            "let foo = [1, 2, 3↓, ]\n",
+            "let foo = [1, 2, 3   ↓,]\n",
+            "let foo = [1: 2, 2: 3↓, ]\n",
+            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
+            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
+            "let example = [ 1,\n2↓,\n // 3,\n]"
+            // "foo([1: \"\\(error)\"↓,])\n"
+            ]
+        #if !os(Linux)
+            // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
+            // https://bugs.swift.org/browse/SR-3449
+            result.append("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n")
+        #endif
+    }()
+    private static let corrections: [String] = {
+        let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓,", with: "") }
+        var result: [String: String] = [:]
+        for (triggering, correction) in zip(triggeringExamples, fixed) {
+            result[triggering] = correction
+        }
+    }()
+
     public static let description = RuleDescription(
         identifier: "trailing_comma",
         name: "Trailing Comma",
@@ -34,27 +59,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             "let example = [ 1,\n 2\n // 3,\n]",
             "foo([1: \"\\(error)\"])\n"
         ],
-        triggeringExamples: [
-            "let foo = [1, 2, 3↓,]\n",
-            "let foo = [1, 2, 3↓, ]\n",
-            "let foo = [1, 2, 3   ↓,]\n",
-            "let foo = [1: 2, 2: 3↓, ]\n",
-            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
-            "let example = [ 1,\n2↓,\n // 3,\n]",
-            "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
-            // "foo([1: \"\\(error)\"↓,])\n"
-        ],
-        corrections: [
-            "let foo = [1, 2, 3↓,]\n": "let foo = [1, 2, 3]\n",
-            "let foo = [1, 2, 3↓, ]\n": "let foo = [1, 2, 3 ]\n",
-            "let foo = [1, 2, 3   ↓,]\n": "let foo = [1, 2, 3   ]\n",
-            "let foo = [1: 2, 2: 3↓, ]\n": "let foo = [1: 2, 2: 3 ]\n",
-            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n": "struct Bar {\n let foo = [1: 2, 2: 3 ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n": "let foo = [1, 2, 3] + [4, 5, 6]\n",
-            "let example = [ 1,\n2↓,\n // 3,\n]": "let example = [ 1,\n2\n // 3,\n]",
-            "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n": "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"]\n"
-        ]
+        triggeringExamples: TrailingCommaRule.triggeringExamples,
+        corrections: TrailingCommaRule.corrections
     )
 
     private static let commaRegex = regex(",", options: [.ignoreMetacharacters])

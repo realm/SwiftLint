@@ -37,6 +37,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             // https://bugs.swift.org/browse/SR-3449
             result.append("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n")
         #endif
+        return result
     }()
     private static let corrections: [String: String] = {
         let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓,", with: "") }
@@ -44,6 +45,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         for (triggering, correction) in zip(triggeringExamples, fixed) {
             result[triggering] = correction
         }
+        return result
     }()
 
     public static let description = RuleDescription(

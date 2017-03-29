@@ -39,6 +39,7 @@ class TrailingCommaRuleTests: XCTestCase {
             // https://bugs.swift.org/browse/SR-3449
             result.append("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
         #endif
+        return result
     }()
     private static let corrections: [String: String] = {
         let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓", with: ",") }
@@ -46,6 +47,7 @@ class TrailingCommaRuleTests: XCTestCase {
         for (triggering, correction) in zip(triggeringExamples, fixed) {
             result[triggering] = correction
         }
+        return result
     }()
     private let mandatoryCommaRuleDescription = RuleDescription(
         identifier: TrailingCommaRule.description.identifier,

@@ -70,10 +70,9 @@ class TrailingCommaRuleTests: XCTestCase {
 
     func testTrailingCommaRuleWithMandatoryComma() {
         print("Started customized tests.")
-        /*
         // Verify TrailingCommaRule with test values for when mandatory_comma is true.
         let ruleDescription = mandatoryCommaRuleDescription
-        let ruleConfiguration = ["mandatory_comma": true]
+        /*let ruleConfiguration = ["mandatory_comma": true]
 
         verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
 

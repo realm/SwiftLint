@@ -84,6 +84,14 @@
             argument = "lint --no-cache"
             isEnabled = "YES">
          </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--path /Users/remer/Workspace/ios/swiftlint-test"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "--config /Users/remer/Workspace/ios/swiftlint-test/.swiftlint.yml"
+            isEnabled = "YES">
+         </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable

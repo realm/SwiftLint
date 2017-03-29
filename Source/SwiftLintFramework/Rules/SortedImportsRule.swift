@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SortedImportsConfiguration(ignoreCase: false)
+    public var configuration = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
 
     public init() {}
 
@@ -49,7 +49,8 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
         let importPairs = zip(imports, imports.dropFirst())
         return importPairs.flatMap { previous, current in
             let ignoreCase = configuration.ignoreCase
-            if current.isLessThan(previous, ignoringCase: ignoreCase) {
+            let testableImportPosition = configuration.testableImportsPosition
+            if current.isLessThan(previous, ignoringCase: ignoreCase, testableImportsPosition: testableImportPosition) {
                 return StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severity,

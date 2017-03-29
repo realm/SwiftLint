@@ -13,7 +13,9 @@ import SourceKittenFramework
 
 internal enum ImportKind: String {
 
+    //swiftlint:disable identifier_name
     case `class­`
+    //swiftlint:enable identifier_name
     case `default` = ""
     case `enum`
     case `func`
@@ -54,6 +56,14 @@ internal func == (lhs: ImportKind, rhs: ImportKind) -> Bool {
     return lhs.rawValue == rhs.rawValue
 }
 
+// MARK: - TestableImportsPosition
+
+public enum TestableImportsPosition: String {
+    case bottom
+    case top
+    case ignore
+}
+
 // MARK: - ImportKind
 
 internal struct Import: Equatable {
@@ -66,8 +76,19 @@ internal struct Import: Equatable {
     let module: String
     let isTestable: Bool
 
-    func isLessThan(_ other: Import, ignoringCase: Bool = false) -> Bool {
-        if isTestable != other.isTestable { return !isTestable }
+    func isLessThan(
+        _ other: Import,
+        ignoringCase: Bool = false,
+        testableImportsPosition: TestableImportsPosition = .bottom) -> Bool {
+
+        switch testableImportsPosition {
+        case .bottom:
+            if isTestable != other.isTestable { return !isTestable }
+        case .top:
+            if isTestable != other.isTestable { return isTestable }
+        case .ignore:
+            break
+        }
         if kind != other.kind { return kind.rawValue < other.kind.rawValue }
         if ignoringCase {
             return module < other.module

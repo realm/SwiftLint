@@ -11,6 +11,7 @@ import XCTest
 @testable import SwiftLintFramework
 
 // swiftlint:disable type_body_length
+// swiftlint:disable file_length
 
 class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
@@ -317,11 +318,32 @@ class RuleConfigurationsTests: XCTestCase {
 extension RuleConfigurationsTests {
 
     func testSortedImportsConfigurationSetsCorrectly() {
-        let data: [String: Any] = ["ignore_case": true]
+        var data: [String: Any] = ["ignore_case": true]
 
-        var config1 = SortedImportsConfiguration(ignoreCase: false)
-        let config2 = SortedImportsConfiguration(ignoreCase: true)
+        var config1 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
+        var config2 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .bottom)
 
+        do {
+            try config1.apply(configuration: data)
+            XCTAssertEqual(config1, config2)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+
+        config1 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .top)
+        config2 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .bottom)
+
+        do {
+            try config1.apply(configuration: data)
+            XCTAssertEqual(config1, config2)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+
+        config1 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .top)
+        config2 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
+
+        data = ["ignore_case": false, "testable_imports_position": TestableImportsPosition.bottom]
         do {
             try config1.apply(configuration: data)
             XCTAssertEqual(config1, config2)
@@ -331,20 +353,20 @@ extension RuleConfigurationsTests {
     }
 
     func testSortedImportsConfigurationThrowsOnBadConfig() {
-        var config1 = SortedImportsConfiguration(ignoreCase: false)
+        var config1 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
         checkError(ConfigurationError.unknownConfiguration) {
-            try config1.apply(configuration: [true])
+            try config1.apply(configuration: [true, "top"])
         }
     }
 
     func testSortedImportsConfigurationIgnoreCase() {
-        let config1 = SortedImportsConfiguration(ignoreCase: true)
+        let config1 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .bottom)
         XCTAssertEqual(config1.ignoreCase, true)
 
-        let config2 = SortedImportsConfiguration(ignoreCase: false)
+        let config2 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
         XCTAssertEqual(config2.ignoreCase, false)
 
-        var config3 = SortedImportsConfiguration(ignoreCase: false)
+        var config3 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
         do {
             try config3.apply(configuration: ["ignore_case": true])
             XCTAssertEqual(config3.ignoreCase, true)
@@ -352,7 +374,7 @@ extension RuleConfigurationsTests {
             XCTFail("Did not configure correctly")
         }
 
-        var config4 = SortedImportsConfiguration(ignoreCase: false)
+        var config4 = SortedImportsConfiguration(ignoreCase: false, testableImportsPosition: .bottom)
         do {
             try config4.apply(configuration: ["ignore_case": false])
             XCTAssertEqual(config4.ignoreCase, false)
@@ -361,12 +383,43 @@ extension RuleConfigurationsTests {
         }
     }
 
+    func testSortedImportsConfigurationTestableImportsPosition() {
+        let config1 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .bottom)
+        XCTAssertEqual(config1.testableImportsPosition, TestableImportsPosition.bottom)
+
+        let config2 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .top)
+        XCTAssertEqual(config2.testableImportsPosition, TestableImportsPosition.top)
+
+        var config3 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .bottom)
+        do {
+            try config3.apply(configuration: ["testable_imports_position": TestableImportsPosition.top.rawValue])
+            XCTAssertEqual(config3.testableImportsPosition, TestableImportsPosition.top)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+
+        var config4 = SortedImportsConfiguration(ignoreCase: true, testableImportsPosition: .ignore)
+        do {
+            try config4.apply(configuration: ["testable_imports_position": TestableImportsPosition.bottom.rawValue])
+            XCTAssertEqual(config4.testableImportsPosition, TestableImportsPosition.bottom)
+        } catch {
+            XCTFail("Did not configure correctly")
+        }
+    }
+
     func testSortedImportsConfigurationEquality() {
-        let possibleTests: [Bool] = [false, true]
+        let possibleTests: [(Bool, TestableImportsPosition)] = [
+            (false, .bottom),
+            (false, .ignore),
+            (false, .top),
+            (true, .bottom),
+            (true, .ignore),
+            (true, .top)
+        ]
 
         possibleTests.enumerated().forEach { index, data in
-            let config1 = SortedImportsConfiguration(ignoreCase: data)
-            let config2 = SortedImportsConfiguration(ignoreCase: data)
+            let config1 = SortedImportsConfiguration(ignoreCase: data.0, testableImportsPosition: data.1)
+            let config2 = SortedImportsConfiguration(ignoreCase: data.0, testableImportsPosition: data.1)
             XCTAssertEqual(config1, config2, "Failed imports configuration equality test data #\(index)")
         }
     }
@@ -402,6 +455,10 @@ extension RuleConfigurationsTests {
                 testSortedImportsConfigurationSetsCorrectly),
             ("testSortedImportsConfigurationThrowsOnBadConfig",
                 testSortedImportsConfigurationThrowsOnBadConfig),
+            ("testSortedImportsConfigurationIgnoreCase",
+                testSortedImportsConfigurationIgnoreCase),
+            ("testSortedImportsConfigurationTestableImportsPosition",
+             testSortedImportsConfigurationTestableImportsPosition),
             ("testTrailingWhitespaceConfigurationThrowsOnBadConfig",
                 testTrailingWhitespaceConfigurationThrowsOnBadConfig),
             ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines",

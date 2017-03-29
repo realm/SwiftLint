@@ -7,8 +7,8 @@
 //
 
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 // swiftlint:disable:next type_name
 class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {

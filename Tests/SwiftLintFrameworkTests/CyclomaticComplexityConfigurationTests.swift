@@ -7,8 +7,8 @@
 //
 
 import SourceKittenFramework
-@testable import SwiftLintFramework
 import XCTest
+@testable import SwiftLintFramework
 
 class CyclomaticComplexityConfigurationTests: XCTestCase {
     func testCyclomaticComplexityConfigurationInitializerSetsLevels() {

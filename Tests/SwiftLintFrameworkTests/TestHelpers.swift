@@ -59,7 +59,10 @@ private func render(locations: [Location], in contents: String) -> String {
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
         var content = contents[line - 1]
-        let scalarIndex = content.unicodeScalars.index(content.unicodeScalars.startIndex, offsetBy: character - 1)
+        let utf16Index = content.utf16.index(content.utf16.startIndex, offsetBy: character - 1)
+        guard let scalarIndex = utf16Index.samePosition(in: content.unicodeScalars) else {
+            fatalError("A UTF‐16 index is pointing at a trailing surrogate.\nThere is a bug in SwiftLint.")
+        }
         content.unicodeScalars.insert("↓", at: scalarIndex)
         contents[line - 1] = content
     }

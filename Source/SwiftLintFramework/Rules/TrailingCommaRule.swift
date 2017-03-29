@@ -161,32 +161,44 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
     }
 
     public func correct(file: File) -> [Correction] {
+        print("Started correction.")
         let violations = violationRanges(in: file, dictionary: file.structure.dictionary)
+        print("Got violations.")
         let correctedViolations = violations.map {
             file.contents.bridge().byteRangeToNSRange(start: $0.location, length: $0.length)!
         }
+        print("Converted violation ranges to NSRange.")
 
         let matches = file.ruleEnabled(violatingRanges: correctedViolations, for: self)
+        print("Filtered matches.")
 
         if matches.isEmpty { return [] }
+        print("Matches exist.")
 
         var correctedContents = file.contents
+        print("Got correctable file.")
 
         matches.reversed().forEach { range in
+            print("Began dealing with \(range)")
             let utf16Start = correctedContents.utf16.index(correctedContents.utf16.startIndex, offsetBy: range.location)
             let utf16End = correctedContents.utf16.index(utf16Start, offsetBy: range.length)
+            print("Got utf16 indices.")
 
             guard let scalarsStart = utf16Start.samePosition(in: correctedContents.unicodeScalars),
                 let scalarsEnd = utf16End.samePosition(in: correctedContents.unicodeScalars) else {
                 fatalError("A UTF‐16 index is pointing at a trailing surrogate.\nThere is a bug in SwiftLint.")
             }
             let scalarRange = scalarsStart ..< scalarsEnd
+            print("Got scalar indices.")
 
             if configuration.mandatoryComma {
+                print("Adding comma...")
                 correctedContents.unicodeScalars.insert(",", at: scalarRange.lowerBound)
             } else {
+                print("Removing comma.")
                 correctedContents.unicodeScalars.removeSubrange(scalarRange)
             }
+            print("Made change.")
         }
 
         let description = type(of: self).description
@@ -194,8 +206,10 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             let location = Location(file: file, characterOffset: range.location)
             return Correction(ruleDescription: description, location: location)
         }
+        print("Generated description.")
 
         file.write(correctedContents)
+        print("Wrote to file.")
 
         return corrections
     }

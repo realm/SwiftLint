@@ -194,9 +194,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             return Correction(ruleDescription: description, location: location)
         }
 
-        // swiftlint:disable force_cast
-        file.write((correctedContents.copy() as! NSString).bridge())
-        // swiftlint:enable force_cast
+        file.write(correctedContents.bridge())
 
         return corrections
     }

@@ -12,8 +12,10 @@ import XCTest
 class TrailingCommaRuleTests: XCTestCase {
 
     func testTrailingCommaRuleWithDefaultConfiguration() {
+        print("Starting default test.")
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
         verifyRule(TrailingCommaRule.description)
+        print("Verified rule.")
 
         // Ensure the rule produces the correct reason string.
         let failingCase = "let array = [\n\t1,\n\t2,\n]\n"
@@ -24,6 +26,7 @@ class TrailingCommaRuleTests: XCTestCase {
                 reason: "Collection literals should not have trailing commas."
             )]
         )
+        print("Intensionally triggered failure.")
     }
 
     private let mandatoryCommaRuleDescription = RuleDescription(

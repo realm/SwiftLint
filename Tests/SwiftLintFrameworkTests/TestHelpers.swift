@@ -58,13 +58,11 @@ private func render(locations: [Location], in contents: String) -> String {
     var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
-        var content = contents[line - 1]
-        let utf16Index = content.utf16.index(content.utf16.startIndex, offsetBy: character - 1)
-        guard let scalarIndex = utf16Index.samePosition(in: content.unicodeScalars) else {
-            fatalError("A UTF‐16 index is pointing at a trailing surrogate.\nThere is a bug in SwiftLint.")
-        }
-        content.unicodeScalars.insert("↓", at: scalarIndex)
-        contents[line - 1] = content
+        let content = NSMutableString(string: contents[line - 1])
+        content.insert("↓", at: character - 1)
+        // swiftlint:disable force_cast
+        contents[line - 1] = (content.copy() as! NSString).bridge()
+        // swiftlint:enable force_cast
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }

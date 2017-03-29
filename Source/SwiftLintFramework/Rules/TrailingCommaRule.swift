@@ -178,7 +178,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
         if matches.isEmpty { return [] }
 
-        var correctedContents = NSMutableString(string: file.contents)
+        let correctedContents = NSMutableString(string: file.contents)
 
         matches.reversed().forEach { range in
             if configuration.mandatoryComma {
@@ -194,7 +194,9 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             return Correction(ruleDescription: description, location: location)
         }
 
+        // swiftlint:disable force_cast
         file.write((correctedContents.copy() as! NSString).bridge())
+        // swiftlint:enable force_cast
 
         return corrections
     }

@@ -40,7 +40,7 @@ class TrailingCommaRuleTests: XCTestCase {
             result.append("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
         #endif
     }()
-    private static let corrections: [String] = {
+    private static let corrections: [String: String] = {
         let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓", with: ",") }
         var result: [String: String] = [:]
         for (triggering, correction) in zip(triggeringExamples, fixed) {

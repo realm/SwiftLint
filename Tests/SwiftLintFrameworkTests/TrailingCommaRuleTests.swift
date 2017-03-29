@@ -72,9 +72,9 @@ class TrailingCommaRuleTests: XCTestCase {
         print("Started customized tests.")
         // Verify TrailingCommaRule with test values for when mandatory_comma is true.
         let ruleDescription = mandatoryCommaRuleDescription
-        /*let ruleConfiguration = ["mandatory_comma": true]
+        let ruleConfiguration = ["mandatory_comma": true]
 
-        verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
+        /*verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)
 
         // Ensure the rule produces the correct reason string.
         let failingCase = "let array = [\n\t1,\n\t2\n]\n"

@@ -178,22 +178,13 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
         if matches.isEmpty { return [] }
 
-        var correctedContents = file.contents
+        var correctedContents = NSMutableString(string: file.contents)
 
         matches.reversed().forEach { range in
-            let utf16Start = correctedContents.utf16.index(correctedContents.utf16.startIndex, offsetBy: range.location)
-            let utf16End = correctedContents.utf16.index(utf16Start, offsetBy: range.length)
-
-            guard let scalarsStart = utf16Start.samePosition(in: correctedContents.unicodeScalars),
-                let scalarsEnd = utf16End.samePosition(in: correctedContents.unicodeScalars) else {
-                fatalError("A UTF‐16 index is pointing at a trailing surrogate.\nThere is a bug in SwiftLint.")
-            }
-            let scalarRange = scalarsStart ..< scalarsEnd
-
             if configuration.mandatoryComma {
-                correctedContents.unicodeScalars.insert(",", at: scalarRange.lowerBound)
+                correctedContents.insert(",", at: range.location)
             } else {
-                correctedContents.unicodeScalars.removeSubrange(scalarRange)
+                correctedContents.deleteCharacters(in: range)
             }
         }
 
@@ -203,7 +194,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             return Correction(ruleDescription: description, location: location)
         }
 
-        file.write(correctedContents)
+        file.write((correctedContents.copy() as! NSString).bridge())
 
         return corrections
     }

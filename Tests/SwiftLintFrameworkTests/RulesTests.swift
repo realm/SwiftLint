@@ -76,6 +76,14 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
+    }
+
+    func testFatalErrorMessageRule() {
+        verifyRule(FatalErrorMessageRule.description)
+    }
+
     func testFileLength() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
                    testMultiByteOffsets: false)
@@ -151,6 +159,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
+    }
+
+    func testImplicitlyUnwrappedOptional() {
+        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 
     func testLargeTuple() {
@@ -377,7 +389,6 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-
 }
 
 extension RulesTests {
@@ -399,6 +410,8 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
+            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
             ("testFileLength", testFileLength),
             ("testFirebaseConfigActivate", testFirebaseConfigActivate),
             ("testFirebaseConfigDefaults", testFirebaseConfigDefaults),
@@ -418,6 +431,7 @@ extension RulesTests {
             ("testGenericTypeName", testGenericTypeName),
             ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
+            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),

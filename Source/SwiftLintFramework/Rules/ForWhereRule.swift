@@ -37,14 +37,30 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
             "for user in users {\n" +
             "   if user.id == 1 { }\n" +
             "   print(user)\n" +
+            "}\n",
+            // if a variable is used
+            "for user in users {\n" +
+            "   let id = user.id\n" +
+            "   if id == 1 { }\n" +
+            "}\n",
+            // if something is after if
+            "for user in users {\n" +
+            "   if user.id == 1 { }\n" +
+            "   return true\n" +
+            "}\n",
+            // condition with multiple clauses
+            "for user in users {\n" +
+            "   if user.id == 1 && user.age > 18 { }\n" +
             "}\n"
         ],
         triggeringExamples: [
             "for user in users {\n" +
-            "   ↓if user.id == 1 { }\n" +
+            "   ↓if user.id == 1 { return true }\n" +
             "}\n"
         ]
     )
+
+    private static let commentKinds = Set(SyntaxKind.commentAndStringKinds())
 
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -55,7 +71,8 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
             let bodyDictionary = subDictionary.substructure.first,
             bodyDictionary.kind.flatMap(StatementKind.init) == .if,
             isOnlyOneIf(dictionary: bodyDictionary),
-            !containsLetInCondition(dictionary: bodyDictionary, file: file),
+            isOnlyIfInsideFor(forDictionary: subDictionary, ifDictionary: bodyDictionary, file: file),
+            !isComplexCondition(dictionary: bodyDictionary, file: file),
             let offset = bodyDictionary .offset else {
                 return []
         }
@@ -82,7 +99,31 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         return dictionary.substructure.first?.kind.flatMap(StatementKind.init) == .brace
     }
 
-    private func containsLetInCondition(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isOnlyIfInsideFor(forDictionary: [String: SourceKitRepresentable],
+                                   ifDictionary: [String: SourceKitRepresentable],
+                                   file: File) -> Bool {
+        guard let offset = forDictionary.offset,
+            let length = forDictionary.length,
+            let ifOffset = ifDictionary.offset,
+            let ifLength = ifDictionary.length else {
+                return false
+        }
+
+        let beforeIfRange = NSRange(location: offset, length: ifOffset - offset)
+        let ifFinalPosition = ifOffset + ifLength
+        let afterIfRange = NSRange(location: ifFinalPosition, length: offset + length - ifFinalPosition)
+        let tokens = file.syntaxMap.tokens(inByteRange: beforeIfRange) +
+            file.syntaxMap.tokens(inByteRange: afterIfRange)
+
+        let allKinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
+        let nonCommentKinds = allKinds.filter { kind in
+            !ForWhereRule.commentKinds.contains(kind)
+        }
+
+        return nonCommentKinds.isEmpty
+    }
+
+    private func isComplexCondition(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         let kind = "source.lang.swift.structure.elem.condition_expr"
         let contents = file.contents.bridge()
         return !dictionary.elements.filter { element in
@@ -93,7 +134,12 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
                     return false
             }
 
-            return !file.match(pattern: "\\blet\\b", with: [.keyword], range: range).isEmpty
+            let containsLet = !file.match(pattern: "\\blet\\b", with: [.keyword], range: range).isEmpty
+            if containsLet {
+                return true
+            }
+
+            return !file.match(pattern: "\\|\\||&&", with: [], range: range).isEmpty
         }.isEmpty
     }
 

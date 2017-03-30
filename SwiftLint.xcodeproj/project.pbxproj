@@ -1316,7 +1316,7 @@
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */,
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
-				10016BAA1E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift in Sources */,=======
+				10016BAA1E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */,
 				D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */,

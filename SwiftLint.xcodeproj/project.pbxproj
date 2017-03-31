@@ -16,6 +16,14 @@
 		02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */; };
 		094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094384FF1D5D2382009168CF /* WeakDelegateRule.swift */; };
 		094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
+		10016BA61E707183001B379E /* FirebaseConfigActivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016B9E1E707183001B379E /* FirebaseConfigActivateRule.swift */; };
+		10016BA71E707183001B379E /* FirebaseConfigDefaultsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016B9F1E707183001B379E /* FirebaseConfigDefaultsRule.swift */; };
+		10016BA81E707183001B379E /* FirebaseConfigFetchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA01E707183001B379E /* FirebaseConfigFetchRule.swift */; };
+		10016BA91E707183001B379E /* FirebaseCoreRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA11E707183001B379E /* FirebaseCoreRule.swift */; };
+		10016BAA1E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA21E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift */; };
+		10016BAB1E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA31E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift */; };
+		10016BAC1E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA41E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift */; };
+		10016BAD1E707183001B379E /* FirebaseInvitesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA51E707183001B379E /* FirebaseInvitesRule.swift */; };
 		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
@@ -284,6 +292,14 @@
 		02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNSStringTests.swift; sourceTree = "<group>"; };
 		094384FF1D5D2382009168CF /* WeakDelegateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakDelegateRule.swift; sourceTree = "<group>"; };
 		094385021D5D4F78009168CF /* PrivateOutletRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRule.swift; sourceTree = "<group>"; };
+		10016B9E1E707183001B379E /* FirebaseConfigActivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigActivateRule.swift; sourceTree = "<group>"; };
+		10016B9F1E707183001B379E /* FirebaseConfigDefaultsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigDefaultsRule.swift; sourceTree = "<group>"; };
+		10016BA01E707183001B379E /* FirebaseConfigFetchRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseConfigFetchRule.swift; sourceTree = "<group>"; };
+		10016BA11E707183001B379E /* FirebaseCoreRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseCoreRule.swift; sourceTree = "<group>"; };
+		10016BA21E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDynamicLinksCustomSchemeURLRule.swift; sourceTree = "<group>"; };
+		10016BA31E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDynamicLinksUniversalLinkRule.swift; sourceTree = "<group>"; };
+		10016BA41E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDynamicLinksSchemeURLRule.swift; sourceTree = "<group>"; };
+		10016BA51E707183001B379E /* FirebaseInvitesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseInvitesRule.swift; sourceTree = "<group>"; };
 		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
@@ -848,6 +864,14 @@
 				C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */,
 				D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
+				10016B9E1E707183001B379E /* FirebaseConfigActivateRule.swift */,
+				10016B9F1E707183001B379E /* FirebaseConfigDefaultsRule.swift */,
+				10016BA01E707183001B379E /* FirebaseConfigFetchRule.swift */,
+				10016BA11E707183001B379E /* FirebaseCoreRule.swift */,
+				10016BA21E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift */,
+				10016BA31E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift */,
+				10016BA41E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift */,
+				10016BA51E707183001B379E /* FirebaseInvitesRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
 				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
 				E816194D1BFBFEAB00946723 /* ForceTryRule.swift */,
@@ -1209,6 +1233,7 @@
 				D4C4A34C1DEA4FF000E0E04C /* AttributesConfiguration.swift in Sources */,
 				83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */,
 				3B12C9C51C322032000B423F /* MasterRuleList.swift in Sources */,
+				10016BA91E707183001B379E /* FirebaseCoreRule.swift in Sources */,
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,
 				E81CDE711C00FEAA00B430F6 /* ValidDocsRule.swift in Sources */,
@@ -1235,6 +1260,8 @@
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
 				D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */,
 				E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */,
+				10016BA71E707183001B379E /* FirebaseConfigDefaultsRule.swift in Sources */,
+				10016BAB1E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift in Sources */,
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				92CCB2D71E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift in Sources */,
 				E847F0A91BFBBABD00EA9363 /* EmptyCountRule.swift in Sources */,
@@ -1284,15 +1311,18 @@
 				D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */,
 				D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */,
 				D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */,
+				10016BA61E707183001B379E /* FirebaseConfigActivateRule.swift in Sources */,
 				D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */,
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
+				10016BAA1E707183001B379E /* FirebaseDynamicLinksCustomSchemeURLRule.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */,
 				D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */,
 				7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
+				10016BA81E707183001B379E /* FirebaseConfigFetchRule.swift in Sources */,
 				D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */,
 				00B8D9791E2D1223004E0EEC /* LegacyConstantRuleExamples.swift in Sources */,
 				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */,
@@ -1316,6 +1346,7 @@
 				094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */,
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
 				3BB47D831C514E8100AE6A10 /* RegexConfiguration.swift in Sources */,
+				10016BAD1E707183001B379E /* FirebaseInvitesRule.swift in Sources */,
 				D4C889711E385B7B00BAE88D /* RedundantDiscardableLetRule.swift in Sources */,
 				3B1150CA1C31FC3F00D83B1E /* Yaml+SwiftLint.swift in Sources */,
 				4A9A3A3A1DC1D75F00DF5183 /* HTMLReporter.swift in Sources */,
@@ -1334,6 +1365,7 @@
 				D4B0228E1E0CC608007E5297 /* ClassDelegateProtocolRule.swift in Sources */,
 				E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */,
 				D40AD08A1E032F9700F48C30 /* UnusedClosureParameterRule.swift in Sources */,
+				10016BAC1E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift in Sources */,
 				D46E041D1DE3712C00728374 /* TrailingCommaRule.swift in Sources */,
 				D4DABFD91E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift in Sources */,
 				E88198521BEA941300333A11 /* TodoRule.swift in Sources */,

@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
+public struct FileLengthRule: ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 400, error: 1000)
 
     public init() {}
@@ -18,15 +18,20 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "File Line Length",
         description: "Files should not span too many lines.",
         nonTriggeringExamples: [
-            repeatElement("//\n", count: 400).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 400).joined(),
+            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()
         ],
         triggeringExamples: [
-            repeatElement("//\n", count: 401).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 401).joined()
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let lineCount = file.lines.count
+        let commentKinds = Set(SyntaxKind.commentKinds())
+        let lineCount = file.syntaxKindsByLines.filter { kinds in
+            return !kinds.filter { !commentKinds.contains($0) }.isEmpty
+        }.count
+
         for parameter in configuration.params where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,

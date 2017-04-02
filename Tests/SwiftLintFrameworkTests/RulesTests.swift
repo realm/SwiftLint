@@ -85,8 +85,7 @@ class RulesTests: XCTestCase {
     }
 
     func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
+        verifyRule(FileLengthRule.description, testMultiByteOffsets: false)
     }
 
     func testFirstWhere() {

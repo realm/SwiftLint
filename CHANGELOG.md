@@ -31,6 +31,10 @@
 
 ##### Enhancements
 
+* Don't count comment lines in `file_length` rule.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
 * Add `implicitly_unwrapped_optional` opt-in rule that warns against using
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)

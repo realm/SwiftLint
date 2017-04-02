@@ -32,7 +32,8 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             ]
         } + [
             "var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld",
-            "angle = someCheck ? angle : -angle"
+            "angle = someCheck ? angle : -angle",
+            "seconds = seconds * 60 + value"
         ],
         triggeringExamples: allOperators.flatMap { operation in
             [
@@ -57,7 +58,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         let operand = "[\\w\\d\\.]+?"
         let spaces = "[^\\S\\r\\n]*?"
 
-        let pattern = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
+        let pattern = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)\(spaces)\\S+$"
         return pattern
     }()
 

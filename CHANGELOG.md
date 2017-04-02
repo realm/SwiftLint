@@ -109,6 +109,10 @@
 
 ##### Bug Fixes
 
+* Prevent false positive in `shorthand_operator` rule.  
+  [sammy-SC](https://github.com/sammy-SC)
+  [#1254](https://github.com/realm/SwiftLint/issues/1254)
+
 * Fix crashes when accessing cached regular expressions when linting in
   parallel.  
   [JP Simard](https://github.com/jpsim)

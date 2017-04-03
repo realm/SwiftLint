@@ -2,7 +2,11 @@
 
 ##### Breaking
 
-* None.
+* Replace YamlSwift with Yams. SwiftLint no longer includes YamlSwift. If your
+  project implicitly depends on YamlSwift, you need to modify it to depend on
+  YamlSwift explicitly.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1412](https://github.com/realm/SwiftLint/issues/1412)
 
 ##### Enhancements
 

@@ -107,6 +107,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "Float",
             "Double",
             "Bool",
+            "TimeInterval",
             "CGPoint",
             "NSPoint",
             "CGSize",

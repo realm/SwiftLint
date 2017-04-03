@@ -44,6 +44,7 @@ internal struct AttributesRuleExamples {
 
     static let swift3NonTriggeringExamples = commonNonTriggeringExamples + [
         "@GKInspectable var maxSpeed: Float",
+        "@IBInspectable var animationDuration: TimeInterval",
         "@discardableResult\n func a() -> Int",
         "@objc\n @discardableResult\n func a() -> Int",
         "func increase(f: @autoclosure () -> Int) -> Int",

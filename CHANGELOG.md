@@ -11,6 +11,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
+* Add TimeInterval as allowed type for the valid_ibinspectable rule.  
+  [Konrad Feiler](https://github.com/Bersaelor)
+  [#1414](https://github.com/realm/SwiftLint/pull/1414)
+
 ##### Bug Fixes
 
 * None.

@@ -27,7 +27,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
             "}\n",
             "if foo() { let _ = bar() }\n",
             "if foo() { _ = bar() }\n",
-            "if case .some(_) = self {}"
+            "if case .some(_) = self {}",
+            "if let point = state.find({ _ in true }) {}"
         ],
         triggeringExamples: [
             "if let ↓_ = Foo.optionalValue {\n" +

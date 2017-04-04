@@ -46,6 +46,10 @@
   [Daniel Rodríguez Troitiño](https://github.com/drodriguez)
   [#1376](https://github.com/realm/SwiftLint/issues/1376)
 
+* Fix false positives on `redundant_discardable_let` rule.  
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1415](https://github.com/realm/SwiftLint/issues/1415)
+
 ## 0.17.0: Extra Rinse Cycle
 
 ##### Breaking

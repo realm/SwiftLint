@@ -8,6 +8,21 @@
   [norio-nomura](https://github.com/norio-nomura)
   [#1412](https://github.com/realm/SwiftLint/issues/1412)
 
+* Since Yams interpret YAML stricter than YamlSwift, some configurations now
+  output parsing errors. e.g.:
+  ```yaml
+  excluded:
+    - *.generated.swift # this line causes error
+    - '*.generated.swift' # should be quoted.
+  custom_rules:
+    wrong_regex:
+      name: "wrong regex"
+      regex: "((assert|precondition)\(false)" # '\' in "" means escape sequence
+    strict_regex:
+      name: "strict regex"
+      regex: '((assert|precondition)\(false)' # Use single quotes
+  ```
+
 ##### Enhancements
 
 * Fix false positives on `for_where` rule and skip violation on

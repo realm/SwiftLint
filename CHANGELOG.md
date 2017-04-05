@@ -30,6 +30,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
+* SwiftLint prints configuration error in locatable format by Xcode's Issue Navigator.
+  ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
+
 ##### Bug Fixes
 
 * None.

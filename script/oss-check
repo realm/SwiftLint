@@ -111,7 +111,7 @@ end
 def generate_reports(branch)
   @repos.each do |repo|
     Dir.chdir("#{@working_dir}/#{repo.name}") do
-      iterations = 2
+      iterations = 5
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now

@@ -22,7 +22,8 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         nonTriggeringExamples: [
             "_ = foo()\n",
             "if let _ = foo() { }\n",
-            "guard let _ = foo() else { return }\n"
+            "guard let _ = foo() else { return }\n",
+            "let _: ExplicitType = foo()"
         ],
         triggeringExamples: [
             "↓let _ = foo()\n",
@@ -71,6 +72,8 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
 
             return !isInBooleanCondition(byteOffset: byteRange.location,
                                          dictionary: file.structure.dictionary)
+                && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
+                                    fileContents: contents)
         }
     }
 
@@ -100,6 +103,19 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         }
 
         return false
+    }
+
+    private func hasExplicitType(utf16Range: Range<Int>, fileContents: NSString) -> Bool {
+        if utf16Range.upperBound == fileContents.length {
+            return false
+        } else {
+            let nextUTF16Unit = fileContents.substring(with: NSRange(location: utf16Range.upperBound, length: 1))
+            if nextUTF16Unit == ":" {
+                return true
+            } else {
+                return false
+            }
+        }
     }
 
 }

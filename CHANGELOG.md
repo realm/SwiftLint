@@ -38,6 +38,10 @@
 
 ##### Bug Fixes
 
+* Fix false positives on `redundant_discardable_let` rule.  
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1415](https://github.com/realm/SwiftLint/issues/1415)
+
 * Fix `--lenient` reports errors before lint completion.  
   [aaroncrespo](https://github.com/aaroncrespo)
   [#1391](https://github.com/realm/SwiftLint/issues/1391)

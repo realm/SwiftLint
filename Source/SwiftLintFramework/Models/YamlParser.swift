@@ -31,12 +31,7 @@ internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
 public struct YamlParser {
     public static func parse(_ yaml: String) throws -> [String: Any] {
         do {
-            if let obj = try Yams.load(yaml: yaml) {
-                if let dic = obj as? [String: Any] {
-                    return dic
-                }
-            }
-            return [:]
+            return try Yams.load(yaml: yaml) as? [String: Any] ?? [:]
         } catch {
             throw YamlParserError.yamlParsing("\(error)")
         }

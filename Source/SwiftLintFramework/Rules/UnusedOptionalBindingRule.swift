@@ -76,11 +76,9 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     private func violations(in range: NSRange, of file: File) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
 
-        let letUnderscore = "let\\s+(_\\s*[=,)])"
-        let letUnderscoreTuple = "let\\s+(\\((\\s*[_,]\\s*)+\\)\\s*=)"
+        let letUnderscore = "let\\s+((_\\s*[=,)])|(\\((\\s*[_,]\\s*)+\\)\\s*=))"
 
         let matches = file.matchesAndSyntaxKinds(matching: letUnderscore, range: range)
-            + file.matchesAndSyntaxKinds(matching: letUnderscoreTuple, range: range)
 
         return matches
             .filter { $0.1.filter(kinds.contains).isEmpty }

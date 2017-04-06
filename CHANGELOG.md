@@ -2,7 +2,25 @@
 
 ##### Breaking
 
-* None.
+* Replace YamlSwift with Yams. SwiftLint no longer includes YamlSwift. If your
+  project implicitly depends on YamlSwift, you need to modify it to depend on
+  YamlSwift explicitly.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1412](https://github.com/realm/SwiftLint/issues/1412)
+
+* Yams interprets YAML more strictly than YamlSwift, so if your YAML
+  configurations previously worked with SwiftLint but didn't fully conform to
+  the YAML 1.2 standard, you'll need to fix those validation errors.
+  For example:
+  ```yaml
+  custom_rules:
+    wrong_regex:
+      name: "wrong regex"
+      regex: "((assert|precondition)\(false)" # '\' in "" means escape sequence
+    strict_regex:
+      name: "strict regex"
+      regex: '((assert|precondition)\(false)' # Use single quotes
+  ```
 
 ##### Enhancements
 
@@ -10,6 +28,10 @@
   complex conditions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
+
+* Print YAML configuration errors in locatable format compatible with Xcode's
+  Issue Navigator.  
+  ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
 
 ##### Bug Fixes
 

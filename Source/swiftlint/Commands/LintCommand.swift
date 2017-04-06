@@ -30,20 +30,19 @@ struct LintCommand: CommandProtocol {
             if options.benchmark {
                 let start = Date()
                 let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = _currentViolations
+                currentViolations = LintCommand.applyLeniency(options: options, violations: _currentViolations)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
                     violations += currentViolations
                 }
             } else {
-                currentViolations = linter.styleViolations
+                currentViolations = LintCommand.applyLeniency(options: options, violations: linter.styleViolations)
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
             }
             linter.file.invalidateCache()
-            violations = LintCommand.applyLeniency(options: options, violations: violations)
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)

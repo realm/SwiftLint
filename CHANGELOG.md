@@ -2,20 +2,52 @@
 
 ##### Breaking
 
-* None.
+* Replace YamlSwift with Yams. SwiftLint no longer includes YamlSwift. If your
+  project implicitly depends on YamlSwift, you need to modify it to depend on
+  YamlSwift explicitly.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1412](https://github.com/realm/SwiftLint/issues/1412)
+
+* Yams interprets YAML more strictly than YamlSwift, so if your YAML
+  configurations previously worked with SwiftLint but didn't fully conform to
+  the YAML 1.2 standard, you'll need to fix those validation errors.
+  For example:
+  ```yaml
+  custom_rules:
+    wrong_regex:
+      name: "wrong regex"
+      regex: "((assert|precondition)\(false)" # '\' in "" means escape sequence
+    strict_regex:
+      name: "strict regex"
+      regex: '((assert|precondition)\(false)' # Use single quotes
+  ```
 
 ##### Enhancements
+
+* Support compiling with Xcode 8.3 and Swift 3.1.  
+  [Keith Smiley](https://github.com/keith)
 
 * Fix false positives on `for_where` rule and skip violation on
   complex conditions.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
+* Print YAML configuration errors in locatable format compatible with Xcode's
+  Issue Navigator.  
+  ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
+
 ##### Bug Fixes
 
 * Fix false positives on `redundant_discardable_let` rule.  
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1415](https://github.com/realm/SwiftLint/issues/1415)
+* Fix `--lenient` reports errors before lint completion.  
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1391](https://github.com/realm/SwiftLint/issues/1391)
+
+* Fix false positives in `unused_optional_binding` rule.  
+  [Daniel Rodríguez Troitiño](https://github.com/drodriguez)
+  [#1376](https://github.com/realm/SwiftLint/issues/1376)
 
 ## 0.17.0: Extra Rinse Cycle
 
@@ -37,17 +69,17 @@
 ##### Enhancements
 
 * Add `implicitly_unwrapped_optional` opt-in rule that warns against using
-  implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.
+  implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
   [#56](https://github.com/realm/SwiftLint/issues/56)
 
 * Performance improvements to `generic_type_name`, `redundant_nil_coalescing`,
-  `mark`, `first_where` and `vertical_whitespace` rules.
+  `mark`, `first_where` and `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `discarded_notification_center_observer` rule that warns when the result
   of `NotificationCenter.addObserver(forName:object:queue:using:)` is not stored
-  so it can be removed later.
+  so it can be removed later.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1062](https://github.com/realm/SwiftLint/issues/1062)
 
@@ -61,7 +93,7 @@
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
 * Add `ignores_function_declarations` and `ignores_comments` as options to
-  `LineLengthRule`.
+  `LineLengthRule`.  
   [Michael L. Welles](https://github.com/mlwelles)
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
@@ -90,7 +122,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only display
-  enabled rules.
+  enabled rules.  
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
 
@@ -103,7 +135,7 @@
   [Kim de Vos](https://github.com/kimdv)
 
 * Add `--lenient` CLI option to `lint` command. Facilitates running a lint task
-  that doesn't fail a pipeline of other tasks.
+  that doesn't fail a pipeline of other tasks.  
   [aaroncrespo](https://github.com/aaroncrespo)
   [#1322](https://github.com/realm/SwiftLint/issues/1322)
 
@@ -154,7 +186,7 @@
 
 * Make `ASTRule` default implementation to navigate through the substructure
   even if its children are from a different kind. This fixes some violations not
-  being reported in some contexts.
+  being reported in some contexts.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1237](https://github.com/realm/SwiftLint/issues/1237)
 
@@ -829,7 +861,7 @@
 ##### Enhancements
 
 * Add `--enable-all-rules` CLI option to `lint` command to facilitate running
-  all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.
+  all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1170](https://github.com/realm/SwiftLint/issues/1170)
 
@@ -1467,12 +1499,12 @@ This release has seen a phenomenal uptake in community contributions!
 ##### Enhancements
 
 * Add `checkstyle` reporter to generate XML reports in the Checkstyle 4.3
-  format.
+  format.  
   [JP Simard](https://github.com/jpsim)
   [#277](https://github.com/realm/SwiftLint/issues/277)
 
 * Support command comment modifiers (`previous`, `this` & `next`) to limit the
-  command's scope to a single line.
+  command's scope to a single line.  
   [JP Simard](https://github.com/jpsim)
   [#222](https://github.com/realm/SwiftLint/issues/222)
 
@@ -1683,7 +1715,7 @@ This release has seen a phenomenal uptake in community contributions!
   [zippy1978](https://github.com/zippy1978)
 
 * Add `OpeningBraceRule` to make sure there is exactly a space before opening
-  brace and it is on the same line as declaration.
+  brace and it is on the same line as declaration.  
   [Alex Culeva](https://github.com/S2dentik)
 
 * Print to stderr for all informational logs. Only reporter outputs is logged to
@@ -1737,7 +1769,7 @@ This release has seen a phenomenal uptake in community contributions!
   [#26](https://github.com/realm/SwiftLint/issues/26)
 
 * Updated `TypeNameRule` and `VariableNameRule` to allow private type & variable
-  names to start with an underscore.
+  names to start with an underscore.  
   [JP Simard](https://github.com/jpsim)
 
 * Disable and re-enable rules from within source code comments using

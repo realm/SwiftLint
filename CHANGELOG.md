@@ -8,12 +8,11 @@
   [norio-nomura](https://github.com/norio-nomura)
   [#1412](https://github.com/realm/SwiftLint/issues/1412)
 
-* Since Yams interpret YAML stricter than YamlSwift, some configurations now
-  output parsing errors. e.g.:
+* Yams interprets YAML more strictly than YamlSwift, so if your YAML
+  configurations previously worked with SwiftLint but didn't fully conform to
+  the YAML 1.2 standard, you'll need to fix those validation errors.
+  For example:
   ```yaml
-  excluded:
-    - *.generated.swift # this line causes error
-    - '*.generated.swift' # should be quoted.
   custom_rules:
     wrong_regex:
       name: "wrong regex"
@@ -30,7 +29,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
-* SwiftLint prints configuration error in locatable format by Xcode's Issue Navigator.
+* Print YAML configuration errors in locatable format compatible with Xcode's
+  Issue Navigator.  
   ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
 
 ##### Bug Fixes

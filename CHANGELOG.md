@@ -13,7 +13,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Avoid pattern matching false positives in `unused_optional_binding` rule.  
+  [Daniel Rodríguez Troitiño](https://github.com/drodriguez)
+  [#1376](https://github.com/realm/SwiftLint/issues/1376)
 
 ## 0.17.0: Extra Rinse Cycle
 

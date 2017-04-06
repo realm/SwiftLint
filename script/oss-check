@@ -88,50 +88,55 @@ def non_empty_lines(path)
   File.read(path).split(/\n+/).reject(&:empty?)
 end
 
-def generate_reports(clone, branch)
-  Dir.chdir(@working_dir) do
-    @repos.each do |repo|
-      if clone
-        puts "Cloning #{repo.name}"
-        `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
-        if repo.name == 'swift'
-          File.open('swift/.swiftlint.yml', 'w') do |file|
-            file << 'included: stdlib'
-          end
+def setup_repos
+  @repos.each do |repo|
+    dir = "#{@working_dir}/#{repo.name}"
+    puts "Cloning #{repo}"
+    `git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null`
+    if repo.name == 'Swift'
+      File.open("#{dir}/.swiftlint.yml", 'w') do |file|
+        file << 'included: stdlib'
+      end
+    end
+    Dir.chdir(dir) do
+      repo.commit_hash = `git rev-parse HEAD`.strip
+    end
+  end
+end
+
+def generate_reports(branch)
+  @repos.each do |repo|
+    Dir.chdir("#{@working_dir}/#{repo.name}") do
+      iterations = 2
+      print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
+      durations = []
+      start = Time.now
+      command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
+      File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
+        Open3.popen3(command) do |_, stdout, _, _|
+          file << stdout.read.chomp
         end
       end
-      Dir.chdir(repo.name) do
-        iterations = 5
-        print "Linting #{iterations} iterations of #{repo.name} with #{branch}: 1"
-        repo.commit_hash = `git rev-parse HEAD`.strip
-        durations = []
+      durations << Time.now - start
+      for i in 2..iterations
+        print "..#{i}"
         start = Time.now
-        command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
-        File.open("../#{branch}_reports/#{repo.name}.txt", 'w') do |file|
-          Open3.popen3(command) do |_, stdout, _, _|
-            file << stdout.read.chomp
-          end
-        end
+        Open3.popen3(command) { |_, stdout, _, _| stdout.read }
         durations << Time.now - start
-        for i in 2..iterations
-          print "..#{i}"
-          start = Time.now
-          Open3.popen3(command) { |_, stdout, _, _| stdout.read }
-          durations << Time.now - start
-        end
-        puts ''
-        average_duration = (durations.reduce(:+) / iterations).round(2)
-        if branch == 'branch'
-          repo.branch_duration = average_duration
-        else
-          repo.master_duration = average_duration
-        end
+      end
+      puts ''
+      average_duration = (durations.reduce(:+) / iterations).round(2)
+      if branch == 'branch'
+        repo.branch_duration = average_duration
+      else
+        repo.master_duration = average_duration
       end
     end
   end
 end
 
 # Prep
+setup_repos
 ["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
   FileUtils.mkdir_p(dir)
 end
@@ -141,7 +146,7 @@ puts 'Building branch'
 `swift build -c release`
 
 # Generate branch reports
-generate_reports(true, 'branch')
+generate_reports('branch')
 # Build master
 `git fetch`
 `git checkout origin/master`
@@ -163,7 +168,7 @@ unless $?.success?
 end
 
 # Generate master reports
-generate_reports(false, 'master')
+generate_reports('master')
 # Diff and report changes to Danger
 @repos.each do |repo|
   branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt")

@@ -106,16 +106,11 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
     }
 
     private func hasExplicitType(utf16Range: Range<Int>, fileContents: NSString) -> Bool {
-        if utf16Range.upperBound == fileContents.length {
+        guard utf16Range.upperBound != fileContents.length else {
             return false
-        } else {
-            let nextUTF16Unit = fileContents.substring(with: NSRange(location: utf16Range.upperBound, length: 1))
-            if nextUTF16Unit == ":" {
-                return true
-            } else {
-                return false
-            }
         }
+        let nextUTF16Unit = fileContents.substring(with: NSRange(location: utf16Range.upperBound, length: 1))
+        return nextUTF16Unit == ":"
     }
 
 }

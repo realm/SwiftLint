@@ -1,4 +1,4 @@
-## Master
+## 0.18.1: Misaligned Drum
 
 ##### Breaking
 
@@ -10,7 +10,7 @@
 
 ##### Bug Fixes
 
-* None.
+* Compile releases in the 'Release' configuration rather than 'Debug'.
 
 ## 0.18.0: Misaligned Drum
 

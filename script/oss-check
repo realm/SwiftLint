@@ -19,9 +19,7 @@ end
 $stdout.sync = true
 repo_clean = `git status --porcelain`.empty?
 
-unless repo_clean
-  fail 'git repo needs to be clean to run oss-check. Aborting.'
-end
+fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
 
 @branch_name = `git symbolic-ref HEAD --short`.strip
 
@@ -68,7 +66,7 @@ def generate_reports(clone, branch)
         puts "Cloning #{repo_name}"
         `git clone "https://github.com/#{repo}" --depth 1 2> /dev/null`
         if repo_name == 'swift'
-          File.open("swift/.swiftlint.yml", 'w') do |file|
+          File.open('swift/.swiftlint.yml', 'w') do |file|
             file << 'included: stdlib'
           end
         end
@@ -85,12 +83,12 @@ def generate_reports(clone, branch)
             file << stdout.read.chomp
           end
         end
-        durations += [Time.now - start]
+        durations << Time.now - start
         for i in 2..iterations
           print "..#{i}"
           start = Time.now
           Open3.popen3(command) { |_, stdout, _, _| stdout.read }
-          durations += [Time.now - start]
+          durations << Time.now - start
         end
         puts ''
         average_duration = (durations.reduce(:+) / iterations).round(2)
@@ -122,7 +120,7 @@ puts 'Building master'
 `swift build -c release`
 unless $?.success?
   # Couldn't build, start fresh
-  FileUtils.rm_rf %w(Packages .build)
+  FileUtils.rm_rf %w[Packages .build]
   return_value = nil
   Open3.popen3('swift build -c release') do |_, stdout, _, wait_thr|
     puts stdout.read.chomp
@@ -146,10 +144,10 @@ generate_reports(false, 'master')
   @repo = repo
 
   (master - branch).each do |fixed|
-      message "This PR fixed a violation in #{@repo_name}: [#{fixed}](#{convert_to_link(fixed)})"
+    message "This PR fixed a violation in #{@repo_name}: [#{fixed}](#{convert_to_link(fixed)})"
   end
   (branch - master).each do |violation|
-      warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
+    warn "This PR introduced a violation in #{@repo_name}: [#{violation}](#{convert_to_link(violation)})"
   end
 end
 
@@ -159,10 +157,10 @@ end
   percent_change = 100 * (master_duration - branch_duration) / master_duration
   faster_slower = nil
   if branch_duration < master_duration
-      faster_slower = 'faster'
+    faster_slower = 'faster'
   else
-      faster_slower = 'slower'
-      percent_change *= -1
+    faster_slower = 'slower'
+    percent_change *= -1
   end
   repo_name = repo.partition('/').last
   message "Linting #{repo_name} with this PR took #{branch_duration}s " \

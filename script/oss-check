@@ -21,6 +21,7 @@ repo_clean = `git status --porcelain`.empty?
 
 fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
 
+@working_dir = 'osscheck'
 @branch_name = `git symbolic-ref HEAD --short`.strip
 
 if @branch_name == 'master'
@@ -48,7 +49,7 @@ end
 @master_durations = {}
 
 def convert_to_link(string)
-  string.sub!("#{Dir.pwd}/osscheck/#{@repo_name}", '')
+  string.sub!("#{Dir.pwd}/#{@working_dir}/#{@repo_name}", '')
   string.sub!('.swift:', '.swift#L')
   string = string.partition(': warning:').first.partition(': error:').first
   "https://github.com/#{@repo}/blob/#{@commits[@repo]}#{string}"
@@ -59,7 +60,7 @@ def non_empty_lines(path)
 end
 
 def generate_reports(clone, branch)
-  Dir.chdir('osscheck') do
+  Dir.chdir(@working_dir) do
     @repos.each do |repo|
       repo_name = repo.partition('/').last
       if clone
@@ -103,7 +104,7 @@ def generate_reports(clone, branch)
 end
 
 # Prep
-['osscheck/branch_reports', 'osscheck/master_reports'].each do |dir|
+["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
   FileUtils.mkdir_p(dir)
 end
 
@@ -139,8 +140,8 @@ generate_reports(false, 'master')
 @repos.each do |repo|
   @repo_name = repo.partition('/').last
 
-  branch = non_empty_lines("osscheck/branch_reports/#{@repo_name}.txt")
-  master = non_empty_lines("osscheck/master_reports/#{@repo_name}.txt")
+  branch = non_empty_lines("#{@working_dir}/branch_reports/#{@repo_name}.txt")
+  master = non_empty_lines("#{@working_dir}/master_reports/#{@repo_name}.txt")
   @repo = repo
 
   (master - branch).each do |fixed|
@@ -169,5 +170,5 @@ end
 
 # Clean up
 `git reset --hard HEAD`
-FileUtils.rm_rf('osscheck')
+FileUtils.rm_rf(@working_dir)
 `git checkout #{@branch_name}`

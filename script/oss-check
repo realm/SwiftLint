@@ -32,7 +32,9 @@ class Repo
   attr_accessor :name
   attr_accessor :github_location
   attr_accessor :commit_hash
+  attr_accessor :branch_exit_value
   attr_accessor :branch_duration
+  attr_accessor :master_exit_value
   attr_accessor :master_duration
 
   def initialize(name, github_location)
@@ -113,8 +115,13 @@ def generate_reports(branch)
       start = Time.now
       command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
-        Open3.popen3(command) do |_, stdout, _, _|
+        Open3.popen3(command) do |_, stdout, _, wait_thr|
           file << stdout.read.chomp
+          if branch == 'branch'
+            repo.branch_exit_value = wait_thr.value
+          else
+            repo.master_exit_value = wait_thr.value
+          end
         end
       end
       durations << Time.now - start
@@ -171,6 +178,14 @@ end
 generate_reports('master')
 # Diff and report changes to Danger
 @repos.each do |repo|
+  if repo.master_exit_value != repo.branch_exit_value
+    warn "This PR changed the exit value when running on #{repo.name}: " \
+         "(#{repo.master_exit_value} to #{repo.branch_exit_value})"
+    # If the exit value changed, don't show the fixes or regressions for this
+    # repo because it's likely due to a crash, and all violations would be noisy
+    next
+  end
+
   branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt")
   master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
 

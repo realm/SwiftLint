@@ -180,7 +180,7 @@ public struct Configuration: Equatable {
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {
-            fail("\(message)")
+            fail(message)
         } catch {
             fail("\(error)")
         }

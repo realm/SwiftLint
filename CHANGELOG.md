@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Make `trailing_comma` rule autocorrectable.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1326](https://github.com/realm/SwiftLint/issues/1326)
 
 ##### Bug Fixes
 
@@ -30,14 +33,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
-
-* Make `trailing_comma` rule autocorrectable.  
-  [Samuel Susla](https://github.com/sammy-SC)
-  [#1326](https://github.com/realm/SwiftLint/issues/1326)
-
-* Performance improvements to `generic_type_name`,
-  `redundant_nil_coalescing`, `mark`, `first_where` and
-  `vertical_whitespace` rules.  
 
 * Add `implicitly_unwrapped_optional` opt-in rule that warns against using
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.

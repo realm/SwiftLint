@@ -1,32 +1,15 @@
 #!/usr/bin/env ruby
 
+################################
+# Requires
+################################
+
 require 'fileutils'
 require 'open3'
 
-def message(str)
-  $stderr.puts('Message: ' + str)
-end
-
-def warn(str)
-  $stderr.puts('Warning: ' + str)
-end
-
-def fail(str)
-  $stderr.puts('Error: ' + str)
-  exit
-end
-
-$stdout.sync = true
-repo_clean = `git status --porcelain`.empty?
-
-fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
-
-@working_dir = 'osscheck'
-
-if `git symbolic-ref HEAD --short`.strip == 'master'
-  fail "can't run osscheck from 'master' as the script compares "\
-       "the performance of this branch against 'master'"
-end
+################################
+# Classes
+################################
 
 class Repo
   attr_accessor :name
@@ -64,20 +47,39 @@ class Repo
   end
 end
 
-@repos = [
-  Repo.new('Alamofire', 'Alamofire/Alamofire'),
-  Repo.new('Swift', 'apple/swift'),
-  Repo.new('Aerial', 'JohnCoates/Aerial'),
-  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
-  Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Kickstarter', 'kickstarter/ios-oss'),
-  Repo.new('Moya', 'Moya/Moya'),
-  Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
-  Repo.new('Nimble', 'Quick/Nimble'),
-  Repo.new('Quick', 'Quick/Quick'),
-  Repo.new('Realm', 'realm/realm-cocoa'),
-  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
-]
+################################
+# Methods
+################################
+
+def message(str)
+  $stderr.puts('Message: ' + str)
+end
+
+def warn(str)
+  $stderr.puts('Warning: ' + str)
+end
+
+def fail(str)
+  $stderr.puts('Error: ' + str)
+  exit
+end
+
+def validate_state_to_run
+  repo_clean = `git status --porcelain`.empty?
+
+  fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
+
+  if `git symbolic-ref HEAD --short`.strip == 'master'
+    fail "can't run osscheck from 'master' as the script compares " \
+         "the performance of this branch against 'master'"
+  end
+end
+
+def make_directory_structure
+  ["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
+    FileUtils.mkdir_p(dir)
+  end
+end
 
 def convert_to_link(repo, string)
   string.sub!("#{Dir.pwd}/#{@working_dir}/#{repo.name}", '')
@@ -142,66 +144,90 @@ def generate_reports(branch)
   end
 end
 
-# Prep
-setup_repos
-["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
-  FileUtils.mkdir_p(dir)
-end
+def build(branch)
+  `git fetch && git checkout origin/master` if branch == 'master'
 
-# Build branch
-puts 'Building branch'
-`swift build -c release`
+  build_command = 'swift build -c release'
 
-# Generate branch reports
-generate_reports('branch')
-# Build master
-`git fetch`
-`git checkout origin/master`
-puts 'Building master'
-`swift build -c release`
-unless $?.success?
+  puts "Building #{branch}"
+  `#{build_command}`
+  return if $?.success?
+
   # Couldn't build, start fresh
   FileUtils.rm_rf %w[Packages .build]
   return_value = nil
-  Open3.popen3('swift build -c release') do |_, stdout, _, wait_thr|
+  Open3.popen3(build_command) do |_, stdout, _, wait_thr|
     puts stdout.read.chomp
     return_value = wait_thr.value
   end
 
-  unless return_value.success?
-    fail 'Could not build master'
-    return
+  fail "Could not build #{branch}" unless return_value.success?
+end
+
+def diff_and_report_changes_to_danger
+  @repos.each do |repo|
+    if repo.master_exit_value != repo.branch_exit_value
+      warn "This PR changed the exit value when running on #{repo.name}: " \
+           "(#{repo.master_exit_value} to #{repo.branch_exit_value})"
+      # If the exit value changed, don't show the fixes or regressions for this
+      # repo because it's likely due to a crash, and all violations would be noisy
+      next
+    end
+
+    branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt")
+    master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
+
+    (master - branch).each do |fixed|
+      message "This PR fixed a violation in #{repo.name}: [#{fixed}](#{convert_to_link(repo, fixed)})"
+    end
+    (branch - master).each do |violation|
+      warn "This PR introduced a violation in #{repo.name}: [#{violation}](#{convert_to_link(repo, violation)})"
+    end
+    message repo.duration_report
   end
 end
 
-# Generate master reports
-generate_reports('master')
+def clean_up
+  `git reset --hard HEAD`
+  FileUtils.rm_rf(@working_dir)
+  `git checkout -`
+end
+
+################################
+# Script
+################################
+
+# Constants
+@working_dir = 'osscheck'
+@repos = [
+  Repo.new('Aerial', 'JohnCoates/Aerial'),
+  Repo.new('Alamofire', 'Alamofire/Alamofire'),
+  Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
+  Repo.new('Kickstarter', 'kickstarter/ios-oss'),
+  Repo.new('Moya', 'Moya/Moya'),
+  Repo.new('Nimble', 'Quick/Nimble'),
+  Repo.new('Quick', 'Quick/Quick'),
+  Repo.new('Realm', 'realm/realm-cocoa'),
+  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
+  Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
+  Repo.new('Swift', 'apple/swift'),
+  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
+]
+
+# Prep
+$stdout.sync = true
+validate_state_to_run
+setup_repos
+make_directory_structure
+
+# Build & generate reports for branch & master
+['branch', 'master'].each do |branch|
+  build(branch)
+  generate_reports(branch)
+end
+
 # Diff and report changes to Danger
-@repos.each do |repo|
-  if repo.master_exit_value != repo.branch_exit_value
-    warn "This PR changed the exit value when running on #{repo.name}: " \
-         "(#{repo.master_exit_value} to #{repo.branch_exit_value})"
-    # If the exit value changed, don't show the fixes or regressions for this
-    # repo because it's likely due to a crash, and all violations would be noisy
-    next
-  end
-
-  branch = non_empty_lines("#{@working_dir}/branch_reports/#{repo.name}.txt")
-  master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
-
-  (master - branch).each do |fixed|
-    message "This PR fixed a violation in #{repo.name}: [#{fixed}](#{convert_to_link(repo, fixed)})"
-  end
-  (branch - master).each do |violation|
-    warn "This PR introduced a violation in #{repo.name}: [#{violation}](#{convert_to_link(repo, violation)})"
-  end
-end
-
-@repos.each do |repo|
-  message repo.duration_report
-end
+diff_and_report_changes_to_danger
 
 # Clean up
-`git reset --hard HEAD`
-FileUtils.rm_rf(@working_dir)
-`git checkout -`
+clean_up

@@ -22,9 +22,8 @@ repo_clean = `git status --porcelain`.empty?
 fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
 
 @working_dir = 'osscheck'
-@branch_name = `git symbolic-ref HEAD --short`.strip
 
-if @branch_name == 'master'
+if `git symbolic-ref HEAD --short`.strip == 'master'
   fail "can't run osscheck from 'master' as the script compares "\
        "the performance of this branch against 'master'"
 end
@@ -171,4 +170,4 @@ end
 # Clean up
 `git reset --hard HEAD`
 FileUtils.rm_rf(@working_dir)
-`git checkout #{@branch_name}`
+`git checkout -`

@@ -14,7 +14,11 @@ matrix:
       os: osx
       osx_image: xcode8.2
     - script: make docker_test
-      env: JOB=Linux
+      env: JOB=Linux3.1
+      sudo: required
+      services: docker
+    - script: make docker_test_302
+      env: JOB=Linux3.0.2
       sudo: required
       services: docker
 notifications:

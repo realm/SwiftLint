@@ -1,3 +1,17 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

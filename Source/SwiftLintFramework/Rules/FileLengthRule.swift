@@ -27,17 +27,30 @@ public struct FileLengthRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let commentKinds = Set(SyntaxKind.commentKinds())
-        let lineCount = file.syntaxKindsByLines.filter { kinds in
-            return !kinds.filter { !commentKinds.contains($0) }.isEmpty
-        }.count
+        let lineCountWithComments = file.lines.count
+        var lineCountWithoutComments: Int?
 
-        for parameter in configuration.params where lineCount > parameter.value {
+        func getLineCountwithoutComments() -> Int {
+            if let lineCount = lineCountWithoutComments {
+                return lineCount
+            }
+            let commentKinds = Set(SyntaxKind.commentKinds())
+            let lineCount = file.syntaxKindsByLines.filter { kinds in
+                return !kinds.filter { !commentKinds.contains($0) }.isEmpty
+            }.count
+
+            lineCountWithoutComments = lineCount
+            return lineCount
+        }
+
+        for parameter in configuration.params where lineCountWithComments > parameter.value {
+            let lineCountWithoutComments = getLineCountwithoutComments()
+            guard parameter.value < lineCountWithoutComments else { continue }
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
-                location: Location(file: file.path, line: lineCount),
+                location: Location(file: file.path, line: lineCountWithoutComments),
                 reason: "File should contain \(configuration.warning) lines or less: " +
-                        "currently contains \(lineCount)")]
+                        "currently contains \(lineCountWithoutComments)")]
         }
         return []
     }

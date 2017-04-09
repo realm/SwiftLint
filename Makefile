@@ -63,7 +63,7 @@ uninstall:
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
 installables: clean bootstrap
-	$(BUILD_TOOL) $(XCODEFLAGS) install
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release install
 
 	mkdir -p "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	mv -f "$(SWIFTLINTFRAMEWORK_BUNDLE)" "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"

@@ -266,7 +266,7 @@ extension XCTestCase {
             XCTFail("No error caught")
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught")
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)")
             }
         } catch {
             XCTFail("Wrong error caught")

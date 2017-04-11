@@ -10,6 +10,11 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
 
+* Make `trailing_comma` rule autocorrectable.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1326](https://github.com/realm/SwiftLint/issues/1326)
+
 ##### Bug Fixes
 
 * None.

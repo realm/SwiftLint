@@ -13,7 +13,9 @@
 
 ##### Bug Fixes
 
-* None.
+* `emoji` and `checkstyle` reporter output report sorted by file name.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1429](https://github.com/realm/SwiftLint/issues/1429)
 
 ## 0.18.1: Misaligned Drum
 

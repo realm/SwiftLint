@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Adds support for `excluded` in custom rules.  
+  [Nigel Flack](https://github.com/nigelflack)
+  [#1437](https://github.com/realm/SwiftLint/issues/1437)
+
 * Make `trailing_comma` rule autocorrectable.  
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)

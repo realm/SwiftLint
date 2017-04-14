@@ -61,7 +61,11 @@ class ReporterTests: XCTestCase {
     }
 
     func testEmojiReporter() {
+    #if _runtime(_ObjC)
         let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
+    #else
+        let expectedOutput = stringFromFile("CannedEmojiReporterOutputNonObjC.txt")
+    #endif
         let result = EmojiReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }

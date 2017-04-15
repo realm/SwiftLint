@@ -17,15 +17,21 @@ struct AutoCorrectCommand: CommandProtocol {
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         return Configuration(options: options).visitLintableFiles(path: options.path, action: "Correcting",
             quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles) { linter in
+            if options.patch {
+                if let corrections = linter.gitPatchCorrect(), !corrections.isEmpty && !options.quiet {
+                    queuedPrint(corrections)
+                }
+                return
+            }
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator:"\n"))
+                queuedPrint(correctionLogs.joined(separator: "\n"))
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                    useTabs: false,
-                    indentWidth: 4)
+                                                           useTabs: false,
+                                                           indentWidth: 4)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }

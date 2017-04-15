@@ -20,6 +20,15 @@ internal func regex(_ pattern: String,
 }
 
 extension File {
+    internal func temporaryCopy() -> File? {
+        guard let tmpFileURL = NSURL.fileURL(withPathComponents: [NSTemporaryDirectory(), NSUUID().uuidString]),
+            ((try? contents.write(to: tmpFileURL, atomically: true, encoding: .utf8)) != nil),
+            let file = File(path: tmpFileURL.path) else {
+                return nil
+        }
+        return file
+    }
+
     internal func regions() -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<String>()

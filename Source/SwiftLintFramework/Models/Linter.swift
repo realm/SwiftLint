@@ -137,4 +137,35 @@ public struct Linter {
         }
         return corrections
     }
+
+    public func gitPatchCorrect() -> String? {
+        guard let fileCopy = file.temporaryCopy() else { return nil }
+        for rule in rules.flatMap({ $0 as? CorrectableRule }) {
+            let newCorrections = rule.correct(file: fileCopy)
+            if !newCorrections.isEmpty {
+                fileCopy.invalidateCache()
+            }
+        }
+
+        // Generate git patch to apply corrections
+        let task = Process()
+        task.launchPath = "/usr/bin/git"
+        task.arguments = ["diff", "--no-index", file.path!, fileCopy.path!]
+
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.launch()
+
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let output = String(data: data, encoding: .utf8)!
+        // `git diff` starts with two lines we don't need:
+        // For example:
+        //   diff --git a/a.swift b/b.swift
+        //   index 19f5668..efc623d 100644
+        var linesWithoutDiffHeaderAndIndex = Array(output.bridge().lines().map({ $0.content }).dropFirst(2))
+        // Second line points to the temporary file, so change it to point to the original
+        let fixedSecondLine = linesWithoutDiffHeaderAndIndex[0].replacingOccurrences(of: "--- a", with: "+++ b")
+        linesWithoutDiffHeaderAndIndex[1] = fixedSecondLine
+        return linesWithoutDiffHeaderAndIndex.joined(separator: "\n")
+    }
 }

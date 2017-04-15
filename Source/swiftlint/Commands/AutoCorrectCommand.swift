@@ -44,16 +44,17 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useScriptInputFiles: Bool
     let quiet: Bool
     let format: Bool
+    let patch: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { format in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format)
-        }}}}
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ patch: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { format in { patch in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, patch: patch)
+            // swiftlint:enable line_length
+        }}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
-        // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
@@ -62,5 +63,8 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| Option(key: "format",
                                defaultValue: false,
                                usage: "should reformat the Swift files")
+            <*> mode <| Option(key: "patch",
+                               defaultValue: false,
+                               usage: "output git-formatted patch rather than overwrite files")
     }
 }

@@ -13,6 +13,11 @@
 
 ##### Enhancements
 
+* Add opt-in options to `identifier_name` rule to exclude non-alphanumeric
+  characters and to allow names that start with uppercase.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#541](https://github.com/realm/SwiftLint/issues/541)
+
 * Adds support for `excluded` in custom rules to exclude files.  
   [Nigel Flack](https://github.com/nigelflack)
   [#1437](https://github.com/realm/SwiftLint/issues/1437)

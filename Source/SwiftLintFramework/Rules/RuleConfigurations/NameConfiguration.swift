@@ -17,6 +17,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
     var excluded: Set<String>
+    var allowedSymbols: Set<String>
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -30,10 +31,12 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
                 minLengthError: Int,
                 maxLengthWarning: Int,
                 maxLengthError: Int,
-                excluded: [String] = []) {
+                excluded: [String] = [],
+                allowedSymbols: [String] = []) {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
+        self.allowedSymbols = Set(allowedSymbols)
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -50,13 +53,17 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
         }
+        if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
+            self.allowedSymbols = Set(allowedSymbols)
+        }
     }
 }
 
 public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
     return lhs.minLength == rhs.minLength &&
            lhs.maxLength == rhs.maxLength &&
-           zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) }
+           zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) } &&
+           zip(lhs.allowedSymbols, rhs.allowedSymbols).reduce(true) { $0 && ($1.0 == $1.1) }
 }
 
 // MARK: - ConfigurationProviderRule extensions

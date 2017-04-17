@@ -125,10 +125,6 @@ class RulesTests: XCTestCase {
         verifyRule(GenericTypeNameRule.description)
     }
 
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
-    }
-
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
@@ -382,7 +378,6 @@ extension RulesTests {
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
             ("testGenericTypeName", testGenericTypeName),
-            ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testImplicitReturn", testImplicitReturn),

@@ -34,6 +34,7 @@
 		3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C61C3361CB000B423F /* RuleTests.swift */; };
 		3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DF0111C5148140011BCED /* CustomRules.swift */; };
 		3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B30C4A01C3785B300E04027 /* YamlParserTests.swift */; };
+		3B3A9A331EA3DFD90075B121 /* IdentifierNameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3A9A321EA3DFD90075B121 /* IdentifierNameRuleTests.swift */; };
 		3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
 		3B63D46D1E1F05160057BE35 /* LineLengthConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B63D46C1E1F05160057BE35 /* LineLengthConfigurationTests.swift */; };
 		3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */; };
@@ -301,6 +302,7 @@
 		3B12C9C61C3361CB000B423F /* RuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleTests.swift; sourceTree = "<group>"; };
 		3B1DF0111C5148140011BCED /* CustomRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomRules.swift; sourceTree = "<group>"; };
 		3B30C4A01C3785B300E04027 /* YamlParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParserTests.swift; sourceTree = "<group>"; };
+		3B3A9A321EA3DFD90075B121 /* IdentifierNameRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRuleTests.swift; sourceTree = "<group>"; };
 		3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+SwiftLint.swift"; sourceTree = "<group>"; };
 		3B63D46C1E1F05160057BE35 /* LineLengthConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineLengthConfigurationTests.swift; sourceTree = "<group>"; };
 		3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineLengthRuleTests.swift; sourceTree = "<group>"; };
@@ -757,6 +759,7 @@
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
 				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
+				3B3A9A321EA3DFD90075B121 /* IdentifierNameRuleTests.swift */,
 				47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */,
 				47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */,
 				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
@@ -1365,6 +1368,7 @@
 				6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */,
 				3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */,
 				E812249A1B04F85B001783D2 /* TestHelpers.swift in Sources */,
+				3B3A9A331EA3DFD90075B121 /* IdentifierNameRuleTests.swift in Sources */,
 				E86396C71BADAFE6002C9E88 /* ReporterTests.swift in Sources */,
 				D43B04661E071ED3004016AF /* ColonRuleTests.swift in Sources */,
 				3B12C9C71C3361CB000B423F /* RuleTests.swift in Sources */,

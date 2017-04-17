@@ -6,7 +6,7 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
-@testable import SwiftLintFramework
+import SwiftLintFramework
 import XCTest
 
 class IdentifierNameRuleTests: XCTestCase {
@@ -33,13 +33,34 @@ class IdentifierNameRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
+
+    func testIdentifierNameWithIgnoreStartWithLowercase() {
+        let baseDescription = IdentifierNameRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            "let MyLet = 0",
+            "enum Foo { case MyEnum }"
+        ]
+        let triggeringExamples = baseDescription.triggeringExamples
+            .filter { !$0.contains("MyLet") && !$0.contains("MyEnum") }
+
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: triggeringExamples,
+                                          corrections: baseDescription.corrections,
+                                          deprecatedAliases: baseDescription.deprecatedAliases)
+
+        verifyRule(description, ruleConfiguration: ["ignores_start_lowercase": true])
+    }
 }
 
 extension IdentifierNameRuleTests {
     static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] {
         return [
             ("testIdentifierName", testIdentifierName),
-            ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols)
+            ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
+            ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
         ]
     }
 }

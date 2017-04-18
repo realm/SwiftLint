@@ -9,7 +9,9 @@
 import Foundation
 
 #if os(Linux)
+#if !swift(>=3.1)
 public typealias NSRegularExpression = RegularExpression
+#endif
 public typealias NSTextCheckingResult = TextCheckingResult
 #endif
 

@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* Adds support for `excluded` in custom rules.  
+* Adds support for `excluded` in custom rules to exclude files.  
   [Nigel Flack](https://github.com/nigelflack)
   [#1437](https://github.com/realm/SwiftLint/issues/1437)
 

@@ -16,7 +16,7 @@ internal struct TypeNameRuleExamples {
 
     static let swift2TriggeringExamples = commonTriggeringExamples + ["enum MyType {\ncase ↓value\n}"]
 
-    static let swift3TriggeringExamples = commonTriggeringExamples
+    static let swift3TriggeringExamples = commonTriggeringExamples + ["enum MyType {\ncase Value\n}"]
 
     private static let types = ["class", "struct", "enum"]
 

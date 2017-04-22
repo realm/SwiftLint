@@ -40,6 +40,10 @@
   keyword when it can be omitted inside closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1194](https://github.com/realm/SwiftLint/issues/1194)
+* Add opt-in option to `unused_optional_binding` rule to ignore `try?` in `guard` statements  
+  [Sega-Zero](https://github.com/Sega-Zero)
+  [#1432](https://github.com/realm/SwiftLint/issues/1432)
+  
 
 ##### Bug Fixes
 

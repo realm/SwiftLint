@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: true)
 
     public init() {}
 
@@ -66,24 +66,33 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
                     return []
             }
 
-            return violations(in: range, of: file).map {
-                StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+            return violations(in: range, of: file, with: kind).map {
+                StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
             }
         }
     }
 
-    private func violations(in range: NSRange, of file: File) -> [NSRange] {
+    private func violations(in range: NSRange, of file: File, with kind: StatementKind) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
 
-        let underscorePattern = "(_\\s*[=,)])"
-        let underscoreTuplePattern = "(\\((\\s*[_,]\\s*)+\\)\\s*=)"
+        let underscorePattern = "(_\\s*[=,)]\\s*(try\\?)?)"
+        let underscoreTuplePattern = "(\\((\\s*[_,]\\s*)+\\)\\s*=\\s*(try\\?)?)"
         let letUnderscore = "let\\s+(\(underscorePattern)|\(underscoreTuplePattern))"
 
         let matches = file.matchesAndSyntaxKinds(matching: letUnderscore, range: range)
 
         return matches
             .filter { $0.1.filter(kinds.contains).isEmpty }
+            .filter { kind != .guard || !self.containsOptionalTry(at: $0.0.range, of: file) }
             .map { $0.0.rangeAt(1) }
+    }
+
+    private func containsOptionalTry(at range: NSRange, of file: File) -> Bool {
+        guard self.configuration.ignoreOptionalTry else { return false }
+
+        let contents = file.contents.bridge().substring(with: range)
+        return contents.contains("try?")
     }
 }

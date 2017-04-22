@@ -337,7 +337,28 @@ class RulesTests: XCTestCase {
     }
 
     func testUnusedOptionalBinding() {
-        verifyRule(UnusedOptionalBindingRule.description)
+        let testBinding = ["guard let _ = try? alwaysThows()"]
+        let baseDescription = UnusedOptionalBindingRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + testBinding
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                           name: baseDescription.name,
+                                           description: baseDescription.description,
+                                           nonTriggeringExamples: nonTriggeringExamples,
+                                           triggeringExamples: baseDescription.triggeringExamples,
+                                           corrections: baseDescription.corrections)
+
+        verifyRule(description)
+
+        // Perform additional tests with the ignore_optional_try settings disabled.
+        let triggeringExamples = baseDescription.triggeringExamples + testBinding
+        let description2 = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: baseDescription.nonTriggeringExamples,
+                                          triggeringExamples: triggeringExamples,
+                                          corrections: baseDescription.corrections)
+
+        verifyRule(description2, ruleConfiguration: ["ignore_optional_try": false])
     }
 
 // swiftlint:disable:next todo

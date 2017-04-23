@@ -303,6 +303,7 @@ following syntax:
 custom_rules:
   pirates_beat_ninjas: # rule identifier
     included: ".*.swift" # regex that defines paths to include during linting. optional.
+    excluded: ".*Test.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([n,N]inja)" # matching pattern
     match_kinds: # SyntaxKinds to match. optional.

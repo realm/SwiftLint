@@ -46,6 +46,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         } + [
             "n = n + i / outputLength",
             "n = n - i / outputLength"
+//            "d = d * 60 * 60"
         ]
     )
 

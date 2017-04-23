@@ -10,14 +10,23 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
 
+* Adds support for `excluded` in custom rules to exclude files.  
+  [Nigel Flack](https://github.com/nigelflack)
+  [#1437](https://github.com/realm/SwiftLint/issues/1437)
+
 * Make `trailing_comma` rule autocorrectable.  
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
 
+* Add lowercase and missing colon checks to the `mark` rule.  
+  [Jason Moore](https://github.com/xinsight)
+
 ##### Bug Fixes
 
-* None.
+* `emoji` and `checkstyle` reporter output report sorted by file name.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1429](https://github.com/realm/SwiftLint/issues/1429)
 
 ## 0.18.1: Misaligned Drum
 
@@ -108,9 +117,10 @@
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
   [#56](https://github.com/realm/SwiftLint/issues/56)
-
-* Performance improvements to `generic_type_name`, `redundant_nil_coalescing`,
-  `mark`, `first_where` and `vertical_whitespace` rules.  
+ 
+* Performance improvements to `generic_type_name`,
+  `redundant_nil_coalescing`, `mark`, `first_where` and
+  `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `discarded_notification_center_observer` rule that warns when the result

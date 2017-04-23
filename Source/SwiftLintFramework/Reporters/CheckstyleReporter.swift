@@ -21,6 +21,7 @@ public struct CheckstyleReporter: Reporter {
             "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<checkstyle version=\"4.3\">",
             violations
                 .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
+                .sorted(by: { $0.key < $1.key })
                 .map(generateForViolationFile).joined(),
             "\n</checkstyle>"
         ].joined()

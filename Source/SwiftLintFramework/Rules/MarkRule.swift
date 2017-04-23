@@ -24,11 +24,14 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "mark",
         name: "Mark",
-        description: "MARK comment should be in valid format.",
+        description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",
-            "// MARK: -\n"
+            "// MARK: -\n",
+            "// BOOKMARK",
+            "//BOOKMARK",
+            "// BOOKMARKS"
         ],
         triggeringExamples: [
             "↓//MARK: bad",
@@ -42,7 +45,12 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//MARK: - bad",
             "↓//MARK:- bad",
             "↓//MARK: -bad",
-            "↓//MARK:-bad"
+            "↓//MARK:-bad",
+            "↓//Mark: bad",
+            "↓// Mark: bad",
+            "↓// MARK bad",
+            "↓//MARK bad",
+            "↓// MARK - bad"
         ],
         corrections: [
             "↓//MARK: comment": "// MARK: comment",
@@ -67,11 +75,17 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
 
+    private let invalidLowercasePattern = "(?:// ?[Mm]ark:)"
+
+    private let missingColonPattern = "(?:// ?MARK[^:])"
+
     private var pattern: String {
         return [
             spaceStartPattern,
             invalidEndSpacesPattern,
-            invalidSpacesAfterHyphenPattern
+            invalidSpacesAfterHyphenPattern,
+            invalidLowercasePattern,
+            missingColonPattern
         ].joined(separator: "|")
     }
 

@@ -64,9 +64,18 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
         if let path = file.path {
             configurations = configurations.filter { config in
-                guard let includedRegex = config.included else { return true }
+                guard let includedRegex = config.included else {
+                    return true
+                }
                 let range = NSRange(location: 0, length: path.bridge().length)
                 return !includedRegex.matches(in: path, options: [], range: range).isEmpty
+            }
+            configurations = configurations.filter { config in
+                guard let excludedRegex = config.excluded else {
+                    return true
+                }
+                let range = NSRange(location: 0, length: path.bridge().length)
+                return excludedRegex.matches(in: path, options: [], range: range).isEmpty
             }
         }
 

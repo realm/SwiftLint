@@ -44,6 +44,13 @@
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
   
+  
+* Add lowercase and missing colon checks to the `mark` rule.  
+  [Jason Moore](https://github.com/xinsight)
+  
+* Add opt-in option to `unused_optional_binding` rule to ignore `try?` in `guard` statements  
+  [Sega-Zero](https://github.com/Sega-Zero)
+  [#1432](https://github.com/realm/SwiftLint/issues/1432)
 
 ##### Bug Fixes
 

@@ -15,6 +15,8 @@
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
   
+* Add lowercase and missing colon checks to the `mark` rule.  
+  [Jason Moore](https://github.com/xinsight)
 
 ##### Bug Fixes
 
@@ -111,9 +113,10 @@
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
   [#56](https://github.com/realm/SwiftLint/issues/56)
-
-* Performance improvements to `generic_type_name`, `redundant_nil_coalescing`,
-  `mark`, `first_where` and `vertical_whitespace` rules.  
+ 
+* Performance improvements to `generic_type_name`,
+  `redundant_nil_coalescing`, `mark`, `first_where` and
+  `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add `discarded_notification_center_observer` rule that warns when the result

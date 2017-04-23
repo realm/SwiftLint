@@ -144,8 +144,7 @@ You should always run SwiftLint with the same toolchain you use to compile your
 code.
 
 You may want to override SwiftLint's default Swift toolchain if you have
-multiple toolchains or Xcodes installed, or if you're using legacy Swift
-versions (e.g. Swift 2.3 with Xcode 8).
+multiple toolchains or Xcodes installed.
 
 Here's the order in which SwiftLint determines which Swift toolchain to use:
 
@@ -188,7 +187,7 @@ Guidelines on when to implement a rule as opt-in:
 * A rule that can have many false positives (e.g. `empty_count`)
 * A rule that is too slow
 * A rule that is not general consensus or is only useful in some cases
-  (e.g. `force_unwrapping`, `missing_docs`)
+  (e.g. `force_unwrapping`)
 
 ### Disable rules in code
 
@@ -249,7 +248,6 @@ disabled_rules: # rule identifiers to exclude from running
   - control_statement
 opt_in_rules: # some rules are only opt-in
   - empty_count
-  - missing_docs
   # Find all the available rules by running:
   # swiftlint rules
 included: # paths to include during linting. `--path` is ignored if present.

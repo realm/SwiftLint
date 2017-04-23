@@ -2,7 +2,14 @@
 
 ##### Breaking
 
-* None.
+* Remove support for Swift 2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+
+* Remove `missing_docs` and `valid_docs` rules since 
+  they were already disabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
 ##### Enhancements
 

@@ -337,7 +337,7 @@ class RulesTests: XCTestCase {
     }
 
     func testUnusedOptionalBinding() {
-        let testBinding = ["guard let _ = try? alwaysThows()"]
+        let testBinding = ["guard let _ = try? alwaysThrows() else { return }"]
         let baseDescription = UnusedOptionalBindingRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + testBinding
         let description = RuleDescription(identifier: baseDescription.identifier,

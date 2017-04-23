@@ -24,6 +24,11 @@
   [norio-nomura](https://github.com/norio-nomura)
   [#1429](https://github.com/realm/SwiftLint/issues/1429)
 
+* Prevent false positive in `shorthand_operator` rule.  
+  [sammy-SC](https://github.com/sammy-SC)
+  [#1254](https://github.com/realm/SwiftLint/issues/1254)
+
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking
@@ -187,10 +192,6 @@
   [#1348](https://github.com/realm/SwiftLint/issues/1348)
 
 ##### Bug Fixes
-
-* Prevent false positive in `shorthand_operator` rule.  
-  [sammy-SC](https://github.com/sammy-SC)
-  [#1254](https://github.com/realm/SwiftLint/issues/1254)
 
 * Fix crashes when accessing cached regular expressions when linting in
   parallel.  

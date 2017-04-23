@@ -26,36 +26,56 @@ class TrailingCommaRuleTests: XCTestCase {
         )
     }
 
+    private static let triggeringExamples: [String] = {
+        var result = [
+            "let foo = [1, 2,\n 3↓]\n",
+            "let foo = [1: 2,\n 2: 3↓]\n",
+            "let foo = [1: 2,\n 2: 3↓   ]\n",
+            "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
+            "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
+        ]
+        #if !os(Linux)
+            // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
+            // https://bugs.swift.org/browse/SR-3449
+            result.append("let foo = [\"אבג\", \"αβγ\",\n\"🇺🇸\"↓]\n")
+        #endif
+        return result
+    }()
+    private static let corrections: [String: String] = {
+        let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓", with: ",") }
+        var result: [String: String] = [:]
+        for (triggering, correction) in zip(triggeringExamples, fixed) {
+            result[triggering] = correction
+        }
+        return result
+    }()
+    private let mandatoryCommaRuleDescription = RuleDescription(
+        identifier: TrailingCommaRule.description.identifier,
+        name: TrailingCommaRule.description.name,
+        description: TrailingCommaRule.description.description,
+        nonTriggeringExamples: [
+            "let foo = []\n",
+            "let foo = [:]\n",
+            "let foo = [1, 2, 3,]\n",
+            "let foo = [1, 2, 3, ]\n",
+            "let foo = [1, 2, 3   ,]\n",
+            "let foo = [1: 2, 2: 3, ]\n",
+            "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
+            "let foo = [Void]()\n",
+            "let foo = [(Void, Void)]()\n",
+            "let foo = [1, 2, 3]\n",
+            "let foo = [1: 2, 2: 3]\n",
+            "let foo = [1: 2, 2: 3   ]\n",
+            "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
+            "let foo = [1, 2, 3] + [4, 5, 6]\n"
+        ],
+        triggeringExamples: TrailingCommaRuleTests.triggeringExamples,
+        corrections: TrailingCommaRuleTests.corrections
+    )
+
     func testTrailingCommaRuleWithMandatoryComma() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is true.
-        let ruleDescription = RuleDescription(
-            identifier: TrailingCommaRule.description.identifier,
-            name: TrailingCommaRule.description.name,
-            description: TrailingCommaRule.description.description,
-            nonTriggeringExamples: [
-                "let foo = []\n",
-                "let foo = [:]\n",
-                "let foo = [1, 2, 3,]\n",
-                "let foo = [1, 2, 3, ]\n",
-                "let foo = [1, 2, 3   ,]\n",
-                "let foo = [1: 2, 2: 3, ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3,]\n}\n",
-                "let foo = [Void]()\n",
-                "let foo = [(Void, Void)]()\n",
-                "let foo = [1, 2, 3]\n",
-                "let foo = [1: 2, 2: 3]\n",
-                "let foo = [1: 2, 2: 3   ]\n",
-                "struct Bar {\n let foo = [1: 2, 2: 3]\n}\n",
-                "let foo = [1, 2, 3] + [4, 5, 6]\n"
-            ],
-            triggeringExamples: [
-                "let foo = [1, 2,\n 3↓]\n",
-                "let foo = [1: 2,\n 2: 3↓]\n",
-                "let foo = [1: 2,\n 2: 3↓   ]\n",
-                "struct Bar {\n let foo = [1: 2,\n 2: 3↓]\n}\n",
-                "let foo = [1, 2,\n 3↓] + [4,\n 5, 6↓]\n"
-            ]
-        )
+        let ruleDescription = mandatoryCommaRuleDescription
         let ruleConfiguration = ["mandatory_comma": true]
 
         verifyRule(ruleDescription, ruleConfiguration: ruleConfiguration)

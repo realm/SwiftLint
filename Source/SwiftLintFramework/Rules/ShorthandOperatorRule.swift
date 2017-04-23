@@ -43,32 +43,42 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "↓foo.aProperty = foo.aProperty \(operation) 1\n",
                 "↓self.aProperty = self.aProperty \(operation) 1\n"
             ]
-
-        }
+        } + [
+            "n = n + i / outputLength",
+            "n = n - i / outputLength"
+        ]
     )
 
     private static let allOperators = ["-", "/", "+", "*"]
 
-    private static let pattern: String = {
+    private static let patterns: [String] = {
         let escaped = { (operators: [String]) -> String in
             return "[\(operators.map { "\\\($0)" }.joined())]"
         }
 
-        let escapedOperators = escaped(allOperators)
+        let escapedAll = escaped(allOperators)
+        let operatorsWithoutPrecedence = escaped(["-", "+"])
+        let operatorsWithPrecedence = escaped(["/", "*"])
         let operand = "[\\w\\d\\.]+?"
         let spaces = "[^\\S\\r\\n]*?"
 
-        let pattern = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)\(spaces)\\S+$"
-        return pattern
+        let pattern1 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(operatorsWithoutPrecedence)"
+        let pattern2 = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(operatorsWithPrecedence)\(spaces)\\S+$"
+        return [pattern1, pattern2]
     }()
 
-    private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
+    private static let violationRegexes: [NSRegularExpression] = {
+        return patterns.map { regex($0, options: [.anchorsMatchLines]) }
+    }()
 
     public func validate(file: File) -> [StyleViolation] {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 
-        let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
+        let matches = ShorthandOperatorRule.violationRegexes
+            .map { $0.matches(in: file.contents, options: [], range: range) }
+            .flatMap { $0 }
+
         return matches.flatMap { match -> StyleViolation? in
 
             // byteRanges will have the ranges of captured groups

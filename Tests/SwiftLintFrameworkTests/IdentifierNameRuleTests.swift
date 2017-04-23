@@ -51,7 +51,7 @@ class IdentifierNameRuleTests: XCTestCase {
                                           corrections: baseDescription.corrections,
                                           deprecatedAliases: baseDescription.deprecatedAliases)
 
-        verifyRule(description, ruleConfiguration: ["ignores_start_lowercase": true])
+        verifyRule(description, ruleConfiguration: ["validates_start_lowercase": false])
     }
 }
 

@@ -72,7 +72,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
-            let requiresCaseCheck = !configuration.ignoresStartWithLowercase || isFunction
+            let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
             if requiresCaseCheck &&
                 kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"

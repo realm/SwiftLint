@@ -18,14 +18,14 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
-* Fixed a minor typo within the `DiscardedNotificationCenterObserverRule` rule  
-  [Spencer Kaiser](https://github.com/spencerkaiser)
-
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
   [norio-nomura](https://github.com/norio-nomura)
   [#1429](https://github.com/realm/SwiftLint/issues/1429)
+
+* Fix typo in `DiscardedNotificationCenterObserverRule`.  
+  [Spencer Kaiser](https://github.com/spencerkaiser)
 
 ## 0.18.1: Misaligned Drum
 

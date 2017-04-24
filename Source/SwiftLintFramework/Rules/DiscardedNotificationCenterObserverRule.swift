@@ -17,7 +17,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
     public static let description = RuleDescription(
         identifier: "discarded_notification_center_observer",
         name: "Discarded Notification Center Observer",
-        description: "When registing for a notification using a block, the opaque observer that is " +
+        description: "When registering for a notification using a block, the opaque observer that is " +
                      "returned should be stored so it can be removed later.",
         nonTriggeringExamples: [
             "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",

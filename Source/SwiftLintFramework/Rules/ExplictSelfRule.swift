@@ -2,7 +2,7 @@
 //  ExplictSelfRule.swift
 //  SwiftLint
 //
-//  Created by Ian Keen on 2016-10-06.
+//  Created by Ian Keen on 06/10/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -47,7 +47,7 @@ func nonTriggering(type: String) -> [String] {
             + "func function(value: Int) -> Int { return value } }",
         "\(type) Edge2 { func value() -> Int { return 42 }; "
             + "func function(value: Int) -> Int { return value } }",
-        "\(type) Edge3 { var value: Int; func function() { let value = 123; _ = value } }",
+        "\(type) Edge3 { var value: Int; func function() { let value = 123; _ = value } }"
     ]
 }
 let nonTriggeringClassExamples = [
@@ -58,7 +58,7 @@ let nonTriggeringClassExamples = [
     "class Good17_A { var value: Int = 42 }; "
         + "class Good17_B: Good17_A { func function() -> Int { return self.value } }",
     "class Good18_A { func value() -> Int { return 42 } }; "
-        + "class Good18_B: Good18_A { func function() -> Int { return self.value() } }",
+        + "class Good18_B: Good18_A { func function() -> Int { return self.value() } }"
 ]
 
 func triggering(type: String) -> [String] {
@@ -103,14 +103,15 @@ let triggeringClassExamples = [
     "class Bad17_A { var value: Int = 42 }; "
         + "class Bad17_B: Bad17_A { func function() -> Int { return value } }",
     "class Bad18_A { func value() -> Int { return 42 } }; "
-        + "class Bad18_B: Bad18_A { func function() -> Int { return value() } }",
+        + "class Bad18_B: Bad18_A { func function() -> Int { return value() } }"
 ]
 
 let nonTriggeringExamples = ["class", "struct"].flatMap(nonTriggering)
 let triggeringExamples = ["class", "struct"].flatMap(triggering)
 
 public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.Error)
+
+    public var configuration = SeverityConfiguration(.error)
 
     public init() { }
 
@@ -122,24 +123,22 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
         triggeringExamples: triggeringExamples + triggeringClassExamples
     )
 
-    public func validateFile(
-        file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
+    public func validate(file: File,
+                         kind: SwiftDeclarationKind,
+                         dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
         //only check kinds that might require `self.`
         let types: [SwiftDeclarationKind] = [
-            .FunctionMethodInstance, .VarInstance,
-            .FunctionMethodStatic, .VarStatic,
+            .functionMethodInstance, .varInstance,
+            .functionMethodStatic, .varStatic
         ]
         guard types.contains(kind) else { return [] }
 
         //build a set of instance/static memebers
         let memberTypes: [SwiftDeclarationKind] = [
-            .FunctionMethodInstance, .VarInstance,
-            .FunctionMethodStatic, .VarStatic,
+            .functionMethodInstance, .varInstance,
+            .functionMethodStatic, .varStatic
         ]
-        let instanceMembers = file.members(memberTypes)
+        let instanceMembers = file.members(declarations: memberTypes)
         let instanceMemberNames = instanceMembers.flatMap { $0["key.name"] as? String }
 
         //get the members body (functions and calculated properties will have this data)
@@ -150,11 +149,11 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         //get all the tokens inside the body
         let range = NSRange(location: bodyLocation, length: bodyLength)
-        let tokens = file.syntaxMap.tokensIn(range)
+        let tokens = file.syntaxMap.tokens(inByteRange: range)
 
         //get parameters (if any)
         let parameters = file
-            .members(dictionary, declarations: [SwiftDeclarationKind.VarParameter])
+            .members(dictionary: dictionary, declarations: [SwiftDeclarationKind.varParameter])
             .flatMap { $0["key.name"] as? String }
 
         var violations: [StyleViolation] = []
@@ -163,17 +162,17 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
         for token in tokens {
             guard let type = SyntaxKind(rawValue: token.type) else { continue }
 
-            let value = token.name(file)
+            let value = token.name(file: file)
             defer { previous.append(value) }
 
             let allowedSuffixes: [[String]] = [
                 ["self"], //self.value (normal access)
                 ["let"], //'let value' or 'if let value' - local scope/unwrap shadowing
-                ["_"], //_ = value - local scope shadowing
+                ["_"] //_ = value - local scope shadowing
             ]
 
-            let isInstanceIdentifier = (type == .Identifier &&
-                token.matches(instanceMemberNames, file: file))
+            let isInstanceIdentifier = (type == .identifier &&
+                token.matches(members: instanceMemberNames, file: file))
 
             let isShadowingParameter = parameters.contains(value)
 
@@ -183,7 +182,7 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
             guard isViolation else { continue }
 
             violations.append(StyleViolation(
-                ruleDescription: self.dynamicType.description,
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, byteOffset: token.offset)
                 )
@@ -195,33 +194,33 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
 extension SyntaxToken {
     func name(file: File) -> String {
-        return file.contents.substring(self.offset, length: self.length)
+        return file.contents.substring(from: self.offset, length: self.length)
     }
     func signature(file: File) -> String {
-        let value = file.contents.substring(self.offset, length: self.length)
+        let value = file.contents.substring(from: self.offset, length: self.length)
 
-        guard file.contents.substring(self.offset + self.length, length: 1) == "("
+        guard file.contents.substring(from: self.offset + self.length, length: 1) == "("
             else { return value }
 
         //get value inside parens
         let remainder = file.contents
-            .substring(self.offset + self.length + 1)
-            .componentsSeparatedByString(")")[0]
+            .substring(from: self.offset + self.length + 1)
+            .components(separatedBy: ")")[0]
         guard !remainder.isEmpty else { return "\(value)()" }
 
         let params = remainder
             .sanitizedParameters()
-            .componentsSeparatedByString(",")
+            .components(separatedBy: ",")
 
         var signature = ""
         for param in params {
-            let pair = param.componentsSeparatedByString(":")
+            let pair = param.components(separatedBy: ":")
             if pair.count == 1 {
                 signature += "_:"
 
             } else {
-                let charSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
-                let trimmed = pair[0].stringByTrimmingCharactersInSet(charSet)
+                let charSet = CharacterSet.whitespacesAndNewlines
+                let trimmed = pair[0].trimmingCharacters(in: charSet)
                 signature += "\(trimmed):"
             }
         }
@@ -229,14 +228,14 @@ extension SyntaxToken {
         return "\(value)(\(signature))"
     }
     func matches(members: [String], file: File) -> Bool {
-        let signature = self.signature(file)
+        let signature = self.signature(file: file)
         return members.contains(signature)
     }
 }
 
 extension File {
     func members(declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
-        return self.members(self.structure.dictionary, declarations: declarations)
+        return self.members(dictionary: self.structure.dictionary, declarations: declarations)
     }
     func members(
         dictionary: [String: SourceKitRepresentable],
@@ -246,18 +245,18 @@ extension File {
 
         return substructure.flatMap { subItem -> [[String: SourceKitRepresentable]] in
             guard let subDict = subItem as? [String: SourceKitRepresentable],
-                kindString = subDict["key.kind"] as? String,
-                kind = SwiftDeclarationKind(rawValue: kindString)
+                  let kindString = subDict["key.kind"] as? String,
+                  let kind = SwiftDeclarationKind(rawValue: kindString)
                 else { return [] }
 
-            return self.members(subDict, declarations: declarations) +
+            return self.members(dictionary: subDict, declarations: declarations) +
                 (declarations.contains(kind) ? [subDict] : [])
         }
     }
 }
 
-extension SequenceType where Generator.Element: Equatable {
-    func suffix(matches items: [Generator.Element]) -> Bool {
+extension Sequence where Iterator.Element: Equatable {
+    func suffix(matches items: [Iterator.Element]) -> Bool {
         let suffix = Array(self.suffix(items.count))
 
         // swiftlint:disable control_statement
@@ -267,7 +266,7 @@ extension SequenceType where Generator.Element: Equatable {
         return false
     }
 
-    func suffix(matches items: [[Generator.Element]]) -> Bool {
+    func suffix(matches items: [[Iterator.Element]]) -> Bool {
         for test in items
             where self.suffix(matches: test) { return true }
         return false
@@ -276,11 +275,9 @@ extension SequenceType where Generator.Element: Equatable {
 
 extension String {
     func sanitizedParameters() -> String {
-        return self.stringByReplacingOccurrencesOfString(
-            "\"(.*)\",|\"(.*)\"",
-            withString: "x",
-            options: .RegularExpressionSearch,
-            range: nil
-        )
+        return self.replacingOccurrences(of: "\"(.*)\",|\"(.*)\"",
+                                         with: "x",
+                                         options: .regularExpression,
+                                         range: nil)
     }
 }

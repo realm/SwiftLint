@@ -18,6 +18,10 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
+* Add `unhandled_throw` rule.  
+  [ArtSabintsev](https://github.com/ArtSabintsev)
+  [#1315](https://github.com/realm/SwiftLint/issues/1315)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -174,10 +178,6 @@
   enabled rules.  
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
-  
-* Added `unhandled_throw` rule.  
-  [ArtSabintsev](https://github.com/ArtSabintsev)
-  [#1315](https://github.com/realm/SwiftLint/issues/1315)
 
 * Now `nesting` rule can be configured with a type and statement level.  
   [Hayashi Tatsuya](https://github.com/sora0077)

@@ -18,6 +18,10 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
+* Improve violation report UX in `function_body_length`,
+  `large_type`, and `type_body_length` rules.  
+  [ultimatedbz](https://github.com/ultimatedbz)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -26,10 +30,6 @@
 
 * Fix typo in `DiscardedNotificationCenterObserverRule`.  
   [Spencer Kaiser](https://github.com/spencerkaiser)
-
-* Fix inaccurate violation report in `file_length` and
-  `function_parameter_count` rules.  
-  [ultimatedbz](https://github.com/ultimatedbz)
 
 ## 0.18.1: Misaligned Drum
 

@@ -15,7 +15,6 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public init() {}
 
-    //
     public static let description = RuleDescription(
         identifier: "unhandled_throw",
         name: "Unhandled Throw",
@@ -55,13 +54,15 @@ public struct UnhandledThrowRule: Rule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "(func).+(throws)"
-
-        let rule1 = "(func).+(throws)\\b$"
-        let rule2 = "(func).+(throws)\\b.+[\\-\\>].+?\\b$"
-        let rule3 = "(func).+(throws)\\b.+(throw)\\s\\S.+?$"
-        let rule4 = "(func).+(throws)\\b.+(try).+[\\{].+(throw)\\s\\S.+?$"
-        let rule5 = "(func).+(throws)\\b.+(return)\\s(try).+$"
-        let excludingPattern = "(\(rule1)|\(rule2)|\(rule3)|\(rule4)|\(rule5))"
+        let excludingPatterns = [
+            "",
+            ".+[\\-\\>].+?\\b",
+            ".+(throw)\\s\\S.+?",
+            ".+(try).+[\\{].+(throw)\\s\\S.+?",
+            ".+(return)\\s(try).+"
+        ]
+        let excludingPattern = excludingPatterns.map({ "\(pattern)\\b\($0)$" })
+                                                .joined(separator: "|")
 
         let matches = file.match(pattern: pattern,
                                  excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),

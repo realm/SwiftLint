@@ -149,8 +149,8 @@ public struct Linter {
 
         // Generate git patch to apply corrections
         let task = Process()
-        task.launchPath = "/usr/bin/git"
-        task.arguments = ["diff", "--no-index", file.path!, fileCopy.path!]
+        task.launchPath = "/usr/bin/env"
+        task.arguments = ["git", "diff", "--no-index", file.path!, fileCopy.path!]
 
         let pipe = Pipe()
         task.standardOutput = pipe
@@ -162,7 +162,9 @@ public struct Linter {
         // For example:
         //   diff --git a/a.swift b/b.swift
         //   index 19f5668..efc623d 100644
-        var linesWithoutDiffHeaderAndIndex = Array(output.bridge().lines().map({ $0.content }).dropFirst(2))
+        let lines = output.bridge().lines()
+        guard lines.count > 2 else { return nil }
+        var linesWithoutDiffHeaderAndIndex = Array(lines.map({ $0.content }).dropFirst(2))
         // Second line points to the temporary file, so change it to point to the original
         let fixedSecondLine = linesWithoutDiffHeaderAndIndex[0].replacingOccurrences(of: "--- a", with: "+++ b")
         linesWithoutDiffHeaderAndIndex[1] = fixedSecondLine

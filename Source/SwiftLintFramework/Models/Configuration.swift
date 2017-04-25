@@ -159,7 +159,8 @@ public struct Configuration: Equatable {
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false) {
         let fullPath = path.bridge().absolutePathRepresentation()
         let fail = { (msg: String) in
-            fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
+            queuedPrintError("\(fullPath):\(msg)")
+            fatalError("Could not read configuration file at path '\(fullPath)'")
         }
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
@@ -179,7 +180,7 @@ public struct Configuration: Equatable {
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {
-            fail("Error parsing YAML: \(message)")
+            fail(message)
         } catch {
             fail("\(error)")
         }

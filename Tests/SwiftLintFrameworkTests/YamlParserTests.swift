@@ -22,7 +22,7 @@ class YamlParserTests: XCTestCase {
     }
 
     func testParseInvalidStringThrows() {
-        checkError(YamlParserError.yamlParsing("expected end, near \"a\"")) {
+        checkError(YamlParserError.yamlParsing("2:1: error: parser: did not find expected <document start>:\na\n^")) {
             _ = try YamlParser.parse("|\na")
         }
     }
@@ -30,10 +30,19 @@ class YamlParserTests: XCTestCase {
 
 extension YamlParserTests {
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] {
-        return [
-            ("testParseEmptyString", testParseEmptyString),
-            ("testParseValidString", testParseValidString),
-            ("testParseInvalidStringThrows", testParseInvalidStringThrows)
-        ]
+        #if swift(>=3.1)
+            return [
+                ("testParseEmptyString", testParseEmptyString),
+                ("testParseValidString", testParseValidString),
+                ("testParseInvalidStringThrows", testParseInvalidStringThrows)
+            ]
+        #else
+            // YamlParserError returns incorrect description because of the bug on Swift 3.0.2 for Linux
+            // - See: https://bugs.swift.org/browse/SR-3366
+            return [
+                ("testParseEmptyString", testParseEmptyString),
+                ("testParseValidString", testParseValidString)
+            ]
+        #endif
     }
 }

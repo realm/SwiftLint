@@ -1,5 +1,5 @@
 //
-//  UnhandledThrow.swift
+//  UnhandledThrowRule.swift
 //  SwiftLint
 //
 //  Created by Arthur Ariel Sabintsev on 2/16/17.

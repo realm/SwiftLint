@@ -19,6 +19,7 @@
   [Jason Moore](https://github.com/xinsight)
 
 * Improve violation reason wording in `function_body_length`,
+* Improve violation report UX in `function_body_length`,
   `large_type`, and `type_body_length` rules.  
   [ultimatedbz](https://github.com/ultimatedbz)
 

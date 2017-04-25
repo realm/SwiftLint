@@ -39,7 +39,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,
                                    location: Location(file: file, byteOffset: offset),
-                                   reason: "Function body should span \(parameter.value) lines or less " +
+                                   reason: "Function body should span \(configuration.warning) lines or less " +
                                            "excluding comments and whitespace: currently spans \(lineCount) " +
                                            "lines")]
         }

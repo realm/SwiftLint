@@ -27,6 +27,9 @@
 * Fix typo in `DiscardedNotificationCenterObserverRule`.  
   [Spencer Kaiser](https://github.com/spencerkaiser)
 
+* Fix inaccurate violation report in fileLengthRule and FunctionParameterCountRule.  
+  [ultimatedbz](https://github.com/ultimatedbz)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

@@ -147,6 +147,7 @@ public let masterRuleList = RuleList(rules:
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
     TypeNameRule.self,
+    UnhandledThrowRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
     UnusedOptionalBindingRule.self,
@@ -154,7 +155,6 @@ public let masterRuleList = RuleList(rules:
     ValidIBInspectableRule.self,
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,
-    UnhandledThrowRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self
 )

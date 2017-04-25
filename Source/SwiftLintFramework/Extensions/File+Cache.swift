@@ -2,16 +2,16 @@
 //  File+Cache.swift
 //  SwiftLint
 //
-//  Created by Nikolaj Schumacher on 2015-05-26.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by Nikolaj Schumacher on 5/26/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
-private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
+private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.EditorOpen(file).failableSend()
+        return try Request.editorOpen(file: file).failableSend()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -19,7 +19,7 @@ private var responseCache = Cache({file -> [String: SourceKitRepresentable]? in
         return nil
     }
 })
-private var structureCache = Cache({file -> Structure? in
+private var structureCache = Cache({ file -> Structure? in
     if let structure = responseCache.get(file).map(Structure.init) {
         queueForRebuild.append(structure)
         return structure
@@ -30,45 +30,104 @@ private var syntaxMapCache = Cache({ file in responseCache.get(file).map(SyntaxM
 private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() })
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
-private typealias AssertHandler = () -> ()
-private var assertHandlers = [String: AssertHandler?]()
+internal typealias AssertHandler = () -> Void
+private var assertHandlers = [String: AssertHandler]()
 
-private var _allDeclarationsByType = [String: [String]]()
-private var queueForRebuild = [Structure]()
+private struct RebuildQueue {
+    private let lock = NSLock()
+    private var queue = [Structure]()
+    private var allDeclarationsByType = [String: [String]]()
+
+    mutating func append(_ structure: Structure) {
+        lock.lock()
+        defer { lock.unlock() }
+        queue.append(structure)
+    }
+
+    mutating func clear() {
+        lock.lock()
+        defer { lock.unlock() }
+        queue.removeAll(keepingCapacity: false)
+        allDeclarationsByType.removeAll(keepingCapacity: false)
+    }
+
+    // Must hold lock when calling
+    private mutating func rebuildIfNecessary() {
+        guard !queue.isEmpty else { return }
+        let allDeclarationsByType = queue.flatMap { structure -> (String, [String])? in
+            guard let firstSubstructureDict = structure.dictionary.substructure.first,
+                let name = firstSubstructureDict.name,
+                let kind = (firstSubstructureDict.kind).flatMap(SwiftDeclarationKind.init),
+                kind == .protocol,
+                case let substructure = firstSubstructureDict.substructure,
+                !substructure.isEmpty else {
+                    return nil
+            }
+            return (name, substructure.flatMap({ $0.name }))
+        }
+        allDeclarationsByType.forEach { self.allDeclarationsByType[$0.0] = $0.1 }
+        queue.removeAll(keepingCapacity: false)
+    }
+
+    mutating func getAllDeclarationsByType() -> [String: [String]] {
+        lock.lock()
+        defer { lock.unlock() }
+        rebuildIfNecessary()
+        return allDeclarationsByType
+    }
+}
+
+private var queueForRebuild = RebuildQueue()
 
 private struct Cache<T> {
-
     private var values = [String: T]()
-    private var factory: File -> T
+    private let factory: (File) -> T
+    private let lock = NSLock()
 
-    private init(_ factory: File -> T) {
+    fileprivate init(_ factory: @escaping (File) -> T) {
         self.factory = factory
     }
 
-    private mutating func get(file: File) -> T {
+    fileprivate mutating func get(_ file: File) -> T {
         let key = file.cacheKey
-        if let value = values[key] {
-            return value
+        lock.lock()
+        defer { lock.unlock() }
+        if let cachedValue = values[key] {
+            return cachedValue
         }
         let value = factory(file)
         values[key] = value
         return value
     }
 
-    private mutating func invalidate(file: File) {
+    fileprivate mutating func invalidate(_ file: File) {
         if let key = file.path {
-            values.removeValueForKey(key)
+            doLocked { values.removeValue(forKey: key) }
         }
     }
 
-    private mutating func clear() {
-        values.removeAll(keepCapacity: false)
+    fileprivate mutating func clear() {
+        doLocked { values.removeAll(keepingCapacity: false) }
+    }
+
+    fileprivate mutating func set(key: String, value: T) {
+        doLocked { values[key] = value }
+    }
+
+    fileprivate mutating func unset(key: String) {
+        doLocked { values.removeValue(forKey: key) }
+    }
+
+    private func doLocked(block: () -> Void) {
+        lock.lock()
+        block()
+        lock.unlock()
     }
 }
 
 extension File {
 
-    private var cacheKey: String {
+    fileprivate var cacheKey: String {
         return path ?? contents
     }
 
@@ -78,17 +137,16 @@ extension File {
         }
         set {
             if newValue {
-                let value: [String: SourceKitRepresentable]? = nil
-                responseCache.values[cacheKey] = value
+                responseCache.set(key: cacheKey, value: nil)
             } else {
-                responseCache.values.removeValueForKey(cacheKey)
+                responseCache.unset(key: cacheKey)
             }
         }
     }
 
-    internal var assertHandler: (() -> ())? {
+    internal var assertHandler: AssertHandler? {
         get {
-            return assertHandlers[cacheKey] ?? nil
+            return assertHandlers[cacheKey]
         }
         set {
             assertHandlers[cacheKey] = newValue
@@ -141,7 +199,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
-        assertHandlers.removeValueForKey(cacheKey)
+        assertHandlers.removeValue(forKey: cacheKey)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
@@ -149,10 +207,9 @@ extension File {
     }
 
     internal static func clearCaches() {
-        queueForRebuild = []
-        _allDeclarationsByType = [:]
+        queueForRebuild.clear()
         responseCache.clear()
-        assertHandlers = [:]
+        assertHandlers.removeAll(keepingCapacity: false)
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
@@ -160,39 +217,6 @@ extension File {
     }
 
     internal static var allDeclarationsByType: [String: [String]] {
-        if !queueForRebuild.isEmpty {
-            rebuildAllDeclarationsByType()
-        }
-        return _allDeclarationsByType
+        return queueForRebuild.getAllDeclarationsByType()
     }
-}
-
-private func dictFromKeyValuePairs<Key: Hashable, Value>(pairs: [(Key, Value)]) -> [Key: Value] {
-    var dict = [Key: Value]()
-    for pair in pairs {
-        dict[pair.0] = pair.1
-    }
-    return dict
-}
-
-private func substructureForDict(dict: [String: SourceKitRepresentable]) ->
-                                 [[String: SourceKitRepresentable]]? {
-    return (dict["key.substructure"] as? [SourceKitRepresentable])?.flatMap {
-        $0 as? [String: SourceKitRepresentable]
-    }
-}
-
-private func rebuildAllDeclarationsByType() {
-    let allDeclarationsByType = queueForRebuild.flatMap { structure -> (String, [String])? in
-        guard let firstSubstructureDict = substructureForDict(structure.dictionary)?.first,
-            name = firstSubstructureDict["key.name"] as? String,
-            kind = (firstSubstructureDict["key.kind"] as? String).flatMap(SwiftDeclarationKind.init)
-            where kind == .Protocol,
-            let substructure = substructureForDict(firstSubstructureDict) else {
-                return nil
-        }
-        return (name, substructure.flatMap({ $0["key.name"] as? String }))
-    }
-    allDeclarationsByType.forEach { _allDeclarationsByType[$0.0] = $0.1 }
-    queueForRebuild = []
 }

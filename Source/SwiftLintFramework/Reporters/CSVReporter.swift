@@ -9,9 +9,9 @@
 import Foundation
 
 extension String {
-    private func escapedForCSV() -> String {
-        let escapedString = stringByReplacingOccurrencesOfString("\"", withString: "\"\"")
-        if escapedString.containsString(",") || escapedString.containsString("\n") {
+    fileprivate func escapedForCSV() -> String {
+        let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
+        if escapedString.contains(",") || escapedString.contains("\n") {
             return "\"\(escapedString)\""
         }
         return escapedString
@@ -26,7 +26,7 @@ public struct CSVReporter: Reporter {
         return "Reports violations as a newline-separated string of comma-separated values (CSV)."
     }
 
-    public static func generateReport(violations: [StyleViolation]) -> String {
+    public static func generateReport(_ violations: [StyleViolation]) -> String {
         let keys = [
             "file",
             "line",
@@ -36,19 +36,18 @@ public struct CSVReporter: Reporter {
             "reason",
             "rule_id"
         ]
-        return (keys + violations.flatMap(arrayForViolation)).joinWithSeparator(",")
+        return (keys + violations.flatMap(array(for:))).joined(separator: ",")
     }
 
-    private static func arrayForViolation(violation: StyleViolation) -> [String] {
-        let values: [AnyObject?] = [
-            violation.location.file?.escapedForCSV(),
-            violation.location.line,
-            violation.location.character,
-            violation.severity.rawValue,
+    fileprivate static func array(for violation: StyleViolation) -> [String] {
+        return [
+            violation.location.file?.escapedForCSV() ?? "",
+            violation.location.line?.description ?? "",
+            violation.location.character?.description ?? "",
+            violation.severity.rawValue.capitalized,
             violation.ruleDescription.name.escapedForCSV(),
             violation.reason.escapedForCSV(),
             violation.ruleDescription.identifier
         ]
-        return values.map({ $0?.description ?? "" })
     }
 }

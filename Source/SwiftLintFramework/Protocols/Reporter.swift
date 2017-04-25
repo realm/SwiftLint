@@ -8,12 +8,12 @@
 
 public protocol Reporter: CustomStringConvertible {
     static var identifier: String { get }
-    static func generateReport(violations: [StyleViolation]) -> String
+    static func generateReport(_ violations: [StyleViolation]) -> String
     static var isRealtime: Bool { get }
 }
 
-public func reporterFromString(string: String) -> Reporter.Type {
-    switch string {
+public func reporterFrom(identifier: String) -> Reporter.Type {
+    switch identifier {
     case XcodeReporter.identifier:
         return XcodeReporter.self
     case JSONReporter.identifier:
@@ -26,7 +26,9 @@ public func reporterFromString(string: String) -> Reporter.Type {
         return JUnitReporter.self
     case HTMLReporter.identifier:
         return HTMLReporter.self
+    case EmojiReporter.identifier:
+        return EmojiReporter.self
     default:
-        fatalError("no reporter with identifier '\(string)' available.")
+        fatalError("no reporter with identifier '\(identifier)' available.")
     }
 }

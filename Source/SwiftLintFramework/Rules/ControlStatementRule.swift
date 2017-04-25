@@ -3,14 +3,14 @@
 //  SwiftLint
 //
 //  Created by Andrea Mazzini on 26/05/15.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -55,31 +55,31 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while"]
         return statements.flatMap { statementKind -> [StyleViolation] in
             let pattern = statementKind == "guard"
                 ? "\(statementKind)\\s*\\([^,{]*\\)\\s*else\\s*\\{"
                 : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
-            return file.matchPattern(pattern).flatMap { match, syntaxKinds in
-                let matchString = file.contents.substring(match.location, length: match.length)
-                if self.isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
+            return file.match(pattern: pattern).flatMap { match, syntaxKinds in
+                let matchString = file.contents.substring(from: match.location, length: match.length)
+                if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
                     return nil
                 }
-                return StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: self.configuration.severity,
+                return StyleViolation(ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
                     location: Location(file: file, characterOffset: match.location))
             }
         }
 
     }
 
-    private func isFalsePositive(content: String, syntaxKind: SyntaxKind?) -> Bool {
-        if syntaxKind != .Keyword {
+    fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {
+        if syntaxKind != .keyword {
             return true
         }
 
-        guard let lastClosingParenthesePosition = content.lastIndexOf(")") else {
+        guard let lastClosingParenthesePosition = content.lastIndex(of: ")") else {
             return false
         }
 

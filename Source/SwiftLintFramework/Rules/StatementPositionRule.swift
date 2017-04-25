@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = StatementConfiguration(statementMode: .Default,
-                                                     severity: SeverityConfiguration(.Warning))
+    public var configuration = StatementConfiguration(statementMode: .default,
+                                                      severity: SeverityConfiguration(.warning))
 
     public init() {}
 
@@ -36,9 +36,9 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓}\n\t  catch {"
         ],
         corrections: [
-            "}\n else {\n": "} else {\n",
-            "}\n   else if {\n": "} else if {\n",
-            "}\n catch {\n": "} catch {\n"
+            "↓}\n else {\n": "} else {\n",
+            "↓}\n   else if {\n": "} else if {\n",
+            "↓}\n catch {\n": "} catch {\n"
         ]
     )
 
@@ -55,7 +55,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "\n\n  }\n  catch {",
             "\"}\nelse{\"",
             "struct A { let catchphrase: Int }\nlet a = A(\n catchphrase: 0\n)",
-            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)",
+            "struct A { let `catch`: Int }\nlet a = A(\n `catch`: 0\n)"
         ],
         triggeringExamples: [
             "↓  }else if {",
@@ -64,32 +64,30 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
             "↓}\n\t  catch {"
         ],
         corrections: [
-            "  }else if {":"  }\n  else if {",
-            "}\n  else {":"}\nelse {",
-            "  }\ncatch {":"  }\n  catch {",
-            "}\n\t  catch {":"}\ncatch {"
+            "  }else if {": "  }\n  else if {",
+            "}\n  else {": "}\nelse {",
+            "  }\ncatch {": "  }\n  catch {",
+            "}\n\t  catch {": "}\ncatch {"
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         switch configuration.statementMode {
-        case .Default:
-            return defaultValidateFile(file)
-        case .UncuddledElse:
-            return uncuddledValidateFile(file)
+        case .default:
+            return defaultValidate(file: file)
+        case .uncuddledElse:
+            return uncuddledValidate(file: file)
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         switch configuration.statementMode {
-        case .Default:
-            return defaultCorrectFile(file)
-        case .UncuddledElse:
-            return uncuddledCorrectFile(file)
+        case .default:
+            return defaultCorrect(file: file)
+        case .uncuddledElse:
+            return uncuddledCorrect(file: file)
         }
-
     }
-
 }
 
 // Default Behaviors
@@ -100,36 +98,32 @@ private extension StatementPositionRule {
     // followed by 'else' or 'catch' literals
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
-    func defaultValidateFile(file: File) -> [StyleViolation] {
-        return defaultViolationRangesInFile(file,
-            withPattern: self.dynamicType.defaultPattern).flatMap { range in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+    func defaultValidate(file: File) -> [StyleViolation] {
+        return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).flatMap { range in
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity.severity,
                 location: Location(file: file, characterOffset: range.location))
         }
     }
 
-    func defaultViolationRangesInFile(file: File, withPattern pattern: String) -> [NSRange] {
-        return file.matchPattern(pattern).filter { _, syntaxKinds in
-            return syntaxKinds.startsWith([.Keyword])
+    func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
+        return file.match(pattern: pattern).filter { _, syntaxKinds in
+            return syntaxKinds.starts(with: [.keyword])
         }.flatMap { $0.0 }
     }
 
-    func defaultCorrectFile(file: File) -> [Correction] {
-        let violations = defaultViolationRangesInFile(file,
-                                                   withPattern: self.dynamicType.defaultPattern)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+    func defaultCorrect(file: File) -> [Correction] {
+        let violations = defaultViolationRanges(in: file, matching: type(of: self).defaultPattern)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
-        let regularExpression = regex(self.dynamicType.defaultPattern)
-        let description = self.dynamicType.description
+        let regularExpression = regex(type(of: self).defaultPattern)
+        let description = type(of: self).description
         var corrections = [Correction]()
         var contents = file.contents
-        for range in matches.reverse() {
+        for range in matches.reversed() {
+            contents = regularExpression.stringByReplacingMatches(in: contents, options: [], range: range,
+                                                                  withTemplate: "} $1")
             let location = Location(file: file, characterOffset: range.location)
-            contents = regularExpression.stringByReplacingMatchesInString(contents,
-                                                                          options: [],
-                                                                          range: range,
-                                                                          withTemplate: "} $1")
             corrections.append(Correction(ruleDescription: description, location: location))
         }
         file.write(contents)
@@ -139,9 +133,9 @@ private extension StatementPositionRule {
 
 // Uncuddled Behaviors
 private extension StatementPositionRule {
-    func uncuddledValidateFile(file: File) -> [StyleViolation] {
-        return uncuddledViolationRangesInFile(file).flatMap { range in
-            return StyleViolation(ruleDescription: self.dynamicType.uncuddledDescription,
+    func uncuddledValidate(file: File) -> [StyleViolation] {
+        return uncuddledViolationRanges(in: file).flatMap { range in
+            return StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
                 severity: configuration.severity.severity,
                 location: Location(file: file, characterOffset: range.location))
         }
@@ -153,22 +147,20 @@ private extension StatementPositionRule {
     // followed by newline and the same amount of whitespace then 'else' or 'catch' literals
     static let uncuddledPattern = "([ \t]*)\\}(\\n+)?([ \t]*)\\b(else|catch)\\b"
 
-    static let uncuddledRegularExpression = (try? NSRegularExpression(pattern: uncuddledPattern,
-        options: [])) ?? NSRegularExpression()
+    static let uncuddledRegex = regex(uncuddledPattern, options: [])
 
-    static func uncuddledMatchValidator(contents: String) ->
-        ((NSTextCheckingResult) -> NSTextCheckingResult?) {
+    static func uncuddledMatchValidator(contents: String) -> ((NSTextCheckingResult) -> NSTextCheckingResult?) {
         return { match in
             if match.numberOfRanges != 5 {
                 return match
             }
-            if match.rangeAtIndex(2).length == 0 {
+            if match.rangeAt(2).length == 0 {
                 return match
             }
-            let range1 = match.rangeAtIndex(1)
-            let range2 = match.rangeAtIndex(3)
-            let whitespace1 = contents.substring(range1.location, length: range1.length)
-            let whitespace2 = contents.substring(range2.location, length: range2.length)
+            let range1 = match.rangeAt(1)
+            let range2 = match.rangeAt(3)
+            let whitespace1 = contents.substring(from: range1.location, length: range1.length)
+            let whitespace2 = contents.substring(from: range2.location, length: range2.length)
             if whitespace1 == whitespace2 {
                 return nil
             }
@@ -176,71 +168,61 @@ private extension StatementPositionRule {
         }
     }
 
-    static func uncuddledMatchFilter(contents contents: String, syntaxMap: SyntaxMap) ->
-        ((NSTextCheckingResult) -> Bool) {
+    static func uncuddledMatchFilter(contents: String, syntaxMap: SyntaxMap) -> ((NSTextCheckingResult) -> Bool) {
         return { match in
             let range = match.range
-            guard let matchRange = contents.NSRangeToByteRange(start: range.location,
-                                                               length: range.length) else {
+            guard let matchRange = contents.bridge().NSRangeToByteRange(start: range.location,
+                                                                        length: range.length) else {
                 return false
             }
-            let tokens = syntaxMap.tokensIn(matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
-            return tokens == [.Keyword]
+            let tokens = syntaxMap.tokens(inByteRange: matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
+            return tokens == [.keyword]
         }
     }
 
-    func uncuddledViolationRangesInFile(file: File) -> [NSRange] {
+    func uncuddledViolationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegularExpression.matchesInString(contents,
-                                                                                 options: [],
-                                                                                 range: range)
-        let validator = self.dynamicType.uncuddledMatchValidator(contents)
-        let filterMatches = self.dynamicType.uncuddledMatchFilter(contents: contents,
-                                                                  syntaxMap: syntaxMap)
+        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents, options: [], range: range)
+        let validator = type(of: self).uncuddledMatchValidator(contents: contents)
+        let filterMatches = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterMatches).map({ $0.range })
 
         return validMatches
     }
 
-    func uncuddledCorrectFile(file: File) -> [Correction] {
+    func uncuddledCorrect(file: File) -> [Correction] {
         var contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
-        let matches = StatementPositionRule.uncuddledRegularExpression.matchesInString(contents,
-                                                                                       options: [],
-                                                                                       range: range)
-        let validator = self.dynamicType.uncuddledMatchValidator(contents)
-        let filterRanges = self.dynamicType.uncuddledMatchFilter(contents: contents,
-                                                                 syntaxMap: syntaxMap)
+        let matches = StatementPositionRule.uncuddledRegex.matches(in: contents, options: [], range: range)
+        let validator = type(of: self).uncuddledMatchValidator(contents: contents)
+        let filterRanges = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
         let validMatches = matches.flatMap(validator).filter(filterRanges)
-                  .filter { !file.ruleEnabledViolatingRanges([$0.range], forRule: self).isEmpty }
+                  .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
         if validMatches.isEmpty { return [] }
-        let description = self.dynamicType.uncuddledDescription
+        let description = type(of: self).uncuddledDescription
         var corrections = [Correction]()
 
-        for match in validMatches.reverse() {
-            let location = Location(file: file, characterOffset: match.range.location)
-            let range1 = match.rangeAtIndex(1)
-            let nsRange2 = match.rangeAtIndex(3)
-            let newlineRange = match.rangeAtIndex(2)
-            let start = contents.startIndex.advancedBy(nsRange2.location)
-            let end = start.advancedBy(nsRange2.length)
-            let range2 = start..<end
-            var whitespace = contents.substring(range1.location, length: range1.length)
+        for match in validMatches.reversed() {
+            let range1 = match.rangeAt(1)
+            let range2 = match.rangeAt(3)
+            let newlineRange = match.rangeAt(2)
+            var whitespace = contents.bridge().substring(with: range1)
             let newLines: String
             if newlineRange.location != NSNotFound {
-               newLines = contents.substring(newlineRange.location, length: newlineRange.length)
+               newLines = contents.bridge().substring(with: newlineRange)
             } else {
                 newLines = ""
             }
             if !whitespace.hasPrefix("\n") && newLines != "\n" {
-                whitespace.insert("\n", atIndex: whitespace.startIndex)
+                whitespace.insert("\n", at: whitespace.startIndex)
             }
-            contents.replaceRange(range2, with: whitespace)
+            contents = contents.bridge().replacingCharacters(in: range2, with: whitespace)
+            let location = Location(file: file, characterOffset: match.range.location)
             corrections.append(Correction(ruleDescription: description, location: location))
         }
 

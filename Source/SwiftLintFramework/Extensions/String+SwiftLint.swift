@@ -2,8 +2,8 @@
 //  String+SwiftLint.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -15,34 +15,35 @@ extension String {
             return false
         }
 
-        if let character = utf16.suffix(1).first {
-            return NSCharacterSet.whitespaceCharacterSet().characterIsMember(character)
+        if let unicodescalar = unicodeScalars.last {
+            return CharacterSet.whitespaces.contains(unicodescalar)
         }
 
         return false
     }
 
     internal func isUppercase() -> Bool {
-        return self == uppercaseString
+        return self == uppercased()
     }
 
     internal func isLowercase() -> Bool {
-        return self == lowercaseString
+        return self == lowercased()
     }
 
-    internal func nameStrippingLeadingUnderscoreIfPrivate(dict: [String: SourceKitRepresentable]) ->
-                                                          String {
-        let privateACL = "source.lang.swift.accessibility.private"
-        if dict["key.accessibility"] as? String == privateACL && characters.first == "_" {
-            return self[startIndex.successor()..<endIndex]
+    internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) -> String {
+        if let aclString = dict.accessibility,
+           let acl = AccessControlLevel(identifier: aclString),
+            acl.isPrivate && characters.first == "_" {
+            return substring(from: index(after: startIndex))
         }
         return self
     }
 
-    internal subscript (range: Range<Int>) -> String {
-        let nsrange = NSRange(location: range.startIndex, length: range.endIndex - range.startIndex)
+    private subscript (range: Range<Int>) -> String {
+        let nsrange = NSRange(location: range.lowerBound,
+                              length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
-            return substringWithRange(indexRange)
+            return substring(with: indexRange)
         }
         fatalError("invalid range")
     }
@@ -51,29 +52,44 @@ extension String {
         if let length = length {
             return self[from..<from + length]
         }
-        return substringFromIndex(startIndex.advancedBy(from, limit: endIndex))
+        let index = characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!
+        return substring(from: index)
     }
 
-    internal func lastIndexOf(search: String) -> Int? {
-        if let range = rangeOfString(search, options: [.LiteralSearch, .BackwardsSearch]) {
-            return startIndex.distanceTo(range.startIndex)
+    internal func lastIndex(of search: String) -> Int? {
+        if let range = range(of: search, options: [.literal, .backwards]) {
+            return characters.distance(from: startIndex, to: range.lowerBound)
         }
         return nil
     }
 
-    internal func nsrangeToIndexRange(nsrange: NSRange) -> Range<Index>? {
+    internal func nsrangeToIndexRange(_ nsrange: NSRange) -> Range<Index>? {
         guard nsrange.location != NSNotFound else {
             return nil
         }
-        let from16 = utf16.startIndex.advancedBy(nsrange.location, limit: utf16.endIndex)
-        let to16 = from16.advancedBy(nsrange.length, limit: utf16.endIndex)
-        if let from = Index(from16, within: self), to = Index(to16, within: self) {
+        let from16 = utf16.index(utf16.startIndex, offsetBy: nsrange.location,
+                                 limitedBy: utf16.endIndex) ?? utf16.endIndex
+        let to16 = utf16.index(from16, offsetBy: nsrange.length,
+                               limitedBy: utf16.endIndex) ?? utf16.endIndex
+        if let from = Index(from16, within: self), let to = Index(to16, within: self) {
             return from..<to
         }
         return nil
     }
 
     public func absolutePathStandardized() -> String {
-        return (self.absolutePathRepresentation() as NSString).stringByStandardizingPath
+        return bridge().absolutePathRepresentation().bridge().standardizingPath
+    }
+
+    internal var isFile: Bool {
+        var isDirectoryObjC: ObjCBool = false
+        if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
+            #if os(Linux)
+                return !isDirectoryObjC
+            #else
+                return !isDirectoryObjC.boolValue
+            #endif
+        }
+        return false
     }
 }

@@ -3,14 +3,14 @@
 //  SwiftLint
 //
 //  Created by Akira Hirakawa on 8/6/15.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import SourceKittenFramework
 
 public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -33,18 +33,17 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."].map({ "\\\($0)" }) +
-            ["%", "<", ">", "&"]
+    public func validate(file: File) -> [StyleViolation] {
+        let escapedOperators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", "."]
+            .map({ "\\\($0)" }).joined()
+        let operators = "\(escapedOperators)%<>&"
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
-        let pattern1 = "func\\s+[" + operators.joinWithSeparator("") +
-            "]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
-        let pattern2 = "func\(zeroOrManySpaces)[" + operators.joinWithSeparator("") +
-            "]+\\s+(<[A-Z]+>)?\\("
-        return file.matchPattern("(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .Keyword
+        let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
+        let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
+        return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
+            return syntaxKinds.first == .keyword
         }.map { range, _ in
-            return StyleViolation(ruleDescription: self.dynamicType.description,
+            return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location))
         }

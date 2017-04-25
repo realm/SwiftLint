@@ -8,91 +8,106 @@
 
 import SourceKittenFramework
 
-private func mappedDictValues(dictionary: [String: SourceKitRepresentable], key: String,
+private func mappedDictValues(fromDictionary dictionary: [String: SourceKitRepresentable], key: String,
                               subKey: String) -> [String] {
     return (dictionary[key] as? [SourceKitRepresentable])?.flatMap({
         ($0 as? [String: SourceKitRepresentable]) as? [String: String]
     }).flatMap({ $0[subKey] }) ?? []
 }
 
-private func declarationOverrides(dictionary: [String: SourceKitRepresentable]) -> Bool {
-    return mappedDictValues(dictionary, key: "key.attributes", subKey: "key.attribute")
-        .contains("source.decl.attribute.override")
+private func declarationOverrides(in dictionary: [String: SourceKitRepresentable]) -> Bool {
+    return dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
 }
 
-private func inheritedMembersForDictionary(dictionary: [String: SourceKitRepresentable]) ->
-                                           [String] {
-    return mappedDictValues(dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
+private func inheritedMembers(for dictionary: [String: SourceKitRepresentable]) -> [String] {
+    return mappedDictValues(fromDictionary: dictionary, key: "key.inheritedtypes", subKey: "key.name").flatMap {
         File.allDeclarationsByType[$0] ?? []
     }
 }
 
 extension File {
-    private func missingDocOffsets(dictionary: [String: SourceKitRepresentable],
-                                   acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
-        if declarationOverrides(dictionary) {
+    fileprivate func missingDocOffsets(in dictionary: [String: SourceKitRepresentable],
+                                       acl: [AccessControlLevel], skipping: [String] = []) -> [Int] {
+        if declarationOverrides(in: dictionary) {
             return []
         }
-        if let name = dictionary["key.name"] as? String where skipping.contains(name) {
+        if let name = dictionary.name, skipping.contains(name) {
             return []
         }
-        let inheritedMembers = inheritedMembersForDictionary(dictionary)
-        let substructureOffsets = (dictionary["key.substructure"] as? [SourceKitRepresentable])?
-            .flatMap { $0 as? [String: SourceKitRepresentable] }
-            .flatMap({ self.missingDocOffsets($0, acl: acl, skipping: inheritedMembers) }) ?? []
-        guard let _ = (dictionary["key.kind"] as? String).flatMap(SwiftDeclarationKind.init),
-            offset = dictionary["key.offset"] as? Int64,
-            accessibility = dictionary["key.accessibility"] as? String
-            where acl.map({ $0.rawValue }).contains(accessibility) else {
+        let inherited = inheritedMembers(for: dictionary)
+        let substructureOffsets = dictionary.substructure.flatMap {
+            missingDocOffsets(in: $0, acl: acl, skipping: inherited)
+        }
+        guard (dictionary.kind).flatMap(SwiftDeclarationKind.init) != nil,
+            let offset = dictionary.offset,
+            let accessibility = dictionary.accessibility,
+            acl.map({ $0.rawValue }).contains(accessibility) else {
                 return substructureOffsets
         }
-        if getDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
+        if parseDocumentationCommentBody(dictionary, syntaxMap: syntaxMap) != nil {
             return substructureOffsets
         }
-        return substructureOffsets + [Int(offset)]
+        return substructureOffsets + [offset]
     }
 }
 
 public enum AccessControlLevel: String, CustomStringConvertible {
-    case Private = "source.lang.swift.accessibility.private"
-    case Internal = "source.lang.swift.accessibility.internal"
-    case Public = "source.lang.swift.accessibility.public"
+    case `private` = "source.lang.swift.accessibility.private"
+    case `fileprivate` = "source.lang.swift.accessibility.fileprivate"
+    case `internal` = "source.lang.swift.accessibility.internal"
+    case `public` = "source.lang.swift.accessibility.public"
+    case `open` = "source.lang.swift.accessibility.open"
 
     internal init?(description value: String) {
         switch value {
-        case "private": self = .Private
-        case "internal": self = .Internal
-        case "public": self = .Public
+        case "private": self = .private
+        case "fileprivate": self = .fileprivate
+        case "internal": self = .internal
+        case "public": self = .public
+        case "open": self = .open
         default: return nil
         }
     }
 
+    init?(identifier value: String) {
+        self.init(rawValue: value)
+    }
+
     public var description: String {
         switch self {
-        case Private: return "private"
-        case Internal: return "internal"
-        case Public: return "public"
+        case .private: return "private"
+        case .fileprivate: return "fileprivate"
+        case .internal: return "internal"
+        case .public: return "public"
+        case .open: return "open"
         }
     }
+
+    // Returns true if is `private` or `fileprivate`
+    var isPrivate: Bool {
+        return self == .private || self == .fileprivate
+    }
+
 }
 
 public struct MissingDocsRule: OptInRule {
-    public init(configuration: AnyObject) throws {
-        guard let array = [String].arrayOf(configuration) else {
-            throw ConfigurationError.UnknownConfiguration
+    public init(configuration: Any) throws {
+        guard let array = [String].array(of: configuration) else {
+            throw ConfigurationError.unknownConfiguration
         }
         let acl = array.flatMap(AccessControlLevel.init(description:))
-        parameters = zip([.Warning, .Error], acl).map(RuleParameter<AccessControlLevel>.init)
+        parameters = zip([.warning, .error], acl).map(RuleParameter<AccessControlLevel>.init)
     }
 
     public var configurationDescription: String {
         return parameters.map({
-            "\($0.severity.rawValue.lowercaseString): \($0.value.rawValue)"
-        }).joinWithSeparator(", ")
+            "\($0.severity.rawValue): \($0.value.rawValue)"
+        }).joined(separator: ", ")
     }
 
     public init() {
-        parameters = [RuleParameter(severity: .Warning, value: .Public)]
+        parameters = [RuleParameter(severity: .warning, value: .public),
+                      RuleParameter(severity: .warning, value: .open)]
     }
 
     public let parameters: [RuleParameter<AccessControlLevel>]
@@ -139,18 +154,26 @@ public struct MissingDocsRule: OptInRule {
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
+        guard SwiftVersion.current == .two else {
+            warnMissingDocsRuleDisabledOnce
+            return []
+        }
         let acl = parameters.map { $0.value }
-        return file.missingDocOffsets(file.structure.dictionary, acl: acl).map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+        return file.missingDocOffsets(in: file.structure.dictionary, acl: acl).map {
+            StyleViolation(ruleDescription: type(of: self).description,
                 location: Location(file: file, byteOffset: $0))
         }
     }
 
-    public func isEqualTo(rule: Rule) -> Bool {
+    public func isEqualTo(_ rule: Rule) -> Bool {
         if let rule = rule as? MissingDocsRule {
-            return rule.parameters == self.parameters
+            return rule.parameters == parameters
         }
         return false
     }
 }
+
+private let warnMissingDocsRuleDisabledOnce: Void = {
+    queuedPrintError("Missing Docs rule is disabled in Swift 2.3 and later as it is non functional.")
+}()

@@ -9,18 +9,33 @@ immediately, but this should be the exception, not the norm._
 
 ### Submodules
 
-This SwiftLint repository uses submodules for its dependencies. 
+This SwiftLint repository uses submodules for its dependencies.
 This means that if you decide to fork this repository to contribute to SwiftLint,
 don't forget to checkout the submodules as well when cloning, by running
 `git submodule update --init --recursive` after cloning.
 
-See more info [in the README](https://github.com/realm/SwiftLint#installation)
+See more info [in the README](https://github.com/realm/SwiftLint#installation).
+
+### Tests
+
+SwiftLint supports building via Xcode and Swift Package Manager on macOS, and
+with Swift Package Manager on Linux. When contributing code changes, please
+ensure that all three supported build methods continue to work and pass tests.
+
+```shell
+$ script/cibuild
+$ swift test
+$ make docker_test
+```
+
+XCTest functions that are added need to be mirrored in the `allTests` static var
+in the test class extensions at the bottom of the test files.
 
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
-Rules should conform to either the `Rule` or `ASTRule` protocols. 
+Rules should conform to either the `Rule` or `ASTRule` protocols.
 To activate a rule, add the rule to `masterRuleList` in `MasterRuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
@@ -50,7 +65,7 @@ See [`ForceCastRule`](https://github.com/realm/SwiftLint/blob/master/Source/Swif
 for a rule that allows severity configuration,
 [`FileLengthRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/FileLengthRule.swift)
 for a rule that has multiple severity levels,
-[`VariableNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/VariableNameRule.swift)
+[`IdentifierNameRule`](https://github.com/realm/SwiftLint/blob/master/Source/SwiftLintFramework/Rules/IdentifierNameRule.swift)
 for a rule that allows name evaluation configuration:
 
 ``` yaml
@@ -60,7 +75,7 @@ file_length:
   warning: 800
   error: 1200
 
-variable_name:
+identifier_name:
   min_length:
     warning: 3
     error: 2
@@ -79,7 +94,7 @@ If your rule is configurable, but does not fit the pattern of
 * This initializer must throw if it does not understand the configuration, or
   it cannot be fully initialized with the configuration and default values.
 * By convention, a failing initializer throws
-  `ConfigurationError.UnknownConfiguration`
+  `ConfigurationError.UnknownConfiguration`.
 * If this initializer fails, your rule will be initialized with its default
   values by calling `init()`.
 

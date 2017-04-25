@@ -2,18 +2,18 @@
 //  TrailingNewlineRule.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
 extension String {
-    private func countOfTrailingCharactersInSet(characterSet: NSCharacterSet) -> Int {
+    private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {
         var count = 0
-        for char in utf16.lazy.reverse() {
-            if !characterSet.characterIsMember(char) {
+        for char in unicodeScalars.lazy.reversed() {
+            if !characterSet.contains(char) {
                 break
             }
             count += 1
@@ -21,14 +21,14 @@ extension String {
         return count
     }
 
-    private func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharactersInSet(NSCharacterSet.newlineCharacterSet())
+    fileprivate func trailingNewlineCount() -> Int? {
+        return countOfTrailingCharacters(in: .newlines)
     }
 }
 
 public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -50,31 +50,33 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
-        return [StyleViolation(ruleDescription: self.dynamicType.description,
+        return [StyleViolation(ruleDescription: type(of: self).description,
             severity: configuration.severity,
             location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        guard let count = file.contents.trailingNewlineCount() where count != 1 else {
+    public func correct(file: File) -> [Correction] {
+        guard let count = file.contents.trailingNewlineCount(), count != 1 else {
             return []
         }
         guard let lastLineRange = file.lines.last?.range else {
             return []
         }
-        if file.ruleEnabledViolatingRanges([lastLineRange], forRule: self).isEmpty {
+        if file.ruleEnabled(violatingRanges: [lastLineRange], for: self).isEmpty {
             return []
         }
         if count < 1 {
             file.append("\n")
         } else {
-            file.write(file.contents.substringToIndex(file.contents.endIndex.advancedBy(1 - count)))
+            let index = file.contents.characters.index(file.contents.endIndex, offsetBy: 1 - count)
+            let contents = file.contents.substring(to: index)
+            file.write(contents)
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
-        return [Correction(ruleDescription: self.dynamicType.description, location: location)]
+        return [Correction(ruleDescription: type(of: self).description, location: location)]
     }
 }

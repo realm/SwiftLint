@@ -2,23 +2,20 @@
 //  VersionCommand.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
-import Foundation
 import Commandant
 import Result
+import SwiftLintFramework
 
-private let version = NSBundle(identifier: "io.realm.SwiftLintFramework")!
-    .objectForInfoDictionaryKey("CFBundleShortVersionString")!
-
-struct VersionCommand: CommandType {
+struct VersionCommand: CommandProtocol {
     let verb = "version"
     let function = "Display the current version of SwiftLint"
 
-    func run(options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
-        print(version)
-        return .Success()
+    func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
+        print(Version.current.value)
+        return .success()
     }
 }

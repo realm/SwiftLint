@@ -2,19 +2,21 @@
 //  File+SwiftLint.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
-internal func regex(pattern: String) -> NSRegularExpression {
+internal func regex(_ pattern: String,
+                    options: NSRegularExpression.Options? = nil) -> NSRegularExpression {
     // all patterns used for regular expressions in SwiftLint are string literals which have been
     // confirmed to work, so it's ok to force-try here.
 
+    let options = options ?? [.anchorsMatchLines, .dotMatchesLineSeparators]
     // swiftlint:disable:next force_try
-    return try! .cached(pattern: pattern)
+    return try! .cached(pattern: pattern, options: options)
 }
 
 extension File {
@@ -25,94 +27,108 @@ extension File {
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
-            case .Disable: disabledRules.unionInPlace(command.ruleIdentifiers)
-            case .Enable: disabledRules.subtractInPlace(command.ruleIdentifiers)
+            case .disable: disabledRules.formUnion(command.ruleIdentifiers)
+            case .enable: disabledRules.subtract(command.ruleIdentifiers)
             }
             let start = Location(file: path, line: command.line, character: command.character)
-            let end = endOfNextCommand(nextCommand)
+            let end = endOf(next: nextCommand)
             regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
         }
         return regions
     }
 
-    private func commands() -> [Command] {
+    fileprivate func commands() -> [Command] {
         if sourcekitdFailed {
             return []
         }
-        let contents = self.contents as NSString
-        return matchPattern("swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\s]+",
-            withSyntaxKinds: [.Comment]).flatMap { range in
-                return Command(string: contents, range: range)
-            }.flatMap { command in
-                return command.expand()
+        let contents = self.contents.bridge()
+        let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
+        return match(pattern: pattern, with: [.comment]).flatMap { range in
+            return Command(string: contents, range: range)
+        }.flatMap { command in
+            return command.expand()
         }
     }
 
-    private func endOfNextCommand(nextCommand: Command?) -> Location {
-        guard let nextCommand = nextCommand else {
-            return Location(file: path, line: Int.max, character: Int.max)
+    fileprivate func endOf(next command: Command?) -> Location {
+        guard let nextCommand = command else {
+            return Location(file: path, line: .max, character: .max)
         }
         let nextLine: Int
         let nextCharacter: Int?
         if let nextCommandCharacter = nextCommand.character {
             nextLine = nextCommand.line
-            if nextCommand.character > 0 {
+            if nextCommandCharacter > 0 {
                 nextCharacter = nextCommandCharacter - 1
             } else {
                 nextCharacter = nil
             }
         } else {
             nextLine = max(nextCommand.line - 1, 0)
-            nextCharacter = Int.max
+            nextCharacter = .max
         }
         return Location(file: path, line: nextLine, character: nextCharacter)
     }
 
-    internal func matchPattern(pattern: String,
-                               withSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        return matchPattern(pattern).filter { _, kindsInRange in
-            return kindsInRange.count == syntaxKinds.count &&
-                zip(kindsInRange, syntaxKinds).filter({ $0.0 != $0.1 }).isEmpty
-        }.map { $0.0 }
+    internal func match(pattern: String, with syntaxKinds: [SyntaxKind], range: NSRange? = nil) -> [NSRange] {
+        return match(pattern: pattern, range: range)
+            .filter { $0.1 == syntaxKinds }
+            .map { $0.0 }
     }
 
-    internal func rangesAndTokensMatching(pattern: String) -> [(NSRange, [SyntaxToken])] {
-        return rangesAndTokensMatching(regex(pattern))
-    }
-
-    internal func rangesAndTokensMatching(regex: NSRegularExpression) ->
-        [(NSRange, [SyntaxToken])] {
-        let contents = self.contents as NSString
-        let range = NSRange(location: 0, length: contents.length)
+    internal func rangesAndTokens(matching pattern: String,
+                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+        let contents = self.contents.bridge()
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
-        return regex.matchesInString(self.contents, options: [], range: range).map { match in
+        return regex(pattern).matches(in: self.contents, options: [], range: range).map { match in
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
-                length: match.range.length) ?? match.range
-            let tokensInRange = syntax.tokensIn(matchByteRange)
+                                                             length: match.range.length) ?? match.range
+            let tokensInRange = syntax.tokens(inByteRange: matchByteRange)
             return (match.range, tokensInRange)
         }
     }
 
-    internal func matchPattern(pattern: String) -> [(NSRange, [SyntaxKind])] {
-        return matchPattern(regex(pattern))
-    }
-
-    internal func matchPattern(regex: NSRegularExpression) -> [(NSRange, [SyntaxKind])] {
-        return rangesAndTokensMatching(regex).map { range, tokens in
+    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+        return rangesAndTokens(matching: pattern, range: range).map { range, tokens in
             (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
         }
+    }
+
+    internal func swiftDeclarationKindsByLine() -> [[SwiftDeclarationKind]]? {
+        if sourcekitdFailed {
+            return nil
+        }
+        var results = [[SwiftDeclarationKind]](repeating: [], count: lines.count + 1)
+        var lineIterator = lines.makeIterator()
+        var structureIterator = structure.kinds().makeIterator()
+        var maybeLine = lineIterator.next()
+        var maybeStructure = structureIterator.next()
+        while let line = maybeLine, let structure = maybeStructure {
+            if NSLocationInRange(structure.byteRange.location, line.byteRange),
+               let swiftDeclarationKind = SwiftDeclarationKind(rawValue: structure.kind) {
+                results[line.index].append(swiftDeclarationKind)
+            }
+            let lineEnd = NSMaxRange(line.byteRange)
+            if structure.byteRange.location > lineEnd {
+                maybeLine = lineIterator.next()
+            } else {
+                maybeStructure = structureIterator.next()
+            }
+        }
+        return results
     }
 
     internal func syntaxTokensByLine() -> [[SyntaxToken]]? {
         if sourcekitdFailed {
             return nil
         }
-        var results = [[SyntaxToken]](count: lines.count + 1, repeatedValue: [])
-        var tokenGenerator = syntaxMap.tokens.generate()
-        var lineGenerator = lines.generate()
+        var results = [[SyntaxToken]](repeating: [], count: lines.count + 1)
+        var tokenGenerator = syntaxMap.tokens.makeIterator()
+        var lineGenerator = lines.makeIterator()
         var maybeLine = lineGenerator.next()
         var maybeToken = tokenGenerator.next()
-        while let line = maybeLine, token = maybeToken {
+        while let line = maybeLine, let token = maybeToken {
             let tokenRange = NSRange(location: token.offset, length: token.length)
             if NSLocationInRange(token.offset, line.byteRange) ||
                 NSLocationInRange(line.byteRange.location, tokenRange) {
@@ -133,16 +149,11 @@ extension File {
     }
 
     internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
-
-        if sourcekitdFailed {
-            return nil
-        }
-        guard let tokens = syntaxTokensByLine() else {
+        guard !sourcekitdFailed, let tokens = syntaxTokensByLine() else {
             return nil
         }
 
-        return tokens.map { $0.flatMap { SyntaxKind.init(rawValue: $0.type) } }
-
+        return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
     }
 
     //Added by S2dent
@@ -157,95 +168,119 @@ extension File {
      - returns: An array of [NSRange] objects consisting of regex matches inside
      file contents.
      */
-    internal func matchPattern(pattern: String,
-                               excludingSyntaxKinds syntaxKinds: [SyntaxKind]) -> [NSRange] {
-        return matchPattern(pattern).filter {
-            $0.1.filter(syntaxKinds.contains).isEmpty
-        }.map { $0.0 }
+    internal func match(pattern: String,
+                        excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                        range: NSRange? = nil) -> [NSRange] {
+        return match(pattern: pattern, range: range)
+            .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
+            .map { $0.0 }
     }
 
-    internal func matchPattern(pattern: String,
-                               excludingSyntaxKinds: [SyntaxKind],
-                               excludingPattern: String) -> [NSRange] {
-        let contents = self.contents as NSString
-        let range = NSRange(location: 0, length: contents.length)
-        let matches = matchPattern(pattern, excludingSyntaxKinds: excludingSyntaxKinds)
+    internal typealias MatchMapping = (NSTextCheckingResult) -> NSRange
+
+    internal func match(pattern: String,
+                        range: NSRange? = nil,
+                        excludingSyntaxKinds: [SyntaxKind],
+                        excludingPattern: String,
+                        exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
+        let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
         if matches.isEmpty {
             return []
         }
-        let exclusionRanges = regex(excludingPattern).matchesInString(self.contents,
-                                                                      options: [],
-                                                                      range: range)
-            .ranges()
-        return matches.filter { !$0.intersectsRanges(exclusionRanges) }
+        let range = range ?? NSRange(location: 0, length: contents.bridge().length)
+        let exclusionRanges = regex(excludingPattern).matches(in: contents, options: [],
+                                                              range: range).map(exclusionMapping)
+        return matches.filter { !$0.intersects(exclusionRanges) }
     }
 
-    internal func validateVariableName(dictionary: [String: SourceKitRepresentable],
-                                       kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        guard let name = dictionary["key.name"] as? String,
-            offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) where
-            SwiftDeclarationKind.variableKinds().contains(kind) && !name.hasPrefix("$") else {
-                return nil
-        }
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
-    }
-
-    internal func append(string: String) {
-        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+    internal func append(_ string: String) {
+        guard let stringData = string.data(using: .utf8) else {
             fatalError("can't encode '\(string)' with UTF8")
         }
-        guard let path = path, fileHandle = NSFileHandle(forWritingAtPath: path) else {
+        guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
             fatalError("can't write to path '\(self.path)'")
         }
-        fileHandle.seekToEndOfFile()
-        fileHandle.writeData(stringData)
+        _ = fileHandle.seekToEndOfFile()
+        fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
-    internal func write(string: String) {
+    internal func write(_ string: String) {
         guard string != contents else {
             return
         }
         guard let path = path else {
             fatalError("file needs a path to call write(_:)")
         }
-        guard let stringData = string.dataUsingEncoding(NSUTF8StringEncoding) else {
+        guard let stringData = string.data(using: .utf8) else {
             fatalError("can't encode '\(string)' with UTF8")
         }
-        stringData.writeToFile(path, atomically: true)
+        do {
+            try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
+        } catch {
+            fatalError("can't write file to \(path)")
+        }
         contents = string
-        lines = contents.lines()
+        lines = contents.bridge().lines()
     }
 
-    internal func ruleEnabledViolatingRanges(violatingRanges: [NSRange],
-                                             forRule rule: Rule) -> [NSRange] {
+    internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
-            let region = fileRegions.filter {
+            let region = fileRegions.first(where: {
                 $0.contains(Location(file: self, characterOffset: range.location))
-            }.first
+            })
             return region?.isRuleEnabled(rule) ?? true
         }
         return violatingRanges
     }
 
-    private func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
+    fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
         let commentKinds = Set(SyntaxKind.commentKinds())
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
             kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count
     }
 
-    internal func exceedsLineCountExcludingCommentsAndWhitespace(start: Int, _ end: Int,
+    internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
                                                                  _ limit: Int) -> (Bool, Int) {
-        if end - start <= limit {
+        guard end - start > limit else {
             return (false, end - start)
         }
 
-        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(start, endLine: end)
+        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
         return (count > limit, count)
     }
+
+    internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
+        typealias RangePatternTemplate = (NSRange, String, String)
+        let matches: [RangePatternTemplate]
+        matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
+            return match(pattern: pattern).filter { range, kinds in
+                return kinds.first == .identifier &&
+                    !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
+            }.map { ($0.0, pattern, template) }
+        }).sorted { $0.0.location > $1.0.location } // reversed
+
+        guard !matches.isEmpty else { return [] }
+
+        let description = type(of: legacyRule).description
+        var corrections = [Correction]()
+        var contents = self.contents
+
+        for (range, pattern, template) in matches {
+            contents = regex(pattern).stringByReplacingMatches(in: contents, options: [],
+                                                               range: range,
+                                                               withTemplate: template)
+            let location = Location(file: self, characterOffset: range.location)
+            corrections.append(Correction(ruleDescription: description, location: location))
+        }
+
+        write(contents)
+        return corrections
+    }
+
 }

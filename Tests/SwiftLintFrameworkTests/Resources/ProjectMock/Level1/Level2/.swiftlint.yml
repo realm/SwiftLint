@@ -1,0 +1,8 @@
+disabled_rules:
+  - force_try
+included:
+  - "everything"
+excluded:
+  - "the place where i committed many coding sins"
+line_length: 10000000000
+reporter: "json"

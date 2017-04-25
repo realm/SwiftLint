@@ -2,10 +2,11 @@
 //  Location.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 
 public struct Location: CustomStringConvertible, Comparable {
@@ -15,11 +16,13 @@ public struct Location: CustomStringConvertible, Comparable {
     public var description: String {
         // Xcode likes warnings and errors in the following format:
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
-        return [
-            file ?? "<nopath>",
-            line.map({ ":\($0)" }) ?? "",
-            character.map({ ":\($0)" }) ?? ""
-        ].joinWithSeparator("")
+        let fileString: String = file ?? "<nopath>"
+        let lineString: String = line.map({ ":\($0)" }) ?? ""
+        let charString: String = character.map({ ":\($0)" }) ?? ""
+        return [fileString, lineString, charString].joined()
+    }
+    public var relativeFile: String? {
+        return file?.replacingOccurrences(of: FileManager.default.currentDirectoryPath + "/", with: "")
     }
 
     public init(file: String?, line: Int? = nil, character: Int? = nil) {
@@ -30,7 +33,7 @@ public struct Location: CustomStringConvertible, Comparable {
 
     public init(file: File, byteOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.lineAndCharacterForByteOffset(offset) {
+        if let lineAndCharacter = file.contents.bridge().lineAndCharacter(forByteOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {
@@ -41,7 +44,7 @@ public struct Location: CustomStringConvertible, Comparable {
 
     public init(file: File, characterOffset offset: Int) {
         self.file = file.path
-        if let lineAndCharacter = file.contents.lineAndCharacterForCharacterOffset(offset) {
+        if let lineAndCharacter = file.contents.bridge().lineAndCharacter(forCharacterOffset: offset) {
             line = lineAndCharacter.line
             character = lineAndCharacter.character
         } else {
@@ -52,6 +55,17 @@ public struct Location: CustomStringConvertible, Comparable {
 }
 
 // MARK: Comparable
+
+private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+  }
+}
 
 public func == (lhs: Location, rhs: Location) -> Bool {
     return lhs.file == rhs.file &&

@@ -2,17 +2,17 @@
 //  ViolationSeverity.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 public enum ViolationSeverity: String, Comparable {
-    case Warning
-    case Error
+    case warning
+    case error
 }
 
 // MARK: Comparable
 
 public func < (lhs: ViolationSeverity, rhs: ViolationSeverity) -> Bool {
-    return lhs == .Warning && rhs == .Error
+    return lhs == .warning && rhs == .error
 }

@@ -2,27 +2,24 @@
 //  ClosingBraceRule.swift
 //  SwiftLint
 //
-//  Created by Yasuhiro Inami on 2015-12-19.
-//  Copyright © 2015 Yasuhiro Inami. All rights reserved.
+//  Created by Yasuhiro Inami on 12/19/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
-private let whitespaceAndNewlineCharacterSet = NSCharacterSet.whitespaceAndNewlineCharacterSet()
+private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
 extension File {
-    private func violatingClosingBraceRanges() -> [NSRange] {
-        return matchPattern(
-            "(\\}[ \\t]+\\))",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
-        )
+    fileprivate func violatingClosingBraceRanges() -> [NSRange] {
+        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
 
 public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -37,46 +34,38 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         ],
         triggeringExamples: [
             "[].map({ ↓} )",
-            "[].map({ }\t)"
+            "[].map({ ↓}\t)"
         ],
         corrections: [
-            "[].map({ } )\n": "[].map({ })\n"
+            "[].map({ ↓} )\n": "[].map({ })\n"
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.violatingClosingBraceRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
-            file.violatingClosingBraceRanges(),
-            forRule: self
-        )
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    private func writeToFile(file: File, violatingRanges: [NSRange]) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingClosingBraceRanges(), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
-        for violatingRange in violatingRanges.reverse() {
+        for violatingRange in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .stringByReplacingCharactersInRange(indexRange, withString: "})")
-                adjustedLocations.insert(violatingRange.location, atIndex: 0)
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "})")
+                adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }
 
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: self.dynamicType.description,
-                location: Location(file: file, characterOffset: $0))
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 }

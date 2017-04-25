@@ -3,7 +3,7 @@
 //  SwiftLint
 //
 //  Created by Chris Eidhof on 20/05/15.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Commandant
@@ -11,60 +11,84 @@ import Result
 import SwiftLintFramework
 import SwiftyTextTable
 
-private let violationMarker = "↓"
+private func print(ruleDescription desc: RuleDescription) {
+    print("\(desc.consoleDescription)")
 
-struct RulesCommand: CommandType {
-    let verb = "rules"
-    let function = "Display the list of rules and their identifiers"
-
-    func run(options: RulesOptions) -> Result<(), CommandantError<()>> {
-        if let ruleID = options.ruleID {
-            guard let rule = masterRuleList.list[ruleID] else {
-                return .Failure(.UsageError(description: "No rule with identifier: \(ruleID)"))
-            }
-
-            printRuleDescript(rule.description)
-            return .Success()
+    if !desc.triggeringExamples.isEmpty {
+        func indent(_ string: String) -> String {
+            return string.components(separatedBy: "\n")
+                .map { "    \($0)" }
+                .joined(separator: "\n")
         }
-
-        let configuration = Configuration(commandLinePath: options.configurationFile)
-        print(TextTable(ruleList: masterRuleList, configuration: configuration).render())
-        return .Success()
-    }
-
-    private func printRuleDescript(desc: RuleDescription) {
-        print("\(desc.consoleDescription)")
-
-        if !desc.triggeringExamples.isEmpty {
-            func indent(string: String) -> String {
-                return string.componentsSeparatedByString("\n")
-                    .map { "    \($0)" }
-                    .joinWithSeparator("\n")
-            }
-            print("\nTriggering Examples (violation is marked with '\(violationMarker)'):")
-            for (index, example) in desc.triggeringExamples.enumerate() {
-                print("\nExample #\(index + 1)\n\n\(indent(example))")
-            }
+        print("\nTriggering Examples (violation is marked with '↓'):")
+        for (index, example) in desc.triggeringExamples.enumerated() {
+            print("\nExample #\(index + 1)\n\n\(indent(example))")
         }
     }
 }
 
-struct RulesOptions: OptionsType {
-    private let ruleID: String?
-    private let configurationFile: String
+struct RulesCommand: CommandProtocol {
+    let verb = "rules"
+    let function = "Display the list of rules and their identifiers"
 
-    static func create(configurationFile: String) -> (ruleID: String) -> RulesOptions {
-        return { ruleID in
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile)
+    func run(_ options: RulesOptions) -> Result<(), CommandantError<()>> {
+        if let ruleID = options.ruleID {
+            guard let rule = masterRuleList.list[ruleID] else {
+                return .failure(.usageError(description: "No rule with identifier: \(ruleID)"))
+            }
+
+            print(ruleDescription: rule.description)
+            return .success()
         }
+
+        let configuration = Configuration(commandLinePath: options.configurationFile)
+        let rules = ruleList(for: options, configuration: configuration)
+
+        print(TextTable(ruleList: rules, configuration: configuration).render())
+        return .success()
     }
 
-    // swiftlint:disable:next line_length
-    static func evaluate(mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
+    private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
+        guard options.filterEnabled else {
+            return masterRuleList
+        }
+
+        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleID, ruleType in
+            let configuredRule = configuration.rules.first { rule in
+                return type(of: rule).description.identifier == ruleID
+            }
+
+            guard configuredRule != nil else {
+                return nil
+            }
+
+            return ruleType
+        }
+
+        return RuleList(rules: filtered)
+    }
+}
+
+struct RulesOptions: OptionsProtocol {
+    fileprivate let ruleID: String?
+    fileprivate let configurationFile: String
+    fileprivate let filterEnabled: Bool
+
+    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ filterEnabled: Bool) -> RulesOptions {
+        return { ruleID in { filterEnabled in
+            // swiftlint:disable:next line_length
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile, filterEnabled: filterEnabled)
+        }}
+    }
+
+    static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| configOption
             <*> mode <| Argument(defaultValue: "",
                                  usage: "the rule identifier to display description for")
+            <*> mode <| Switch(flag: "e",
+                               key: "enabled",
+                               usage: "only display enabled rules")
     }
 }
 
@@ -80,17 +104,13 @@ extension TextTable {
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
-        let sortedRules = ruleList.list.sort { $0.0 < $1.0 }
+        let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
-            let configuredRule: Rule? = {
-                for rule in configuration.rules
-                    where rule.dynamicType.description.identifier == ruleID {
-                        return rule
-                }
-                return nil
-            }()
-            addRow([
+            let configuredRule = configuration.rules.first { rule in
+                return type(of: rule).description.identifier == ruleID
+            }
+            addRow(values: [
                 ruleID,
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",

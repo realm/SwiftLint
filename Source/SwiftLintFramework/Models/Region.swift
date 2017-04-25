@@ -20,15 +20,21 @@ public struct Region {
         self.disabledRuleIdentifiers = disabledRuleIdentifiers
     }
 
-    public func contains(location: Location) -> Bool {
+    public func contains(_ location: Location) -> Bool {
         return start <= location && end >= location
     }
 
-    public func isRuleEnabled(rule: Rule) -> Bool {
+    public func isRuleEnabled(_ rule: Rule) -> Bool {
         return !isRuleDisabled(rule)
     }
 
-    public func isRuleDisabled(rule: Rule) -> Bool {
-        return disabledRuleIdentifiers.contains(rule.dynamicType.description.identifier)
+    public func isRuleDisabled(_ rule: Rule) -> Bool {
+        let identifiers = type(of: rule).description.allIdentifiers
+        return !disabledRuleIdentifiers.intersection(identifiers).isEmpty
+    }
+
+    public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
+        let identifiers = type(of: rule).description.deprecatedAliases
+        return disabledRuleIdentifiers.intersection(identifiers)
     }
 }

@@ -2,7 +2,7 @@
 //  PrivateOutletRule.swift
 //  SwiftLint
 //
-//  Created by Olivier Halligon on 12/08/2016.
+//  Created by Olivier Halligon on 12/8/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -23,51 +23,48 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "class Foo {\n  @IBOutlet private var label: UILabel!\n}\n",
             "class Foo {\n  var notAnOutlet: UILabel\n}\n",
             "class Foo {\n  @IBOutlet weak private var label: UILabel?\n}\n",
-            "class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet private weak var label: UILabel?\n}\n"
         ],
         triggeringExamples: [
-            "class Foo {\n  @IBOutlet var label: UILabel?\n}\n",
-            "class Foo {\n  @IBOutlet var label: UILabel!\n}\n",
+            "class Foo {\n  @IBOutlet ↓var label: UILabel?\n}\n",
+            "class Foo {\n  @IBOutlet ↓var label: UILabel!\n}\n"
         ]
     )
 
-    public func validateFile(file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .VarInstance else {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard kind == .varInstance else {
             return []
         }
 
         // Check if IBOutlet
-        let attributes = (dictionary["key.attributes"] as? [SourceKitRepresentable])?
-            .flatMap({ ($0 as? [String: SourceKitRepresentable]) as? [String: String] })
-            .flatMap({ $0["key.attribute"] }) ?? []
-        let isOutlet = attributes.contains("source.decl.attribute.iboutlet")
+        let isOutlet = dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.iboutlet")
         guard isOutlet else { return [] }
 
         // Check if private
-        let accessibility = (dictionary["key.accessibility"] as? String) ?? ""
-        let setterAccessiblity = (dictionary["key.setter_accessibility"] as? String) ?? ""
-        let isPrivate = accessibility == "source.lang.swift.accessibility.private"
-        let isPrivateSet = setterAccessiblity == "source.lang.swift.accessibility.private"
+        let isPrivate = isPrivateLevel(identifier: dictionary.accessibility)
+        let isPrivateSet = isPrivateLevel(identifier: dictionary.setterAccessibility)
 
-        if isPrivate || (self.configuration.allowPrivateSet && isPrivateSet) {
+        if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {
             return []
         }
 
         // Violation found!
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)
         }
 
         return [
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severityConfiguration.severity,
-                location: location
-            )
+                location: location)
         ]
+    }
+
+    private func isPrivateLevel(identifier: String?) -> Bool {
+        return identifier.flatMap(AccessControlLevel.init(identifier:))?.isPrivate ?? false
     }
 }

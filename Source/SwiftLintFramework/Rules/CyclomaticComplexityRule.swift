@@ -2,7 +2,7 @@
 //  CyclomaticComplexityRule.swift
 //  SwiftLint
 //
-//  Created by Denis Lebedev on 24/01/2016.
+//  Created by Denis Lebedev on 24/1/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 10, error: 20)
+    public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
     public init() {}
 
@@ -28,64 +28,64 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             "if true {}; if true {}; if true {}; if true {}; if true {}; if true {}\n" +
                 "func f2() {\n" +
                     "if true {}; if true {}; if true {}; if true {}; if true {}\n" +
-                "}}",
+                "}}"
         ],
         triggeringExamples: [
-            "func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
+            "↓func f1() {\n  if true {\n    if true {\n      if false {}\n    }\n" +
                 "  }\n  if false {}\n  let i = 0\n\n  switch i {\n  case 1: break\n" +
                 "  case 2: break\n  case 3: break\n  case 4: break\n default: break\n  }\n" +
                 "  for _ in 1...5 {\n    guard true else {\n      return\n    }\n  }\n}\n"
         ]
     )
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !functionKinds.contains(kind) {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 
-        let complexity = measureComplexity(file, dictionary: dictionary)
+        let complexity = measureComplexity(in: file, dictionary: dictionary)
 
         for parameter in configuration.params where complexity > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            let offset = dictionary.offset ?? 0
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: "Function should have complexity \(configuration.warning) or less: " +
+                reason: "Function should have complexity \(configuration.length.warning) or less: " +
                         "currently complexity equals \(complexity)")]
         }
 
         return []
     }
 
-    private func measureComplexity(file: File,
-                                   dictionary: [String: SourceKitRepresentable]) -> Int {
+    private func measureComplexity(in file: File, dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
-
-        let complexity = substructure.reduce(0) { complexity, subItem in
-            guard let subDict = subItem as? [String: SourceKitRepresentable],
-                      kind = subDict["key.kind"] as? String else {
+        let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
+            guard let kind = subDict.kind else {
                 return complexity
             }
 
-            if let declarationKid = SwiftDeclarationKind(rawValue: kind)
-                where functionKinds.contains(declarationKid) {
+            if let declarationKind = SwiftDeclarationKind(rawValue: kind),
+                SwiftDeclarationKind.functionKinds().contains(declarationKind) {
                 return complexity
             }
 
-            if kind == "source.lang.swift.stmt.switch" {
+            guard let statementKind = StatementKind(rawValue: kind) else {
+                return complexity + measureComplexity(in: file, dictionary: subDict)
+            }
+
+            if statementKind == .switch {
                 hasSwitchStatements = true
             }
-
+            let score = configuration.complexityStatements.contains(statementKind) ? 1 : 0
             return complexity +
-                Int(complexityStatements.contains(kind)) +
-                measureComplexity(file, dictionary: subDict)
+                score +
+                measureComplexity(in: file, dictionary: subDict)
         }
 
-        if hasSwitchStatements {
-            return reduceSwitchComplexity(complexity, file: file, dictionary: dictionary)
+        if hasSwitchStatements && !configuration.ignoresCaseStatements {
+            return reduceSwitchComplexity(initialComplexity: complexity, file: file, dictionary: dictionary)
         }
 
         return complexity
@@ -93,43 +93,16 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    private func reduceSwitchComplexity(complexity: Int, file: File,
+    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
-        let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
-        let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
+        let bodyOffset = dictionary.bodyOffset ?? 0
+        let bodyLength = dictionary.bodyLength ?? 0
 
-        let c = (file.contents as NSString)
+        let c = file.contents.bridge()
             .substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""
 
-        let fallthroughCount = c.componentsSeparatedByString("fallthrough").count - 1
+        let fallthroughCount = c.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount
     }
-
-    private let complexityStatements = [
-        "source.lang.swift.stmt.foreach",
-        "source.lang.swift.stmt.if",
-        "source.lang.swift.stmt.case",
-        "source.lang.swift.stmt.guard",
-        "source.lang.swift.stmt.for",
-        "source.lang.swift.stmt.repeatwhile",
-        "source.lang.swift.stmt.while"
-    ]
-
-    private let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
-    ]
 
 }

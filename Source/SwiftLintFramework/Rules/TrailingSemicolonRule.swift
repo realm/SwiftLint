@@ -2,23 +2,23 @@
 //  TrailingSemiColonRule.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-11-17.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 11/17/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 import SourceKittenFramework
 
 extension File {
-    private func violatingTrailingSemicolonRanges() -> [NSRange] {
-        return matchPattern("(;+([^\\S\\n]?)*)+;?$",
-                            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
+    fileprivate func violatingTrailingSemicolonRanges() -> [NSRange] {
+        return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
+                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
 
 public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -35,27 +35,24 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
             "let a = 0↓; ; ;\n"
         ],
         corrections: [
-            "let a = 0;\n": "let a = 0\n",
-            "let a = 0;\nlet b = 1\n": "let a = 0\nlet b = 1\n",
-            "let a = 0;;\n": "let a = 0\n",
-            "let a = 0;    ;;\n": "let a = 0\n",
-            "let a = 0; ; ;\n": "let a = 0\n"
+            "let a = 0↓;\n": "let a = 0\n",
+            "let a = 0↓;\nlet b = 1\n": "let a = 0\nlet b = 1\n",
+            "let a = 0↓;;\n": "let a = 0\n",
+            "let a = 0↓;    ;;\n": "let a = 0\n",
+            "let a = 0↓; ; ;\n": "let a = 0\n"
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.violatingTrailingSemicolonRanges().map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
+            StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
-            file.violatingTrailingSemicolonRanges(),
-            forRule: self
-        )
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingTrailingSemicolonRanges(), for: self)
         let adjustedRanges = violatingRanges.reduce([NSRange]()) { adjustedRanges, element in
             let adjustedLocation = element.location - adjustedRanges.count
             let adjustedRange = NSRange(location: adjustedLocation, length: element.length)
@@ -68,12 +65,12 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         for range in adjustedRanges {
             if let indexRange = correctedContents.nsrangeToIndexRange(range) {
                 correctedContents = correctedContents
-                    .stringByReplacingCharactersInRange(indexRange, withString: "")
+                    .replacingCharacters(in: indexRange, with: "")
             }
         }
         file.write(correctedContents)
         return adjustedRanges.map {
-            Correction(ruleDescription: self.dynamicType.description,
+            Correction(ruleDescription: type(of: self).description,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }

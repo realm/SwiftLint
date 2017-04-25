@@ -2,14 +2,14 @@
 //  TrailingWhitespaceConfiguration.swift
 //  SwiftLint
 //
-//  Created by Reimar Twelker on 12.04.16.
+//  Created by Reimar Twelker on 12/4/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
 import Foundation
 
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var ignoresEmptyLines = false
     var ignoresComments = true
 
@@ -24,16 +24,16 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
         self.ignoresComments = ignoresComments
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func apply(configuration: Any) throws {
+        guard let configuration = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         ignoresEmptyLines = (configuration["ignores_empty_lines"] as? Bool == true)
         ignoresComments = (configuration["ignores_comments"] as? Bool == true)
 
         if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }
@@ -41,5 +41,6 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
 public func == (lhs: TrailingWhitespaceConfiguration,
                 rhs: TrailingWhitespaceConfiguration) -> Bool {
     return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines &&
-        lhs.ignoresComments == rhs.ignoresComments
+        lhs.ignoresComments == rhs.ignoresComments &&
+        lhs.severityConfiguration == rhs.severityConfiguration
 }

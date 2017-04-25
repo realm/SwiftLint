@@ -36,18 +36,18 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         self.excluded = Set(excluded)
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func apply(configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         if let minLengthConfiguration = configurationDict["min_length"] {
-            try minLength.applyConfiguration(minLengthConfiguration)
+            try minLength.apply(configuration: minLengthConfiguration)
         }
         if let maxLengthConfiguration = configurationDict["max_length"] {
-            try maxLength.applyConfiguration(maxLengthConfiguration)
+            try maxLength.apply(configuration: maxLengthConfiguration)
         }
-        if let excluded = [String].arrayOf(configurationDict["excluded"]) {
+        if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
         }
     }
@@ -63,13 +63,13 @@ public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
 
 public extension ConfigurationProviderRule where ConfigurationType == NameConfiguration {
     public func severity(forLength length: Int) -> ViolationSeverity? {
-        if let minError = configuration.minLength.error where length < minError {
-            return .Error
-        } else if let maxError = configuration.maxLength.error where length > maxError {
-            return .Error
+        if let minError = configuration.minLength.error, length < minError {
+            return .error
+        } else if let maxError = configuration.maxLength.error, length > maxError {
+            return .error
         } else if length < configuration.minLength.warning ||
                   length > configuration.maxLength.warning {
-            return .Warning
+            return .warning
         }
         return nil
     }

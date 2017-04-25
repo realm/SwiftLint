@@ -19,20 +19,50 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
-Using [Homebrew](http://brew.sh/)
+### Using [Homebrew](http://brew.sh/):
 
 ```
 brew install swiftlint
 ```
 
+### Using [CocoaPods](https://cocoapods.org):
+
+Simply add the following line to your Podfile:
+
+```ruby
+pod 'SwiftLint'
+```
+
+This will download the SwiftLint binaries and dependencies in `Pods/` during your next
+`pod install` execution and will allow you to invoke it via `${PODS_ROOT}/SwiftLint/swiftlint`
+in your Script Build Phases.
+
+This is the recommended way to install a specific version of SwiftLint since it supports
+installing a pinned version rather than simply the latest (which is the case with Homebrew).
+
+Note that this will add the SwiftLint binaries, its dependencies' binaries and the Swift binary
+library distribution to the `Pods/` directory, so checking in this directory to SCM such as
+git is discouraged.
+
+### Using a pre-built package:
+
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and
 running it.
 
+### Compiling from source:
+
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 7.1 or later).
+`git submodule update --init --recursive; make install` (Xcode 8.0 or later).
 
 ## Usage
+
+### Presentation
+
+To get a high-level overview of recommended ways to integrate SwiftLint into your project,
+we encourage you to watch this presentation or read the transcript:
+
+[![Presentation](assets/presentation.jpg)](https://realm.io/news/slug-jp-simard-swiftlint)
 
 ### Xcode
 
@@ -49,10 +79,18 @@ fi
 
 ![](assets/runscript.png)
 
+Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
+
+```bash
+"${PODS_ROOT}/SwiftLint/swiftlint"
+```
+
 #### Format on Save Xcode Plugin
 
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
+
+⚠ ️This plugin will not work with Xcode 8 without disabling SIP. This is not recommended.
 
 ### AppCode
 
@@ -63,7 +101,7 @@ The `autocorrect` action is available via `⌥⏎`.
 
 ### Atom
 
-To integrate SwiftLint with [Atom](https://atom.io/) install the
+To integrate SwiftLint with [Atom](https://atom.io/), install the
 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
 APM.
 
@@ -86,34 +124,70 @@ will be searched recursively.
 To specify a list of files when using `lint` or `autocorrect` (like the list of
 files modified by Xcode specified by the
 [`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
-plugin, or modified files in the working tree based on `git ls-files -m`) you
+plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
 following instance variables: `SCRIPT_INPUT_FILE_COUNT` and
-`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`... `SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
+`SCRIPT_INPUT_FILE_0`, `SCRIPT_INPUT_FILE_1`...`SCRIPT_INPUT_FILE_{SCRIPT_INPUT_FILE_COUNT}`.
 
 These are same environment variables set for input files to
 [custom Xcode script phases](http://indiestack.com/2014/12/speeding-up-custom-script-phases/).
 
+### Working With Multiple Swift Versions
+
+SwiftLint hooks into SourceKit so it continues working even as Swift evolves!
+
+This also keeps SwiftLint lean, as it doesn't need to ship with a full Swift
+compiler, it just communicates with the official one you already have installed
+on your machine.
+
+You should always run SwiftLint with the same toolchain you use to compile your
+code.
+
+You may want to override SwiftLint's default Swift toolchain if you have
+multiple toolchains or Xcodes installed, or if you're using legacy Swift
+versions (e.g. Swift 2.3 with Xcode 8).
+
+Here's the order in which SwiftLint determines which Swift toolchain to use:
+
+* `$XCODE_DEFAULT_TOOLCHAIN_OVERRIDE`
+* `$TOOLCHAIN_DIR` or `$TOOLCHAINS`
+* `xcrun -find swift`
+* `/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+* `~/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain`
+
+`sourcekitd.framework` is expected to be found in the `usr/lib/` subdirectory of
+the value passed in the paths above.
+
+You may also set the `TOOLCHAINS` environment variable to the reverse-DNS
+notation that identifies a Swift toolchain version:
+
+```shell
+$ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
+```
+
+On Linux, SourceKit is expected to be located in
+`/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
+environment variable.
+
 ## Rules
 
-There are only a small number of rules currently implemented, but we hope the
-Swift community (that's you!) will contribute more over time.
+Over 75 rules are included in SwiftLint and the Swift community (that's you!)
+continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
-
-The rules that *are* currently implemented are mostly there as a starting point
-and are subject to change.
 
 See the [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see the currently implemented rules.
 
-`opt_in_rules` are disabled by default (you have to explicitly enable them in
-your configuration file).
+`opt_in_rules` are disabled by default (i.e., you have to explicitly enable them
+in your configuration file).
 
 Guidelines on when to implement a rule as opt-in:
 
 * A rule that can have many false positives (e.g. `empty_count`)
 * A rule that is too slow
-* A rule that is not general consensus or only useful in some cases
+* A rule that is not general consensus or is only useful in some cases
   (e.g. `force_unwrapping`, `missing_docs`)
 
 ### Disable rules in code
@@ -137,7 +211,7 @@ let noWarning :String = "" // No warning about colons immediately after variable
 let hasWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
-It's also possible to modify a disable or enable command by appending
+It's also possible to modify a `disable` or `enable` command by appending
 `:previous`, `:this` or `:next` for only applying the command to the previous,
 this (current) or next line respectively.
 
@@ -163,10 +237,10 @@ run SwiftLint from. The following parameters can be configured:
 Rule inclusion:
 
 * `disabled_rules`: Disable rules from the default enabled set.
-* `opt_in_rules`: Some rules are opt-in.
-* `whitelist_rules`: Can not be specified alongside `disabled_rules` or
-  `opt_in_rules`. Acts as a whitelist, only the rules specified in this list
-  will be enabled.
+* `opt_in_rules`: Enable rules not from the default set.
+* `whitelist_rules`: Acts as a whitelist, only the rules specified in this list
+  will be enabled. Can not be specified alongside `disabled_rules` or
+  `opt_in_rules`.
 
 ```yaml
 disabled_rules: # rule identifiers to exclude from running
@@ -210,14 +284,14 @@ type_name:
     warning: 40
     error: 50
   excluded: iPhone # excluded via string
-variable_name:
+identifier_name:
   min_length: # only min_length
     error: 4 # only error
   excluded: # excluded via string array
     - id
     - URL
     - GlobalAPIKey
-reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit)
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 ```
 
 #### Defining Custom Rules
@@ -296,7 +370,7 @@ applying corrections.
 
 ## License
 
-MIT licensed.
+[MIT licensed.](LICENSE)
 
 ## About
 
@@ -307,5 +381,5 @@ Realm are trademarks of Realm Inc.
 
 We :heart: open source software!
 See [our other open source projects](https://github.com/realm),
-read [our blog](https://realm.io/news) or say hi on twitter
+read [our blog](https://realm.io/news), or say hi on twitter
 ([@realm](https://twitter.com/realm)).

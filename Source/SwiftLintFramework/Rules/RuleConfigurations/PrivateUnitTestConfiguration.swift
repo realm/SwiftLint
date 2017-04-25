@@ -13,37 +13,35 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
-    public var regex = NSRegularExpression()
-    public var included = NSRegularExpression()
-    public var severityConfiguration = SeverityConfiguration(.Warning)
+    public var regex: NSRegularExpression!
+    public var included: NSRegularExpression?
+    public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
         return severityConfiguration.severity
     }
 
     public var consoleDescription: String {
-        return "\(severity.rawValue.lowercaseString): \(regex.pattern)"
+        return "\(severity.rawValue): \(regex.pattern)"
     }
 
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier,
-                               name: name ?? identifier,
-                               description: "")
+        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
     }
 
     public init(identifier: String) {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configurationDict = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func apply(configuration: Any) throws {
+        guard let configurationDict = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
         if let regexString = configurationDict["regex"] as? String {
-            regex = try NSRegularExpression.cached(pattern: regexString)
+            regex = try .cached(pattern: regexString)
         }
         if let includedString = configurationDict["included"] as? String {
-            included = try NSRegularExpression.cached(pattern: includedString)
+            included = try .cached(pattern: includedString)
         }
         if let name = configurationDict["name"] as? String {
             self.name = name
@@ -52,7 +50,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
             self.message = message
         }
         if let severityString = configurationDict["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }
@@ -61,6 +59,6 @@ public func == (lhs: PrivateUnitTestConfiguration, rhs: PrivateUnitTestConfigura
     return lhs.identifier == rhs.identifier &&
         lhs.message == rhs.message &&
         lhs.regex == rhs.regex &&
-        lhs.included.pattern == rhs.included.pattern &&
+        lhs.included?.pattern == rhs.included?.pattern &&
         lhs.severity == rhs.severity
 }

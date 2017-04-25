@@ -8,33 +8,55 @@
 
 import Foundation
 
-public enum CommandAction: String {
-    case Enable = "enable"
-    case Disable = "disable"
-
-    private func inverse() -> CommandAction {
-        switch self {
-        case .Enable: return .Disable
-        case .Disable: return .Enable
+#if !os(Linux)
+private extension Scanner {
+    func scanUpToString(_ string: String) -> String? {
+        var result: NSString? = nil
+        let success = scanUpTo(string, into: &result)
+        if success {
+            return result?.bridge()
         }
+        return nil
+    }
+
+    func scanString(string: String) -> String? {
+        var result: NSString? = nil
+        let success = scanString(string, into: &result)
+        if success {
+            return result?.bridge()
+        }
+        return nil
     }
 }
-
-public enum CommandModifier: String {
-    case Previous = "previous"
-    case This = "this"
-    case Next = "next"
-}
+#endif
 
 public struct Command {
-    let action: CommandAction
-    let ruleIdentifiers: [String]
-    let line: Int
-    let character: Int?
-    let modifier: CommandModifier?
+    public enum Action: String {
+        case enable
+        case disable
 
-    public init(action: CommandAction, ruleIdentifiers: [String], line: Int = 0,
-                character: Int? = nil, modifier: CommandModifier? = nil) {
+        fileprivate func inverse() -> Action {
+            switch self {
+            case .enable: return .disable
+            case .disable: return .enable
+            }
+        }
+    }
+
+    public enum Modifier: String {
+        case previous
+        case this
+        case next
+    }
+
+    internal let action: Action
+    internal let ruleIdentifiers: [String]
+    internal let line: Int
+    internal let character: Int?
+    private let modifier: Modifier?
+
+    public init(action: Action, ruleIdentifiers: [String], line: Int = 0,
+                character: Int? = nil, modifier: Modifier? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
         self.line = line
@@ -43,35 +65,32 @@ public struct Command {
     }
 
     public init?(string: NSString, range: NSRange) {
-        let scanner = NSScanner(string: string.substringWithRange(range))
-        scanner.scanString("swiftlint:", intoString: nil)
-        var optionalActionAndModifierNSString: NSString? = nil
-        scanner.scanUpToString(" ", intoString: &optionalActionAndModifierNSString)
-        guard let actionAndModifierString = optionalActionAndModifierNSString as String? else {
+        let scanner = Scanner(string: string.substring(with: range))
+        _ = scanner.scanString(string: "swiftlint:")
+        guard let actionAndModifierString = scanner.scanUpToString(" ") else {
             return nil
         }
-        let actionAndModifierScanner = NSScanner(string: actionAndModifierString)
-        var actionNSString: NSString? = nil
-        actionAndModifierScanner.scanUpToString(":", intoString: &actionNSString)
-        guard let actionString = actionNSString as String?,
-            action = CommandAction(rawValue: actionString),
-            lineAndCharacter = string.lineAndCharacterForCharacterOffset(NSMaxRange(range)) else {
+        let actionAndModifierScanner = Scanner(string: actionAndModifierString)
+        guard let actionString = actionAndModifierScanner.scanUpToString(":"),
+            let action = Action(rawValue: actionString),
+            let lineAndCharacter = string.lineAndCharacter(forCharacterOffset: NSMaxRange(range))
+            else {
                 return nil
         }
         self.action = action
-        ruleIdentifiers = (scanner.string as NSString)
-            .substringFromIndex(scanner.scanLocation + 1)
-            .componentsSeparatedByCharactersInSet(.whitespaceCharacterSet())
+        ruleIdentifiers = scanner.string.bridge()
+            .substring(from: scanner.scanLocation + 1)
+            .components(separatedBy: .whitespaces)
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(":", intoString: nil)
+        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
 
         // Modifier
         if hasModifier {
-            let modifierString = (actionAndModifierScanner.string as NSString)
-                .substringFromIndex(actionAndModifierScanner.scanLocation)
-            modifier = CommandModifier(rawValue: modifierString)
+            let modifierString = actionAndModifierScanner.string.bridge()
+                .substring(from: actionAndModifierScanner.scanLocation)
+            modifier = Modifier(rawValue: modifierString)
         } else {
             modifier = nil
         }
@@ -82,19 +101,19 @@ public struct Command {
             return [self]
         }
         switch modifier {
-        case .Previous:
+        case .previous:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
                     character: Int.max)
             ]
-        case .This:
+        case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
                     character: Int.max)
             ]
-        case .Next:
+        case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,

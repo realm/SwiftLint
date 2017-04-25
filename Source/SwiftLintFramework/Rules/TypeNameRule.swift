@@ -2,8 +2,8 @@
 //  TypeNameRule.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
@@ -23,60 +23,83 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
-            [
-                "\(type) MyType {}",
-                "private \(type) _MyType {}",
-                "enum MyType {\ncase value\n}",
-                "\(type) " + Repeat(count: 40, repeatedValue: "A").joinWithSeparator("") + " {}"
-            ]
-        }),
-        triggeringExamples: ["class", "struct", "enum"].flatMap({ type in
-            [
-                "↓\(type) myType {}",
-                "↓\(type) _MyType {}",
-                "private ↓\(type) MyType_ {}",
-                "↓\(type) My {}",
-                "↓\(type) " + Repeat(count: 41, repeatedValue: "A").joinWithSeparator("") + " {}"
-            ]
-        })
+        nonTriggeringExamples: TypeNameRuleExamples.swift3NonTriggeringExamples,
+        triggeringExamples: TypeNameRuleExamples.swift3TriggeringExamples
     )
 
-    public func validateFile(file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let typeKinds: [SwiftDeclarationKind] = [
-            .Class,
-            .Struct,
-            .Typealias,
-            .Enum
-        ]
-        if !typeKinds.contains(kind) {
+    private let typeKinds: [SwiftDeclarationKind] = {
+        let common = SwiftDeclarationKind.typeKinds()
+        switch SwiftVersion.current {
+        case .two, .twoPointThree:
+            return common + [.enumelement]
+        case .three:
+            return common
+        }
+    }()
+
+    public func validate(file: File) -> [StyleViolation] {
+        return validateTypeAliasesAndAssociatedTypes(in: file) +
+            validate(file: file, dictionary: file.structure.dictionary)
+    }
+
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+
+        guard typeKinds.contains(kind),
+            let name = dictionary.name,
+            let offset = dictionary.offset else {
+                return []
+        }
+
+        return validate(name: name, dictionary: dictionary, file: file, offset: offset)
+    }
+
+    private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
+        let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
+        return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
+            guard tokens.count == 2,
+                let keywordToken = tokens.first,
+                let nameToken = tokens.last,
+                SyntaxKind(rawValue: keywordToken.type) == .keyword,
+                SyntaxKind(rawValue: nameToken.type) == .identifier else {
+                    return []
+            }
+
+            let contents = file.contents.bridge()
+            guard let name = contents.substringWithByteRange(start: nameToken.offset,
+                                                             length: nameToken.length) else {
+                return []
+            }
+
+            return validate(name: name, file: file, offset: nameToken.offset)
+        }
+    }
+
+    private func validate(name: String, dictionary: [String: SourceKitRepresentable] = [:], file: File,
+                          offset: Int) -> [StyleViolation] {
+        guard !configuration.excluded.contains(name) else {
             return []
         }
-        if let name = dictionary["key.name"] as? String where
-            !configuration.excluded.contains(name),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
-            let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-            let nameCharacterSet = NSCharacterSet(charactersInString: name)
-            if !NSCharacterSet.alphanumericCharacterSet().isSupersetOfSet(nameCharacterSet) {
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: .Error,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should only contain alphanumeric characters: '\(name)'")]
-            } else if !name.substringToIndex(name.startIndex.successor()).isUppercase() {
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: .Error,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should start with an uppercase character: '\(name)'")]
-            } else if let severity = severity(forLength: name.characters.count) {
-                return [StyleViolation(ruleDescription: self.dynamicType.description,
-                    severity: severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                        "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
-            }
+
+        let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
+        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+            return [StyleViolation(ruleDescription: type(of: self).description,
+               severity: .error,
+               location: Location(file: file, byteOffset: offset),
+               reason: "Type name should only contain alphanumeric characters: '\(name)'")]
+        } else if !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+            return [StyleViolation(ruleDescription: type(of: self).description,
+               severity: .error,
+               location: Location(file: file, byteOffset: offset),
+               reason: "Type name should start with an uppercase character: '\(name)'")]
+        } else if let severity = severity(forLength: name.characters.count) {
+            return [StyleViolation(ruleDescription: type(of: self).description,
+               severity: severity,
+               location: Location(file: file, byteOffset: offset),
+               reason: "Type name should be between \(configuration.minLengthThreshold) and " +
+                    "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
         }
+
         return []
     }
 }

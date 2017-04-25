@@ -1,0 +1,7 @@
+machine:
+  xcode:
+    version: "8.2"
+
+test:
+  override:
+    - bundle exec danger --verbose

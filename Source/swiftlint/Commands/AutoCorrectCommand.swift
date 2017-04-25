@@ -7,42 +7,38 @@
 //
 
 import Commandant
-import Foundation
 import Result
-import SourceKittenFramework
 import SwiftLintFramework
 
-struct AutoCorrectCommand: CommandType {
+struct AutoCorrectCommand: CommandProtocol {
     let verb = "autocorrect"
     let function = "Automatically correct warnings and errors"
 
-    func run(options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
-        let configuration = Configuration(commandLinePath: options.configurationFile,
-            rootPath: options.path, quiet: options.quiet)
-        return configuration.visitLintableFiles(options.path, action: "Correcting",
+    func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
+        return Configuration(options: options).visitLintableFiles(path: options.path, action: "Correcting",
             quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles) { linter in
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joinWithSeparator("\n"))
+                queuedPrint(correctionLogs.joined(separator:"\n"))
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
                     useTabs: false,
                     indentWidth: 4)
-                _ = try? formattedContents.dataUsingEncoding(NSUTF8StringEncoding)?
-                    .writeToFile(linter.file.path!, options: [])
+                _ = try? formattedContents
+                    .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }
         }.flatMap { files in
             if !options.quiet {
                 queuedPrintError("Done correcting \(files.count) files!")
             }
-            return .Success()
+            return .success()
         }
     }
 }
 
-struct AutoCorrectOptions: OptionsType {
+struct AutoCorrectOptions: OptionsProtocol {
     let path: String
     let configurationFile: String
     let useScriptInputFiles: Bool
@@ -50,13 +46,13 @@ struct AutoCorrectOptions: OptionsType {
     let format: Bool
 
     // swiftlint:disable line_length
-    static func create(path: String) -> (configurationFile: String) -> (useScriptInputFiles: Bool) -> (quiet: Bool) -> (format: Bool) -> AutoCorrectOptions {
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> AutoCorrectOptions {
         return { configurationFile in { useScriptInputFiles in { quiet in { format in
             self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format)
         }}}}
     }
 
-    static func evaluate(mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
+    static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")

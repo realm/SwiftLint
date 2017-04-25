@@ -2,7 +2,7 @@
 //  FunctionParameterCountRule.swift
 //  SwiftLint
 //
-//  Created by Denis Lebedev on 26/01/2016.
+//  Created by Denis Lebedev on 26/1/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -19,41 +19,54 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
         nonTriggeringExamples: [
+            "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "`init`(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?<T>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "init?<T: String>(a: T, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
                 "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
         ],
         triggeringExamples: [
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
-            "func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "↓func initialValue(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
+            "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int = 2, g: Int) {}",
+            "struct Foo {\n" +
+                "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}\n" +
+                "↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}"
         ]
     )
 
-    public func validateFile(file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !functionKinds.contains(kind) {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 
-        let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
-        let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
-        let substructure = dictionary["key.substructure"] as? [SourceKitRepresentable] ?? []
+        let nameOffset = dictionary.nameOffset ?? 0
+        let length = dictionary.nameLength ?? 0
 
-        let minThreshold = configuration.params.map({ $0.value }).minElement(<)
+        if functionIsInitializer(file: file, byteOffset: nameOffset, byteLength: length) {
+            return []
+        }
 
-        let allParameterCount =
-            allFunctionParameterCount(substructure, offset: nameOffset, length: length)
-        if allParameterCount < minThreshold {
+        let minThreshold = configuration.params.map({ $0.value }).min(by: <)
+
+        let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, offset: nameOffset,
+                                                          length: length)
+        if allParameterCount < minThreshold! {
             return []
         }
 
         let parameterCount = allParameterCount -
-            defaultFunctionParameterCount(file, offset: nameOffset, length: length)
+            defaultFunctionParameterCount(file: file, byteOffset: nameOffset, byteLength: length)
 
         for parameter in configuration.params where parameterCount > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
-            return [StyleViolation(ruleDescription: self.dynamicType.description,
+            let offset = dictionary.offset ?? 0
+            return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
                 reason: "Function should have \(configuration.warning) parameters or less: " +
@@ -63,48 +76,44 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    private func allFunctionParameterCount(structure: [SourceKitRepresentable],
-                                           offset: Int, length: Int) -> Int {
+    fileprivate func allFunctionParameterCount(structure: [[String: SourceKitRepresentable]],
+                                               offset: Int, length: Int) -> Int {
         var parameterCount = 0
-        for substructure in structure {
-            guard let subDict = substructure as? [String: SourceKitRepresentable],
-                key = subDict["key.kind"] as? String,
-                parameterOffset = subDict["key.offset"] as? Int64 else {
+        for subDict in structure {
+            guard let key = subDict.kind,
+                let parameterOffset = subDict.offset else {
                     continue
             }
 
-            guard offset..<offset+length ~= Int(parameterOffset) else {
+            guard offset..<(offset + length) ~= parameterOffset else {
                 return parameterCount
             }
 
-            if SwiftDeclarationKind(rawValue: key) == .VarParameter {
+            if SwiftDeclarationKind(rawValue: key) == .varParameter {
                 parameterCount += 1
             }
         }
         return parameterCount
     }
 
-    private func defaultFunctionParameterCount(file: File, offset: Int, length: Int) -> Int {
-        let equalCharacter = Character("=")
-        return (file.contents as NSString)
-            .substringWithByteRange(start: offset, length: length)?
-            .characters.filter { $0 == equalCharacter }.count ?? 0
+    fileprivate func defaultFunctionParameterCount(file: File, byteOffset: Int, byteLength: Int) -> Int {
+        return file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)?
+            .characters.filter { $0 == "=" }.count ?? 0
     }
 
-    private let functionKinds: [SwiftDeclarationKind] = [
-        .FunctionAccessorAddress,
-        .FunctionAccessorDidset,
-        .FunctionAccessorGetter,
-        .FunctionAccessorMutableaddress,
-        .FunctionAccessorSetter,
-        .FunctionAccessorWillset,
-        .FunctionConstructor,
-        .FunctionDestructor,
-        .FunctionFree,
-        .FunctionMethodClass,
-        .FunctionMethodInstance,
-        .FunctionMethodStatic,
-        .FunctionOperator,
-        .FunctionSubscript
-    ]
+    fileprivate func functionIsInitializer(file: File, byteOffset: Int, byteLength: Int) -> Bool {
+        guard let name = file.contents.bridge()
+            .substringWithByteRange(start: byteOffset, length: byteLength),
+            name.hasPrefix("init"),
+            let funcName = name.components(separatedBy: CharacterSet(charactersIn: "<(")).first else {
+            return false
+        }
+        if funcName == "init" { // fast path
+            return true
+        }
+        let nonAlphas = CharacterSet.alphanumerics.inverted
+        let alphaNumericName = funcName.components(separatedBy: nonAlphas).joined()
+        return alphaNumericName == "init"
+    }
+
 }

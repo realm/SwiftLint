@@ -3,32 +3,32 @@
 //  SwiftLint
 //
 //  Created by JP Simard on 5/28/15.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
 import Foundation
 
-extension NSFileManager {
-    internal func filesToLintAtPath(path: String, rootDirectory: String? = nil) -> [String] {
+public protocol LintableFileManager {
+    func filesToLint(inPath: String, rootDirectory: String?) -> [String]
+}
+
+extension FileManager: LintableFileManager {
+    public func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
         let rootPath = rootDirectory ?? currentDirectoryPath
-        let absolutePath = (path.absolutePathRepresentation(rootPath) as NSString)
-            .stringByStandardizingPath
-        var isDirectory: ObjCBool = false
-        guard fileExistsAtPath(absolutePath, isDirectory: &isDirectory) else {
-            return []
-        }
-        if isDirectory {
-            do {
-                return try subpathsOfDirectoryAtPath(absolutePath)
-                    .map((absolutePath as NSString).stringByAppendingPathComponent).filter {
-                        $0.isSwiftFile()
-                }
-            } catch {
-                fatalError("Couldn't find files in \(absolutePath): \(error)")
-            }
-        } else if absolutePath.isSwiftFile() {
+        let absolutePath = path.bridge()
+            .absolutePathRepresentation(rootDirectory: rootPath).bridge()
+            .standardizingPath
+
+        // if path is a file, it won't be returned in `enumerator(atPath:)`
+        if absolutePath.bridge().isSwiftFile() && absolutePath.isFile {
             return [absolutePath]
         }
-        return []
+
+        return enumerator(atPath: absolutePath)?.flatMap { element in
+            if let element = element as? String, element.bridge().isSwiftFile() {
+                return absolutePath.bridge().appendingPathComponent(element)
+            }
+            return nil
+        } ?? []
     }
 }

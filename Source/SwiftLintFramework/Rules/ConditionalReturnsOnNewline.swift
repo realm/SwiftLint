@@ -2,7 +2,7 @@
 //  ConditionalReturnsOnNewline.swift
 //  SwiftLint
 //
-//  Created by Rohan Dhaimade on 12/08/2016.
+//  Created by Rohan Dhaimade on 12/8/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
     public let configurationDescription = "N/A"
-    public var configuration = SeverityConfiguration(.Warning)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
@@ -29,34 +29,33 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
             "/*if true { */ return }"
         ],
         triggeringExamples: [
-            "guard true else { return }",
-            "if true { return }",
-            "if true { break } else { return }",
-            "if true { break } else {       return }",
-            "if true { return \"YES\" } else { return \"NO\" }"
+            "↓guard true else { return }",
+            "↓if true { return }",
+            "↓if true { break } else { return }",
+            "↓if true { break } else {       return }",
+            "↓if true { return \"YES\" } else { return \"NO\" }"
         ]
     )
 
-    public func validateFile(file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return"
-        return file.rangesAndTokensMatching(pattern).filter { range, tokens in
-            guard let firstToken = tokens.first, lastToken = tokens.last
-                where SyntaxKind(rawValue: firstToken.type) == .Keyword &&
-                    SyntaxKind(rawValue: lastToken.type) == .Keyword else {
+        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
+            guard let firstToken = tokens.first, let lastToken = tokens.last,
+                SyntaxKind(rawValue: firstToken.type) == .keyword &&
+                    SyntaxKind(rawValue: lastToken.type) == .keyword else {
                         return false
             }
 
-            return ["if", "guard"].contains(contentForToken(firstToken, file: file)) &&
-                contentForToken(lastToken, file: file) == "return"
+            return ["if", "guard"].contains(content(for: firstToken, file: file)) &&
+                content(for: lastToken, file: file) == "return"
         }.map {
-            StyleViolation(ruleDescription: self.dynamicType.description,
-                severity: self.configuration.severity,
+            StyleViolation(ruleDescription: type(of: self).description,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 
-    private func contentForToken(token: SyntaxToken, file: File) -> String {
-        return file.contents.substringWithByteRange(start: token.offset,
-                                                    length: token.length) ?? ""
+    private func content(for token: SyntaxToken, file: File) -> String {
+        return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
 }

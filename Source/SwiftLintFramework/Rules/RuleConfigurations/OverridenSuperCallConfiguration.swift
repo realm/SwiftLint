@@ -42,7 +42,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "tearDown()"
     ]
 
-    var severityConfiguration = SeverityConfiguration(.Warning)
+    var severityConfiguration = SeverityConfiguration(.warning)
     var excluded: [String] = []
     var included: [String] = ["*"]
 
@@ -58,24 +58,24 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
             ", included: [\(included)]"
     }
 
-    public mutating func applyConfiguration(configuration: AnyObject) throws {
-        guard let configuration = configuration as? [String: AnyObject] else {
-            throw ConfigurationError.UnknownConfiguration
+    public mutating func apply(configuration: Any) throws {
+        guard let configuration = configuration as? [String: Any] else {
+            throw ConfigurationError.unknownConfiguration
         }
 
         if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let excluded = [String].arrayOf(configuration["excluded"]) {
+        if let excluded = [String].array(of: configuration["excluded"]) {
             self.excluded = excluded
         }
 
-        if let included = [String].arrayOf(configuration["included"]) {
+        if let included = [String].array(of: configuration["included"]) {
             self.included = included
         }
 
-        self.resolvedMethodNames = calculateResolvedMethodNames()
+        resolvedMethodNames = calculateResolvedMethodNames()
     }
 
     public var severity: ViolationSeverity {

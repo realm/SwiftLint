@@ -2,62 +2,134 @@
 //  Linter.swift
 //  SwiftLint
 //
-//  Created by JP Simard on 2015-05-16.
-//  Copyright (c) 2015 Realm. All rights reserved.
+//  Created by JP Simard on 5/16/15.
+//  Copyright © 2015 Realm. All rights reserved.
 //
 
+import Dispatch
 import Foundation
 import SourceKittenFramework
+
+private struct LintResult {
+    let violations: [StyleViolation]
+    let ruleTime: (id: String, time: Double)?
+    let deprecatedToValidIDPairs: [(String, String)]
+}
+
+extension Rule {
+    fileprivate func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
+        if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
+            return nil
+        }
+
+        let violations: [StyleViolation]
+        let ruleTime: (String, Double)?
+        if benchmark {
+            let start = Date()
+            violations = validate(file: file)
+            let id = type(of: self).description.identifier
+            ruleTime = (id, -start.timeIntervalSinceNow)
+        } else {
+            violations = validate(file: file)
+            ruleTime = nil
+        }
+
+        let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
+            return (violation, regions.first(where: { $0.contains(violation.location) }))
+        }.partitioned { _, region in
+            return region?.isRuleEnabled(self) ?? true
+        }
+
+        let enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
+            let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
+            return identifiers.map { ($0, type(of: self).description.identifier) }
+        }
+
+        return LintResult(violations: enabledViolations, ruleTime: ruleTime,
+                          deprecatedToValidIDPairs: deprecatedToValidIDPairs)
+    }
+}
 
 public struct Linter {
     public let file: File
     private let rules: [Rule]
+    private let cache: LinterCache?
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
     }
 
     public var styleViolationsAndRuleTimes: ([StyleViolation], [(id: String, time: Double)]) {
-        return getStyleViolations(true)
+        return getStyleViolations(benchmark: true)
     }
 
-    private func getStyleViolations(benchmark: Bool = false) ->
-        ([StyleViolation], [(id: String, time: Double)]) {
+    private func getStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)]) {
+
+        if let cached = cachedStyleViolations(benchmark: benchmark) {
+            return cached
+        }
+
         if file.sourcekitdFailed {
-            queuedPrintError("Most of rules are skipped because sourcekitd fails.")
+            queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
-        var ruleTimes = [(id: String, time: Double)]()
-        let violations = rules.flatMap { rule -> [StyleViolation] in
-            if !(rule is SourceKitFreeRule) && self.file.sourcekitdFailed {
-                return []
-            }
-            let start: NSDate! = benchmark ? NSDate() : nil
-            let violations = rule.validateFile(self.file)
-            if benchmark {
-                let id = rule.dynamicType.description.identifier
-                ruleTimes.append((id, -start.timeIntervalSinceNow))
-            }
-            return violations.filter { violation in
-                guard let violationRegion = regions.filter({ $0.contains(violation.location) })
-                    .first else {
-                        return true
-                }
-                return violationRegion.isRuleEnabled(rule)
-            }
+        let validationResults = rules.parallelFlatMap {
+            $0.lint(file: self.file, regions: regions, benchmark: benchmark)
         }
+        let violations = validationResults.flatMap { $0.violations }
+        let ruleTimes = validationResults.flatMap { $0.ruleTime }
+        var deprecatedToValidIdentifier = [String: String]()
+        for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
+            deprecatedToValidIdentifier[key] = value
+        }
+
+        if let cache = cache, let path = file.path {
+            let hash = file.contents.hash
+            cache.cache(violations: violations, forFile: path, fileHash: hash)
+        }
+
+        for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
+            queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
+                "completely removed in a future release.")
+        }
+
         return (violations, ruleTimes)
     }
 
-    public init(file: File, configuration: Configuration = Configuration()!) {
+    private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
+        let start: Date! = benchmark ? Date() : nil
+        guard let cache = cache,
+            let file = file.path,
+            case let hash = self.file.contents.hash,
+            let cachedViolations = cache.violations(forFile: file, hash: hash) else {
+                return nil
+        }
+
+        var ruleTimes = [(id: String, time: Double)]()
+        if benchmark {
+            // let's assume that all rules should have the same duration and split the duration among them
+            let totalTime = -start.timeIntervalSinceNow
+            let fractionedTime = totalTime / TimeInterval(rules.count)
+            ruleTimes = rules.flatMap { rule in
+                let id = type(of: rule).description.identifier
+                return (id, fractionedTime)
+            }
+        }
+
+        return (cachedViolations, ruleTimes)
+    }
+
+    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil) {
         self.file = file
+        self.cache = cache
         rules = configuration.rules
     }
 
     public func correct() -> [Correction] {
         var corrections = [Correction]()
         for rule in rules.flatMap({ $0 as? CorrectableRule }) {
-            let newCorrections = rule.correctFile(file)
+            let newCorrections = rule.correct(file: file)
             corrections += newCorrections
             if !newCorrections.isEmpty {
                 file.invalidateCache()

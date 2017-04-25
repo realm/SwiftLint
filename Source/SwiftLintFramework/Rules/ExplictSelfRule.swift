@@ -142,9 +142,8 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let instanceMemberNames = instanceMembers.flatMap { $0["key.name"] as? String }
 
         //get the members body (functions and calculated properties will have this data)
-        guard
-            let bodyLocation = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) })
+        guard let bodyLocation = dictionary.bodyOffset,
+              let bodyLength = dictionary.bodyLength
             else { return [] }
 
         //get all the tokens inside the body

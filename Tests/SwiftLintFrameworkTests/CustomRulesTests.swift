@@ -79,6 +79,17 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testCustomRulesExcludedExcludesFile() {
+        var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let violations = customRules.validate(file: getTestTextFile())
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
@@ -118,7 +129,9 @@ extension CustomRulesTests {
             ("testCustomRulesIncludedDefault",
                 testCustomRulesIncludedDefault),
             ("testCustomRulesIncludedExcludesFile",
-                testCustomRulesIncludedExcludesFile)
+                testCustomRulesIncludedExcludesFile),
+            ("testCustomRulesExcludedExcludesFile",
+                testCustomRulesExcludedExcludesFile)
         ]
     }
 }

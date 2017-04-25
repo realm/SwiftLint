@@ -90,7 +90,7 @@ Alternatively, if you've installed SwiftLint via CocoaPods the script should loo
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
-⚠ ️This plugin will not work with Xcode 8 without diabling SIP. This is not recommended.
+⚠ ️This plugin will not work with Xcode 8 without disabling SIP. This is not recommended.
 
 ### AppCode
 
@@ -303,6 +303,7 @@ following syntax:
 custom_rules:
   pirates_beat_ninjas: # rule identifier
     included: ".*.swift" # regex that defines paths to include during linting. optional.
+    excluded: ".*Test.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([n,N]inja)" # matching pattern
     match_kinds: # SyntaxKinds to match. optional.

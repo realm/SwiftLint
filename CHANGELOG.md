@@ -2,22 +2,133 @@
 
 ##### Breaking
 
+* None.
+
+##### Enhancements
+
+* Adds support for `excluded` in custom rules to exclude files.  
+  [Nigel Flack](https://github.com/nigelflack)
+  [#1437](https://github.com/realm/SwiftLint/issues/1437)
+
+* Make `trailing_comma` rule autocorrectable.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1326](https://github.com/realm/SwiftLint/issues/1326)
+
+* Add lowercase and missing colon checks to the `mark` rule.  
+  [Jason Moore](https://github.com/xinsight)
+
+##### Bug Fixes
+
+* `emoji` and `checkstyle` reporter output report sorted by file name.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1429](https://github.com/realm/SwiftLint/issues/1429)
+
+* Fix typo in `DiscardedNotificationCenterObserverRule`.  
+  [Spencer Kaiser](https://github.com/spencerkaiser)
+
+* Fix inaccurate violation report in `file_length` and
+  `function_parameter_count` rules.  
+  [ultimatedbz](https://github.com/ultimatedbz)
+
+## 0.18.1: Misaligned Drum
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Compile releases in the 'Release' configuration rather than 'Debug'.
+
+## 0.18.0: Misaligned Drum
+
+##### Breaking
+
+* Replace YamlSwift with Yams. SwiftLint no longer includes YamlSwift. If your
+  project implicitly depends on YamlSwift, you need to modify it to depend on
+  YamlSwift explicitly.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#1412](https://github.com/realm/SwiftLint/issues/1412)
+
+* Yams interprets YAML more strictly than YamlSwift, so if your YAML
+  configurations previously worked with SwiftLint but didn't fully conform to
+  the YAML 1.2 standard, you'll need to fix those validation errors.
+  For example:
+  ```yaml
+  custom_rules:
+    wrong_regex:
+      name: "wrong regex"
+      regex: "((assert|precondition)\(false)" # '\' in "" means escape sequence
+    strict_regex:
+      name: "strict regex"
+      regex: '((assert|precondition)\(false)' # Use single quotes
+  ```
+
+##### Enhancements
+
+* Support compiling with Xcode 8.3 and Swift 3.1.  
+  [Keith Smiley](https://github.com/keith)
+
+* Fix false positives on `for_where` rule and skip violation on
+  complex conditions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1387)
+
+* Print YAML configuration errors in locatable format compatible with Xcode's
+  Issue Navigator.  
+  ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)
+
+##### Bug Fixes
+
+* Fix --lenient enforcement not being applied to all violations.  
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1391](https://github.com/realm/SwiftLint/issues/1391)
+
+* Fix false positives in `unused_optional_binding` rule.  
+  [Daniel Rodríguez Troitiño](https://github.com/drodriguez)
+  [#1376](https://github.com/realm/SwiftLint/issues/1376)
+
+* Fix false positives in `redundant_discardable_let` rule.  
+  [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+  [#1415](https://github.com/realm/SwiftLint/issues/1415)
+
+## 0.17.0: Extra Rinse Cycle
+
+##### Breaking
+
 * `variable_name` rule (`VariableNameRule`) is now `identifier_name`
   (`IdentifierNameRule`) as it validates other identifiers as well.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#663](https://github.com/realm/SwiftLint/issues/663)
 
+* Fix `sorted_imports` rule to sort ignoring case.  
+  [Keith Smiley](https://github.com/keith)
+  [#1185](https://github.com/realm/SwiftLint/issues/1185)
+
+* Temporarily disable cache when linting. This will be re-enabled in a future
+  version after important cache-related issues have been addressed.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Enhancements
+
+* Add `implicitly_unwrapped_optional` opt-in rule that warns against using
+  implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
+  [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
+  [#56](https://github.com/realm/SwiftLint/issues/56)
 
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Add `discarded_notification_center_observer` rule
-  that warns when the result of
-  `NotificationCenter.addObserver(forName:object:queue:using:)`
-  is not stored so it can be removed later.  
+* Add `discarded_notification_center_observer` rule that warns when the result
+  of `NotificationCenter.addObserver(forName:object:queue:using:)` is not stored
+  so it can be removed later.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1062](https://github.com/realm/SwiftLint/issues/1062)
 
@@ -30,8 +141,8 @@
   [Jon Shier](https://github.com/jshier)
   [#1261](https://github.com/realm/SwiftLint/issues/1261)
 
-* Add `ignores_function_declarations` and `ignores_comments` as options
-  to `LineLengthRule`.  
+* Add `ignores_function_declarations` and `ignores_comments` as options to
+  `LineLengthRule`.  
   [Michael L. Welles](https://github.com/mlwelles)
   [#598](https://github.com/realm/SwiftLint/issues/598)
   [#975](https://github.com/realm/SwiftLint/issues/975)
@@ -46,6 +157,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1278](https://github.com/realm/SwiftLint/issues/1278)
 
+* Add `ignores_case_statements` as option to `CyclomaticComplexityRule`.  
+  [Michael L. Welles](https://github.com/mlwelles)
+  [#1298](https://github.com/realm/SwiftLint/issues/1298)
+
 * Add correctable `redundant_discardable_let` rule that warns when
   `let _ = foo()` is used to discard a result from a function instead of
   `_ = foo()`.  
@@ -55,8 +170,8 @@
 * Accept global and local variables in `implicit_getter` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only
-  display enabled rules.  
+* Add `--enabled` (or `-e`) switch to the `rules` CLI command, to only display
+  enabled rules.  
   [Natan Rolnik](https://github.com/NatanRolnik)
   [#1270](https://github.com/realm/SwiftLint/issues/1270)
   
@@ -64,7 +179,30 @@
   [ArtSabintsev](https://github.com/ArtSabintsev)
   [#1315](https://github.com/realm/SwiftLint/issues/1315)
 
+* Now `nesting` rule can be configured with a type and statement level.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+  [#1318](https://github.com/realm/SwiftLint/issues/1318)
+
+* Add `explicit_type_interface` opt-in rule that validates that the properties
+  have an explicit type interface.  
+  [Kim de Vos](https://github.com/kimdv)
+
+* Add `--lenient` CLI option to `lint` command. Facilitates running a lint task
+  that doesn't fail a pipeline of other tasks.  
+  [aaroncrespo](https://github.com/aaroncrespo)
+  [#1322](https://github.com/realm/SwiftLint/issues/1322)
+
+* Add `fatal_error_message` opt-in rule that validates that `fatalError()` calls
+  have a message.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1348](https://github.com/realm/SwiftLint/issues/1348)
+
 ##### Bug Fixes
+
+* Fix crashes when accessing cached regular expressions when linting in
+  parallel.  
+  [JP Simard](https://github.com/jpsim)
+  [#1344](https://github.com/realm/SwiftLint/issues/1344)
 
 * Fix a false positive on `large_tuple` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -100,8 +238,8 @@
   [#1257](https://github.com/realm/SwiftLint/issues/1257)
 
 * Make `ASTRule` default implementation to navigate through the substructure
-  even if its children are from a different kind. This fixes some violations
-  not being reported in some contexts.  
+  even if its children are from a different kind. This fixes some violations not
+  being reported in some contexts.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1237](https://github.com/realm/SwiftLint/issues/1237)
 
@@ -115,6 +253,16 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1216](https://github.com/realm/SwiftLint/issues/1216)
 
+* Fix `todo` rule messages when the comment is not on a new line.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1304](https://github.com/realm/SwiftLint/issues/1304)
+
+* Fix false negative on `unused_closure_parameter` rule.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
+
+* Fix `checkstyle` report format.  
+  [Yuki Oya](https://github.com/YukiOya)
+
 ## 0.16.1: Commutative Fabric Sheets
 
 ##### Breaking
@@ -124,7 +272,7 @@
 ##### Enhancements
 
 * Improve `unused_optional_binding` rule on tuples check.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
 
 * Update `variable_name` to ignore overrides.  
   [Aaron McTavish](https://github.com/aamctustwo)
@@ -241,7 +389,7 @@
   [#1090](https://github.com/realm/SwiftLint/issues/1090)
 
 * Make `weak_delegate` rule ignore computed properties.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
   [#1089](https://github.com/realm/SwiftLint/issues/1089)
 
 * Add `object_literal` opt-in rule that warns against using image and color
@@ -298,7 +446,7 @@
 
 * Add `unused_optional_binding` rule that will check for optional bindings
   not being used.  
-  [Rafael Machado](https://github.com/rakaramos/)
+  [Rafael Machado](https://github.com/rakaramos)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
 
 ##### Bug Fixes
@@ -766,7 +914,7 @@
 ##### Enhancements
 
 * Add `--enable-all-rules` CLI option to `lint` command to facilitate running
-  all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.
+  all rules, even opt-in and disabled ones, ignoring `whitelist_rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1170](https://github.com/realm/SwiftLint/issues/1170)
 
@@ -1404,12 +1552,12 @@ This release has seen a phenomenal uptake in community contributions!
 ##### Enhancements
 
 * Add `checkstyle` reporter to generate XML reports in the Checkstyle 4.3
-  format.
+  format.  
   [JP Simard](https://github.com/jpsim)
   [#277](https://github.com/realm/SwiftLint/issues/277)
 
 * Support command comment modifiers (`previous`, `this` & `next`) to limit the
-  command's scope to a single line.
+  command's scope to a single line.  
   [JP Simard](https://github.com/jpsim)
   [#222](https://github.com/realm/SwiftLint/issues/222)
 
@@ -1620,7 +1768,7 @@ This release has seen a phenomenal uptake in community contributions!
   [zippy1978](https://github.com/zippy1978)
 
 * Add `OpeningBraceRule` to make sure there is exactly a space before opening
-  brace and it is on the same line as declaration.
+  brace and it is on the same line as declaration.  
   [Alex Culeva](https://github.com/S2dentik)
 
 * Print to stderr for all informational logs. Only reporter outputs is logged to
@@ -1674,7 +1822,7 @@ This release has seen a phenomenal uptake in community contributions!
   [#26](https://github.com/realm/SwiftLint/issues/26)
 
 * Updated `TypeNameRule` and `VariableNameRule` to allow private type & variable
-  names to start with an underscore.
+  names to start with an underscore.  
   [JP Simard](https://github.com/jpsim)
 
 * Disable and re-enable rules from within source code comments using

@@ -58,10 +58,9 @@ private func render(locations: [Location], in contents: String) -> String {
     var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
-        var content = contents[line - 1]
-        let index = content.index(content.startIndex, offsetBy: character - 1)
-        content.insert("↓", at: index)
-        contents[line - 1] = content
+        let content = NSMutableString(string: contents[line - 1])
+        content.insert("↓", at: character - 1)
+        contents[line - 1] = content.bridge()
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
@@ -267,7 +266,7 @@ extension XCTestCase {
             XCTFail("No error caught")
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught")
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)")
             }
         } catch {
             XCTFail("Wrong error caught")

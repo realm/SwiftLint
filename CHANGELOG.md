@@ -18,6 +18,10 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
+* Add `unhandled_throw` rule.  
+  [ArtSabintsev](https://github.com/ArtSabintsev)
+  [#1315](https://github.com/realm/SwiftLint/issues/1315)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

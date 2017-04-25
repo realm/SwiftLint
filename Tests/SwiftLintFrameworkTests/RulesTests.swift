@@ -145,16 +145,16 @@ class RulesTests: XCTestCase {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 
-    func testLegacyNSGeometryFunctions() {
-        verifyRule(LegacyNSGeometryFunctionsRule.description)
-    }
-
     func testLegacyConstant() {
         verifyRule(LegacyConstantRule.description)
     }
 
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
+    }
+
+    func testLegacyNSGeometryFunctions() {
+        verifyRule(LegacyNSGeometryFunctionsRule.description)
     }
 
     func testMark() {
@@ -262,6 +262,10 @@ class RulesTests: XCTestCase {
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
+    func testSuperCall() {
+        verifyRule(OverriddenSuperCallRule.description)
+    }
+
     func testSwitchCaseOnNewline() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
@@ -320,6 +324,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeNameRule.description)
     }
 
+    func testUnhandledThrow() {
+        verifyRule(UnhandledThrowRule.description)
+    }
+
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -348,10 +356,6 @@ class RulesTests: XCTestCase {
 
     func testVoidReturn() {
         verifyRule(VoidReturnRule.description)
-    }
-
-    func testSuperCall() {
-        verifyRule(OverriddenSuperCallRule.description)
     }
 
     func testWeakDelegate() {
@@ -395,9 +399,9 @@ extension RulesTests {
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testLegacyConstant", testLegacyConstant),
             ("testLegacyConstructor", testLegacyConstructor),
+            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
@@ -419,6 +423,7 @@ extension RulesTests {
             ("testSortedImports", testSortedImports),
             ("testStatementPosition", testStatementPosition),
             ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+            ("testSuperCall", testSuperCall),
             ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
             ("testSyntacticSugar", testSyntacticSugar),
             ("testTrailingNewline", testTrailingNewline),
@@ -426,13 +431,13 @@ extension RulesTests {
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
             ("testTypeName", testTypeName),
+            ("testUnhandledThrow", testUnhandledThrow),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),
-            ("testSuperCall", testSuperCall),
             ("testWeakDelegate", testWeakDelegate)
         ]
     }

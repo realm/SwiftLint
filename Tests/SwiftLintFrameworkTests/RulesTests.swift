@@ -164,7 +164,7 @@ class RulesTests: XCTestCase {
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
     }
-    
+
     func testLetVarWhitespace() {
         verifyRule(LetVarWhitespaceRule.description)
     }

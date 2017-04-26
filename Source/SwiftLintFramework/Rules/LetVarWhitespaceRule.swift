@@ -38,16 +38,16 @@ public struct LetVarWhitespaceRule: OptInRule {
         let commentLines = commentLineNumbers(file: file)
         var violations = [StyleViolation]()
         let notWhitespace = CharacterSet.whitespaces.inverted
-        
+
         for (index, line) in file.lines.enumerated() {
             guard !varLines.contains(index) &&
                   !commentLines.contains(index) else {
                 continue
             }
-            
+
             let lastRange = line.content.rangeOfCharacter(from: notWhitespace, options: [.backwards])
             let firstRange = line.content.rangeOfCharacter(from: notWhitespace)
-            
+
             // Precedes var/let and has text not ending with {
             if linePrecedesVar(index, varLines, commentLines) {
                 if let last = lastRange.map({ line.content.substring(with: $0) }), last != "{" {
@@ -63,22 +63,22 @@ public struct LetVarWhitespaceRule: OptInRule {
         }
         return violations
     }
-    
+
     func linePrecedesVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
         return lineNeighborsVar(lineNumber, varLines, commentLines, 1)
     }
-    
+
     func lineFollowsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
         return lineNeighborsVar(lineNumber, varLines, commentLines, -1)
     }
-    
+
     func lineNeighborsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>, _ increment: Int) -> Bool {
         if varLines.contains(lineNumber + increment) {
             return true
         }
-        
+
         var prevLine = lineNumber
-        
+
         while commentLines.contains(prevLine) {
             if varLines.contains(prevLine + increment) {
                 return true
@@ -87,28 +87,32 @@ public struct LetVarWhitespaceRule: OptInRule {
         }
         return false
     }
-    
+
     func violated(_ violations: inout [StyleViolation], _ file: File, _ line: Int) {
         let content = file.lines[line].content
-        let startIndex = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted)?.lowerBound ?? content.startIndex
+        let startIndex = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted)?.lowerBound
+                         ?? content.startIndex
         let offset = content.characters.distance(from: content.startIndex, to: startIndex)
-        
-        violations.append(StyleViolation(ruleDescription: LetVarWhitespaceRule.description, location: Location(file: file, characterOffset: offset + file.lines[line].range.location)))
+        let location = Location(file: file, characterOffset: offset + file.lines[line].range.location)
+
+        violations.append(StyleViolation(ruleDescription: LetVarWhitespaceRule.description,
+                                         location: location))
     }
-    
+
     // Collects all the line numbers containing var or let declarations
     func varLetLineNumbers(file: File, structure: [[String: SourceKitRepresentable]]) -> Set<Int> {
         var result = Set<Int>()
-        
+
         for statement in structure {
             guard let kind = statement.kind else {
                 continue
             }
-            
+
             switch kind {
             case SwiftDeclarationKind.varGlobal.rawValue,
                  SwiftDeclarationKind.varClass.rawValue,
                  SwiftDeclarationKind.varLocal.rawValue,
+                 SwiftDeclarationKind.varStatic.rawValue,
                  SwiftDeclarationKind.varInstance.rawValue:
                 guard let offset = statement.offset,
                       let length = statement.length else {
@@ -116,7 +120,7 @@ public struct LetVarWhitespaceRule: OptInRule {
                 }
                 let startLine = file.line(for: offset, startFrom: 0)
                 let endLine = file.line(for: offset + length, startFrom: startLine)
-                
+
                 for lineNumber in startLine...endLine {
                     result.update(with: lineNumber)
                 }
@@ -135,7 +139,8 @@ public struct LetVarWhitespaceRule: OptInRule {
         var result = Set<Int>()
         let syntaxMap = file.syntaxMap
 
-        for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue {
+        for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue ||
+                                            token.type == SyntaxKind.docComment.rawValue {
             let startLine = file.line(for: token.offset, startFrom: 0)
             let endLine = file.line(for: token.offset + token.length, startFrom: startLine)
 
@@ -151,7 +156,7 @@ extension File {
     func line(for offset: Int, startFrom: Int) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
-            
+
             if line.byteRange.location + line.byteRange.length > offset {
                 return index
             }
@@ -163,7 +168,7 @@ extension File {
 extension CharacterSet {
     var inverted: CharacterSet {
         var other = self
-        
+
         other.invert()
         return other
     }

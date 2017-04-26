@@ -23,7 +23,8 @@ public struct LetVarWhitespaceRule: OptInRule {
         nonTriggeringExamples: [
             "let a = 0\nvar x = 1\n\nx = 2\n",
             "a = 5\n\nvar x = 1\n",
-            "struct X {\n\tvar a = 0\n}\n"
+            "struct X {\n\tvar a = 0\n}\n",
+            "let a = 1 +\n\t2\nlet b = 5\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
@@ -34,29 +35,57 @@ public struct LetVarWhitespaceRule: OptInRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let varLines = varLetLineNumbers(file: file, structure: file.structure.dictionary.substructure)
+        let commentLines = commentLineNumbers(file: file)
         var violations = [StyleViolation]()
         let notWhitespace = CharacterSet.whitespaces.inverted
         
         for (index, line) in file.lines.enumerated() {
-            guard !varLines.contains(index) else { continue }
+            guard !varLines.contains(index) &&
+                  !commentLines.contains(index) else {
+                continue
+            }
             
             let lastRange = line.content.rangeOfCharacter(from: notWhitespace, options: [.backwards])
             let firstRange = line.content.rangeOfCharacter(from: notWhitespace)
             
             // Precedes var/let and has text not ending with {
-            if varLines.contains(index + 1) {
+            if linePrecedesVar(index, varLines, commentLines) {
                 if let last = lastRange.map({ line.content.substring(with: $0) }), last != "{" {
                     violated(&violations, file, index)
                 }
             }
             // Follows var/let and has text not starting with }
-            if varLines.contains(index - 1) {
+            if lineFollowsVar(index, varLines, commentLines) {
                 if let first = firstRange.map({ line.content.substring(with: $0) }), first != "}" {
                     violated(&violations, file, index)
                 }
             }
         }
         return violations
+    }
+    
+    func linePrecedesVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
+        return lineNeighborsVar(lineNumber, varLines, commentLines, 1)
+    }
+    
+    func lineFollowsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
+        return lineNeighborsVar(lineNumber, varLines, commentLines, -1)
+    }
+    
+    func lineNeighborsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>, _ increment: Int) -> Bool {
+        if varLines.contains(lineNumber + increment) {
+            return true
+        }
+        
+        var prevLine = lineNumber
+        
+        while commentLines.contains(prevLine) {
+            if varLines.contains(prevLine + increment) {
+                return true
+            }
+            prevLine += increment
+        }
+        return false
     }
     
     func violated(_ violations: inout [StyleViolation], _ file: File, _ line: Int) {
@@ -72,24 +101,47 @@ public struct LetVarWhitespaceRule: OptInRule {
         var result = Set<Int>()
         
         for statement in structure {
-            guard let kind = statement.kind else { continue }
+            guard let kind = statement.kind else {
+                continue
+            }
             
             switch kind {
             case SwiftDeclarationKind.varGlobal.rawValue,
                  SwiftDeclarationKind.varClass.rawValue,
                  SwiftDeclarationKind.varLocal.rawValue,
                  SwiftDeclarationKind.varInstance.rawValue:
-                guard let offset = statement.offset else { break }
-                let lineNumber = file.line(for: offset, startFrom: 0)
+                guard let offset = statement.offset,
+                      let length = statement.length else {
+                    break
+                }
+                let startLine = file.line(for: offset, startFrom: 0)
+                let endLine = file.line(for: offset + length, startFrom: startLine)
                 
-                result.update(with: lineNumber)
+                for lineNumber in startLine...endLine {
+                    result.update(with: lineNumber)
+                }
             default:
                 break
             }
             if statement["key.substructure"] != nil {
                 result.formUnion(varLetLineNumbers(file: file, structure: statement.substructure))
             }
-            print(statement)
+        }
+        return result
+    }
+
+    // Collects all the line numbers containing comments
+    func commentLineNumbers(file: File) -> Set<Int> {
+        var result = Set<Int>()
+        let syntaxMap = file.syntaxMap
+
+        for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue {
+            let startLine = file.line(for: token.offset, startFrom: 0)
+            let endLine = file.line(for: token.offset + token.length, startFrom: startLine)
+
+            for lineNumber in startLine...endLine {
+                result.update(with: lineNumber)
+            }
         }
         return result
     }
@@ -100,7 +152,7 @@ extension File {
         for index in startFrom..<lines.count {
             let line = lines[index]
             
-            if line.range.location + line.range.length > offset {
+            if line.byteRange.location + line.byteRange.length > offset {
                 return index
             }
         }

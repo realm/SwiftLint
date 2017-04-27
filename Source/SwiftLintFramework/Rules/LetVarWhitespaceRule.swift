@@ -24,12 +24,14 @@ public struct LetVarWhitespaceRule: OptInRule {
             "let a = 0\nvar x = 1\n\nx = 2\n",
             "a = 5\n\nvar x = 1\n",
             "struct X {\n\tvar a = 0\n}\n",
-            "let a = 1 +\n\t2\nlet b = 5\n"
+            "let a = 1 +\n\t2\nlet b = 5\n",
+            "var x: Int {\n\treturn 0\n}\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
-            "↓a = 5\nvar x = 1\n",
-            "struct X {\n\tlet a\n\t↓func x() {}\n}\n"
+            "a = 5\n↓var x = 1\n",
+            "struct X {\n\tlet a\n\t↓func x() {}\n}\n",
+            "var x: Int {\n\tlet a = 0\n\treturn a\n}\n"
         ]
     )
 
@@ -37,26 +39,29 @@ public struct LetVarWhitespaceRule: OptInRule {
         let varLines = varLetLineNumbers(file: file, structure: file.structure.dictionary.substructure)
         let commentLines = commentLineNumbers(file: file)
         var violations = [StyleViolation]()
-        let notWhitespace = CharacterSet.whitespaces.inverted
 
         for (index, line) in file.lines.enumerated() {
             guard !varLines.contains(index) &&
                   !commentLines.contains(index) else {
                 continue
             }
-
-            let lastRange = line.content.rangeOfCharacter(from: notWhitespace, options: [.backwards])
-            let firstRange = line.content.rangeOfCharacter(from: notWhitespace)
+            
+            let trimmed = line.content.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else {
+                continue
+            }
 
             // Precedes var/let and has text not ending with {
             if linePrecedesVar(index, varLines, commentLines) {
-                if let last = lastRange.map({ line.content.substring(with: $0) }), last != "{" {
-                    violated(&violations, file, index)
+                if !trimmed.hasSuffix("{") &&
+                   !file.lines[index+1].content.trimmingCharacters(in: .whitespaces).hasPrefix("}") {
+                    violated(&violations, file, index+1)
                 }
             }
             // Follows var/let and has text not starting with }
             if lineFollowsVar(index, varLines, commentLines) {
-                if let first = firstRange.map({ line.content.substring(with: $0) }), first != "}" {
+                if !trimmed.hasPrefix("}") &&
+                   !file.lines[index-1].content.trimmingCharacters(in: .whitespaces).hasSuffix("{") {
                     violated(&violations, file, index)
                 }
             }
@@ -120,15 +125,27 @@ public struct LetVarWhitespaceRule: OptInRule {
                 }
                 let startLine = file.line(for: offset, startFrom: 0)
                 let endLine = file.line(for: offset + length, startFrom: startLine)
+                var lines = Set(startLine...endLine)
 
-                for lineNumber in startLine...endLine {
-                    result.update(with: lineNumber)
+                // Exclude the body where the accessors are
+                if let bodyOffset = statement.bodyOffset,
+                   let bodyLength = statement.bodyLength {
+                    let bodyStart = file.line(for: bodyOffset, startFrom: startLine) + 1
+                    let bodyEnd = file.line(for: bodyOffset + bodyLength, startFrom: bodyStart) - 1
+                    
+                    if bodyStart <= bodyEnd {
+                        lines.subtract(Set(bodyStart...bodyEnd))
+                    }
                 }
+                result.formUnion(lines)
             default:
                 break
             }
-            if statement["key.substructure"] != nil {
-                result.formUnion(varLetLineNumbers(file: file, structure: statement.substructure))
+            
+            let substructure = statement.substructure
+            
+            if !substructure.isEmpty {
+                result.formUnion(varLetLineNumbers(file: file, structure: substructure))
             }
         }
         return result
@@ -144,9 +161,7 @@ public struct LetVarWhitespaceRule: OptInRule {
             let startLine = file.line(for: token.offset, startFrom: 0)
             let endLine = file.line(for: token.offset + token.length, startFrom: startLine)
 
-            for lineNumber in startLine...endLine {
-                result.update(with: lineNumber)
-            }
+            result.formUnion(Set(startLine...endLine))
         }
         return result
     }
@@ -162,14 +177,5 @@ extension File {
             }
         }
         return 0
-    }
-}
-
-extension CharacterSet {
-    var inverted: CharacterSet {
-        var other = self
-
-        other.invert()
-        return other
     }
 }

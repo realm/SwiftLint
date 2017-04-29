@@ -843,6 +843,7 @@
 				D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */,
 				D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */,
 				7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */,
+				327368C41DA743D900EAD5A7 /* ExplictSelfRule.swift */,
 				C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */,
 				C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */,
 				D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */,
@@ -912,7 +913,6 @@
 				1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */,
 				D47079AE1DFE520000027086 /* VoidReturnRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
-				327368C41DA743D900EAD5A7 /* ExplictSelfRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";

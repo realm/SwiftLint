@@ -71,9 +71,9 @@ func triggering(type: String) -> [String] {
         "\(type) Bad4a { func value() -> Int { return 42 }; "
             + "func function() -> Int { return value() } }",
         "\(type) Bad4b { func value(foo: Int) -> Int { return foo }; "
-            + "func function() -> Int { return value(42) } }",
+            + "func function() -> Int { return value(foo: 42) } }",
         "\(type) Bad4c { func value(foo: Int, bar: Int) -> Int { return foo + bar }; "
-            + "func function() -> Int { return value(40, bar: 2) } }",
+            + "func function() -> Int { return value(foo: 40, bar: 2) } }",
         "\(type) Bad4d { func value(foo bar: Int, baz: Int) -> Int { return bar + baz }; "
             + "func function() -> Int { return value(foo: 40, baz: 2) } }",
         "\(type) Bad5 { func value() -> Int { return 42 }; var property: Int { return value() } }",

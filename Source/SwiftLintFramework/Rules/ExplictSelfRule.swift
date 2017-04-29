@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-func nonTriggering(type: String) -> [String] {
+private func nonTriggering(type: String) -> [String] {
     return [
         "\(type) Good1 { let value: Int = 42; var property: Int { return self.value } }",
         "\(type) Good2 { let value: Int = 42; func function() -> Int { return self.value } }",
@@ -50,7 +50,8 @@ func nonTriggering(type: String) -> [String] {
         "\(type) Edge3 { var value: Int; func function() { let value = 123; _ = value } }"
     ]
 }
-let nonTriggeringClassExamples = [
+
+private let nonTriggeringClassExamples = [
     "class Good15_A { var value: Int = 42 }; "
         + "class Good15_B: Good15_A { var property: Int { return self.value } }",
     "class Good16_A { func value() -> Int { return 42 } }; "
@@ -61,7 +62,7 @@ let nonTriggeringClassExamples = [
         + "class Good18_B: Good18_A { func function() -> Int { return self.value() } }"
 ]
 
-func triggering(type: String) -> [String] {
+private func triggering(type: String) -> [String] {
     return [
         "\(type) Bad1 { let value: Int = 42; var property: Int { return value } }",
         "\(type) Bad2 { let value: Int = 42; func function() -> Int { return value } }",
@@ -95,7 +96,8 @@ func triggering(type: String) -> [String] {
             + "static func function() -> Int { return value() } }"
     ]
 }
-let triggeringClassExamples = [
+
+private let triggeringClassExamples = [
     "class Bad15_A { var value: Int = 42 }; "
         + "class Bad15_B: Bad15_A { var property: Int { return value } }",
     "class Bad16_A { func value() -> Int { return 42 } }; "
@@ -106,8 +108,8 @@ let triggeringClassExamples = [
         + "class Bad18_B: Bad18_A { func function() -> Int { return value() } }"
 ]
 
-let nonTriggeringExamples = ["class", "struct"].flatMap(nonTriggering)
-let triggeringExamples = ["class", "struct"].flatMap(triggering)
+private let nonTriggeringExamples = ["class", "struct"].flatMap(nonTriggering)
+private let triggeringExamples = ["class", "struct"].flatMap(triggering)
 
 public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
@@ -236,10 +238,11 @@ extension SyntaxToken {
 }
 
 extension File {
-    func members(declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
+    fileprivate func members(declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
         return self.members(dictionary: self.structure.dictionary, declarations: declarations)
     }
-    func members(
+
+    fileprivate func members(
         dictionary: [String: SourceKitRepresentable],
         declarations: [SwiftDeclarationKind]) -> [[String: SourceKitRepresentable]] {
 
@@ -258,7 +261,7 @@ extension File {
 }
 
 extension Sequence where Iterator.Element: Equatable {
-    func suffix(matches items: [Iterator.Element]) -> Bool {
+    fileprivate func suffix(matches items: [Iterator.Element]) -> Bool {
         let suffix = Array(self.suffix(items.count))
 
         // swiftlint:disable control_statement
@@ -268,7 +271,7 @@ extension Sequence where Iterator.Element: Equatable {
         return false
     }
 
-    func suffix(matches items: [[Iterator.Element]]) -> Bool {
+    fileprivate func suffix(matches items: [[Iterator.Element]]) -> Bool {
         for test in items
             where self.suffix(matches: test) { return true }
         return false
@@ -276,7 +279,7 @@ extension Sequence where Iterator.Element: Equatable {
 }
 
 extension String {
-    func sanitizedParameters() -> String {
+    fileprivate func sanitizedParameters() -> String {
         return self.replacingOccurrences(of: "\"(.*)\",|\"(.*)\"",
                                          with: "x",
                                          options: .regularExpression,

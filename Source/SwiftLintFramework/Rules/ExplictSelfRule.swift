@@ -193,17 +193,20 @@ public struct ExplicitSelfRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
 extension SyntaxToken {
     func name(file: File) -> String {
-        return file.contents.substring(from: self.offset, length: self.length)
+        let range = file.contents.bridge().byteRangeToNSRange(start: self.offset, length: self.length)!
+        return file.contents.bridge().substring(from: range.location, length: range.length)
     }
-    func signature(file: File) -> String {
-        let value = file.contents.substring(from: self.offset, length: self.length)
 
-        guard file.contents.substring(from: self.offset + self.length, length: 1) == "("
+    func signature(file: File) -> String {
+        let value = name(file: file)
+        let range = file.contents.bridge().byteRangeToNSRange(start: self.offset, length: self.length)!
+
+        guard file.contents.substring(from: range.location + range.length, length: 1) == "("
             else { return value }
 
         //get value inside parens
-        let remainder = file.contents
-            .substring(from: self.offset + self.length + 1)
+        let remainder = file.contents.bridge()
+            .substring(from: range.location + range.length + 1)
             .components(separatedBy: ")")[0]
         guard !remainder.isEmpty else { return "\(value)()" }
 

@@ -1,26 +1,28 @@
 //
-//  IdentifierNameRuleTests.swift
+//  TypeNameRuleTests.swift
 //  SwiftLint
 //
-//  Created by Javier Hernandez on 16/04/17.
+//  Created by Javier Hernandez on 30/04/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
 import SwiftLintFramework
 import XCTest
 
-class IdentifierNameRuleTests: XCTestCase {
+class TypeNameRuleTests: XCTestCase {
 
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
+    func testTypeName() {
+        verifyRule(TypeNameRule.description)
     }
 
-    func testIdentifierNameWithAllowedSymbols() {
-        let baseDescription = IdentifierNameRule.description
+    func testTypeNameWithAllowedSymbols() {
+        let baseDescription = TypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "let myLet$ = 0",
-            "let myLet% = 0",
-            "let myLet$% = 0"
+            "class MyType$ {}",
+            "struct MyType$ {}",
+            "enum MyType$ {}",
+            "typealias Foo$ = Void",
+            "protocol Foo {\n associatedtype Bar$\n }"
         ]
 
         let description = RuleDescription(identifier: baseDescription.identifier,
@@ -31,14 +33,16 @@ class IdentifierNameRuleTests: XCTestCase {
                                           corrections: baseDescription.corrections,
                                           deprecatedAliases: baseDescription.deprecatedAliases)
 
-        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
-    func testIdentifierNameWithIgnoreStartWithLowercase() {
-        let baseDescription = IdentifierNameRule.description
+    func testTypeNameWithIgnoreStartWithLowercase() {
+        let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
-            "↓let MyLet = 0",
-            "enum Foo { case ↓MyEnum }"
+            "private typealias ↓foo = Void",
+            "↓class myType {}",
+            "↓struct myType {}",
+            "↓enum myType {}"
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }
@@ -57,12 +61,12 @@ class IdentifierNameRuleTests: XCTestCase {
     }
 }
 
-extension IdentifierNameRuleTests {
-    static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] {
+extension TypeNameRuleTests {
+    static var allTests: [(String, (TypeNameRuleTests) -> () throws -> Void)] {
         return [
-            ("testIdentifierName", testIdentifierName),
-            ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
-            ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
+            ("testTypeName", testTypeName),
+            ("testTypeNameWithAllowedSymbols", testTypeNameWithAllowedSymbols),
+            ("testTypeNameWithIgnoreStartWithLowercase", testTypeNameWithIgnoreStartWithLowercase)
         ]
     }
 }

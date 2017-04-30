@@ -1,26 +1,29 @@
 //
-//  IdentifierNameRuleTests.swift
+//  GenericTypeNameRuleTests.swift
 //  SwiftLint
 //
-//  Created by Javier Hernandez on 16/04/17.
+//  Created by Javier Hernandez on 30/04/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
 import SwiftLintFramework
 import XCTest
 
-class IdentifierNameRuleTests: XCTestCase {
+class GenericTypeNameRuleTests: XCTestCase {
 
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
+    func testGenericTypeName() {
+        verifyRule(GenericTypeNameRule.description)
     }
 
-    func testIdentifierNameWithAllowedSymbols() {
-        let baseDescription = IdentifierNameRule.description
+    func testGenericTypeNameWithAllowedSymbols() {
+        let baseDescription = GenericTypeNameRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "let myLet$ = 0",
-            "let myLet% = 0",
-            "let myLet$% = 0"
+            "func foo<T$>() {}\n",
+            "func foo<T$, U%>(param: U%) -> T$ {}\n",
+            "typealias StringDictionary<T$> = Dictionary<String, T$>\n",
+            "class Foo<T$%> {}\n",
+            "struct Foo<T$%> {}\n",
+            "enum Foo<T$%> {}\n"
         ]
 
         let description = RuleDescription(identifier: baseDescription.identifier,
@@ -34,11 +37,13 @@ class IdentifierNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
-    func testIdentifierNameWithIgnoreStartWithLowercase() {
-        let baseDescription = IdentifierNameRule.description
+    func testGenericTypeNameWithIgnoreStartWithLowercase() {
+        let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [
-            "↓let MyLet = 0",
-            "enum Foo { case ↓MyEnum }"
+            "func foo<↓type>() {}\n",
+            "class Foo<↓type> {}\n",
+            "struct Foo<↓type> {}\n",
+            "enum Foo<↓type> {}\n"
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }
@@ -57,12 +62,12 @@ class IdentifierNameRuleTests: XCTestCase {
     }
 }
 
-extension IdentifierNameRuleTests {
-    static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] {
+extension GenericTypeNameRuleTests {
+    static var allTests: [(String, (GenericTypeNameRuleTests) -> () throws -> Void)] {
         return [
-            ("testIdentifierName", testIdentifierName),
-            ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
-            ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
+            ("testGenericTypeName", testGenericTypeName),
+            ("testGenericTypeNameWithAllowedSymbols", testGenericTypeNameWithAllowedSymbols),
+            ("testGenericTypeNameWithIgnoreStartWithLowercase", testGenericTypeNameWithIgnoreStartWithLowercase)
         ]
     }
 }

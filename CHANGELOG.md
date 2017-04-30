@@ -13,8 +13,9 @@
 
 ##### Enhancements
 
-* Add opt-in options to `identifier_name` rule to exclude non-alphanumeric
-  characters and to allow names that start with uppercase.  
+* Add opt-in configurations to `generic_type_name`, `identifier_name` and
+  `type_name` rules to allow excluding non-alphanumeric characters and names 
+  that start with uppercase.  
   [Javier Hernández](https://github.com/jaherhi)
   [#541](https://github.com/realm/SwiftLint/issues/541)
 

@@ -60,9 +60,10 @@ public struct ExplicitInternalTopLevelRule: OptInRule, ConfigurationProviderRule
                             })
         // Find all implicitly internal or structures lacking ACL
         var implicitInternalByteRanges = [NSRange]()
-        // We are ignoring violations starting at 0 index in order to simplify
-        for each in topLevelDeclByteRanges where each.location > 0 {
-             let tokens = file.syntaxMap.tokens(inByteRange: NSRange(location: each.location - 1, length: each.length))
+        for each in topLevelDeclByteRanges where each.location >= 0 {
+            let decrement = each.location == 0 ? 0 : 1
+            let tokens = file.syntaxMap.tokens(inByteRange: NSRange(
+                         location: each.location - decrement, length: each.length))
 
             // Filter out explicit access control labels
             // This should also handle the case when empty

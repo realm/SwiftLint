@@ -29,6 +29,13 @@
   `large_type`, and `type_body_length` rules.  
   [ultimatedbz](https://github.com/ultimatedbz)
 
+* Add `explicit_top_level_acl` opt-in rule that validates that all top
+  level declarations should explicitly be marked with an Access  Control
+  Level (`private`, `fileprivate`, `internal`, `public` or `open`).  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#58](https://github.com/realm/SwiftLint/issues/58)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

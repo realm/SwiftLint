@@ -36,6 +36,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#58](https://github.com/realm/SwiftLint/issues/58)
 
+* Add `implicit_return` opt-in rule that warns agains using the `return`
+  keyword when it can be omitted inside closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1194](https://github.com/realm/SwiftLint/issues/1194)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

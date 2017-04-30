@@ -84,13 +84,13 @@ public struct ExplicitInternalTopLevelRule: OptInRule, ConfigurationProviderRule
 
         // Match the implicit internal to the top-level declarations
         var violations = [StyleViolation]()
-        for each in internalStructures {
-            guard let start = each["key.offset"] as? NSNumber else { continue }
-            let range = NSRange(location: start.intValue, length: 1)
+        for each in internalStructures {   //Int would not cast only Int64
+            guard let start = each["key.offset"] as? Int64 else { continue }
+            let range = NSRange(location: Int(start), length: 1)
             if range.intersects(implicitInternalByteRanges) {
                 violations.append(StyleViolation(ruleDescription: ExplicitInternalTopLevelRule.description,
                 severity: self.configuration.severity,
-                location: Location(file: file, byteOffset: start.intValue)))
+                location: Location(file: file, byteOffset: Int(start))))
            }
         }
         return violations

@@ -76,12 +76,12 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testExplicitTypeInterfaceRule() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
+    func testExplicitTopLevelACLRule() {
+        verifyRule(ExplicitTopLevelACLRule.description)
     }
 
-    func testExplicitInternalTopLevelRule() {
-        verifyRule(ExplicitInternalTopLevelRule.description)
+    func testExplicitTypeInterfaceRule() {
+        verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
     func testFatalErrorMessageRule() {
@@ -382,8 +382,8 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTopLevelACLRule", testExplicitTopLevelACLRule),
             ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
-            ("testExplicitInternalTopLevelRule", testExplicitInternalTopLevelRule),
             ("testFatalErrorMessageRule", testFatalErrorMessageRule),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),

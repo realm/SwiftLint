@@ -13,6 +13,11 @@
 
 ##### Enhancements
 
+* Add `ExplicitSelfRule` opt-in rule that enforces the use of `self.` for
+  instance members.  
+  [Ian Keen](https://github.com/IanKeen)
+  [#321](https://github.com/realm/SwiftLint/issues/321)
+* None.
 * Adds support for `excluded` in custom rules to exclude files.  
   [Nigel Flack](https://github.com/nigelflack)
   [#1437](https://github.com/realm/SwiftLint/issues/1437)

@@ -25,6 +25,10 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
+* Added ExplicitInternalTopLevelRule.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [#58](https://github.com/realm/SwiftLint/issues/58)
+
 * Improve violation reason wording in `function_body_length`,
   `large_type`, and `type_body_length` rules.  
   [ultimatedbz](https://github.com/ultimatedbz)

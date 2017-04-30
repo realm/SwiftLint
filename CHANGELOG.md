@@ -38,6 +38,10 @@
 * Fix typo in `DiscardedNotificationCenterObserverRule`.  
   [Spencer Kaiser](https://github.com/spencerkaiser)
 
+* Fix `empty_parameters` rule with Swift 3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1460](https://github.com/realm/SwiftLint/issues/1460)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

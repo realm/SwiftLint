@@ -54,6 +54,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1460](https://github.com/realm/SwiftLint/issues/1460)
 
+* Prevent triggering `redundant_optional_initialization` rule
+  on a `lazy var` since it needs initialization.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1334](https://github.com/realm/SwiftLint/issues/1334)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

@@ -64,6 +64,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyEnumArguments() {
+        verifyRule(EmptyEnumArgumentsRule.description)
+    }
+
     func testEmptyParameters() {
         verifyRule(EmptyParametersRule.description)
     }
@@ -367,6 +371,7 @@ extension RulesTests {
             ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
+            ("testEmptyEnumArguments", testEmptyEnumArguments),
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),

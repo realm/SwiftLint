@@ -169,12 +169,6 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testMissingDocs() {
-//        verifyRule(MissingDocsRule.description)
-//    }
-
     func testNesting() {
         verifyRule(NestingRule.description)
     }
@@ -336,37 +330,6 @@ class RulesTests: XCTestCase {
         verifyRule(UnusedEnumeratedRule.description)
     }
 
-    func testUnusedOptionalBinding() {
-        let testBinding = ["guard let _ = try? alwaysThrows() else { return }"]
-        let baseDescription = UnusedOptionalBindingRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + testBinding
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                           name: baseDescription.name,
-                                           description: baseDescription.description,
-                                           nonTriggeringExamples: nonTriggeringExamples,
-                                           triggeringExamples: baseDescription.triggeringExamples,
-                                           corrections: baseDescription.corrections)
-
-        verifyRule(description)
-
-        // Perform additional tests with the ignore_optional_try settings disabled.
-        let triggeringExamples = baseDescription.triggeringExamples + testBinding
-        let description2 = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: baseDescription.nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
-
-        verifyRule(description2, ruleConfiguration: ["ignore_optional_try": false])
-    }
-
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testValidDocs() {
-//        verifyRule(ValidDocsRule.description)
-//    }
-
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
     }
@@ -459,7 +422,6 @@ extension RulesTests {
             ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),

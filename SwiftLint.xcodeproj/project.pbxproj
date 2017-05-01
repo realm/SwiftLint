@@ -117,6 +117,7 @@
 		D44254201DB87CA200492EA4 /* ValidIBInspectableRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */; };
 		D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */; };
 		D4470D571EB69225008A1B2E /* ImplicitReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */; };
+		D4470D5B1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D5A1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift */; };
 		D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */; };
 		D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */; };
 		D46252541DF63FB200BE2CA1 /* NumberSeparatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */; };
@@ -401,6 +402,7 @@
 		D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidIBInspectableRule.swift; sourceTree = "<group>"; };
 		D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyntacticSugarRule.swift; sourceTree = "<group>"; };
 		D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitReturnRule.swift; sourceTree = "<group>"; };
+		D4470D5A1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingRuleTests.swift; sourceTree = "<group>"; };
 		D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyConstructorRule.swift; sourceTree = "<group>"; };
 		D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRuleExamples.swift; sourceTree = "<group>"; };
 		D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorRule.swift; sourceTree = "<group>"; };
@@ -744,35 +746,36 @@
 			isa = PBXGroup;
 			children = (
 				D0D1212219E878CC005E4BAA /* Configuration */,
-				D0D1217C19E87B05005E4BAA /* Supporting Files */,
 				3B12C9BE1C3209AC000B423F /* Resources */,
+				D0D1217C19E87B05005E4BAA /* Supporting Files */,
 				D4998DE61DF191380006E05D /* AttributesRuleTests.swift */,
 				D43B04651E071ED3004016AF /* ColonRuleTests.swift */,
 				E809EDA21B8A73FB00399043 /* ConfigurationTests.swift */,
 				3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */,
+				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
+				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
-				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
+				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
+				47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */,
+				47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */,
+				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
 				3B63D46C1E1F05160057BE35 /* LineLengthConfigurationTests.swift */,
 				3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */,
-				E832F10C1B17E725003F265F /* IntegrationTests.swift */,
 				D4C27BFF1E12DFF500DF713E /* LinterCacheTests.swift */,
 				D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */,
 				E86396C61BADAFE6002C9E88 /* ReporterTests.swift */,
+				3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */,
 				E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */,
+				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
+				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				E81224991B04F85B001783D2 /* TestHelpers.swift */,
 				D4DB92241E628898005DE9C1 /* TodoRuleTests.swift */,
-				3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */,
-				3B12C9C61C3361CB000B423F /* RuleTests.swift */,
-				3B30C4A01C3785B300E04027 /* YamlParserTests.swift */,
-				3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */,
-				6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */,
 				C9802F2E1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift */,
+				D4470D5A1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift */,
 				006204DD1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift */,
-				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
-				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
-				47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */,
-				47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */,
+				3B12C9C21C320A53000B423F /* Yaml+SwiftLintTests.swift */,
+				3B30C4A01C3785B300E04027 /* YamlParserTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Tests/SwiftLintFrameworkTests;
@@ -1371,6 +1374,7 @@
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
 				47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */,
 				67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */,
+				D4470D5B1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift in Sources */,
 				C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */,
 				3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,

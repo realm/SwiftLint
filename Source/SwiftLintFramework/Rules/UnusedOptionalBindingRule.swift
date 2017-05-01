@@ -68,8 +68,8 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
             return violations(in: range, of: file, with: kind).map {
                 StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severityConfiguration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                               severity: configuration.severityConfiguration.severity,
+                               location: Location(file: file, characterOffset: $0.location))
             }
         }
     }
@@ -85,14 +85,16 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
 
         return matches
             .filter { $0.1.filter(kinds.contains).isEmpty }
-            .filter { kind != .guard || !self.containsOptionalTry(at: $0.0.range, of: file) }
+            .filter { kind != .guard || !containsOptionalTry(at: $0.0.range, of: file) }
             .map { $0.0.rangeAt(1) }
     }
 
     private func containsOptionalTry(at range: NSRange, of file: File) -> Bool {
-        guard self.configuration.ignoreOptionalTry else { return false }
+        guard configuration.ignoreOptionalTry else {
+            return false
+        }
 
-        let contents = file.contents.bridge().substring(with: range)
-        return contents.contains("try?")
+        let matches = file.match(pattern: "try?", with: [.keyword], range: range)
+        return !matches.isEmpty
     }
 }

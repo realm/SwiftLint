@@ -342,6 +342,10 @@ class RulesTests: XCTestCase {
         verifyRule(ValidIBInspectableRule.description)
     }
 
+    func testVerticalParameterAlignmentOnCall() {
+        verifyRule(VerticalParameterAlignmentOnCallRule.description)
+    }
+
     func testVerticalParameterAlignment() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }

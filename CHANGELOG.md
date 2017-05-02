@@ -39,6 +39,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1546](https://github.com/realm/SwiftLint/issues/1546)
 
+* Add `vertical_parameter_alignment_on_call` opt-in rule that validates that
+  parameters are vertically aligned on a method call.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1037](https://github.com/realm/SwiftLint/issues/1037)
+
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  

@@ -171,6 +171,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNoExtensionAccessModifierRule() {
+        verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
@@ -401,6 +405,7 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
+            ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
             ("testNotificationCenterDetachment", testNotificationCenterDetachment),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),

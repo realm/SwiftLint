@@ -21,6 +21,7 @@ opt_in_rules:
   - number_separator
   - prohibited_super_call
   - fatal_error_message
+  - implicit_return
 
 file_header:
   required_pattern: |

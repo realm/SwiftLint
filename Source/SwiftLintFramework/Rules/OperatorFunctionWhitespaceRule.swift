@@ -41,11 +41,11 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
         let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
         return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
-            return syntaxKinds.first == .keyword
+            syntaxKinds.first == .keyword
         }.map { range, _ in
-            return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location))
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
     }
 }

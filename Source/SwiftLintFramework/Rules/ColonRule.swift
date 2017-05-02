@@ -106,9 +106,9 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let violations = typeColonViolationRanges(in: file, matching: pattern).flatMap { range in
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severityConfiguration.severity,
-                                  location: Location(file: file, characterOffset: range.location))
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
 
         let dictionaryViolations: [StyleViolation]

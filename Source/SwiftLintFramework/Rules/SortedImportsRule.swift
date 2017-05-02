@@ -44,7 +44,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
 
         let modulePairs = zip(modulesAndOffsets, modulesAndOffsets.dropFirst())
         let violatingOffsets = modulePairs.flatMap { previous, current in
-            return current < previous ? current.1 : nil
+            current < previous ? current.1 : nil
         }
 
         return violatingOffsets.map {

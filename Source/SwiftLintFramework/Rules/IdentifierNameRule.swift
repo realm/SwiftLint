@@ -97,7 +97,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private let kinds: [SwiftDeclarationKind] = {
-        return SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds() + [.enumelement]
+        SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds() + [.enumelement]
     }()
 
     private func type(for kind: SwiftDeclarationKind) -> String {

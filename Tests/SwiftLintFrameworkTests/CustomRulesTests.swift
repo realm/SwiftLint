@@ -50,9 +50,9 @@ class CustomRulesTests: XCTestCase {
         let file = File(contents: "// My file with\n// a pattern")
         XCTAssertEqual(customRules.validate(file: file),
                        [StyleViolation(ruleDescription: regexConfig.description,
-                        severity: .warning,
-                        location: Location(file: nil, line: 2, character: 6),
-                        reason: regexConfig.message)])
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 6),
+                                       reason: regexConfig.message)])
     }
 
     func testLocalDisableCustomRule() {

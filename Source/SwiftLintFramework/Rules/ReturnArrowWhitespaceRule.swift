@@ -53,8 +53,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file, skipParentheses: true).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

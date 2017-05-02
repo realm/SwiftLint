@@ -73,8 +73,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

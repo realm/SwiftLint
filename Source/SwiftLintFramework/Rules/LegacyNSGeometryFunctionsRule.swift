@@ -100,8 +100,8 @@ public struct LegacyNSGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
 
         return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

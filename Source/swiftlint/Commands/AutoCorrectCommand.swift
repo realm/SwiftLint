@@ -28,8 +28,7 @@ struct AutoCorrectCommand: CommandProtocol {
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                    useTabs: false,
-                    indentWidth: 4)
+                                                           useTabs: false, indentWidth: 4)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }

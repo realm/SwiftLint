@@ -51,15 +51,15 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
                 .last,
             inlineMatch.range.location != NSNotFound,
             case let attributeRange = NSRange(location: inlineMatch.range.location,
-                length: funcOffset - inlineMatch.range.location),
+                                              length: funcOffset - inlineMatch.range.location),
             case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
             alwaysInlinePattern.firstMatch(in: file.contents, options: [], range: attributeRange) != nil
         else {
             return []
         }
         return [StyleViolation(ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: funcOffset))]
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: funcOffset))]
     }
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [

@@ -121,6 +121,7 @@ public let masterRuleList = RuleList(rules:
     MarkRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
+    NoExtensionAccessModifierRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,

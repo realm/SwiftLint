@@ -18,14 +18,14 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         name: "File Line Length",
         description: "Files should not span too many lines.",
         nonTriggeringExamples: [
-            repeatElement("//\n", count: 400).joined(separator: "")
+            repeatElement("//\n", count: 400).joined()
         ],
         triggeringExamples: [
-            repeatElement("//\n", count: 401).joined(separator: "")
+            repeatElement("//\n", count: 401).joined()
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
         for parameter in configuration.params where lineCount > parameter.value {
             return [StyleViolation(ruleDescription: type(of: self).description,

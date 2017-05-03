@@ -13,7 +13,7 @@ private func classScoped(_ value: String) -> String {
     return "class Foo {\n  \(value)\n}\n"
 }
 
-public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
+public struct ImplicitGetterRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -47,13 +47,14 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
         triggeringExamples: [
             classScoped("var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
             classScoped("var foo: Int {\n ↓get{\n return 20 \n} \n} \n}"),
-            classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}")
+            classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
+            "var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\bget\\b"
-        let getTokens: [SyntaxToken] = file.rangesAndTokensMatching(pattern).flatMap { _, tokens in
+        let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).flatMap { _, tokens in
             guard tokens.count == 1, let token = tokens.first,
                 SyntaxKind(rawValue: token.type) == .keyword else {
                 return nil
@@ -64,13 +65,12 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
 
         let violatingTokens = getTokens.filter { token -> Bool in
             // the last element is the deepest structure
-            guard let dictionary =
-                variableDeclarationsFor(token.offset, structure: file.structure).last else {
-                    return false
+            guard let dict = variableDeclarations(forByteOffset: token.offset, structure: file.structure).last else {
+                return false
             }
 
             // If there's a setter, `get` is allowed
-            return dictionary["key.setter_accessibility"] == nil
+            return dict.setterAccessibility == nil
         }
 
         return violatingTokens.map { token in
@@ -78,54 +78,42 @@ public struct ImplicitGetterRule: Rule, ConfigurationProviderRule {
             let location = Location(file: file, byteOffset: token.offset)
 
             return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: location
-            )
+                                  severity: configuration.severity,
+                                  location: location)
         }
     }
 
-    private func variableDeclarationsFor(_ byteOffset: Int,
-                                         structure: Structure) -> [[String: SourceKitRepresentable]] {
+    private func variableDeclarations(forByteOffset byteOffset: Int,
+                                      structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
+        let allowedKinds = Set(SwiftDeclarationKind.variableKinds()).subtracting([.varParameter])
 
-        func parse(dictionary: [String: SourceKitRepresentable]) {
-
-            let allowedKinds: [SwiftDeclarationKind] = [.varClass, .varInstance, .varStatic]
+        func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
 
             // Only accepts variable declarations which contains a body and contains the
             // searched byteOffset
-            if let kindString = (dictionary["key.kind"] as? String),
+            guard let kindString = dictionary.kind,
                 let kind = SwiftDeclarationKind(rawValue: kindString),
-                let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-                allowedKinds.contains(kind) {
-                let byteRange = NSRange(location: bodyOffset, length: bodyLength)
-
-                if NSLocationInRange(byteOffset, byteRange) {
-                    results.append(dictionary)
-                }
+                let bodyOffset = dictionary.bodyOffset,
+                let bodyLength = dictionary.bodyLength,
+                case let byteRange = NSRange(location: bodyOffset, length: bodyLength),
+                NSLocationInRange(byteOffset, byteRange) else {
+                    return
             }
 
-            let typeKinds: [SwiftDeclarationKind] = [
-                .class,
-                .enum,
-                .extension,
-                .extensionClass,
-                .extensionEnum,
-                .extensionProtocol,
-                .extensionStruct,
-                .struct
-            ] + allowedKinds
+            if parentKind != .protocol && allowedKinds.contains(kind) {
+                results.append(dictionary)
+            }
 
             for dictionary in dictionary.substructure {
-                if let kindString = (dictionary["key.kind"] as? String),
-                    let kind = SwiftDeclarationKind(rawValue: kindString),
-                    typeKinds.contains(kind) {
-                    parse(dictionary: dictionary)
-                }
+                parse(dictionary: dictionary, parentKind: kind)
             }
         }
-        parse(dictionary: structure.dictionary)
+
+        for dictionary in structure.dictionary.substructure {
+            parse(dictionary: dictionary, parentKind: nil)
+        }
+
         return results
     }
 }

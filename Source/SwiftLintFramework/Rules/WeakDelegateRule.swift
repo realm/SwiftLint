@@ -30,7 +30,8 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
             "class Foo {\n  var delegateNotified: Bool?\n}\n",
             // There's no way to declare a property weak in a protocol
             "protocol P {\n var delegate: AnyObject? { get set }\n}\n",
-            "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n"
+            "class Foo {\n protocol P {\n var delegate: AnyObject? { get set }\n}\n}\n",
+            "class Foo {\n var computedDelegate: ComputedDelegate {\n return bar() \n} \n}"
         ],
         triggeringExamples: [
             "class Foo {\n  ↓var delegate: SomeProtocol?\n}\n",
@@ -38,15 +39,14 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }
 
         // Check if name contains "delegate"
-        guard let name = (dictionary["key.name"] as? String),
+        guard let name = dictionary.name,
             name.lowercased().hasSuffix("delegate") else {
                 return []
         }
@@ -56,14 +56,18 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         guard !isWeak else { return [] }
 
         // if the declaration is inside a protocol
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            !protocolDeclarationsFor(offset, structure: file.structure).isEmpty {
+        if let offset = dictionary.offset,
+            !protocolDeclarations(forByteOffset: offset, structure: file.structure).isEmpty {
             return []
         }
 
+        // Check if non-computed
+        let isComputed = dictionary.bodyLength ?? 0 > 0
+        guard !isComputed else { return [] }
+
         // Violation found!
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)
@@ -78,27 +82,27 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func protocolDeclarationsFor(_ byteOffset: Int, structure: Structure) ->
-        [[String: SourceKitRepresentable]] {
-            var results = [[String: SourceKitRepresentable]]()
+    private func protocolDeclarations(forByteOffset byteOffset: Int,
+                                      structure: Structure) -> [[String: SourceKitRepresentable]] {
+        var results = [[String: SourceKitRepresentable]]()
 
-            func parse(dictionary: [String: SourceKitRepresentable]) {
+        func parse(dictionary: [String: SourceKitRepresentable]) {
 
-                // Only accepts protocols declarations which contains a body and contains the
-                // searched byteOffset
-                if let kindString = (dictionary["key.kind"] as? String),
-                    SwiftDeclarationKind(rawValue: kindString) == .protocol,
-                    let offset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-                    let length = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }) {
-                    let byteRange = NSRange(location: offset, length: length)
+            // Only accepts protocols declarations which contains a body and contains the
+            // searched byteOffset
+            if let kindString = (dictionary.kind),
+                SwiftDeclarationKind(rawValue: kindString) == .protocol,
+                let offset = dictionary.bodyOffset,
+                let length = dictionary.bodyLength {
+                let byteRange = NSRange(location: offset, length: length)
 
-                    if NSLocationInRange(byteOffset, byteRange) {
-                        results.append(dictionary)
-                    }
+                if NSLocationInRange(byteOffset, byteRange) {
+                    results.append(dictionary)
                 }
-                dictionary.substructure.forEach(parse)
             }
-            parse(dictionary: structure.dictionary)
-            return results
+            dictionary.substructure.forEach(parse)
+        }
+        parse(dictionary: structure.dictionary)
+        return results
     }
 }

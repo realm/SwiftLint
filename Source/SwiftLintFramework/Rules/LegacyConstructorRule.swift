@@ -97,21 +97,21 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
                             "NSMakePoint", "NSMakeSize", "NSMakeRect", "NSMakeRange",
                             "UIEdgeInsetsMake", "NSEdgeInsetsMake"]
 
         let pattern = "\\b(" + constructors.joined(separator: "|") + ")\\b"
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
+        return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
         let patterns = [
             "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",
@@ -129,6 +129,6 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
             "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
         ]
-        return file.correctLegacyRule(self, patterns: patterns)
+        return file.correct(legacyRule: self, patterns: patterns)
     }
 }

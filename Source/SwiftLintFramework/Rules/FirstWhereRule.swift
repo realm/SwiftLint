@@ -21,20 +21,21 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",
-            "matchPattern(pattern).filter { $0.first == .identifier }\n"
+            "match(pattern: pattern).filter { $0.first == .identifier }\n"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",
             "↓myList.filter({ $0 % 2 == 0 }).first\n",
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first\n",
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()\n",
-            "↓myList.filter(someFunction).first\n"
+            "↓myList.filter(someFunction).first\n",
+            "↓myList.filter({ $0 % 2 == 0 })\n.first\n"
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        let pattern = "[\\s\\}\\)]*\\.first"
-        let firstRanges = file.matchPattern(pattern, withSyntaxKinds: [.identifier])
+    public func validate(file: File) -> [StyleViolation] {
+        let pattern = "[\\}\\)]\\s*\\.first"
+        let firstRanges = file.match(pattern: pattern, with: [.identifier])
         let contents = file.contents.bridge()
         let structure = file.structure
 
@@ -47,10 +48,9 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
                 return nil
             }
 
-            return methodCallFor(bodyByteRange.location - 1,
-                                 excludingOffset: firstByteRange.location,
-                                 dictionary: structure.dictionary, predicate: { dictionary in
-                guard let name = dictionary["key.name"] as? String else {
+            return methodCall(forByteOffset: bodyByteRange.location - 1, excludingOffset: firstByteRange.location,
+                              dictionary: structure.dictionary, predicate: { dictionary in
+                guard let name = dictionary.name else {
                     return false
                 }
 
@@ -65,16 +65,15 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func methodCallFor(_ byteOffset: Int,
-                               excludingOffset: Int,
-                               dictionary: [String: SourceKitRepresentable],
-                               predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
+    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
+                            dictionary: [String: SourceKitRepresentable],
+                            predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
 
-        if let kindString = (dictionary["key.kind"] as? String),
+        if let kindString = (dictionary.kind),
             SwiftExpressionKind(rawValue: kindString) == .call,
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+            let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength,
+            let offset = dictionary.offset {
             let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
             if NSLocationInRange(byteOffset, byteRange) &&
@@ -84,8 +83,8 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         }
 
         for dictionary in dictionary.substructure {
-            if let offset = methodCallFor(byteOffset, excludingOffset: excludingOffset,
-                                          dictionary: dictionary, predicate: predicate) {
+            if let offset = methodCall(forByteOffset: byteOffset, excludingOffset: excludingOffset,
+                                       dictionary: dictionary, predicate: predicate) {
                 return offset
             }
         }

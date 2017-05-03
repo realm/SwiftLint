@@ -38,6 +38,8 @@
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
@@ -74,6 +76,12 @@
             ReferencedContainer = "container:SwiftLint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "lint --no-cache"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
             key = "DEVELOPER_DIR"

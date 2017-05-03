@@ -18,10 +18,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
-
-    // swiftlint:disable:next force_try
-    private static let regularExpression = try! NSRegularExpression(pattern: parametersPattern,
-                                                                    options: [])
+    private static let regularExpression = regex(parametersPattern, options: [])
 
     public init() {}
 
@@ -30,18 +27,17 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
-        nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples(),
-        triggeringExamples: AttributesRuleExamples.triggeringExamples()
+        nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
+        triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return validateTestableImport(file: file) +
-            validateFile(file, dictionary: file.structure.dictionary)
+            validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let attributeShouldBeOnSameLine: Bool?
         if SwiftDeclarationKind.variableKinds().contains(kind) {
@@ -65,15 +61,14 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        return file.matchPattern(pattern).flatMap { range, kinds -> StyleViolation? in
-            guard kinds.count == 2 &&
-                kinds.first == .attributeBuiltin && kinds.last == .keyword else {
-                    return nil
+        return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
+            guard kinds == [.attributeBuiltin, .keyword] else {
+                return nil
             }
 
             let contents = file.contents.bridge()
             let match = contents.substring(with: range)
-            let idx = match.lastIndexOf("import") ?? 0
+            let idx = match.lastIndex(of: "import") ?? 0
             let location = idx + range.location
 
             return StyleViolation(ruleDescription: type(of: self).description,
@@ -88,7 +83,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let attributes = parseAttributes(dictionary: dictionary)
 
         guard !attributes.isEmpty,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
+            let offset = dictionary.offset,
             let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: offset) else {
             return []
         }
@@ -106,13 +101,13 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                              attributeShouldBeOnSameLine: Bool) -> Bool {
         let line = file.lines[lineNumber - 1]
 
-        let tokens = file.syntaxMap.tokensIn(line.byteRange)
+        let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
         let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
 
         do {
-            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber - 1,
+            let previousAttributesWithParameters = try attributesFromPreviousLines(lineNumber: lineNumber - 1,
                                                                                    file: file)
             let previousAttributes = Set(previousAttributesWithParameters.map { $0.0 })
 
@@ -122,7 +117,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
             let alwaysOnSameLineAttributes = configuration.alwaysOnSameLine
             let alwaysOnNewLineAttributes =
-                createAlwaysOnNewLineAttributes(previousAttributesWithParameters,
+                createAlwaysOnNewLineAttributes(previousAttributes: previousAttributesWithParameters,
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
@@ -150,7 +145,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func createAlwaysOnNewLineAttributes(_ previousAttributes: [(String, Bool)],
+    private func createAlwaysOnNewLineAttributes(previousAttributes: [(String, Bool)],
                                                  attributesTokens: [(String, NSRange)],
                                                  line: Line, file: File) -> Set<String> {
         let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
@@ -178,7 +173,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     private func violation(dictionary: [String: SourceKitRepresentable],
                            file: File) -> [StyleViolation] {
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)
@@ -193,7 +188,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     // returns an array with the token itself (i.e. "@objc") and whether it's parameterized
     // note: the parameter is not contained in the token
-    private func attributesFromPreviousLines(_ lineNumber: Int,
+    private func attributesFromPreviousLines(lineNumber: Int,
                                              file: File) throws -> [(String, Bool)] {
         var currentLine = lineNumber - 1
         var allTokens = [(String, Bool)]()
@@ -206,7 +201,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             }
 
             let line = file.lines[currentLine]
-            let tokens = file.syntaxMap.tokensIn(line.byteRange)
+            let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
 
             if tokens.isEmpty {
                 foundEmptyLine = true
@@ -258,13 +253,12 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let restOfLineOffset = attributeRange.location + attributeRange.length
         let restOfLineLength = line.byteRange.location + line.byteRange.length - restOfLineOffset
 
-        let range = NSRange(location: 0, length: restOfLineLength)
         let regex = AttributesRule.regularExpression
         let contents = file.contents.bridge()
 
         // check if after the token is a `(` with only spaces allowed between the token and `(`
-        guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset,
-                                                               length: restOfLineLength),
+        guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset, length: restOfLineLength),
+            case let range = NSRange(location: 0, length: restOfLine.bridge().length),
             regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
 
             return false
@@ -303,20 +297,21 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let blacklist = Set(arrayLiteral: "source.decl.attribute.__raw_doc_comment",
-                              "source.decl.attribute.mutating",
-                              "source.decl.attribute.nonmutating",
-                              "source.decl.attribute.lazy",
-                              "source.decl.attribute.dynamic",
-                              "source.decl.attribute.final",
-                              "source.decl.attribute.infix",
-                              "source.decl.attribute.optional",
-                              "source.decl.attribute.override",
-                              "source.decl.attribute.postfix",
-                              "source.decl.attribute.prefix",
-                              "source.decl.attribute.required",
-                              "source.decl.attribute.weak"
-                              )
+        let blacklist: Set<String> = [
+            "source.decl.attribute.__raw_doc_comment",
+            "source.decl.attribute.mutating",
+            "source.decl.attribute.nonmutating",
+            "source.decl.attribute.lazy",
+            "source.decl.attribute.dynamic",
+            "source.decl.attribute.final",
+            "source.decl.attribute.infix",
+            "source.decl.attribute.optional",
+            "source.decl.attribute.override",
+            "source.decl.attribute.postfix",
+            "source.decl.attribute.prefix",
+            "source.decl.attribute.required",
+            "source.decl.attribute.weak"
+        ]
         return attributes.filter { !blacklist.contains($0) }
     }
 }

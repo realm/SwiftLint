@@ -58,10 +58,9 @@ private func render(locations: [Location], in contents: String) -> String {
     var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
-        var content = contents[line - 1]
-        let index = content.index(content.startIndex, offsetBy: character - 1)
-        content.insert("↓", at: index)
-        contents[line - 1] = content
+        let content = NSMutableString(string: contents[line - 1])
+        content.insert("↓", at: character - 1)
+        contents[line - 1] = content.bridge()
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
@@ -184,9 +183,12 @@ extension XCTestCase {
             )
         }
 
-        // "disable" command doesn't violate
-        let command = "// swiftlint:disable \(ruleDescription.identifier)\n"
-        XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+        let disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+
+        // "disable" commands doesn't violate
+        for command in disableCommands {
+            XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+        }
 
         // corrections
         ruleDescription.corrections.forEach {
@@ -197,11 +199,13 @@ extension XCTestCase {
             testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
         }
 
-        // "disable" command do not correct
+        // "disable" commands do not correct
         ruleDescription.corrections.forEach { before, _ in
-            let beforeDisabled = command + before
-            let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
-            config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            for command in disableCommands {
+                let beforeDisabled = command + before
+                let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0
+                config.assertCorrection(expectedCleaned, expected: expectedCleaned)
+            }
         }
 
     }
@@ -262,7 +266,7 @@ extension XCTestCase {
             XCTFail("No error caught")
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught")
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)")
             }
         } catch {
             XCTFail("Wrong error caught")

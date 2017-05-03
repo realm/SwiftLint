@@ -19,62 +19,36 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "legacy_constant",
         name: "Legacy Constant",
         description: "Struct-scoped constants are preferred over legacy global constants.",
-        nonTriggeringExamples: [
-            "CGRect.infinite",
-            "CGPoint.zero",
-            "CGRect.zero",
-            "CGSize.zero",
-            "NSPoint.zero",
-            "NSRect.zero",
-            "NSSize.zero",
-            "CGRect.null"
-        ],
-        triggeringExamples: [
-            "↓CGRectInfinite",
-            "↓CGPointZero",
-            "↓CGRectZero",
-            "↓CGSizeZero",
-            "↓NSZeroPoint",
-            "↓NSZeroRect",
-            "↓NSZeroSize",
-            "↓CGRectNull"
-        ],
-        corrections: [
-            "↓CGRectInfinite\n": "CGRect.infinite\n",
-            "↓CGPointZero\n": "CGPoint.zero\n",
-            "↓CGRectZero\n": "CGRect.zero\n",
-            "↓CGSizeZero\n": "CGSize.zero\n",
-            "↓NSZeroPoint\n": "NSPoint.zero\n",
-            "↓NSZeroRect\n": "NSRect.zero\n",
-            "↓NSZeroSize\n": "NSSize.zero\n",
-            "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n"
-        ]
+        nonTriggeringExamples: LegacyConstantRuleExamples.nonTriggeringExamples,
+        triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
+        corrections: LegacyConstantRuleExamples.corrections
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        let constants = ["CGRectInfinite", "CGPointZero", "CGRectZero", "CGSizeZero",
-                         "NSZeroPoint", "NSZeroRect", "NSZeroSize", "CGRectNull"]
+    private static let legacyConstants: [String] = {
+        return Array(LegacyConstantRule.legacyPatterns.keys)
+    }()
 
-        let pattern = "\\b(" + constants.joined(separator: "|") + ")\\b"
+    private static let legacyPatterns = LegacyConstantRuleExamples.patterns
 
-        return file.matchPattern(pattern, withSyntaxKinds: [.identifier]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
-        }
+    public func validate(file: File) -> [StyleViolation] {
+        let pattern = "\\b" + LegacyConstantRule.legacyConstants.joined(separator: "|")
+
+        return file.match(pattern: pattern, range: nil)
+            .filter { Set($0.1).isSubset(of: [.identifier]) }
+            .map { $0.0 }
+            .map {
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: $0.location))
+            }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let patterns = [
-            "CGRectInfinite": "CGRect.infinite",
-            "CGPointZero": "CGPoint.zero",
-            "CGRectZero": "CGRect.zero",
-            "CGSizeZero": "CGSize.zero",
-            "NSZeroPoint": "NSPoint.zero",
-            "NSZeroRect": "NSRect.zero",
-            "NSZeroSize": "NSSize.zero",
-            "CGRectNull": "CGRect.null"
-        ]
-        return file.correctLegacyRule(self, patterns: patterns)
+    public func correct(file: File) -> [Correction] {
+        var wordBoundPatterns: [String: String] = [:]
+        LegacyConstantRule.legacyPatterns.forEach { key, value in
+            wordBoundPatterns["\\b" + key] = value
+        }
+
+        return file.correct(legacyRule: self, patterns: wordBoundPatterns)
     }
 }

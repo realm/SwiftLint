@@ -11,7 +11,7 @@ import SourceKittenFramework
 public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = OverridenSuperCallConfiguration()
 
-    public init() { }
+    public init() {}
 
     public static let description = RuleDescription(
         identifier: "overridden_super_call",
@@ -60,45 +60,28 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard let offset = dictionary["key.bodyoffset"] as? Int64,
-              let name = dictionary["key.name"] as? String
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard let offset = dictionary.bodyOffset,
+            let name = dictionary.name,
+            kind == .functionMethodInstance,
+            configuration.resolvedMethodNames.contains(name),
+            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
         else { return [] }
 
-        guard kind == .functionMethodInstance &&
-              configuration.resolvedMethodNames.contains(name) &&
-              dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
-        else { return [] }
-
-        let callsToSuper = extractCallsToSuper(name, substructure: dictionary.substructure)
+        let callsToSuper = dictionary.extractCallsToSuper(methodName: name)
 
         if callsToSuper.isEmpty {
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, byteOffset: Int(offset)),
+                location: Location(file: file, byteOffset: offset),
                 reason: "Method '\(name)' should call to super function")]
         } else if callsToSuper.count > 1 {
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, byteOffset: Int(offset)),
+                location: Location(file: file, byteOffset: offset),
                 reason: "Method '\(name)' should call to super only once")]
         }
         return []
-    }
-
-    private func extractCallsToSuper(_ name: String,
-                                     substructure: [SourceKitRepresentable]) -> [String] {
-        let superCall = "super.\(name)"
-        return substructure.flatMap {
-            guard let elems = $0 as? [String: SourceKitRepresentable],
-                let type = (elems["key.kind"] as? String)
-                    .flatMap({ SwiftExpressionKind(rawValue: $0) }),
-                let name = elems["key.name"] as? String,
-                type == .call && superCall.contains(name)
-                else { return nil }
-            return name
-        }
     }
 }

@@ -31,24 +31,19 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance else {
             return []
         }
 
         // Check if IBOutlet
-        let isOutlet = dictionary.enclosedSwiftAttributes.contains(
-           "source.decl.attribute.iboutlet")
+        let isOutlet = dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.iboutlet")
         guard isOutlet else { return [] }
 
         // Check if private
-        let accessibility = dictionary["key.accessibility"] as? String
-        let setterAccessiblity = dictionary["key.setter_accessibility"] as? String
-
-        let isPrivate = isPrivateLevel(identifier: accessibility)
-        let isPrivateSet = isPrivateLevel(identifier: setterAccessiblity)
+        let isPrivate = isPrivateLevel(identifier: dictionary.accessibility)
+        let isPrivateSet = isPrivateLevel(identifier: dictionary.setterAccessibility)
 
         if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {
             return []
@@ -56,7 +51,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         // Violation found!
         let location: Location
-        if let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) {
+        if let offset = dictionary.offset {
             location = Location(file: file, byteOffset: offset)
         } else {
             location = Location(file: file.path)

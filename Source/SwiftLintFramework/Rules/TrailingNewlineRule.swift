@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 extension String {
-    fileprivate func countOfTrailingCharactersInSet(_ characterSet: CharacterSet) -> Int {
+    private func countOfTrailingCharacters(in characterSet: CharacterSet) -> Int {
         var count = 0
         for char in unicodeScalars.lazy.reversed() {
             if !characterSet.contains(char) {
@@ -22,7 +22,7 @@ extension String {
     }
 
     fileprivate func trailingNewlineCount() -> Int? {
-        return countOfTrailingCharactersInSet(CharacterSet.newlines)
+        return countOfTrailingCharacters(in: .newlines)
     }
 }
 
@@ -50,7 +50,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         if file.contents.trailingNewlineCount() == 1 {
             return []
         }
@@ -59,14 +59,14 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         guard let count = file.contents.trailingNewlineCount(), count != 1 else {
             return []
         }
         guard let lastLineRange = file.lines.last?.range else {
             return []
         }
-        if file.ruleEnabledViolatingRanges([lastLineRange], forRule: self).isEmpty {
+        if file.ruleEnabled(violatingRanges: [lastLineRange], for: self).isEmpty {
             return []
         }
         if count < 1 {

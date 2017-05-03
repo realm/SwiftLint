@@ -7,9 +7,7 @@
 //
 
 import Commandant
-import Foundation
 import Result
-import SourceKittenFramework
 import SwiftLintFramework
 
 struct AutoCorrectCommand: CommandProtocol {
@@ -17,9 +15,7 @@ struct AutoCorrectCommand: CommandProtocol {
     let function = "Automatically correct warnings and errors"
 
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
-        let configuration = Configuration(commandLinePath: options.configurationFile,
-            rootPath: options.path, quiet: options.quiet)
-        return configuration.visitLintableFiles(options.path, action: "Correcting",
+        return Configuration(options: options).visitLintableFiles(path: options.path, action: "Correcting",
             quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles) { linter in
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {

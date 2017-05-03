@@ -34,7 +34,10 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             "func validateFunction(\n" +
             "   _ file: File, kind: SwiftDeclarationKind,\n" +
             "   dictionary: [String: SourceKitRepresentable]\n" +
-            ") -> [StyleViolation]\n"
+            ") -> [StyleViolation]\n",
+            "func regex(_ pattern: String,\n" +
+            "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
+            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n"
         ],
         triggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
@@ -47,9 +50,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
@@ -57,8 +59,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         let contents = file.contents.bridge()
         let pattern = "\\(\\s*(\\S)"
 
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             let nameRange = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let paramStart = regex(pattern).firstMatch(in: file.contents,
                                                        options: [], range: nameRange)?.rangeAt(1).location,
@@ -68,12 +70,13 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
                 return []
         }
 
+        let paramRegex = regex("^\\s*(.*?):", options: [.anchorsMatchLines])
+
         let linesRange = (startLine + 1)...endLine
         let violationLocations = linesRange.flatMap { lineIndex -> Int? in
             let line = file.lines[lineIndex - 1]
-            guard let paramRange = regex("\\S").firstMatch(in: file.contents, options: [],
-                                                           range: line.range)?.range,
-                contents.substring(with: paramRange) != ")",
+            guard let paramRange = paramRegex.firstMatch(in: file.contents, options: [],
+                                                         range: line.range)?.rangeAt(1),
                 let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramRange.location),
                 paramCharacter != startCharacter else {
                     return nil

@@ -11,10 +11,9 @@ import SourceKittenFramework
 
 private let descriptionReason = "Limit vertical whitespace to a single empty line."
 
-public struct VerticalWhitespaceRule: CorrectableRule,
-                                      ConfigurationProviderRule {
+public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
     public init() {}
 
@@ -40,43 +39,68 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-
-        let linesSections = validate(file)
-        if linesSections.isEmpty { return [] }
+    public func validate(file: File) -> [StyleViolation] {
+        let linesSections = violatingLineSections(in: file)
+        guard !linesSections.isEmpty else {
+            return []
+        }
 
         var violations = [StyleViolation]()
         for (eachLastLine, eachSectionCount) in linesSections {
-
             // Skips violations for areas where the rule is disabled
-            if !file.ruleEnabledViolatingRanges([eachLastLine.range], forRule: self).isEmpty {
-                let violation = StyleViolation(ruleDescription: type(of: self).description,
-                                           severity: configuration.severity,
-                                           location: Location(file: file.path,
-                                            line: eachLastLine.index ),
-                                           reason: descriptionReason
-                                            + " Currently \(eachSectionCount + 1)." )
-                violations.append(violation)
+            if !file.ruleEnabled(violatingRanges: [eachLastLine.range], for: self).isEmpty {
+                violations.append(StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severityConfiguration.severity,
+                    location: Location(file: file.path, line: eachLastLine.index),
+                    reason: descriptionReason + " Currently \(eachSectionCount + 1)."
+                ))
             }
         }
         return violations
     }
 
-    func validate(_ file: File) -> [(lastLine: Line, linesToRemove: Int)] {
+    private typealias LineSection = (lastLine: Line, linesToRemove: Int)
 
+    private func violatingLineSections(in file: File) -> [LineSection] {
+        let nonSpaceRegex = regex("\\S", options: [])
         let filteredLines = file.lines.filter {
-            $0.content.trimmingCharacters(in: .whitespaces).isEmpty
+            nonSpaceRegex.firstMatch(in: file.contents, options: [], range: $0.range) == nil
         }
 
-        if filteredLines.isEmpty { return [] }
+        guard !filteredLines.isEmpty else {
+            return []
+        }
 
+        let blankLinesSections = extractSections(from: filteredLines)
+
+        // filtering out violations in comments and strings
+        let stringAndComments = Set(SyntaxKind.commentAndStringKinds())
+        let syntaxMap = file.syntaxMap
+        let result = blankLinesSections.flatMap { eachSection -> (lastLine: Line, linesToRemove: Int)? in
+            guard let lastLine = eachSection.last else {
+                return nil
+            }
+            let kindInSection = syntaxMap.tokens(inByteRange: lastLine.byteRange)
+                                         .flatMap { SyntaxKind(rawValue: $0.type) }
+            if stringAndComments.isDisjoint(with: kindInSection) {
+                return (lastLine, eachSection.count)
+            }
+
+            return nil
+        }
+
+        return result.filter { $0.linesToRemove >= configuration.maxEmptyLines }
+    }
+
+    private func extractSections(from lines: [Line]) -> [[Line]] {
         var blankLinesSections = [[Line]]()
         var lineSection = [Line]()
 
         var previousIndex = 0
-        for index in 0..<filteredLines.count {
-            if filteredLines[previousIndex].index + 1 == filteredLines[index].index {
-                lineSection.append(filteredLines[index])
+        for (index, line) in lines.enumerated() {
+            if lines[previousIndex].index + 1 == line.index {
+                lineSection.append(line)
             } else if !lineSection.isEmpty {
                 blankLinesSections.append(lineSection)
                 lineSection.removeAll()
@@ -87,25 +111,11 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             blankLinesSections.append(lineSection)
         }
 
-        // filtering out violations in comments and strings
-        let stringAndComments = Set(SyntaxKind.commentAndStringKinds())
-        let syntaxMap = file.syntaxMap
-        var result = [(lastLine: Line, linesToRemove: Int)]()
-        for eachSection in blankLinesSections {
-            guard let lastLine = eachSection.last else { continue }
-            let kindInSection = syntaxMap.tokensIn(lastLine.byteRange)
-                                        .flatMap { SyntaxKind(rawValue: $0.type) }
-            if stringAndComments.isDisjoint(with: kindInSection) {
-                result.append((lastLine, eachSection.count))
-            }
-        }
-
-        return result
-
+        return blankLinesSections
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let linesSections = validate(file)
+    public func correct(file: File) -> [Correction] {
+        let linesSections = violatingLineSections(in: file)
         if linesSections.isEmpty { return [] }
 
         var indexOfLinesToDelete = [Int]()
@@ -119,8 +129,8 @@ public struct VerticalWhitespaceRule: CorrectableRule,
         var corrections = [Correction]()
         for currentLine in file.lines {
 
-            // Doesnt correct lines where rule is disabled
-            if file.ruleEnabledViolatingRanges([currentLine.range], forRule: self).isEmpty {
+            // Doesn't correct lines where rule is disabled
+            if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)
                 continue
             }
@@ -144,7 +154,5 @@ public struct VerticalWhitespaceRule: CorrectableRule,
             return corrections
         }
         return []
-
     }
-
 }

@@ -13,11 +13,11 @@ extension SyntaxMap {
     /// Returns array of SyntaxTokens intersecting with byte range
     ///
     /// - Parameter byteRange: byte based NSRange
-    internal func tokensIn(_ byteRange: NSRange) -> [SyntaxToken] {
+    internal func tokens(inByteRange byteRange: NSRange) -> [SyntaxToken] {
 
         func intersect(_ token: SyntaxToken) -> Bool {
             return NSRange(location: token.offset, length: token.length)
-                .intersectsRange(byteRange)
+                .intersects(byteRange)
         }
 
         func notIntersect(_ token: SyntaxToken) -> Bool {

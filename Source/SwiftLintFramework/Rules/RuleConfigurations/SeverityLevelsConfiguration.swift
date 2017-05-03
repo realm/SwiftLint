@@ -37,7 +37,7 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
         return [RuleParameter(severity: .warning, value: warning)]
     }
 
-    mutating public func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
             warning = configurationArray[0]
             error = (configurationArray.count > 1) ? configurationArray[1] : nil

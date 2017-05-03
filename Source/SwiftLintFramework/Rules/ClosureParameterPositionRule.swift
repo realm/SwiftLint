@@ -50,16 +50,15 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
 
     private static let openBraceRegex = regex("\\{")
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else {
             return []
         }
 
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyLength = dictionary.bodyLength,
             bodyLength > 0 else {
                 return []
         }
@@ -71,20 +70,17 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         // parameters from inner closures are reported on the top-level one, so we can't just
         // use the first and last parameters to check, we need to check all of them
         return parameters.flatMap { param -> StyleViolation? in
-            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                paramOffset > rangeStart else {
+            guard let paramOffset = param.offset, paramOffset > rangeStart else {
                 return nil
             }
 
             let rangeLength = paramOffset - rangeStart
             let contents = file.contents.bridge()
 
-            guard let range = contents.byteRangeToNSRange(start: rangeStart,
-                                                          length: rangeLength),
+            guard let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength),
                 let match = regex.matches(in: file.contents, options: [], range: range).last?.range,
                 match.location != NSNotFound,
-                let braceOffset = contents.NSRangeToByteRange(start: match.location,
-                                                              length: match.length)?.location,
+                let braceOffset = contents.NSRangeToByteRange(start: match.location, length: match.length)?.location,
                 let (braceLine, _) = contents.lineAndCharacter(forByteOffset: braceOffset),
                 let (paramLine, _) = contents.lineAndCharacter(forByteOffset: paramOffset),
                 braceLine != paramLine else {

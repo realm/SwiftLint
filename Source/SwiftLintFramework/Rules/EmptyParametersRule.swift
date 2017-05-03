@@ -27,21 +27,21 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
             "let foo: (ConfigurationTests) ->Void throws -> Void)\n"
         ],
         triggeringExamples: [
-            "let abc: ↓Void -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n"
+            "let abc: ↓(Void) -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n",
+            "let foo: ↓(Void) -> () throws -> Void)\n"
         ],
         corrections: [
-            "let abc: ↓Void -> Void = {}\n": "let abc: () -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n": "func foo(completion: () -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n":
+            "let abc: ↓(Void) -> Void = {}\n": "let abc: () -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n": "func foo(completion: () -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n":
                 "func foo(completion: () throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
+            "let foo: ↓(Void) -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violationRanges(file: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -50,26 +50,20 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds()
-        let voidPattern = "Void"
+        let voidPattern = "\\(Void\\)"
         let pattern = voidPattern + "\\s*(throws\\s+)?->"
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
 
-        return file.matchPattern(pattern,
-                                 excludingSyntaxKinds: kinds,
-                                 excludingPattern: excludingPattern).flatMap {
-            let voidRegex = NSRegularExpression.forcePattern(voidPattern)
-            return voidRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
+        return file.match(pattern: pattern,
+                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+                          excludingPattern: excludingPattern).flatMap { range in
+            let voidRegex = regex(voidPattern)
+            return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRanges(file: file),
-                                                              forRule: self)
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(file: file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

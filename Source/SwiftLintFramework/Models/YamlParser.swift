@@ -6,7 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-import Yaml
+import Yams
 
 // MARK: - YamlParsingError
 
@@ -29,21 +29,11 @@ internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
 // MARK: - YamlParser
 
 public struct YamlParser {
-    public static func parse(_ contents: String) throws -> [String: Any] {
+    public static func parse(_ yaml: String) throws -> [String: Any] {
         do {
-            if let dict = try loadYaml(contents).flatDictionary {
-                return dict
-            } else {
-                throw YamlParserError.yamlFlattening
-            }
-        }
-    }
-
-    fileprivate static func loadYaml(_ yaml: String) throws -> Yaml {
-        do {
-            return try Yaml.load(yaml)
-        } catch Yaml.ResultError.message(let message) {
-            throw YamlParserError.yamlParsing(message ?? "Unknown Yaml Error")
+            return try Yams.load(yaml: yaml) as? [String: Any] ?? [:]
+        } catch {
+            throw YamlParserError.yamlParsing("\(error)")
         }
     }
 }

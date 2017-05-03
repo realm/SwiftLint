@@ -24,7 +24,7 @@ class ReporterTests: XCTestCase {
             EmojiReporter.self
         ]
         for reporter in reporters {
-            XCTAssertEqual(reporter.identifier, reporterFromString(reporter.identifier).identifier)
+            XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
         }
     }
 
@@ -61,7 +61,11 @@ class ReporterTests: XCTestCase {
     }
 
     func testEmojiReporter() {
+    #if _runtime(_ObjC)
         let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
+    #else
+        let expectedOutput = stringFromFile("CannedEmojiReporterOutputNonObjC.txt")
+    #endif
         let result = EmojiReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
@@ -78,7 +82,7 @@ class ReporterTests: XCTestCase {
             } else if let array = (result as? [Any])?.bridge() {
                 return array
             }
-            fatalError()
+            fatalError("Unexpected value in JSON: \(result)")
         }
         XCTAssertEqual(jsonValue(result), jsonValue(expectedOutput))
     }

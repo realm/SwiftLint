@@ -19,16 +19,17 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
         name: "Sorted Imports",
         description: "Imports should be sorted.",
         nonTriggeringExamples: [
-            "import AAA\nimport BBB\nimport CCC\nimport DDD"
+            "import AAA\nimport BBB\nimport CCC\nimport DDD",
+            "import Alamofire\nimport API",
+            "import labc\nimport Ldef"
         ],
         triggeringExamples: [
             "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        let importRanges = file.matchPattern("import\\s+\\w+",
-                                             withSyntaxKinds: [.keyword, .identifier])
+    public func validate(file: File) -> [StyleViolation] {
+        let importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
         let contents = file.contents.bridge()
 
         let importLength = 6
@@ -36,7 +37,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
             let moduleRange = NSRange(location: range.location + importLength,
                                       length: range.length - importLength)
             let moduleName = contents.substring(with: moduleRange)
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
             let offset = NSMaxRange(range) - moduleName.bridge().length
             return (moduleName, offset)
         }

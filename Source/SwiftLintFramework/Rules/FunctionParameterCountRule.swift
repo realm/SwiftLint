@@ -40,31 +40,32 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 
-        let nameOffset = Int(dictionary["key.nameoffset"] as? Int64 ?? 0)
-        let length = Int(dictionary["key.namelength"] as? Int64 ?? 0)
+        let nameOffset = dictionary.nameOffset ?? 0
+        let length = dictionary.nameLength ?? 0
 
-        if functionIsInitializer(file, offset: nameOffset, length: length) {
+        if functionIsInitializer(file: file, byteOffset: nameOffset, byteLength: length) {
             return []
         }
 
         let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
-        let allParameterCount = allFunctionParameterCount(dictionary.substructure, offset: nameOffset, length: length)
+        let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, offset: nameOffset,
+                                                          length: length)
         if allParameterCount < minThreshold! {
             return []
         }
 
         let parameterCount = allParameterCount -
-            defaultFunctionParameterCount(file, offset: nameOffset, length: length)
+            defaultFunctionParameterCount(file: file, byteOffset: nameOffset, byteLength: length)
 
         for parameter in configuration.params where parameterCount > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            let offset = dictionary.offset ?? 0
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
@@ -75,16 +76,16 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    fileprivate func allFunctionParameterCount(_ structure: [[String: SourceKitRepresentable]],
+    fileprivate func allFunctionParameterCount(structure: [[String: SourceKitRepresentable]],
                                                offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for subDict in structure {
-            guard let key = subDict["key.kind"] as? String,
-                let parameterOffset = subDict["key.offset"] as? Int64 else {
+            guard let key = subDict.kind,
+                let parameterOffset = subDict.offset else {
                     continue
             }
 
-            guard offset..<(offset + length) ~= Int(parameterOffset) else {
+            guard offset..<(offset + length) ~= parameterOffset else {
                 return parameterCount
             }
 
@@ -95,17 +96,16 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return parameterCount
     }
 
-    fileprivate func defaultFunctionParameterCount(_ file: File, offset: Int, length: Int) -> Int {
-        return file.contents.bridge().substringWithByteRange(start: offset, length: length)?
+    fileprivate func defaultFunctionParameterCount(file: File, byteOffset: Int, byteLength: Int) -> Int {
+        return file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)?
             .characters.filter { $0 == "=" }.count ?? 0
     }
 
-    fileprivate func functionIsInitializer(_ file: File, offset: Int, length: Int) -> Bool {
+    fileprivate func functionIsInitializer(file: File, byteOffset: Int, byteLength: Int) -> Bool {
         guard let name = file.contents.bridge()
-            .substringWithByteRange(start: offset, length: length),
+            .substringWithByteRange(start: byteOffset, length: byteLength),
             name.hasPrefix("init"),
-            let funcName = name
-                .components(separatedBy: CharacterSet(charactersIn: "<(")).first else {
+            let funcName = name.components(separatedBy: CharacterSet(charactersIn: "<(")).first else {
             return false
         }
         if funcName == "init" { // fast path

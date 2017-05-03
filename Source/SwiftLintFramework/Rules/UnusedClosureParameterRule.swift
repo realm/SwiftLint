@@ -30,14 +30,27 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 "return { migration, schemaVersion in\n" +
                 "rlmMigration(migration.rlmMigration, schemaVersion)\n" +
                 "}\n" +
-            "}"
+            "}",
+            "genericsFunc { (a: Type, b) in\n" +
+                "a + b\n" +
+            "}\n",
+            "var label: UILabel = { (lbl: UILabel) -> UILabel in\n" +
+            "   lbl.backgroundColor = .red\n" +
+            "   return lbl\n" +
+            "}(UILabel())\n",
+            "hoge(arg: num) { num in\n" +
+            "  return num\n" +
+            "}\n"
         ],
         triggeringExamples: [
             "[1, 2].map { ↓number in\n return 3\n}\n",
             "[1, 2].map { ↓number in\n return numberWithSuffix\n}\n",
             "[1, 2].map { ↓number in\n return 3 // number\n}\n",
             "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n",
-            "[1, 2].something { number, ↓idx in\n return number\n}\n"
+            "[1, 2].something { number, ↓idx in\n return number\n}\n",
+            "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
+            "hoge(arg: num) { ↓num in\n" +
+            "}\n"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -49,14 +62,25 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n":
                 "[1, 2].map { _ in\n return 3 \"number\"\n}\n",
             "[1, 2].something { number, ↓idx in\n return number\n}\n":
-                "[1, 2].something { number, _ in\n return number\n}\n"
+                "[1, 2].something { number, _ in\n return number\n}\n",
+            "genericsFunc(closure: { (↓int: Int) -> Void in // do something\n}\n":
+                "genericsFunc(closure: { (_: Int) -> Void in // do something\n}\n",
+            "genericsFunc { (↓a, ↓b: Type) -> Void in\n}\n":
+                "genericsFunc { (_, _: Type) -> Void in\n}\n",
+            "genericsFunc { (↓a: Type, ↓b: Type) -> Void in\n}\n":
+                "genericsFunc { (_: Type, _: Type) -> Void in\n}\n",
+            "genericsFunc { (↓a: Type, ↓b) -> Void in\n}\n":
+                "genericsFunc { (_: Type, _) -> Void in\n}\n",
+            "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
+                "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
+            "hoge(arg: num) { ↓num in\n}\n":
+                "hoge(arg: num) { _ in\n}\n"
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return violationRangesInFile(file, dictionary: dictionary, kind: kind).map { range, name in
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        return violationRanges(in: file, dictionary: dictionary, kind: kind).map { range, name in
             let reason = "Unused parameter \"\(name)\" in a closure should be replaced with _."
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
@@ -65,18 +89,15 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         }
     }
 
-    private func violationRangesInFile(_ file: File,
-                                       dictionary: [String: SourceKitRepresentable],
-                                       kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
-        guard kind == .call else {
-            return []
-        }
-
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
+    private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable],
+                                 kind: SwiftExpressionKind) -> [(range: NSRange, name: String)] {
+        guard kind == .call,
+            !isClosure(dictionary: dictionary),
+            let offset = dictionary.offset,
+            let length = dictionary.length,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyLength = dictionary.bodyLength,
             bodyLength > 0 else {
                 return []
         }
@@ -87,9 +108,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         let contents = file.contents.bridge()
 
         return parameters.flatMap { param -> (NSRange, String)? in
-            guard let paramOffset = (param["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let paramLength = (param["key.length"] as? Int64).flatMap({ Int($0) }),
-                let name = param["key.name"] as? String,
+            guard let paramOffset = param.offset,
+                let name = param.name,
+                name != "_",
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),
                 let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
@@ -97,13 +118,15 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 return nil
             }
 
+            let paramLength = name.bridge().length
+
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {
                 guard let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                                   length: range.length),
                     // if it's the parameter declaration itself, we should skip
-                    byteRange.location != paramOffset,
-                    case let tokens = file.syntaxMap.tokensIn(byteRange),
+                    byteRange.location > paramOffset,
+                    case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
                     // a parameter usage should be only one token
                     tokens.count == 1 else {
                     continue
@@ -122,27 +145,34 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         }
     }
 
-    private func violationRangesInFile(_ file: File,
-                                       dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func isClosure(dictionary: [String: SourceKitRepresentable]) -> Bool {
+        return dictionary.name.flatMap { name -> Bool in
+            let length = name.bridge().length
+            let range = NSRange(location: 0, length: length)
+            return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
+        } ?? false
+    }
+
+    private func violationRanges(in file: File,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict["key.kind"] as? String,
+            guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {
                     return []
             }
-            return violationRangesInFile(file, dictionary: subDict) +
-                violationRangesInFile(file, dictionary: subDict, kind: kind).map({ $0.0 })
+            return violationRanges(in: file, dictionary: subDict) +
+                violationRanges(in: file, dictionary: subDict, kind: kind).map({ $0.0 })
         }
     }
 
-    private func violationRangesInFile(_ file: File) -> [NSRange] {
-        return violationRangesInFile(file, dictionary: file.structure.dictionary).sorted { lh, rh in
-            lh.location < rh.location
+    private func violationRanges(in file: File) -> [NSRange] {
+        return violationRanges(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
+            lhs.location < rhs.location
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(violationRangesInFile(file),
-                                                              forRule: self)
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 

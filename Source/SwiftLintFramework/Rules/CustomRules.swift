@@ -23,14 +23,14 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
 
     public init() {}
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
 
         for (key, value) in configurationDict {
             var ruleConfiguration = RegexConfiguration(identifier: key)
-            try ruleConfiguration.applyConfiguration(value)
+            try ruleConfiguration.apply(configuration: value)
             customRuleConfigurations.append(ruleConfiguration)
         }
     }
@@ -55,7 +55,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
     public init() {}
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         var configurations = configuration.customRuleConfigurations
 
         if configurations.isEmpty {
@@ -64,16 +64,32 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
 
         if let path = file.path {
             configurations = configurations.filter { config in
-                guard let includedRegex = config.included else { return true }
+                guard let includedRegex = config.included else {
+                    return true
+                }
                 let range = NSRange(location: 0, length: path.bridge().length)
                 return !includedRegex.matches(in: path, options: [], range: range).isEmpty
             }
+            configurations = configurations.filter { config in
+                guard let excludedRegex = config.excluded else {
+                    return true
+                }
+                let range = NSRange(location: 0, length: path.bridge().length)
+                return excludedRegex.matches(in: path, options: [], range: range).isEmpty
+            }
         }
 
-        return configurations.flatMap {
-            validate(file, configuration: $0).filter { eachViolation in
+        return configurations.flatMap { configuration -> [StyleViolation] in
+            let pattern = configuration.regex.pattern
+            let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtracting(configuration.matchKinds))
+            return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map({
+                StyleViolation(ruleDescription: configuration.description,
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: $0.location),
+                               reason: configuration.message)
+            }).filter { violation in
                 let regions = file.regions().filter {
-                    $0.contains(eachViolation.location)
+                    $0.contains(violation.location)
                 }
                 guard let region = regions.first else { return true }
 
@@ -83,18 +99,6 @@ public struct CustomRules: Rule, ConfigurationProviderRule {
                 }
                 return true
             }
-        }
-    }
-
-    fileprivate func validate(_ file: File, configuration: RegexConfiguration) -> [StyleViolation] {
-        let pattern = configuration.regex.pattern
-        let excludingKinds = Array(Set(SyntaxKind.allKinds())
-            .subtracting(configuration.matchKinds))
-        return file.matchPattern(pattern, excludingSyntaxKinds: excludingKinds).map {
-            StyleViolation(ruleDescription: configuration.description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location),
-                reason: configuration.message)
         }
     }
 }

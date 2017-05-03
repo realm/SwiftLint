@@ -17,6 +17,10 @@ opt_in_rules:
   - closure_end_indentation
   - first_where
   - sorted_imports
+  - object_literal
+  - number_separator
+  - prohibited_super_call
+  - fatal_error_message
 
 file_header:
   required_pattern: |
@@ -28,3 +32,5 @@ file_header:
                     \/\/  Copyright © \d{4} Realm\. All rights reserved\.
                     \/\/
 line_length: 120
+number_separator:
+  minimum_length: 5

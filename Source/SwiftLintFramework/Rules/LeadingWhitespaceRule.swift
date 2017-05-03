@@ -24,7 +24,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         corrections: ["\n //": "//"]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let countOfLeadingWhitespace = file.contents.countOfLeadingCharacters(in: .whitespacesAndNewlines)
         if countOfLeadingWhitespace == 0 {
             return []
@@ -36,12 +36,12 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
             "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
         let whitespaceAndNewline = CharacterSet.whitespacesAndNewlines
         let spaceCount = file.contents.countOfLeadingCharacters(in: whitespaceAndNewline)
         guard spaceCount > 0,
             let firstLineRange = file.lines.first?.range,
-            !file.ruleEnabledViolatingRanges([firstLineRange], forRule: self).isEmpty else {
+            !file.ruleEnabled(violatingRanges: [firstLineRange], for: self).isEmpty else {
                 return []
         }
 

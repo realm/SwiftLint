@@ -8,35 +8,68 @@
 
 import Foundation
 
+public enum RuleListError: Error {
+    case duplicatedConfigurations(rule: Rule.Type)
+}
+
 public struct RuleList {
     public let list: [String: Rule.Type]
+    private let aliases: [String: String]
+
     public init(rules: Rule.Type...) {
-        var tmpList = [String: Rule.Type]()
-        for rule in rules {
-            tmpList[rule.description.identifier] = rule
-        }
-        list = tmpList
+        self.init(rules: rules)
     }
 
-    internal func configuredRules(with dictionary: [String: Any]) -> [Rule] {
-        var rules = [Rule]()
-        for ruleType in list.values {
-            let identifier = ruleType.description.identifier
-            if let ruleConfiguration = dictionary[identifier] {
-                do {
-                    let configuredRule = try ruleType.init(configuration: ruleConfiguration)
-                    rules.append(configuredRule)
-                } catch {
-                    queuedPrintError(
-                        "Invalid configuration for '\(identifier)'. Falling back to default."
-                    )
-                    rules.append(ruleType.init())
-                }
-            } else {
-                rules.append(ruleType.init())
+    public init(rules: [Rule.Type]) {
+        var tmpList = [String: Rule.Type]()
+        var tmpAliases = [String: String]()
+
+        for rule in rules {
+            let identifier = rule.description.identifier
+            tmpList[identifier] = rule
+            for alias in rule.description.deprecatedAliases {
+                tmpAliases[alias] = identifier
+            }
+            tmpAliases[identifier] = identifier
+        }
+        list = tmpList
+        aliases = tmpAliases
+    }
+
+    internal func configuredRules(with dictionary: [String: Any]) throws -> [Rule] {
+        var rules = [String: Rule]()
+
+        for (key, configuration) in dictionary {
+            guard let identifier = identifier(for: key), let ruleType = list[identifier] else {
+                continue
+            }
+            guard rules[identifier] == nil else {
+                throw RuleListError.duplicatedConfigurations(rule: ruleType)
+            }
+            do {
+                let configuredRule = try ruleType.init(configuration: configuration)
+                rules[identifier] = configuredRule
+            } catch {
+                queuedPrintError("Invalid configuration for '\(identifier)'. Falling back to default.")
+                rules[identifier] = ruleType.init()
             }
         }
-        return rules
+
+        for (identifier, ruleType) in list where rules[identifier] == nil {
+            rules[identifier] = ruleType.init()
+        }
+
+        return Array(rules.values)
+    }
+
+    internal func identifier(for alias: String) -> String? {
+        return aliases[alias]
+    }
+
+    internal func allValidIdentifiers() -> [String] {
+        return list.flatMap { (_, rule) -> [String] in
+            rule.description.allIdentifiers
+        }
     }
 }
 
@@ -49,24 +82,35 @@ public let masterRuleList = RuleList(rules:
     ClosureSpacingRule.self,
     ColonRule.self,
     CommaRule.self,
+    CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewline.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
+    DiscardedNotificationCenterObserverRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,
+    ExplicitTopLevelACLRule.self,
+    ExplicitTypeInterfaceRule.self,
+    FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
     FirstWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
+    ForWhereRule.self,
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
+    GenericTypeNameRule.self,
+    IdentifierNameRule.self,
     ImplicitGetterRule.self,
+    ImplicitlyUnwrappedOptionalRule.self,
+    ImplicitReturnRule.self,
+    LargeTupleRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,
     LegacyConstantRule.self,
@@ -74,10 +118,11 @@ public let masterRuleList = RuleList(rules:
     LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
     MarkRule.self,
-    MissingDocsRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
+    NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
+    ObjectLiteralRule.self,
     OpeningBraceRule.self,
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
@@ -85,11 +130,13 @@ public let masterRuleList = RuleList(rules:
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
+    RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,
     RedundantStringEnumValueRule.self,
     RedundantVoidReturnRule.self,
     ReturnArrowWhitespaceRule.self,
+    ShorthandOperatorRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
     SwitchCaseOnNewlineRule.self,
@@ -103,9 +150,8 @@ public let masterRuleList = RuleList(rules:
     TypeNameRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
-    ValidDocsRule.self,
+    UnusedOptionalBindingRule.self,
     ValidIBInspectableRule.self,
-    VariableNameRule.self,
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,

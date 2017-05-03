@@ -10,69 +10,28 @@ import Foundation
 import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
 
     public init() {}
-
-    private static var corrections: [String: String] {
-        var result = [String: String]()
-
-        for (violation, sign) in [("↓-", "-"), ("+↓", "+"), ("↓", "")] {
-            result["let foo = \(violation)10_0"] = "let foo = \(sign)100"
-            result["let foo = \(violation)1000"] = "let foo = \(sign)1_000"
-            result["let foo = \(violation)1000e2"] = "let foo = \(sign)1_000e2"
-            result["let foo = \(violation)1__000"] = "let foo = \(sign)1_000"
-            result["let foo = \(violation)1.0001"] = "let foo = \(sign)1.000_1"
-            result["let foo = \(violation)1_000_000.000000_1"] = "let foo = \(sign)1_000_000.000_000_1"
-            result["let foo = \(violation)1000000.000000_1"] = "let foo = \(sign)1_000_000.000_000_1"
-        }
-
-        return result
-    }
 
     public static let description = RuleDescription(
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
-        nonTriggeringExamples: ["-", "+", ""].flatMap { (sign: String) -> [String] in
-            [
-                "let foo = \(sign)100",
-                "let foo = \(sign)1_000",
-                "let foo = \(sign)1_000_000",
-                "let foo = \(sign)1.000_1",
-                "let foo = \(sign)1_000_000.000_000_1",
-                "let binary = \(sign)0b10000",
-                "let binary = \(sign)0b1000_0001",
-                "let hex = \(sign)0xA",
-                "let hex = \(sign)0xAA_BB",
-                "let octal = \(sign)0o21",
-                "let octal = \(sign)0o21_1",
-                "let exp = \(sign)1_000_000.000_000e2"
-            ]
-        },
-        triggeringExamples: ["↓-", "+↓", "↓"].flatMap { (sign: String) -> [String] in
-            [
-                "let foo = \(sign)10_0",
-                "let foo = \(sign)1000",
-                "let foo = \(sign)1000e2",
-                "let foo = \(sign)1__000",
-                "let foo = \(sign)1.0001",
-                "let foo = \(sign)1_000_000.000000_1",
-                "let foo = \(sign)1000000.000000_1"
-            ]
-        },
-        corrections: NumberSeparatorRule.corrections
+        nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
+        triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
+        corrections: NumberSeparatorRuleExamples.corrections
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        return violatingRanges(file).map { range, _ in
+    public func validate(file: File) -> [StyleViolation] {
+        return violatingRanges(in: file).map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
+                                  severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }
 
-    private func violatingRanges(_ file: File) -> [(NSRange, String)] {
+    private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
         return numberTokens.flatMap { token in
             guard let content = contentFrom(file: file, token: token),
@@ -81,8 +40,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             }
 
             let signs = CharacterSet(charactersIn: "+-")
+            let exponential = CharacterSet(charactersIn: "eE")
             guard let nonSign = content.components(separatedBy: signs).last,
-                case let exponentialComponents = nonSign.components(separatedBy: "e"),
+                case let exponentialComponents = nonSign.components(separatedBy: exponential),
                 let nonExponential = exponentialComponents.first else {
                     return nil
             }
@@ -92,13 +52,13 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             var validFraction = true
             var expectedFraction: String?
             if components.count == 2, let fractionSubstring = components.last {
-                let result = isValid(number: fractionSubstring, reversed: false)
+                let result = isValid(number: fractionSubstring, isFraction: true)
                 validFraction = result.0
                 expectedFraction = result.1
             }
 
             guard let integerSubstring = components.first,
-                case let (valid, expected) = isValid(number: integerSubstring, reversed: true),
+                case let (valid, expected) = isValid(number: integerSubstring, isFraction: false),
                 !valid || !validFraction,
                 let range = file.contents.bridge().byteRangeToNSRange(start: token.offset,
                                                                       length: token.length) else {
@@ -117,22 +77,19 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             }
 
             if exponentialComponents.count == 2, let exponential = exponentialComponents.last {
-                corrected += "e" + exponential
+                let exponentialSymbol = content.contains("e") ? "e" : "E"
+                corrected += exponentialSymbol + exponential
             }
 
             return (range, corrected)
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let ranges = violatingRanges(file).filter { range, _ in
-            return !file.ruleEnabledViolatingRanges([range], forRule: self).isEmpty
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = self.violatingRanges(in: file).filter { range, _ in
+            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
-        return writeToFile(file, violatingRanges: ranges)
-    }
-
-    private func writeToFile(_ file: File, violatingRanges: [(NSRange, String)]) -> [Correction] {
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
@@ -158,20 +115,29 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         return prefixes.filter { lowercased.hasPrefix($0) }.isEmpty
     }
 
-    private func isValid(number: String, reversed: Bool) -> (Bool, String) {
+    private func isValid(number: String, isFraction: Bool) -> (Bool, String) {
         var correctComponents = [String]()
         let clean = number.replacingOccurrences(of: "_", with: "")
 
+        let minimumLength: Int
+        if isFraction {
+            minimumLength = configuration.minimumFractionLength ?? configuration.minimumLength
+        } else {
+            minimumLength = configuration.minimumLength
+        }
+
+        let shouldAddSeparators = clean.characters.count >= minimumLength
+
         for (idx, char) in reversedIfNeeded(Array(clean.characters),
-                                            reversed: reversed).enumerated() {
-            if idx % 3 == 0 && idx > 0 {
+                                            reversed: !isFraction).enumerated() {
+            if idx % 3 == 0 && idx > 0 && shouldAddSeparators {
                 correctComponents.append("_")
             }
 
             correctComponents.append(String(char))
         }
 
-        let expected = reversedIfNeeded(correctComponents, reversed: reversed).joined()
+        let expected = reversedIfNeeded(correctComponents, reversed: !isFraction).joined()
         return (expected == number, expected)
     }
 

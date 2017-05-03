@@ -17,12 +17,13 @@ public struct EmojiReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return violations.group { violation in
-            violation.location.file ?? "Other"
-        }.map(reportFor).joined(separator: "\n")
+        return violations
+            .group(by: { $0.location.file ?? "Other" })
+            .sorted(by: { $0.key < $1.key })
+            .map(report).joined(separator: "\n")
     }
 
-    private static func reportFor(file: String, with violations: [StyleViolation]) -> String {
+    private static func report(for file: String, with violations: [StyleViolation]) -> String {
         let lines = [file] + violations.sorted(by: { lhs, rhs in
             guard lhs.severity == rhs.severity else {
                 return lhs.severity > rhs.severity

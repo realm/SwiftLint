@@ -29,6 +29,12 @@ public struct Region {
     }
 
     public func isRuleDisabled(_ rule: Rule) -> Bool {
-        return disabledRuleIdentifiers.contains(type(of: rule).description.identifier)
+        let identifiers = type(of: rule).description.allIdentifiers
+        return !disabledRuleIdentifiers.intersection(identifiers).isEmpty
+    }
+
+    public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {
+        let identifiers = type(of: rule).description.deprecatedAliases
+        return disabledRuleIdentifiers.intersection(identifiers)
     }
 }

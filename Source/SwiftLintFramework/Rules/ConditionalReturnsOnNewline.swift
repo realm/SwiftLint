@@ -37,17 +37,17 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return"
-        return file.rangesAndTokensMatching(pattern).filter { _, tokens in
+        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
                 SyntaxKind(rawValue: firstToken.type) == .keyword &&
                     SyntaxKind(rawValue: lastToken.type) == .keyword else {
                         return false
             }
 
-            return ["if", "guard"].contains(contentForToken(token: firstToken, file: file)) &&
-                contentForToken(token: lastToken, file: file) == "return"
+            return ["if", "guard"].contains(content(for: firstToken, file: file)) &&
+                content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
@@ -55,8 +55,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         }
     }
 
-    private func contentForToken(token: SyntaxToken, file: File) -> String {
-        return file.contents.bridge().substringWithByteRange(start: token.offset,
-                                                             length: token.length) ?? ""
+    private func content(for token: SyntaxToken, file: File) -> String {
+        return file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) ?? ""
     }
 }

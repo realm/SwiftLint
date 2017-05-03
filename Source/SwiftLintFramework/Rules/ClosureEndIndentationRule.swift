@@ -24,18 +24,24 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "       print(number)\n" +
             "   }\n",
             "[1, 2].map { $0 + 1 }\n",
-            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
             "   return Command(string: contents, range: range)\n" +
             "}.flatMap { command in\n" +
             "   return command.expand()\n" +
-            "}\n"
+            "}\n",
+            "foo(foo: bar,\n" +
+            "    options: baz) { _ in }\n",
+            "someReallyLongProperty.chainingWithAnotherProperty\n" +
+            "   .foo { _ in }",
+            "foo(abc, 123)\n" +
+            "{ _ in }\n"
         ],
         triggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +
             "       print(number)\n" +
             "↓}\n",
-            "return matchPattern(pattern, withSyntaxKinds: [.comment]).flatMap { range in\n" +
+            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
             "   return Command(string: contents, range: range)\n" +
             "   ↓}.flatMap { command in\n" +
             "   return command.expand()\n" +
@@ -45,28 +51,28 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
 
     private static let notWhitespace = regex("[^\\s]")
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else {
             return []
         }
 
         let contents = file.contents.bridge()
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let length = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-            let bodyLength = (dictionary["key.bodylength"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let bodyLength = dictionary.bodyLength,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             bodyLength > 0,
             case let endOffset = offset + length - 1,
             contents.substringWithByteRange(start: endOffset, length: 1) == "}",
-            let startOffset = startOffsetFor(dictionary: dictionary, file: file),
+            let startOffset = startOffset(forDictionary: dictionary, file: file),
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
             case let nameEndPosition = nameOffset + nameLength,
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
-            startLine != endLine, bodyOffsetLine != endLine else {
+            startLine != endLine, bodyOffsetLine != endLine,
+            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file:file) else {
                 return []
         }
 
@@ -89,10 +95,9 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     }
 
-    private func startOffsetFor(dictionary: [String: SourceKitRepresentable],
-                                file: File) -> Int? {
-        guard let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }) else {
+    private func startOffset(forDictionary dictionary: [String: SourceKitRepresentable], file: File) -> Int? {
+        guard let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength else {
             return nil
         }
 
@@ -107,5 +112,48 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         }
 
         return methodByteRange.location
+    }
+
+    private func containsSingleLineClosure(dictionary: [String: SourceKitRepresentable],
+                                           endPosition: Int,
+                                           file: File) -> Bool {
+        let contents = file.contents.bridge()
+
+        guard let closure = trailingClosure(dictionary: dictionary, file: file),
+            let start = closure.bodyOffset,
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: start),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: endPosition) else {
+                return false
+        }
+
+        return startLine == endLine
+    }
+
+    private func trailingClosure(dictionary: [String: SourceKitRepresentable],
+                                 file: File) -> [String: SourceKitRepresentable]? {
+        let arguments = dictionary.enclosedArguments
+        let closureArguments = filterClosureArguments(arguments, file: file)
+
+        if closureArguments.count == 1,
+            closureArguments.last?.bridge() == arguments.last?.bridge() {
+            return closureArguments.last
+        }
+
+        return nil
+    }
+
+    private func filterClosureArguments(_ arguments: [[String: SourceKitRepresentable]],
+                                        file: File) -> [[String: SourceKitRepresentable]] {
+        return arguments.filter { argument in
+            guard let offset = argument.bodyOffset,
+                let length = argument.bodyLength,
+                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                match.location == range.location else {
+                    return false
+            }
+
+            return true
+        }
     }
 }

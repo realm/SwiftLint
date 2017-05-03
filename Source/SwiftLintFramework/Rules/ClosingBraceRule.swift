@@ -13,10 +13,7 @@ private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlin
 
 extension File {
     fileprivate func violatingClosingBraceRanges() -> [NSRange] {
-        return matchPattern(
-            "(\\}[ \\t]+\\))",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds()
-        )
+        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
 
@@ -44,7 +41,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return file.violatingClosingBraceRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -52,22 +49,14 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violatingRanges = file.ruleEnabledViolatingRanges(
-            file.violatingClosingBraceRanges(),
-            forRule: self
-        )
-        return writeToFile(file, violatingRanges: violatingRanges)
-    }
-
-    fileprivate func writeToFile(_ file: File, violatingRanges: [NSRange]) -> [Correction] {
+    public func correct(file: File) -> [Correction] {
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingClosingBraceRanges(), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
         for violatingRange in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
-                correctedContents = correctedContents
-                    .replacingCharacters(in: indexRange, with: "})")
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "})")
                 adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }
@@ -76,7 +65,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
 
         return adjustedLocations.map {
             Correction(ruleDescription: type(of: self).description,
-                location: Location(file: file, characterOffset: $0))
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 }

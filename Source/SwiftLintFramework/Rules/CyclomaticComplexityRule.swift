@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 10, error: 20)
+    public var configuration = CyclomaticComplexityConfiguration(warning: 10, error: 20)
 
     public init() {}
 
@@ -38,32 +38,31 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File, kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if !SwiftDeclarationKind.functionKinds().contains(kind) {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
             return []
         }
 
-        let complexity = measureComplexity(file, dictionary: dictionary)
+        let complexity = measureComplexity(in: file, dictionary: dictionary)
 
         for parameter in configuration.params where complexity > parameter.value {
-            let offset = Int(dictionary["key.offset"] as? Int64 ?? 0)
+            let offset = dictionary.offset ?? 0
             return [StyleViolation(ruleDescription: type(of: self).description,
                 severity: parameter.severity,
                 location: Location(file: file, byteOffset: offset),
-                reason: "Function should have complexity \(configuration.warning) or less: " +
+                reason: "Function should have complexity \(configuration.length.warning) or less: " +
                         "currently complexity equals \(complexity)")]
         }
 
         return []
     }
 
-    private func measureComplexity(_ file: File,
-                                   dictionary: [String: SourceKitRepresentable]) -> Int {
+    private func measureComplexity(in file: File, dictionary: [String: SourceKitRepresentable]) -> Int {
         var hasSwitchStatements = false
 
         let complexity = dictionary.substructure.reduce(0) { complexity, subDict in
-            guard let kind = subDict["key.kind"] as? String else {
+            guard let kind = subDict.kind else {
                 return complexity
             }
 
@@ -73,20 +72,20 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
             }
 
             guard let statementKind = StatementKind(rawValue: kind) else {
-                return complexity + measureComplexity(file, dictionary: subDict)
+                return complexity + measureComplexity(in: file, dictionary: subDict)
             }
 
             if statementKind == .switch {
                 hasSwitchStatements = true
             }
-
+            let score = configuration.complexityStatements.contains(statementKind) ? 1 : 0
             return complexity +
-                (complexityStatements.contains(statementKind) ? 1 : 0) +
-                measureComplexity(file, dictionary: subDict)
+                score +
+                measureComplexity(in: file, dictionary: subDict)
         }
 
-        if hasSwitchStatements {
-            return reduceSwitchComplexity(complexity, file: file, dictionary: dictionary)
+        if hasSwitchStatements && !configuration.ignoresCaseStatements {
+            return reduceSwitchComplexity(initialComplexity: complexity, file: file, dictionary: dictionary)
         }
 
         return complexity
@@ -94,10 +93,10 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
     // Switch complexity is reduced by `fallthrough` cases
 
-    private func reduceSwitchComplexity(_ complexity: Int, file: File,
+    private func reduceSwitchComplexity(initialComplexity complexity: Int, file: File,
                                         dictionary: [String: SourceKitRepresentable]) -> Int {
-        let bodyOffset = Int(dictionary["key.bodyoffset"] as? Int64 ?? 0)
-        let bodyLength = Int(dictionary["key.bodylength"] as? Int64 ?? 0)
+        let bodyOffset = dictionary.bodyOffset ?? 0
+        let bodyLength = dictionary.bodyLength ?? 0
 
         let c = file.contents.bridge()
             .substringWithByteRange(start: bodyOffset, length: bodyLength) ?? ""
@@ -105,15 +104,5 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let fallthroughCount = c.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount
     }
-
-    private let complexityStatements: [StatementKind] = [
-        .forEach,
-        .if,
-        .case,
-        .guard,
-        .for,
-        .repeatWhile,
-        .while
-    ]
 
 }

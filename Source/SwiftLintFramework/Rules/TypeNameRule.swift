@@ -18,79 +18,36 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public init() {}
 
-    private static func nonTriggeringExamples() -> [String] {
-        let types = ["class", "struct", "enum"]
-        let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
-            [
-                "\(type) MyType {}",
-                "private \(type) _MyType {}",
-                "enum MyType {\ncase value\n}",
-                "\(type) \(repeatElement("A", count: 40).joined()) {}"
-            ]
-        }
-        let typeAliasAndAssociatedTypeExamples = [
-            "typealias Foo = Void",
-            "private typealias Foo = Void",
-            "protocol Foo {\n associatedtype Bar\n }",
-            "protocol Foo {\n associatedtype Bar: Equatable\n }"
-        ]
-
-        return typeExamples + typeAliasAndAssociatedTypeExamples
-    }
-
-    private static func triggeringExamples() -> [String] {
-        let types = ["class", "struct", "enum"]
-        let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
-            [
-                "↓\(type) myType {}",
-                "↓\(type) _MyType {}",
-                "private ↓\(type) MyType_ {}",
-                "↓\(type) My {}",
-                "↓\(type) \(repeatElement("A", count: 41).joined()) {}"
-            ]
-        }
-        let typeAliasAndAssociatedTypeExamples: [String] = [
-            "typealias ↓X = Void",
-            "private typealias ↓Foo_Bar = Void",
-            "private typealias ↓foo = Void",
-            "typealias ↓\(repeatElement("A", count: 41).joined()) = Void",
-            "protocol Foo {\n associatedtype ↓X\n }",
-            "protocol Foo {\n associatedtype ↓Foo_Bar: Equatable\n }",
-            "protocol Foo {\n associatedtype ↓\(repeatElement("A", count: 41).joined())\n }"
-        ]
-
-        return typeExamples + typeAliasAndAssociatedTypeExamples
-    }
-
     public static let description = RuleDescription(
         identifier: "type_name",
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: TypeNameRule.nonTriggeringExamples(),
-        triggeringExamples: TypeNameRule.triggeringExamples()
+        nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
+        triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        return validateTypeAliasesAndAssociatedTypes(file) +
-            validateFile(file, dictionary: file.structure.dictionary)
+    private let typeKinds = SwiftDeclarationKind.typeKinds()
+
+    public func validate(file: File) -> [StyleViolation] {
+        return validateTypeAliasesAndAssociatedTypes(in: file) +
+            validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard SwiftDeclarationKind.typeKinds().contains(kind),
-            let name = dictionary["key.name"] as? String,
-            let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }) else {
+        guard typeKinds.contains(kind),
+            let name = dictionary.name,
+            let offset = dictionary.offset else {
                 return []
         }
 
-        return validateName(name: name, dictionary: dictionary, file: file, offset: offset)
+        return validate(name: name, dictionary: dictionary, file: file, offset: offset)
     }
 
-    private func validateTypeAliasesAndAssociatedTypes(_ file: File) -> [StyleViolation] {
-        let rangesAndTokens = file.rangesAndTokensMatching("(typealias|associatedtype)\\s+.+?\\b")
+    private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
+        let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
         return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
             guard tokens.count == 2,
                 let keywordToken = tokens.first,
@@ -106,14 +63,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            return validateName(name: name, file: file, offset: nameToken.offset)
+            return validate(name: name, file: file, offset: nameToken.offset)
         }
     }
 
-    private func validateName(name: String,
-                              dictionary: [String: SourceKitRepresentable] = [:],
-                              file: File,
-                              offset: Int) -> [StyleViolation] {
+    private func validate(name: String, dictionary: [String: SourceKitRepresentable] = [:], file: File,
+                          offset: Int) -> [StyleViolation] {
         guard !configuration.excluded.contains(name) else {
             return []
         }

@@ -15,8 +15,9 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
 
     static let description = RuleDescription(identifier: "severity_level_mock",
                                              name: "",
-                                             description: "")
-    func validateFile(_ file: File) -> [StyleViolation] { return [] }
+                                             description: "",
+                                             deprecatedAliases: ["mock"])
+    func validate(file: File) -> [StyleViolation] { return [] }
 }
 
 class RuleTests: XCTestCase {
@@ -26,7 +27,7 @@ class RuleTests: XCTestCase {
         init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
-        func validateFile(_ file: File) -> [StyleViolation] {
+        func validate(file: File) -> [StyleViolation] {
             return []
         }
     }
@@ -36,7 +37,7 @@ class RuleTests: XCTestCase {
         init(configuration: Any) throws { self.init() }
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
-        func validateFile(_ file: File) -> [StyleViolation] {
+        func validate(file: File) -> [StyleViolation] {
             return []
         }
     }
@@ -47,7 +48,7 @@ class RuleTests: XCTestCase {
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",
                                                  description: "")
-        func validateFile(_ file: File) -> [StyleViolation] { return [] }
+        func validate(file: File) -> [StyleViolation] { return [] }
     }
 
     func testRuleIsEqualTo() {

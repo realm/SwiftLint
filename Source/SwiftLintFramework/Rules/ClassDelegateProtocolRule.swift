@@ -25,7 +25,9 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             "class FooDelegate {}\n",
             "@objc protocol FooDelegate {}\n",
             "@objc(MyFooDelegate)\n protocol FooDelegate {}\n",
-            "protocol FooDelegate: BarDelegate {}\n"
+            "protocol FooDelegate: BarDelegate {}\n",
+            "protocol FooDelegate: AnyObject {}\n",
+            "protocol FooDelegate: NSObjectProtocol {}\n"
         ],
         triggeringExamples: [
             "↓protocol FooDelegate {}\n",
@@ -33,21 +35,22 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File,
-                             kind: SwiftDeclarationKind,
-                             dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol"]
+
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .protocol else {
             return []
         }
 
         // Check if name contains "Delegate"
-        guard let name = (dictionary["key.name"] as? String), isDelegateProtocol(name) else {
+        guard let name = dictionary.name, isDelegateProtocol(name) else {
             return []
         }
 
         // Check if @objc
-        let objcAttributes = Set(arrayLiteral: "source.decl.attribute.objc",
-                                 "source.decl.attribute.objc.name")
+        let objcAttributes: Set<String> = ["source.decl.attribute.objc",
+                                           "source.decl.attribute.objc.name"]
         let isObjc = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes).isEmpty
         guard !isObjc else {
             return []
@@ -58,11 +61,16 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        // Check if inherits from a known reference type protocol
+        guard dictionary.inheritedTypes.filter(isReferenceTypeProtocol).isEmpty else {
+            return []
+        }
+
         // Check if : class
-        guard let offset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-            let nameOffset = (dictionary["key.nameoffset"] as? Int64).flatMap({ Int($0) }),
-            let nameLength = (dictionary["key.namelength"] as? Int64).flatMap({ Int($0) }),
-            let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
+        guard let offset = dictionary.offset,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyOffset = dictionary.bodyOffset,
             case let contents = file.contents.bridge(),
             case let start = nameOffset + nameLength,
             let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start),
@@ -78,11 +86,15 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func isClassProtocol(file: File, range: NSRange) -> Bool {
-        return !file.matchPattern("\\bclass\\b", withSyntaxKinds: [.keyword], range: range).isEmpty
+        return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {
         return name.hasSuffix("Delegate")
+    }
+
+    private func isReferenceTypeProtocol(_ name: String) -> Bool {
+        return referenceTypeProtocols.contains(name)
     }
 
 }

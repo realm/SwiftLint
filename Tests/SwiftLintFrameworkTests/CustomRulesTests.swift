@@ -22,14 +22,14 @@ class CustomRulesTests: XCTestCase {
         var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
-        comp.regex = .forcePattern("regex")
+        comp.regex = regex("regex")
         comp.severityConfiguration = SeverityConfiguration(.error)
         comp.matchKinds = Set([SyntaxKind.comment])
         var compRules = CustomRulesConfiguration()
         compRules.customRuleConfigurations = [comp]
         do {
             var configuration = CustomRulesConfiguration()
-            try configuration.applyConfiguration(configDict)
+            try configuration.apply(configuration: configDict)
             XCTAssertEqual(configuration, compRules)
         } catch {
             XCTFail("Did not configure correctly")
@@ -40,7 +40,7 @@ class CustomRulesTests: XCTestCase {
         let config = 17
         var customRulesConfig = CustomRulesConfiguration()
         checkError(ConfigurationError.unknownConfiguration) {
-            try customRulesConfig.applyConfiguration(config)
+            try customRulesConfig.apply(configuration: config)
         }
     }
 
@@ -48,7 +48,7 @@ class CustomRulesTests: XCTestCase {
         let (regexConfig, customRules) = getCustomRules()
 
         let file = File(contents: "// My file with\n// a pattern")
-        XCTAssertEqual(customRules.validateFile(file),
+        XCTAssertEqual(customRules.validate(file: file),
                        [StyleViolation(ruleDescription: regexConfig.description,
                         severity: .warning,
                         location: Location(file: nil, line: 2, character: 6),
@@ -58,13 +58,13 @@ class CustomRulesTests: XCTestCase {
     func testLocalDisableCustomRule() {
         let (_, customRules) = getCustomRules()
         let file = File(contents: "//swiftlint:disable custom \n// file with a pattern")
-        XCTAssertEqual(customRules.validateFile(file), [])
+        XCTAssertEqual(customRules.validate(file: file), [])
     }
 
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
-        let violations = customRules.validateFile(getTestTextFile())
+        let violations = customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 1)
     }
 
@@ -75,7 +75,18 @@ class CustomRulesTests: XCTestCase {
         customRuleConfiguration.customRuleConfigurations = [regexConfig]
         customRules.configuration = customRuleConfiguration
 
-        let violations = customRules.validateFile(getTestTextFile())
+        let violations = customRules.validate(file: getTestTextFile())
+        XCTAssertEqual(violations.count, 0)
+    }
+
+    func testCustomRulesExcludedExcludesFile() {
+        var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let violations = customRules.validate(file: getTestTextFile())
         XCTAssertEqual(violations.count, 0)
     }
 
@@ -86,7 +97,7 @@ class CustomRulesTests: XCTestCase {
 
         var regexConfig = RegexConfiguration(identifier: "custom")
         do {
-            try regexConfig.applyConfiguration(config)
+            try regexConfig.apply(configuration: config)
         } catch {
             XCTFail("Failed regex config")
         }
@@ -118,7 +129,9 @@ extension CustomRulesTests {
             ("testCustomRulesIncludedDefault",
                 testCustomRulesIncludedDefault),
             ("testCustomRulesIncludedExcludesFile",
-                testCustomRulesIncludedExcludesFile)
+                testCustomRulesIncludedExcludesFile),
+            ("testCustomRulesExcludedExcludesFile",
+                testCustomRulesExcludedExcludesFile)
         ]
     }
 }

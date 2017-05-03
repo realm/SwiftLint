@@ -15,6 +15,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
+    public var excluded: NSRegularExpression?
     public var matchKinds = Set(SyntaxKind.allKinds())
     public var severityConfiguration = SeverityConfiguration(.warning)
 
@@ -34,7 +35,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         self.identifier = identifier
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any],
             let regexString = configurationDict["regex"] as? String else {
                 throw ConfigurationError.unknownConfiguration
@@ -44,6 +45,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
         if let includedString = configurationDict["included"] as? String {
             included = try .cached(pattern: includedString)
+        }
+
+        if let excludedString = configurationDict["excluded"] as? String {
+            excluded = try .cached(pattern: excludedString)
         }
 
         if let name = configurationDict["name"] as? String {
@@ -56,7 +61,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             self.matchKinds = Set(try matchKinds.map({ try SyntaxKind(shortName: $0) }))
         }
         if let severityString = configurationDict["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }
@@ -66,6 +71,7 @@ public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&
            lhs.included?.pattern == rhs.included?.pattern &&
+           lhs.excluded?.pattern == rhs.excluded?.pattern &&
            lhs.matchKinds == rhs.matchKinds &&
            lhs.severity == rhs.severity
 }

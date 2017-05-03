@@ -31,7 +31,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 "navigationBarHidden, animated: true)",
             "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
                 "self.searchBar?.text?.isEmpty == false) {}",
-            "print(\"\\(xVar)!\")"
+            "print(\"\\(xVar)!\")",
+            "var test = (!bar)"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -43,8 +44,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        return violationRangesInFile(file).map {
+    public func validate(file: File) -> [StyleViolation] {
+        return violationRanges(in: file).map {
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location))
@@ -53,19 +54,17 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // capture previous and next of "!"
     // http://userguide.icu-project.org/strings/regexp
-    fileprivate static let pattern = "(\\S)(!)(.?)"
+    private static let pattern = "([^\\s\\p{Ps}])(!)(.?)"
 
-    // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern,
-        options: [.dotMatchesLineSeparators])
-    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind
+    private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind
         .commentKeywordStringAndTypeidentifierKinds().map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind
         .commentAndStringKinds().map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
+    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
 
     // swiftlint:disable:next function_body_length
-    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
+    private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: contents.utf16.count)
@@ -86,8 +85,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
-                let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
-                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
+                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
+                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
 
                 // check first captured range
                 // If not empty, first captured range is comment, string, keyword or typeidentifier.
@@ -120,7 +119,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                         else { return nil }
 
-                    let tokensInThirdRange = syntaxMap.tokensIn(matchByteThirdRange).filter {
+                    let tokensInThirdRange = syntaxMap.tokens(inByteRange: matchByteThirdRange).filter {
                         ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains($0.type)
                     }
                     // If not empty, third captured range is identifier.
@@ -129,7 +128,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 }
 
                 // check structure
-                if checkStructure(file, byteRange: matchByteFirstRange) {
+                if checkStructure(in: file, byteRange: matchByteFirstRange) {
                     return violationRange
                 } else {
                     return nil
@@ -139,9 +138,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     // Returns if range should generate violation
     // check deepest kind matching range in structure
-    fileprivate func checkStructure(_ file: File, byteRange: NSRange) -> Bool {
+    private func checkStructure(in file: File, byteRange: NSRange) -> Bool {
         let nsstring = file.contents.bridge()
-        let kinds = file.structure.kindsFor(byteRange.location)
+        let kinds = file.structure.kinds(forByteOffset: byteRange.location)
         if let lastKind = kinds.last {
             switch lastKind.kind {
             // range is in some "source.lang.swift.decl.var.*"

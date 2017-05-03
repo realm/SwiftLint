@@ -43,17 +43,17 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validateFile(_ file: File) -> [StyleViolation] {
-        return violationRangesInFile(file).map {
+    public func validate(file: File) -> [StyleViolation] {
+        return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    public func correctFile(_ file: File) -> [Correction] {
-        let violations = violationRangesInFile(file)
-        let matches = file.ruleEnabledViolatingRanges(violations, forRule: self)
+    public func correct(file: File) -> [Correction] {
+        let violations = violationRanges(in: file)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
         if matches.isEmpty { return [] }
 
         var contents = file.contents.bridge()
@@ -71,7 +71,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
     // captures spaces and comma only
     // http://userguide.icu-project.org/strings/regexp
 
-    fileprivate static let mainPatternGroups =
+    private static let mainPatternGroups =
         "(" +                  // start first capure
         "\\s+" +               // followed by whitespace
         "," +                  // to the left of a comma
@@ -83,20 +83,18 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         ")" +                  // end capture
         "(\\S)"                // second capture is not whitespace.
 
-    fileprivate static let pattern =
+    private static let pattern =
         "\\S\(mainPatternGroups)" + // Regexp will match if expression not begin with comma
         "|" +                       // or
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
-    // swiftlint:disable:next force_try
-    fileprivate static let regularExpression = try! NSRegularExpression(pattern: pattern,
-                                                                        options: [])
-    fileprivate static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
+    private static let regularExpression = regex(pattern, options: [])
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
         .map { $0.rawValue }
-    fileprivate static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
         .map { $0.rawValue }
 
-    fileprivate func violationRangesInFile(_ file: File) -> [NSRange] {
+    private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let range = NSRange(location: 0, length: contents.utf16.count)
         let syntaxMap = file.syntaxMap
@@ -117,7 +115,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // first captured range won't match tokens if it is not comment neither string
-                let tokensInFirstRange = syntaxMap.tokensIn(matchByteFirstRange)
+                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
                     .filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
 
                 // If not empty, first captured range is comment or string
@@ -138,7 +136,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                     else { return nil }
 
                 // second captured range won't match tokens if it is not comment
-                let tokensInSecondRange = syntaxMap.tokensIn(matchByteSecondRange)
+                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
                     .filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
 
                 // If not empty, second captured range is comment

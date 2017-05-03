@@ -36,16 +36,16 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         self.excluded = Set(excluded)
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configurationDict = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
 
         if let minLengthConfiguration = configurationDict["min_length"] {
-            try minLength.applyConfiguration(minLengthConfiguration)
+            try minLength.apply(configuration: minLengthConfiguration)
         }
         if let maxLengthConfiguration = configurationDict["max_length"] {
-            try maxLength.applyConfiguration(maxLengthConfiguration)
+            try maxLength.apply(configuration: maxLengthConfiguration)
         }
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)

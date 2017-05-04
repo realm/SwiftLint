@@ -145,7 +145,11 @@ def generate_reports(branch)
 end
 
 def build(branch)
-  `git fetch && git checkout origin/master` if branch == 'master'
+  if branch == 'master'
+    `git checkout master`
+  else
+    `git merge master || git reset --hard`
+  end
 
   build_command = 'swift build -c release'
 

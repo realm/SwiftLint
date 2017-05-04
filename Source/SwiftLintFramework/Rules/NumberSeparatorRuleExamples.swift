@@ -29,15 +29,11 @@ internal struct NumberSeparatorRuleExamples {
         }
     }()
 
-    static let swift3TriggeringExamples = triggeringExamples(signs: ["↓-", "+↓", "↓"])
+    static let triggeringExamples = makeTriggeringExamples(signs: ["↓-", "+↓", "↓"])
 
-    static let swift2TriggeringExamples = triggeringExamples(signs: ["-↓", "+↓", "↓"])
+    static let corrections = makeCorrections(signs: [("↓-", "-"), ("+↓", "+"), ("↓", "")])
 
-    static let swift3Corrections = corrections(signs: [("↓-", "-"), ("+↓", "+"), ("↓", "")])
-
-    static let swift2Corrections = corrections(signs: [("-↓", "-"), ("+↓", "+"), ("↓", "")])
-
-    private static func triggeringExamples(signs: [String]) -> [String] {
+    private static func makeTriggeringExamples(signs: [String]) -> [String] {
         return signs.flatMap { (sign: String) -> [String] in
             [
                 "let foo = \(sign)10_0",
@@ -52,7 +48,7 @@ internal struct NumberSeparatorRuleExamples {
         }
     }
 
-    private static func corrections(signs: [(String, String)]) -> [String: String] {
+    private static func makeCorrections(signs: [(String, String)]) -> [String: String] {
         var result = [String: String]()
 
         for (violation, sign) in signs {

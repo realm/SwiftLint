@@ -52,16 +52,6 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
     }
 
     private func containsType(dictionary: [String: SourceKitRepresentable]) -> Bool {
-        if let typeName = dictionary.typeName {
-            switch SwiftVersion.current {
-            // on Swift 2.x, `key.typename` returns the `key.name` if there's no explicit type
-            case .two, .twoPointThree:
-                return typeName != dictionary.name
-            case .three:
-                return true
-            }
-        }
-
-        return false
+        return dictionary.typeName != nil
     }
 }

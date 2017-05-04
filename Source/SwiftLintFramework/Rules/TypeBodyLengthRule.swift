@@ -59,7 +59,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
                         return [StyleViolation(ruleDescription: type(of: self).description,
                             severity: parameter.severity,
                             location: Location(file: file, byteOffset: offset),
-                            reason: "Type body should span \(parameter.value) lines or less " +
+                            reason: "Type body should span \(configuration.warning) lines or less " +
                                 "excluding comments and whitespace: currently spans \(lineCount) " +
                                 "lines")]
                     }

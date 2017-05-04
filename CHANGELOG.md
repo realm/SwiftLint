@@ -21,9 +21,13 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-
+  
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
+  
+* Add opt-in option to `unused_optional_binding` rule to ignore `try?` in `guard` statements  
+  [Sega-Zero](https://github.com/Sega-Zero)
+  [#1432](https://github.com/realm/SwiftLint/issues/1432)
 
 * Improve violation reason wording in `function_body_length`,
   `large_type`, and `type_body_length` rules.  

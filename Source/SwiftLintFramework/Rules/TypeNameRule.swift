@@ -23,19 +23,11 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: TypeNameRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: TypeNameRuleExamples.swift3TriggeringExamples
+        nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
+        triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    private let typeKinds: [SwiftDeclarationKind] = {
-        let common = SwiftDeclarationKind.typeKinds()
-        switch SwiftVersion.current {
-        case .two, .twoPointThree:
-            return common + [.enumelement]
-        case .three:
-            return common
-        }
-    }()
+    private let typeKinds = SwiftDeclarationKind.typeKinds()
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +

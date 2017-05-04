@@ -76,6 +76,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
+    func testExplicitTopLevelACLRule() {
+        verifyRule(ExplicitTopLevelACLRule.description)
+    }
+
     func testExplicitTypeInterfaceRule() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
@@ -131,6 +135,10 @@ class RulesTests: XCTestCase {
 
     func testImplicitlyUnwrappedOptional() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    }
+
+    func testImplicitReturn() {
+        verifyRule(ImplicitReturnRule.description)
     }
 
     func testLargeTuple() {
@@ -378,6 +386,7 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
+            ("testExplicitTopLevelACLRule", testExplicitTopLevelACLRule),
             ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
             ("testFatalErrorMessageRule", testFatalErrorMessageRule),
             ("testFileLength", testFileLength),
@@ -392,6 +401,7 @@ extension RulesTests {
             ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
+            ("testImplicitReturn", testImplicitReturn),
             ("testLargeTuple", testLargeTuple),
             ("testLeadingWhitespace", testLeadingWhitespace),
             ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),

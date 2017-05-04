@@ -27,17 +27,17 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
             "let foo: (ConfigurationTests) ->Void throws -> Void)\n"
         ],
         triggeringExamples: [
-            "let abc: ↓Void -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n"
+            "let abc: ↓(Void) -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n",
+            "let foo: ↓(Void) -> () throws -> Void)\n"
         ],
         corrections: [
-            "let abc: ↓Void -> Void = {}\n": "let abc: () -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n": "func foo(completion: () -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n":
+            "let abc: ↓(Void) -> Void = {}\n": "let abc: () -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n": "func foo(completion: () -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n":
                 "func foo(completion: () throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
+            "let foo: ↓(Void) -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
         ]
     )
 
@@ -50,7 +50,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let voidPattern = "Void"
+        let voidPattern = "\\(Void\\)"
         let pattern = voidPattern + "\\s*(throws\\s+)?->"
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
 

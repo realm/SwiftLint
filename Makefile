@@ -7,11 +7,6 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFT_2_XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
-	-scheme 'swiftlint with Swift 2.3' \
-	DSTROOT=$(TEMPORARY_FOLDER) \
-	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
-
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework
 SWIFTLINT_EXECUTABLE=$(BUILT_BUNDLE)/Contents/MacOS/swiftlint
@@ -42,7 +37,6 @@ bootstrap:
 	script/bootstrap
 
 test: clean bootstrap
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) test
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 clean:
@@ -51,9 +45,6 @@ clean:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Debug clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Release clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Test clean
 
 install: uninstall package
 	sudo installer -pkg SwiftLint.pkg -target /

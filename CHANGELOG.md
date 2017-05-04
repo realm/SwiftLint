@@ -2,7 +2,14 @@
 
 ##### Breaking
 
-* None.
+* Remove support for Swift 2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+
+* Remove `missing_docs` and `valid_docs` rules since 
+  they were already disabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
 ##### Enhancements
 
@@ -18,6 +25,22 @@
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
+* Improve violation reason wording in `function_body_length`,
+  `large_type`, and `type_body_length` rules.  
+  [ultimatedbz](https://github.com/ultimatedbz)
+
+* Add `explicit_top_level_acl` opt-in rule that validates that all top
+  level declarations should explicitly be marked with an Access  Control
+  Level (`private`, `fileprivate`, `internal`, `public` or `open`).  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#58](https://github.com/realm/SwiftLint/issues/58)
+
+* Add `implicit_return` opt-in rule that warns agains using the `return`
+  keyword when it can be omitted inside closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1194](https://github.com/realm/SwiftLint/issues/1194)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -28,6 +51,17 @@
   [sammy-SC](https://github.com/sammy-SC)
   [#1254](https://github.com/realm/SwiftLint/issues/1254)
 
+* Fix typo in `DiscardedNotificationCenterObserverRule`.  
+  [Spencer Kaiser](https://github.com/spencerkaiser)
+
+* Fix `empty_parameters` rule with Swift 3.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1460](https://github.com/realm/SwiftLint/issues/1460)
+
+* Prevent triggering `redundant_optional_initialization` rule
+  on a `lazy var` since it needs initialization.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1334](https://github.com/realm/SwiftLint/issues/1334)
 
 ## 0.18.1: Misaligned Drum
 
@@ -118,7 +152,7 @@
   implicitly unwrapped optionals, except cases when this IUO is an IBOutlet.  
   [Siarhei Fedartsou](https://github.com/SiarheiFedartsou)
   [#56](https://github.com/realm/SwiftLint/issues/56)
- 
+
 * Performance improvements to `generic_type_name`,
   `redundant_nil_coalescing`, `mark`, `first_where` and
   `vertical_whitespace` rules.  

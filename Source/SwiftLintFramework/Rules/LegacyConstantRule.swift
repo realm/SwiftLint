@@ -15,43 +15,20 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     public init() {}
 
-    public static let description: RuleDescription = {
-        let nonTriggeringExamples: [String]
-        let triggeringExampes: [String]
-        let corrections: [String: String]
-        switch SwiftVersion.current {
-        case .two, .twoPointThree:
-            nonTriggeringExamples = LegacyConstantRuleExamples.swift2NonTriggeringExamples
-            triggeringExampes = LegacyConstantRuleExamples.swift2TriggeringExamples
-            corrections = LegacyConstantRuleExamples.swift2Corrections
-        case .three:
-            nonTriggeringExamples = LegacyConstantRuleExamples.swift3NonTriggeringExamples
-            triggeringExampes = LegacyConstantRuleExamples.swift3TriggeringExamples
-            corrections = LegacyConstantRuleExamples.swift3Corrections
-        }
-
-        return RuleDescription(
-            identifier: "legacy_constant",
-            name: "Legacy Constant",
-            description: "Struct-scoped constants are preferred over legacy global constants.",
-            nonTriggeringExamples: nonTriggeringExamples,
-            triggeringExamples: triggeringExampes,
-            corrections: corrections
-        )
-    }()
+    public static let description = RuleDescription(
+        identifier: "legacy_constant",
+        name: "Legacy Constant",
+        description: "Struct-scoped constants are preferred over legacy global constants.",
+        nonTriggeringExamples: LegacyConstantRuleExamples.nonTriggeringExamples,
+        triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
+        corrections: LegacyConstantRuleExamples.corrections
+    )
 
     private static let legacyConstants: [String] = {
         return Array(LegacyConstantRule.legacyPatterns.keys)
     }()
 
-    private static let legacyPatterns: [String: String] = {
-        switch SwiftVersion.current {
-        case .two, .twoPointThree:
-            return LegacyConstantRuleExamples.swift2Patterns
-        case .three:
-            return LegacyConstantRuleExamples.swift3Patterns
-        }
-    }()
+    private static let legacyPatterns = LegacyConstantRuleExamples.patterns
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\b" + LegacyConstantRule.legacyConstants.joined(separator: "|")

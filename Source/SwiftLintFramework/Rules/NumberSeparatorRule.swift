@@ -19,8 +19,8 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
-        triggeringExamples: NumberSeparatorRuleExamples.swift3TriggeringExamples,
-        corrections: NumberSeparatorRuleExamples.swift3Corrections
+        triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
+        corrections: NumberSeparatorRuleExamples.corrections
     )
 
     public func validate(file: File) -> [StyleViolation] {

@@ -59,6 +59,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1334](https://github.com/realm/SwiftLint/issues/1334)
 
+* Fix `ignores_case_statements` key in `cyclomatic_complexity` description.  
+  [Jeff Blagdon](https://github.com/jefflovejapan)
+  [#1434](https://github.com/realm/SwiftLint/issues/1434)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

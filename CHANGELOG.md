@@ -43,6 +43,8 @@
 
 ##### Bug Fixes
 
+* Fix `ignores_case_statements` typo in doc string for `cyclomatic_complexity`  [Jeff Blagdon](https://github.com/jefflovejapan)
+
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
   [norio-nomura](https://github.com/norio-nomura)
   [#1429](https://github.com/realm/SwiftLint/issues/1429)

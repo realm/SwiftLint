@@ -169,12 +169,6 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testMissingDocs() {
-//        verifyRule(MissingDocsRule.description)
-//    }
-
     func testNesting() {
         verifyRule(NestingRule.description)
     }
@@ -336,16 +330,6 @@ class RulesTests: XCTestCase {
         verifyRule(UnusedEnumeratedRule.description)
     }
 
-    func testUnusedOptionalBinding() {
-        verifyRule(UnusedOptionalBindingRule.description)
-    }
-
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testValidDocs() {
-//        verifyRule(ValidDocsRule.description)
-//    }
-
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
     }
@@ -438,7 +422,6 @@ extension RulesTests {
             ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
             ("testValidIBInspectable", testValidIBInspectable),
             ("testVerticalParameterAlignment", testVerticalParameterAlignment),
             ("testVoidReturn", testVoidReturn),

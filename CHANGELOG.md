@@ -45,6 +45,10 @@
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
+  
+* Improve documentation for using a specific `.swiftlint.yml` config file 
+  with cocoapods.  
+  [Andrew Erickson](https://github.com/aerickson14)
 
 ##### Bug Fixes
 

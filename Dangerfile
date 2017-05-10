@@ -60,4 +60,6 @@ if has_app_changes || has_danger_changes
       fail parse_line(line)
     end
   end
+
+  warn "Testing"
 end

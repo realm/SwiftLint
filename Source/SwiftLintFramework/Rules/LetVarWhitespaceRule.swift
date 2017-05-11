@@ -45,7 +45,7 @@ public struct LetVarWhitespaceRule: OptInRule {
                   !commentLines.contains(index) else {
                 continue
             }
-            
+
             let trimmed = line.content.trimmingCharacters(in: .whitespaces)
             guard !trimmed.isEmpty else {
                 continue
@@ -54,14 +54,14 @@ public struct LetVarWhitespaceRule: OptInRule {
             // Precedes var/let and has text not ending with {
             if linePrecedesVar(index, varLines, commentLines) {
                 if !trimmed.hasSuffix("{") &&
-                   !file.lines[index+1].content.trimmingCharacters(in: .whitespaces).hasPrefix("}") {
-                    violated(&violations, file, index+1)
+                   !file.lines[index + 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("}") {
+                    violated(&violations, file, index + 1)
                 }
             }
             // Follows var/let and has text not starting with }
             if lineFollowsVar(index, varLines, commentLines) {
                 if !trimmed.hasPrefix("}") &&
-                   !file.lines[index-1].content.trimmingCharacters(in: .whitespaces).hasSuffix("{") {
+                   !file.lines[index - 1].content.trimmingCharacters(in: .whitespaces).hasSuffix("{") {
                     violated(&violations, file, index)
                 }
             }
@@ -132,7 +132,7 @@ public struct LetVarWhitespaceRule: OptInRule {
                    let bodyLength = statement.bodyLength {
                     let bodyStart = file.line(for: bodyOffset, startFrom: startLine) + 1
                     let bodyEnd = file.line(for: bodyOffset + bodyLength, startFrom: bodyStart) - 1
-                    
+
                     if bodyStart <= bodyEnd {
                         lines.subtract(Set(bodyStart...bodyEnd))
                     }
@@ -141,9 +141,9 @@ public struct LetVarWhitespaceRule: OptInRule {
             default:
                 break
             }
-            
+
             let substructure = statement.substructure
-            
+
             if !substructure.isEmpty {
                 result.formUnion(varLetLineNumbers(file: file, structure: substructure))
             }

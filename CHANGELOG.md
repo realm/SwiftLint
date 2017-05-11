@@ -95,6 +95,7 @@
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
+
 * Whitespace around let/var groups.  
   [Uncommon](https://github.com/Uncommon)
   [#1471](https://github.com/realm/SwiftLint/issues/1471)

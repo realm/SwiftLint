@@ -68,6 +68,10 @@
   [Jeff Blagdon](https://github.com/jefflovejapan)
   [#1434](https://github.com/realm/SwiftLint/issues/1434)
 
+* Add `inline_comment` rule that validates inline comments.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1310](https://github.com/realm/SwiftLint/issues/1310)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

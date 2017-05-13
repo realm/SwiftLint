@@ -15,6 +15,7 @@ private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
+private let endOfLine = "[\\{\\}\\)\\?\\S]"
 
 public struct InlineCommentRule: ConfigurationProviderRule {
 
@@ -27,19 +28,19 @@ public struct InlineCommentRule: ConfigurationProviderRule {
         name: "InlineComment",
         description: "Inline comments should be in valid format.",
         nonTriggeringExamples: [
-            "var foo: Bool?  // Good"
+            "func foo() {  // Good\n}"
         ],
         triggeringExamples: [
-        "↓var foo1: Date?  //Wrong",
-        "↓var foo2: Date?  //  Wrong",
-        "↓var foo3: Date? // Wrong",
-        "↓var foo4: Date?// Wrong",
-        "↓var foo5: Date?   // Wrong"
+        "func foo() ↓{  //Wrong\n}",
+        "func foo() ↓{  //  Wrong\n}",
+        "func foo() ↓{ // Wrong\n}",
+        "func foo() ↓{// Wrong\n}",
+        "func foo() ↓{   // Wrong\n}"
         ]
     )
 
-    private let inlineStartPattern = "(?:\\S(?:\(nonOrOneSpace)|\(threeOrMoreSpace))\(comment))"
-    private let inlineEndPattern = "(?:\\S\(twoSpace)\(comment)(:?\(nonSpace)|\(twoOrMoreSpace)))"
+    private let inlineStartPattern = "(?:\(endOfLine)(?:\(nonOrOneSpace)|\(threeOrMoreSpace))\(comment))"
+    private let inlineEndPattern = "(?:\(endOfLine)\(twoSpace)\(comment)(:?\(nonSpace)|\(twoOrMoreSpace)))"
 
     private var pattern: String {
         return [

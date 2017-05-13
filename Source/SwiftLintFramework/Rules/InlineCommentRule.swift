@@ -15,7 +15,7 @@ private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
-private let endOfLine = "[\\{\\}\\)\\?]"
+private let endOfLine = "[\\{\\}\\)\\?][^\\n]"
 
 public struct InlineCommentRule: ConfigurationProviderRule {
 

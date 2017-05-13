@@ -110,6 +110,7 @@ public let masterRuleList = RuleList(rules:
     ImplicitGetterRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
     ImplicitReturnRule.self,
+    InlineCommentRule.self,
     LargeTupleRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,

@@ -38,8 +38,6 @@
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>
@@ -59,7 +57,8 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
+      useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "/Users/kimdevos/Desktop/lint"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "NO"
       debugXPCServices = "NO"

@@ -626,6 +626,9 @@
 * Fix some overlapping `// swiftlint` commands not being applied.  
   [JP Simard](https://github.com/jpsim)
   [#1388](https://github.com/realm/SwiftLint/issues/1388)
+* Add `inline_comment` rule that validates inline comments.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1310](https://github.com/realm/SwiftLint/issues/1310)
 
 ## 0.18.1: Misaligned Drum
 

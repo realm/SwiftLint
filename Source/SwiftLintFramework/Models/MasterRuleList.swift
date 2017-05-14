@@ -131,6 +131,7 @@ public let masterRuleList = RuleList(rules:
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
+    ProtocolPropertyAccessorsOrderRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,

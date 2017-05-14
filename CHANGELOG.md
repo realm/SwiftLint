@@ -62,6 +62,12 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
+* Add `protocol_property_accessors_order` correctable rule that validates
+  that the order of accessors is `get set` when declaring variables
+  in protocols.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1504](https://github.com/realm/SwiftLint/issues/1504)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

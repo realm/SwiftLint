@@ -90,6 +90,7 @@ public let masterRuleList = RuleList(rules:
     DiscardedNotificationCenterObserverRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
+    EmptyEnumArgumentsRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,

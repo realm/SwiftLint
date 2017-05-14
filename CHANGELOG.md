@@ -36,7 +36,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#58](https://github.com/realm/SwiftLint/issues/58)
 
-* Add `implicit_return` opt-in rule that warns agains using the `return`
+* Add `implicit_return` opt-in rule that warns against using the `return`
   keyword when it can be omitted inside closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1194](https://github.com/realm/SwiftLint/issues/1194)
@@ -45,6 +45,11 @@
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
+
+* Add `empty_enum_arguments` correctable rule that warns against using
+  silent associated values inside a `case`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1425](https://github.com/realm/SwiftLint/issues/1425)
 
 ##### Bug Fixes
 

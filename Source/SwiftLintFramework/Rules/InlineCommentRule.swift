@@ -17,7 +17,7 @@ private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
 private let endOfLine = "[\\{\\}\\)\\?][^\\n]"
 
-public struct InlineCommentRule: ConfigurationProviderRule {
+public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

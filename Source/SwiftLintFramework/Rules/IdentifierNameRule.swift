@@ -47,7 +47,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
             let type = self.type(for: kind)
             if !isFunction {
-                if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+                let containsAllowedSymbol = configuration.allowedSymbols.first(where: { name.contains($0) }) != nil
+                if !containsAllowedSymbol &&
+                    !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
@@ -70,7 +72,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
-            if kind != .varStatic && name.isViolatingCase && !name.isOperator {
+            let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
+            if requiresCaseCheck &&
+                kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"
                 return [
                     StyleViolation(ruleDescription: description,

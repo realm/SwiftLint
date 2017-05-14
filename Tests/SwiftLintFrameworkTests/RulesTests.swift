@@ -125,14 +125,6 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testGenericTypeName() {
-        verifyRule(GenericTypeNameRule.description)
-    }
-
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
-    }
-
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
@@ -322,10 +314,6 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
-    }
-
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -386,8 +374,6 @@ extension RulesTests {
             ("testForWhere", testForWhere),
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
-            ("testGenericTypeName", testGenericTypeName),
-            ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testImplicitReturn", testImplicitReturn),
@@ -424,7 +410,6 @@ extension RulesTests {
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),

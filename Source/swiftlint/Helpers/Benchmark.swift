@@ -32,18 +32,19 @@ struct Benchmark {
     }
 
     func save() {
-        let string = entries
-            .reduce([String: Double]()) { accu, idAndTime in
-                var accu = accu
-                accu[idAndTime.id] = (accu[idAndTime.id] ?? 0) + idAndTime.time
-                return accu
-            }
-            .sorted { $0.1 < $1.1 }
-            .map { "\(numberFormatter.string(from: NSNumber(value: $0.1))!): \($0.0)" }
-            .joined(separator: "\n")
-        let data = (string + "\n").data(using: .utf8)
+        // Decomposed to improve compile times
+        let entriesDict: [String: Double] = entries.reduce([String: Double]()) { accu, idAndTime in
+            var accu = accu
+            accu[idAndTime.id] = (accu[idAndTime.id] ?? 0) + idAndTime.time
+            return accu
+        }
+        let entriesKeyValues: [(String, Double)] = entriesDict.sorted { $0.1 < $1.1 }
+        let lines: [String] = entriesKeyValues.map { id, time -> String in
+            return "\(numberFormatter.string(from: NSNumber(value: time))!): \(id)"
+        }
+        let string: String = lines.joined(separator: "\n") + "\n"
         let url = URL(fileURLWithPath: "benchmark_\(name)_\(timestamp).txt")
-        try? data?.write(to: url, options: [.atomic])
+        try? string.data(using: .utf8)?.write(to: url, options: [.atomic])
     }
 }
 

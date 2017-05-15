@@ -101,7 +101,7 @@ docker_test_302:
 
 # http://irace.me/swift-profiling/
 display_compilation_time:
-	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build test | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
+	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build-for-testing | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
 
 swift_snapshot_install:
 	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg

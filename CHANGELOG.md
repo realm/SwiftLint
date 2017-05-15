@@ -57,6 +57,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1425](https://github.com/realm/SwiftLint/issues/1425)
 
+* Remove `file.zip` from the `Pods` directory when installing SwiftLint via
+  CocoaPods.  
+  [Hesham Salman](https://github.com/heshamsalman)
+  [#1507](https://github.com/realm/SwiftLint/issues/1507)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

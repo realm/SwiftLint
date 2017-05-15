@@ -52,23 +52,21 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
     private func violationRanges(in file: File, kind: StatementKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        let patternKind = "source.lang.swift.structure.elem.pattern"
         guard kind == .case else {
             return []
         }
 
-        let elements = dictionary.elements.filter { $0.kind == patternKind }
         let contents = file.contents.bridge()
-        let pattern = "\\([,\\s_]*\\)"
 
-        return elements.flatMap { subDictionary -> [NSRange] in
-            guard let offset = subDictionary.offset,
+        return dictionary.elements.flatMap { subDictionary -> [NSRange] in
+            guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
+                let offset = subDictionary.offset,
                 let length = subDictionary.length,
                 let caseRange = contents.byteRangeToNSRange(start: offset, length: length) else {
                     return []
             }
 
-            return file.match(pattern: pattern, range: caseRange).flatMap { range, kinds in
+            return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { range, kinds in
                 guard Set(kinds).isSubset(of: [.keyword]) else {
                     return nil
                 }

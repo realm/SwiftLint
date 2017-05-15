@@ -94,14 +94,14 @@ archive:
 release: package archive portable_zip
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --rm norionomura/sourcekit:31 swift test
+	docker run -v `pwd`:`pwd` -w `pwd` --rm norionomura/sourcekit:311 swift test
 
 docker_test_302:
 	docker run -v `pwd`:`pwd` -w `pwd` --rm norionomura/sourcekit:302 swift test
 
 # http://irace.me/swift-profiling/
 display_compilation_time:
-	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build test | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
+	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build-for-testing | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
 
 swift_snapshot_install:
 	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg

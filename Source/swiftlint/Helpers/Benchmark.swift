@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 struct BenchmarkEntry {
-    let id: String // swiftlint:disable:this identifier_name
+    let id: String
     let time: Double
 }
 
@@ -22,7 +22,6 @@ struct Benchmark {
         self.name = name
     }
 
-    // swiftlint:disable:next identifier_name
     mutating func record(id: String, time: Double) {
         entries.append(BenchmarkEntry(id: id, time: time))
     }

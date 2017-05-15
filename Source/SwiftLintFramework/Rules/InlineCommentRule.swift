@@ -10,12 +10,13 @@ import Foundation
 import SourceKittenFramework
 
 private let nonSpace = "[^\\s]"
+private let nonNewLine = "[^\\n]"
 private let nonOrOneSpace = "\\s{0,1}"
 private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
-private let endOfLine = "[\\{\\}\\)\\?][^\\n]"
+private let endOfStatement = "[\\{\\}\\?]"
 
 public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 
@@ -28,19 +29,22 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
         name: "InlineComment",
         description: "Inline comments should be in valid format.",
         nonTriggeringExamples: [
-            "func foo() {  // Good\n}"
+            "// Good\nfunc foo() {\n}",
+            "func foo() {  // Good\n}",
+            "class Foo {var foo: Date?  // Good\n}"
         ],
         triggeringExamples: [
         "func foo() ↓{  //Wrong\n}",
         "func foo() ↓{  //  Wrong\n}",
         "func foo() ↓{ // Wrong\n}",
         "func foo() ↓{// Wrong\n}",
-        "func foo() ↓{   // Wrong\n}"
+        "func foo() ↓{   // Wrong\n}",
+        "class Foo {\nvar foo: Date↓? // Wrong\n}"
         ]
     )
 
-    private let inlineStartPattern = "(?:\(endOfLine)(?:\(nonOrOneSpace)|\(threeOrMoreSpace))\(comment))"
-    private let inlineEndPattern = "(?:\(endOfLine)\(twoSpace)\(comment)(:?\(nonSpace)|\(twoOrMoreSpace)))"
+    private let inlineStartPattern = "(?:\(endOfStatement)(?:\(nonOrOneSpace)|\(threeOrMoreSpace))\(comment))"
+    private let inlineEndPattern = "(?:\(endOfStatement)\(twoSpace)\(comment)(:?\(nonSpace)|\(twoOrMoreSpace)))"
 
     private var pattern: String {
         return [

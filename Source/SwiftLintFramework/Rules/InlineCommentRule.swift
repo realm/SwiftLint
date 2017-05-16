@@ -16,7 +16,7 @@ private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
-private let endOfStatement = "[\\{\\}\\?]"
+private let endOfStatement = "[{}?(),]+"
 
 public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 
@@ -31,7 +31,9 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
         nonTriggeringExamples: [
             "// Good\nfunc foo() {\n}",
             "func foo() {  // Good\n}",
-            "class Foo {var foo: Date?  // Good\n}"
+            "class Foo {var foo = Date()  // Good\n}",
+            "class Foo {var foo: Date?  // Good\n}",
+            "class Foo {var foo = [1,  // Good\n2]\n}"
         ],
         triggeringExamples: [
         "func foo() ↓{  //Wrong\n}",
@@ -39,7 +41,9 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
         "func foo() ↓{ // Wrong\n}",
         "func foo() ↓{// Wrong\n}",
         "func foo() ↓{   // Wrong\n}",
-        "class Foo {\nvar foo: Date↓? // Wrong\n}"
+        "class Foo {\nvar foo: Date↓? // Wrong\n}",
+        "class Foo {var foo = Date↓() // Wrong\n}",
+        "class Foo {var foo = [1↓,  //Wrong\n2]\n}"
         ]
     )
 

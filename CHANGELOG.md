@@ -15,15 +15,11 @@
   `LintableFileManager` protocol.  
   [Victor Pimentel](https://github.com/victorpimentel)
 
-* Replace `configurationHash` parameters in all `LinterCache` initializers
-  with `configurationDescription` parameters.  
+* Several breaking changes to `LinterCache`.  
   [Victor Pimentel](https://github.com/victorpimentel)
+  [JP Simard](https://github.com/jpsim)
 
-* Remove `fileHash` parameter from `LinterCache.cache(violations:forFile:)`
-  and `LinterCache.violations(forFile:)` functions.  
-  [Victor Pimentel](https://github.com/victorpimentel)
-
-* Remove `hash` attribute from `Configuration` struct.  
+* Remove `Configuration.hash` property.  
   [Victor Pimentel](https://github.com/victorpimentel)
 
 * Rename `ConditionalReturnsOnNewline` struct to
@@ -34,6 +30,7 @@
 
 * Cache linter results for files unmodified since the previous linter run.  
   [Victor Pimentel](https://github.com/victorpimentel)
+  [JP Simard](https://github.com/jpsim)
   [#1184](https://github.com/realm/SwiftLint/issues/1184)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and

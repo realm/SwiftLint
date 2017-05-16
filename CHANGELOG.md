@@ -11,6 +11,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
+* Rename `ConditionalReturnsOnNewline` struct to
+  `ConditionalReturnsOnNewlineRule` to match rule naming conventions.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and

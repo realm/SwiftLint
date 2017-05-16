@@ -10,7 +10,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
-    public let configurationDescription = "N/A"
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

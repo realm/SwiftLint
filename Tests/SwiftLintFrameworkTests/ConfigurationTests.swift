@@ -131,6 +131,10 @@ class ConfigurationTests: XCTestCase {
             XCTFail("Should not be called with path \(path)")
             return []
         }
+
+        public func modificationDate(forFileAtPath path: String) -> Date? {
+            return nil
+        }
     }
 
     func testExcludedPaths() {

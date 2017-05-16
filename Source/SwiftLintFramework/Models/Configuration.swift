@@ -32,7 +32,7 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
-    public var hash: Int?
+    public var cacheDescription: String?
     public let cachePath: String?
 
     public init?(disabledRules: [String] = [],
@@ -174,7 +174,7 @@ public struct Configuration: Equatable {
             }
             self.init(dict: dict, enableAllRules: enableAllRules)!
             configurationPath = fullPath
-            hash = dict.description.hashValue
+            cacheDescription = dict.description
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {

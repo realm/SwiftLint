@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public enum LinterCacheError: Error {
     case invalidFormat
-    case differentVersion
     case differentConfiguration
 }
 
@@ -20,21 +19,14 @@ public final class LinterCache {
     private let lock = NSLock()
     internal lazy var fileManager: LintableFileManager = FileManager.default
 
-    public init(currentVersion: Version = .current, configurationDescription: String? = nil) {
-        cache = [
-            Key.version.rawValue: currentVersion.value,
-            Key.files.rawValue: [:]
-        ]
+    public init(configurationDescription: String? = nil) {
+        cache = [Key.files.rawValue: [:]]
         cache[Key.configuration.rawValue] = configurationDescription
     }
 
-    public init(cache: Any, currentVersion: Version = .current, configurationDescription: String? = nil) throws {
+    public init(cache: Any, configurationDescription: String? = nil) throws {
         guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
-        }
-
-        guard dictionary[Key.version.rawValue] as? String == currentVersion.value else {
-            throw LinterCacheError.differentVersion
         }
 
         guard dictionary[Key.configuration.rawValue] as? String == configurationDescription else {
@@ -44,12 +36,10 @@ public final class LinterCache {
         self.cache = dictionary
     }
 
-    public convenience init(contentsOf url: URL, currentVersion: Version = .current,
-                            configurationDescription: String? = nil) throws {
+    public convenience init(contentsOf url: URL, configurationDescription: String? = nil) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data, options: [])
-        try self.init(cache: json, currentVersion: currentVersion,
-                      configurationDescription: configurationDescription)
+        try self.init(cache: json, configurationDescription: configurationDescription)
     }
 
     public func cache(violations: [StyleViolation], forFile file: String) {
@@ -117,7 +107,6 @@ extension LinterCache {
         case ruleID = "rule_id"
         case severity
         case type
-        case version
         case violations
     }
 }

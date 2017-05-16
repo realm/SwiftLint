@@ -53,8 +53,8 @@ private func defaultCacheURL(options: LintOptions) -> URL {
         let baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
     #endif
 
-    let fileName = String(rootPath.hash) + ".json"
-    let folder = baseURL.appendingPathComponent("SwiftLint")
+    let fileName = "\(rootPath.hash).json"
+    let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
 
     do {
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)

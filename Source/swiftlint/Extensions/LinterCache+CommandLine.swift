@@ -16,14 +16,7 @@ extension LinterCache {
             return nil
         }
 
-        let cache: LinterCache
-        do {
-            cache = try LinterCache(contentsOf: url, configuration: configuration)
-        } catch {
-            cache = LinterCache(configuration: configuration)
-        }
-
-        return cache
+        return (try? LinterCache(contentsOf: url)) ?? LinterCache()
     }
 
     func save(options: LintOptions, configuration: Configuration) {
@@ -52,7 +45,6 @@ private func defaultCacheURL(options: LintOptions) -> URL {
         let baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
     #endif
 
-    let fileName = "\(rootPath.hash).json"
     let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
 
     do {
@@ -61,5 +53,5 @@ private func defaultCacheURL(options: LintOptions) -> URL {
         queuedPrintError("Error while creating cache: " + error.localizedDescription)
     }
 
-    return folder.appendingPathComponent(fileName)
+    return folder.appendingPathComponent("\(rootPath.hash).json")
 }

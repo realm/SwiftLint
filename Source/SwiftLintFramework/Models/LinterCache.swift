@@ -11,35 +11,27 @@ import SourceKittenFramework
 
 public enum LinterCacheError: Error {
     case invalidFormat
-    case differentConfiguration
 }
 
 public final class LinterCache {
-    private var cache: [String: Any]
+    private var cache = [String: Any]()
     private let lock = NSLock()
     internal lazy var fileManager: LintableFileManager = FileManager.default
 
-    public init(configuration: Configuration) {
-        cache = [Key.files.rawValue: [:]]
-        cache[Key.configuration.rawValue] = configuration.cacheDescription
-    }
+    public init() {}
 
-    public init(cache: Any, configuration: Configuration) throws {
+    public init(cache: Any) throws {
         guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
-        }
-
-        guard dictionary[Key.configuration.rawValue] as? String == configuration.cacheDescription else {
-            throw LinterCacheError.differentConfiguration
         }
 
         self.cache = dictionary
     }
 
-    public convenience init(contentsOf url: URL, configuration: Configuration) throws {
+    public convenience init(contentsOf url: URL) throws {
         let data = try Data(contentsOf: url)
         let json = try JSONSerialization.jsonObject(with: data)
-        try self.init(cache: json, configuration: configuration)
+        try self.init(cache: json)
     }
 
     public func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
@@ -50,13 +42,12 @@ public final class LinterCache {
         let configurationDescription = configuration.cacheDescription
 
         lock.lock()
-        var filesCache = (cache[Key.files.rawValue] as? [String: Any]) ?? [:]
+        var filesCache = (cache[configurationDescription] as? [String: Any]) ?? [:]
         filesCache[file] = [
             Key.violations.rawValue: violations.map(dictionary(for:)),
-            Key.lastModification.rawValue: lastModification.timeIntervalSinceReferenceDate,
-            Key.configuration.rawValue: configurationDescription
+            Key.lastModification.rawValue: lastModification.timeIntervalSinceReferenceDate
         ]
-        cache[Key.files.rawValue] = filesCache
+        cache[configurationDescription] = filesCache
         lock.unlock()
     }
 
@@ -69,12 +60,10 @@ public final class LinterCache {
 
         lock.lock()
 
-        guard let filesCache = cache[Key.files.rawValue] as? [String: Any],
+        guard let filesCache = cache[configurationDescription] as? [String: Any],
             let entry = filesCache[file] as? [String: Any],
             let cacheLastModification = entry[Key.lastModification.rawValue] as? TimeInterval,
             cacheLastModification == lastModification.timeIntervalSinceReferenceDate,
-            let cacheConfigurationDescription = entry[Key.configuration.rawValue] as? String,
-            cacheConfigurationDescription == configurationDescription,
             let violations = entry[Key.violations.rawValue] as? [[String: Any]] else {
                 lock.unlock()
                 return nil
@@ -107,7 +96,6 @@ extension LinterCache {
     fileprivate enum Key: String {
         case character
         case configuration
-        case files
         case lastModification = "last_modification"
         case line
         case reason

@@ -36,7 +36,7 @@ class LinterCacheTests: XCTestCase {
     func testInitThrowsWhenUsingInvalidCacheFormat() {
         let cache = [["version": "0.1.0"]]
         checkError(LinterCacheError.invalidFormat) {
-            _ = try LinterCache(cache: cache, currentVersion: Version(value: "0.1.0"))
+            _ = try LinterCache(cache: cache)
         }
     }
 

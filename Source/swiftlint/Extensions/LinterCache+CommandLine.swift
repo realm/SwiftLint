@@ -16,12 +16,12 @@ extension LinterCache {
             return nil
         }
 
-        let configurationHash = configuration.hash
+        let configurationDescription = configuration.cacheDescription
         let cache: LinterCache
         do {
-            cache = try LinterCache(contentsOf: url, configurationHash: configurationHash)
+            cache = try LinterCache(contentsOf: url, configurationDescription: configurationDescription)
         } catch {
-            cache = LinterCache(configurationHash: configurationHash)
+            cache = LinterCache(configurationDescription: configurationDescription)
         }
 
         return cache
@@ -50,7 +50,7 @@ private func defaultCacheURL(options: LintOptions) -> URL {
     #if os(Linux)
         let baseURL = URL(fileURLWithPath: "/var/tmp/")
     #else
-        let baseURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
     #endif
 
     let fileName = String(rootPath.hash) + ".json"

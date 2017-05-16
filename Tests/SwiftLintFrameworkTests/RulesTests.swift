@@ -41,7 +41,7 @@ class RulesTests: XCTestCase {
     }
 
     func testConditionalReturnsOnNewline() {
-        verifyRule(ConditionalReturnsOnNewline.description)
+        verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
     func testControlStatement() {
@@ -80,15 +80,15 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testExplicitTopLevelACLRule() {
+    func testExplicitTopLevelACL() {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 
-    func testExplicitTypeInterfaceRule() {
+    func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
-    func testFatalErrorMessageRule() {
+    func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }
 
@@ -363,9 +363,9 @@ extension RulesTests {
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
-            ("testExplicitTopLevelACLRule", testExplicitTopLevelACLRule),
-            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
-            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
+            ("testExplicitTopLevelACL", testExplicitTopLevelACL),
+            ("testExplicitTypeInterface", testExplicitTypeInterface),
+            ("testFatalErrorMessage", testFatalErrorMessage),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),

@@ -83,7 +83,7 @@ public let masterRuleList = RuleList(rules:
     ColonRule.self,
     CommaRule.self,
     CompilerProtocolInitRule.self,
-    ConditionalReturnsOnNewline.self,
+    ConditionalReturnsOnNewlineRule.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,

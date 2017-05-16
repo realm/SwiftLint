@@ -83,7 +83,7 @@
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
 		85DA81321D6B471000951BC4 /* MarkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856651A61D6B395F005E6B29 /* MarkRule.swift */; };
 		92CCB2D71E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */; };
-		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */; };
+		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */; };
 		B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */; };
 		B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */; };
 		B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */ = {isa = PBXBuildFile; fileRef = B39359A325FE84B7EDD1C455 /* CannedJunitReporterOutput.xml */; };
@@ -352,7 +352,7 @@
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
 		856651A61D6B395F005E6B29 /* MarkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkRule.swift; sourceTree = "<group>"; };
 		92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingRule.swift; sourceTree = "<group>"; };
-		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewline.swift; sourceTree = "<group>"; };
+		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewlineRule.swift; sourceTree = "<group>"; };
 		B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestRule.swift; sourceTree = "<group>"; };
 		B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestConfiguration.swift; sourceTree = "<group>"; };
 		B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedEmojiReporterOutput.txt; sourceTree = "<group>"; };
@@ -824,12 +824,12 @@
 			isa = PBXGroup;
 			children = (
 				E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */,
-				57ED82791CF65183002B3513 /* JUnitReporter.swift */,
 				E86396CA1BADB519002C9E88 /* CSVReporter.swift */,
-				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
-				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
-				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
 				2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */,
+				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
+				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
+				57ED82791CF65183002B3513 /* JUnitReporter.swift */,
+				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
 			);
 			path = Reporters;
 			sourceTree = "<group>";
@@ -847,7 +847,7 @@
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
 				695BE9CE1BDFD92B0071E985 /* CommaRule.swift */,
 				D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */,
-				93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift */,
+				93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */,
 				65454F451B14D73800319A6C /* ControlStatementRule.swift */,
 				3B1DF0111C5148140011BCED /* CustomRules.swift */,
 				2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */,
@@ -874,8 +874,8 @@
 				E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */,
 				D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */,
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
-				D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */,
 				47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */,
+				D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */,
 				D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
 				4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */,
@@ -945,22 +945,23 @@
 		E8A541801BF945FF006BA322 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */,
 				E80E018C1B92C0F60078EB70 /* Command.swift */,
-				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
 				E809EDA01B8A71DF00399043 /* Configuration.swift */,
+				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
+				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
 				D4FD58B11E12A0200019503C /* LinterCache.swift */,
 				E88DEA6E1B09843F00A66CB0 /* Location.swift */,
+				3B12C9C41C322032000B423F /* MasterRuleList.swift */,
 				E80E018E1B92C1350078EB70 /* Region.swift */,
 				83D71E261B131EB5000395DE /* RuleDescription.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
-				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
-				D4C27BFD1E12D53F00DF713E /* Version.swift */,
-				3B12C9C41C322032000B423F /* MasterRuleList.swift */,
-				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
-				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
 				D4A893341E15824100BF954D /* SwiftVersion.swift */,
+				D4C27BFD1E12D53F00DF713E /* Version.swift */,
+				E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */,
+				3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -984,7 +985,6 @@
 				D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */,
 				E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */,
 				6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */,
-				D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1303,7 +1303,7 @@
 				D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */,
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
-				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewline.swift in Sources */,
+				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */,
 				D43DB1081DC573DA00281215 /* ImplicitGetterRule.swift in Sources */,
 				7C0C2E7A1D2866CB0076435A /* ExplicitInitRule.swift in Sources */,
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,

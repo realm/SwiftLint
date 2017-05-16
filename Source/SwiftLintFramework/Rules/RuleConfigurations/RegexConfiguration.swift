@@ -30,17 +30,11 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
     internal var cacheDescription: String {
         var dict = [String: Any]()
         dict["identifier"] = identifier
-        if let name = name {
-            dict["name"] = name
-        }
+        dict["name"] = name
         dict["message"] = message
         dict["regex"] = regex.pattern
-        if let included = included?.pattern {
-            dict["included"] = included
-        }
-        if let excluded = excluded?.pattern {
-            dict["excluded"] = excluded
-        }
+        dict["included"] = included?.pattern
+        dict["excluded"] = excluded?.pattern
         dict["match_kinds"] = matchKinds.map { $0.rawValue }
         dict["severity"] = severityConfiguration.consoleDescription
         if let jsonData = try? JSONSerialization.data(withJSONObject: dict),

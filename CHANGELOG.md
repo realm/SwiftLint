@@ -11,11 +11,30 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
+* Add `modificationDate(forFileAtPath:)` function requirement to
+  `LintableFileManager` protocol.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Replace `configurationHash` parameters in all `LinterCache` initializers
+  with `configurationDescription` parameters.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Remove `fileHash` parameter from `LinterCache.cache(violations:forFile:)`
+  and `LinterCache.violations(forFile:)` functions.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Remove `hash` attribute from `Configuration` struct.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
 * Rename `ConditionalReturnsOnNewline` struct to
   `ConditionalReturnsOnNewlineRule` to match rule naming conventions.  
   [JP Simard](https://github.com/jpsim)
 
 ##### Enhancements
+
+* Cache linter results for files unmodified since the previous linter run.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+  [#1184](https://github.com/realm/SwiftLint/issues/1184)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and
   `type_name` rules to allow excluding non-alphanumeric characters and names 
@@ -171,24 +190,6 @@
   version after important cache-related issues have been addressed.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Add `modificationDate(forFileAtPath:)` function requirement to
-  `LintableFileManager` protocol.
-  [Victor Pimentel](https://github.com/victorpimentel)
-
-* Replace `configurationHash` parameters in all `LinterCache` initialiazers
-  with `configurationDescription` parameters.
-  [Victor Pimentel](https://github.com/victorpimentel)
-
-* Remove `fileHash` parameter from `LinterCache.cache(violations:forFile:)`
-  and `LinterCache.violations(forFile:)` functions.
-  [Victor Pimentel](https://github.com/victorpimentel)
-
-* Remove `hash` attribute from `Configuration` struct.
-  [Victor Pimentel](https://github.com/victorpimentel)
-
-* Add `configurationDescription` attribute to `Configuration` struct.
-  [Victor Pimentel](https://github.com/victorpimentel)
-
 ##### Enhancements
 
 * Add `implicitly_unwrapped_optional` opt-in rule that warns against using
@@ -333,15 +334,6 @@
 
 * Fix `checkstyle` report format.  
   [Yuki Oya](https://github.com/YukiOya)
-
-* Fix stale cache by using file modification dates instead of hashing whole
-  files.
-  [Victor Pimentel](https://github.com/victorpimentel)
-  [#1184](https://github.com/realm/SwiftLint/issues/1184)
-
-* Move file cache from `ApplicationSupport` to `~/Library/Caches` directory.
-  [Victor Pimentel](https://github.com/victorpimentel)
-  [#1184](https://github.com/realm/SwiftLint/issues/1184)
 
 ## 0.16.1: Commutative Fabric Sheets
 

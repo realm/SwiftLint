@@ -9,8 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-private let fileManager = FileManager.default
-
 private enum ConfigurationKey: String {
     case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
@@ -192,7 +190,7 @@ public struct Configuration: Equatable {
                   optional: !CommandLine.arguments.contains("--config"), quiet: quiet, enableAllRules: enableAllRules)
     }
 
-    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = fileManager) -> [String] {
+    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = FileManager.default) -> [String] {
         // If path is a Swift file, skip filtering with excluded/included paths
         if path.bridge().isSwiftFile() && path.isFile {
             return [path]

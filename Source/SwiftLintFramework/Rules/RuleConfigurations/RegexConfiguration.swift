@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Equatable {
+public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
@@ -25,6 +25,23 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
+    }
+
+    internal var cacheDescription: String {
+        var dict = [String: Any]()
+        dict["identifier"] = identifier
+        dict["name"] = name
+        dict["message"] = message
+        dict["regex"] = regex.pattern
+        dict["included"] = included?.pattern
+        dict["excluded"] = excluded?.pattern
+        dict["match_kinds"] = matchKinds.map { $0.rawValue }
+        dict["severity"] = severityConfiguration.consoleDescription
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
+        }
+        fatalError("Could not serialize regex configuration for cache")
     }
 
     public var description: RuleDescription {

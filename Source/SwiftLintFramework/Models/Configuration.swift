@@ -37,7 +37,7 @@ public struct Configuration: Equatable {
     public var cacheDescription: String {
         let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
             var accu = accu
-            accu[type(of: element).description.identifier] = element.configurationDescription
+            accu[type(of: element).description.identifier] = element.cacheDescription
             return accu
         }
         let dict: [String: Any] = [

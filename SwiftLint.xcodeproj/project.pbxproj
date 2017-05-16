@@ -824,12 +824,12 @@
 			isa = PBXGroup;
 			children = (
 				E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */,
-				57ED82791CF65183002B3513 /* JUnitReporter.swift */,
 				E86396CA1BADB519002C9E88 /* CSVReporter.swift */,
-				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
-				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
-				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
 				2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */,
+				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
+				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
+				57ED82791CF65183002B3513 /* JUnitReporter.swift */,
+				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
 			);
 			path = Reporters;
 			sourceTree = "<group>";

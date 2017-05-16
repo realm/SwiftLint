@@ -11,11 +11,21 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
+* Rename `ConditionalReturnsOnNewline` struct to
+  `ConditionalReturnsOnNewlineRule` to match rule naming conventions.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Enhancements
 
 * Don't count comment lines in `file_length` rule.  
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
+* Add opt-in configurations to `generic_type_name`, `identifier_name` and
+  `type_name` rules to allow excluding non-alphanumeric characters and names 
+  that start with uppercase.  
+  [Javier Hernández](https://github.com/jaherhi)
+  [#541](https://github.com/realm/SwiftLint/issues/541)
 
 * Adds support for `excluded` in custom rules to exclude files.  
   [Nigel Flack](https://github.com/nigelflack)
@@ -40,10 +50,25 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#58](https://github.com/realm/SwiftLint/issues/58)
 
-* Add `implicit_return` opt-in rule that warns agains using the `return`
+* Add `implicit_return` opt-in rule that warns against using the `return`
   keyword when it can be omitted inside closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1194](https://github.com/realm/SwiftLint/issues/1194)
+  
+* Add option to `unused_optional_binding` rule to ignore `try?`
+  in `guard` statements.  
+  [Sega-Zero](https://github.com/Sega-Zero)
+  [#1432](https://github.com/realm/SwiftLint/issues/1432)
+
+* Add `empty_enum_arguments` correctable rule that warns against using
+  silent associated values inside a `case`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1425](https://github.com/realm/SwiftLint/issues/1425)
+
+* Remove `file.zip` from the `Pods` directory when installing SwiftLint via
+  CocoaPods.  
+  [Hesham Salman](https://github.com/heshamsalman)
+  [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
 ##### Bug Fixes
 
@@ -62,6 +87,10 @@
   on a `lazy var` since it needs initialization.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1334](https://github.com/realm/SwiftLint/issues/1334)
+
+* Fix `ignores_case_statements` key in `cyclomatic_complexity` description.  
+  [Jeff Blagdon](https://github.com/jefflovejapan)
+  [#1434](https://github.com/realm/SwiftLint/issues/1434)
 
 ## 0.18.1: Misaligned Drum
 

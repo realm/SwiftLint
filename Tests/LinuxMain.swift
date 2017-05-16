@@ -19,6 +19,8 @@ XCTMain([
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
+    testCase(GenericTypeNameRuleTests.allTests),
+    testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
     testCase(IntegrationTests.allTests),
@@ -32,7 +34,9 @@ XCTMain([
     testCase(RuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
+    testCase(TypeNameRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
+    testCase(UnusedOptionalBindingRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(YamlParserTests.allTests),
     testCase(YamlSwiftLintTests.allTests)

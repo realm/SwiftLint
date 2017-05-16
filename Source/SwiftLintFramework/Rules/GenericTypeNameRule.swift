@@ -166,14 +166,16 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        let containsAllowedSymbol = configuration.allowedSymbols.contains(where: name.contains)
+        if !containsAllowedSymbol && !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should only contain alphanumeric characters: '\(name)'")
             ]
-        } else if !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+        } else if configuration.validatesStartWithLowercase &&
+            !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,

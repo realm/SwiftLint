@@ -16,7 +16,8 @@ private enum ConfigurationKey: String {
 
 public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return length.consoleDescription + ", ignores switch statements: \(ignoresCaseStatements)"
+        return length.consoleDescription +
+            ", \(ConfigurationKey.ignoresCaseStatements.rawValue): \(ignoresCaseStatements)"
     }
 
     public static let defaultComplexityStatements: Set<StatementKind> = [

@@ -43,10 +43,10 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         let forbiddenStringDescription = forbiddenString ?? "None"
         let forbiddenPatternDescription = forbiddenPattern ?? "None"
         return severityConfiguration.consoleDescription +
-            ", required_string: \(requiredStringDescription))" +
-            ", required_pattern: \(requiredPatternDescription))" +
-            ", forbidden_string: \(forbiddenStringDescription))" +
-            ", forbidden_pattern: \(forbiddenPatternDescription))"
+            ", required_string: \(requiredStringDescription)" +
+            ", required_pattern: \(requiredPatternDescription)" +
+            ", forbidden_string: \(forbiddenStringDescription)" +
+            ", forbidden_pattern: \(forbiddenPatternDescription)"
     }
 
     public init() {}

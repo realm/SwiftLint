@@ -945,6 +945,7 @@
 		E8A541801BF945FF006BA322 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */,
 				E80E018C1B92C0F60078EB70 /* Command.swift */,
 				E809EDA01B8A71DF00399043 /* Configuration.swift */,
 				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
@@ -968,7 +969,6 @@
 		E8A541811BF94604006BA322 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */,
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
 				D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,

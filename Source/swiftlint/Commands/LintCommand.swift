@@ -23,7 +23,7 @@ struct LintCommand: CommandProtocol {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
-        let cache = LinterCache.makeCache(options: options, configuration: configuration)
+        let cache = options.ignoreCache ? nil : LinterCache.makeCache(options: options, configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]

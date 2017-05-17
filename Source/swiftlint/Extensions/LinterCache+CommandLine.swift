@@ -11,27 +11,18 @@ import SwiftLintFramework
 
 extension LinterCache {
 
-    class func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache? {
-        guard let url = cacheURL(options: options, configuration: configuration) else {
-            return nil
-        }
-
+    internal class func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache {
+        let url = cacheURL(options: options, configuration: configuration)
         return (try? LinterCache(contentsOf: url)) ?? LinterCache()
     }
 
-    func save(options: LintOptions, configuration: Configuration) {
-        if let url = cacheURL(options: options, configuration: configuration) {
-            try? save(to: url)
-        }
+    internal func save(options: LintOptions, configuration: Configuration) {
+        try? save(to: cacheURL(options: options, configuration: configuration))
     }
 
 }
 
-private func cacheURL(options: LintOptions, configuration: Configuration) -> URL? {
-    guard !options.ignoreCache else {
-        return nil
-    }
-
+private func cacheURL(options: LintOptions, configuration: Configuration) -> URL {
     let baseURL: URL
     if let path = options.cachePath.isEmpty ? configuration.cachePath : options.cachePath {
         baseURL = URL(fileURLWithPath: path)

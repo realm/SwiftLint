@@ -66,6 +66,11 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
+* Update file_header rule to trigger on the first line when missing a header,
+  so the warning will be shown in Xcode editor.  
+  [rjhodge](https://github.com/rjhodge)
+  [#1520](https://github.com/realm/SwiftLint/issues/1520)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

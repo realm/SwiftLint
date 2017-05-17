@@ -155,7 +155,6 @@
 		D4D1B9BB1EAC2C910028BE6A /* AccessControlLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */; };
 		D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */; };
 		D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */; };
-		D4DA1DF81E175E8A0037413D /* LinterCache+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF71E175E8A0037413D /* LinterCache+CommandLine.swift */; };
 		D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */; };
 		D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
 		D4DABFD31E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */; };
@@ -445,7 +444,6 @@
 		D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccessControlLevel.swift; sourceTree = "<group>"; };
 		D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShorthandOperatorRule.swift; sourceTree = "<group>"; };
 		D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerProtocolInitRule.swift; sourceTree = "<group>"; };
-		D4DA1DF71E175E8A0037413D /* LinterCache+CommandLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinterCache+CommandLine.swift"; sourceTree = "<group>"; };
 		D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTupleRule.swift; sourceTree = "<group>"; };
 		D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorConfiguration.swift; sourceTree = "<group>"; };
 		D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardedNotificationCenterObserverRule.swift; sourceTree = "<group>"; };
@@ -996,7 +994,6 @@
 			isa = PBXGroup;
 			children = (
 				E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */,
-				D4DA1DF71E175E8A0037413D /* LinterCache+CommandLine.swift */,
 				E86E2B2D1E17443B001E823C /* Reporter+CommandLine.swift */,
 			);
 			path = Extensions;
@@ -1408,7 +1405,6 @@
 			files = (
 				E86E2B2E1E17443B001E823C /* Reporter+CommandLine.swift in Sources */,
 				E8B067811C13E49600E9E13F /* Configuration+CommandLine.swift in Sources */,
-				D4DA1DF81E175E8A0037413D /* LinterCache+CommandLine.swift in Sources */,
 				E802ED001C56A56000A35AE1 /* Benchmark.swift in Sources */,
 				E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */,
 				E81FB3E41C6D507B00DC988F /* CommonOptions.swift in Sources */,

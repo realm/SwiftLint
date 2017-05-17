@@ -34,7 +34,7 @@ public struct Configuration: Equatable {
     public var configurationPath: String?     // if successfully loaded from a path
     public let cachePath: String?
 
-    public var cacheDescription: String {
+    internal var cacheDescription: String {
         let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
             var accu = accu
             accu[type(of: element).description.identifier] = element.cacheDescription
@@ -49,6 +49,28 @@ public struct Configuration: Equatable {
               return jsonString
         }
         fatalError("Could not serialize configuration for cache")
+    }
+
+    internal var cacheURL: URL {
+        let baseURL: URL
+        if let path = cachePath {
+            baseURL = URL(fileURLWithPath: path)
+        } else {
+            #if os(Linux)
+                baseURL = URL(fileURLWithPath: "/var/tmp/")
+            #else
+                baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+            #endif
+        }
+        let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
+
+        do {
+            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            queuedPrintError("Error while creating cache: " + error.localizedDescription)
+        }
+
+        return folder.appendingPathComponent("cache.json")
     }
 
     public init?(disabledRules: [String] = [],

@@ -9,32 +9,39 @@
 import Foundation
 import SourceKittenFramework
 
-public enum LinterCacheError: Error {
+internal enum LinterCacheError: Error {
     case invalidFormat
+    case noLocation
 }
 
 public final class LinterCache {
     private var cache = [String: Any]()
     private let lock = NSLock()
     internal lazy var fileManager: LintableFileManager = FileManager.default
+    private let location: URL?
 
-    public init() {}
+    internal init() {
+        location = nil
+    }
 
-    public init(cache: Any) throws {
+    internal init(cache: Any) throws {
         guard let dictionary = cache as? [String: Any] else {
             throw LinterCacheError.invalidFormat
         }
 
         self.cache = dictionary
+        location = nil
     }
 
-    public convenience init(contentsOf url: URL) throws {
-        let data = try Data(contentsOf: url)
-        let json = try JSONSerialization.jsonObject(with: data)
-        try self.init(cache: json)
+    public init(configuration: Configuration) {
+        location = configuration.cacheURL
+        if let data = try? Data(contentsOf: location!),
+            let json = try? JSONSerialization.jsonObject(with: data) {
+            cache = (json as? [String: Any]) ?? [:]
+        }
     }
 
-    public func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
+    internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
             return
         }
@@ -51,7 +58,7 @@ public final class LinterCache {
         lock.unlock()
     }
 
-    public func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
+    internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
         guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
             return nil
         }
@@ -73,7 +80,10 @@ public final class LinterCache {
         return violations.flatMap { StyleViolation.from(cache: $0, file: file) }
     }
 
-    public func save(to url: URL) throws {
+    public func save() throws {
+        guard let url = location else {
+            throw LinterCacheError.noLocation
+        }
         lock.lock()
         let json = toJSON(cache)
         lock.unlock()
@@ -118,12 +128,9 @@ extension StyleViolation {
 
         let line = cache[LinterCache.Key.line.rawValue] as? Int
         let character = cache[LinterCache.Key.character.rawValue] as? Int
-
-        let ruleDescription = RuleDescription(identifier: ruleID, name: name, description: reason)
-        let location = Location(file: file, line: line, character: character)
-        let violation = StyleViolation(ruleDescription: ruleDescription, severity: severity,
-                                       location: location, reason: reason)
-
-        return violation
+        return StyleViolation(ruleDescription: RuleDescription(identifier: ruleID, name: name, description: reason),
+                              severity: severity,
+                              location: Location(file: file, line: line, character: character),
+                              reason: reason)
     }
 }

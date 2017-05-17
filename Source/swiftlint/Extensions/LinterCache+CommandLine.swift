@@ -11,20 +11,19 @@ import SwiftLintFramework
 
 extension LinterCache {
 
-    internal class func makeCache(options: LintOptions, configuration: Configuration) -> LinterCache {
-        let url = cacheURL(options: options, configuration: configuration)
-        return (try? LinterCache(contentsOf: url)) ?? LinterCache()
+    internal class func makeCache(configuration: Configuration) -> LinterCache {
+        return (try? LinterCache(contentsOf: cacheURL(configuration: configuration))) ?? LinterCache()
     }
 
-    internal func save(options: LintOptions, configuration: Configuration) {
-        try? save(to: cacheURL(options: options, configuration: configuration))
+    internal func save(configuration: Configuration) {
+        try? save(to: cacheURL(configuration: configuration))
     }
 
 }
 
-private func cacheURL(options: LintOptions, configuration: Configuration) -> URL {
+private func cacheURL(configuration: Configuration) -> URL {
     let baseURL: URL
-    if let path = options.cachePath.isEmpty ? configuration.cachePath : options.cachePath {
+    if let path = configuration.cachePath {
         baseURL = URL(fileURLWithPath: path)
     } else {
 #if os(Linux)
@@ -41,6 +40,5 @@ private func cacheURL(options: LintOptions, configuration: Configuration) -> URL
         queuedPrintError("Error while creating cache: " + error.localizedDescription)
     }
 
-    let rootPath = options.path.bridge().absolutePathRepresentation()
-    return folder.appendingPathComponent("\(rootPath.hash).json")
+    return folder.appendingPathComponent("cache.json")
 }

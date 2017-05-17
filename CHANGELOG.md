@@ -66,11 +66,6 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
-* Update file_header rule to trigger on the first line when missing a header,
-  so the warning will be shown in Xcode editor.  
-  [rjhodge](https://github.com/rjhodge)
-  [#1520](https://github.com/realm/SwiftLint/issues/1520)
-
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -92,6 +87,12 @@
 * Fix `ignores_case_statements` key in `cyclomatic_complexity` description.  
   [Jeff Blagdon](https://github.com/jefflovejapan)
   [#1434](https://github.com/realm/SwiftLint/issues/1434)
+
+* Fall back to reporting violations on line `1` if no line was provided for the
+  violation's location, ensuring Xcode always displays the warning or error.  
+  [rjhodge](https://github.com/rjhodge)
+  [JP Simard](https://github.com/jpsim)
+  [#1520](https://github.com/realm/SwiftLint/issues/1520)
 
 ## 0.18.1: Misaligned Drum
 

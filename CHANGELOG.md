@@ -62,7 +62,8 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
-* Updated file_header rule to use line 1 character 1 for files that are missing a header
+* Update file_header rule to trigger on the first line when missing a header,
+  so the warning will be shown in Xcode editor.  
   [rjhodge](https://github.com/rjhodge)
   [#1520](https://github.com/realm/SwiftLint/issues/1520)
 

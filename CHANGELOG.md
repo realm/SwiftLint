@@ -94,6 +94,11 @@
   [JP Simard](https://github.com/jpsim)
   [#1520](https://github.com/realm/SwiftLint/issues/1520)
 
+* Fix crash or incorrect violation location with strings including multi-byte
+  unicode characters.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1006](https://github.com/realm/SwiftLint/issues/1006)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

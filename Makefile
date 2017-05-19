@@ -23,11 +23,6 @@ SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
 
 VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a
-SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
-SWIFT_BUILD_COMMAND=$(SWIFT_COMMAND) build
-SWIFT_TEST_COMMAND=$(SWIFT_COMMAND) test
-
 .PHONY: all bootstrap clean install package test uninstall
 
 all: bootstrap
@@ -105,26 +100,6 @@ docker_htop:
 # http://irace.me/swift-profiling/
 display_compilation_time:
 	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build-for-testing | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
-
-swift_snapshot_install:
-	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg
-	sudo installer -pkg swift.pkg -target /
-
-# Use Xcode's swiftc
-spm: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
-spm:
-	$(SWIFT_BUILD_COMMAND)
-
-# Use Xcode's swiftc
-spm_test: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
-spm_test: spm
-	$(SWIFT_TEST_COMMAND)
-
-spm_clean:
-	$(SWIFT_BUILD_COMMAND) --clean
-
-spm_clean_dist:
-	$(SWIFT_BUILD_COMMAND) --clean=dist
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint

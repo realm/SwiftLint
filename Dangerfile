@@ -1,5 +1,7 @@
 require 'open3'
 
+puts "Ruby version: #{RUBY_VERSION}"
+
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
@@ -60,4 +62,6 @@ if has_app_changes || has_danger_changes
       fail parse_line(line)
     end
   end
+
+  warn "Testing"
 end

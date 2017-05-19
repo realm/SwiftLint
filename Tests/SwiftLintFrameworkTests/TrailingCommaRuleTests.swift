@@ -85,7 +85,7 @@ class TrailingCommaRuleTests: XCTestCase {
         XCTAssertEqual(trailingCommaViolations(failingCase, ruleConfiguration: ruleConfiguration), [
             StyleViolation(
                 ruleDescription: TrailingCommaRule.description,
-                location: Location(file: nil, line: 3, character: 2),
+                location: Location(file: nil, line: 3, character: 3),
                 reason: "Multi-line collection literals should have trailing commas."
             )]
         )

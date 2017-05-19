@@ -91,9 +91,6 @@ release: package archive portable_zip
 docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
 
-docker_test_302:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:302 swift test
-
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop
 

@@ -17,10 +17,6 @@ matrix:
       env: JOB=Linux3.1
       sudo: required
       services: docker
-    - script: make docker_test_302
-      env: JOB=Linux3.0.2
-      sudo: required
-      services: docker
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

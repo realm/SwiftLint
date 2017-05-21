@@ -99,6 +99,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1006](https://github.com/realm/SwiftLint/issues/1006)
 
+* Fix false positive in `syntactic_sugar` rule when using nested types named
+  `Optional`, `ImplicitlyUnwrappedOptional`, `Array` or `Dictionary`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1508](https://github.com/realm/SwiftLint/issues/1508)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

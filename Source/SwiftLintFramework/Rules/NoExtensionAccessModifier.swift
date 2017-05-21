@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoExtensionAccessModifierRule: OptInRule, ConfigurationProviderRule {
+public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -31,23 +31,34 @@ public struct NoExtensionAccessModifierRule: OptInRule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let extensions = file.structure.dictionary.substructure.flatMap({ element -> Int? in
-            guard let kind = element.kind, kind == "source.lang.swift.decl.extension",
-                let offset = element.offset else { return nil }
-            return offset
-        })
-        let syntaxTokens = file.syntaxMap.tokens
-            let violations = extensions.flatMap { (offSet) -> Int? in
-                let parts = syntaxTokens.partitioned { offSet <= $0.offset }
-                guard let lastKind = parts.first.last else { return nil }
-                return lastKind.type == SyntaxKind.attributeBuiltin.rawValue ? offSet : nil
-            }
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+        guard kind == .extension, let offset = dictionary.offset else {
+            return []
+        }
 
-        return violations.map({
-            StyleViolation(
-                ruleDescription: NoExtensionAccessModifierRule.description,
-                location: Location(file: file, byteOffset: $0))
-        })
+        let syntaxTokens = file.syntaxMap.tokens
+        let parts = syntaxTokens.partitioned { offset <= $0.offset }
+        guard let aclToken = parts.first.last,
+            isACL(token: aclToken, file: file) else {
+                return []
+        }
+
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset))
+        ]
+    }
+
+    private func isACL(token: SyntaxToken, file: File) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+            return false
+        }
+
+        let contents = file.contents.bridge()
+        let aclString = contents.substringWithByteRange(start: token.offset,
+                                                        length: token.length)
+        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
     }
 }

@@ -223,6 +223,10 @@ class RulesTests: XCTestCase {
         verifyRule(ProhibitedSuperRule.description)
     }
 
+    func testProtocolPropertyAccessorsOrder() {
+        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
+    }
+
     func testRedundantDiscardableLet() {
         verifyRule(RedundantDiscardableLetRule.description)
     }
@@ -399,6 +403,7 @@ extension RulesTests {
             ("testPrivateOutlet", testPrivateOutlet),
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
+            ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
             ("testRedundantDiscardableLet", testRedundantDiscardableLet),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),

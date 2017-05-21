@@ -72,6 +72,10 @@
   [norio-nomura](https://github.com/norio-nomura)
   [#1429](https://github.com/realm/SwiftLint/issues/1429)
 
+* Prevent false positive in `shorthand_operator` rule.  
+  [sammy-SC](https://github.com/sammy-SC)
+  [#1254](https://github.com/realm/SwiftLint/issues/1254)
+
 * Fix typo in `DiscardedNotificationCenterObserverRule`.  
   [Spencer Kaiser](https://github.com/spencerkaiser)
 

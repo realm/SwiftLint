@@ -31,7 +31,11 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-
+  
+* Added `no_extension_access_modifier` opt-in rule to disallow access modifiers completely, à la SE-0119.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [#1457](https://github.com/realm/SwiftLint/issues/1457)
+  
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 

@@ -12,8 +12,8 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excluded), " +
-            "allowed_symbols: \(allowedSymbols), " +
+            "excluded: \(excluded.sorted()), " +
+            "allowed_symbols: \(allowedSymbols.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase)"
     }
 

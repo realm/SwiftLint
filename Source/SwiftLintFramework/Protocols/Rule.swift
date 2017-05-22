@@ -21,6 +21,10 @@ extension Rule {
     public func isEqualTo(_ rule: Rule) -> Bool {
         return type(of: self).description == type(of: rule).description
     }
+
+    internal var cacheDescription: String {
+        return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
+    }
 }
 
 public protocol OptInRule: Rule {}

@@ -32,8 +32,24 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
-    public var hash: Int?
     public let cachePath: String?
+
+    public var cacheDescription: String {
+        let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
+            var accu = accu
+            accu[type(of: element).description.identifier] = element.cacheDescription
+            return accu
+        }
+        let dict: [String: Any] = [
+            "root": rootPath ?? FileManager.default.currentDirectoryPath,
+            "rules": cacheRulesDescriptions
+        ]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
+        }
+        fatalError("Could not serialize configuration for cache")
+    }
 
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
@@ -174,7 +190,6 @@ public struct Configuration: Equatable {
             }
             self.init(dict: dict, enableAllRules: enableAllRules)!
             configurationPath = fullPath
-            hash = dict.description.hashValue
             self.rootPath = rootPath
             return
         } catch YamlParserError.yamlParsing(let message) {

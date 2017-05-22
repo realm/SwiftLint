@@ -15,8 +15,8 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription +
-            ", always_on_same_line: \(alwaysOnSameLine)" +
-            ", always_on_line_above: \(alwaysOnNewLine)"
+            ", always_on_same_line: \(alwaysOnSameLine.sorted())" +
+            ", always_on_line_above: \(alwaysOnNewLine.sorted())"
     }
 
     public init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],

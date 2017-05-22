@@ -41,7 +41,7 @@ class RulesTests: XCTestCase {
     }
 
     func testConditionalReturnsOnNewline() {
-        verifyRule(ConditionalReturnsOnNewline.description)
+        verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
     func testControlStatement() {
@@ -64,6 +64,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyEnumArguments() {
+        verifyRule(EmptyEnumArgumentsRule.description)
+    }
+
     func testEmptyParameters() {
         verifyRule(EmptyParametersRule.description)
     }
@@ -76,15 +80,15 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testExplicitTopLevelACLRule() {
+    func testExplicitTopLevelACL() {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 
-    func testExplicitTypeInterfaceRule() {
+    func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
-    func testFatalErrorMessageRule() {
+    func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }
 
@@ -119,14 +123,6 @@ class RulesTests: XCTestCase {
 
     func testFunctionParameterCount() {
         verifyRule(FunctionParameterCountRule.description)
-    }
-
-    func testGenericTypeName() {
-        verifyRule(GenericTypeNameRule.description)
-    }
-
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
     }
 
     func testImplicitGetter() {
@@ -177,6 +173,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNoExtensionAccessModifierRule() {
+        verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
@@ -225,6 +225,10 @@ class RulesTests: XCTestCase {
 
     func testProhibitedSuper() {
         verifyRule(ProhibitedSuperRule.description)
+    }
+
+    func testProtocolPropertyAccessorsOrder() {
+        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -322,10 +326,6 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
-    }
-
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -371,12 +371,13 @@ extension RulesTests {
             ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
             ("testDynamicInline", testDynamicInline),
             ("testEmptyCount", testEmptyCount),
+            ("testEmptyEnumArguments", testEmptyEnumArguments),
             ("testEmptyParameters", testEmptyParameters),
             ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
             ("testExplicitInit", testExplicitInit),
-            ("testExplicitTopLevelACLRule", testExplicitTopLevelACLRule),
-            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
-            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
+            ("testExplicitTopLevelACL", testExplicitTopLevelACL),
+            ("testExplicitTypeInterface", testExplicitTypeInterface),
+            ("testFatalErrorMessage", testFatalErrorMessage),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
@@ -385,8 +386,6 @@ extension RulesTests {
             ("testForWhere", testForWhere),
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),
-            ("testGenericTypeName", testGenericTypeName),
-            ("testIdentifierName", testIdentifierName),
             ("testImplicitGetter", testImplicitGetter),
             ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
             ("testImplicitReturn", testImplicitReturn),
@@ -400,6 +399,7 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
+            ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
             ("testNotificationCenterDetachment", testNotificationCenterDetachment),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),
@@ -408,6 +408,7 @@ extension RulesTests {
             ("testPrivateOutlet", testPrivateOutlet),
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
+            ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
             ("testRedundantDiscardableLet", testRedundantDiscardableLet),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
@@ -424,7 +425,6 @@ extension RulesTests {
             ("testTrailingSemicolon", testTrailingSemicolon),
             ("testTrailingWhitespace", testTrailingWhitespace),
             ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
             ("testUnusedClosureParameter", testUnusedClosureParameter),
             ("testUnusedEnumerated", testUnusedEnumerated),
             ("testValidIBInspectable", testValidIBInspectable),

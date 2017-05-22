@@ -14,22 +14,6 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
 
     func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
-            "guard let _ = try? alwaysThrows() else { return }"
-        ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples,
-                                          corrections: baseDescription.corrections)
-
-        verifyRule(description)
-    }
-
-    func testIgnoreOptionalTryDisabled() {
-        // Perform additional tests with the ignore_optional_try settings disabled.
-        let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [
             "guard let _ = try? alwaysThrows() else { return }"
         ]
@@ -40,7 +24,23 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
                                           triggeringExamples: triggeringExamples,
                                           corrections: baseDescription.corrections)
 
-        verifyRule(description, ruleConfiguration: ["ignore_optional_try": false])
+        verifyRule(description)
+    }
+
+    func testIgnoreOptionalTryEnabled() {
+        // Perform additional tests with the ignore_optional_try settings enabled.
+        let baseDescription = UnusedOptionalBindingRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
+            "guard let _ = try? alwaysThrows() else { return }"
+        ]
+        let description = RuleDescription(identifier: baseDescription.identifier,
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: baseDescription.triggeringExamples,
+                                          corrections: baseDescription.corrections)
+
+        verifyRule(description, ruleConfiguration: ["ignore_optional_try": true])
     }
 }
 
@@ -48,7 +48,7 @@ extension UnusedOptionalBindingRuleTests {
     static var allTests: [(String, (UnusedOptionalBindingRuleTests) -> () throws -> Void)] {
         return [
             ("testDefaultConfiguration", testDefaultConfiguration),
-            ("testIgnoreOptionalTryDisabled", testIgnoreOptionalTryDisabled)
+            ("testIgnoreOptionalTryEnabled", testIgnoreOptionalTryEnabled)
         ]
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: true)
+    public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
 
     public init() {}
 

@@ -106,11 +106,16 @@ publish:
 get_version:
 	@echo $(VERSION_STRING)
 
-set_version:
-	$(eval NEW_VERSION := $(filter-out $@,$(MAKECMDGOALS)))
+push_version:
+	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
+	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
+	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
 	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
+	git push origin master
+	git push origin $(NEW_VERSION)
 
 %:
 	@:

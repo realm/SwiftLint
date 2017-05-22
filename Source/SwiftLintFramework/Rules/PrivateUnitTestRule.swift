@@ -9,16 +9,16 @@
 import Foundation
 import SourceKittenFramework
 
-private extension AccessControlLevel {
-    init?(_ dictionary: [String: SourceKitRepresentable]) {
+extension AccessControlLevel {
+    fileprivate init?(_ dictionary: [String: SourceKitRepresentable]) {
         guard let accessibility = dictionary.accessibility,
             let acl = AccessControlLevel(rawValue: accessibility) else { return nil }
         self = acl
     }
 }
 
-private extension Dictionary where Key: ExpressibleByStringLiteral {
-    var superclass: String? {
+extension Dictionary where Key: ExpressibleByStringLiteral {
+    fileprivate var superclass: String? {
         guard let kindString = self.kind,
             let kind = SwiftDeclarationKind(rawValue: kindString), kind == .class,
             let className = inheritedTypes.first else { return nil }

@@ -125,8 +125,8 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
 }
 
-private extension String {
-    var strippingURLs: String {
+extension String {
+    fileprivate var strippingURLs: String {
         let range = NSRange(location: 0, length: bridge().length)
         // Workaround for Linux until NSDataDetector is available
         #if os(Linux)

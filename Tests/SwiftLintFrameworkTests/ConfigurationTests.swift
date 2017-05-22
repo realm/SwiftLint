@@ -246,8 +246,8 @@ class ConfigurationTests: XCTestCase {
 
 // MARK: - ProjectMock Paths
 
-fileprivate extension String {
-    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
+extension String {
+    fileprivate func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
     }
 }
@@ -262,45 +262,45 @@ extension XCTestCase {
     }
 }
 
-fileprivate extension XCTestCase {
+extension XCTestCase {
 
-    var projectMockPathLevel0: String {
+    fileprivate var projectMockPathLevel0: String {
         return bundlePath.stringByAppendingPathComponent("ProjectMock")
     }
 
-    var projectMockPathLevel1: String {
+    fileprivate var projectMockPathLevel1: String {
         return projectMockPathLevel0.stringByAppendingPathComponent("Level1")
     }
 
-    var projectMockPathLevel2: String {
+    fileprivate var projectMockPathLevel2: String {
         return projectMockPathLevel1.stringByAppendingPathComponent("Level2")
     }
 
-    var projectMockPathLevel3: String {
+    fileprivate var projectMockPathLevel3: String {
         return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
     }
 
-    var projectMockYAML0: String {
+    fileprivate var projectMockYAML0: String {
         return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
     }
 
-    var projectMockYAML2: String {
+    fileprivate var projectMockYAML2: String {
         return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
     }
 
-    var projectMockSwift0: String {
+    fileprivate var projectMockSwift0: String {
         return projectMockPathLevel0.stringByAppendingPathComponent("Level0.swift")
     }
 
-    var projectMockSwift1: String {
+    fileprivate var projectMockSwift1: String {
         return projectMockPathLevel1.stringByAppendingPathComponent("Level1.swift")
     }
 
-    var projectMockSwift2: String {
+    fileprivate var projectMockSwift2: String {
         return projectMockPathLevel2.stringByAppendingPathComponent("Level2.swift")
     }
 
-    var projectMockSwift3: String {
+    fileprivate var projectMockSwift3: String {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
     }
 }

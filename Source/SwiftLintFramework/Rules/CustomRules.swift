@@ -9,8 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-private extension Region {
-    func isRuleDisabled(customRuleIdentifier: String) -> Bool {
+extension Region {
+    fileprivate func isRuleDisabled(customRuleIdentifier: String) -> Bool {
         return disabledRuleIdentifiers.contains(customRuleIdentifier)
     }
 }

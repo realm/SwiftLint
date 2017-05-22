@@ -42,7 +42,7 @@ public protocol SourceKitFreeRule: Rule {}
 
 // MARK: - ConfigurationProviderRule conformance to Configurable
 
-public extension ConfigurationProviderRule {
+extension ConfigurationProviderRule {
     public init(configuration: Any) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)

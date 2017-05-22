@@ -9,8 +9,8 @@
 import Foundation
 
 #if !os(Linux)
-private extension Scanner {
-    func scanUpToString(_ string: String) -> String? {
+extension Scanner {
+    fileprivate func scanUpToString(_ string: String) -> String? {
         var result: NSString? = nil
         let success = scanUpTo(string, into: &result)
         if success {
@@ -19,7 +19,7 @@ private extension Scanner {
         return nil
     }
 
-    func scanString(string: String) -> String? {
+    fileprivate func scanString(string: String) -> String? {
         var result: NSString? = nil
         let success = scanString(string, into: &result)
         if success {

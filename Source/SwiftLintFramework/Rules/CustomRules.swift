@@ -17,8 +17,11 @@ private extension Region {
 
 // MARK: - CustomRulesConfiguration
 
-public struct CustomRulesConfiguration: RuleConfiguration, Equatable {
+public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public var consoleDescription: String { return "user-defined" }
+    internal var cacheDescription: String {
+        return customRuleConfigurations.map({ $0.cacheDescription }).joined(separator: "\n")
+    }
     public var customRuleConfigurations = [RegexConfiguration]()
 
     public init() {}
@@ -42,7 +45,11 @@ public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) ->
 
 // MARK: - CustomRules
 
-public struct CustomRules: Rule, ConfigurationProviderRule {
+public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
+
+    internal var cacheDescription: String {
+        return configuration.cacheDescription
+    }
 
     public static let description = RuleDescription(
         identifier: "custom_rules",

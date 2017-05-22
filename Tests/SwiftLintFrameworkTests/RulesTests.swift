@@ -168,6 +168,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNoExtensionAccessModifierRule() {
+        verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }
@@ -216,6 +220,10 @@ class RulesTests: XCTestCase {
 
     func testProhibitedSuper() {
         verifyRule(ProhibitedSuperRule.description)
+    }
+
+    func testProtocolPropertyAccessorsOrder() {
+        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -385,6 +393,7 @@ extension RulesTests {
             ("testMark", testMark),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
+            ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
             ("testNotificationCenterDetachment", testNotificationCenterDetachment),
             ("testObjectLiteral", testObjectLiteral),
             ("testOpeningBrace", testOpeningBrace),
@@ -393,6 +402,7 @@ extension RulesTests {
             ("testPrivateOutlet", testPrivateOutlet),
             ("testPrivateUnitTest", testPrivateUnitTest),
             ("testProhibitedSuper", testProhibitedSuper),
+            ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
             ("testRedundantDiscardableLet", testRedundantDiscardableLet),
             ("testRedundantNilCoalescing", testRedundantNilCoalescing),
             ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),

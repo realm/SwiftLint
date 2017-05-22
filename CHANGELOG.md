@@ -1,4 +1,4 @@
-## Master
+## 0.19.0-rc.1: Coin-Operated Machine RC1
 
 ##### Breaking
 
@@ -11,6 +11,17 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
+* Add `modificationDate(forFileAtPath:)` function requirement to
+  `LintableFileManager` protocol.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
+* Several breaking changes to `LinterCache`.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+  [JP Simard](https://github.com/jpsim)
+
+* Remove `Configuration.hash` property.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+
 * Rename `ConditionalReturnsOnNewline` struct to
   `ConditionalReturnsOnNewlineRule` to match rule naming conventions.  
   [JP Simard](https://github.com/jpsim)
@@ -20,6 +31,11 @@
 * Don't count comment lines in `file_length` rule.  
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
+* Cache linter results for files unmodified since the previous linter run.  
+  [Victor Pimentel](https://github.com/victorpimentel)
+  [JP Simard](https://github.com/jpsim)
+  [#1184](https://github.com/realm/SwiftLint/issues/1184)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and
   `type_name` rules to allow excluding non-alphanumeric characters and names 
@@ -35,7 +51,12 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-
+  
+* Added `no_extension_access_modifier` opt-in rule to disallow access modifiers
+  completely, à la SE-0119.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [#1457](https://github.com/realm/SwiftLint/issues/1457)
+  
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
@@ -70,11 +91,21 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
+* Add `protocol_property_accessors_order` correctable rule that validates
+  that the order of accessors is `get set` when declaring variables
+  in protocols.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1504](https://github.com/realm/SwiftLint/issues/1504)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
   [norio-nomura](https://github.com/norio-nomura)
   [#1429](https://github.com/realm/SwiftLint/issues/1429)
+
+* Prevent false positive in `shorthand_operator` rule.  
+  [sammy-SC](https://github.com/sammy-SC)
+  [#1254](https://github.com/realm/SwiftLint/issues/1254)
 
 * Fix typo in `DiscardedNotificationCenterObserverRule`.  
   [Spencer Kaiser](https://github.com/spencerkaiser)
@@ -91,6 +122,22 @@
 * Fix `ignores_case_statements` key in `cyclomatic_complexity` description.  
   [Jeff Blagdon](https://github.com/jefflovejapan)
   [#1434](https://github.com/realm/SwiftLint/issues/1434)
+
+* Fall back to reporting violations on line `1` if no line was provided for the
+  violation's location, ensuring Xcode always displays the warning or error.  
+  [rjhodge](https://github.com/rjhodge)
+  [JP Simard](https://github.com/jpsim)
+  [#1520](https://github.com/realm/SwiftLint/issues/1520)
+
+* Fix crash or incorrect violation location with strings including multi-byte
+  unicode characters.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1006](https://github.com/realm/SwiftLint/issues/1006)
+
+* Fix false positive in `syntactic_sugar` rule when using nested types named
+  `Optional`, `ImplicitlyUnwrappedOptional`, `Array` or `Dictionary`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1508](https://github.com/realm/SwiftLint/issues/1508)
 
 ## 0.18.1: Misaligned Drum
 

@@ -98,6 +98,9 @@
 
 * Make `Region` & `Command` structs conform to `Equatable`.  
   [JP Simard](https://github.com/jpsim)
+* Add `multiline_parameters_definition` opt-in rule that warns to either keep
+  all the parameters of a method on the same line, or one per line.
+  [Ornithologist Coder](https://github.com/ornithocoder)
 
 * Make `closure_spacing` a `CorrectableRule`.  
   [J. Cheyo Jimenez](https://github.com/masters3d)

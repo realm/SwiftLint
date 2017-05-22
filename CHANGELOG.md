@@ -66,6 +66,10 @@
   [Hesham Salman](https://github.com/heshamsalman)
   [#1507](https://github.com/realm/SwiftLint/issues/1507)
 
+* Add `multiline_method_definition` opt-in rule that warns to either keep
+  all the parameters of a method one the same line, or one per line.
+  [Ornithologist Coder](https://github.com/ornithocoder)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

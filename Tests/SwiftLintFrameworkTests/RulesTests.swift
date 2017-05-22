@@ -165,6 +165,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
+    func testMultilineMethodDefinition() {
+        verifyRule(MultilineMethodDefinitionRule.description)
+    }
+
     func testNesting() {
         verifyRule(NestingRule.description)
     }

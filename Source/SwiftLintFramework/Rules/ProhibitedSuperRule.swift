@@ -47,6 +47,13 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                     "\t\tsuper.updateLayer()\n" +
                     "\t\tself.method2()\n" +
                 "\t}\n" +
+            "}\n",
+            "class VC: NSView {\n" +
+                "\toverride func updateLayer() {↓\n" +
+                "\t\tdefer {\n" +
+                "\t\t\tsuper.updateLayer()\n" +
+                "\t\t}\n" +
+                "\t}\n" +
             "}\n"
         ]
     )

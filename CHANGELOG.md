@@ -31,7 +31,9 @@
 * Cache linter results for files unmodified since the previous linter run.  
   [Victor Pimentel](https://github.com/victorpimentel)
   [JP Simard](https://github.com/jpsim)
+  [Marcelo Fabri](https://github.com/marcelofabri)
   [#1184](https://github.com/realm/SwiftLint/issues/1184)
+  [#1550](https://github.com/realm/SwiftLint/issues/1550)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and
   `type_name` rules to allow excluding non-alphanumeric characters and names 

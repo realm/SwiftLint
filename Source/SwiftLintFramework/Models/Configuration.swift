@@ -34,45 +34,6 @@ public struct Configuration: Equatable {
     public var configurationPath: String?     // if successfully loaded from a path
     public let cachePath: String?
 
-    internal var cacheDescription: String {
-        let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
-            var accu = accu
-            accu[type(of: element).description.identifier] = element.cacheDescription
-            return accu
-        }
-        let dict: [String: Any] = [
-            "root": rootPath ?? FileManager.default.currentDirectoryPath,
-            "rules": cacheRulesDescriptions
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
-          let jsonString = String(data: jsonData, encoding: .utf8) {
-              return jsonString
-        }
-        fatalError("Could not serialize configuration for cache")
-    }
-
-    internal var cacheURL: URL {
-        let baseURL: URL
-        if let path = cachePath {
-            baseURL = URL(fileURLWithPath: path)
-        } else {
-            #if os(Linux)
-                baseURL = URL(fileURLWithPath: "/var/tmp/")
-            #else
-                baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            #endif
-        }
-        let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
-
-        do {
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            queuedPrintError("Error while creating cache: " + error.localizedDescription)
-        }
-
-        return folder.appendingPathComponent("cache.json")
-    }
-
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
                  enableAllRules: Bool = false,
@@ -351,21 +312,6 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 // MARK: - Nested Configurations Extension
 
 extension Configuration {
-    private static var cachedConfigurationsByPath = [String: Configuration]()
-    private static var cachedConfigurationsByPathLock = NSLock()
-
-    fileprivate func setCached(atPath path: String) {
-        Configuration.cachedConfigurationsByPathLock.lock()
-        Configuration.cachedConfigurationsByPath[path] = self
-        Configuration.cachedConfigurationsByPathLock.unlock()
-    }
-
-    fileprivate static func getCached(atPath path: String) -> Configuration? {
-        cachedConfigurationsByPathLock.lock()
-        defer { cachedConfigurationsByPathLock.unlock() }
-        return cachedConfigurationsByPath[path]
-    }
-
     fileprivate func configuration(forPath path: String) -> Configuration {
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)

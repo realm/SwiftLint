@@ -144,6 +144,10 @@
   [JP Simard](https://github.com/jpsim)
   [#949](https://github.com/realm/SwiftLint/issues/949)
 
+* Fix some overlapping `// swiftlint` commands not being applied.  
+  [JP Simard](https://github.com/jpsim)
+  [#1388](https://github.com/realm/SwiftLint/issues/1388)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

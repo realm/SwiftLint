@@ -135,6 +135,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1508](https://github.com/realm/SwiftLint/issues/1508)
 
+* Fix non-root configurations logging configuration warnings more than once.  
+  [JP Simard](https://github.com/jpsim)
+  [#949](https://github.com/realm/SwiftLint/issues/949)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

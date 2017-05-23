@@ -214,6 +214,7 @@ public struct Configuration: Equatable {
             self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)!
             configurationPath = fullPath
             self.rootPath = rootPath
+            setCached(atPath: fullPath)
             return
         } catch YamlParserError.yamlParsing(let message) {
             fail(message)
@@ -221,6 +222,7 @@ public struct Configuration: Equatable {
             fail("\(error)")
         }
         self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
+        setCached(atPath: fullPath)
     }
 
     public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false, enableAllRules: Bool = false,
@@ -349,6 +351,21 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 // MARK: - Nested Configurations Extension
 
 extension Configuration {
+    private static var cachedConfigurationsByPath = [String: Configuration]()
+    private static var cachedConfigurationsByPathLock = NSLock()
+
+    fileprivate func setCached(atPath path: String) {
+        Configuration.cachedConfigurationsByPathLock.lock()
+        Configuration.cachedConfigurationsByPath[path] = self
+        Configuration.cachedConfigurationsByPathLock.unlock()
+    }
+
+    fileprivate static func getCached(atPath path: String) -> Configuration? {
+        cachedConfigurationsByPathLock.lock()
+        defer { cachedConfigurationsByPathLock.unlock() }
+        return cachedConfigurationsByPath[path]
+    }
+
     fileprivate func configuration(forPath path: String) -> Configuration {
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
@@ -356,8 +373,10 @@ extension Configuration {
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
-            return merge(with: Configuration(path: configurationSearchPath, rootPath: rootPath,
-                optional: false, quiet: true))
+            let fullPath = pathNSString.absolutePathRepresentation()
+            let config = Configuration.getCached(atPath: fullPath) ??
+                Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true)
+            return merge(with: config)
         }
 
         // If we are not at the root path, continue down the tree

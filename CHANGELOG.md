@@ -135,6 +135,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1508](https://github.com/realm/SwiftLint/issues/1508)
 
+* Fix false positives in `prohibited_super_call` & `overridden_super_call` rules
+  where calls to `super` were done in nested scopes such as `defer` blocks.  
+  [JP Simard](https://github.com/jpsim)
+  [#1301](https://github.com/realm/SwiftLint/issues/1301)
+
 ## 0.18.1: Misaligned Drum
 
 ##### Breaking

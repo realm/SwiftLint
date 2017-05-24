@@ -6,6 +6,7 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
+import Foundation
 import SourceKittenFramework
 
 private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds() + [.extension, .protocol]

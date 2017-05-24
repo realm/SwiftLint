@@ -95,6 +95,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1504](https://github.com/realm/SwiftLint/issues/1504)
 
+* Add `outlet_setter` opt-in rule that warns when IBOutlet properties are reset
+  in code, rather than set automaticaly by IB.  
+  [Jeffrey Bergier](https://github.com/jeffreybergier)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

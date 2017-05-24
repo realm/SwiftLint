@@ -38,8 +38,6 @@
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
-            <SkippedTests>
-            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

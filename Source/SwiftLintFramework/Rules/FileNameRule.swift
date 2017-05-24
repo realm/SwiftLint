@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds() + [.extension]
+private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds() + [.extension, .protocol]
 
 extension Dictionary where Key: ExpressibleByStringLiteral {
     fileprivate func recursiveDeclaredTypeNames() -> [String] {

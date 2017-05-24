@@ -46,7 +46,7 @@ extension File {
         return regions
     }
 
-    fileprivate func commands() -> [Command] {
+    internal func commands() -> [Command] {
         if sourcekitdFailed {
             return []
         }

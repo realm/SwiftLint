@@ -93,6 +93,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1504](https://github.com/realm/SwiftLint/issues/1504)
 
+* Make `Region` & `Command` structs conform to `Equatable`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

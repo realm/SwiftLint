@@ -13,9 +13,9 @@ import Yams
 
 class YamlSwiftLintTests: XCTestCase {
 
-    func testFlattenYaml() {
+    func testFlattenYaml() throws {
         do {
-            guard let yamlDict = try Yams.load(yaml: getTestYaml()) as? [String: Any] else {
+            guard let yamlDict = try Yams.load(yaml: try getTestYaml()) as? [String: Any] else {
                 XCTFail()
                 return
             }
@@ -48,9 +48,8 @@ class YamlSwiftLintTests: XCTestCase {
         }
     }
 
-    private func getTestYaml() -> String {
-        // swiftlint:disable:next force_try
-        return try! String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
+    private func getTestYaml() throws -> String {
+        return try String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
     }
 }
 

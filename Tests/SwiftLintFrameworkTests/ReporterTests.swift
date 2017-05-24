@@ -70,13 +70,12 @@ class ReporterTests: XCTestCase {
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testJSONReporter() {
+    func testJSONReporter() throws {
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
         let result = JSONReporter.generateReport(generateViolations())
-        func jsonValue(_ jsonString: String) -> NSObject {
+        func jsonValue(_ jsonString: String) throws -> NSObject {
             let data = jsonString.data(using: .utf8)!
-            // swiftlint:disable:next force_try
-            let result = try! JSONSerialization.jsonObject(with: data, options: [])
+            let result = try JSONSerialization.jsonObject(with: data, options: [])
             if let dict = (result as? [String: Any])?.bridge() {
                 return dict
             } else if let array = (result as? [Any])?.bridge() {
@@ -84,7 +83,7 @@ class ReporterTests: XCTestCase {
             }
             fatalError("Unexpected value in JSON: \(result)")
         }
-        XCTAssertEqual(jsonValue(result), jsonValue(expectedOutput))
+        XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
     func testCSVReporter() {

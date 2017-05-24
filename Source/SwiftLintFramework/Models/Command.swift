@@ -30,12 +30,12 @@ private extension Scanner {
 }
 #endif
 
-public struct Command {
+public struct Command: Equatable {
     public enum Action: String {
         case enable
         case disable
 
-        fileprivate func inverse() -> Action {
+        internal func inverse() -> Action {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
@@ -53,7 +53,7 @@ public struct Command {
     internal let ruleIdentifiers: [String]
     internal let line: Int
     internal let character: Int?
-    private let modifier: Modifier?
+    internal let modifier: Modifier?
 
     public init(action: Action, ruleIdentifiers: [String], line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil) {
@@ -121,4 +121,14 @@ public struct Command {
             ]
         }
     }
+}
+
+// MARK: Equatable
+
+public func == (lhs: Command, rhs: Command) -> Bool {
+    return lhs.action == rhs.action &&
+        lhs.ruleIdentifiers == rhs.ruleIdentifiers &&
+        lhs.line == rhs.line &&
+        lhs.character == rhs.character &&
+        lhs.modifier == rhs.modifier
 }

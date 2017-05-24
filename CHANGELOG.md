@@ -95,6 +95,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1504](https://github.com/realm/SwiftLint/issues/1504)
 
+* Make `Region` & `Command` structs conform to `Equatable`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  
@@ -145,6 +148,10 @@
 * Fix non-root configurations logging configuration warnings more than once.  
   [JP Simard](https://github.com/jpsim)
   [#949](https://github.com/realm/SwiftLint/issues/949)
+
+* Fix some overlapping `// swiftlint` commands not being applied.  
+  [JP Simard](https://github.com/jpsim)
+  [#1388](https://github.com/realm/SwiftLint/issues/1388)
 
 ## 0.18.1: Misaligned Drum
 

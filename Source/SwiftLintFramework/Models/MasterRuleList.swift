@@ -99,6 +99,7 @@ public let masterRuleList = RuleList(rules:
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
+    FileNameRule.self,
     FirstWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,

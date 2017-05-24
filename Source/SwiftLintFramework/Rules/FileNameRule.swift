@@ -14,9 +14,9 @@ private let typeAndExtensionKinds = SwiftDeclarationKind.typeKinds() + [.extensi
 extension Dictionary where Key: ExpressibleByStringLiteral {
     fileprivate func recursiveDeclaredTypeNames() -> [String] {
         let subNames = substructure.flatMap { $0.recursiveDeclaredTypeNames() }
-        if let kindString = kind, let theKind = SwiftDeclarationKind(rawValue: kindString),
-            typeAndExtensionKinds.contains(theKind), let theName = name {
-            return [theName] + subNames
+        if let kind = kind.flatMap(SwiftDeclarationKind.init),
+            typeAndExtensionKinds.contains(kind), let name = name {
+            return [name] + subNames
         }
         return subNames
     }

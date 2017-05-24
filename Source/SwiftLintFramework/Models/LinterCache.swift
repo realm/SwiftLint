@@ -15,30 +15,47 @@ internal enum LinterCacheError: Error {
 }
 
 public final class LinterCache {
-    private var cache = [String: Any]()
+    private typealias Cache = [String: [String: [String: Any]]]
+
+    private let readCache: Cache
+    private var writeCache = Cache()
     private let lock = NSLock()
-    internal lazy var fileManager: LintableFileManager = FileManager.default
+    internal let fileManager: LintableFileManager
     private let location: URL?
 
-    internal init() {
+    internal init(fileManager: LintableFileManager = FileManager.default) {
         location = nil
+        self.fileManager = fileManager
+        self.readCache = [:]
     }
 
-    internal init(cache: Any) throws {
-        guard let dictionary = cache as? [String: Any] else {
+    internal init(cache: Any, fileManager: LintableFileManager = FileManager.default) throws {
+        guard let dictionary = cache as? Cache else {
             throw LinterCacheError.invalidFormat
         }
 
-        self.cache = dictionary
+        self.readCache = dictionary
         location = nil
+        self.fileManager = fileManager
     }
 
-    public init(configuration: Configuration) {
+    public init(configuration: Configuration,
+                fileManager: LintableFileManager = FileManager.default) {
         location = configuration.cacheURL
         if let data = try? Data(contentsOf: location!),
-            let json = try? JSONSerialization.jsonObject(with: data) {
-            cache = (json as? [String: Any]) ?? [:]
+            let json = try? JSONSerialization.jsonObject(with: data),
+            let cache = json as? Cache {
+            readCache = cache
+        } else {
+            readCache = [:]
         }
+        self.fileManager = fileManager
+    }
+
+    private init(cache: Cache, location: URL?, fileManager: LintableFileManager) {
+        self.readCache = cache
+        self.location = location
+        self.fileManager = fileManager
     }
 
     internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
@@ -49,12 +66,12 @@ public final class LinterCache {
         let configurationDescription = configuration.cacheDescription
 
         lock.lock()
-        var filesCache = (cache[configurationDescription] as? [String: Any]) ?? [:]
+        var filesCache = writeCache[configurationDescription] ?? [:]
         filesCache[file] = [
             Key.violations.rawValue: violations.map(dictionary(for:)),
             Key.lastModification.rawValue: lastModification.timeIntervalSinceReferenceDate
         ]
-        cache[configurationDescription] = filesCache
+        writeCache[configurationDescription] = filesCache
         lock.unlock()
     }
 
@@ -65,18 +82,14 @@ public final class LinterCache {
 
         let configurationDescription = configuration.cacheDescription
 
-        lock.lock()
-
-        guard let filesCache = cache[configurationDescription] as? [String: Any],
-            let entry = filesCache[file] as? [String: Any],
+        guard let filesCache = readCache[configurationDescription],
+            let entry = filesCache[file],
             let cacheLastModification = entry[Key.lastModification.rawValue] as? TimeInterval,
             cacheLastModification == lastModification.timeIntervalSinceReferenceDate,
             let violations = entry[Key.violations.rawValue] as? [[String: Any]] else {
-                lock.unlock()
                 return nil
         }
 
-        lock.unlock()
         return violations.flatMap { StyleViolation.from(cache: $0, file: file) }
     }
 
@@ -84,10 +97,32 @@ public final class LinterCache {
         guard let url = location else {
             throw LinterCacheError.noLocation
         }
-        lock.lock()
+        guard !writeCache.isEmpty else {
+            return
+        }
+
+        let cache = mergeCaches()
         let json = toJSON(cache)
-        lock.unlock()
         try json.write(to: url, atomically: true, encoding: .utf8)
+    }
+
+    internal func flushed() -> LinterCache {
+        return LinterCache(cache: mergeCaches(), location: location, fileManager: fileManager)
+    }
+
+    private func mergeCaches() -> Cache {
+        var cache = readCache
+        lock.lock()
+        for (key, value) in writeCache {
+            var filesCache = cache[key] ?? [:]
+            for (file, fileCache) in value {
+                filesCache[file] = fileCache
+            }
+            cache[key] = filesCache
+        }
+        lock.unlock()
+
+        return cache
     }
 
     private func dictionary(for violation: StyleViolation) -> [String: Any] {

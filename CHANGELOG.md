@@ -1,4 +1,4 @@
-## Master
+## 0.19.0-rc.1: Coin-Operated Machine RC1
 
 ##### Breaking
 
@@ -48,7 +48,8 @@
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
   
-* Added `no_extension_access_modifier` opt-in rule to disallow access modifiers completely, à la SE-0119.  
+* Added `no_extension_access_modifier` opt-in rule to disallow access modifiers
+  completely, à la SE-0119.  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [#1457](https://github.com/realm/SwiftLint/issues/1457)
   
@@ -134,6 +135,15 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1508](https://github.com/realm/SwiftLint/issues/1508)
 
+* Fix false positives in `prohibited_super_call` & `overridden_super_call` rules
+  where calls to `super` were done in nested scopes such as `defer` blocks.  
+  [JP Simard](https://github.com/jpsim)
+  [#1301](https://github.com/realm/SwiftLint/issues/1301)
+
+* Fix non-root configurations logging configuration warnings more than once.  
+  [JP Simard](https://github.com/jpsim)
+  [#949](https://github.com/realm/SwiftLint/issues/949)
+  
 * Add `inline_comment` rule that validates inline comments.  
   [Kim de Vos](https://github.com/kimdv)
   [#1310](https://github.com/realm/SwiftLint/issues/1310)

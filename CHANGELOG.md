@@ -98,6 +98,9 @@
 * Make `Region` & `Command` structs conform to `Equatable`.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `closure_spacing` a `CorrectableRule`.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

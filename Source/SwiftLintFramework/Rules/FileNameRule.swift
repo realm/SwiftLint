@@ -39,9 +39,10 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
+        let typeInFileName = fileName.components(separatedBy: CharacterSet(charactersIn: "+.")).first ?? fileName
+
         let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()
-        guard !allDeclaredTypeNames.isEmpty,
-            !allDeclaredTypeNames.contains(where: fileName.contains) else {
+        guard !allDeclaredTypeNames.isEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {
             return []
         }
 

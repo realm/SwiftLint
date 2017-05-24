@@ -165,8 +165,8 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-    func testMultilineParametersDefinition() {
-        verifyRule(MultilineParametersDefinitionRule.description)
+    func testMultilineParameters() {
+        verifyRule(MultilineParametersRule.description)
     }
 
     func testNesting() {
@@ -396,7 +396,7 @@ extension RulesTests {
             ("testLegacyConstant", testLegacyConstant),
             ("testLegacyConstructor", testLegacyConstructor),
             ("testMark", testMark),
-            ("testMultilineParametersDefinition", testMultilineParametersDefinition),
+            ("testMultilineParameters", testMultilineParameters),
             ("testNesting", testNesting),
             ("testNimbleOperator", testNimbleOperator),
             ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),

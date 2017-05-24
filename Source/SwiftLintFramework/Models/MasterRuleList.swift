@@ -119,7 +119,7 @@ public let masterRuleList = RuleList(rules:
     LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
     MarkRule.self,
-    MultilineParametersDefinitionRule.self,
+    MultilineParametersRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,

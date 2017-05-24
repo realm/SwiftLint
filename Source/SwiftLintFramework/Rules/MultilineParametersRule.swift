@@ -9,17 +9,17 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineParametersDefinitionRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "multiline_parameters_definition",
-        name: "Multiline parameters definition",
+        identifier: "multiline_parameters",
+        name: "Multiline Parameters",
         description: "Functions and methods parameters should be either on the same line, or one per line.",
-        nonTriggeringExamples: MultilineParametersRulesExamples.nonTriggeringExamples,
-        triggeringExamples: MultilineParametersRulesExamples.triggeringExamples
+        nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
+        triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )
 
     public func validate(file: File,

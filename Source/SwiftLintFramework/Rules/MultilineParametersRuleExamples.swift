@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal struct MultilineParametersRulesExamples {
+internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples = [
         "func foo() { }",
         "func foo(param1: Int) { }",

@@ -92,7 +92,7 @@ docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
 
 docker_htop:
-	docker run -it --rm --pid=container:swiftlint terencewestphal/htop
+	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 
 # http://irace.me/swift-profiling/
 display_compilation_time:

@@ -61,109 +61,111 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
     private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier]
 
-    // swiftlint:disable:next function_body_length
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
-        let range = NSRange(location: 0, length: contents.utf16.count)
+        let range = NSRange(location: 0, length: nsstring.length)
         let syntaxMap = file.syntaxMap
         return ForceUnwrappingRule.regularExpression
             .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
-                if match.numberOfRanges < 3 { return nil }
-
-                let firstRange = match.rangeAt(1)
-                let secondRange = match.rangeAt(2)
-                let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
-
-                guard let matchByteFirstRange = nsstring
-                    .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
-                    let matchByteSecondRange = nsstring
-                        .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
-                    else { return nil }
-
-                let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
-                let kindsInSecondRange = syntaxMap.kinds(inByteRange: matchByteSecondRange)
-
-                // check first captured range
-                // If not empty, first captured range is comment, string, keyword or typeidentifier.
-                // We checks "not empty" because kinds may empty without filtering.
-                guard !kindsInFirstRange
-                    .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains) else {
-                        return nil
-                }
-
-                // if first captured range is identifier, generate violation
-                if kindsInFirstRange.contains(.identifier) {
-                    return violationRange
-                }
-
-                // check second capture '!'
-                let forceUnwrapNotInCommentOrString = !kindsInSecondRange
-                    .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains)
-
-                // check firstCapturedString is ")" and '!' is not within comment or string
-                let firstCapturedString = nsstring.substring(with: firstRange)
-                if firstCapturedString == ")" && forceUnwrapNotInCommentOrString {
-                    return violationRange
-                }
-
-                // check third capture
-                if match.numberOfRanges == 3 {
-
-                    // check third captured range
-                    let secondRange = match.rangeAt(3)
-                    guard let matchByteThirdRange = nsstring
-                        .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
-                        else { return nil }
-
-                    let thirdCaptureIsIdentifier = !syntaxMap.kinds(inByteRange: matchByteThirdRange)
-                        .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains)
-                    if thirdCaptureIsIdentifier { return nil }
-                }
-
-                // check structure
-                if checkStructure(in: file, byteRange: matchByteFirstRange) {
-                    return violationRange
-                } else {
-                    return nil
-                }
+                return violationRange(match: match, nsstring: nsstring, syntaxMap: syntaxMap, file: file)
             }
+    }
+
+    private func violationRange(match: NSTextCheckingResult, nsstring: NSString, syntaxMap: SyntaxMap,
+                                file: File) -> NSRange? {
+        if match.numberOfRanges < 3 { return nil }
+
+        let firstRange = match.rangeAt(1)
+        let secondRange = match.rangeAt(2)
+
+        guard let matchByteFirstRange = nsstring
+            .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
+            let matchByteSecondRange = nsstring
+                .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
+            else { return nil }
+
+        let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
+
+        // check first captured range
+        // If not empty, first captured range is comment, string, keyword or typeidentifier.
+        // We checks "not empty" because kinds may empty without filtering.
+        guard !kindsInFirstRange
+            .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains) else {
+                return nil
+        }
+
+        let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
+
+        // if first captured range is identifier, generate violation
+        if kindsInFirstRange.contains(.identifier) {
+            return violationRange
+        }
+
+        // check firstCapturedString is ")" and '!' is not within comment or string
+        let firstCapturedString = nsstring.substring(with: firstRange)
+        if firstCapturedString == ")" {
+            // check second capture '!'
+            let kindsInSecondRange = syntaxMap.kinds(inByteRange: matchByteSecondRange)
+            let forceUnwrapNotInCommentOrString = !kindsInSecondRange
+                .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains)
+            if forceUnwrapNotInCommentOrString {
+                return violationRange
+            }
+        }
+
+        // check third capture
+        if match.numberOfRanges == 3 {
+
+            // check third captured range
+            let thirdRange = match.rangeAt(3)
+            guard let matchByteThirdRange = nsstring
+                .NSRangeToByteRange(start: thirdRange.location, length: thirdRange.length)
+                else { return nil }
+
+            let thirdCaptureIsIdentifier = !syntaxMap.kinds(inByteRange: matchByteThirdRange)
+                .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains)
+            if thirdCaptureIsIdentifier { return nil }
+        }
+
+        // check structure
+        if checkStructure(in: file, contents: nsstring, byteRange: matchByteFirstRange) {
+            return violationRange
+        } else {
+            return nil
+        }
     }
 
     // Returns if range should generate violation
     // check deepest kind matching range in structure
-    private func checkStructure(in file: File, byteRange: NSRange) -> Bool {
-        let nsstring = file.contents.bridge()
+    private func checkStructure(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
-        if let lastKind = kinds.last {
-            switch lastKind.kind {
-            // range is in some "source.lang.swift.decl.var.*"
-            case SwiftDeclarationKind.varClass.rawValue: fallthrough
-            case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
-            case SwiftDeclarationKind.varInstance.rawValue: fallthrough
-            case SwiftDeclarationKind.varStatic.rawValue:
-                let byteOffset = lastKind.byteRange.location
-                let byteLength = byteRange.location - byteOffset
-                if let varDeclarationString = nsstring
-                    .substringWithByteRange(start: byteOffset, length: byteLength),
-                    varDeclarationString.contains("=") {
-                        // if declarations contains "=", range is not type annotation
-                        return true
-                } else {
-                    // range is type annotation of declaration
-                    return false
-                }
-            // followings have invalid "key.length" returned from SourceKitService w/ Xcode 7.2.1
+        guard let lastKind = kinds.last else {
+            return false
+        }
+        switch lastKind.kind {
+        // range is in some "source.lang.swift.decl.var.*"
+        case SwiftDeclarationKind.varClass.rawValue: fallthrough
+        case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
+        case SwiftDeclarationKind.varInstance.rawValue: fallthrough
+        case SwiftDeclarationKind.varStatic.rawValue:
+            let byteOffset = lastKind.byteRange.location
+            let byteLength = byteRange.location - byteOffset
+            if let varDeclarationString = contents
+                .substringWithByteRange(start: byteOffset, length: byteLength),
+                varDeclarationString.contains("=") {
+                    // if declarations contains "=", range is not type annotation
+                    return true
+            }
+            // range is type annotation of declaration
+            return false
+        // followings have invalid "key.length" returned from SourceKitService w/ Xcode 7.2.1
 //            case SwiftDeclarationKind.VarParameter.rawValue: fallthrough
 //            case SwiftDeclarationKind.VarLocal.rawValue: fallthrough
-            default:
-                break
-            }
-            if lastKind.kind.hasPrefix("source.lang.swift.decl.function") {
-                return true
-            }
+        default:
+            break
         }
-        return false
+        return lastKind.kind.hasPrefix("source.lang.swift.decl.function")
     }
 }

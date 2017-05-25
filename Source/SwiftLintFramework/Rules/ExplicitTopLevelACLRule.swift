@@ -64,9 +64,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = NSRange(location: previousInternalByteRange.location, length: length)
-            let internalBelongsToType = file.syntaxMap.tokens(inByteRange: range).filter {
-                SyntaxKind(rawValue: $0.type) != .attributeBuiltin
-            }.isEmpty
+            let internalBelongsToType = file.syntaxMap.kinds(inByteRange: range).contains(.attributeBuiltin)
 
             return !internalBelongsToType
         }

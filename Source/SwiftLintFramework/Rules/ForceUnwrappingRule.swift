@@ -57,11 +57,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     private static let pattern = "([^\\s\\p{Ps}])(!)(.?)"
 
     private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind
-        .commentKeywordStringAndTypeidentifierKinds().map { $0.rawValue }
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind
-        .commentAndStringKinds().map { $0.rawValue }
-    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier.rawValue]
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
+    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier]
 
     // swiftlint:disable:next function_body_length
     private func violationRanges(in file: File) -> [NSRange] {
@@ -76,55 +74,52 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
                 let firstRange = match.rangeAt(1)
                 let secondRange = match.rangeAt(2)
-
                 let violationRange = NSRange(location: NSMaxRange(firstRange), length: 0)
 
-                guard let matchByteFirstRange = contents.bridge()
+                guard let matchByteFirstRange = nsstring
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),
-                    let matchByteSecondRange = contents.bridge()
+                    let matchByteSecondRange = nsstring
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
-                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
-                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
+                let kindsInFirstRange = syntaxMap.kinds(inByteRange: matchByteFirstRange)
+                let kindsInSecondRange = syntaxMap.kinds(inByteRange: matchByteSecondRange)
 
                 // check first captured range
                 // If not empty, first captured range is comment, string, keyword or typeidentifier.
-                // We checks "not empty" because tokens may empty without filtering.
-                guard tokensInFirstRange.filter({
-                    ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains($0.type)
-                }).isEmpty else { return nil }
+                // We checks "not empty" because kinds may empty without filtering.
+                guard !kindsInFirstRange
+                    .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForFirstCapture.contains) else {
+                        return nil
+                }
 
                 // if first captured range is identifier, generate violation
-                if tokensInFirstRange.map({ $0.type }).contains(SyntaxKind.identifier.rawValue) {
+                if kindsInFirstRange.contains(.identifier) {
                     return violationRange
                 }
 
                 // check second capture '!'
-                let forceUnwrapNotInCommentOrString = tokensInSecondRange.filter({
-                    ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains($0.type)
-                }).isEmpty
+                let forceUnwrapNotInCommentOrString = !kindsInSecondRange
+                    .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains)
 
                 // check firstCapturedString is ")" and '!' is not within comment or string
                 let firstCapturedString = nsstring.substring(with: firstRange)
-                if firstCapturedString == ")" &&
-                    forceUnwrapNotInCommentOrString { return violationRange }
+                if firstCapturedString == ")" && forceUnwrapNotInCommentOrString {
+                    return violationRange
+                }
 
                 // check third capture
                 if match.numberOfRanges == 3 {
 
                     // check third captured range
                     let secondRange = match.rangeAt(3)
-                    guard let matchByteThirdRange = contents.bridge()
+                    guard let matchByteThirdRange = nsstring
                         .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                         else { return nil }
 
-                    let tokensInThirdRange = syntaxMap.tokens(inByteRange: matchByteThirdRange).filter {
-                        ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains($0.type)
-                    }
-                    // If not empty, third captured range is identifier.
-                    // "!" is "operator prefix !".
-                    if !tokensInThirdRange.isEmpty { return nil }
+                    let thirdCaptureIsIdentifier = !syntaxMap.kinds(inByteRange: matchByteThirdRange)
+                        .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains)
+                    if thirdCaptureIsIdentifier { return nil }
                 }
 
                 // check structure

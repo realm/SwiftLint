@@ -134,16 +134,17 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
     }
 
     private func trailingCommaIndex(contents: String, file: File, offset: Int) -> Int? {
-        let range = NSRange(location: 0, length: contents.bridge().length)
+        let nsstring = contents.bridge()
+        let range = NSRange(location: 0, length: nsstring.length)
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments
         return ranges.filter {
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.kinds(inByteRange: range)
-            return kinds.filter(SyntaxKind.commentKinds().contains).isEmpty
+            return !kinds.contains(where: SyntaxKind.commentKinds().contains)
         }.last.flatMap {
-            contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
+            nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }
 

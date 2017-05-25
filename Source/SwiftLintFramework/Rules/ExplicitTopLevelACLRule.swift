@@ -24,12 +24,15 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
             "private struct C {}\n",
             "internal enum A {\n enum B {}\n}",
             "internal final class Foo {}",
-            "internal\nclass Foo {}"
+            "internal\nclass Foo {}",
+            "internal func a() {}\n"
         ],
         triggeringExamples: [
             "enum A {}\n",
             "final class B {}\n",
-            "struct C {}\n"
+            "struct C {}\n",
+            "func a() {}\n",
+            "internal let a = 0\nfunc b() {}\n"
         ]
     )
 
@@ -64,9 +67,9 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = NSRange(location: previousInternalByteRange.location, length: length)
-            let internalBelongsToType = file.syntaxMap.kinds(inByteRange: range).contains(.attributeBuiltin)
+            let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
 
-            return !internalBelongsToType
+            return internalDoesntBelongToType
         }
 
         return violationOffsets.map {

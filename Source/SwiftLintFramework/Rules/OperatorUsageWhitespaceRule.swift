@@ -148,7 +148,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             return []
         }
 
-        return file.syntaxMap.tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
+        return file.syntaxMap.kinds(inByteRange: byteRange)
     }
 
     private func operatorInRange(file: File, range: NSRange) -> String {

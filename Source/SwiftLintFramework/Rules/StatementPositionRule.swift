@@ -175,8 +175,7 @@ private extension StatementPositionRule {
                                                                         length: range.length) else {
                 return false
             }
-            let tokens = syntaxMap.tokens(inByteRange: matchRange).flatMap { SyntaxKind(rawValue: $0.type) }
-            return tokens == [.keyword]
+            return syntaxMap.kinds(inByteRange: matchRange) == [.keyword]
         }
     }
 

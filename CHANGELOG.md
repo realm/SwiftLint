@@ -1,4 +1,4 @@
-## 0.19.0-rc.1: Coin-Operated Machine RC1
+## 0.19.0: Coin-Operated Machine
 
 ##### Breaking
 

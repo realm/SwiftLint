@@ -65,10 +65,6 @@ def fail(str)
 end
 
 def validate_state_to_run
-  repo_clean = `git status --porcelain`.empty?
-
-  fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
-
   if `git symbolic-ref HEAD --short`.strip == 'master'
     fail "can't run osscheck from 'master' as the script compares " \
          "the performance of this branch against 'master'"
@@ -111,11 +107,11 @@ end
 def generate_reports(branch)
   @repos.each do |repo|
     Dir.chdir("#{@working_dir}/#{repo.name}") do
-      iterations = 5
+      iterations = (ARGV[0] || 5).to_i
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
+      command = "../builds/#{branch}/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode"
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           file << stdout.read.chomp
@@ -145,16 +141,25 @@ def generate_reports(branch)
 end
 
 def build(branch)
-  `git fetch && git checkout origin/master` if branch == 'master'
+  dir="#{@working_dir}/builds/#{branch}"
+  FileUtils.rm_rf(dir)
+  `git worktree prune`
+  if branch == 'master'
+    `git fetch && git worktree add --force --detach #{dir} origin/master`
+  else
+    `git worktree add --force --detach #{dir}`
+  end
 
-  build_command = 'swift build -c release'
+  build_command = "cd #{dir}; swift build -c release"
 
   puts "Building #{branch}"
   `#{build_command}`
   return if $?.success?
 
   # Couldn't build, start fresh
-  FileUtils.rm_rf %w[Packages .build]
+  Dir.chdir(dir) do
+    FileUtils.rm_rf %w[Packages .build]
+  end
   return_value = nil
   Open3.popen3(build_command) do |_, stdout, _, wait_thr|
     puts stdout.read.chomp
@@ -188,9 +193,8 @@ def diff_and_report_changes_to_danger
 end
 
 def clean_up
-  `git reset --hard HEAD`
   FileUtils.rm_rf(@working_dir)
-  `git checkout -`
+  `git worktree prune`
 end
 
 ################################

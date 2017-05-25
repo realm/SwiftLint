@@ -21,24 +21,18 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     public init() {}
 
-    private static let triggeringExamples: [String] = {
-        var result = [
-            "let foo = [1, 2, 3↓,]\n",
-            "let foo = [1, 2, 3↓, ]\n",
-            "let foo = [1, 2, 3   ↓,]\n",
-            "let foo = [1: 2, 2: 3↓, ]\n",
-            "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
-            "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
-            "let example = [ 1,\n2↓,\n // 3,\n]"
-            // "foo([1: \"\\(error)\"↓,])\n"
-            ]
-        #if !os(Linux)
-            // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
-            // https://bugs.swift.org/browse/SR-3449
-            result.append("let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n")
-        #endif
-        return result
-    }()
+    private static let triggeringExamples =  [
+        "let foo = [1, 2, 3↓,]\n",
+        "let foo = [1, 2, 3↓, ]\n",
+        "let foo = [1, 2, 3   ↓,]\n",
+        "let foo = [1: 2, 2: 3↓, ]\n",
+        "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
+        "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
+        "let example = [ 1,\n2↓,\n // 3,\n]",
+        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
+        // "foo([1: \"\\(error)\"↓,])\n"
+    ]
+
     private static let corrections: [String: String] = {
         let fixed = triggeringExamples.map { $0.replacingOccurrences(of: "↓,", with: "") }
         var result: [String: String] = [:]
@@ -140,16 +134,17 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
     }
 
     private func trailingCommaIndex(contents: String, file: File, offset: Int) -> Int? {
-        let range = NSRange(location: 0, length: contents.bridge().length)
+        let nsstring = contents.bridge()
+        let range = NSRange(location: 0, length: nsstring.length)
         let ranges = TrailingCommaRule.commaRegex.matches(in: contents, options: [], range: range).map { $0.range }
 
         // skip commas in comments
         return ranges.filter {
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.kinds(inByteRange: range)
-            return kinds.filter(SyntaxKind.commentKinds().contains).isEmpty
+            return !kinds.contains(where: SyntaxKind.commentKinds().contains)
         }.last.flatMap {
-            contents.bridge().NSRangeToByteRange(start: $0.location, length: $0.length)
+            nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location
     }
 

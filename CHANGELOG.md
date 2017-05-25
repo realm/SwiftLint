@@ -1,4 +1,18 @@
-## 0.19.0-rc.1: Coin-Operated Machine RC1
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.19.0: Coin-Operated Machine
 
 ##### Breaking
 

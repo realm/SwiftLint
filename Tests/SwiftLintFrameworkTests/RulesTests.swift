@@ -382,7 +382,7 @@ extension RulesTests {
             ("testFirstWhere", testFirstWhere),
             ("testForceCast", testForceCast),
             ("testForceTry", testForceTry),
-            // ("testForceUnwrapping", testForceUnwrapping),
+            ("testForceUnwrapping", testForceUnwrapping),
             ("testForWhere", testForWhere),
             ("testFunctionBodyLength", testFunctionBodyLength),
             ("testFunctionParameterCount", testFunctionParameterCount),

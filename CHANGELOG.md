@@ -83,6 +83,7 @@
   silent associated values inside a `case`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1425](https://github.com/realm/SwiftLint/issues/1425)
+  [#1549](https://github.com/realm/SwiftLint/issues/1549)
 
 * Remove `file.zip` from the `Pods` directory when installing SwiftLint via
   CocoaPods.  

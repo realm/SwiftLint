@@ -21,7 +21,8 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         nonTriggeringExamples: [
             "switch foo {\n case .bar: break\n}",
             "switch foo {\n case .bar(let x): break\n}",
-            "switch foo {\n case let .bar(x): break\n}"
+            "switch foo {\n case let .bar(x): break\n}",
+            "switch (foo, bar) {\n case (_, _): break\n}"
         ],
         triggeringExamples: [
             "switch foo {\n case .bar↓(_): break\n}",
@@ -67,8 +68,10 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             }
 
             return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { range, kinds in
-                guard Set(kinds).isSubset(of: [.keyword]) else {
-                    return nil
+                guard Set(kinds).isSubset(of: [.keyword]),
+                    case let byteRange = NSRange(location: offset, length: length),
+                    Set(file.syntaxMap.kinds(inByteRange: byteRange)) != [.keyword] else {
+                        return nil
                 }
 
                 // avoid matches after `where` keyworkd

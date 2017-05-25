@@ -95,9 +95,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             }
 
             let kindsInCaptureGroups = byteRanges.map { range -> [SyntaxKind] in
-                range.flatMap {
-                    return file.syntaxMap.kinds(inByteRange: $0)
-                } ?? []
+                return range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []
             }
 
             guard kindsAreValid(kindsInCaptureGroups[0]) &&

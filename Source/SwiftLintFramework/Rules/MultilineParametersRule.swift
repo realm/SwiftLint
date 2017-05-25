@@ -38,9 +38,8 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         for structure in dictionary.substructure {
             guard
                 let structureOffset = structure.offset,
-                let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: structureOffset),
-                structure.kind == SwiftDeclarationKind.varParameter.rawValue,
-                structure.typeName != nil
+                let structureKind = structure.kind, SwiftDeclarationKind(rawValue: structureKind) == .varParameter,
+                let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: structureOffset)
                 else {
                     continue
             }

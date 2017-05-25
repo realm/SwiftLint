@@ -151,9 +151,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         return namesAndRanges.flatMap { (name, range) -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
-                case let kinds = file.syntaxMap.tokens(inByteRange: byteRange)
-                    .flatMap({ SyntaxKind(rawValue: $0.type) }),
-                kinds == [.identifier] else {
+                file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {
                     return nil
             }
 

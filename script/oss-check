@@ -6,6 +6,33 @@
 
 require 'fileutils'
 require 'open3'
+require 'optparse'
+
+################################
+# Options
+################################
+
+@options = {
+  branch: 'HEAD',
+  iterations: 5,
+  skip_clean: false,
+  verbose: false,
+}
+
+OptionParser.new do |opts|
+  opts.on("--branch BRANCH", "compares the performance of BRANCH against 'master'") do |branch|
+    @options[:branch] = branch
+  end
+  opts.on("--iterations N", Integer, "iterates lint N times on each repositories") do |iterations|
+    @options[:iterations] = iterations
+  end
+  opts.on("--skip-clean", "skip cleaning on completion") do |skip_clean|
+    @options[:skip_clean] = skip_clean
+  end
+  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+    @options[:verbose] = v
+  end
+end.parse!
 
 ################################
 # Classes
@@ -64,9 +91,21 @@ def fail(str)
   exit
 end
 
+def perform(*args)
+  commands = args
+  if @options[:verbose]
+    commands.each { |x|
+      puts(x)
+      system(x)
+    }
+  else
+    commands.each { |x| `#{x}` }
+  end
+end
+
 def validate_state_to_run
-  if `git symbolic-ref HEAD --short`.strip == 'master'
-    fail "can't run osscheck from 'master' as the script compares " \
+  if `git symbolic-ref HEAD --short`.strip == 'master' and @options[:branch] == 'HEAD'
+    fail "can't run osscheck without '--branch' option from 'master' as the script compares " \
          "the performance of this branch against 'master'"
   end
 end
@@ -92,7 +131,7 @@ def setup_repos
   @repos.each do |repo|
     dir = "#{@working_dir}/#{repo.name}"
     puts "Cloning #{repo}"
-    `git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null`
+    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     if repo.name == 'Swift'
       File.open("#{dir}/.swiftlint.yml", 'w') do |file|
         file << 'included: stdlib'
@@ -107,12 +146,13 @@ end
 def generate_reports(branch)
   @repos.each do |repo|
     Dir.chdir("#{@working_dir}/#{repo.name}") do
-      iterations = (ARGV[0] || 5).to_i
+      iterations = @options[:iterations]
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/#{branch}/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode"
+      command = "../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode"
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
+        puts command if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           file << stdout.read.chomp
           if branch == 'branch'
@@ -126,6 +166,7 @@ def generate_reports(branch)
       for i in 2..iterations
         print "..#{i}"
         start = Time.now
+        puts command if @options[:verbose]
         Open3.popen3(command) { |_, stdout, _, _| stdout.read }
         durations << Time.now - start
       end
@@ -141,19 +182,19 @@ def generate_reports(branch)
 end
 
 def build(branch)
-  dir="#{@working_dir}/builds/#{branch}"
-  FileUtils.rm_rf(dir)
-  `git worktree prune`
-  if branch == 'master'
-    `git fetch && git worktree add --force --detach #{dir} origin/master`
+  puts "Building #{branch}"
+
+  dir="#{@working_dir}/builds"
+  target = branch == 'master' ? 'origin/master' : @options[:branch]
+  if File.directory?(dir)
+    perform("cd #{dir}; git checkout #{target}")
   else
-    `git worktree add --force --detach #{dir}`
+    perform("git fetch && git worktree add --detach #{dir} #{target}")
   end
 
   build_command = "cd #{dir}; swift build -c release"
 
-  puts "Building #{branch}"
-  `#{build_command}`
+  perform(build_command)
   return if $?.success?
 
   # Couldn't build, start fresh
@@ -161,6 +202,7 @@ def build(branch)
     FileUtils.rm_rf %w[Packages .build]
   end
   return_value = nil
+  puts build_command if @options[:verbose]
   Open3.popen3(build_command) do |_, stdout, _, wait_thr|
     puts stdout.read.chomp
     return_value = wait_thr.value
@@ -194,7 +236,7 @@ end
 
 def clean_up
   FileUtils.rm_rf(@working_dir)
-  `git worktree prune`
+  perform("git worktree prune")
 end
 
 ################################
@@ -234,4 +276,4 @@ end
 diff_and_report_changes_to_danger
 
 # Clean up
-clean_up
+clean_up if !@options[:skip_clean]

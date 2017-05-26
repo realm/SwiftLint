@@ -195,14 +195,16 @@ extension ColonRule {
     fileprivate func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
-        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
+        return file.rangesAndTokens(matching: pattern).filter { arg in
+            let (_, syntaxTokens) = arg
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
             if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {
                 return false
             }
             return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty
-        }.flatMap { range, syntaxTokens in
-            let identifierRange = nsstring
+        }.flatMap { arg in
+                let (range, syntaxTokens) = arg
+                let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }
@@ -281,10 +283,11 @@ extension ColonRule {
             return NSRange(location: offset, length: length)
         }
 
-        let even = ranges.enumerated().flatMap { $0 % 2 == 0 ? $1 : nil }
-        let odd = ranges.enumerated().flatMap { $0 % 2 != 0 ? $1 : nil }
+        let even = ranges.enumerated().flatMap { $0.0 % 2 == 0 ? $0.1 : nil }
+        let odd = ranges.enumerated().flatMap { $0.0 % 2 != 0 ? $0.1 : nil }
 
-        return zip(even, odd).map { evenRange, oddRange -> NSRange in
+        return zip(even, odd).map { evenOdd -> NSRange in
+            let (evenRange, oddRange) = evenOdd
             let location = NSMaxRange(evenRange)
             let length = oddRange.location - location
 

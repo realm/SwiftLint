@@ -38,7 +38,8 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "(guard|if)[^\n]*return"
-        return file.rangesAndTokens(matching: pattern).filter { _, tokens in
+        return file.rangesAndTokens(matching: pattern).filter { arg in
+            let (_, tokens) = arg
             guard let firstToken = tokens.first, let lastToken = tokens.last,
                 SyntaxKind(rawValue: firstToken.type) == .keyword &&
                     SyntaxKind(rawValue: lastToken.type) == .keyword else {

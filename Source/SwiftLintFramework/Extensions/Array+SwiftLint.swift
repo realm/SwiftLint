@@ -35,7 +35,7 @@ extension Array {
         return nil
     }
 
-    func group<U: Hashable>(by transform: (Element) -> U) -> [U: [Element]] {
+    func group<U>(by transform: (Element) -> U) -> [U: [Element]] {
         return reduce([:]) { dictionary, element in
             var dictionary = dictionary
             let key = transform(element)
@@ -52,11 +52,33 @@ extension Array {
     }
 
     func parallelFlatMap<T>(transform: @escaping ((Element) -> [T])) -> [T] {
-        return parallelMap(transform: transform).flatMap { $0 }
+        var result = [(Int, [T])]()
+        result.reserveCapacity(count)
+
+        let queueLabelPrefix = "io.realm.SwiftLintFramework.map.\(NSUUID().uuidString)"
+        let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            let jobIndexAndResults = (index, transform(self[index]))
+            resultAccumulatorQueue.sync {
+                result.append(jobIndexAndResults)
+            }
+        }
+        return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
     }
 
     func parallelFlatMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
-        return parallelMap(transform: transform).flatMap { $0 }
+        var result = [(Int, T?)]()
+        result.reserveCapacity(count)
+
+        let queueLabelPrefix = "io.realm.SwiftLintFramework.map.\(NSUUID().uuidString)"
+        let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
+        DispatchQueue.concurrentPerform(iterations: count) { index in
+            let jobIndexAndResults = (index, transform(self[index]))
+            resultAccumulatorQueue.sync {
+                result.append(jobIndexAndResults)
+            }
+        }
+        return result.sorted { $0.0 < $1.0 }.flatMap { $0.1 }
     }
 
     func parallelMap<T>(transform: @escaping ((Element) -> T)) -> [T] {

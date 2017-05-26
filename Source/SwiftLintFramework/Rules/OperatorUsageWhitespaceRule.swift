@@ -74,10 +74,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRanges(file: file).map { range, _ in
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: range.location))
+        return violationRanges(file: file).map { rangeAndString in
+            let (range, _) = rangeAndString
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity,
+                                  location: Location(file: file, characterOffset: range.location))
         }
     }
 
@@ -98,8 +99,9 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
         let spaces = [(zeroSpaces, zeroSpaces), (oneSpace, manySpaces),
                       (manySpaces, oneSpace), (manySpaces, manySpaces)]
-        let patterns = spaces.map { first, second in
-            leadingVariableOrNumber + first + operators + second + trailingVariableOrNumber
+        let patterns = spaces.map { arg -> String in
+            let (first, second) = arg
+            return leadingVariableOrNumber + first + operators + second + trailingVariableOrNumber
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
@@ -156,7 +158,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
     }
 
     public func correct(file: File) -> [Correction] {
-        let violatingRanges = violationRanges(file: file).filter { range, _ in
+        let violatingRanges = violationRanges(file: file).filter { arg -> Bool in
+            let (range, _) = arg
             return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 

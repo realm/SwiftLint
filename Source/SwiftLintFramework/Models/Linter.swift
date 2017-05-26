@@ -36,12 +36,14 @@ extension Rule {
 
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
             return (violation, regions.first(where: { $0.contains(violation.location) }))
-        }.partitioned { _, region in
-            return region?.isRuleEnabled(self) ?? true
+        }.partitioned { arg -> Bool in
+                let (_, region) = arg
+                return region?.isRuleEnabled(self) ?? true
         }
 
         let enabledViolations = enabledViolationsAndRegions.map { $0.0 }
-        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
+        let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { arg -> [(String, String)] in
+            let (_, region) = arg
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
             return identifiers.map { ($0, type(of: self).description.identifier) }
         }

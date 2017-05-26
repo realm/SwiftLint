@@ -68,7 +68,8 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.contents.bridge()
 
-        return file.matchesAndSyntaxKinds(matching: pattern).flatMap { result, kinds in
+        return file.matchesAndSyntaxKinds(matching: pattern).flatMap { arg in
+            let (result, kinds) = arg
             let range = result.range
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,

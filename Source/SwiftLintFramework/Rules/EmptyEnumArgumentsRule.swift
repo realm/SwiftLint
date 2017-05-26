@@ -67,7 +67,8 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                     return []
             }
 
-            return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { range, kinds in
+            return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { arg in
+                let (range, kinds) = arg
                 guard Set(kinds).isSubset(of: [.keyword]),
                     case let byteRange = NSRange(location: offset, length: length),
                     Set(file.syntaxMap.kinds(inByteRange: byteRange)) != [.keyword] else {

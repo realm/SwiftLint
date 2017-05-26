@@ -100,8 +100,9 @@ extension File {
 
     internal func matchesAndSyntaxKinds(matching pattern: String,
                                         range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
-        return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
-            (textCheckingResult, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
+        return matchesAndTokens(matching: pattern, range: range).map { textCheckingResultAndTokens in
+            let (textCheckingResult, tokens) = textCheckingResultAndTokens
+            return (textCheckingResult, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
         }
     }
 
@@ -111,8 +112,9 @@ extension File {
     }
 
     internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
-        return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
-            (textCheckingResult.range, syntaxKinds)
+        return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResultAndKinds in
+            let (textCheckingResult, syntaxKinds) = textCheckingResultAndKinds
+            return (textCheckingResult.range, syntaxKinds)
         }
     }
 
@@ -279,8 +281,10 @@ extension File {
     internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
         typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
-        matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return match(pattern: pattern).filter { range, kinds in
+        matches = patterns.flatMap({ arg -> [RangePatternTemplate] in
+            let (pattern, template) = arg
+            return match(pattern: pattern).filter { arg -> Bool in
+                let (range, kinds) = arg
                 return kinds.first == .identifier &&
                     !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
             }.map { ($0.0, pattern, template) }

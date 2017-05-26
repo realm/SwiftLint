@@ -40,9 +40,11 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         let zeroOrManySpaces = "(\\s{0}|\\s{2,})"
         let pattern1 = "func\\s+[\(operators)]+\(zeroOrManySpaces)(<[A-Z]+>)?\\("
         let pattern2 = "func\(zeroOrManySpaces)[\(operators)]+\\s+(<[A-Z]+>)?\\("
-        return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { _, syntaxKinds in
+        return file.match(pattern: "(\(pattern1)|\(pattern2))").filter { arg -> Bool in
+            let (_, syntaxKinds) = arg
             return syntaxKinds.first == .keyword
-        }.map { range, _ in
+        }.map { arg in
+            let (range, _) = arg
             return StyleViolation(ruleDescription: type(of: self).description,
                 severity: configuration.severity,
                 location: Location(file: file, characterOffset: range.location))

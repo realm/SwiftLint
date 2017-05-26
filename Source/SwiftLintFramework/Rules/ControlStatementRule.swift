@@ -61,7 +61,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             let pattern = statementKind == "guard"
                 ? "\(statementKind)\\s*\\([^,{]*\\)\\s*else\\s*\\{"
                 : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
-            return file.match(pattern: pattern).flatMap { match, syntaxKinds in
+            return file.match(pattern: pattern).flatMap { arg in
+                let (match, syntaxKinds) = arg
                 let matchString = file.contents.substring(from: match.location, length: match.length)
                 if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
                     return nil

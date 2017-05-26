@@ -48,7 +48,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
         let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
-        return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
+        return rangesAndTokens.flatMap { arg -> [StyleViolation] in
+            let (_, tokens) = arg
             guard tokens.count == 2,
                 let keywordToken = tokens.first,
                 let nameToken = tokens.last,

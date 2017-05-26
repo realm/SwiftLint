@@ -80,7 +80,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return violationRanges(in: file, dictionary: dictionary, kind: kind).map { range, name in
+        return violationRanges(in: file, dictionary: dictionary, kind: kind).map { rangeName in
+            let (range, name) = rangeName
             let reason = "Unused parameter \"\(name)\" in a closure should be replaced with _."
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,

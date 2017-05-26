@@ -22,7 +22,7 @@ public struct CheckstyleReporter: Reporter {
             violations
                 .group(by: { ($0.location.file ?? "<nopath>").escapedForXML() })
                 .sorted(by: { $0.key < $1.key })
-                .map(generateForViolationFile).joined(),
+                .map({ generateForViolationFile($0.0, violations: $0.1) }).joined(),
             "\n</checkstyle>"
         ].joined()
     }

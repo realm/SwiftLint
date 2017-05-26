@@ -12,7 +12,9 @@ import Foundation
 #if !swift(>=3.1)
 public typealias NSRegularExpression = RegularExpression
 #endif
+#if !swift(>=4.0)
 public typealias NSTextCheckingResult = TextCheckingResult
+#endif
 #endif
 
 private var regexCache = [RegexCacheKey: NSRegularExpression]()

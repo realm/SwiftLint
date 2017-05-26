@@ -101,7 +101,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
             return (contents, nil)
         }
-        let capturedString = contents[indexRange]
+        let capturedString = String(contents[indexRange])
         var adjustedRange = violatingRange
         var correctString = " {"
 

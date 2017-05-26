@@ -191,7 +191,8 @@ extension XCTestCase {
         }
 
         // "disable" commands do not correct
-        ruleDescription.corrections.forEach { before, _ in
+        ruleDescription.corrections.forEach { arg in
+            let (before, _) = arg
             for command in disableCommands {
                 let beforeDisabled = command + before
                 let expectedCleaned = cleanedContentsAndMarkerOffsets(from: beforeDisabled).0

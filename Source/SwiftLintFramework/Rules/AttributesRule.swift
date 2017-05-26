@@ -61,7 +61,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
+        return file.match(pattern: pattern).flatMap { arg -> StyleViolation? in
+            let (range, kinds) = arg
             guard kinds == [.attributeBuiltin, .keyword] else {
                 return nil
             }
@@ -149,18 +150,20 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                                                  attributesTokens: [(String, NSRange)],
                                                  line: Line, file: File) -> Set<String> {
         let attributesTokensWithParameters: [(String, Bool)] = attributesTokens.map {
-            let hasParameter = attributeContainsParameter(attributeRange: $1,
+            let hasParameter = attributeContainsParameter(attributeRange: $0.1,
                                                           line: line, file: file)
-            return ($0, hasParameter)
+            return ($0.0, hasParameter)
         }
         let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return Set(allAttributes.flatMap { (token, hasParameter) -> String? in
+        return Set(allAttributes.flatMap { arg -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
             //      b. the parameter was parsed in the `hasParameter` variable (most attributes)
             // 2. it's a whitelisted attribute, according to the current configuration
+
+            let (token, hasParameter) = arg
             let isParameterized = hasParameter || token.bridge().contains("(")
             if isParameterized || configuration.alwaysOnNewLine.contains(token) {
                 return token

@@ -77,7 +77,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
         let pattern = "typealias\\s+\\w+?\\s*" + genericTypePattern + "\\s*="
-        return file.match(pattern: pattern).flatMap { (range, tokens) -> [(String, Int)] in
+        return file.match(pattern: pattern).flatMap { arg -> [(String, Int)] in
+            let (range, tokens) = arg
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
@@ -139,16 +140,19 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let namesAndRanges: [(String, NSRange)] = beforeWhere.split(separator: ",").flatMap { string, range in
-            return string.split(separator: ":").first.map {
-                let (trimmed, trimmedRange) = $0.0.trimmingWhitespaces()
-                return (trimmed, NSRange(location: range.location + trimmedRange.location,
-                                         length: trimmedRange.length))
+        let namesAndRanges: [(String, NSRange)] = beforeWhere.split(separator: ",")
+            .flatMap { arg -> (String, NSRange)? in
+                let (string, range) = arg
+                return string.split(separator: ":").first.map {
+                    let (trimmed, trimmedRange) = $0.0.trimmingWhitespaces()
+                    return (trimmed, NSRange(location: range.location + trimmedRange.location,
+                                             length: trimmedRange.length))
+                }
             }
-        }
 
         let contents = file.contents.bridge()
-        return namesAndRanges.flatMap { (name, range) -> (String, Int)? in
+        return namesAndRanges.flatMap { arg -> (String, Int)? in
+            let (name, range) = arg
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
                 file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {

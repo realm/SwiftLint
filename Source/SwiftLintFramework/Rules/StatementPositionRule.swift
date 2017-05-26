@@ -107,7 +107,8 @@ private extension StatementPositionRule {
     }
 
     func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
-        return file.match(pattern: pattern).filter { _, syntaxKinds in
+        return file.match(pattern: pattern).filter { arg -> Bool in
+            let (_, syntaxKinds) = arg
             return syntaxKinds.starts(with: [.keyword])
         }.flatMap { $0.0 }
     }

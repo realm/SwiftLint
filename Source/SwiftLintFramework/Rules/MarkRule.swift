@@ -150,10 +150,12 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private func violationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
-        return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
+        return file.rangesAndTokens(matching: pattern).filter { arg -> Bool in
+            let (_, syntaxTokens) = arg
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
-        }.flatMap { range, syntaxTokens in
-            let identifierRange = nsstring
+        }.flatMap { arg in
+                let (range, syntaxTokens) = arg
+                let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }

@@ -294,12 +294,14 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
     }
 
     // Deprecation warning for rules
-    let deprecatedRulesIdentifiers = ruleList.list.flatMap { (identifier, rule) -> [(String, String)] in
+    let deprecatedRulesIdentifiers = ruleList.list.flatMap { arg -> [(String, String)] in
+        let (identifier, rule) = arg
         return rule.description.deprecatedAliases.map { ($0, identifier) }
     }
 
     let userProvidedRuleIDs = Set(disabledRules + optInRules + whitelistRules)
-    let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
+    let deprecatedUsages = deprecatedRulesIdentifiers.filter { arg -> Bool in
+        let (deprecatedIdentifier, _) = arg
         return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
     }
 

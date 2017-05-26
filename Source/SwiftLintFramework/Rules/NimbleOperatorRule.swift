@@ -88,8 +88,9 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let excludingKinds = SyntaxKind.commentKinds()
 
         return file.match(pattern: pattern)
-            .filter { _, kinds in
-                kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
+            .filter { arg -> Bool in
+                let (_, kinds) = arg
+                return kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
             }.map { $0.0 }
     }
 

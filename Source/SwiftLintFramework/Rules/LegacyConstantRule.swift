@@ -45,7 +45,8 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
 
     public func correct(file: File) -> [Correction] {
         var wordBoundPatterns: [String: String] = [:]
-        LegacyConstantRule.legacyPatterns.forEach { key, value in
+        LegacyConstantRule.legacyPatterns.forEach { arg in
+            let (key, value) = arg
             wordBoundPatterns["\\b" + key] = value
         }
 

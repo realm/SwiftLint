@@ -57,14 +57,17 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                     reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"))
             }
         }
-        violations.append(contentsOf: dictionary.substructure.flatMap { subDict in
-            if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
-                return (kind, subDict)
+        violations.append(contentsOf: dictionary.substructure
+            .flatMap { subDict -> [(SwiftDeclarationKind, [String: SourceKitRepresentable])] in
+                if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
+                    return [(kind, subDict)]
+                }
+                return []
+            }.flatMap { kindAndSubdict -> [StyleViolation] in
+                let (kind, subDict) = kindAndSubdict
+                return validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
             }
-            return nil
-        }.flatMap { kind, subDict in
-            return validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
-        })
+        )
         return violations
     }
 }

@@ -93,7 +93,7 @@ class CustomRulesTests: XCTestCase {
     func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
-        extraConfig.forEach { config[$0] = $1 }
+        extraConfig.forEach { config[$0.0] = $0.1 }
 
         var regexConfig = RegexConfiguration(identifier: "custom")
         do {

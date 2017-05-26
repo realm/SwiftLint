@@ -115,7 +115,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "NSRect"
         ]
 
-        let intTypes = ["", "8", "16", "32", "64"].flatMap { size in
+        let intTypes: [String] = ["", "8", "16", "32", "64"].flatMap { size in
             ["U", ""].flatMap { (sign: String) -> String in
                 "\(sign)Int\(size)"
             }

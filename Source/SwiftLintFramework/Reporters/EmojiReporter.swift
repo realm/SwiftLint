@@ -20,7 +20,8 @@ public struct EmojiReporter: Reporter {
         return violations
             .group(by: { $0.location.file ?? "Other" })
             .sorted(by: { $0.key < $1.key })
-            .map(report).joined(separator: "\n")
+            .map({ report(for: $0.0, with: $0.1) })
+            .joined(separator: "\n")
     }
 
     private static func report(for file: String, with violations: [StyleViolation]) -> String {

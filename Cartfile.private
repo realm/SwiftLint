@@ -1,3 +1,3 @@
 github "Carthage/Commandant" "master"
 github "jspahrsummers/xcconfigs" "master"
-github "jpsim/Yams" ~> 0.3
+github "jpsim/Yams" "jp-swift-4"

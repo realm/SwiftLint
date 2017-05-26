@@ -33,7 +33,7 @@ struct LintCommand: CommandProtocol {
                 currentViolations = LintCommand.applyLeniency(options: options, violations: _currentViolations)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
-                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
+                    currentRuleTimes.forEach { ruleBenchmark.record(id: $0.0, time: $0.1) }
                     violations += currentViolations
                 }
             } else {
@@ -73,7 +73,7 @@ struct LintCommand: CommandProtocol {
         } else if strictWithViolations {
             exit(3)
         }
-        return .success()
+        return .success(())
     }
 
     private static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {

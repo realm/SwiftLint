@@ -38,14 +38,14 @@ struct RulesCommand: CommandProtocol {
             }
 
             print(ruleDescription: rule.description)
-            return .success()
+            return .success(())
         }
 
         let configuration = Configuration(commandLinePath: options.configurationFile)
         let rules = ruleList(for: options, configuration: configuration)
 
         print(TextTable(ruleList: rules, configuration: configuration).render())
-        return .success()
+        return .success(())
     }
 
     private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
@@ -53,7 +53,8 @@ struct RulesCommand: CommandProtocol {
             return masterRuleList
         }
 
-        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleID, ruleType in
+        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleIDAndType in
+            let (ruleID, ruleType) = ruleIDAndType
             let configuredRule = configuration.rules.first { rule in
                 return type(of: rule).description.identifier == ruleID
             }

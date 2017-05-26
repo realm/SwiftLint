@@ -37,7 +37,7 @@ struct AutoCorrectCommand: CommandProtocol {
             if !options.quiet {
                 queuedPrintError("Done correcting \(files.count) files!")
             }
-            return .success()
+            return .success(())
         }
     }
 }

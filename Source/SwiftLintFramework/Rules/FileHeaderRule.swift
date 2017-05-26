@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     public var configuration = FileHeaderConfiguration()
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         identifier: "file_header",
         name: "File Header",
         description: "Files should have consistent header comments.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = \"Copyright\"",
             "let foo = 2 // Copyright",

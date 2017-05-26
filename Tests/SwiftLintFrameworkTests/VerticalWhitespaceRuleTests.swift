@@ -22,6 +22,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
             identifier: VerticalWhitespaceRule.description.identifier,
             name: VerticalWhitespaceRule.description.name,
             description: VerticalWhitespaceRule.description.description,
+            kind: VerticalWhitespaceRule.description.kind,
             nonTriggeringExamples: [
                 "let aaaa = 0\n\n\n"
             ],

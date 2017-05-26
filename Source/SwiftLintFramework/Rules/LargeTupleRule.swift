@@ -21,7 +21,6 @@ private enum RangeKind {
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
-    public static let kind = RuleKind.metrics
 
     public init() {}
 
@@ -29,6 +28,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         identifier: "large_tuple",
         name: "Large Tuple",
         description: "Tuples shouldn't have too many members. Create a custom type instead.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "let foo: (Int, Int)\n",
             "let foo: (start: Int, end: Int)\n",

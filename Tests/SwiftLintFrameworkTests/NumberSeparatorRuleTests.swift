@@ -20,6 +20,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             identifier: NumberSeparatorRule.description.identifier,
             name: NumberSeparatorRule.description.name,
             description: NumberSeparatorRule.description.description,
+            kind: NumberSeparatorRule.description.kind,
             nonTriggeringExamples: [
                 "let foo = 10_000",
                 "let foo = 1000",
@@ -47,6 +48,7 @@ class NumberSeparatorRuleTests: XCTestCase {
             identifier: NumberSeparatorRule.description.identifier,
             name: NumberSeparatorRule.description.name,
             description: NumberSeparatorRule.description.description,
+            kind: NumberSeparatorRule.description.kind,
             nonTriggeringExamples: [
                 "let foo = 1_000.000_000_1",
                 "let foo = 1.000_001",

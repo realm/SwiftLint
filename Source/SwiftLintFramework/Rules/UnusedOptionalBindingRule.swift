@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     public var configuration = UnusedOptionalBindingConfiguration(ignoreOptionalTry: false)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         identifier: "unused_optional_binding",
         name: "Unused Optional Binding",
         description: "Prefer `!= nil` over `let _ =`",
+        kind: .style,
         nonTriggeringExamples: [
             "if let bar = Foo.optionalValue {\n" +
             "}\n",

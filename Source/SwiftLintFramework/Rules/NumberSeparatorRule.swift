@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = NumberSeparatorConfiguration(minimumLength: 0, minimumFractionLength: nil)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
+        kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
         triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
         corrections: NumberSeparatorRuleExamples.corrections

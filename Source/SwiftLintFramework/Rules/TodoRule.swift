@@ -25,7 +25,6 @@ extension SyntaxKind {
 public struct TodoRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -33,6 +32,7 @@ public struct TodoRule: ConfigurationProviderRule {
         identifier: "todo",
         name: "Todo",
         description: "TODOs and FIXMEs should be avoided.",
+        kind: .lint,
         nonTriggeringExamples: [
             "// notaTODO:\n",
             "// notaFIXME:\n"

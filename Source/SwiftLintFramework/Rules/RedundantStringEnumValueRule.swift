@@ -22,7 +22,6 @@ private func children(of dict: [String: SourceKitRepresentable],
 
 public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -30,6 +29,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",
         description: "String enum values can be omitted when they are equal to the enumcase name.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "enum Numbers: String {\n case one\n case two\n}\n",
             "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",

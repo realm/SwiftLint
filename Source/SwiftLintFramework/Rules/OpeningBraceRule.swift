@@ -22,7 +22,6 @@ extension File {
 public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -31,6 +30,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         name: "Opening Brace Spacing",
         description: "Opening braces should be preceded by a single space and on the same line " +
                      "as the declaration.",
+        kind: .style,
         nonTriggeringExamples: [
             "func abc() {\n}",
             "[].map() { $0 }",

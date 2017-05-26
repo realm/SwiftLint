@@ -49,14 +49,13 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         return configuration.cacheDescription
     }
 
-    public static let kind = RuleKind.lint
-
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "private_unit_test",
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class FooTest: XCTestCase { " +
                 "func test1() {}\n " +

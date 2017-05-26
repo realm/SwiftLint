@@ -10,6 +10,7 @@ public struct RuleDescription: Equatable {
     public let identifier: String
     public let name: String
     public let description: String
+    public let kind: RuleKind
     public let nonTriggeringExamples: [String]
     public let triggeringExamples: [String]
     public let corrections: [String: String]
@@ -21,13 +22,14 @@ public struct RuleDescription: Equatable {
         return Array(deprecatedAliases) + [identifier]
     }
 
-    public init(identifier: String, name: String, description: String,
+    public init(identifier: String, name: String, description: String, kind: RuleKind,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
                 deprecatedAliases: Set<String> = []) {
         self.identifier = identifier
         self.name = name
         self.description = description
+        self.kind = kind
         self.nonTriggeringExamples = nonTriggeringExamples
         self.triggeringExamples = triggeringExamples
         self.corrections = corrections

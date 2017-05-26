@@ -48,6 +48,7 @@ class TrailingCommaRuleTests: XCTestCase {
         identifier: TrailingCommaRule.description.identifier,
         name: TrailingCommaRule.description.name,
         description: TrailingCommaRule.description.description,
+        kind: TrailingCommaRule.description.kind,
         nonTriggeringExamples: [
             "let foo = []\n",
             "let foo = [:]\n",

@@ -22,6 +22,7 @@ class AttributesRuleTests: XCTestCase {
             identifier: AttributesRule.description.identifier,
             name: AttributesRule.description.name,
             description: AttributesRule.description.description,
+            kind: AttributesRule.description.kind,
             nonTriggeringExamples: [
                 "@objc var x: String",
                 "@objc func foo()",
@@ -49,6 +50,7 @@ class AttributesRuleTests: XCTestCase {
             identifier: AttributesRule.description.identifier,
             name: AttributesRule.description.name,
             description: AttributesRule.description.description,
+            kind: AttributesRule.description.kind,
             nonTriggeringExamples: [
                 "@objc\n var x: String",
                 "@objc\n func foo()",

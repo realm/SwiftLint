@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -21,6 +20,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         name: "Returning Whitespace",
         description: "Return arrow and return type should be separated by a single space or on a " +
                      "separate line.",
+        kind: .style,
         nonTriggeringExamples: [
             "func abc() -> Int {}\n",
             "func abc() -> [Int] {}\n",

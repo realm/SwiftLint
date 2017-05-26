@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         identifier: "legacy_cggeometry_functions",
         name: "Legacy CGGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "rect.width",
             "rect.height",

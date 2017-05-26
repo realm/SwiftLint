@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         identifier: "nimble_operator",
         name: "Nimble Operator",
         description: "Prefer Nimble operator overloads over free matcher functions.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "expect(seagull.squawk) != \"Hi!\"\n",
             "expect(\"Hi!\") == \"Hi!\"\n",

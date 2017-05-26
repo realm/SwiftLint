@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         identifier: "force_unwrapping",
         name: "Force Unwrapping",
         description: "Force unwrapping should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "if let url = NSURL(string: query)",
             "navigationController?.pushViewController(viewController, animated: true)",

@@ -14,7 +14,6 @@ private let descriptionReason = "Limit vertical whitespace to a single empty lin
 public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -22,6 +21,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
         description: descriptionReason,
+        kind: .style,
         nonTriggeringExamples: [
             "let abc = 0\n",
             "let abc = 0\n\n",

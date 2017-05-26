@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         name: "Discarded Notification Center Observer",
         description: "When registering for a notification using a block, the opaque observer that is " +
                      "returned should be stored so it can be removed later.",
+        kind: .lint,
         nonTriggeringExamples: [
             "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil) { }\n",
             "let foo = nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })\n",

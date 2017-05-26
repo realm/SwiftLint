@@ -16,7 +16,6 @@ private enum AttributesRuleError: Error {
 
 public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = AttributesConfiguration()
-    public static let kind = RuleKind.style
 
     private static let parametersPattern = "^\\s*\\(.+\\)"
     private static let regularExpression = regex(parametersPattern, options: [])
@@ -28,6 +27,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
+        kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )

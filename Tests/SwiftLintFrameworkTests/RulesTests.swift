@@ -214,6 +214,7 @@ class RulesTests: XCTestCase {
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,
                                           description: baseDescription.description,
+                                          kind: baseDescription.kind,
                                           nonTriggeringExamples: nonTriggeringExamples,
                                           triggeringExamples: baseDescription.triggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
@@ -299,6 +300,7 @@ class RulesTests: XCTestCase {
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,
                                           description: baseDescription.description,
+                                          kind: baseDescription.kind,
                                           nonTriggeringExamples: nonTriggeringExamples,
                                           triggeringExamples: baseDescription.triggeringExamples,
                                           corrections: baseDescription.corrections)
@@ -314,6 +316,7 @@ class RulesTests: XCTestCase {
         let description2 = RuleDescription(identifier: baseDescription2.identifier,
                                            name: baseDescription2.name,
                                            description: baseDescription2.description,
+                                           kind: baseDescription2.kind,
                                            nonTriggeringExamples: nonTriggeringExamples2,
                                            triggeringExamples: triggeringExamples2,
                                            corrections: baseDescription2.corrections)

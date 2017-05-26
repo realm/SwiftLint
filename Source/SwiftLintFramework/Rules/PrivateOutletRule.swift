@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         identifier: "private_outlet",
         name: "Private Outlets",
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class Foo {\n  @IBOutlet private var label: UILabel?\n}\n",
             "class Foo {\n  @IBOutlet private var label: UILabel!\n}\n",

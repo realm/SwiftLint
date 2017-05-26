@@ -18,7 +18,6 @@ private let nonSpaceOrTwoOrMoreSpaceOrNewline = "(?:[^ \n]|\(twoOrMoreSpace))"
 public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -26,6 +25,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "mark",
         name: "Mark",
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
+        kind: .lint,
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",

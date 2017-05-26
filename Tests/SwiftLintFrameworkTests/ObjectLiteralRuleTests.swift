@@ -49,6 +49,7 @@ class ObjectLiteralRuleTests: XCTestCase {
             identifier: baseDescription.identifier,
             name: baseDescription.name,
             description: baseDescription.description,
+            kind: baseDescription.kind,
             nonTriggeringExamples: baseDescription.nonTriggeringExamples + nonTriggeringColorLiteralExamples,
             triggeringExamples: imageLiteralTriggeringExamples
         )
@@ -67,6 +68,7 @@ class ObjectLiteralRuleTests: XCTestCase {
             identifier: baseDescription.identifier,
             name: baseDescription.name,
             description: baseDescription.description,
+            kind: baseDescription.kind,
             nonTriggeringExamples: baseDescription.nonTriggeringExamples + nonTriggeringImageLiteralExamples,
             triggeringExamples: colorLiteralTriggeringExamples
         )
@@ -82,6 +84,7 @@ class ObjectLiteralRuleTests: XCTestCase {
             identifier: baseDescription.identifier,
             name: baseDescription.name,
             description: baseDescription.description,
+            kind: baseDescription.kind,
             nonTriggeringExamples: baseDescription.nonTriggeringExamples,
             triggeringExamples: allTriggeringExamples
         )

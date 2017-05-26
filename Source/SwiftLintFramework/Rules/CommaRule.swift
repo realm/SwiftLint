@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "comma",
         name: "Comma Spacing",
         description: "There should be no space before and one after any comma.",
+        kind: .style,
         nonTriggeringExamples: [
             "func abc(a: String, b: String) { }",
             "abc(a: \"string\", b: \"string\"",

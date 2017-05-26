@@ -11,7 +11,6 @@ import SourceKittenFramework
 public struct ForceCastRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct ForceCastRule: ConfigurationProviderRule {
         identifier: "force_cast",
         name: "Force Cast",
         description: "Force casts should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"
         ],

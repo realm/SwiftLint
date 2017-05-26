@@ -11,7 +11,6 @@ import SourceKittenFramework
 public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
         identifier: "operator_whitespace",
         name: "Operator Function Whitespace",
         description: "Operators should be surrounded by a single whitespace when defining them.",
+        kind: .style,
         nonTriggeringExamples: [
             "func <| (lhs: Int, rhs: Int) -> Int {}\n",
             "func <|< <A>(lhs: A, rhs: A) -> A {}\n",

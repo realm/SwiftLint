@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
         name: "Empty Parentheses with Trailing Closure",
         description: "When using trailing closures, empty parentheses should be avoided " +
                      "after the method call.",
+        kind: .style,
         nonTriggeringExamples: [
             "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map({ $0 + 1 })\n",

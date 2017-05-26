@@ -12,14 +12,14 @@ import SourceKittenFramework
 public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "dynamic_inline",
         name: "Dynamic Inline",
-        description: "avoid using 'dynamic' and '@inline(__always)' together.",
+        description: "Avoid using 'dynamic' and '@inline(__always)' together.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class C {\ndynamic func f() {}}",
             "class C {\n@inline(__always) func f() {}}",

@@ -11,7 +11,6 @@ import SourceKittenFramework
 public struct ControlStatementRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         identifier: "control_statement",
         name: "Control Statement",
         description: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
+        kind: .style,
         nonTriggeringExamples: [
             "if condition {\n",
             "if (a, b) == (0, 1) {\n",

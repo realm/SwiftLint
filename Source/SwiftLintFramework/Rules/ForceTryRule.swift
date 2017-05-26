@@ -11,7 +11,6 @@ import SourceKittenFramework
 public struct ForceTryRule: ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.error)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct ForceTryRule: ConfigurationProviderRule {
         identifier: "force_try",
         name: "Force Try",
         description: "Force tries should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func a() throws {}; do { try a() } catch {}"
         ],

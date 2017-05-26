@@ -17,7 +17,6 @@ private enum ColonKind {
 public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = ColonConfiguration()
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -26,6 +25,7 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
         name: "Colon",
         description: "Colons should be next to the identifier when specifying a type " +
                      "and next to the key in dictionary literals.",
+        kind: .style,
         nonTriggeringExamples: [
             "let abc: Void\n",
             "let abc: [Void: Void]\n",

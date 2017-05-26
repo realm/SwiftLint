@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         identifier: "empty_parameters",
         name: "Empty Parameters",
         description: "Prefer `() -> ` over `Void -> `.",
+        kind: .style,
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
             "func foo(completion: () -> Void)\n",

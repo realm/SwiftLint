@@ -10,14 +10,14 @@ import SourceKittenFramework
 
 public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 40, error: 100)
-    public static let kind = RuleKind.metrics
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",
-        description: "Functions bodies should not span too many lines."
+        description: "Functions bodies should not span too many lines.",
+        kind: .metrics
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,

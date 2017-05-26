@@ -29,7 +29,6 @@ extension String {
 public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -37,6 +36,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         identifier: "trailing_newline",
         name: "Trailing Newline",
         description: "Files should have a single trailing newline.",
+        kind: .style,
         nonTriggeringExamples: [
             "let a = 0\n"
         ],

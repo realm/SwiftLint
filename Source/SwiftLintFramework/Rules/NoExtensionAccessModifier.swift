@@ -18,6 +18,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         identifier: "no_extension_access_modifier",
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "extension String {}",
             "\n\n extension String {}"

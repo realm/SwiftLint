@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         identifier: "unused_closure_parameter",
         name: "Unused Closure Parameter",
         description: "Unused parameter in a closure should be replaced with _.",
+        kind: .lint,
         nonTriggeringExamples: [
             "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map({ $0 + 1 })\n",

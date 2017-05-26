@@ -18,6 +18,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         identifier: "multiline_parameters",
         name: "Multiline Parameters",
         description: "Functions and methods parameters should be either on the same line, or one per line.",
+        kind: .style,
         nonTriggeringExamples: MultilineParametersRuleExamples.nonTriggeringExamples,
         triggeringExamples: MultilineParametersRuleExamples.triggeringExamples
     )

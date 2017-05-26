@@ -19,7 +19,6 @@ extension File {
 public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -28,6 +27,7 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
         name: "Redundant Nil Coalescing",
         description: "nil coalescing operator is only evaluated if the lhs is nil" +
             ", coalescing operator with nil as rhs is redundant",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "var myVar: Int?; myVar ?? 0\n"
         ],

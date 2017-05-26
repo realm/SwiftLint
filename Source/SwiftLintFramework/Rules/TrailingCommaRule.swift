@@ -18,7 +18,6 @@ private typealias CommaRuleViolation = (index: Int, reason: TrailingCommaReason)
 
 public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
     public var configuration = TrailingCommaConfiguration()
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -47,6 +46,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         identifier: "trailing_comma",
         name: "Trailing Comma",
         description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = [1, 2, 3]\n",
             "let foo = []\n",

@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
         identifier: "closure_parameter_position",
         name: "Closure Parameter Position",
         description: "Closure parameters should be on the same line as opening brace.",
+        kind: .style,
         nonTriggeringExamples: [
             "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map({ $0 + 1 })\n",

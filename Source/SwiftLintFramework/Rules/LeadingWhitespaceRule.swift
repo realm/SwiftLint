@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule, SourceKitFreeRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
+        kind: .style,
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "\n", " //\n" ],
         corrections: ["\n //": "//"]

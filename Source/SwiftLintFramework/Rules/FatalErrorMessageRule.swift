@@ -18,6 +18,7 @@ public struct FatalErrorMessageRule: ASTRule, ConfigurationProviderRule, OptInRu
         identifier: "fatal_error_message",
         name: "Fatal Error Message",
         description: "A fatalError call should have a message.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func foo() {\n  fatalError(\"Foo\")\n}\n",
             "func foo() {\n  fatalError(x)\n}\n"

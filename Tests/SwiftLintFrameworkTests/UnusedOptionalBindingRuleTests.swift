@@ -20,6 +20,7 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,
                                           description: baseDescription.description,
+                                          kind: baseDescription.kind,
                                           nonTriggeringExamples: baseDescription.nonTriggeringExamples,
                                           triggeringExamples: triggeringExamples,
                                           corrections: baseDescription.corrections)
@@ -36,6 +37,7 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,
                                           description: baseDescription.description,
+                                          kind: baseDescription.kind,
                                           nonTriggeringExamples: nonTriggeringExamples,
                                           triggeringExamples: baseDescription.triggeringExamples,
                                           corrections: baseDescription.corrections)

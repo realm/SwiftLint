@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -20,6 +19,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         name: "Compiler Protocol Init",
         description: "The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` " +
                      "shouldn't be called directly.",
+        kind: .lint,
         nonTriggeringExamples: [
             "let set: Set<Int> = [1, 2]\n",
             "let set = Set(array)\n"

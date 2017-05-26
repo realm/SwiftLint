@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct SortedImportsRule: ConfigurationProviderRule, OptInRule {
         identifier: "sorted_imports",
         name: "Sorted Imports",
         description: "Imports should be sorted.",
+        kind: .style,
         nonTriggeringExamples: [
             "import AAA\nimport BBB\nimport CCC\nimport DDD",
             "import Alamofire\nimport API",

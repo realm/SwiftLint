@@ -12,7 +12,6 @@ import SourceKittenFramework
 public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.style
 
     public init() {}
 
@@ -21,6 +20,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         name: "Operator Usage Whitespace",
         description: "Operators should be surrounded by a single whitespace " +
                      "when they are being used.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = 1 + 2\n",
             "let foo = 1 > 2\n",

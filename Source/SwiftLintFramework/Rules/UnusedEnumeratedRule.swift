@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         identifier: "unused_enumerated",
         name: "Unused Enumerated",
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "for (idx, foo) in bar.enumerated() { }\n",
             "for (_, foo) in bar.enumerated().something() { }\n",

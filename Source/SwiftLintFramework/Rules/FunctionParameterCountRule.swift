@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 5, error: 8)
-    public static let kind = RuleKind.metrics
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         identifier: "function_parameter_count",
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",

@@ -19,7 +19,6 @@ extension File {
 public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.idiomatic
 
     public init() {}
 
@@ -27,6 +26,7 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons.",
+        kind: .idiomatic,
         nonTriggeringExamples: [ "let a = 0\n" ],
         triggeringExamples: [
             "let a = 0↓;\n",

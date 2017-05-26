@@ -25,6 +25,7 @@ class ColonRuleTests: XCTestCase {
             identifier: ColonRule.description.identifier,
             name: ColonRule.description.name,
             description: ColonRule.description.description,
+            kind: ColonRule.description.kind,
             nonTriggeringExamples: ColonRule.description.nonTriggeringExamples + [
                 "let abc:  Void\n",
                 "let abc:  (Void, String, Int)\n",
@@ -92,6 +93,7 @@ class ColonRuleTests: XCTestCase {
             identifier: ColonRule.description.identifier,
             name: ColonRule.description.name,
             description: ColonRule.description.description,
+            kind: ColonRule.description.kind,
             nonTriggeringExamples: ColonRule.description.nonTriggeringExamples + [
                 "let abc = [Void:Void]()\n",
                 "let abc = [Void : Void]()\n",

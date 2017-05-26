@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
@@ -22,6 +21,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         name: "Valid IBInspectable",
         description: "@IBInspectable should be applied to variables only, have its type explicit " +
             "and be of a supported type",
+        kind: .lint,
         nonTriggeringExamples: [
             "class Foo {\n  @IBInspectable private var x: Int\n}\n",
             "class Foo {\n  @IBInspectable private var x: String?\n}\n",

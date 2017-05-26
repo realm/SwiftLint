@@ -30,6 +30,7 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         let description = RuleDescription(identifier: baseDescription.identifier,
                                           name: baseDescription.name,
                                           description: baseDescription.description,
+                                          kind: baseDescription.kind,
                                           nonTriggeringExamples: nonTriggeringExamples,
                                           triggeringExamples: triggeringExamples,
                                           corrections: baseDescription.corrections)

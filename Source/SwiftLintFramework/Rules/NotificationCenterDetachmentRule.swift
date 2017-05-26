@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -19,6 +18,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
         description: "An object should only remove itself as an observer in `deinit`.",
+        kind: .lint,
         nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )

@@ -11,7 +11,6 @@ import SourceKittenFramework
 
 public struct LineLengthRule: ConfigurationProviderRule {
     public var configuration = LineLengthConfiguration(warning: 120, error: 200)
-    public static let kind = RuleKind.metrics
 
     public init() {}
 
@@ -23,6 +22,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
+        kind: .metrics,
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",

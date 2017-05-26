@@ -20,6 +20,7 @@ class FileHeaderRuleTests: XCTestCase {
             identifier: FileHeaderRule.description.identifier,
             name: FileHeaderRule.description.name,
             description: FileHeaderRule.description.description,
+            kind: FileHeaderRule.description.kind,
             nonTriggeringExamples: [
                 "// **Header",
                 "//\n // **Header"
@@ -42,6 +43,7 @@ class FileHeaderRuleTests: XCTestCase {
             identifier: FileHeaderRule.description.identifier,
             name: FileHeaderRule.description.name,
             description: FileHeaderRule.description.description,
+            kind: FileHeaderRule.description.kind,
             nonTriggeringExamples: [
                 "// Copyright © 2016 Realm",
                 "//\n // Copyright © 2016 Realm"
@@ -62,6 +64,7 @@ class FileHeaderRuleTests: XCTestCase {
             identifier: FileHeaderRule.description.identifier,
             name: FileHeaderRule.description.name,
             description: FileHeaderRule.description.description,
+            kind: FileHeaderRule.description.kind,
             nonTriggeringExamples: [
                 "// Copyright\n",
                 "let foo = \"**All rights reserved.\"",
@@ -84,6 +87,7 @@ class FileHeaderRuleTests: XCTestCase {
             identifier: FileHeaderRule.description.identifier,
             name: FileHeaderRule.description.name,
             description: FileHeaderRule.description.description,
+            kind: FileHeaderRule.description.kind,
             nonTriggeringExamples: [
                 "// Copyright\n",
                 "// FileHeaderRuleTests.m\n",

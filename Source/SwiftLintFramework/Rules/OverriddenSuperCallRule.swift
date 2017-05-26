@@ -10,7 +10,6 @@ import SourceKittenFramework
 
 public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptInRule {
     public var configuration = OverridenSuperCallConfiguration()
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -18,6 +17,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         identifier: "overridden_super_call",
         name: "Overridden methods call super",
         description: "Some overridden methods should always call super",
+        kind: .lint,
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func viewWillAppear(_ animated: Bool) {\n" +

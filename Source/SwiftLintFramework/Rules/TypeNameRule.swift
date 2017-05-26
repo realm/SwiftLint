@@ -15,7 +15,6 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                                                  minLengthError: 0,
                                                  maxLengthWarning: 40,
                                                  maxLengthError: 1000)
-    public static let kind = RuleKind.lint
 
     public init() {}
 
@@ -23,7 +22,8 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         identifier: "type_name",
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
-        "uppercase character and span between 3 and 40 characters in length.",
+                     "uppercase character and span between 3 and 40 characters in length.",
+        kind: .idiomatic,
         nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )

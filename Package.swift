@@ -1,4 +1,4 @@
-import PackageDescription
+import PackageDescription4
 
 let package = Package(
   name: "SwiftLint",

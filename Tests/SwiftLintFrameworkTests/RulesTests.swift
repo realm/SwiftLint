@@ -88,6 +88,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
+    func testExtensionAccessModifier() {
+        verifyRule(ExtensionAccessModifierRule.description)
+    }
+
     func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }
@@ -377,6 +381,7 @@ extension RulesTests {
             ("testExplicitInit", testExplicitInit),
             ("testExplicitTopLevelACL", testExplicitTopLevelACL),
             ("testExplicitTypeInterface", testExplicitTypeInterface),
+            ("testExtensionAccessModifier", testExtensionAccessModifier),
             ("testFatalErrorMessage", testFatalErrorMessage),
             ("testFileLength", testFileLength),
             ("testFirstWhere", testFirstWhere),

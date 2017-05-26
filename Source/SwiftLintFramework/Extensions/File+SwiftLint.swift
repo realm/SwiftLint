@@ -304,4 +304,13 @@ extension File {
         return corrections
     }
 
+    internal func isACL(token: SyntaxToken) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+            return false
+        }
+
+        let aclString = contents.bridge().substringWithByteRange(start: token.offset,
+                                                                 length: token.length)
+        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
+    }
 }

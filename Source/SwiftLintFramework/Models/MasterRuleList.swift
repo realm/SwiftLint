@@ -96,6 +96,7 @@ public let masterRuleList = RuleList(rules:
     ExplicitInitRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,
+    ExtensionAccessModifierRule.self,
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,

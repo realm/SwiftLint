@@ -25,7 +25,8 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard isValidFunction(kind),
+        guard
+            SwiftDeclarationKind.functionKinds().contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength
             else {
@@ -59,16 +60,5 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: offset))]
-    }
-
-    // MARK: - Private
-
-    private func isValidFunction(_ kind: SwiftDeclarationKind) -> Bool {
-        return [
-            SwiftDeclarationKind.functionMethodStatic,
-            SwiftDeclarationKind.functionMethodClass,
-            SwiftDeclarationKind.functionMethodInstance,
-            SwiftDeclarationKind.functionFree
-        ].contains(kind)
     }
 }

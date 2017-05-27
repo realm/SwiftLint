@@ -10,8 +10,8 @@ let package = Package(
       ]),
   ],
   dependencies: [
-    .Package(url: "/Users/jp/Projects/SourceKitten", majorVersion: 1),
-    .Package(url: "/Users/jp/Projects/SwiftyTextTable", majorVersion: 1),
+    .Package(url: "/root/SourceKitten", majorVersion: 1),
+    .Package(url: "/root/SwiftyTextTable", majorVersion: 1),
   ],
   swiftLanguageVersions: [3, 4]
 )

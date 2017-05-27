@@ -32,6 +32,7 @@
   as `@discardableResult`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1525](https://github.com/realm/SwiftLint/issues/1525)
+
 * Add `extension_access_modifier` opt-in rule that validates that if all 
   extension declaration have the same Access Control Level, the ACL should
   be in the extension.  

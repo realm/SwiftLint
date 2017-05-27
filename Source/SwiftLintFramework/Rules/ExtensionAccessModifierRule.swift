@@ -37,6 +37,10 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
             "public extension Foo {\n" +
             "   var bar: Int { return 1 }\n" +
             "   var baz: Int { return 1 }\n" +
+            "}",
+            "extension Foo {\n" +
+            "   private bar: Int { return 1 }\n" +
+            "   private baz: Int { return 1 }\n" +
             "}"
         ],
         triggeringExamples: [
@@ -47,6 +51,10 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
             "↓extension Foo {\n" +
             "   public var bar: Int { return 1 }\n" +
             "   public func baz() {}\n" +
+            "}",
+            "public extension Foo {\n" +
+            "   public ↓func bar() {}\n" +
+            "   public ↓func baz() {}\n" +
             "}"
         ]
     )
@@ -58,22 +66,28 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                 return []
         }
 
-        let declarations = dictionary.substructure.flatMap { entry -> AccessControlLevel? in
-            guard entry.kind.flatMap(SwiftDeclarationKind.init) != nil else {
+        let declarations = dictionary.substructure.flatMap { entry -> (acl: AccessControlLevel, offset: Int)? in
+            guard entry.kind.flatMap(SwiftDeclarationKind.init) != nil,
+                let acl = entry.accessibility.flatMap(AccessControlLevel.init(identifier:)),
+                let offset = entry.offset else {
                 return nil
             }
 
-            return entry.accessibility.flatMap(AccessControlLevel.init(identifier:))
-        }.unique
+            return (acl: acl, offset: offset)
+        }
 
-        guard declarations.count == 1, declarations != [.internal], declarations != [.private] else {
+        let declarationsACLs = declarations.map { $0.acl }.unique
+
+        guard declarationsACLs.count == 1, declarationsACLs != [.internal], declarationsACLs != [.private] else {
             return []
         }
 
         let syntaxTokens = file.syntaxMap.tokens
         let parts = syntaxTokens.partitioned { offset <= $0.offset }
         if let aclToken = parts.first.last, file.isACL(token: aclToken) {
-            return []
+            return declarationsViolations(file: file, acl: declarationsACLs[0],
+                                          declarationOffsets: declarations.map { $0.offset },
+                                          dictionary: dictionary)
         }
 
         return [
@@ -81,5 +95,48 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
+    }
+
+    private func declarationsViolations(file: File, acl: AccessControlLevel,
+                                        declarationOffsets: [Int],
+                                        dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+
+        guard let offset = dictionary.offset, let length = dictionary.length,
+            case let contents = file.contents.bridge(),
+            let range = contents.byteRangeToNSRange(start: offset, length: length) else {
+                return []
+        }
+
+        // find all ACL tokens
+        let allACLRanges = file.match(pattern: acl.description, with: [.attributeBuiltin], range: range).flatMap {
+            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
+        }
+
+        let violationOffsets = declarationOffsets.filter { typeOffset in
+            // find the last ACL token before the type
+            guard let previousInternalByteRange = lastACLByteRange(before: typeOffset, in: allACLRanges) else {
+                // didn't find a candidate token, so the ACL is implict (not a violation)
+                return false
+            }
+
+            // the ACL token correspond to the type if there're only
+            // attributeBuiltin (`final` for example) tokens between them
+            let length = typeOffset - previousInternalByteRange.location
+            let range = NSRange(location: previousInternalByteRange.location, length: length)
+            let internalBelongsToType = Set(file.syntaxMap.kinds(inByteRange: range)) == [.attributeBuiltin]
+
+            return internalBelongsToType
+        }
+
+        return violationOffsets.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: $0))
+        }
+    }
+
+    private func lastACLByteRange(before typeOffset: Int, in ranges: [NSRange]) -> NSRange? {
+        let firstPartition = ranges.partitioned(by: { $0.location > typeOffset }).first
+        return firstPartition.last
     }
 }

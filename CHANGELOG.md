@@ -11,6 +11,10 @@
   or one per line.  
   [Ornithologist Coder](https://github.com/ornithocoder)
 
+* Update `function_parameter_count` rule to ignore overridden methods.  
+  [Markus Gasser](https://github.com/frenetisch-applaudierend)
+  [#1562](https://github.com/realm/SwiftLint/issues/1562)
+
 ##### Bug Fixes
 
 * None.

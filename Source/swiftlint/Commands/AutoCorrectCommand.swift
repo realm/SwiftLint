@@ -17,15 +17,21 @@ struct AutoCorrectCommand: CommandProtocol {
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         return Configuration(options: options).visitLintableFiles(path: options.path, action: "Correcting",
             quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles) { linter in
+            if options.patch {
+                if let corrections = linter.gitPatchCorrect(), !corrections.isEmpty && !options.quiet {
+                    queuedPrint(corrections)
+                }
+                return
+            }
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator:"\n"))
+                queuedPrint(correctionLogs.joined(separator: "\n"))
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                    useTabs: false,
-                    indentWidth: 4)
+                                                           useTabs: false,
+                                                           indentWidth: 4)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }
@@ -44,16 +50,17 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useScriptInputFiles: Bool
     let quiet: Bool
     let format: Bool
+    let patch: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { format in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format)
-        }}}}
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ patch: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { format in { patch in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, patch: patch)
+            // swiftlint:enable line_length
+        }}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
-        // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
@@ -62,5 +69,8 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| Option(key: "format",
                                defaultValue: false,
                                usage: "should reformat the Swift files")
+            <*> mode <| Option(key: "patch",
+                               defaultValue: false,
+                               usage: "output git-formatted patch rather than overwrite files")
     }
 }

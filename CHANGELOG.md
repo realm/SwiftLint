@@ -15,6 +15,10 @@
   [Markus Gasser](https://github.com/frenetisch-applaudierend)
   [#1562](https://github.com/realm/SwiftLint/issues/1562)
 
+* Skip files with valid cache & no violations when auto correcting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1554](https://github.com/realm/SwiftLint/issues/1554)
+
 ##### Bug Fixes
 
 * None.

@@ -24,6 +24,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1532](https://github.com/realm/SwiftLint/issues/1532)
 
+* Don't trigger violations from `discarded_notification_center_observer` rule 
+  when the observer is being returned from a function that is not marked 
+  as `@discardableResult`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1525](https://github.com/realm/SwiftLint/issues/1525)
+
 ##### Bug Fixes
 
 * None.

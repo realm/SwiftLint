@@ -126,6 +126,10 @@ public struct Linter {
     }
 
     public func correct() -> [Correction] {
+        if let violations = cachedStyleViolations()?.0, violations.isEmpty {
+            return []
+        }
+
         var corrections = [Correction]()
         for rule in rules.flatMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file)

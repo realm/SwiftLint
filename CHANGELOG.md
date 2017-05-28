@@ -19,6 +19,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1554](https://github.com/realm/SwiftLint/issues/1554)
 
+* Don't trigger violations from `private_unit_test` rule when a
+  method has parameters.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1532](https://github.com/realm/SwiftLint/issues/1532)
+
 ##### Bug Fixes
 
 * None.

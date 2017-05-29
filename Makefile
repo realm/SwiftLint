@@ -92,7 +92,7 @@ docker_test:
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
 
 docker_test_4:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:4020170511a swift test
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:4020170524a swift test
 
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset

@@ -32,7 +32,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "if addedToPlaylist && (!self.selectedFilters.isEmpty || " +
                 "self.searchBar?.text?.isEmpty == false) {}",
             "print(\"\\(xVar)!\")",
-            "var test = (!bar)"
+            "var test = (!bar)",
+            "var a: [Int]!",
+            "private var myProperty: (Void -> Void)!"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -40,7 +42,12 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let unwrapped = optional↓!",
             "return cell↓!",
             "let url = NSURL(string: \"http://www.google.com\")↓!",
-            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓! }"
+            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓! }",
+            "let dict = [\"Boooo\": \"👻\"]func bla() -> String { return dict[\"Boooo\"]↓!.contains(\"B\") }",
+            "let a = dict[\"abc\"]↓!.contains(\"B\")",
+            "dict[\"abc\"]↓!.bar(\"B\")",
+            "if dict[\"a\"]↓!!!! {",
+            "var foo: [Bool]! = dict[\"abc\"]↓!"
         ]
     )
 
@@ -52,14 +59,13 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    // capture previous and next of "!"
+    // capture previous of "!"
     // http://userguide.icu-project.org/strings/regexp
-    private static let pattern = "([^\\s\\p{Ps}])(!)(.?)"
+    private static let pattern = "([^\\s\\p{Ps}])(!+)"
 
     private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
-    private static let excludingSyntaxKindsForThirdCapture = [SyntaxKind.identifier]
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
@@ -103,43 +109,26 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             return violationRange
         }
 
-        // check firstCapturedString is ")" and '!' is not within comment or string
+        // check if firstCapturedString is either ")" or "]" 
+        // and '!' is not within comment or string
+        // and matchByteFirstRange is not a type annotation
         let firstCapturedString = nsstring.substring(with: firstRange)
-        if firstCapturedString == ")" {
+        if [")", "]"].contains(firstCapturedString) {
             // check second capture '!'
             let kindsInSecondRange = syntaxMap.kinds(inByteRange: matchByteSecondRange)
             let forceUnwrapNotInCommentOrString = !kindsInSecondRange
                 .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForSecondCapture.contains)
-            if forceUnwrapNotInCommentOrString {
+            if forceUnwrapNotInCommentOrString &&
+                !isTypeAnnotation(in: file, contents: nsstring, byteRange: matchByteFirstRange) {
                 return violationRange
             }
         }
 
-        // check third capture
-        if match.numberOfRanges == 3 {
-
-            // check third captured range
-            let thirdRange = match.rangeAt(3)
-            guard let matchByteThirdRange = nsstring
-                .NSRangeToByteRange(start: thirdRange.location, length: thirdRange.length)
-                else { return nil }
-
-            let thirdCaptureIsIdentifier = !syntaxMap.kinds(inByteRange: matchByteThirdRange)
-                .contains(where: ForceUnwrappingRule.excludingSyntaxKindsForThirdCapture.contains)
-            if thirdCaptureIsIdentifier { return nil }
-        }
-
-        // check structure
-        if checkStructure(in: file, contents: nsstring, byteRange: matchByteFirstRange) {
-            return violationRange
-        } else {
-            return nil
-        }
+        return nil
     }
 
-    // Returns if range should generate violation
-    // check deepest kind matching range in structure
-    private func checkStructure(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
+    // check deepest kind matching range in structure is a typeAnnotation
+    private func isTypeAnnotation(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
         guard let lastKind = kinds.last else {
             return false
@@ -149,6 +138,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         case SwiftDeclarationKind.varClass.rawValue: fallthrough
         case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
         case SwiftDeclarationKind.varInstance.rawValue: fallthrough
+        case SwiftDeclarationKind.varParameter.rawValue: fallthrough
+        case SwiftDeclarationKind.varLocal.rawValue: fallthrough
         case SwiftDeclarationKind.varStatic.rawValue:
             let byteOffset = lastKind.byteRange.location
             let byteLength = byteRange.location - byteOffset
@@ -156,16 +147,13 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 .substringWithByteRange(start: byteOffset, length: byteLength),
                 varDeclarationString.contains("=") {
                     // if declarations contains "=", range is not type annotation
-                    return true
+                    return false
             }
             // range is type annotation of declaration
-            return false
-        // followings have invalid "key.length" returned from SourceKitService w/ Xcode 7.2.1
-//            case SwiftDeclarationKind.VarParameter.rawValue: fallthrough
-//            case SwiftDeclarationKind.VarLocal.rawValue: fallthrough
+            return true
         default:
             break
         }
-        return lastKind.kind.hasPrefix("source.lang.swift.decl.function")
+        return false
     }
 }

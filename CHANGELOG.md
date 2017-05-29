@@ -6,6 +6,9 @@
 
 ##### Enhancements
 
+* Match `(Void)` as return type in the `void_return` rule.  
+  [Anders Hasselqvist](https://github.com/nevil)
+
 * Add `multiline_parameters` opt-in rule that warns to either keep
   all the parameters of a method or function on the same line,
   or one per line.  

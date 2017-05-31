@@ -308,35 +308,3 @@ class LinterCacheTests: XCTestCase {
         validateNewConfigDoesntHitCache(dict: [:], initialConfig: initialConfig)
     }
 }
-
-extension LinterCacheTests {
-    static var allTests: [(String, (LinterCacheTests) -> () throws -> Void)] {
-        return [
-            ("testInitThrowsWhenUsingInvalidCacheFormat", testInitThrowsWhenUsingInvalidCacheFormat),
-            ("testSaveThrowsWithNoLocation", testSaveThrowsWithNoLocation),
-            ("testInitSucceeds", testInitSucceeds),
-            ("testUnchangedFilesReusesCache", testUnchangedFilesReusesCache),
-            ("testConfigFileReorderedReusesCache", testConfigFileReorderedReusesCache),
-            ("testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache",
-                testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache),
-            ("testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache",
-                testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache),
-            ("testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers",
-                testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers),
-            ("testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted",
-                testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted),
-            ("testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted)
-        ]
-    }
-}

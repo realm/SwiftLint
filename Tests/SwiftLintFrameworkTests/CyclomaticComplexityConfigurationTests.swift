@@ -94,20 +94,3 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
     }
 
 }
-
-extension CyclomaticComplexityConfigurationTests {
-    static var allTests: [(String, (CyclomaticComplexityConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testCyclomaticComplexityConfigurationInitializerSetsLevels",
-             testCyclomaticComplexityConfigurationInitializerSetsLevels),
-            ("testCyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements",
-              testCyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements),
-            ("testCyclomaticComplexityConfigurationThrowsOnBadConfigValues",
-             testCyclomaticComplexityConfigurationThrowsOnBadConfigValues),
-            ("testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary",
-             testCyclomaticComplexityConfigurationApplyConfigurationWithDictionary),
-            ("testCyclomaticComplexityConfigurationCompares",
-             testCyclomaticComplexityConfigurationCompares)
-        ]
-    }
-}

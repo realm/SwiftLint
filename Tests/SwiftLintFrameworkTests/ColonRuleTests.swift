@@ -153,13 +153,3 @@ class ColonRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["apply_to_dictionaries": false])
     }
 }
-
-extension ColonRuleTests {
-    static var allTests: [(String, (ColonRuleTests) -> () throws -> Void)] {
-        return [
-            ("testColonWithDefaultConfiguration", testColonWithDefaultConfiguration),
-            ("testColonWithFlexibleRightSpace", testColonWithFlexibleRightSpace),
-            ("testColonWithoutApplyToDictionaries", testColonWithoutApplyToDictionaries)
-        ]
-    }
-}

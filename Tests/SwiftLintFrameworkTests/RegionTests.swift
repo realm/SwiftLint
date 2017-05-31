@@ -113,15 +113,3 @@ class RegionTests: XCTestCase {
     }
 
 }
-
-extension RegionTests {
-    static var allTests: [(String, (RegionTests) -> () throws -> Void)] {
-        return [
-            ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
-            ("testNoRegionsInFileWithNoCommands", testNoRegionsInFileWithNoCommands),
-            ("testRegionsFromSingleCommand", testRegionsFromSingleCommand),
-            ("testRegionsFromMatchingPairCommands", testRegionsFromMatchingPairCommands),
-            ("testRegionsFromThreeCommandForSingleLine", testRegionsFromThreeCommandForSingleLine)
-        ]
-    }
-}

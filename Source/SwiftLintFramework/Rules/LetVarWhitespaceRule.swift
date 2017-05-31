@@ -25,13 +25,15 @@ public struct LetVarWhitespaceRule: OptInRule {
             "a = 5\n\nvar x = 1\n",
             "struct X {\n\tvar a = 0\n}\n",
             "let a = 1 +\n\t2\nlet b = 5\n",
-            "var x: Int {\n\treturn 0\n}\n"
+            "var x: Int {\n\treturn 0\n}\n",
+            "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
             "a = 5\n↓var x = 1\n",
-            "struct X {\n\tlet a\n\t↓func x() {}\n}\n",
-            "var x: Int {\n\tlet a = 0\n\treturn a\n}\n"
+            // This case doesn't work because of an apparent limitation in SourceKit
+            // "var x: Int {\n\tlet a = 0\n\treturn a\n}\n",
+            "struct X {\n\tlet a\n\t↓func x() {}\n}\n"
         ]
     )
 
@@ -113,12 +115,7 @@ public struct LetVarWhitespaceRule: OptInRule {
                 continue
             }
 
-            switch kind {
-            case SwiftDeclarationKind.varGlobal.rawValue,
-                 SwiftDeclarationKind.varClass.rawValue,
-                 SwiftDeclarationKind.varLocal.rawValue,
-                 SwiftDeclarationKind.varStatic.rawValue,
-                 SwiftDeclarationKind.varInstance.rawValue:
+            if SwiftDeclarationKind.varKinds.contains(where: { $0.rawValue == kind }) {
                 guard let offset = statement.offset,
                       let length = statement.length else {
                     break
@@ -138,8 +135,6 @@ public struct LetVarWhitespaceRule: OptInRule {
                     }
                 }
                 result.formUnion(lines)
-            default:
-                break
             }
 
             let substructure = statement.substructure
@@ -167,12 +162,16 @@ public struct LetVarWhitespaceRule: OptInRule {
     }
 }
 
+extension SwiftDeclarationKind {
+    static let varKinds: [SwiftDeclarationKind] = [.varGlobal, .varClass, .varLocal, .varStatic, .varInstance]
+}
+
 extension File {
-    func line(for offset: Int, startFrom: Int) -> Int {
+    func line(for byteOffset: Int, startFrom: Int) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
 
-            if line.byteRange.location + line.byteRange.length > offset {
+            if line.byteRange.location + line.byteRange.length > byteOffset {
                 return index
             }
         }

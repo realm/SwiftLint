@@ -22,20 +22,20 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1554](https://github.com/realm/SwiftLint/issues/1554)
 
-* Don't trigger violations from `private_unit_test` rule when a
-  method has parameters.  
+* Don't trigger violations from the `private_unit_test` rule when a method has
+  parameters.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1532](https://github.com/realm/SwiftLint/issues/1532)
 
-* Don't trigger violations from `discarded_notification_center_observer` rule 
-  when the observer is being returned from a function that is not marked 
+* Don't trigger violations from the `discarded_notification_center_observer`
+  rule when the observer is being returned from a function that is not marked
   as `@discardableResult`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1525](https://github.com/realm/SwiftLint/issues/1525)
 
-* Add `extension_access_modifier` opt-in rule that validates that if all 
-  extension declaration have the same Access Control Level, the ACL should
-  be in the extension.  
+* Add `extension_access_modifier` opt-in rule validating that if all the
+  declarations in a given extension have the same Access Control Level, the ACL
+  keyword should be applied to the top-level extension.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1546](https://github.com/realm/SwiftLint/issues/1546)
 
@@ -53,7 +53,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
-* Remove `missing_docs` and `valid_docs` rules since 
+* Remove `missing_docs` and `valid_docs` rules since
   they were already disabled.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
@@ -83,7 +83,7 @@
   [#1550](https://github.com/realm/SwiftLint/issues/1550)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and
-  `type_name` rules to allow excluding non-alphanumeric characters and names 
+  `type_name` rules to allow excluding non-alphanumeric characters and names
   that start with uppercase.  
   [Javier Hernández](https://github.com/jaherhi)
   [#541](https://github.com/realm/SwiftLint/issues/541)
@@ -120,7 +120,7 @@
   keyword when it can be omitted inside closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1194](https://github.com/realm/SwiftLint/issues/1194)
-  
+
 * Add option to `unused_optional_binding` rule to ignore `try?`
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)

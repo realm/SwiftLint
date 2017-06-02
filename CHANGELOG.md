@@ -30,6 +30,7 @@
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
+  [Felipe Plets](https://github.com/felipeplets)
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1597](https://github.com/realm/SwiftLint/issues/1597)
 

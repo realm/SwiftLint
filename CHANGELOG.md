@@ -35,7 +35,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positive in `empty_enum_arguments` rule when calling methods.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1597](https://github.com/realm/SwiftLint/issues/1597)
 
 ## 0.19.0: Coin-Operated Machine
 

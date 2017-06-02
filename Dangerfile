@@ -12,7 +12,7 @@ has_build_changes = !git.modified_files.grep(/Makefile|SwiftLint\.xcodeproj|Swif
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
-  fail("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
+  warn("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
 ```markdown

@@ -28,10 +28,13 @@ VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionSt
 all: bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) build
 
-update_linux_tests:
-	sourcery --sources Tests --templates .sourcery --output .sourcery
+sourcery:
+	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery
 	tail -n +4 .sourcery/LinuxMain.generated.swift > Tests/LinuxMain.swift
 	rm .sourcery/LinuxMain.generated.swift
+	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
+	tail -n +4 .sourcery/MasterRuleList.generated.swift > Source/SwiftLintFramework/Models/MasterRuleList.swift
+	rm .sourcery/MasterRuleList.generated.swift
 
 bootstrap:
 	script/bootstrap

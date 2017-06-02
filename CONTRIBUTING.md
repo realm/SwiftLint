@@ -16,6 +16,13 @@ don't forget to checkout the submodules as well when cloning, by running
 
 See more info [in the README](https://github.com/realm/SwiftLint#installation).
 
+### Code Generation
+
+If XCTest cases or functions are added/removed/renamed, or if rules are
+added/removed/renamed, you'll need to run `make sourcery`, which requires that
+[Sourcery](https://github.com/krzysztofzablocki/Sourcery) be installed on your
+machine. This will update source files to reflect these changes.
+
 ### Tests
 
 SwiftLint supports building via Xcode and Swift Package Manager on macOS, and
@@ -28,17 +35,11 @@ $ swift test
 $ make docker_test
 ```
 
-If XCTest cases or functions are added/removed/renamed, you'll need to run
-`make update_linux_tests`, which requires that
-[Sourcery](https://github.com/krzysztofzablocki/Sourcery) be installed on your
-machine.
-
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
 Rules should conform to either the `Rule` or `ASTRule` protocols.
-To activate a rule, add the rule to `masterRuleList` in `MasterRuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
 

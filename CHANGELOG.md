@@ -33,6 +33,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1525](https://github.com/realm/SwiftLint/issues/1525)
 
+* Add `extension_access_modifier` opt-in rule that validates that if all 
+  extension declaration have the same Access Control Level, the ACL should
+  be in the extension.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1546](https://github.com/realm/SwiftLint/issues/1546)
+
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
@@ -104,7 +110,7 @@
   [ultimatedbz](https://github.com/ultimatedbz)
 
 * Add `explicit_top_level_acl` opt-in rule that validates that all top
-  level declarations should explicitly be marked with an Access  Control
+  level declarations should explicitly be marked with an Access Control
   Level (`private`, `fileprivate`, `internal`, `public` or `open`).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [Marcelo Fabri](https://github.com/marcelofabri)

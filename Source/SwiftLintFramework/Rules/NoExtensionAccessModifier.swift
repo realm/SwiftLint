@@ -39,9 +39,8 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
 
         let syntaxTokens = file.syntaxMap.tokens
         let parts = syntaxTokens.partitioned { offset <= $0.offset }
-        guard let aclToken = parts.first.last,
-            isACL(token: aclToken, file: file) else {
-                return []
+        guard let aclToken = parts.first.last, file.isACL(token: aclToken) else {
+            return []
         }
 
         return [

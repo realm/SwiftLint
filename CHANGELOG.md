@@ -2,7 +2,9 @@
 
 ##### Breaking
 
-* None.
+* `prohibited_super_call` and `overridden_super_call` rules are 
+   now enabled by default.  
+   [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

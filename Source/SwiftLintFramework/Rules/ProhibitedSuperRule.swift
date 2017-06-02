@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
+public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule {
     public var configuration = ProhibitedSuperConfiguration()
 
     public init() {}

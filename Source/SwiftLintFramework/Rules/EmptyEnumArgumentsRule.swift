@@ -23,7 +23,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             "switch foo {\n case .bar(let x): break\n}",
             "switch foo {\n case let .bar(x): break\n}",
             "switch (foo, bar) {\n case (_, _): break\n}",
-            "switch foo {\n case \"bar\".uppercased(): break\n}"
+            "switch foo {\n case \"bar\".uppercased(): break\n}",
             "switch foo {\n case \"bar\".lowercased(): break\n}"
         ],
         triggeringExamples: [

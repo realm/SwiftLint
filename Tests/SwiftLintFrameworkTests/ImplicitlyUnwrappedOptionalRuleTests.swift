@@ -37,14 +37,3 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 }
-
-extension ImplicitlyUnwrappedOptionalRuleTests {
-    static var allTests: [(String, (ImplicitlyUnwrappedOptionalRuleTests) -> () throws -> Void)] {
-        return [
-            ("testImplicitlyUnwrappedOptionalRuleDefaultConfiguration",
-             testImplicitlyUnwrappedOptionalRuleDefaultConfiguration),
-            ("testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode",
-             testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode)
-        ]
-    }
-}

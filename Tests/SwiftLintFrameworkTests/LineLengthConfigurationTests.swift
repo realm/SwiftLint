@@ -192,26 +192,3 @@ class LineLengthConfigurationTests: XCTestCase {
         XCTAssertTrue(configuration2 == configuration6)
     }
 }
-
-extension LineLengthConfigurationTests {
-    static var allTests: [(String, (LineLengthConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testLineLengthConfigurationInitializerSetsLength",
-             testLineLengthConfigurationInitializerSetsLength),
-            ("testLineLengthConfigurationInitialiserSetsIgnoresURLs",
-             testLineLengthConfigurationInitialiserSetsIgnoresURLs),
-            ("testLineLengthConfigurationPartialParams",
-             testLineLengthConfigurationPartialParams),
-            ("testLineLengthConfigurationParams",
-             testLineLengthConfigurationParams),
-            ("testLineLengthConfigurationThrowsOnBadConfig",
-             testLineLengthConfigurationThrowsOnBadConfig),
-            ("testLineLengthConfigurationApplyConfigurationWithArray",
-             testLineLengthConfigurationApplyConfigurationWithArray),
-            ("testLineLengthConfigurationApplyConfigurationWithDictionary",
-             testLineLengthConfigurationApplyConfigurationWithDictionary),
-            ("testLineLengthConfigurationCompares",
-             testLineLengthConfigurationCompares)
-        ]
-    }
-}

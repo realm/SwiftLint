@@ -52,11 +52,3 @@ class YamlSwiftLintTests: XCTestCase {
         return try String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
     }
 }
-
-extension YamlSwiftLintTests {
-    static var allTests: [(String, (YamlSwiftLintTests) -> () throws -> Void)] {
-        return [
-            ("testFlattenYaml", testFlattenYaml)
-        ]
-    }
-}

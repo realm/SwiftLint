@@ -22,7 +22,8 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             "switch foo {\n case .bar: break\n}",
             "switch foo {\n case .bar(let x): break\n}",
             "switch foo {\n case let .bar(x): break\n}",
-            "switch (foo, bar) {\n case (_, _): break\n}"
+            "switch (foo, bar) {\n case (_, _): break\n}",
+            "switch foo {\n case \"bar\".uppercased(): break\n}"
         ],
         triggeringExamples: [
             "switch foo {\n case .bar↓(_): break\n}",
@@ -59,6 +60,17 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
         let contents = file.contents.bridge()
 
+        let callsRanges = dictionary.substructure.flatMap { dict -> NSRange? in
+            guard dict.kind.flatMap(SwiftExpressionKind.init) == .call,
+                let offset = dict.offset,
+                let length = dict.length,
+                let range = contents.byteRangeToNSRange(start: offset, length: length) else {
+                    return nil
+            }
+
+            return range
+        }
+
         return dictionary.elements.flatMap { subDictionary -> [NSRange] in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,
@@ -77,6 +89,10 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                 // avoid matches after `where` keyworkd
                 if let whereMatch = file.match(pattern: "where", with: [.keyword], range: caseRange).first,
                     whereMatch.location < range.location {
+                    return nil
+                }
+
+                if callsRanges.first(where: { range.intersects($0) }) != nil {
                     return nil
                 }
 

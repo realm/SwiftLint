@@ -114,24 +114,3 @@ class CustomRulesTests: XCTestCase {
         return File(path: "\(bundlePath)/test.txt")!
     }
 }
-
-extension CustomRulesTests {
-    static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
-        return [
-            ("testCustomRuleConfigurationSetsCorrectly",
-                testCustomRuleConfigurationSetsCorrectly),
-            ("testCustomRuleConfigurationThrows",
-                testCustomRuleConfigurationThrows),
-            ("testCustomRules",
-                testCustomRules),
-            ("testLocalDisableCustomRule",
-                testLocalDisableCustomRule),
-            ("testCustomRulesIncludedDefault",
-                testCustomRulesIncludedDefault),
-            ("testCustomRulesIncludedExcludesFile",
-                testCustomRulesIncludedExcludesFile),
-            ("testCustomRulesExcludedExcludesFile",
-                testCustomRulesExcludedExcludesFile)
-        ]
-    }
-}

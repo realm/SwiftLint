@@ -60,13 +60,3 @@ class TypeNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["validates_start_lowercase": false])
     }
 }
-
-extension TypeNameRuleTests {
-    static var allTests: [(String, (TypeNameRuleTests) -> () throws -> Void)] {
-        return [
-            ("testTypeName", testTypeName),
-            ("testTypeNameWithAllowedSymbols", testTypeNameWithAllowedSymbols),
-            ("testTypeNameWithIgnoreStartWithLowercase", testTypeNameWithIgnoreStartWithLowercase)
-        ]
-    }
-}

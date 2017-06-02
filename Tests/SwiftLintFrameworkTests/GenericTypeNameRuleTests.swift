@@ -61,13 +61,3 @@ class GenericTypeNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["validates_start_lowercase": false])
     }
 }
-
-extension GenericTypeNameRuleTests {
-    static var allTests: [(String, (GenericTypeNameRuleTests) -> () throws -> Void)] {
-        return [
-            ("testGenericTypeName", testGenericTypeName),
-            ("testGenericTypeNameWithAllowedSymbols", testGenericTypeNameWithAllowedSymbols),
-            ("testGenericTypeNameWithIgnoreStartWithLowercase", testGenericTypeNameWithIgnoreStartWithLowercase)
-        ]
-    }
-}

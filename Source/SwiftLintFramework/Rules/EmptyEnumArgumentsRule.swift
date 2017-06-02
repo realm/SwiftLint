@@ -92,7 +92,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                     return nil
                 }
 
-                if callsRanges.first(where: { range.intersects($0) }) != nil {
+                if callsRanges.first(where: range.intersects) != nil {
                     return nil
                 }
 

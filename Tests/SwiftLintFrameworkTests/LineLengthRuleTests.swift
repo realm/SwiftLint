@@ -73,12 +73,3 @@ class LineLengthRuleTests: XCTestCase {
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 }
-
-extension LineLengthRuleTests {
-    static var allTests: [(String, (LineLengthRuleTests) -> () throws -> Void)] {
-        return [
-            ("testLineLength", testLineLength),
-            ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled)
-        ]
-    }
-}

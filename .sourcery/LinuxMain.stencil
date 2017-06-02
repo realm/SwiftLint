@@ -1,0 +1,24 @@
+//
+//  LinuxMain.swift
+//  SwiftLint
+//
+//  Created by JP Simard on 12/11/16.
+//  Copyright © 2016 Realm. All rights reserved.
+//
+
+@testable import SwiftLintFrameworkTests
+import XCTest
+
+// swiftlint:disable line_length file_length
+
+{% for type in types.classes|based:"XCTestCase" %}
+extension {{ type.name }} {
+    static var allTests: [(String, ({{ type.name }}) -> () throws -> Void)] = [
+    {% for method in type.methods where method.parameters.count == 0 and method.shortName|hasPrefix:"test" %}    ("{{ method.shortName }}", {{ method.shortName }}){% if not forloop.last %},{% endif %}
+    {% endfor %}]
+}
+
+{% endfor %}
+XCTMain([
+{% for type in types.classes|based:"XCTestCase" %}    testCase({{ type.name }}.allTests){% if not forloop.last %},{% endif %}
+{% endfor %}])

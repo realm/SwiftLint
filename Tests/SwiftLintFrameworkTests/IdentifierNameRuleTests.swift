@@ -56,13 +56,3 @@ class IdentifierNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["validates_start_lowercase": false])
     }
 }
-
-extension IdentifierNameRuleTests {
-    static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] {
-        return [
-            ("testIdentifierName", testIdentifierName),
-            ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
-            ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
-        ]
-    }
-}

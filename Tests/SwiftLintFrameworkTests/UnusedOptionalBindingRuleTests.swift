@@ -43,12 +43,3 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["ignore_optional_try": true])
     }
 }
-
-extension UnusedOptionalBindingRuleTests {
-    static var allTests: [(String, (UnusedOptionalBindingRuleTests) -> () throws -> Void)] {
-        return [
-            ("testDefaultConfiguration", testDefaultConfiguration),
-            ("testIgnoreOptionalTryEnabled", testIgnoreOptionalTryEnabled)
-        ]
-    }
-}

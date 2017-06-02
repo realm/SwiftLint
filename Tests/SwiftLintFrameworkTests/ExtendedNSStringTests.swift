@@ -30,12 +30,3 @@ class ExtendedNSStringTests: XCTestCase {
         }
     }
 }
-
-extension ExtendedNSStringTests {
-    static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] {
-        return [
-            ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters",
-                testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
-        ]
-    }
-}

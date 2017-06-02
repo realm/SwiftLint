@@ -28,8 +28,10 @@ $ swift test
 $ make docker_test
 ```
 
-XCTest functions that are added need to be mirrored in the `allTests` static var
-in the test class extensions at the bottom of the test files.
+If XCTest cases or functions are added/removed/renamed, you'll need to run
+`make update_linux_tests`, which requires that
+[Sourcery](https://github.com/krzysztofzablocki/Sourcery) be installed on your
+machine.
 
 ## Rules
 

@@ -126,32 +126,3 @@ class RuleTests: XCTestCase {
         XCTAssertFalse(RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
     }
 }
-
-extension RuleTests {
-    static var allTests: [(String, (RuleTests) -> () throws -> Void)] {
-        return [
-            ("testRuleIsEqualTo",
-                testRuleIsEqualTo),
-            ("testRuleIsNotEqualTo",
-                testRuleIsNotEqualTo),
-            ("testRuleArraysWithDifferentCountsNotEqual",
-                testRuleArraysWithDifferentCountsNotEqual),
-            ("testSeverityLevelRuleInitsWithConfigDictionary",
-                testSeverityLevelRuleInitsWithConfigDictionary),
-            ("testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary",
-                testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary),
-            ("testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary",
-                testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary),
-            ("testSeverityLevelRuleInitsWithConfigArray",
-                testSeverityLevelRuleInitsWithConfigArray),
-            ("testSeverityLevelRuleInitsWithSingleValueConfigArray",
-                testSeverityLevelRuleInitsWithSingleValueConfigArray),
-            ("testSeverityLevelRuleInitsWithLiteral",
-                testSeverityLevelRuleInitsWithLiteral),
-            ("testSeverityLevelRuleNotEqual",
-                testSeverityLevelRuleNotEqual),
-            ("testDifferentSeverityLevelRulesNotEqual",
-                testDifferentSeverityLevelRulesNotEqual)
-        ]
-    }
-}

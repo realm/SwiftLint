@@ -27,13 +27,3 @@ class YamlParserTests: XCTestCase {
         }
     }
 }
-
-extension YamlParserTests {
-    static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] {
-        return [
-            ("testParseEmptyString", testParseEmptyString),
-            ("testParseValidString", testParseValidString),
-            ("testParseInvalidStringThrows", testParseInvalidStringThrows)
-        ]
-    }
-}

@@ -211,25 +211,3 @@ class CommandTests: XCTestCase {
         }
     }
 }
-
-extension CommandTests {
-    static var allTests: [(String, (CommandTests) -> () throws -> Void)] {
-        return [
-            ("testNoCommandsInEmptyFile", testNoCommandsInEmptyFile),
-            ("testEmptyString", testEmptyString),
-            ("testDisable", testDisable),
-            ("testDisablePrevious", testDisablePrevious),
-            ("testDisableThis", testDisableThis),
-            ("testDisableNext", testDisableNext),
-            ("testEnable", testEnable),
-            ("testEnablePrevious", testEnablePrevious),
-            ("testEnableThis", testEnableThis),
-            ("testEnableNext", testEnableNext),
-            ("testActionInverse", testActionInverse),
-            ("testNoModifierCommandExpandsToItself", testNoModifierCommandExpandsToItself),
-            ("testExpandPreviousCommand", testExpandPreviousCommand),
-            ("testExpandThisCommand", testExpandThisCommand),
-            ("testExpandNextCommand", testExpandNextCommand)
-        ]
-    }
-}

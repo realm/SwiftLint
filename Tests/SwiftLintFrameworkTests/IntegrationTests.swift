@@ -62,12 +62,3 @@ extension String {
         }
     }
 }
-
-extension IntegrationTests {
-    static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] {
-        return [
-            ("testSwiftLintLints", testSwiftLintLints),
-            ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects)
-        ]
-    }
-}

@@ -1086,6 +1086,7 @@
 				6CCFCF291CFEF6D3003239EB /* Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */,
 				E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */,
+				E86C76171EE0CC1B0081860F /* Run Sourcery */,
 			);
 			buildRules = (
 			);
@@ -1221,6 +1222,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+		E86C76171EE0CC1B0081860F /* Run Sourcery */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Run Sourcery";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sourcery >/dev/null; then\n  make sourcery\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

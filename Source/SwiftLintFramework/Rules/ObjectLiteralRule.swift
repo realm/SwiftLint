@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
 
@@ -52,7 +52,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }

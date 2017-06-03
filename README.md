@@ -40,6 +40,10 @@ in your Script Build Phases.
 This is the recommended way to install a specific version of SwiftLint since it supports
 installing a pinned version rather than simply the latest (which is the case with Homebrew).
 
+The default set of rules will be used to start with, and overwritten by any nested configuration files. 
+To start with a base configuration you must tell swiftlint where to find your base `.swiftlint.yml` 
+file using the `--config` option. (ie `"${PODS_ROOT}"/SwiftLint/swiftlint lint --config "${SOURCE_ROOT}"/.swiftlint.yml`)
+
 Note that this will add the SwiftLint binaries, its dependencies' binaries and the Swift binary
 library distribution to the `Pods/` directory, so checking in this directory to SCM such as
 git is discouraged.

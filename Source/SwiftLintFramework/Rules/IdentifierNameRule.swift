@@ -115,8 +115,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-fileprivate extension String {
-    var isViolatingCase: Bool {
+extension String {
+    fileprivate var isViolatingCase: Bool {
         let secondIndex = characters.index(after: startIndex)
         let firstCharacter = substring(to: secondIndex)
         guard firstCharacter.isUppercase() else {
@@ -130,7 +130,7 @@ fileprivate extension String {
         return secondCharacter.isLowercase()
     }
 
-    var isOperator: Bool {
+    fileprivate var isOperator: Bool {
         let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
         return !operators.filter(hasPrefix).isEmpty
     }

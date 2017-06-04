@@ -13,7 +13,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 1,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 20,
-                                                 maxLengthError: 1000)
+                                                 maxLengthError: 1_000)
 
     public init() {}
 

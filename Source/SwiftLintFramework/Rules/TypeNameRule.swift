@@ -14,7 +14,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     public var configuration = NameConfiguration(minLengthWarning: 3,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 40,
-                                                 maxLengthError: 1000)
+                                                 maxLengthError: 1_000)
 
     public init() {}
 

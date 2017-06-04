@@ -101,6 +101,15 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false)
     }
 
+    func testFileprivateRule() {
+        verifyRule(FileprivateConfiguration.fileprivateLimited)
+    }
+
+    func testFileprivateRuleWithConfig() {
+        verifyRule(FileprivateConfiguration.fileprivateDisallowed,
+                   ruleConfiguration: ["strict": true])
+    }
+
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }

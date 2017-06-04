@@ -260,7 +260,7 @@ class ConfigurationTests: XCTestCase {
 
 // MARK: - ProjectMock Paths
 
-fileprivate extension String {
+private extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
     }
@@ -276,7 +276,7 @@ extension XCTestCase {
     }
 }
 
-fileprivate extension XCTestCase {
+private extension XCTestCase {
 
     var projectMockPathLevel0: String {
         return bundlePath.stringByAppendingPathComponent("ProjectMock")

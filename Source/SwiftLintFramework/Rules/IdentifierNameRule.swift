@@ -115,7 +115,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-fileprivate extension String {
+private extension String {
     var isViolatingCase: Bool {
         let secondIndex = characters.index(after: startIndex)
         let firstCharacter = substring(to: secondIndex)

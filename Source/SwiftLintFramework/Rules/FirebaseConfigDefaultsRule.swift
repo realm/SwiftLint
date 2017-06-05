@@ -2,7 +2,7 @@
 //  FirebaseConfigDefaultsRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public struct FirebaseConfigDefaultsRule: ConfigurationProviderRule, OptInRule {
             "class ViewController: UIViewController {\n" +
             "  override func viewDidLoad() {\n" +
             "    super.viewDidLoad() \n" +
-            "    remoteConfig.setDefaultsFromPlistFileName(\"RemoteConfigDefaults\")\n" +
+            "    remoteConfig.setDefaults(fromPlist: \"RemoteConfigDefaults\")\n" +
             "  }\n" +
             "}"
         ],

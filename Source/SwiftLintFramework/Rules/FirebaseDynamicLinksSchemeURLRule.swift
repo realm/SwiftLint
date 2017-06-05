@@ -2,7 +2,7 @@
 //  FirebaseDynamicLinksSchemeURLRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public struct FirebaseDynamicLinksSchemeURLRule: ConfigurationProviderRule, OptI
             "class AppDelegate: UIResponder, UIApplicationDelegate {\n" +
             "  func application(_ application: UIApplication," +
             "      didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {\n" +
-            "    FIROptions.default().deepLinkURLScheme = self.customURLScheme\n" +
+            "    FirebaseOptions.defaultOptions()?.deepLinkURLScheme = self.customURLScheme\n" +
             "    return true \n" +
             "  }\n" +
             "}"
@@ -43,21 +43,9 @@ public struct FirebaseDynamicLinksSchemeURLRule: ConfigurationProviderRule, OptI
             for method in first.substructure where
                 SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
                     method.name == "application(_:didFinishLaunchingWithOptions:)" {
-                switch SwiftVersion.current {
-                case .two:
-                    let methodRange = file.contents.bridge().byteRangeToNSRange(start: method.bodyOffset!,
-                                                                                length: method.bodyLength!)
-                    if !file.match(pattern: "deepLinkURLScheme =",
-                                   excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
-                                   range: methodRange).isEmpty {
-                        return []
-                    }
-                case .three:
-                    for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
-                        call.name! == "FIROptions.default" {
-                            return []
-                    }
-                default: break
+                for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
+                    call.name! == "FirebaseOptions.defaultOptions" {
+                    return []
                 }
                 return [StyleViolation(ruleDescription: type(of: self).description,
                                        severity: configuration.severity,

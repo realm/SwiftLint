@@ -2,7 +2,7 @@
 //  FirebaseDynamicLinksHandleCustomSchemeURLRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public struct FirebaseDynamicLinksCustomSchemeURLRule: ConfigurationProviderRule
             "class AppDelegate: UIResponder, UIApplicationDelegate {\n" +
             "  func application(_ application: UIApplication, open url: URL," +
             "      sourceApplication: String?, annotation: Any) -> Bool {\n" +
-            "    let dynamicLink = FIRDynamicLinks.dynamicLinks()?.dynamicLink(fromCustomSchemeURL: url) \n" +
+            "    let dynamicLink = DynamicLinks.dynamicLinks()?.dynamicLink(fromCustomSchemeURL: url) \n" +
             "    return true \n" +
             "  }\n" +
             "}"

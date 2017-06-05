@@ -101,35 +101,14 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false)
     }
 
-    func testFirebaseConfigActivate() {
+    func testFirebaseRules() {
         verifyRule(FirebaseConfigActivateRule.description)
-    }
-
-    func testFirebaseConfigDefaults() {
         verifyRule(FirebaseConfigDefaultsRule.description)
-    }
-
-    func testFirebaseConfigFetch() {
         verifyRule(FirebaseConfigFetchRule.description)
-    }
-
-    func testFirebaseCore() {
         verifyRule(FirebaseCoreRule.description)
-    }
-
-    func testFirebaseDynamicLinksCustomSchemeURL() {
         verifyRule(FirebaseDynamicLinksCustomSchemeURLRule.description)
-    }
-
-    func testFirebaseDynamicLinksUniversalLink() {
         verifyRule(FirebaseDynamicLinksUniversalLinkRule.description)
-    }
-
-    func testFirebaseDynamicLinksSchemeURL() {
         verifyRule(FirebaseDynamicLinksSchemeURLRule.description)
-    }
-
-    func testFirebaseInvites() {
         verifyRule(FirebaseInvitesRule.description)
     }
 

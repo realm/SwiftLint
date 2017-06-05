@@ -39,7 +39,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1546](https://github.com/realm/SwiftLint/issues/1546)
 
-* Add opt-in rules for Firebase SDK.
+* Add opt-in rules for Firebase SDK.  
   [Ibrahim Ulukaya (Google Inc.)](https://github.com/iulukaya)
 
 

@@ -425,6 +425,8 @@
 * Fix `todo` rule messages when the comment is not on a new line.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1304](https://github.com/realm/SwiftLint/issues/1304)
+* Fix false positive and wrong correction on `unused_closure_parameter` rule.  
+  [Hayashi Tatsuya](https://github.com/sora0077)
 
 * Fix false negative on `unused_closure_parameter` rule.  
   [Hayashi Tatsuya](https://github.com/sora0077)

@@ -40,6 +40,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "}(UILabel())\n",
             "hoge(arg: num) { num in\n" +
             "  return num\n" +
+            "}\n",
+            "addObserver(self) { `self` in\n" +
+            "    print(self)\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -49,8 +52,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].map { ↓number in\n return 3 \"number\"\n}\n",
             "[1, 2].something { number, ↓idx in\n return number\n}\n",
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
-            "hoge(arg: num) { ↓num in\n" +
-            "}\n"
+            "hoge(arg: num) { ↓num in\n}\n",
+            "addObserver(self) { ↓`self` in\n }\n"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -74,7 +77,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
                 "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
             "hoge(arg: num) { ↓num in\n}\n":
-                "hoge(arg: num) { _ in\n}\n"
+                "hoge(arg: num) { _ in\n}\n",
+            "addObserver(self) { ↓`self` in\n }\n":
+                "addObserver(self) { _ in\n }\n"
         ]
     )
 
@@ -111,14 +116,13 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             guard let paramOffset = param.offset,
                 let name = param.name,
                 name != "_",
+                let paramLength = paramLength(from: param, for: .current),
                 let regex = try? NSRegularExpression(pattern: name,
                                                      options: [.ignoreMetacharacters]),
                 let range = contents.byteRangeToNSRange(start: rangeStart, length: rangeLength)
             else {
                 return nil
             }
-
-            let paramLength = name.bridge().length
 
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {
@@ -133,9 +137,13 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 }
 
                 // found a usage, there's no violation!
-                if let token = tokens.first, SyntaxKind(rawValue: token.type) == .identifier,
-                    token.offset == byteRange.location, token.length == byteRange.length {
-                    return nil
+                if let token = tokens.first, token.offset == byteRange.location, token.length == byteRange.length {
+                    if SyntaxKind(rawValue: token.type) == .identifier {
+                        return nil
+                    }
+                    if name == "self" {
+                        return nil
+                    }
                 }
             }
             if let range = contents.byteRangeToNSRange(start: paramOffset, length: paramLength) {
@@ -151,6 +159,18 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             let range = NSRange(location: 0, length: length)
             return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
+    }
+
+    private func paramLength(from param: [String: SourceKitRepresentable], for version: SwiftVersion) -> Int? {
+        guard let name = param.name else { return nil }
+        switch version {
+        case .two, .twoPointThree:
+            let typeName = param.typeName?.replacingOccurrences(of: "`", with: "")
+            let hasActualType = typeName != name
+            return hasActualType ? name.bridge().length : param.length
+        case .three:
+            return param.typeName != nil ? name.bridge().length : param.length
+        }
     }
 
     private func violationRanges(in file: File,

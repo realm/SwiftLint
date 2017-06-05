@@ -2,7 +2,7 @@
 //  FirebaseDynamicLinksUniversalLinkRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public struct FirebaseDynamicLinksUniversalLinkRule: ConfigurationProviderRule, 
             "class AppDelegate: UIResponder, UIApplicationDelegate {\n" +
             "  func application(_ application: UIApplication, continue userActivity: NSUserActivity," +
             "      restorationHandler: @escaping ([Any]?) -> Void) -> Bool {\n" +
-            "    let dynamicLink = FIRDynamicLinks.dynamicLinks()?.handleUniversalLink(userActivity.webpageURL!) {" +
+            "    let handled = DynamicLinks.dynamicLinks()?.handleUniversalLink(userActivity.webpageURL!) {" +
             "        (dynamiclink, error) in { \n" +
             "    } \n" +
             "    return true \n" +

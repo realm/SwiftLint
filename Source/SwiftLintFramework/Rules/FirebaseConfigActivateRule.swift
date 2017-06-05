@@ -2,7 +2,7 @@
 //  FirebaseConfigActivateRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 

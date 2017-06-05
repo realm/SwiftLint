@@ -2,7 +2,7 @@
 //  FirebaseInvitesRule.swift
 //  SwiftLint
 //
-//  Created by Ibrahim Ulukaya on 3/8/17.
+//  Created by Ibrahim Ulukaya (Google Inc.) on 3/8/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -22,7 +22,7 @@ public struct FirebaseInvitesRule: ConfigurationProviderRule, OptInRule {
             "class AppDelegate: UIResponder, UIApplicationDelegate {\n" +
             "  func application(_ application: UIApplication, open url: URL," +
             "      options: [UIApplicationOpenURLOptionsKey : Any]) -> Bool {\n" +
-            "    FIRInvites.handle(url, sourceApplication:sourceApplication, annotation:annotation) \n" +
+            "    Invites.handle(url, sourceApplication:sourceApplication, annotation:annotation) \n" +
             "    return true \n" +
             "  }\n" +
             "}"

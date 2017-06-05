@@ -39,6 +39,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1546](https://github.com/realm/SwiftLint/issues/1546)
 
+* Add opt-in rules for Firebase SDK.
+  [Ibrahim Ulukaya (Google Inc.)](https://github.com/iulukaya)
+
+
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
@@ -252,8 +256,6 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1387)
 
-* Add opt-in rules for Firebase SDK.
-  [Ibrahim Ulukaya](https://github.com/iulukaya)
 * Print YAML configuration errors in locatable format compatible with Xcode's
   Issue Navigator.  
   ![](https://cloud.githubusercontent.com/assets/33430/24688866/f18d40f4-19fd-11e7-8f17-72f1fca20406.png)

@@ -25,7 +25,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     private static let legacyConstants: [String] = {
-        return Array(LegacyConstantRule.legacyPatterns.keys)
+        Array(LegacyConstantRule.legacyPatterns.keys)
     }()
 
     private static let legacyPatterns = LegacyConstantRuleExamples.patterns

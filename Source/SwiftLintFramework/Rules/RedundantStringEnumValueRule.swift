@@ -80,7 +80,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
 
     private func enumElementsCount(dictionary: [String: SourceKitRepresentable]) -> Int {
         return children(of: dictionary, matching: .enumelement).filter({ element in
-            return !filterEnumInits(dictionary: element).isEmpty
+            !filterEnumInits(dictionary: element).isEmpty
         }).count
     }
 

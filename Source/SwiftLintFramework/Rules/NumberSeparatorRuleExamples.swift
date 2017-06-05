@@ -11,7 +11,7 @@ import Foundation
 internal struct NumberSeparatorRuleExamples {
 
     static let nonTriggeringExamples: [String] = {
-        return ["-", "+", ""].flatMap { (sign: String) -> [String] in
+        ["-", "+", ""].flatMap { (sign: String) -> [String] in
             [
                 "let foo = \(sign)100",
                 "let foo = \(sign)1_000",

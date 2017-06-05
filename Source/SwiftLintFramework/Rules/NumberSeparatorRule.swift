@@ -25,7 +25,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     public func validate(file: File) -> [StyleViolation] {
         return violatingRanges(in: file).map { range, _ in
-            return StyleViolation(ruleDescription: type(of: self).description,
+            StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
@@ -87,7 +87,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     public func correct(file: File) -> [Correction] {
         let violatingRanges = self.violatingRanges(in: file).filter { range, _ in
-            return !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
+            !file.ruleEnabled(violatingRanges: [range], for: self).isEmpty
         }
 
         var correctedContents = file.contents

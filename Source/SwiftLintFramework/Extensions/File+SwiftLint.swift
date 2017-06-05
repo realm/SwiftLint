@@ -53,9 +53,9 @@ extension File {
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
         return match(pattern: pattern, with: [.comment]).flatMap { range in
-            return Command(string: contents, range: range)
+            Command(string: contents, range: range)
         }.flatMap { command in
-            return command.expand()
+            command.expand()
         }
     }
 
@@ -280,8 +280,8 @@ extension File {
         typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
         matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
-            return match(pattern: pattern).filter { range, kinds in
-                return kinds.first == .identifier &&
+            match(pattern: pattern).filter { range, kinds in
+                kinds.first == .identifier &&
                     !ruleEnabled(violatingRanges: [range], for: legacyRule).isEmpty
             }.map { ($0.0, pattern, template) }
         }).sorted { $0.0.location > $1.0.location } // reversed

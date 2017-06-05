@@ -94,7 +94,7 @@ public struct Configuration: Equatable {
             }
 
             rules = configuredRules.filter { rule in
-                return whitelistRules.contains(type(of: rule).description.identifier)
+                whitelistRules.contains(type(of: rule).description.identifier)
             }
         } else {
             rules = configuredRules.filter { rule in
@@ -295,12 +295,12 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 
     // Deprecation warning for rules
     let deprecatedRulesIdentifiers = ruleList.list.flatMap { (identifier, rule) -> [(String, String)] in
-        return rule.description.deprecatedAliases.map { ($0, identifier) }
+        rule.description.deprecatedAliases.map { ($0, identifier) }
     }
 
     let userProvidedRuleIDs = Set(disabledRules + optInRules + whitelistRules)
     let deprecatedUsages = deprecatedRulesIdentifiers.filter { deprecatedIdentifier, _ in
-        return dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
+        dict[deprecatedIdentifier] != nil || userProvidedRuleIDs.contains(deprecatedIdentifier)
     }
 
     for (deprecatedIdentifier, identifier) in deprecatedUsages {

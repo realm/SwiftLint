@@ -63,7 +63,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
             }
             return nil
         }.flatMap { kind, subDict in
-            return validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
+            validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
         })
         return violations
     }

@@ -100,15 +100,15 @@ private extension StatementPositionRule {
 
     func defaultValidate(file: File) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).flatMap { range in
-            return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity.severity,
-                location: Location(file: file, characterOffset: range.location))
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
     }
 
     func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         return file.match(pattern: pattern).filter { _, syntaxKinds in
-            return syntaxKinds.starts(with: [.keyword])
+            syntaxKinds.starts(with: [.keyword])
         }.flatMap { $0.0 }
     }
 
@@ -135,7 +135,7 @@ private extension StatementPositionRule {
 private extension StatementPositionRule {
     func uncuddledValidate(file: File) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).flatMap { range in
-            return StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
+            StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
                 severity: configuration.severity.severity,
                 location: Location(file: file, characterOffset: range.location))
         }

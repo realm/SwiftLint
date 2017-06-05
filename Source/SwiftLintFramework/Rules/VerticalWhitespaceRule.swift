@@ -81,8 +81,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             guard let lastLine = eachSection.last else {
                 return nil
             }
-            let kindInSection = syntaxMap.tokens(inByteRange: lastLine.byteRange)
-                                         .flatMap { SyntaxKind(rawValue: $0.type) }
+            let kindInSection = syntaxMap.kinds(inByteRange: lastLine.byteRange)
             if stringAndComments.isDisjoint(with: kindInSection) {
                 return (lastLine, eachSection.count)
             }

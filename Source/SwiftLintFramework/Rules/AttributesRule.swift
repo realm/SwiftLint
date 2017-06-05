@@ -27,8 +27,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
-        nonTriggeringExamples: AttributesRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: AttributesRuleExamples.swift3TriggeringExamples
+        nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
+        triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
 
     public func validate(file: File) -> [StyleViolation] {

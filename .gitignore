@@ -53,6 +53,7 @@ osscheck/
 # SPM
 .build
 Packages
+Package.pins
 
 # macOS
 .DS_Store

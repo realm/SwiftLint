@@ -20,6 +20,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         description: "Prefer `-> Void` over `-> ()`.",
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
+            "let abc: () -> (VoidVoid) = {}\n",
             "func foo(completion: () -> Void)\n",
             "let foo: (ConfigurationTests) -> () throws -> Void)\n",
             "let foo: (ConfigurationTests) ->   () throws -> Void)\n",
@@ -28,14 +29,20 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         ],
         triggeringExamples: [
             "let abc: () -> ↓() = {}\n",
+            "let abc: () -> ↓(Void) = {}\n",
+            "let abc: () -> ↓(   Void ) = {}\n",
             "func foo(completion: () -> ↓())\n",
             "func foo(completion: () -> ↓(   ))\n",
+            "func foo(completion: () -> ↓(Void))\n",
             "let foo: (ConfigurationTests) -> () throws -> ↓())\n"
         ],
         corrections: [
             "let abc: () -> ↓() = {}\n": "let abc: () -> Void = {}\n",
+            "let abc: () -> ↓(Void) = {}\n": "let abc: () -> Void = {}\n",
+            "let abc: () -> ↓(   Void ) = {}\n": "let abc: () -> Void = {}\n",
             "func foo(completion: () -> ↓())\n": "func foo(completion: () -> Void)\n",
             "func foo(completion: () -> ↓(   ))\n": "func foo(completion: () -> Void)\n",
+            "func foo(completion: () -> ↓(Void))\n": "func foo(completion: () -> Void)\n",
             "let foo: (ConfigurationTests) -> () throws -> ↓())\n":
                 "let foo: (ConfigurationTests) -> () throws -> Void)\n"
         ]
@@ -51,7 +58,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
 
     private func violationRanges(file: File) -> [NSRange] {
         let kinds = SyntaxKind.commentAndStringKinds()
-        let parensPattern = "\\(\\s*\\)"
+        let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
         let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"
 

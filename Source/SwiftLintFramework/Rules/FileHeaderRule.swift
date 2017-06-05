@@ -83,7 +83,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file.path)
+                    location: Location(file: file.path, line: 1)
                 )
             ]
         }

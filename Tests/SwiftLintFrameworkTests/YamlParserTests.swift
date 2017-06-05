@@ -22,18 +22,8 @@ class YamlParserTests: XCTestCase {
     }
 
     func testParseInvalidStringThrows() {
-        checkError(YamlParserError.yamlParsing("expected end, near \"a\"")) {
+        checkError(YamlParserError.yamlParsing("2:1: error: parser: did not find expected <document start>:\na\n^")) {
             _ = try YamlParser.parse("|\na")
         }
-    }
-}
-
-extension YamlParserTests {
-    static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] {
-        return [
-            ("testParseEmptyString", testParseEmptyString),
-            ("testParseValidString", testParseValidString),
-            ("testParseInvalidStringThrows", testParseInvalidStringThrows)
-        ]
     }
 }

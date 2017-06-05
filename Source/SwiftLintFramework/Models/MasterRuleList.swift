@@ -5,73 +5,8 @@
 //  Created by Scott Hoyt on 12/28/15.
 //  Copyright © 2015 Realm. All rights reserved.
 //
-
-import Foundation
-
-public enum RuleListError: Error {
-    case duplicatedConfigurations(rule: Rule.Type)
-}
-
-public struct RuleList {
-    public let list: [String: Rule.Type]
-    private let aliases: [String: String]
-
-    public init(rules: Rule.Type...) {
-        self.init(rules: rules)
-    }
-
-    public init(rules: [Rule.Type]) {
-        var tmpList = [String: Rule.Type]()
-        var tmpAliases = [String: String]()
-
-        for rule in rules {
-            let identifier = rule.description.identifier
-            tmpList[identifier] = rule
-            for alias in rule.description.deprecatedAliases {
-                tmpAliases[alias] = identifier
-            }
-            tmpAliases[identifier] = identifier
-        }
-        list = tmpList
-        aliases = tmpAliases
-    }
-
-    internal func configuredRules(with dictionary: [String: Any]) throws -> [Rule] {
-        var rules = [String: Rule]()
-
-        for (key, configuration) in dictionary {
-            guard let identifier = identifier(for: key), let ruleType = list[identifier] else {
-                continue
-            }
-            guard rules[identifier] == nil else {
-                throw RuleListError.duplicatedConfigurations(rule: ruleType)
-            }
-            do {
-                let configuredRule = try ruleType.init(configuration: configuration)
-                rules[identifier] = configuredRule
-            } catch {
-                queuedPrintError("Invalid configuration for '\(identifier)'. Falling back to default.")
-                rules[identifier] = ruleType.init()
-            }
-        }
-
-        for (identifier, ruleType) in list where rules[identifier] == nil {
-            rules[identifier] = ruleType.init()
-        }
-
-        return Array(rules.values)
-    }
-
-    internal func identifier(for alias: String) -> String? {
-        return aliases[alias]
-    }
-
-    internal func allValidIdentifiers() -> [String] {
-        return list.flatMap { (_, rule) -> [String] in
-            rule.description.allIdentifiers
-        }
-    }
-}
+// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// DO NOT EDIT
 
 public let masterRuleList = RuleList(rules:
     AttributesRule.self,
@@ -83,17 +18,20 @@ public let masterRuleList = RuleList(rules:
     ColonRule.self,
     CommaRule.self,
     CompilerProtocolInitRule.self,
-    ConditionalReturnsOnNewline.self,
+    ConditionalReturnsOnNewlineRule.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
+    EmptyEnumArgumentsRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     ExplicitInitRule.self,
+    ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,
+    ExtensionAccessModifierRule.self,
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
@@ -106,15 +44,16 @@ public let masterRuleList = RuleList(rules:
     FirebaseDynamicLinksSchemeURLRule.self,
     FirebaseInvitesRule.self,
     FirstWhereRule.self,
+    ForWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
-    ForWhereRule.self,
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
+    ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
     LargeTupleRule.self,
     LeadingWhitespaceRule.self,
@@ -124,9 +63,10 @@ public let masterRuleList = RuleList(rules:
     LegacyNSGeometryFunctionsRule.self,
     LineLengthRule.self,
     MarkRule.self,
-    MissingDocsRule.self,
+    MultilineParametersRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
+    NoExtensionAccessModifierRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
     ObjectLiteralRule.self,
@@ -137,6 +77,7 @@ public let masterRuleList = RuleList(rules:
     PrivateOutletRule.self,
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
+    ProtocolPropertyAccessorsOrderRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,
@@ -158,7 +99,6 @@ public let masterRuleList = RuleList(rules:
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
     UnusedOptionalBindingRule.self,
-    ValidDocsRule.self,
     ValidIBInspectableRule.self,
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,

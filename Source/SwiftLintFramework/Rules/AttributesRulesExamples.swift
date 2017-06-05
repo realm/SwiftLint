@@ -8,7 +8,7 @@
 
 internal struct AttributesRuleExamples {
 
-    private static let commonNonTriggeringExamples = [
+    static let nonTriggeringExamples = [
         "@objc var x: String",
         "@objc private var x: String",
         "@nonobjc var x: String",
@@ -39,10 +39,7 @@ internal struct AttributesRuleExamples {
 
         // attribute with allowed empty new line above
         "extension Property {\n\n @available(*, unavailable, renamed: \"isOptional\")\n" +
-        "public var optional: Bool { fatalError() }\n}"
-    ]
-
-    static let swift3NonTriggeringExamples = commonNonTriggeringExamples + [
+        "public var optional: Bool { fatalError() }\n}",
         "@GKInspectable var maxSpeed: Float",
         "@discardableResult\n func a() -> Int",
         "@objc\n @discardableResult\n func a() -> Int",
@@ -50,16 +47,7 @@ internal struct AttributesRuleExamples {
         "func foo(completionHandler: @escaping () -> Void)"
     ]
 
-    static let swift2NonTriggeringExamples = commonNonTriggeringExamples + [
-        "@warn_unused_result\n func a() -> Int",
-        "@objc\n @warn_unused_result\n func a() -> Int",
-        "func increase(@autoclosure f: () -> Int ) -> Int",
-        "func foo(@noescape x: Int -> Int)",
-        "@noreturn\n func exit(_: Int)",
-        "func exit(_: Int) -> @noreturn Int"
-    ]
-
-    static let commonTriggeringExamples = [
+    static let triggeringExamples = [
         "@objc\n ↓var x: String",
         "@objc\n\n ↓var x: String",
         "@objc\n private ↓var x: String",
@@ -87,21 +75,10 @@ internal struct AttributesRuleExamples {
         "@available(iOS 9.0, *) @objc(abc_stackView)\n ↓let stackView: UIStackView",
         "@objc(abc_addSomeObject:) @NSManaged\n ↓func addSomeObject(book: SomeObject)",
         "@objc(abc_addSomeObject:)\n @NSManaged\n ↓func addSomeObject(book: SomeObject)",
-        "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing"
-    ]
-
-    static let swift3TriggeringExamples = commonTriggeringExamples + [
+        "@available(iOS 9.0, *)\n @objc(ABCThing) ↓class Thing",
         "@GKInspectable\n ↓var maxSpeed: Float",
         "@discardableResult ↓func a() -> Int",
         "@objc\n @discardableResult ↓func a() -> Int",
         "@objc\n\n @discardableResult\n ↓func a() -> Int"
-    ]
-
-    static let swift2TriggeringExamples = commonTriggeringExamples + [
-        "@warn_unused_result ↓func a() -> Int",
-        "@warn_unused_result(message=\"You should use this\") ↓func a() -> Int",
-        "@objc\n @warn_unused_result ↓func a() -> Int",
-        "@objc\n\n @warn_unused_result\n ↓func a() -> Int",
-        "@noreturn ↓func exit(_: Int)"
     ]
 }

@@ -7,14 +7,10 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFT_2_XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
-	-scheme 'swiftlint with Swift 2.3' \
-	DSTROOT=$(TEMPORARY_FOLDER) \
-	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
-
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework
 SWIFTLINT_EXECUTABLE=$(BUILT_BUNDLE)/Contents/MacOS/swiftlint
+XCTEST_LOCATION=.build/debug/SwiftLintPackageTests.xctest
 
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
@@ -28,21 +24,25 @@ SWIFTLINTFRAMEWORK_PLIST=Source/SwiftLintFramework/Supporting Files/Info.plist
 
 VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$(SWIFTLINT_PLIST)")
 
-SWIFT_SNAPSHOT=swift-DEVELOPMENT-SNAPSHOT-2016-04-12-a
-SWIFT_COMMAND=/Library/Developer/Toolchains/$(SWIFT_SNAPSHOT).xctoolchain/usr/bin/swift
-SWIFT_BUILD_COMMAND=$(SWIFT_COMMAND) build
-SWIFT_TEST_COMMAND=$(SWIFT_COMMAND) test
-
 .PHONY: all bootstrap clean install package test uninstall
 
 all: bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) build
 
+sourcery:
+	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery
+	sed -e 4,11d .sourcery/LinuxMain.generated.swift > .sourcery/LinuxMain.swift
+	sed -n 4,10p .sourcery/LinuxMain.generated.swift | cat - .sourcery/LinuxMain.swift > Tests/LinuxMain.swift
+	rm .sourcery/LinuxMain.swift .sourcery/LinuxMain.generated.swift
+	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
+	sed -e 4,11d .sourcery/MasterRuleList.generated.swift > .sourcery/MasterRuleList.swift
+	sed -n 4,10p .sourcery/MasterRuleList.generated.swift | cat - .sourcery/MasterRuleList.swift > Source/SwiftLintFramework/Models/MasterRuleList.swift
+	rm .sourcery/MasterRuleList.swift .sourcery/MasterRuleList.generated.swift
+
 bootstrap:
 	script/bootstrap
 
 test: clean bootstrap
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) test
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 clean:
@@ -51,9 +51,6 @@ clean:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Debug clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Release clean
-	$(BUILD_TOOL) $(SWIFT_2_XCODEFLAGS) -configuration Test clean
 
 install: uninstall package
 	sudo installer -pkg SwiftLint.pkg -target /
@@ -63,7 +60,7 @@ uninstall:
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
 installables: clean bootstrap
-	$(BUILD_TOOL) $(XCODEFLAGS) install
+	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release install
 
 	mkdir -p "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	mv -f "$(SWIFTLINTFRAMEWORK_BUNDLE)" "$(TEMPORARY_FOLDER)$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
@@ -103,31 +100,15 @@ archive:
 release: package archive portable_zip
 
 docker_test:
-	docker run -v `pwd`:/SwiftLint norionomura/sourcekit:302 bash -c "cd /SwiftLint && swift test"
+	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
+
+docker_htop:
+	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 
 # http://irace.me/swift-profiling/
 display_compilation_time:
-	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build test | grep -E ^[1-9]{1}[0-9]*.[0-9]ms | sort -n
-
-swift_snapshot_install:
-	curl https://swift.org/builds/development/xcode/$(SWIFT_SNAPSHOT)/$(SWIFT_SNAPSHOT)-osx.pkg -o swift.pkg
-	sudo installer -pkg swift.pkg -target /
-
-# Use Xcode's swiftc
-spm: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
-spm:
-	$(SWIFT_BUILD_COMMAND)
-
-# Use Xcode's swiftc
-spm_test: export SWIFT_EXEC=$(shell TOOLCHAINS= xcrun -find swiftc)
-spm_test: spm
-	$(SWIFT_TEST_COMMAND)
-
-spm_clean:
-	$(SWIFT_BUILD_COMMAND) --clean
-
-spm_clean_dist:
-	$(SWIFT_BUILD_COMMAND) --clean=dist
+	$(BUILD_TOOL) $(XCODEFLAGS) OTHER_SWIFT_FLAGS="-Xfrontend -debug-time-function-bodies" clean build-for-testing | grep -E ^[1-9]{1}[0-9]*.[0-9]+ms | sort -n
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
@@ -137,11 +118,17 @@ publish:
 get_version:
 	@echo $(VERSION_STRING)
 
-set_version:
-	$(eval NEW_VERSION := $(filter-out $@,$(MAKECMDGOALS)))
+push_version:
+	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
+	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
+	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md
 	@sed 's/__VERSION__/$(NEW_VERSION)/g' script/Version.swift.template > Source/SwiftLintFramework/Models/Version.swift
 	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINTFRAMEWORK_PLIST)"
 	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
+	git commit -a -m "release $(NEW_VERSION)"
+	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
+	git push origin master
+	git push origin $(NEW_VERSION)
 
 %:
 	@:

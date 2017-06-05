@@ -41,7 +41,7 @@ class RulesTests: XCTestCase {
     }
 
     func testConditionalReturnsOnNewline() {
-        verifyRule(ConditionalReturnsOnNewline.description)
+        verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
     func testControlStatement() {
@@ -64,6 +64,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyEnumArguments() {
+        verifyRule(EmptyEnumArgumentsRule.description)
+    }
+
     func testEmptyParameters() {
         verifyRule(EmptyParametersRule.description)
     }
@@ -76,11 +80,19 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testExplicitTypeInterfaceRule() {
+    func testExplicitTopLevelACL() {
+        verifyRule(ExplicitTopLevelACLRule.description)
+    }
+
+    func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
-    func testFatalErrorMessageRule() {
+    func testExtensionAccessModifier() {
+        verifyRule(ExtensionAccessModifierRule.description)
+    }
+
+    func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }
 
@@ -149,20 +161,16 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testGenericTypeName() {
-        verifyRule(GenericTypeNameRule.description)
-    }
-
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
-    }
-
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
 
     func testImplicitlyUnwrappedOptional() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
+    }
+
+    func testImplicitReturn() {
+        verifyRule(ImplicitReturnRule.description)
     }
 
     func testLargeTuple() {
@@ -193,14 +201,16 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testMissingDocs() {
-//        verifyRule(MissingDocsRule.description)
-//    }
+    func testMultilineParameters() {
+        verifyRule(MultilineParametersRule.description)
+    }
 
     func testNesting() {
         verifyRule(NestingRule.description)
+    }
+
+    func testNoExtensionAccessModifierRule() {
+        verifyRule(NoExtensionAccessModifierRule.description)
     }
 
     func testNotificationCenterDetachment() {
@@ -251,6 +261,10 @@ class RulesTests: XCTestCase {
 
     func testProhibitedSuper() {
         verifyRule(ProhibitedSuperRule.description)
+    }
+
+    func testProtocolPropertyAccessorsOrder() {
+        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -348,10 +362,6 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
-    }
-
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -359,16 +369,6 @@ class RulesTests: XCTestCase {
     func testUnusedEnumerated() {
         verifyRule(UnusedEnumeratedRule.description)
     }
-
-    func testUnusedOptionalBinding() {
-        verifyRule(UnusedOptionalBindingRule.description)
-    }
-
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testValidDocs() {
-//        verifyRule(ValidDocsRule.description)
-//    }
 
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
@@ -388,92 +388,5 @@ class RulesTests: XCTestCase {
 
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
-    }
-}
-
-extension RulesTests {
-    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
-        return [
-            ("testClassDelegateProtocol", testClassDelegateProtocol),
-            ("testClosingBrace", testClosingBrace),
-            ("testComma", testComma),
-            ("testCompilerProtocolInit", testCompilerProtocolInit),
-            ("testClosureEndIndentation", testClosureEndIndentation),
-            ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacing", testClosureSpacing),
-            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-            ("testControlStatement", testControlStatement),
-            ("testCyclomaticComplexity", testCyclomaticComplexity),
-            ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
-            ("testDynamicInline", testDynamicInline),
-            ("testEmptyCount", testEmptyCount),
-            ("testEmptyParameters", testEmptyParameters),
-            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-            ("testExplicitInit", testExplicitInit),
-            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
-            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
-            ("testFileLength", testFileLength),
-            ("testFirebaseConfigActivate", testFirebaseConfigActivate),
-            ("testFirebaseConfigDefaults", testFirebaseConfigDefaults),
-            ("testFirebaseConfigFetch", testFirebaseConfigFetch),
-            ("testFirebaseCore", testFirebaseCore),
-            ("testFirebaseDynamicLinksCustomSchemeURL", testFirebaseDynamicLinksCustomSchemeURL),
-            ("testFirebaseDynamicLinksUniversalLink", testFirebaseDynamicLinksUniversalLink),
-            ("testFirebaseDynamicLinksSchemeURL", testFirebaseDynamicLinksSchemeURL),
-            ("testFirebaseInvites", testFirebaseInvites),
-            ("testFirstWhere", testFirstWhere),
-            ("testForceCast", testForceCast),
-            ("testForceTry", testForceTry),
-            // ("testForceUnwrapping", testForceUnwrapping),
-            ("testForWhere", testForWhere),
-            ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCount", testFunctionParameterCount),
-            ("testGenericTypeName", testGenericTypeName),
-            ("testIdentifierName", testIdentifierName),
-            ("testImplicitGetter", testImplicitGetter),
-            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
-            ("testLargeTuple", testLargeTuple),
-            ("testLeadingWhitespace", testLeadingWhitespace),
-            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
-            ("testLegacyConstant", testLegacyConstant),
-            ("testLegacyConstructor", testLegacyConstructor),
-            ("testMark", testMark),
-            ("testNesting", testNesting),
-            ("testNimbleOperator", testNimbleOperator),
-            ("testNotificationCenterDetachment", testNotificationCenterDetachment),
-            ("testObjectLiteral", testObjectLiteral),
-            ("testOpeningBrace", testOpeningBrace),
-            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
-            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-            ("testPrivateOutlet", testPrivateOutlet),
-            ("testPrivateUnitTest", testPrivateUnitTest),
-            ("testProhibitedSuper", testProhibitedSuper),
-            ("testRedundantDiscardableLet", testRedundantDiscardableLet),
-            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-            ("testRedundantVoidReturn", testRedundantVoidReturn),
-            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
-            ("testShorthandOperator", testShorthandOperator),
-            ("testSortedImports", testSortedImports),
-            ("testStatementPosition", testStatementPosition),
-            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
-            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
-            ("testSyntacticSugar", testSyntacticSugar),
-            ("testTrailingNewline", testTrailingNewline),
-            ("testTrailingSemicolon", testTrailingSemicolon),
-            ("testTrailingWhitespace", testTrailingWhitespace),
-            ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
-            ("testUnusedClosureParameter", testUnusedClosureParameter),
-            ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
-            ("testValidIBInspectable", testValidIBInspectable),
-            ("testVerticalParameterAlignment", testVerticalParameterAlignment),
-            ("testVoidReturn", testVoidReturn),
-            ("testSuperCall", testSuperCall),
-            ("testWeakDelegate", testWeakDelegate)
-        ]
     }
 }

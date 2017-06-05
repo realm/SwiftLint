@@ -10,17 +10,9 @@ import Foundation
 
 internal struct TypeNameRuleExamples {
 
-    static let swift2NonTriggeringExamples = commonNonTriggeringExamples + ["enum MyType {\ncase Value\n}"]
-
-    static let swift3NonTriggeringExamples = commonNonTriggeringExamples + ["enum MyType {\ncase value\n}"]
-
-    static let swift2TriggeringExamples = commonTriggeringExamples + ["enum MyType {\ncase ↓value\n}"]
-
-    static let swift3TriggeringExamples = commonTriggeringExamples
-
     private static let types = ["class", "struct", "enum"]
 
-    private static let commonNonTriggeringExamples: [String] = {
+    static let nonTriggeringExamples: [String] = {
         let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
             [
                 "\(type) MyType {}",
@@ -35,10 +27,10 @@ internal struct TypeNameRuleExamples {
             "protocol Foo {\n associatedtype Bar: Equatable\n }"
         ]
 
-        return typeExamples + typeAliasAndAssociatedTypeExamples
+        return typeExamples + typeAliasAndAssociatedTypeExamples + ["enum MyType {\ncase value\n}"]
     }()
 
-    private static let commonTriggeringExamples: [String] = {
+    static let triggeringExamples: [String] = {
         let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
             [
                 "↓\(type) myType {}",

@@ -9,12 +9,13 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Equatable {
+public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
+    public var excluded: NSRegularExpression?
     public var matchKinds = Set(SyntaxKind.allKinds())
     public var severityConfiguration = SeverityConfiguration(.warning)
 
@@ -24,6 +25,23 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         return "\(severity.rawValue): \(regex.pattern)"
+    }
+
+    internal var cacheDescription: String {
+        var dict = [String: Any]()
+        dict["identifier"] = identifier
+        dict["name"] = name
+        dict["message"] = message
+        dict["regex"] = regex.pattern
+        dict["included"] = included?.pattern
+        dict["excluded"] = excluded?.pattern
+        dict["match_kinds"] = matchKinds.map { $0.rawValue }
+        dict["severity"] = severityConfiguration.consoleDescription
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
+        }
+        fatalError("Could not serialize regex configuration for cache")
     }
 
     public var description: RuleDescription {
@@ -46,6 +64,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
             included = try .cached(pattern: includedString)
         }
 
+        if let excludedString = configurationDict["excluded"] as? String {
+            excluded = try .cached(pattern: excludedString)
+        }
+
         if let name = configurationDict["name"] as? String {
             self.name = name
         }
@@ -66,6 +88,7 @@ public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&
            lhs.included?.pattern == rhs.included?.pattern &&
+           lhs.excluded?.pattern == rhs.excluded?.pattern &&
            lhs.matchKinds == rhs.matchKinds &&
            lhs.severity == rhs.severity
 }

@@ -10,38 +10,7 @@ import Foundation
 
 internal struct LegacyConstantRuleExamples {
 
-    static let swift2NonTriggeringExamples = commonNonTriggeringExamples
-
-    static let swift3NonTriggeringExamples = commonNonTriggeringExamples + ["CGFloat.pi", "Float.pi"]
-
-    static let swift2TriggeringExamples = commonTriggeringExamples
-
-    static let swift3TriggeringExamples = commonTriggeringExamples + ["↓CGFloat(M_PI)", "↓Float(M_PI)"]
-
-    static let swift2Corrections = commonCorrections
-
-    static let swift3Corrections: [String: String] = {
-        var corrections = commonCorrections
-        ["↓CGFloat(M_PI)": "CGFloat.pi",
-         "↓Float(M_PI)": "Float.pi",
-         "↓CGFloat(M_PI)\n↓Float(M_PI)\n": "CGFloat.pi\nFloat.pi\n"].forEach { key, value in
-            corrections[key] = value
-        }
-        return corrections
-    }()
-
-    static let swift2Patterns = commonPatterns
-
-    static let swift3Patterns: [String: String] = {
-        var patterns = commonPatterns
-        ["CGFloat\\(M_PI\\)": "CGFloat.pi",
-         "Float\\(M_PI\\)": "Float.pi"].forEach { key, value in
-            patterns[key] = value
-        }
-        return patterns
-    }()
-
-    private static let commonNonTriggeringExamples = [
+    static let nonTriggeringExamples = [
         "CGRect.infinite",
         "CGPoint.zero",
         "CGRect.zero",
@@ -49,10 +18,12 @@ internal struct LegacyConstantRuleExamples {
         "NSPoint.zero",
         "NSRect.zero",
         "NSSize.zero",
-        "CGRect.null"
+        "CGRect.null",
+        "CGFloat.pi",
+        "Float.pi"
     ]
 
-    private static let commonTriggeringExamples = [
+    static let triggeringExamples = [
         "↓CGRectInfinite",
         "↓CGPointZero",
         "↓CGRectZero",
@@ -60,10 +31,12 @@ internal struct LegacyConstantRuleExamples {
         "↓NSZeroPoint",
         "↓NSZeroRect",
         "↓NSZeroSize",
-        "↓CGRectNull"
+        "↓CGRectNull",
+        "↓CGFloat(M_PI)",
+        "↓Float(M_PI)"
     ]
 
-    private static let commonCorrections = [
+    static let corrections = [
         "↓CGRectInfinite": "CGRect.infinite",
         "↓CGPointZero": "CGPoint.zero",
         "↓CGRectZero": "CGRect.zero",
@@ -72,10 +45,13 @@ internal struct LegacyConstantRuleExamples {
         "↓NSZeroRect": "NSRect.zero",
         "↓NSZeroSize": "NSSize.zero",
         "↓CGRectNull": "CGRect.null",
-        "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n"
+        "↓CGRectInfinite\n↓CGRectNull\n": "CGRect.infinite\nCGRect.null\n",
+        "↓CGFloat(M_PI)": "CGFloat.pi",
+        "↓Float(M_PI)": "Float.pi",
+        "↓CGFloat(M_PI)\n↓Float(M_PI)\n": "CGFloat.pi\nFloat.pi\n"
     ]
 
-    private static let commonPatterns = [
+    static let patterns = [
         "CGRectInfinite": "CGRect.infinite",
         "CGPointZero": "CGPoint.zero",
         "CGRectZero": "CGRect.zero",
@@ -83,7 +59,8 @@ internal struct LegacyConstantRuleExamples {
         "NSZeroPoint": "NSPoint.zero",
         "NSZeroRect": "NSRect.zero",
         "NSZeroSize": "NSSize.zero",
-        "CGRectNull": "CGRect.null"
+        "CGRectNull": "CGRect.null",
+        "CGFloat\\(M_PI\\)": "CGFloat.pi",
+        "Float\\(M_PI\\)": "Float.pi"
     ]
-
 }

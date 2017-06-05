@@ -28,7 +28,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
-                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
+                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}",
+            "override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"
         ],
         triggeringExamples: [
             "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
@@ -50,6 +51,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         let length = dictionary.nameLength ?? 0
 
         if functionIsInitializer(file: file, byteOffset: nameOffset, byteLength: length) {
+            return []
+        }
+
+        if functionIsOverride(attributes: dictionary.enclosedSwiftAttributes) {
             return []
         }
 
@@ -116,4 +121,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return alphaNumericName == "init"
     }
 
+    fileprivate func functionIsOverride(attributes: [String]) -> Bool {
+        return attributes.contains("source.decl.attribute.override")
+    }
 }

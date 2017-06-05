@@ -37,24 +37,31 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
             "class Some {\n" +
                 "\tfunc viewWillAppear(_ animated: Bool) {\n" +
                 "\t}\n" +
+            "}\n",
+            "class VC: UIViewController {\n" +
+                "\toverride func viewDidLoad() {\n" +
+                "\t\tdefer {\n" +
+                "\t\t\tsuper.viewDidLoad()\n" +
+                "\t\t}\n" +
+                "\t}\n" +
             "}\n"
         ],
         triggeringExamples: [
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(_ animated: Bool) ↓{\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) {↓\n" +
                     "\t\t//Not calling to super\n" +
                     "\t\tself.method()\n" +
                 "\t}\n" +
             "}\n",
             "class VC: UIViewController {\n" +
-                "\toverride func viewWillAppear(_ animated: Bool) ↓{\n" +
+                "\toverride func viewWillAppear(_ animated: Bool) {↓\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
                     "\t\t//Other code\n" +
                     "\t\tsuper.viewWillAppear(animated)\n" +
                 "\t}\n" +
             "}\n",
             "class VC: UIViewController {\n" +
-                "\toverride func didReceiveMemoryWarning() ↓{\n" +
+                "\toverride func didReceiveMemoryWarning() {↓\n" +
                 "\t}\n" +
             "}\n"
         ]

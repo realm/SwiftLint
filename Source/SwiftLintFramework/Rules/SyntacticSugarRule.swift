@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
+public struct SyntacticSugarRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -30,7 +30,8 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
             "var currentIndex: Array<OnboardingPage>.Index?",
             "func x(a: [Int], b: Int) -> Array<Int>.Index",
             "unsafeBitCast(nonOptionalT, to: Optional<T>.self)",
-            "type is Optional<String>.Type"
+            "type is Optional<String>.Type",
+            "let x: Foo.Optional<String>"
         ],
         triggeringExamples: [
             "let x: ↓Array<String>",
@@ -40,13 +41,15 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
             "func x(a: ↓Array<Int>, b: Int) -> [Int: Any]",
             "func x(a: [Int], b: Int) -> ↓Dictionary<Int, String>",
             "func x(a: ↓Array<Int>, b: Int) -> ↓Dictionary<Int, String>",
-            "let x = ↓Array<String>.array(of: object)"
+            "let x = ↓Array<String>.array(of: object)",
+            "let x: ↓Swift.Optional<String>"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
         let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
-        let pattern = "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
+        let negativeLookBehind = "(?:(?<!\\.)|Swift\\.)"
+        let pattern = negativeLookBehind + "\\b(?:" + types.joined(separator: "|") + ")\\s*<.*?>"
         let kinds = SyntaxKind.commentAndStringKinds()
         let contents = file.contents.bridge()
 

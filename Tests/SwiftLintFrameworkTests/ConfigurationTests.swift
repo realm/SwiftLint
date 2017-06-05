@@ -131,6 +131,10 @@ class ConfigurationTests: XCTestCase {
             XCTFail("Should not be called with path \(path)")
             return []
         }
+
+        public func modificationDate(forFileAtPath path: String) -> Date? {
+            return nil
+        }
     }
 
     func testExcludedPaths() {
@@ -298,36 +302,5 @@ fileprivate extension XCTestCase {
 
     var projectMockSwift3: String {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
-    }
-}
-
-extension ConfigurationTests {
-    static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testInit", testInit),
-            ("testEmptyConfiguration", testEmptyConfiguration),
-            ("testWhitelistRules", testWhitelistRules),
-            ("testWarningThreshold_value", testWarningThreshold_value),
-            ("testWarningThreshold_nil", testWarningThreshold_nil),
-            ("testOtherRuleConfigurationsAlongsideWhitelistRules",
-                testOtherRuleConfigurationsAlongsideWhitelistRules),
-            ("testDisabledRules", testDisabledRules),
-            ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
-            ("testExcludedPaths", testExcludedPaths),
-            ("testIsEqualTo", testIsEqualTo),
-            ("testIsNotEqualTo", testIsNotEqualTo),
-            ("testMerge", testMerge),
-            ("testLevel0", testLevel0),
-            ("testLevel1", testLevel1),
-            ("testLevel2", testLevel2),
-            ("testLevel3", testLevel3),
-            ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-            ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
-            ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
-            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-            ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
-        ]
     }
 }

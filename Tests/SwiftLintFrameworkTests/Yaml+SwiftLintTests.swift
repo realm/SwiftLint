@@ -9,14 +9,16 @@
 import Foundation
 @testable import SwiftLintFramework
 import XCTest
-import Yaml
+import Yams
 
 class YamlSwiftLintTests: XCTestCase {
 
-    func testFlattenYaml() {
+    func testFlattenYaml() throws {
         do {
-            let yaml = try Yaml.load(getTestYaml())
-            let yamlDict = yaml.flatDictionary!
+            guard let yamlDict = try Yams.load(yaml: try getTestYaml()) as? [String: Any] else {
+                XCTFail()
+                return
+            }
 
             let dict1 = (yamlDict["dictionary1"] as? [Swift.String: Any])!
             let dict2 = (yamlDict["dictionary2"] as? [Swift.String: Any])!
@@ -46,16 +48,7 @@ class YamlSwiftLintTests: XCTestCase {
         }
     }
 
-    private func getTestYaml() -> String {
-        // swiftlint:disable:next force_try
-        return try! String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
-    }
-}
-
-extension YamlSwiftLintTests {
-    static var allTests: [(String, (YamlSwiftLintTests) -> () throws -> Void)] {
-        return [
-            ("testFlattenYaml", testFlattenYaml)
-        ]
+    private func getTestYaml() throws -> String {
+        return try String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
     }
 }

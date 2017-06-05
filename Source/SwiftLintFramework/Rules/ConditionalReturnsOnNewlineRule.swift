@@ -1,5 +1,5 @@
 //
-//  ConditionalReturnsOnNewline.swift
+//  ConditionalReturnsOnNewlineRule.swift
 //  SwiftLint
 //
 //  Created by Rohan Dhaimade on 12/8/16.
@@ -9,8 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
-    public let configurationDescription = "N/A"
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

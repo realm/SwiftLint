@@ -90,13 +90,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
     private static let regularExpression = regex(pattern, options: [])
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
-        .map { $0.rawValue }
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
-        .map { $0.rawValue }
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
-        let range = NSRange(location: 0, length: contents.utf16.count)
+        let nsstring = contents.bridge()
+        let range = NSRange(location: 0, length: nsstring.length)
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
             .matches(in: contents, options: [], range: range)
@@ -110,37 +109,33 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
 
                 // check first captured range
                 let firstRange = match.rangeAt(indexStartRange)
-                guard let matchByteFirstRange = contents.bridge()
+                guard let matchByteFirstRange = nsstring
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
 
-                // first captured range won't match tokens if it is not comment neither string
-                let tokensInFirstRange = syntaxMap.tokens(inByteRange: matchByteFirstRange)
-                    .filter { CommaRule.excludingSyntaxKindsForFirstCapture.contains($0.type) }
-
-                // If not empty, first captured range is comment or string
-                if !tokensInFirstRange.isEmpty {
+                // first captured range won't match kinds if it is not comment neither string
+                let firstCaptureIsCommentOrString = syntaxMap.kinds(inByteRange: matchByteFirstRange)
+                    .contains(where: CommaRule.excludingSyntaxKindsForFirstCapture.contains)
+                if firstCaptureIsCommentOrString {
                     return nil
                 }
 
                 // If the first range does not start with comma, it already violates this rule
                 // no matter what is contained in the second range.
-                if !contents.bridge().substring(with: firstRange).hasPrefix(",") {
+                if !nsstring.substring(with: firstRange).hasPrefix(", ") {
                     return firstRange
                 }
 
                 // check second captured range
                 let secondRange = match.rangeAt(indexStartRange + 1)
-                guard let matchByteSecondRange = contents.bridge()
+                guard let matchByteSecondRange = nsstring
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }
 
-                // second captured range won't match tokens if it is not comment
-                let tokensInSecondRange = syntaxMap.tokens(inByteRange: matchByteSecondRange)
-                    .filter { CommaRule.excludingSyntaxKindsForSecondCapture.contains($0.type) }
-
-                // If not empty, second captured range is comment
-                if !tokensInSecondRange.isEmpty {
+                // second captured range won't match kinds if it is not comment
+                let secondCaptureIsComment = syntaxMap.kinds(inByteRange: matchByteSecondRange)
+                    .contains(where: CommaRule.excludingSyntaxKindsForSecondCapture.contains)
+                if secondCaptureIsComment {
                     return nil
                 }
 

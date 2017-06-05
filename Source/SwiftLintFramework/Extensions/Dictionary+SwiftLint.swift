@@ -94,16 +94,7 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
             }
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
-                switch SwiftVersion.current {
-                case .two, .twoPointThree:
-                    // with Swift 2.3, a closure parameter is inside another .varParameter and not inside an .argument
-                    let parameters = subDict.enclosedVarParameters + [subDict]
-                    return parameters.filter {
-                        $0.typeName != nil
-                    }
-                case .three:
-                    return [subDict]
-                }
+                return [subDict]
             } else if SwiftExpressionKind(rawValue: kindString) == .argument {
                 return subDict.enclosedVarParameters
             }
@@ -114,19 +105,9 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var enclosedArguments: [[String: SourceKitRepresentable]] {
         return substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
-            guard let kindString = subDict.kind else {
-                return []
-            }
-
-            switch SwiftVersion.current {
-            case .two, .twoPointThree:
-                guard SwiftDeclarationKind(rawValue: kindString) == .varParameter else {
+            guard let kindString = subDict.kind,
+                SwiftExpressionKind(rawValue: kindString) == .argument else {
                     return []
-                }
-            case .three:
-                guard SwiftExpressionKind(rawValue: kindString) == .argument else {
-                    return []
-                }
             }
 
             return [subDict]
@@ -140,12 +121,13 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     internal func extractCallsToSuper(methodName: String) -> [String] {
         let superCall = "super.\(methodName)"
-        return substructure.flatMap { elems in
+        return substructure.flatMap { elems -> [String] in
             guard let type = elems.kind.flatMap({ SwiftExpressionKind(rawValue: $0) }),
                 let name = elems.name,
-                type == .call && superCall.contains(name)
-                else { return nil }
-            return name
+                type == .call && superCall.contains(name) else {
+                    return elems.extractCallsToSuper(methodName: methodName)
+            }
+            return [name]
         }
     }
 }

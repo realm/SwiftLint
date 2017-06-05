@@ -74,16 +74,3 @@ class CyclomaticComplexityRuleTests: XCTestCase {
     }
 
 }
-
-extension CyclomaticComplexityRuleTests {
-    static var allTests: [(String, (CyclomaticComplexityRuleTests) -> () throws -> Void)] {
-        return [
-            ("testCyclomaticComplexity",
-             testCyclomaticComplexity),
-            ("testIgnoresCaseStatementsConfigurationEnabled",
-             testIgnoresCaseStatementsConfigurationEnabled),
-            ("testIgnoresCaseStatementsConfigurationDisabled",
-             testIgnoresCaseStatementsConfigurationDisabled)
-        ]
-    }
-}

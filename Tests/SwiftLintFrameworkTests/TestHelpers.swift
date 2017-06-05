@@ -58,10 +58,9 @@ private func render(locations: [Location], in contents: String) -> String {
     var contents = contents.bridge().lines().map { $0.content }
     for location in locations.sorted(by: > ) {
         guard let line = location.line, let character = location.character else { continue }
-        var content = contents[line - 1]
-        let index = content.index(content.startIndex, offsetBy: character - 1)
-        content.insert("↓", at: index)
-        contents[line - 1] = content
+        let content = NSMutableString(string: contents[line - 1])
+        content.insert("↓", at: character - 1)
+        contents[line - 1] = content.bridge()
     }
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
@@ -127,14 +126,9 @@ private func testCorrection(_ correction: (String, String),
                             configuration config: Configuration,
                             testMultiByteOffsets: Bool) {
     config.assertCorrection(correction.0, expected: correction.1)
-
-    // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
-    // https://bugs.swift.org/browse/SR-3449
-    #if !os(Linux)
-        if testMultiByteOffsets {
-            config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
-        }
-    #endif
+    if testMultiByteOffsets {
+        config.assertCorrection(addEmoji(correction.0), expected: addEmoji(correction.1))
+    }
 }
 
 private func addEmoji(_ string: String) -> String {
@@ -159,14 +153,10 @@ extension XCTestCase {
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
 
-        // disabled on Linux because of https://bugs.swift.org/browse/SR-3448 and
-        // https://bugs.swift.org/browse/SR-3449
-        #if !os(Linux)
         if testMultiByteOffsets {
             verifyExamples(triggers: triggers.map(addEmoji),
                            nonTriggers: nonTriggers.map(addEmoji), configuration: config)
         }
-        #endif
 
         // Comment doesn't violate
         if !skipCommentTests {
@@ -267,7 +257,7 @@ extension XCTestCase {
             XCTFail("No error caught")
         } catch let rError as T {
             if error != rError {
-                XCTFail("Wrong error caught")
+                XCTFail("Wrong error caught. Got \(rError) but was expecting \(error)")
             }
         } catch {
             XCTFail("Wrong error caught")

@@ -1,0 +1,11 @@
+//
+//  MasterRuleList.swift
+//  SwiftLint
+//
+//  Created by Scott Hoyt on 12/28/15.
+//  Copyright © 2015 Realm. All rights reserved.
+//
+
+public let masterRuleList = RuleList(rules:
+{% for rule in types.structs where rule.name|hasSuffix:"Rule" or rule.name|hasSuffix:"Rules" %}    {{ rule.name }}.self{% if not forloop.last %},{% endif %}
+{% endfor %})

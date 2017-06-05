@@ -23,27 +23,26 @@ struct LintCommand: CommandProtocol {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
-        let cache = LinterCache.makeCache(options: options, configuration: configuration)
+        let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
                 let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = _currentViolations
+                currentViolations = LintCommand.applyLeniency(options: options, violations: _currentViolations)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
                     violations += currentViolations
                 }
             } else {
-                currentViolations = linter.styleViolations
+                currentViolations = LintCommand.applyLeniency(options: options, violations: linter.styleViolations)
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
             }
             linter.file.invalidateCache()
-            violations = LintCommand.applyLeniency(options: options, violations: violations)
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
             if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)
@@ -61,7 +60,7 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
-            cache?.save(options: options, configuration: configuration)
+            try? cache?.save()
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                              strictWithViolations: options.strict && !violations.isEmpty)
         }
@@ -141,7 +140,7 @@ struct LintOptions: OptionsProtocol {
     // swiftlint:disable line_length
     static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
         return { useSTDIN in { configurationFile in { strict in { lenient in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: true, enableAllRules: enableAllRules)
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
         }}}}}}}}}}}
     }
 
@@ -164,7 +163,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the location of the cache used when linting")
+                               usage: "the directory of the cache used when linting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
                                usage: "ignore cache when linting")
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,

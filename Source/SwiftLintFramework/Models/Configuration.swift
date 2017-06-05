@@ -9,8 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-private let fileManager = FileManager.default
-
 private enum ConfigurationKey: String {
     case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
@@ -34,7 +32,6 @@ public struct Configuration: Equatable {
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
-    public var hash: Int?
     public let cachePath: String?
 
     public init?(disabledRules: [String] = [],
@@ -108,7 +105,8 @@ public struct Configuration: Equatable {
         }
     }
 
-    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false) {
+    public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
+                 cachePath: String? = nil) {
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
         let optInRules = defaultStringArray(
             dict[ConfigurationKey.optInRules.rawValue] ?? dict[ConfigurationKey.enabledRules.rawValue]
@@ -152,18 +150,19 @@ public struct Configuration: Equatable {
                   ruleList: ruleList,
                   configuredRules: configuredRules,
                   swiftlintVersion: dict[ConfigurationKey.swiftlintVersion.rawValue] as? String,
-                  cachePath: dict[ConfigurationKey.cachePath.rawValue] as? String)
+                  cachePath: cachePath ?? dict[ConfigurationKey.cachePath.rawValue] as? String)
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false) {
+                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
         let fullPath = path.bridge().absolutePathRepresentation()
         let fail = { (msg: String) in
-            fatalError("Could not read configuration file at path '\(fullPath)': \(msg)")
+            queuedPrintError("\(fullPath):\(msg)")
+            fatalError("Could not read configuration file at path '\(fullPath)'")
         }
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
-            self.init(enableAllRules: enableAllRules)!
+            self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
             self.rootPath = rootPath
             return
         }
@@ -173,25 +172,28 @@ public struct Configuration: Equatable {
             if !quiet {
                 queuedPrintError("Loading configuration from '\(path)'")
             }
-            self.init(dict: dict, enableAllRules: enableAllRules)!
+            self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)!
             configurationPath = fullPath
-            hash = dict.description.hashValue
             self.rootPath = rootPath
+            setCached(atPath: fullPath)
             return
         } catch YamlParserError.yamlParsing(let message) {
-            fail("Error parsing YAML: \(message)")
+            fail(message)
         } catch {
             fail("\(error)")
         }
-        self.init(enableAllRules: enableAllRules)!
+        self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
+        setCached(atPath: fullPath)
     }
 
-    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false, enableAllRules: Bool = false) {
+    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false, enableAllRules: Bool = false,
+                cachePath: String? = nil) {
         self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
-                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet, enableAllRules: enableAllRules)
+                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet, enableAllRules: enableAllRules,
+                  cachePath: cachePath)
     }
 
-    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = fileManager) -> [String] {
+    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = FileManager.default) -> [String] {
         // If path is a Swift file, skip filtering with excluded/included paths
         if path.bridge().isSwiftFile() && path.isFile {
             return [path]
@@ -317,8 +319,10 @@ extension Configuration {
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
-            return merge(with: Configuration(path: configurationSearchPath, rootPath: rootPath,
-                optional: false, quiet: true))
+            let fullPath = pathNSString.absolutePathRepresentation()
+            let config = Configuration.getCached(atPath: fullPath) ??
+                Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true)
+            return merge(with: config)
         }
 
         // If we are not at the root path, continue down the tree

@@ -30,22 +30,29 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         ],
         triggeringExamples: [
             "class VC: UIViewController {\n" +
-                "\toverride func loadView() ↓{\n" +
+                "\toverride func loadView() {↓\n" +
                     "\t\tsuper.loadView()\n" +
                 "\t}\n" +
             "}\n",
             "class VC: NSFileProviderExtension {\n" +
                 "\toverride func providePlaceholder(at url: URL," +
-                "completionHandler: @escaping (Error?) -> Void) ↓{\n" +
+                "completionHandler: @escaping (Error?) -> Void) {↓\n" +
                     "\t\tself.method1()\n" +
                     "\t\tsuper.providePlaceholder(at:url, completionHandler: completionHandler)\n" +
                 "\t}\n" +
             "}\n",
             "class VC: NSView {\n" +
-                "\toverride func updateLayer() ↓{\n" +
+                "\toverride func updateLayer() {↓\n" +
                     "\t\tself.method1()\n" +
                     "\t\tsuper.updateLayer()\n" +
                     "\t\tself.method2()\n" +
+                "\t}\n" +
+            "}\n",
+            "class VC: NSView {\n" +
+                "\toverride func updateLayer() {↓\n" +
+                "\t\tdefer {\n" +
+                "\t\t\tsuper.updateLayer()\n" +
+                "\t\t}\n" +
                 "\t}\n" +
             "}\n"
         ]

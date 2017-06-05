@@ -9,111 +9,163 @@
 import Foundation
 import SourceKittenFramework
 
-public enum LinterCacheError: Error {
+internal enum LinterCacheError: Error {
     case invalidFormat
-    case differentVersion
-    case differentConfiguration
+    case noLocation
 }
 
 public final class LinterCache {
-    private var cache: [String: Any]
-    private let lock = NSLock()
+    private typealias Cache = [String: [String: [String: Any]]]
 
-    public init(currentVersion: Version = .current, configurationHash: Int? = nil) {
-        cache = [
-            "version": currentVersion.value,
-            "files": [:]
-        ]
-        cache["configuration_hash"] = configurationHash
+    private let readCache: Cache
+    private var writeCache = Cache()
+    private let lock = NSLock()
+    internal let fileManager: LintableFileManager
+    private let location: URL?
+
+    internal init(fileManager: LintableFileManager = FileManager.default) {
+        location = nil
+        self.fileManager = fileManager
+        self.readCache = [:]
     }
 
-    public init(cache: Any, currentVersion: Version = .current, configurationHash: Int? = nil) throws {
-        guard let dictionary = cache as? [String: Any] else {
+    internal init(cache: Any, fileManager: LintableFileManager = FileManager.default) throws {
+        guard let dictionary = cache as? Cache else {
             throw LinterCacheError.invalidFormat
         }
 
-        guard let version = dictionary["version"] as? String, version == currentVersion.value else {
-            throw LinterCacheError.differentVersion
-        }
-
-        if dictionary["configuration_hash"] as? Int != configurationHash {
-            throw LinterCacheError.differentConfiguration
-        }
-
-        self.cache = dictionary
+        self.readCache = dictionary
+        location = nil
+        self.fileManager = fileManager
     }
 
-    public convenience init(contentsOf url: URL, currentVersion: Version = .current,
-                            configurationHash: Int? = nil) throws {
-        let data = try Data(contentsOf: url)
-        let json = try JSONSerialization.jsonObject(with: data, options: [])
-        try self.init(cache: json, currentVersion: currentVersion,
-                      configurationHash: configurationHash)
+    public init(configuration: Configuration,
+                fileManager: LintableFileManager = FileManager.default) {
+        location = configuration.cacheURL
+        if let data = try? Data(contentsOf: location!),
+            let json = try? JSONSerialization.jsonObject(with: data),
+            let cache = json as? Cache {
+            readCache = cache
+        } else {
+            readCache = [:]
+        }
+        self.fileManager = fileManager
     }
 
-    public func cache(violations: [StyleViolation], forFile file: String, fileHash: Int) {
+    private init(cache: Cache, location: URL?, fileManager: LintableFileManager) {
+        self.readCache = cache
+        self.location = location
+        self.fileManager = fileManager
+    }
+
+    internal func cache(violations: [StyleViolation], forFile file: String, configuration: Configuration) {
+        guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
+            return
+        }
+
+        let configurationDescription = configuration.cacheDescription
+
         lock.lock()
-        var filesCache = (cache["files"] as? [String: Any]) ?? [:]
+        var filesCache = writeCache[configurationDescription] ?? [:]
         filesCache[file] = [
-            "violations": violations.map(dictionary(for:)),
-            "hash": fileHash
+            Key.violations.rawValue: violations.map(dictionary(for:)),
+            Key.lastModification.rawValue: lastModification.timeIntervalSinceReferenceDate
         ]
-        cache["files"] = filesCache
+        writeCache[configurationDescription] = filesCache
         lock.unlock()
     }
 
-    public func violations(forFile file: String, hash: Int) -> [StyleViolation]? {
-        lock.lock()
+    internal func violations(forFile file: String, configuration: Configuration) -> [StyleViolation]? {
+        guard let lastModification = fileManager.modificationDate(forFileAtPath: file) else {
+            return nil
+        }
 
-        guard let filesCache = cache["files"] as? [String: Any],
-            let entry = filesCache[file] as? [String: Any],
-            let cacheHash = entry["hash"] as? Int,
-            cacheHash == hash,
-            let violations = entry["violations"] as? [[String: Any]] else {
-                lock.unlock()
+        let configurationDescription = configuration.cacheDescription
+
+        guard let filesCache = readCache[configurationDescription],
+            let entry = filesCache[file],
+            let cacheLastModification = entry[Key.lastModification.rawValue] as? TimeInterval,
+            cacheLastModification == lastModification.timeIntervalSinceReferenceDate,
+            let violations = entry[Key.violations.rawValue] as? [[String: Any]] else {
                 return nil
         }
 
-        lock.unlock()
         return violations.flatMap { StyleViolation.from(cache: $0, file: file) }
     }
 
-    public func save(to url: URL) throws {
-        lock.lock()
+    public func save() throws {
+        guard let url = location else {
+            throw LinterCacheError.noLocation
+        }
+        guard !writeCache.isEmpty else {
+            return
+        }
+
+        let cache = mergeCaches()
         let json = toJSON(cache)
-        lock.unlock()
         try json.write(to: url, atomically: true, encoding: .utf8)
+    }
+
+    internal func flushed() -> LinterCache {
+        return LinterCache(cache: mergeCaches(), location: location, fileManager: fileManager)
+    }
+
+    private func mergeCaches() -> Cache {
+        var cache = readCache
+        lock.lock()
+        for (key, value) in writeCache {
+            var filesCache = cache[key] ?? [:]
+            for (file, fileCache) in value {
+                filesCache[file] = fileCache
+            }
+            cache[key] = filesCache
+        }
+        lock.unlock()
+
+        return cache
     }
 
     private func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
-            "line": violation.location.line ?? NSNull() as Any,
-            "character": violation.location.character ?? NSNull() as Any,
-            "severity": violation.severity.rawValue,
-            "type": violation.ruleDescription.name,
-            "rule_id": violation.ruleDescription.identifier,
-            "reason": violation.reason
+            Key.line.rawValue: violation.location.line ?? NSNull() as Any,
+            Key.character.rawValue: violation.location.character ?? NSNull() as Any,
+            Key.severity.rawValue: violation.severity.rawValue,
+            Key.type.rawValue: violation.ruleDescription.name,
+            Key.ruleID.rawValue: violation.ruleDescription.identifier,
+            Key.reason.rawValue: violation.reason
         ]
+    }
+}
+
+extension LinterCache {
+    fileprivate enum Key: String {
+        case character
+        case configuration
+        case lastModification = "last_modification"
+        case line
+        case reason
+        case ruleID = "rule_id"
+        case severity
+        case type
+        case violations
     }
 }
 
 extension StyleViolation {
     fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
-        guard let severity = (cache["severity"] as? String).flatMap({ ViolationSeverity(rawValue: $0) }),
-            let name = cache["type"] as? String,
-            let ruleId = cache["rule_id"] as? String,
-            let reason = cache["reason"] as? String else {
+        guard let severityString = (cache[LinterCache.Key.severity.rawValue] as? String),
+            let severity = ViolationSeverity(rawValue: severityString),
+            let name = cache[LinterCache.Key.type.rawValue] as? String,
+            let ruleID = cache[LinterCache.Key.ruleID.rawValue] as? String,
+            let reason = cache[LinterCache.Key.reason.rawValue] as? String else {
                 return nil
         }
 
-        let line = cache["line"] as? Int
-        let character = cache["character"] as? Int
-
-        let ruleDescription = RuleDescription(identifier: ruleId, name: name, description: reason)
-        let location = Location(file: file, line: line, character: character)
-        let violation = StyleViolation(ruleDescription: ruleDescription, severity: severity,
-                                       location: location, reason: reason)
-
-        return violation
+        let line = cache[LinterCache.Key.line.rawValue] as? Int
+        let character = cache[LinterCache.Key.character.rawValue] as? Int
+        return StyleViolation(ruleDescription: RuleDescription(identifier: ruleID, name: name, description: reason),
+                              severity: severity,
+                              location: Location(file: file, line: line, character: character),
+                              reason: reason)
     }
 }

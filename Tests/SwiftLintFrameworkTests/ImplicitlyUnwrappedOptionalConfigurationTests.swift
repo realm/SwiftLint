@@ -51,14 +51,3 @@ class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
     }
 
 }
-
-extension ImplicitlyUnwrappedOptionalConfigurationTests {
-    static var allTests: [(String, (ImplicitlyUnwrappedOptionalConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary",
-             testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary),
-            ("testImplicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig",
-             testImplicitlyUnwrappedOptionalConfigurationThrowsOnBadConfig)
-        ]
-    }
-}

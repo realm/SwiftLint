@@ -38,9 +38,15 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", required_string: \(requiredString)" +
-            ", required_pattern: \(requiredPattern), forbidden_string: \(forbiddenString)" +
-            ", forbidden_pattern: \(forbiddenPattern)"
+        let requiredStringDescription = requiredString ?? "None"
+        let requiredPatternDescription = requiredPattern ?? "None"
+        let forbiddenStringDescription = forbiddenString ?? "None"
+        let forbiddenPatternDescription = forbiddenPattern ?? "None"
+        return severityConfiguration.consoleDescription +
+            ", required_string: \(requiredStringDescription)" +
+            ", required_pattern: \(requiredPatternDescription)" +
+            ", forbidden_string: \(forbiddenStringDescription)" +
+            ", forbidden_pattern: \(forbiddenPatternDescription)"
     }
 
     public init() {}

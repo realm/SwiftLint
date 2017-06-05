@@ -79,6 +79,17 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
+    func testCustomRulesExcludedExcludesFile() {
+        var (regexConfig, customRules) = getCustomRules(["excluded": "\\.txt$"])
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig]
+        customRules.configuration = customRuleConfiguration
+
+        let violations = customRules.validate(file: getTestTextFile())
+        XCTAssertEqual(violations.count, 0)
+    }
+
     func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
@@ -101,24 +112,5 @@ class CustomRulesTests: XCTestCase {
 
     func getTestTextFile() -> File {
         return File(path: "\(bundlePath)/test.txt")!
-    }
-}
-
-extension CustomRulesTests {
-    static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] {
-        return [
-            ("testCustomRuleConfigurationSetsCorrectly",
-                testCustomRuleConfigurationSetsCorrectly),
-            ("testCustomRuleConfigurationThrows",
-                testCustomRuleConfigurationThrows),
-            ("testCustomRules",
-                testCustomRules),
-            ("testLocalDisableCustomRule",
-                testLocalDisableCustomRule),
-            ("testCustomRulesIncludedDefault",
-                testCustomRulesIncludedDefault),
-            ("testCustomRulesIncludedExcludesFile",
-                testCustomRulesIncludedExcludesFile)
-        ]
     }
 }

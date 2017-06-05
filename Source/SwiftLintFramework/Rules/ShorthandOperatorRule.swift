@@ -32,7 +32,8 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             ]
         } + [
             "var helloWorld = \"world!\"\n helloWorld = \"Hello, \" + helloWorld",
-            "angle = someCheck ? angle : -angle"
+            "angle = someCheck ? angle : -angle",
+            "seconds = seconds * 60 + value"
         ],
         triggeringExamples: allOperators.flatMap { operation in
             [
@@ -42,8 +43,11 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
                 "↓foo.aProperty = foo.aProperty \(operation) 1\n",
                 "↓self.aProperty = self.aProperty \(operation) 1\n"
             ]
-
-        }
+        } + [
+            "n = n + i / outputLength",
+            "n = n - i / outputLength"
+//            "d = d * 60 * 60"
+        ]
     )
 
     private static let allOperators = ["-", "/", "+", "*"]
@@ -53,21 +57,27 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             return "[\(operators.map { "\\\($0)" }.joined())]"
         }
 
-        let escapedOperators = escaped(allOperators)
+        let escapedAll = escaped(allOperators)
+        let operatorsWithoutPrecedence = escaped(["-", "+"])
+        let operatorsWithPrecedence = escaped(["/", "*"])
         let operand = "[\\w\\d\\.]+?"
         let spaces = "[^\\S\\r\\n]*?"
 
-        let pattern = "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)\(escapedOperators)"
-        return pattern
+        let pattern1 = "\(operatorsWithoutPrecedence)"
+        let pattern2 = "\(operatorsWithPrecedence)\(spaces)\\S+$"
+        return "^\(spaces)(\(operand))\(spaces)=\(spaces)(\\1)\(spaces)(\(pattern1)|\(pattern2))"
     }()
 
-    private static let violationRegex = regex(pattern, options: [.anchorsMatchLines])
+    private static let violationRegex: NSRegularExpression = {
+        return regex(pattern, options: [.anchorsMatchLines])
+    }()
 
     public func validate(file: File) -> [StyleViolation] {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 
         let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
+
         return matches.flatMap { match -> StyleViolation? in
 
             // byteRanges will have the ranges of captured groups
@@ -85,10 +95,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             }
 
             let kindsInCaptureGroups = byteRanges.map { range -> [SyntaxKind] in
-                range.flatMap {
-                    let tokens = file.syntaxMap.tokens(inByteRange: $0)
-                    return tokens.flatMap { SyntaxKind(rawValue: $0.type) }
-                } ?? []
+                return range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []
             }
 
             guard kindsAreValid(kindsInCaptureGroups[0]) &&

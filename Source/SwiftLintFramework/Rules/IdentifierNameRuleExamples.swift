@@ -9,7 +9,7 @@
 import Foundation
 
 internal struct IdentifierNameRuleExamples {
-    private static let commonNonTriggeringExamples = [
+    static let nonTriggeringExamples = [
         "let myLet = 0",
         "var myVar = 0",
         "private let _myLet = 0",
@@ -24,13 +24,7 @@ internal struct IdentifierNameRuleExamples {
         "override func IsOperator(name: String) -> Bool"
     ]
 
-    static let swift2NonTriggeringExamples = commonNonTriggeringExamples + [
-        "enum Foo { case MyEnum }"
-    ]
-
-    static let swift3NonTriggeringExamples = commonNonTriggeringExamples
-
-    private static let commonTriggeringExamples = [
+    static let triggeringExamples = [
         "↓let MyLet = 0",
         "↓let _myLet = 0",
         "private ↓let myLet_ = 0",
@@ -40,12 +34,7 @@ internal struct IdentifierNameRuleExamples {
         "↓let i = 0",
         "↓var id = 0",
         "private ↓let _i = 0",
-        "↓func IsOperator(name: String) -> Bool"
-    ]
-
-    static let swift2TriggeringExamples = commonTriggeringExamples
-
-    static let swift3TriggeringExamples = commonTriggeringExamples + [
+        "↓func IsOperator(name: String) -> Bool",
         "enum Foo { case ↓MyEnum }"
     ]
 }

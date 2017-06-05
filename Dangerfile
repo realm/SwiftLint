@@ -7,11 +7,12 @@ warn('Big PR') if git.lines_of_code > 500
 # including in a CHANGELOG for example
 has_app_changes = !git.modified_files.grep(/Source/).empty?
 has_test_changes = !git.modified_files.grep(/Tests/).empty?
-has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check/).empty?
+has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_build_changes = !git.modified_files.grep(/Makefile|SwiftLint\.xcodeproj|SwiftLint\.xcworkspace|Package\.swift|Cartfile/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
-  fail("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
+  warn("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
 ```markdown
@@ -29,7 +30,7 @@ if git.lines_of_code > 50 && has_app_changes && !has_test_changes
 end
 
 # Run OSSCheck if there were app changes
-if has_app_changes || has_danger_changes
+if has_app_changes || has_danger_changes || has_build_changes
   def non_empty_lines(lines)
     lines.split(/\n+/).reject(&:empty?)
   end
@@ -52,7 +53,9 @@ if has_app_changes || has_danger_changes
   file.unlink
 
   non_empty_lines(lines).each do |line|
-    if line.start_with? 'Message:'
+    if line.start_with? 'Permanently added the RSA host key for IP address'
+      # Don't report to Danger
+    elsif line.start_with? 'Message:'
       message parse_line(line)
     elsif line.start_with? 'Warning:'
       warn parse_line(line)

@@ -55,6 +55,7 @@ public struct Linter {
     public let file: File
     private let rules: [Rule]
     private let cache: LinterCache?
+    private let configuration: Configuration
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -85,8 +86,7 @@ public struct Linter {
         }
 
         if let cache = cache, let path = file.path {
-            let hash = file.contents.hash
-            cache.cache(violations: violations, forFile: path, fileHash: hash)
+            cache.cache(violations: violations, forFile: path, configuration: configuration)
         }
 
         for (deprecatedIdentifier, identifier) in deprecatedToValidIdentifier {
@@ -99,11 +99,9 @@ public struct Linter {
 
     private func cachedStyleViolations(benchmark: Bool = false) -> ([StyleViolation], [(id: String, time: Double)])? {
         let start: Date! = benchmark ? Date() : nil
-        guard let cache = cache,
-            let file = file.path,
-            case let hash = self.file.contents.hash,
-            let cachedViolations = cache.violations(forFile: file, hash: hash) else {
-                return nil
+        guard let cache = cache, let file = file.path,
+            let cachedViolations = cache.violations(forFile: file, configuration: configuration) else {
+            return nil
         }
 
         var ruleTimes = [(id: String, time: Double)]()
@@ -123,10 +121,15 @@ public struct Linter {
     public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil) {
         self.file = file
         self.cache = cache
+        self.configuration = configuration
         rules = configuration.rules
     }
 
     public func correct() -> [Correction] {
+        if let violations = cachedStyleViolations()?.0, violations.isEmpty {
+            return []
+        }
+
         var corrections = [Correction]()
         for rule in rules.flatMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file)

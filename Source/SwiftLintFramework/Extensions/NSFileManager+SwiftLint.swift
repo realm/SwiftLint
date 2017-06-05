@@ -10,6 +10,7 @@ import Foundation
 
 public protocol LintableFileManager {
     func filesToLint(inPath: String, rootDirectory: String?) -> [String]
+    func modificationDate(forFileAtPath: String) -> Date?
 }
 
 extension FileManager: LintableFileManager {
@@ -30,5 +31,9 @@ extension FileManager: LintableFileManager {
             }
             return nil
         } ?? []
+    }
+
+    public func modificationDate(forFileAtPath path: String) -> Date? {
+        return (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
     }
 }

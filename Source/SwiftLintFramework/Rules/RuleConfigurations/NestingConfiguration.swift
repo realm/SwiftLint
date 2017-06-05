@@ -11,7 +11,7 @@ import Foundation
 public struct NestingConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(type_level) \(typeLevel.shortConsoleDescription), " +
-        "(statement_level) \(statementLevel.shortConsoleDescription)"
+            "(statement_level) \(statementLevel.shortConsoleDescription)"
     }
 
     var typeLevel: SeverityLevelsConfiguration

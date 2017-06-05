@@ -24,9 +24,19 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
             let className = inheritedTypes.first else { return nil }
         return className
     }
+
+    var parameters: [[String: SourceKitRepresentable]] {
+        return substructure.filter { dict in
+            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init) else {
+                return false
+            }
+
+            return kind == .varParameter
+        }
+    }
 }
 
-public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
+public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider {
 
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
@@ -34,6 +44,10 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         configuration.regex = regex("XCTestCase")
         return configuration
     }()
+
+    internal var cacheDescription: String {
+        return configuration.cacheDescription
+    }
 
     public init() {}
 
@@ -67,6 +81,10 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
                 "func test1() {}\n " +
                 "internal func test2() {}\n " +
                 "public func test3() {}\n " +
+            "}",
+            // Methods with params
+            "public class FooTest: XCTestCase { " +
+                "func test1(param: Int) {}\n " +
             "}"
         ],
         triggeringExamples: [
@@ -115,11 +133,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         guard classViolations.isEmpty else { return classViolations }
 
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
-            guard let kindString = subDict.kind,
-                let kind = KindType(rawValue: kindString), kind == .functionMethodInstance else {
-                    return []
-            }
-            return validateFunction(file: file, kind: kind, dictionary: subDict)
+            return validateFunction(file: file, dictionary: subDict)
         }
     }
 
@@ -131,11 +145,13 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule {
         return !regex.matches(in: superclass, options: [], range: range).isEmpty
     }
 
-    private func validateFunction(file: File, kind: SwiftDeclarationKind,
+    private func validateFunction(file: File,
                                   dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        assert(kind == .functionMethodInstance)
-        guard let name = dictionary.name, name.hasPrefix("test") else {
-            return []
+        guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+            kind == .functionMethodInstance,
+            let name = dictionary.name, name.hasPrefix("test"),
+            dictionary.parameters.isEmpty else {
+                return []
         }
         return validateAccessControlLevel(file: file, dictionary: dictionary)
     }

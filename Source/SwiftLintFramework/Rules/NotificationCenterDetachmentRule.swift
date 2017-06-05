@@ -18,8 +18,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
         description: "An object should only remove itself as an observer in `deinit`.",
-        nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: NotificationCenterDetachmentRuleExamples.swift3TriggeringExamples
+        nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.nonTriggeringExamples,
+        triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -59,14 +59,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         }
     }
 
-    private var methodName: String = {
-        switch SwiftVersion.current {
-        case .two, .twoPointThree:
-            return "NSNotificationCenter.defaultCenter.removeObserver"
-        case .three:
-            return "NotificationCenter.default.removeObserver"
-        }
-    }()
+    private var methodName = "NotificationCenter.default.removeObserver"
 
     private func parameterIsSelf(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let bodyOffset = dictionary.bodyOffset,

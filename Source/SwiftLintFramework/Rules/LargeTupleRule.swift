@@ -66,7 +66,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
         return offsets.flatMap { location, size in
             for parameter in configuration.params where size > parameter.value {
-                let reason = "Tuples should have at most \(parameter.value) members."
+                let reason = "Tuples should have at most \(configuration.warning) members."
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: parameter.severity,
                                       location: Location(file: file, byteOffset: location),

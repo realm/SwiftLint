@@ -20,11 +20,15 @@ public struct FirebaseConfigActivateRule: ASTRule, RecursiveRule, OptInRule {
         description: "Firebase Config should be activated.",
         nonTriggeringExamples: [
             "remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
-                " (status, error) -> Void in \n self.remoteConfig.activateFetched() \n }"
+                " (status, error) -> Void in \n self.remoteConfig.activateFetched() \n }",
+            "foo.fetch() { }",
+            "foo.fetch(fromURL: URL) { }"
         ],
         triggeringExamples: [
             "remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
-                " (status, error) -> Void in \n }"
+                " (status, error) -> Void in \n }",
+            "remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
+            " (status, error) -> Void in \n foo.fetch() \n }"
         ]
     )
 
@@ -34,11 +38,11 @@ public struct FirebaseConfigActivateRule: ASTRule, RecursiveRule, OptInRule {
             return []
         }
 
-        guard dictionary.name!.hasSuffix(".fetch") else {
+        guard let name = dictionary.name, name.hasSuffix(".fetch") else {
             return []
         }
 
-        guard dictionary.substructure[0].name == "withExpirationDuration" else {
+        guard let param = dictionary.substructure.first, param.name == "withExpirationDuration" else {
             return []
         }
 

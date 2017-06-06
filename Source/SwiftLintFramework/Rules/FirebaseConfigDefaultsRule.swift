@@ -27,16 +27,30 @@ public struct FirebaseConfigDefaultsRule: ASTRule, RecursiveRule, OptInRule {
             "    }\n" +
             "    remoteConfig.setDefaults(fromPlist: \"RemoteConfigDefaults\")\n" +
             "  }\n" +
+            "}",
+            "class ViewController: UIViewController {\n" +
+            "  override func viewDidLoad() {\n" +
+            "    super.viewDidLoad() \n" +
+            "    foo.fetch() { } \n" +
+            "    foo.fetch(fromURL: URL) { } \n" +
+            "  }\n" +
             "}"
         ],
         triggeringExamples: [
             "class ViewController: UIViewController {\n" +
-                "  override func viewDidLoad() {\n" +
-                "    super.viewDidLoad() \n" +
-                "    remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
-                "        (status, error) -> Void in \n" +
-                "    }\n" +
-                "  }\n" +
+            "  override func viewDidLoad() {\n" +
+            "    super.viewDidLoad() \n" +
+            "    remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
+            "        (status, error) -> Void in \n" +
+            "    }\n" +
+            "  }\n" +
+            "}",
+            "class ViewController: UIViewController {\n" +
+            "  func fetch {\n " +
+            "    remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
+            "        (status, error) -> Void in \n" +
+            "    }\n" +
+            "  }\n" +
             "}"
         ]
     )
@@ -47,11 +61,11 @@ public struct FirebaseConfigDefaultsRule: ASTRule, RecursiveRule, OptInRule {
             return []
         }
 
-        guard dictionary.name!.hasSuffix(".fetch") else {
+        guard let name = dictionary.name, name.hasSuffix(".fetch") else {
             return []
         }
 
-        guard dictionary.substructure[0].name == "withExpirationDuration" else {
+        guard let param = dictionary.substructure.first, param.name == "withExpirationDuration" else {
             return []
         }
 

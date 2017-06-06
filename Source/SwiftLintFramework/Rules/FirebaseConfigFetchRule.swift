@@ -48,11 +48,11 @@ public struct FirebaseConfigFetchRule: ASTRule, RecursiveRule, OptInRule {
             return []
         }
 
-        guard dictionary.name!.hasSuffix(".fetch") else {
+        guard let name = dictionary.name, name.hasSuffix(".fetch") else {
             return []
         }
 
-        guard dictionary.substructure[0].name == "withExpirationDuration" else {
+        guard let param = dictionary.substructure.first, param.name == "withExpirationDuration" else {
             return []
         }
 
@@ -77,7 +77,7 @@ public struct FirebaseConfigFetchRule: ASTRule, RecursiveRule, OptInRule {
     public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
         if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
             let name = dictionary.name, name.hasSuffix(".fetch"),
-                dictionary.substructure[0].name == "withExpirationDuration" {
+                let param = dictionary.substructure.first, param.name == "withExpirationDuration" {
             return true
         }
         return false

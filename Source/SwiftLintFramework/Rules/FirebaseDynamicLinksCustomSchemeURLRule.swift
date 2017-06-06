@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseDynamicLinksCustomSchemeURLRule: ConfigurationProviderRule, OptInRule {
+public struct FirebaseDynamicLinksCustomSchemeURLRule: RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -40,30 +40,27 @@ public struct FirebaseDynamicLinksCustomSchemeURLRule: ConfigurationProviderRule
     public func validate(file: File) -> [StyleViolation] {
         let appDelegate = file.structure.dictionary.substructure
         if let first = appDelegate.first, first.inheritedTypes.contains("UIApplicationDelegate") {
-            var offset: Int?
             for method in first.substructure where
                 SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind {
                 switch method.name! {
-                case "application(_:open:options:)":
-                    for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
-                        call.name!.hasSuffix(".dynamicLink") {
-                        return []
-                    }
-                    offset = method.offset
-                case "application(_:open:sourceApplication:annotation:)":
-                    for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
-                        call.name!.hasSuffix(".dynamicLink") {
-                        return []
-                    }
-                    offset = method.offset
+                case "application(_:open:options:)", "application(_:open:sourceApplication:annotation:)":
+                    return validateRecursive(file: file, dictionary: method)
                 default:
                     break
                 }
             }
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: offset ?? 0))]
+                                   location: Location(file: file, byteOffset: first.offset ?? 0))]
         }
         return []
+    }
+
+    public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
+        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.hasSuffix(".dynamicLink") {
+            return true
+        }
+        return false
     }
 }

@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseConfigActivateRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct FirebaseConfigActivateRule: ASTRule, RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -38,28 +38,19 @@ public struct FirebaseConfigActivateRule: ASTRule, ConfigurationProviderRule, Op
             return []
         }
 
-        let fetchClosure = dictionary.substructure[1].substructure[2]
-        if isFetchActivated (dictionary: fetchClosure) {
-           return []
-        } else {
-           return [StyleViolation(ruleDescription: type(of: self).description,
-                            severity: configuration.severity,
-                            location: Location(file: file, byteOffset: fetchClosure.offset ?? 0))]
+        guard dictionary.substructure[0].name == "withExpirationDuration" else {
+            return []
         }
+
+        let fetchClosure = dictionary.substructure[1].substructure[2]
+        return validateRecursive(file: file, dictionary: fetchClosure)
     }
 
-    private func isFetchActivated (dictionary: [String: SourceKitRepresentable]) -> Bool {
+    public func validateBaseCase(dictionary: [String: SourceKitRepresentable]) -> Bool {
         if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
             let name = dictionary.name, name.hasSuffix(".activateFetched") {
             return true
         }
-
-        for subDict in dictionary.substructure {
-            if isFetchActivated(dictionary: subDict) {
-                return true
-            }
-        }
-
         return false
     }
 }

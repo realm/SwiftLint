@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseCoreRule: ConfigurationProviderRule, OptInRule {
+public struct FirebaseCoreRule: RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -43,15 +43,17 @@ public struct FirebaseCoreRule: ConfigurationProviderRule, OptInRule {
             for method in first.substructure where
                 SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
                     method.name == "application(_:didFinishLaunchingWithOptions:)" {
-                for call in method.substructure where
-                    call.kind == SwiftExpressionKind.call.rawValue && call.name == "FirebaseApp.configure" {
-                    return []
-                }
-                return [StyleViolation(ruleDescription: type(of: self).description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, byteOffset: method.offset ?? 0))]
+                return validateRecursive(file: file, dictionary: method)
             }
         }
         return []
+    }
+
+    public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
+        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            dictionary.name == "FirebaseApp.configure" {
+            return true
+        }
+        return false
     }
 }

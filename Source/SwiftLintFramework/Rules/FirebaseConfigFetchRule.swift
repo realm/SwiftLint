@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseConfigFetchRule: ConfigurationProviderRule, OptInRule {
+public struct FirebaseConfigFetchRule: ASTRule, RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -17,7 +17,7 @@ public struct FirebaseConfigFetchRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "firebase_config_fetch",
         name: "Firebase Config Fetch",
-        description: "Firebase Config fetch should be called.",
+        description: "Firebase Config fetch should be called in viewDidLoad().",
         nonTriggeringExamples: [
             "class ViewController: UIViewController {\n" +
             "  override func viewDidLoad() {\n" +
@@ -33,25 +33,53 @@ public struct FirebaseConfigFetchRule: ConfigurationProviderRule, OptInRule {
             "  override func viewDidLoad() {\n" +
             "    super.viewDidLoad() \n" +
             "  }\n" +
+            "  func fetch {\n " +
+            "    remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
+            "        (status, error) -> Void in \n" +
+            "    }\n" +
+            "  }\n" +
             "}"
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let controller = file.structure.dictionary.substructure
-        if let first = controller.first, first.inheritedTypes.contains("UIViewController") {
-            for method in first.substructure where
-                SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
-                    method.name == "viewDidLoad()" {
-                for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue
-                    && call.name!.contains(".fetch") {
-                    return []
-                }
-                return [StyleViolation(ruleDescription: type(of: self).description,
-                                       severity: configuration.severity,
-                                       location: Location(file: file, byteOffset: method.offset ?? 0))]
-            }
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard SwiftExpressionKind.call == kind else {
+            return []
         }
-        return []
+
+        guard dictionary.name!.hasSuffix(".fetch") else {
+            return []
+        }
+
+        guard dictionary.substructure[0].name == "withExpirationDuration" else {
+            return []
+        }
+
+        guard let first = file.structure.dictionary.substructure.first else {
+            return []
+        }
+
+        guard first.inheritedTypes.contains("UIViewController")  else {
+            return []
+        }
+
+        for method in first.substructure where
+            SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
+                method.name == "viewDidLoad()" {
+                    return validateRecursive(file: file, dictionary: method)
+        }
+        return [StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: first.offset ?? 0))]
+    }
+
+    public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
+        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.hasSuffix(".fetch"),
+                dictionary.substructure[0].name == "withExpirationDuration" {
+            return true
+        }
+        return false
     }
 }

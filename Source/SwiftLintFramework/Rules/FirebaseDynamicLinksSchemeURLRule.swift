@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseDynamicLinksSchemeURLRule: ConfigurationProviderRule, OptInRule {
+public struct FirebaseDynamicLinksSchemeURLRule: RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -43,15 +43,20 @@ public struct FirebaseDynamicLinksSchemeURLRule: ConfigurationProviderRule, OptI
             for method in first.substructure where
                 SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
                     method.name == "application(_:didFinishLaunchingWithOptions:)" {
-                for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
-                    call.name! == "FirebaseOptions.defaultOptions" {
-                    return []
-                }
-                return [StyleViolation(ruleDescription: type(of: self).description,
-                                       severity: configuration.severity,
-                                       location: Location(file: file, byteOffset: method.offset ?? 0))]
+                return validateRecursive(file: file, dictionary: method)
             }
+            return [StyleViolation(ruleDescription: type(of: self).description,
+                                   severity: configuration.severity,
+                                   location: Location(file: file, byteOffset: first.offset ?? 0))]
         }
         return []
+    }
+
+    public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
+        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            dictionary.name == "FirebaseOptions.defaultOptions" {
+            return true
+        }
+        return false
     }
 }

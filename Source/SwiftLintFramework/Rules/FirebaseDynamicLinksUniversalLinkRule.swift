@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-public struct FirebaseDynamicLinksUniversalLinkRule: ConfigurationProviderRule, OptInRule {
+public struct FirebaseDynamicLinksUniversalLinkRule: RecursiveRule, OptInRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -45,15 +45,20 @@ public struct FirebaseDynamicLinksUniversalLinkRule: ConfigurationProviderRule, 
             for method in first.substructure where
                 SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind &&
                     method.name == "application(_:continue:restorationHandler:)" {
-                for call in method.substructure where call.kind == SwiftExpressionKind.call.rawValue &&
-                    call.name!.hasSuffix(".handleUniversalLink") {
-                    return []
-                }
-                return [StyleViolation(ruleDescription: type(of: self).description,
-                                       severity: configuration.severity,
-                                       location: Location(file: file, byteOffset: method.offset ?? 0))]
+                return validateRecursive(file: file, dictionary: method)
             }
+            return [StyleViolation(ruleDescription: type(of: self).description,
+                                   severity: configuration.severity,
+                                   location: Location(file: file, byteOffset: first.offset ?? 0))]
         }
         return []
+    }
+
+    public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
+        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.hasSuffix(".handleUniversalLink") {
+            return true
+        }
+        return false
     }
 }

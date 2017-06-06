@@ -24,6 +24,7 @@
 		10016BAB1E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA31E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift */; };
 		10016BAC1E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA41E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift */; };
 		10016BAD1E707183001B379E /* FirebaseInvitesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10016BA51E707183001B379E /* FirebaseInvitesRule.swift */; };
+		10EE19731EE63C8800C2E61A /* RecursiveRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EE19711EE63A0800C2E61A /* RecursiveRule.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifier.swift */; };
 		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
@@ -312,6 +313,7 @@
 		10016BA31E707183001B379E /* FirebaseDynamicLinksUniversalLinkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDynamicLinksUniversalLinkRule.swift; sourceTree = "<group>"; };
 		10016BA41E707183001B379E /* FirebaseDynamicLinksSchemeURLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDynamicLinksSchemeURLRule.swift; sourceTree = "<group>"; };
 		10016BA51E707183001B379E /* FirebaseInvitesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseInvitesRule.swift; sourceTree = "<group>"; };
+		10EE19711EE63A0800C2E61A /* RecursiveRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecursiveRule.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifier.swift; sourceTree = "<group>"; };
 		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
@@ -988,6 +990,7 @@
 				E86396C11BADAAE5002C9E88 /* Reporter.swift */,
 				E88DEA761B098D0C00A66CB0 /* Rule.swift */,
 				3B828E521C546468000D180E /* RuleConfiguration.swift */,
+				10EE19711EE63A0800C2E61A /* RecursiveRule.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1333,6 +1336,7 @@
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
 				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
+				10EE19731EE63C8800C2E61A /* RecursiveRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */,
 				2E336D1B1DF08BFB00CCFE77 /* EmojiReporter.swift in Sources */,

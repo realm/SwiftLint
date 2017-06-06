@@ -38,6 +38,13 @@ public struct FirebaseConfigFetchRule: ASTRule, RecursiveRule, OptInRule {
             "        (status, error) -> Void in \n" +
             "    }\n" +
             "  }\n" +
+            "}",
+            "class ViewController: UIViewController {\n" +
+            "  func fetch {\n " +
+            "    remoteConfig.fetch(withExpirationDuration: TimeInterval(expirationDuration)) {" +
+            "        (status, error) -> Void in \n" +
+            "    }\n" +
+            "  }\n" +
             "}"
         ]
     )

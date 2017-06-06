@@ -666,6 +666,10 @@
   or one per line.  
   [Ornithologist Coder](https://github.com/ornithocoder)
 
+* Added `modifierOrderRule` to enforce the order of modifiers.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [#1472](https://github.com/realm/SwiftLint/issues/1472)
+
 * Update `function_parameter_count` rule to ignore overridden methods.  
   [Markus Gasser](https://github.com/frenetisch-applaudierend)
   [#1562](https://github.com/realm/SwiftLint/issues/1562)

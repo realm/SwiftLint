@@ -50,7 +50,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].something { number, ↓idx in\n return number\n}\n",
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
             "hoge(arg: num) { ↓num in\n" +
-            "}\n"
+            "}\n",
+            "fooFunc { 아 in\n }"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -118,7 +119,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 return nil
             }
 
-            let paramLength = name.bridge().length
+            let paramLength = name.lengthOfBytes(using: .utf8)
 
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {

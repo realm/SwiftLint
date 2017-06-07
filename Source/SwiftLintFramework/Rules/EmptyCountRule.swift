@@ -21,17 +21,19 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
             "var count = 0\n",
             "[Int]().isEmpty\n",
             "[Int]().count > 1\n",
-            "[Int]().count == 1\n"
+            "[Int]().count == 1\n",
+            "return count > 0\n",
+            "return count == 0\n"
         ],
         triggeringExamples: [
-            "[Int]().↓count == 0\n",
-            "[Int]().↓count > 0\n",
-            "[Int]().↓count != 0\n"
+            "[Int]()↓.count == 0\n",
+            "[Int]()↓.count > 0\n",
+            "[Int]()↓.count != 0\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "count\\s*(==|!=|<|<=|>|>=)\\s*0"
+        let pattern = "\\.count\\s*(==|!=|<|<=|>|>=)\\s*0"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

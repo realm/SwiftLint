@@ -1224,6 +1224,10 @@ This release has seen a phenomenal uptake in community contributions!
 
 * Improve error messages for invalid configuration files.  
   [Brian Hardy](https://github.com/lyricsboy)
+  
+* Add Runpath Search Paths so that `swiftlint` can find
+  `SwiftLintFramework.framework` in more places.  
+  [Isaac Greenspan](https://github.com/vokal-isaac)
 
 * Added the user-configurable option `ignores_empty_lines` to the
   `trailing_whitespace` rule. It can be used to control whether the

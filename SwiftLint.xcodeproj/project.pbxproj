@@ -1673,7 +1673,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/../Frameworks @executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -1685,7 +1685,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/../Frameworks @executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -1697,7 +1697,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/../Frameworks @executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
@@ -1709,7 +1709,7 @@
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path @executable_path/SwiftLintFramework.framework/Versions/Current/Frameworks @executable_path/../Frameworks @executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;

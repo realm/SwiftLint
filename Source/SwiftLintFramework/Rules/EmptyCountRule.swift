@@ -19,19 +19,20 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         description: "Prefer checking `isEmpty` over comparing `count` to zero.",
         nonTriggeringExamples: [
             "var count = 0\n",
+            "var count = 0\nlet a = count > 0",
             "[Int]().isEmpty\n",
             "[Int]().count > 1\n",
             "[Int]().count == 1\n"
         ],
         triggeringExamples: [
-            "[Int]().↓count == 0\n",
-            "[Int]().↓count > 0\n",
-            "[Int]().↓count != 0\n"
+            "[Int]()↓.count == 0\n",
+            "[Int]()↓.count > 0\n",
+            "[Int]()↓.count != 0\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "count\\s*(==|!=|<|<=|>|>=)\\s*0"
+        let pattern = "\\.count\\s*(==|!=|<|<=|>|>=)\\s*0"
         let excludingKinds = SyntaxKind.commentAndStringKinds()
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

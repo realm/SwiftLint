@@ -34,16 +34,12 @@ public struct FirebaseConfigActivateRule: ASTRule, RecursiveRule, OptInRule {
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftExpressionKind.call == kind else {
-            return []
-        }
-
-        guard let name = dictionary.name, name.hasSuffix(".fetch") else {
-            return []
-        }
-
-        guard let param = dictionary.substructure.first, param.name == "withExpirationDuration" else {
-            return []
+        guard
+            SwiftExpressionKind.call == kind,
+            let name = dictionary.name, name.hasSuffix(".fetch"),
+            let param = dictionary.substructure.first, param.name == "withExpirationDuration"
+            else {
+                return []
         }
 
         let fetchClosure = dictionary.substructure[1].substructure[2]
@@ -51,10 +47,12 @@ public struct FirebaseConfigActivateRule: ASTRule, RecursiveRule, OptInRule {
     }
 
     public func validateBaseCase(dictionary: [String: SourceKitRepresentable]) -> Bool {
-        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
-            let name = dictionary.name, name.hasSuffix(".activateFetched") {
-            return true
+        guard
+            let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.hasSuffix(".activateFetched")
+            else {
+                return false
         }
-        return false
+        return true
     }
 }

@@ -25,7 +25,8 @@ public struct FirebaseDynamicLinksCustomSchemeURLRule: RecursiveRule, OptInRule 
             "    let dynamicLink = DynamicLinks.dynamicLinks()?.dynamicLink(fromCustomSchemeURL: url) \n" +
             "    return true \n" +
             "  }\n" +
-            "}"
+            "}",
+            "class foo { }"
         ],
         triggeringExamples: [
             "class AppDelegate: UIResponder, UIApplicationDelegate {\n" +
@@ -33,34 +34,38 @@ public struct FirebaseDynamicLinksCustomSchemeURLRule: RecursiveRule, OptInRule 
                 "      sourceApplication: String?, annotation: Any) -> Bool {\n" +
                 "    return true \n" +
                 "  }\n" +
-            "}"
+            "}",
+            "class AppDelegate: UIResponder, UIApplicationDelegate { }"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
         let appDelegate = file.structure.dictionary.substructure
-        if let first = appDelegate.first, first.inheritedTypes.contains("UIApplicationDelegate") {
-            for method in first.substructure where
-                SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind {
-                switch method.name! {
-                case "application(_:open:options:)", "application(_:open:sourceApplication:annotation:)":
-                    return validateRecursive(file: file, dictionary: method)
-                default:
-                    break
-                }
-            }
-            return [StyleViolation(ruleDescription: type(of: self).description,
-                                   severity: configuration.severity,
-                                   location: Location(file: file, byteOffset: first.offset ?? 0))]
+        guard let first = appDelegate.first, first.inheritedTypes.contains("UIApplicationDelegate") else {
+            return []
         }
-        return []
+
+        for method in first.substructure where
+            SwiftDeclarationKind.functionMethodInstance.rawValue == method.kind {
+            switch method.name! {
+            case "application(_:open:options:)", "application(_:open:sourceApplication:annotation:)":
+                return validateRecursive(file: file, dictionary: method)
+            default:
+                break
+            }
+        }
+        return [StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: first.offset ?? 0))]
     }
 
     public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
-        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
-            let name = dictionary.name, name.hasSuffix(".dynamicLink") {
-            return true
+        guard
+            let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.hasSuffix(".dynamicLink")
+            else {
+                return false
         }
-        return false
+        return true
     }
 }

@@ -42,7 +42,6 @@
 * Add opt-in rules for Firebase SDK.  
   [Ibrahim Ulukaya (Google Inc.)](https://github.com/iulukaya)
 
-
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  

@@ -34,7 +34,13 @@ public struct FirebaseConfigDefaultsRule: ASTRule, RecursiveRule, OptInRule {
             "    foo.fetch() { } \n" +
             "    foo.fetch(fromURL: URL) { } \n" +
             "  }\n" +
-            "}"
+            "}",
+            "class ViewController: UIViewController {\n" +
+                "  override func viewDidLoad() {\n" +
+                "    super.viewDidLoad()\n" +
+                "  }\n" +
+            "}",
+            "class ViewController: UIViewController { }"
         ],
         triggeringExamples: [
             "class ViewController: UIViewController {\n" +
@@ -57,24 +63,19 @@ public struct FirebaseConfigDefaultsRule: ASTRule, RecursiveRule, OptInRule {
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftExpressionKind.call == kind else {
-            return []
+        guard
+            SwiftExpressionKind.call == kind,
+            let name = dictionary.name, name.hasSuffix(".fetch"),
+            let param = dictionary.substructure.first, param.name == "withExpirationDuration"
+            else {
+                return []
         }
 
-        guard let name = dictionary.name, name.hasSuffix(".fetch") else {
-            return []
-        }
-
-        guard let param = dictionary.substructure.first, param.name == "withExpirationDuration" else {
-            return []
-        }
-
-        guard let first = file.structure.dictionary.substructure.first else {
-            return []
-        }
-
-        guard first.inheritedTypes.contains("UIViewController")  else {
-            return []
+        guard
+            let first = file.structure.dictionary.substructure.first,
+            first.inheritedTypes.contains("UIViewController")
+            else {
+                return []
         }
 
         for method in first.substructure where
@@ -88,10 +89,12 @@ public struct FirebaseConfigDefaultsRule: ASTRule, RecursiveRule, OptInRule {
     }
 
     public func validateBaseCase(dictionary: [String : SourceKitRepresentable]) -> Bool {
-        if let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
-            let name = dictionary.name, name.contains(".setDefaults") {
-            return true
+        guard
+            let kindString = dictionary.kind, SwiftExpressionKind(rawValue: kindString) == .call,
+            let name = dictionary.name, name.contains(".setDefaults")
+            else {
+                return false
         }
-        return false
+        return true
     }
 }

@@ -60,12 +60,8 @@ public struct FirebaseConfigFetchRule: ASTRule, RecursiveRule, OptInRule {
         guard
             SwiftExpressionKind.call == kind,
             let name = dictionary.name, name.hasSuffix(".fetch"),
-            let param = dictionary.substructure.first, param.name == "withExpirationDuration"
-            else {
-                return []
-        }
+            let param = dictionary.substructure.first, param.name == "withExpirationDuration",
 
-        guard
             let first = file.structure.dictionary.substructure.first,
             first.inheritedTypes.contains("UIViewController")
             else {

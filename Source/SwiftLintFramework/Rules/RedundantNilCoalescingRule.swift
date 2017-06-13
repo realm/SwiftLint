@@ -43,8 +43,8 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
     public func validate(file: File) -> [StyleViolation] {
         return file.violatingRedundantNilCoalescingRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

@@ -360,6 +360,7 @@ extension RulesTests {
         ("testUnusedClosureParameter", testUnusedClosureParameter),
         ("testUnusedEnumerated", testUnusedEnumerated),
         ("testValidIBInspectable", testValidIBInspectable),
+        ("testVerticalParameterAlignmentOnCall", testVerticalParameterAlignmentOnCall),
         ("testVerticalParameterAlignment", testVerticalParameterAlignment),
         ("testVoidReturn", testVoidReturn),
         ("testSuperCall", testSuperCall),

@@ -67,8 +67,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
                     return nil
                 }
                 return StyleViolation(ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: match.location))
+                                      severity: configuration.severity,
+                                      location: Location(file: file, characterOffset: match.location))
             }
         }
 

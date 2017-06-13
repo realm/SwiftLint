@@ -44,8 +44,8 @@ public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
             return syntaxKinds.first == .keyword
         }.map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location))
+                                  severity: configuration.severity,
+                                  location: Location(file: file, characterOffset: range.location))
         }
     }
 }

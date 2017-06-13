@@ -49,8 +49,8 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
                 content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 

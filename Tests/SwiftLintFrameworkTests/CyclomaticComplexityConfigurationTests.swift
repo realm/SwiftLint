@@ -15,24 +15,20 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         let warning = 10
         let error = 30
         let level = SeverityLevelsConfiguration(warning: warning, error: error)
-        let configuration1 = CyclomaticComplexityConfiguration(warning: warning,
-                                                               error: error)
+        let configuration1 = CyclomaticComplexityConfiguration(warning: warning, error: error)
         XCTAssertEqual(configuration1.length, level)
 
         let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
-        let configuration2 = CyclomaticComplexityConfiguration(warning: warning,
-                                                  error: nil)
+        let configuration2 = CyclomaticComplexityConfiguration(warning: warning, error: nil)
         XCTAssertEqual(configuration2.length, length2)
     }
 
     func testCyclomaticComplexityConfigurationInitializerSetsIgnoresCaseStatements() {
-        let configuration1 = CyclomaticComplexityConfiguration(warning: 10,
-                                                               error: 30,
+        let configuration1 = CyclomaticComplexityConfiguration(warning: 10, error: 30,
                                                                ignoresCaseStatements: true)
         XCTAssertTrue(configuration1.ignoresCaseStatements)
 
-        let configuration2 = CyclomaticComplexityConfiguration(warning:0,
-                                                               error: 30)
+        let configuration2 = CyclomaticComplexityConfiguration(warning:0, error: 30)
         XCTAssertFalse(configuration2.ignoresCaseStatements)
     }
 

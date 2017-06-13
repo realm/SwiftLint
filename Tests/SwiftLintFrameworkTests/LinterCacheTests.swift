@@ -221,7 +221,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
-            ], ruleList: RuleList(rules: CustomRules.self)
+            ],
+            ruleList: RuleList(rules: CustomRules.self)
         )!
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -230,7 +231,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"]]
-            ], initialConfig: initialConfig
+            ],
+            initialConfig: initialConfig
         )
 
         // Addition
@@ -238,7 +240,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]]
-            ], initialConfig: initialConfig
+            ],
+            initialConfig: initialConfig
         )
 
         // Removal

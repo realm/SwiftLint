@@ -100,9 +100,9 @@ private extension StatementPositionRule {
 
     func defaultValidate(file: File) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).flatMap { range in
-            return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity.severity,
-                location: Location(file: file, characterOffset: range.location))
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
     }
 
@@ -135,9 +135,9 @@ private extension StatementPositionRule {
 private extension StatementPositionRule {
     func uncuddledValidate(file: File) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).flatMap { range in
-            return StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
-                severity: configuration.severity.severity,
-                location: Location(file: file, characterOffset: range.location))
+            StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
+                           severity: configuration.severity.severity,
+                           location: Location(file: file, characterOffset: range.location))
         }
     }
 

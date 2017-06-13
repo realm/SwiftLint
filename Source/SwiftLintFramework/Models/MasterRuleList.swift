@@ -8,7 +8,7 @@
 // Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
-public let masterRuleList = RuleList(rules:
+public let masterRuleList = RuleList(rules: [
     AttributesRule.self,
     ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,
@@ -92,8 +92,9 @@ public let masterRuleList = RuleList(rules:
     UnusedEnumeratedRule.self,
     UnusedOptionalBindingRule.self,
     ValidIBInspectableRule.self,
+    VerticalParameterAlignmentOnCallRule.self,
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self
-)
+])

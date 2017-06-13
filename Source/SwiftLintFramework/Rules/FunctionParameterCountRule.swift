@@ -71,11 +71,12 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where parameterCount > parameter.value {
             let offset = dictionary.offset ?? 0
+            let reason = "Function should have \(configuration.warning) parameters or less: " +
+                         "it currently has \(parameterCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: parameter.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: "Function should have \(configuration.warning) parameters or less: " +
-                    "it currently has \(parameterCount)")]
+                                   severity: parameter.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: reason)]
         }
 
         return []

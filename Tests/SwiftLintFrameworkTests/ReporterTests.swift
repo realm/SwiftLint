@@ -36,21 +36,21 @@ class ReporterTests: XCTestCase {
         let location = Location(file: "filename", line: 1, character: 2)
         return [
             StyleViolation(ruleDescription: LineLengthRule.description,
-                location: location,
-                reason: "Violation Reason."),
+                           location: location,
+                           reason: "Violation Reason."),
             StyleViolation(ruleDescription: LineLengthRule.description,
-                severity: .error,
-                location: location,
-                reason: "Violation Reason."),
+                           severity: .error,
+                           location: location,
+                           reason: "Violation Reason."),
             StyleViolation(ruleDescription: SyntacticSugarRule.description,
-                severity: .error,
-                location: location,
-                reason: "Shorthand syntactic sugar should be used" +
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
                 ", i.e. [Int] instead of Array<Int>."),
             StyleViolation(ruleDescription: ColonRule.description,
-                severity: .error,
-                location: Location(file: nil),
-                reason: nil)
+                           severity: .error,
+                           location: Location(file: nil),
+                           reason: nil)
         ]
     }
 

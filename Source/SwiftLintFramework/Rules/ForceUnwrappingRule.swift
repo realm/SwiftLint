@@ -46,9 +46,9 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file).map {
-            return StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

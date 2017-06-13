@@ -29,11 +29,14 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         if countOfLeadingWhitespace == 0 {
             return []
         }
+
+        let reason = "File shouldn't start with whitespace: " +
+                     "currently starts with \(countOfLeadingWhitespace) whitespace characters"
+
         return [StyleViolation(ruleDescription: type(of: self).description,
-            severity: configuration.severity,
-            location: Location(file: file.path, line: 1),
-            reason: "File shouldn't start with whitespace: " +
-            "currently starts with \(countOfLeadingWhitespace) whitespace characters")]
+                               severity: configuration.severity,
+                               location: Location(file: file.path, line: 1),
+                               reason: reason)]
     }
 
     public func correct(file: File) -> [Correction] {

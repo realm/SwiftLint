@@ -92,8 +92,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -101,26 +101,26 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         var result = [Correction]()
 
         result.append(contentsOf: correct(file: file,
-            pattern: spaceStartPattern,
-            replaceString: "// MARK:"))
+                                          pattern: spaceStartPattern,
+                                          replaceString: "// MARK:"))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endNonSpacePattern,
-            replaceString: "// MARK: ",
-            keepLastChar: true))
+                                          pattern: endNonSpacePattern,
+                                          replaceString: "// MARK: ",
+                                          keepLastChar: true))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endTwoOrMoreSpacePattern,
-            replaceString: "// MARK: "))
+                                          pattern: endTwoOrMoreSpacePattern,
+                                          replaceString: "// MARK: "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: twoOrMoreSpacesAfterHyphenPattern,
-            replaceString: "// MARK: - "))
+                                          pattern: twoOrMoreSpacesAfterHyphenPattern,
+                                          replaceString: "// MARK: - "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: nonSpaceOrNewlineAfterHyphenPattern,
-            replaceString: "// MARK: - ",
-            keepLastChar: true))
+                                          pattern: nonSpaceOrNewlineAfterHyphenPattern,
+                                          replaceString: "// MARK: - ",
+                                          keepLastChar: true))
 
         return result
     }

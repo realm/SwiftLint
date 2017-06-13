@@ -223,6 +223,15 @@ extension NumberSeparatorRuleTests {
     ]
 }
 
+extension ObjectLiteralRuleTests {
+    static var allTests: [(String, (ObjectLiteralRuleTests) -> () throws -> Void)] = [
+        ("testObjectLiteralWithDefaultConfiguration", testObjectLiteralWithDefaultConfiguration),
+        ("testObjectLiteralWithImageLiteral", testObjectLiteralWithImageLiteral),
+        ("testObjectLiteralWithColorLiteral", testObjectLiteralWithColorLiteral),
+        ("testObjectLiteralWithImageAndColorLiteral", testObjectLiteralWithImageAndColorLiteral)
+    ]
+}
+
 extension RegionTests {
     static var allTests: [(String, (RegionTests) -> () throws -> Void)] = [
         ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
@@ -335,7 +344,6 @@ extension RulesTests {
         ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),
-        ("testObjectLiteral", testObjectLiteral),
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
@@ -449,6 +457,7 @@ XCTMain([
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
+    testCase(ObjectLiteralRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),

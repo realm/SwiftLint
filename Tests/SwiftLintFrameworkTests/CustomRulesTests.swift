@@ -61,6 +61,16 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(customRules.validate(file: file), [])
     }
 
+    func testLocalDisableCustomRuleWithMultipleRules() {
+        let (configs, customRules) = getCustomRulesWithTwoRules()
+        let file = File(contents: "//swiftlint:disable \(configs.1.identifier) \n// file with a pattern")
+        XCTAssertEqual(customRules.validate(file: file),
+                       [StyleViolation(ruleDescription: configs.0.description,
+                                       severity: .warning,
+                                       location: Location(file: nil, line: 2, character: 16),
+                                       reason: configs.0.message)])
+    }
+
     func testCustomRulesIncludedDefault() {
         // Violation detected when included is omitted.
         let (_, customRules) = getCustomRules()
@@ -90,7 +100,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
+    private func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }
@@ -110,7 +120,36 @@ class CustomRulesTests: XCTestCase {
         return (regexConfig, customRules)
     }
 
-    func getTestTextFile() -> File {
+    private func getCustomRulesWithTwoRules() -> ((RegexConfiguration, RegexConfiguration), CustomRules) {
+        let config1 = ["regex": "pattern",
+                      "match_kinds": "comment"]
+
+        var regexConfig1 = RegexConfiguration(identifier: "custom1")
+        do {
+            try regexConfig1.apply(configuration: config1)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+
+        let config2 = ["regex": "something",
+                       "match_kinds": "comment"]
+
+        var regexConfig2 = RegexConfiguration(identifier: "custom2")
+        do {
+            try regexConfig2.apply(configuration: config2)
+        } catch {
+            XCTFail("Failed regex config")
+        }
+
+        var customRuleConfiguration = CustomRulesConfiguration()
+        customRuleConfiguration.customRuleConfigurations = [regexConfig1, regexConfig2]
+
+        var customRules = CustomRules()
+        customRules.configuration = customRuleConfiguration
+        return ((regexConfig1, regexConfig2), customRules)
+    }
+
+    private func getTestTextFile() -> File {
         return File(path: "\(bundlePath)/test.txt")!
     }
 }

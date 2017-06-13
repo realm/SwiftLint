@@ -101,9 +101,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
                     return true
                 }
 
-                return !configurations.contains { config in
-                    return region.isRuleDisabled(customRuleIdentifier: config.identifier)
-                }
+                return !region.isRuleDisabled(customRuleIdentifier: configuration.identifier)
             }
         }
     }

@@ -64,6 +64,10 @@
   [#977](https://github.com/realm/SwiftLint/issues/977)
   [#1614](https://github.com/realm/SwiftLint/issues/1614)
 
+* Fix custom rules not working correctly with comment commands.  
+  [JP Simard](https://github.com/jpsim)
+  [#1558](https://github.com/realm/SwiftLint/issues/1558)
+
 * Fix incorrectly using configuration files named `.swiftlint.yml` when they are
   located in the same directory as a differently-named, user-provided custom
   configuration file.  

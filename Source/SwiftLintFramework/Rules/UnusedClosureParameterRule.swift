@@ -51,7 +51,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
             "hoge(arg: num) { ↓num in\n" +
             "}\n",
-            "fooFunc { 아 in\n }"
+            "fooFunc { ↓아 in\n }"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":

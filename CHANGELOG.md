@@ -50,6 +50,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1597](https://github.com/realm/SwiftLint/issues/1597)
 
+* Fix crash in `unused_closure_parameter` rule when using unicode identifiers.  
+  [Woo-Sik Byun](https://github.com/woosiki)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.19.0: Coin-Operated Machine
 
 ##### Breaking

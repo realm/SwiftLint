@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add support for missing triggering cases in `force_unwrapping`
+  when using subscript.  
+  [Otávio Lima](https://github.com/otaviolima)
+
 * Match `(Void)` as return type in the `void_return` rule.  
   [Anders Hasselqvist](https://github.com/nevil)
 
@@ -53,6 +57,12 @@
 * Fix crash in `unused_closure_parameter` rule when using unicode identifiers.  
   [Woo-Sik Byun](https://github.com/woosiki)
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix two false positives in `force_unwrapping` rule.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#614](https://github.com/realm/SwiftLint/issues/614)
+  [#977](https://github.com/realm/SwiftLint/issues/977)
+  [#1614](https://github.com/realm/SwiftLint/issues/1614)
 
 ## 0.19.0: Coin-Operated Machine
 

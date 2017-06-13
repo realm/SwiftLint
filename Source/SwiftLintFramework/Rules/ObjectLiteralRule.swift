@@ -45,8 +45,8 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call,
             let offset = dictionary.offset,
-            isImageNamedInit(dictionary: dictionary, file: file) ||
-                isColorInit(dictionary: dictionary, file: file) else {
+            (configuration.imageLiteral && isImageNamedInit(dictionary: dictionary, file: file)) ||
+                (configuration.colorLiteral && isColorInit(dictionary: dictionary, file: file)) else {
             return []
         }
 

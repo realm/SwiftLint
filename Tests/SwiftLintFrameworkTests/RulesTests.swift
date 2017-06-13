@@ -189,10 +189,6 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
-    func testObjectLiteral() {
-        verifyRule(ObjectLiteralRule.description)
-    }
-
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }

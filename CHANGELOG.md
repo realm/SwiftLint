@@ -47,6 +47,11 @@
   parameters are vertically aligned on a method call.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1037](https://github.com/realm/SwiftLint/issues/1037)
+* Add `code_literal` and `image_literal` boolean configuration options to
+  `object_literal` rule. They allow to only check for one or the other
+  literal type instead of both together.
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1587](https://github.com/realm/SwiftLint/issues/1587)
 
 ##### Bug Fixes
 

@@ -42,7 +42,9 @@ class ObjectLiteralRuleTests: XCTestCase {
     func testObjectLiteralWithImageLiteral() {
         // Verify ObjectLiteral rule for when image_literal is true.
         let baseDescription = ObjectLiteralRule.description
-        let nonTriggeringColorLiteralExamples = colorLiteralTriggeringExamples.map { $0.replacingOccurrences(of: "↓", with: "") }
+        let nonTriggeringColorLiteralExamples = colorLiteralTriggeringExamples.map { example in
+            example.replacingOccurrences(of: "↓", with: "")
+        }
 
         let description = RuleDescription(
             identifier: baseDescription.identifier,
@@ -59,7 +61,9 @@ class ObjectLiteralRuleTests: XCTestCase {
     func testObjectLiteralWithColorLiteral() {
         // Verify ObjectLiteral rule for when color_literal is true.
         let baseDescription = ObjectLiteralRule.description
-        let nonTriggeringImageLiteralExamples = imageLiteralTriggeringExamples.map { $0.replacingOccurrences(of: "↓", with: "") }
+        let nonTriggeringImageLiteralExamples = imageLiteralTriggeringExamples.map { example in
+            example.replacingOccurrences(of: "↓", with: "")
+        }
 
         let description = RuleDescription(
             identifier: baseDescription.identifier,

@@ -64,6 +64,12 @@
   [#977](https://github.com/realm/SwiftLint/issues/977)
   [#1614](https://github.com/realm/SwiftLint/issues/1614)
 
+* Fix incorrectly using configuration files named `.swiftlint.yml` when they are
+  located in the same directory as a differently-named, user-provided custom
+  configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#1531](https://github.com/realm/SwiftLint/issues/1531)
+
 ## 0.19.0: Coin-Operated Machine
 
 ##### Breaking

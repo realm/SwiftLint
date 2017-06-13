@@ -313,6 +313,10 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 
 extension Configuration {
     fileprivate func configuration(forPath path: String) -> Configuration {
+        if path == rootPath {
+            return self
+        }
+
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 

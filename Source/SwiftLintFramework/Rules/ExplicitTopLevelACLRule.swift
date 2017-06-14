@@ -81,7 +81,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func lastInternalByteRange(before typeOffset: Int, in ranges: [NSRange]) -> NSRange? {
-        let firstPartition = ranges.partitioned(by: { $0.location > typeOffset }).first
+        let firstPartition = ranges.prefix(while: { typeOffset > $0.location })
         return firstPartition.last
     }
 }

@@ -74,6 +74,10 @@
   [JP Simard](https://github.com/jpsim)
   [#1531](https://github.com/realm/SwiftLint/issues/1531)
 
+* Fix `empty_count` rule false positive in words that include "count".  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1622](https://github.com/realm/SwiftLint/issues/1622)
+
 ## 0.19.0: Coin-Operated Machine
 
 ##### Breaking

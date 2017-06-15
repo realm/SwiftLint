@@ -38,7 +38,6 @@ class ObjectLiteralRuleTests: XCTestCase {
         verifyRule(ObjectLiteralRule.description)
     }
 
-    // swiftlint:disable:next function_body_length
     func testObjectLiteralWithImageLiteral() {
         // Verify ObjectLiteral rule for when image_literal is true.
         let baseDescription = ObjectLiteralRule.description
@@ -57,7 +56,6 @@ class ObjectLiteralRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": false])
     }
 
-    // swiftlint:disable:next function_body_length
     func testObjectLiteralWithColorLiteral() {
         // Verify ObjectLiteral rule for when color_literal is true.
         let baseDescription = ObjectLiteralRule.description
@@ -76,7 +74,6 @@ class ObjectLiteralRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["image_literal": false, "color_literal": true])
     }
 
-    // swiftlint:disable:next function_body_length
     func testObjectLiteralWithImageAndColorLiteral() {
         // Verify ObjectLiteral rule for when image_literal & color_literal are true.
         let baseDescription = ObjectLiteralRule.description

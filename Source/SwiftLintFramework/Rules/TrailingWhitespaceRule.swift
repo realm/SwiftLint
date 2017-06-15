@@ -45,8 +45,8 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
         return filteredLines.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file.path, line: $0.index))
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file.path, line: $0.index))
         }
     }
 

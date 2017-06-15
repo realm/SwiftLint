@@ -55,8 +55,8 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             return []
         }
         return [StyleViolation(ruleDescription: type(of: self).description,
-            severity: configuration.severity,
-            location: Location(file: file.path, line: max(file.lines.count, 1)))]
+                               severity: configuration.severity,
+                               location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
     public func correct(file: File) -> [Correction] {

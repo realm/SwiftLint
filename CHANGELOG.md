@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add support for missing triggering cases in `force_unwrapping`
+  when using subscript.  
+  [Otávio Lima](https://github.com/otaviolima)
+
 * Match `(Void)` as return type in the `void_return` rule.  
   [Anders Hasselqvist](https://github.com/nevil)
 
@@ -39,6 +43,17 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1546](https://github.com/realm/SwiftLint/issues/1546)
 
+* Add `vertical_parameter_alignment_on_call` opt-in rule that validates that
+  parameters are vertically aligned on a method call.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1037](https://github.com/realm/SwiftLint/issues/1037)
+
+* Add `code_literal` and `image_literal` boolean configuration options to
+  `object_literal` rule. They allow to only check for one or the other
+  literal type instead of both together.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1587](https://github.com/realm/SwiftLint/issues/1587)
+
 * Add opt-in rules for Firebase SDK.  
   [Ibrahim Ulukaya (Google Inc.)](https://github.com/iulukaya)
 
@@ -47,6 +62,30 @@
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1597](https://github.com/realm/SwiftLint/issues/1597)
+
+* Fix crash in `unused_closure_parameter` rule when using unicode identifiers.  
+  [Woo-Sik Byun](https://github.com/woosiki)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix two false positives in `force_unwrapping` rule.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#614](https://github.com/realm/SwiftLint/issues/614)
+  [#977](https://github.com/realm/SwiftLint/issues/977)
+  [#1614](https://github.com/realm/SwiftLint/issues/1614)
+
+* Fix custom rules not working correctly with comment commands.  
+  [JP Simard](https://github.com/jpsim)
+  [#1558](https://github.com/realm/SwiftLint/issues/1558)
+
+* Fix incorrectly using configuration files named `.swiftlint.yml` when they are
+  located in the same directory as a differently-named, user-provided custom
+  configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#1531](https://github.com/realm/SwiftLint/issues/1531)
+
+* Fix `empty_count` rule false positive in words that include "count".  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1622](https://github.com/realm/SwiftLint/issues/1622)
 
 ## 0.19.0: Coin-Operated Machine
 
@@ -99,12 +138,12 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-  
+
 * Added `no_extension_access_modifier` opt-in rule to disallow access modifiers
   completely, à la SE-0119.  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [#1457](https://github.com/realm/SwiftLint/issues/1457)
-  
+
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 

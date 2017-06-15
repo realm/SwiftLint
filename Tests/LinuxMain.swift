@@ -67,6 +67,7 @@ extension ConfigurationTests {
         ("testLevel1", testLevel1),
         ("testLevel2", testLevel2),
         ("testLevel3", testLevel3),
+        ("testCustomConfiguration", testCustomConfiguration),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
         ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
@@ -83,6 +84,7 @@ extension CustomRulesTests {
         ("testCustomRuleConfigurationThrows", testCustomRuleConfigurationThrows),
         ("testCustomRules", testCustomRules),
         ("testLocalDisableCustomRule", testLocalDisableCustomRule),
+        ("testLocalDisableCustomRuleWithMultipleRules", testLocalDisableCustomRuleWithMultipleRules),
         ("testCustomRulesIncludedDefault", testCustomRulesIncludedDefault),
         ("testCustomRulesIncludedExcludesFile", testCustomRulesIncludedExcludesFile),
         ("testCustomRulesExcludedExcludesFile", testCustomRulesExcludedExcludesFile)
@@ -221,6 +223,15 @@ extension NumberSeparatorRuleTests {
     ]
 }
 
+extension ObjectLiteralRuleTests {
+    static var allTests: [(String, (ObjectLiteralRuleTests) -> () throws -> Void)] = [
+        ("testObjectLiteralWithDefaultConfiguration", testObjectLiteralWithDefaultConfiguration),
+        ("testObjectLiteralWithImageLiteral", testObjectLiteralWithImageLiteral),
+        ("testObjectLiteralWithColorLiteral", testObjectLiteralWithColorLiteral),
+        ("testObjectLiteralWithImageAndColorLiteral", testObjectLiteralWithImageAndColorLiteral)
+    ]
+}
+
 extension RegionTests {
     static var allTests: [(String, (RegionTests) -> () throws -> Void)] = [
         ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
@@ -333,7 +344,6 @@ extension RulesTests {
         ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),
-        ("testObjectLiteral", testObjectLiteral),
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
@@ -360,6 +370,7 @@ extension RulesTests {
         ("testUnusedClosureParameter", testUnusedClosureParameter),
         ("testUnusedEnumerated", testUnusedEnumerated),
         ("testValidIBInspectable", testValidIBInspectable),
+        ("testVerticalParameterAlignmentOnCall", testVerticalParameterAlignmentOnCall),
         ("testVerticalParameterAlignment", testVerticalParameterAlignment),
         ("testVoidReturn", testVoidReturn),
         ("testSuperCall", testSuperCall),
@@ -446,6 +457,7 @@ XCTMain([
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
+    testCase(ObjectLiteralRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),

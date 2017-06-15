@@ -200,10 +200,6 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
-    func testObjectLiteral() {
-        verifyRule(ObjectLiteralRule.description)
-    }
-
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }
@@ -312,11 +308,11 @@ class RulesTests: XCTestCase {
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
         let description = RuleDescription(identifier: baseDescription.identifier,
-                                                name: baseDescription.name,
-                                         description: baseDescription.description,
-                               nonTriggeringExamples: nonTriggeringExamples,
-                                  triggeringExamples: baseDescription.triggeringExamples,
-                                         corrections: baseDescription.corrections)
+                                          name: baseDescription.name,
+                                          description: baseDescription.description,
+                                          nonTriggeringExamples: nonTriggeringExamples,
+                                          triggeringExamples: baseDescription.triggeringExamples,
+                                          corrections: baseDescription.corrections)
         verifyRule(description,
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
 
@@ -351,6 +347,10 @@ class RulesTests: XCTestCase {
 
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
+    }
+
+    func testVerticalParameterAlignmentOnCall() {
+        verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 
     func testVerticalParameterAlignment() {

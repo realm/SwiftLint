@@ -69,18 +69,19 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 strippedString = strippedString.strippingURLs
             }
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#colorLiteral")
+                                           withDelimiter: "#colorLiteral")
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#imageLiteral")
+                                           withDelimiter: "#imageLiteral")
 
             let length = strippedString.characters.count
 
             for param in configuration.params where length > param.value {
+                let reason = "Line should be \(configuration.length.warning) characters or less: " +
+                             "currently \(length) characters"
                 return StyleViolation(ruleDescription: type(of: self).description,
-                    severity: param.severity,
-                    location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.length.warning) characters or less: " +
-                        "currently \(length) characters")
+                                      severity: param.severity,
+                                      location: Location(file: file.path, line: line.index),
+                                      reason: reason)
             }
             return nil
         }

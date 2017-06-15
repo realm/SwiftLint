@@ -153,6 +153,12 @@ class ConfigurationTests: XCTestCase {
         return configuration
     }
 
+    private var projectMockConfig0CustomPath: Configuration {
+        var configuration = Configuration(path: projectMockYAML0CustomPath, optional: false, quiet: true)
+        configuration.rootPath = projectMockPathLevel0
+        return configuration
+    }
+
     fileprivate var projectMockConfig2: Configuration {
         return Configuration(path: projectMockYAML2, optional: false, quiet: true)
     }
@@ -189,6 +195,14 @@ class ConfigurationTests: XCTestCase {
     func testLevel3() {
         XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
                        projectMockConfig0.merge(with: projectMockConfig2))
+    }
+
+    // MARK: - Testing Custom Configuration File
+
+    func testCustomConfiguration() {
+        let file = File(path: projectMockSwift0)!
+        XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
+                          projectMockConfig0CustomPath.configuration(for: file))
     }
 
     // MARK: - Testing Rules from config dictionary
@@ -282,6 +296,10 @@ fileprivate extension XCTestCase {
 
     var projectMockYAML0: String {
         return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
+    }
+
+    var projectMockYAML0CustomPath: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("custom.yml")
     }
 
     var projectMockYAML2: String {

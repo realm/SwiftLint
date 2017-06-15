@@ -29,8 +29,8 @@ public struct ForceTryRule: ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         return file.match(pattern: "try!", with: [.keyword]).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

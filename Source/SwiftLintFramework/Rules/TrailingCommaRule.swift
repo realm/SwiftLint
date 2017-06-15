@@ -126,9 +126,9 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
     private func violations(file: File, byteOffset: Int, reason: String) -> [StyleViolation] {
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, byteOffset: byteOffset),
-                reason: reason
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, byteOffset: byteOffset),
+                           reason: reason
             )
         ]
     }

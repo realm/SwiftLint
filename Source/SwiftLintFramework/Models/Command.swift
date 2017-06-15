@@ -105,19 +105,19 @@ public struct Command: Equatable {
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,
-                    character: Int.max)
+                        character: Int.max)
             ]
         }
     }

@@ -48,6 +48,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1037](https://github.com/realm/SwiftLint/issues/1037)
 
+* Add `code_literal` and `image_literal` boolean configuration options to
+  `object_literal` rule. They allow to only check for one or the other
+  literal type instead of both together.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1587](https://github.com/realm/SwiftLint/issues/1587)
+
 ##### Bug Fixes
 
 * Fix false positive in `empty_enum_arguments` rule when calling methods.  
@@ -129,12 +135,12 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-  
+
 * Added `no_extension_access_modifier` opt-in rule to disallow access modifiers
   completely, à la SE-0119.  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [#1457](https://github.com/realm/SwiftLint/issues/1457)
-  
+
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 

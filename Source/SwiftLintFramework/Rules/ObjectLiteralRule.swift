@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
 
@@ -45,14 +45,14 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call,
             let offset = dictionary.offset,
-            isImageNamedInit(dictionary: dictionary, file: file) ||
-                isColorInit(dictionary: dictionary, file: file) else {
+            (configuration.imageLiteral && isImageNamedInit(dictionary: dictionary, file: file)) ||
+                (configuration.colorLiteral && isColorInit(dictionary: dictionary, file: file)) else {
             return []
         }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }

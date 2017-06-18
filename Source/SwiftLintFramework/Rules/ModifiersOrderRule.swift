@@ -101,14 +101,10 @@ public struct ModifiersOrderRule: OptInRule, ConfigurationProviderRule {
         let tokenSections = extractContinuousSections(from: file.syntaxMap.tokens, in: file)
         let builtIns: [(offset: Int, values: [String])] = tokenSections.flatMap({
             guard let first = $0.first, let last = $0.last
-                else {
-                return nil
-                }
+                else { return nil }
             let length = last.offset - first.offset + last.length
             guard let builtInString = file.contents.bridge().substringWithByteRange(start: first.offset, length: length)
-                else {
-                return nil
-                }
+                else { return nil }
             let strings = builtInString.bridge().components(separatedBy: CharacterSet.whitespacesAndNewlines)
                     .filter({ !$0.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty })
             return (first.offset, strings)
@@ -152,7 +148,8 @@ public struct ModifiersOrderRule: OptInRule, ConfigurationProviderRule {
                 return nil
             } else {
              return StyleViolation(ruleDescription: ModifiersOrderRule.description,
-                    location: Location(file: file, byteOffset: $0.offset), reason: ordered.joined(separator: " "))
+                                   location: Location(file: file, byteOffset: $0.offset),
+                                   reason: ordered.joined(separator: " "))
             }
         })
     }

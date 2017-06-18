@@ -16,12 +16,12 @@ internal func pathOption(action: String) -> Option<String> {
 }
 
 internal let configOption = Option(key: "config",
-                          defaultValue: Configuration.fileName,
-                          usage: "the path to SwiftLint's configuration file")
+                                   defaultValue: Configuration.fileName,
+                                   usage: "the path to SwiftLint's configuration file")
 
 internal let useScriptInputFilesOption = Option(key: "use-script-input-files",
-                                       defaultValue: false,
-                                       usage: "read SCRIPT_INPUT_FILE* environment variables " +
+                                                defaultValue: false,
+                                                usage: "read SCRIPT_INPUT_FILE* environment variables " +
                                             "as files")
 
 internal func quietOption(action: String) -> Option<Bool> {

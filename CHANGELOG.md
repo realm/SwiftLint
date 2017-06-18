@@ -76,6 +76,9 @@
   when using subscript.  
   [Otávio Lima](https://github.com/otaviolima)
 
+* Enable explicit_top_level_acl and extension_access_modifier rules.  
+  [masters3d](https://github.com/masters3d)
+
 * Match `(Void)` as return type in the `void_return` rule.  
   [Anders Hasselqvist](https://github.com/nevil)
 

@@ -5,7 +5,7 @@
 //  Created by JP Simard on 12/11/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.6.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests

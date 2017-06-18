@@ -84,6 +84,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1622](https://github.com/realm/SwiftLint/issues/1622)
 
+* Use `validates_start_with_lowercase` key when decoding configurations for
+  `generic_type_name`, `identifier_name` and `type_name` rules. This key was
+  used on the docs, but internally `validates_start_lowercase` was used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1626](https://github.com/realm/SwiftLint/issues/1626)
+
 ## 0.19.0: Coin-Operated Machine
 
 ##### Breaking

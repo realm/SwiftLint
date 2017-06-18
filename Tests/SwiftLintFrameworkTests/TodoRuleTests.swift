@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class TodoRuleTests: XCTestCase {
+internal class TodoRuleTests: XCTestCase {
 
     func testTodo() {
         verifyRule(TodoRule.description, commentDoesntViolate: false)

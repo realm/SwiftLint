@@ -6,7 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-struct RegexHelpers {
+internal struct RegexHelpers {
     // A single variable
     static let varName = "[a-zA-Z_][a-zA-Z0-9_]+"
 

@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class FileHeaderRuleTests: XCTestCase {
+internal class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithDefaultConfiguration() {
         verifyRule(FileHeaderRule.description, skipCommentTests: true)

@@ -9,7 +9,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class AttributesRuleTests: XCTestCase {
+internal class AttributesRuleTests: XCTestCase {
 
     func testAttributesWithDefaultConfiguration() {
         // Test with default parameters

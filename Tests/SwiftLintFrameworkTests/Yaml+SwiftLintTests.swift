@@ -11,7 +11,7 @@ import Foundation
 import XCTest
 import Yams
 
-class YamlSwiftLintTests: XCTestCase {
+internal class YamlSwiftLintTests: XCTestCase {
 
     func testFlattenYaml() throws {
         do {

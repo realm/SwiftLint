@@ -11,7 +11,7 @@ import SourceKittenFramework
 import XCTest
 
 // swiftlint:disable:next type_name
-class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
+internal class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
 
     func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
         var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,

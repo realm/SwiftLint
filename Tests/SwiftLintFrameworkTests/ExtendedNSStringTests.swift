@@ -9,7 +9,7 @@
 import Foundation
 import XCTest
 
-class ExtendedNSStringTests: XCTestCase {
+internal class ExtendedNSStringTests: XCTestCase {
 
     func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
         let contents = "" +

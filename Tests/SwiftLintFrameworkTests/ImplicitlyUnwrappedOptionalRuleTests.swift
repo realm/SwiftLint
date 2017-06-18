@@ -10,7 +10,7 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
-class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
+internal class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
 
     func testImplicitlyUnwrappedOptionalRuleDefaultConfiguration() {
         let rule = ImplicitlyUnwrappedOptionalRule()

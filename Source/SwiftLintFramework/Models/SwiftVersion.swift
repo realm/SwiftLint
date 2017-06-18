@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SwiftVersion {
+internal enum SwiftVersion {
     case three
 
     static let current: SwiftVersion = {

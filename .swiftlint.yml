@@ -20,6 +20,8 @@ opt_in_rules:
   - object_literal
   - number_separator
   - prohibited_super_call
+  - explicit_top_level_acl
+  - extension_access_modifier
   - fatal_error_message
   - vertical_parameter_alignment_on_call
 

@@ -10,7 +10,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class LineLengthRuleTests: XCTestCase {
+internal class LineLengthRuleTests: XCTestCase {
 
     private let longFunctionDeclaration = "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
         "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +

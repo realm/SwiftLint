@@ -11,14 +11,14 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-extension Command {
-    fileprivate init?(string: String) {
+private extension Command {
+    init?(string: String) {
         let nsString = string.bridge()
         self.init(string: nsString, range: NSRange(location: 3, length: nsString.length - 4))
     }
 }
 
-class CommandTests: XCTestCase {
+internal class CommandTests: XCTestCase {
 
     // MARK: Command Creation
 

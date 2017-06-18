@@ -9,7 +9,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class YamlParserTests: XCTestCase {
+internal class YamlParserTests: XCTestCase {
 
     func testParseEmptyString() {
         XCTAssertEqual((try YamlParser.parse("")).count, 0,

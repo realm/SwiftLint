@@ -125,11 +125,11 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 }
 
-extension String {
+private extension String {
     /// Returns corrected string if the correction is possible, otherwise returns nil.
-    fileprivate func replace(function name: NimbleOperatorRule.MatcherFunction,
-                             with operators: NimbleOperatorRule.Operators,
-                             in range: NSRange) -> String? {
+    func replace(function name: NimbleOperatorRule.MatcherFunction,
+                 with operators: NimbleOperatorRule.Operators,
+                 in range: NSRange) -> String? {
 
         let anything = "\\s*(.*?)\\s*"
 

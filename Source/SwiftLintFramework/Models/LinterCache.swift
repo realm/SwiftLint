@@ -138,8 +138,8 @@ public final class LinterCache {
     }
 }
 
-extension LinterCache {
-    fileprivate enum Key: String {
+private extension LinterCache {
+    enum Key: String {
         case character
         case configuration
         case lastModification = "last_modification"

@@ -18,7 +18,7 @@ private func violatingFuncWithBody(_ body: String) -> String {
     return funcWithBody(body, violates: true)
 }
 
-class FunctionBodyLengthRuleTests: XCTestCase {
+internal class FunctionBodyLengthRuleTests: XCTestCase {
 
     func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 39).joined())

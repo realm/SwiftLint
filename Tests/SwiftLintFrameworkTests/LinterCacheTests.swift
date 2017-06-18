@@ -72,7 +72,7 @@ private class TestFileManager: LintableFileManager {
     }
 }
 
-class LinterCacheTests: XCTestCase {
+internal class LinterCacheTests: XCTestCase {
 
     // MARK: Test Helpers
 

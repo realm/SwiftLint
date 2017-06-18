@@ -9,12 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
-struct BenchmarkEntry {
+internal struct BenchmarkEntry {
     let id: String
     let time: Double
 }
 
-struct Benchmark {
+internal struct Benchmark {
     private let name: String
     private var entries = [BenchmarkEntry]()
 

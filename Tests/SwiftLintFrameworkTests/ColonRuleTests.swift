@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class ColonRuleTests: XCTestCase {
+internal class ColonRuleTests: XCTestCase {
 
     func testColonWithDefaultConfiguration() {
         // Verify Colon rule with test values for when flexible_right_spacing

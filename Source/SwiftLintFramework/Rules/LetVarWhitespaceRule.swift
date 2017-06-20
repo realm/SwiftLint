@@ -26,25 +26,26 @@ public struct LetVarWhitespaceRule: OptInRule {
             "struct X {\n\tvar a = 0\n}\n",
             "let a = 1 +\n\t2\nlet b = 5\n",
             "var x: Int {\n\treturn 0\n}\n",
-            "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n"
+            "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n",
+            "#if os(macOS)\nlet a = 0\n#endif\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
             "a = 5\n↓var x = 1\n",
             // This case doesn't work because of an apparent limitation in SourceKit
-            // "var x: Int {\n\tlet a = 0\n\treturn a\n}\n",
+            // "var x: Int {\n\tlet a = 0\n\t↓return a\n}\n",
             "struct X {\n\tlet a\n\t↓func x() {}\n}\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
         let varLines = varLetLineNumbers(file: file, structure: file.structure.dictionary.substructure)
-        let commentLines = commentLineNumbers(file: file)
+        let skippedLines = skippedLineNumbers(file: file)
         var violations = [StyleViolation]()
 
         for (index, line) in file.lines.enumerated() {
             guard !varLines.contains(index) &&
-                  !commentLines.contains(index) else {
+                  !skippedLines.contains(index) else {
                 continue
             }
 
@@ -54,14 +55,14 @@ public struct LetVarWhitespaceRule: OptInRule {
             }
 
             // Precedes var/let and has text not ending with {
-            if linePrecedesVar(index, varLines, commentLines) {
+            if linePrecedesVar(index, varLines, skippedLines) {
                 if !trimmed.hasSuffix("{") &&
                    !file.lines[index + 1].content.trimmingCharacters(in: .whitespaces).hasPrefix("}") {
                     violated(&violations, file, index + 1)
                 }
             }
             // Follows var/let and has text not starting with }
-            if lineFollowsVar(index, varLines, commentLines) {
+            if lineFollowsVar(index, varLines, skippedLines) {
                 if !trimmed.hasPrefix("}") &&
                    !file.lines[index - 1].content.trimmingCharacters(in: .whitespaces).hasSuffix("{") {
                     violated(&violations, file, index)
@@ -71,22 +72,22 @@ public struct LetVarWhitespaceRule: OptInRule {
         return violations
     }
 
-    func linePrecedesVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
-        return lineNeighborsVar(lineNumber, varLines, commentLines, 1)
+    func linePrecedesVar(_ lineNumber: Int, _ varLines: Set<Int>, _ skippedLines: Set<Int>) -> Bool {
+        return lineNeighborsVar(lineNumber, varLines, skippedLines, 1)
     }
 
-    func lineFollowsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>) -> Bool {
-        return lineNeighborsVar(lineNumber, varLines, commentLines, -1)
+    func lineFollowsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ skippedLines: Set<Int>) -> Bool {
+        return lineNeighborsVar(lineNumber, varLines, skippedLines, -1)
     }
 
-    func lineNeighborsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ commentLines: Set<Int>, _ increment: Int) -> Bool {
+    func lineNeighborsVar(_ lineNumber: Int, _ varLines: Set<Int>, _ skippedLines: Set<Int>, _ increment: Int) -> Bool {
         if varLines.contains(lineNumber + increment) {
             return true
         }
 
         var prevLine = lineNumber
 
-        while commentLines.contains(prevLine) {
+        while skippedLines.contains(prevLine) {
             if varLines.contains(prevLine + increment) {
                 return true
             }
@@ -146,8 +147,8 @@ public struct LetVarWhitespaceRule: OptInRule {
         return result
     }
 
-    // Collects all the line numbers containing comments
-    func commentLineNumbers(file: File) -> Set<Int> {
+    // Collects all the line numbers containing comments or #if/#endif
+    func skippedLineNumbers(file: File) -> Set<Int> {
         var result = Set<Int>()
         let syntaxMap = file.syntaxMap
 
@@ -158,6 +159,14 @@ public struct LetVarWhitespaceRule: OptInRule {
 
             result.formUnion(Set(startLine...endLine))
         }
+        
+        let conditionals = ["#if", "#elseif", "#else", "#endif"]
+        let conditionalLines = file.lines.filter {
+            let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
+            return conditionals.contains(where: { trimmed.hasPrefix($0) })
+        }
+        
+        result.formUnion(conditionalLines.map { $0.index-1 })
         return result
     }
 }

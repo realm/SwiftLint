@@ -160,14 +160,14 @@ public struct LetVarWhitespaceRule: OptInRule {
 
             result.formUnion(Set(startLine...endLine))
         }
-        
+
         let conditionals = ["#if", "#elseif", "#else", "#endif", "@available"]
         let conditionalLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
             return conditionals.contains(where: { trimmed.hasPrefix($0) })
         }
-        
-        result.formUnion(conditionalLines.map { $0.index-1 })
+
+        result.formUnion(conditionalLines.map { $0.index - 1 })
         return result
     }
 }

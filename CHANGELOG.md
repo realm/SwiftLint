@@ -18,6 +18,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1629](https://github.com/realm/SwiftLint/issues/1629)
 
+* Don't trigger a `vertical_parameter_alignment_on_call` violation when
+  trailing closures are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1635](https://github.com/realm/SwiftLint/issues/1635)
+
 ## 0.20.0: Liquid Fabric Softener
 
 ##### Breaking

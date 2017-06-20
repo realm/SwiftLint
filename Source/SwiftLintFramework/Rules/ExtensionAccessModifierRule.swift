@@ -41,6 +41,10 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
             "extension Foo {\n" +
             "   private bar: Int { return 1 }\n" +
             "   private baz: Int { return 1 }\n" +
+            "}",
+            "extension Foo {\n" +
+            "   open bar: Int { return 1 }\n" +
+            "   open baz: Int { return 1 }\n" +
             "}"
         ],
         triggeringExamples: [
@@ -77,8 +81,8 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         }
 
         let declarationsACLs = declarations.map { $0.acl }.unique
-
-        guard declarationsACLs.count == 1, declarationsACLs != [.internal], declarationsACLs != [.private] else {
+        let allowedACLs: Set<AccessControlLevel> = [.internal, .private, .open]
+        guard declarationsACLs.count == 1, !allowedACLs.contains(declarationsACLs[0]) else {
             return []
         }
 

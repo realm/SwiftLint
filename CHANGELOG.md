@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Don't trigger an `extension_access_modifier` violation when all extension
+  members  are `open`, as `open extension` is not supported by Swift.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1629](https://github.com/realm/SwiftLint/issues/1629)
 
 ## 0.20.0: Liquid Fabric Softener
 

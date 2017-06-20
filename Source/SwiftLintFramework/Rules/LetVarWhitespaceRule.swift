@@ -27,7 +27,8 @@ public struct LetVarWhitespaceRule: OptInRule {
             "let a = 1 +\n\t2\nlet b = 5\n",
             "var x: Int {\n\treturn 0\n}\n",
             "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n",
-            "#if os(macOS)\nlet a = 0\n#endif\n"
+            "#if os(macOS)\nlet a = 0\n#endif\n",
+            "@available(swift 4)\nlet a = 0\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
@@ -160,7 +161,7 @@ public struct LetVarWhitespaceRule: OptInRule {
             result.formUnion(Set(startLine...endLine))
         }
         
-        let conditionals = ["#if", "#elseif", "#else", "#endif"]
+        let conditionals = ["#if", "#elseif", "#else", "#endif", "@available"]
         let conditionalLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
             return conditionals.contains(where: { trimmed.hasPrefix($0) })

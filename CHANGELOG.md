@@ -10,6 +10,9 @@
 
 ##### Bug Fixes
 
+* Fix typo in `FatalErrorMessageRule`.  
+  [Alexander Lash](https://github.com/abl)
+
 * Don't trigger an `extension_access_modifier` violation when all extension
   members  are `open`, as `open extension` is not supported by Swift.  
   [Marcelo Fabri](https://github.com/marcelofabri)

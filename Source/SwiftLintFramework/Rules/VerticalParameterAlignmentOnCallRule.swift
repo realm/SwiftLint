@@ -24,7 +24,10 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "foo(param1: 1, param2: bar)",
             "foo(param1: 1, param2: bar\n" +
             "    param3: false,\n" +
-            "    param4: true)"
+            "    param4: true)",
+            "foo(\n" +
+            "   param1: 1\n" +
+            ") { _ in }"
         ],
         triggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
@@ -33,7 +36,9 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             " ↓param3: false, param4: true)",
             "foo(param1: 1, param2: bar\n" +
             "       ↓param3: false,\n" +
-            "       ↓param4: true)"
+            "       ↓param4: true)",
+            "foo(param1: 1,\n" +
+            "       ↓param2: { _ in })"
         ]
     )
 
@@ -61,6 +66,12 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
                 return nil
             }
 
+            if argument.bridge() == arguments.last?.bridge(),
+                isClosure(argument, file: file),
+                isAlreadyTrailingClosure(dictionary: dictionary, file: file) {
+                return nil
+            }
+
             return offset
         }
 
@@ -70,4 +81,28 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
                            location: Location(file: file, byteOffset: $0))
         }
     }
+
+    private func isClosure(_ argument: [String: SourceKitRepresentable],
+                           file: File) -> Bool {
+        guard let offset = argument.bodyOffset,
+            let length = argument.bodyLength,
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+            let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+            match.location == range.location else {
+                return false
+        }
+
+        return true
+    }
+
+    private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+                return false
+        }
+
+        return !text.hasSuffix(")")
+    }
+
 }

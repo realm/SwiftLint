@@ -23,6 +23,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1635](https://github.com/realm/SwiftLint/issues/1635)
 
+* Make `vertical_parameter_alignment_on_call` more flexible when closures
+  are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1630](https://github.com/realm/SwiftLint/issues/1630)
+
 ## 0.20.0: Liquid Fabric Softener
 
 ##### Breaking

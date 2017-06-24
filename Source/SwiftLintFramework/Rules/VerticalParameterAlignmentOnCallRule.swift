@@ -27,7 +27,27 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "    param4: true)",
             "foo(\n" +
             "   param1: 1\n" +
-            ") { _ in }"
+            ") { _ in }",
+            "UIView.animate(withDuration: 0.4, animations: {\n" +
+            "    blurredImageView.alpha = 1\n" +
+            "}, completion: { _ in\n" +
+            "    self.hideLoading()\n" +
+            "})",
+            "UIView.animate(withDuration: 0.4, animations: {\n" +
+            "    blurredImageView.alpha = 1\n" +
+            "},\n" +
+            "completion: { _ in\n" +
+            "    self.hideLoading()\n" +
+            "})",
+            "foo(param1: 1, param2: { _ in },\n" +
+            "    param3: false, param4: true)",
+            "foo({ _ in\n" +
+            "       bar()\n" +
+            "   },\n" +
+            "   completion: { _ in\n" +
+            "       baz()\n" +
+            "   }\n" +
+            ")"
         ],
         triggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
@@ -38,7 +58,13 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "       ↓param3: false,\n" +
             "       ↓param4: true)",
             "foo(param1: 1,\n" +
-            "       ↓param2: { _ in })"
+            "       ↓param2: { _ in })",
+            "foo(param1: 1,\n" +
+            "    param2: { _ in\n" +
+            "}, param3: 2,\n" +
+            " ↓param4: 0)",
+            "foo(param1: 1, param2: { _ in },\n" +
+            "       ↓param3: false, param4: true)"
         ]
     )
 
@@ -49,12 +75,19 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             arguments.count > 1,
             let firstArgumentOffset = arguments.first?.offset,
             case let contents = file.contents.bridge(),
-            let firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset) else {
+            var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset) else {
                 return []
         }
 
         var visitedLines: Set<Int> = []
-        let violatingOffsets: [Int] = arguments.dropFirst().flatMap { argument in
+        var previousArgumentWasMultilineBlock = false
+
+        let violatingOffsets: [Int] = arguments.flatMap { argument in
+            let closureArgument = isClosure(argument: argument, file: file)
+            defer {
+                previousArgumentWasMultilineBlock = closureArgument && isMultiline(argument: argument, file: file)
+            }
+
             guard let offset = argument.offset,
                 let (line, character) = contents.lineAndCharacter(forByteOffset: offset),
                 line > firstArgumentPosition.line else {
@@ -66,8 +99,15 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
                 return nil
             }
 
-            if argument.bridge() == arguments.last?.bridge(),
-                isClosure(argument, file: file),
+            // if this is the first element on a new line after a closure with multiple lines,
+            // we reset the reference position
+            if previousArgumentWasMultilineBlock && firstVisit {
+                firstArgumentPosition = (line, character)
+                return nil
+            }
+
+            // never trigger on a trailing closure
+            if argument.bridge() == arguments.last?.bridge(), closureArgument,
                 isAlreadyTrailingClosure(dictionary: dictionary, file: file) {
                 return nil
             }
@@ -82,7 +122,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         }
     }
 
-    private func isClosure(_ argument: [String: SourceKitRepresentable],
+    private func isClosure(argument: [String: SourceKitRepresentable],
                            file: File) -> Bool {
         guard let offset = argument.bodyOffset,
             let length = argument.bodyLength,
@@ -95,6 +135,18 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         return true
     }
 
+    private func isMultiline(argument: [String: SourceKitRepresentable], file: File) -> Bool {
+        guard let offset = argument.bodyOffset,
+            let length = argument.bodyLength,
+            case let contents = file.contents.bridge(),
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length) else {
+                return false
+        }
+
+        return endLine > startLine
+    }
+
     private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
@@ -104,5 +156,4 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
 
         return !text.hasSuffix(")")
     }
-
 }

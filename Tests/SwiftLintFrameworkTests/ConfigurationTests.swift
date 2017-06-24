@@ -154,13 +154,17 @@ class ConfigurationTests: XCTestCase {
     }
 
     private var projectMockConfig0CustomPath: Configuration {
-        var configuration = Configuration(path: projectMockYAML0CustomPath, optional: false, quiet: true)
-        configuration.rootPath = projectMockPathLevel0
-        return configuration
+        return Configuration(path: projectMockYAML0CustomPath, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
     }
 
     fileprivate var projectMockConfig2: Configuration {
         return Configuration(path: projectMockYAML2, optional: false, quiet: true)
+    }
+
+    fileprivate var projectMockConfig3: Configuration {
+        return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
+                             optional: false, quiet: true)
     }
 
     func testIsEqualTo() {
@@ -194,7 +198,12 @@ class ConfigurationTests: XCTestCase {
 
     func testLevel3() {
         XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
+                       projectMockConfig0.merge(with: projectMockConfig3))
+    }
+
+    func testNestedConfigurationWithCustomRootPath() {
+        XCTAssertEqual(projectMockConfig3,
+                       projectMockConfig0.merge(with: projectMockConfig3))
     }
 
     // MARK: - Testing Custom Configuration File

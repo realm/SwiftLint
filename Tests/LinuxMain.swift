@@ -67,6 +67,7 @@ extension ConfigurationTests {
         ("testLevel1", testLevel1),
         ("testLevel2", testLevel2),
         ("testLevel3", testLevel3),
+        ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testCustomConfiguration", testCustomConfiguration),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),

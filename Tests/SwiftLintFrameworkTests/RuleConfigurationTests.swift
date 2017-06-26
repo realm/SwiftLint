@@ -70,20 +70,24 @@ class RuleConfigurationTests: XCTestCase {
             "type_level": [
                 "warning": 7, "error": 17
             ],
-            "statement_level": [
+            "function_level": [
                 "warning": 8, "error": 18
-            ]
+            ],
+            "check_nesting_in_closures_and_statements": false,
+            "always_allow_one_type_in_functions": true
         ] as [String: Any]
         var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
                                                  typeLevelError: nil,
-                                                 statementLevelWarning: 0,
-                                                 statementLevelError: nil)
+                                                 functionLevelWarning: 0,
+                                                 functionLevelError: nil)
         do {
             try nestingConfig.apply(configuration: config)
             XCTAssertEqual(nestingConfig.typeLevel.warning, 7)
-            XCTAssertEqual(nestingConfig.statementLevel.warning, 8)
+            XCTAssertEqual(nestingConfig.functionLevel.warning, 8)
             XCTAssertEqual(nestingConfig.typeLevel.error, 17)
-            XCTAssertEqual(nestingConfig.statementLevel.error, 18)
+            XCTAssertEqual(nestingConfig.functionLevel.error, 18)
+            XCTAssert(nestingConfig.alwaysAllowOneTypeInFunctions)
+            XCTAssert(!nestingConfig.checkNestingInClosuresAndStatements)
         } catch {
             XCTFail("Failed to configure nested configurations")
         }
@@ -93,8 +97,8 @@ class RuleConfigurationTests: XCTestCase {
         let config = 17
         var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
                                                  typeLevelError: nil,
-                                                 statementLevelWarning: 0,
-                                                 statementLevelError: nil)
+                                                 functionLevelWarning: 0,
+                                                 functionLevelError: nil)
         checkError(ConfigurationError.unknownConfiguration) {
             try nestingConfig.apply(configuration: config)
         }

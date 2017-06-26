@@ -1,18 +1,26 @@
 public struct NestingConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
-        return "(type_level) \(typeLevel.shortConsoleDescription), " +
-            "(statement_level) \(statementLevel.shortConsoleDescription)"
+        return "(type_level) \(typeLevel.shortConsoleDescription)"
+            + ", (function_level) \(functionLevel.shortConsoleDescription)"
+            + ", (check_nesting_in_closures_and_statements) \(checkNestingInClosuresAndStatements)"
+            + ", (always_allow_one_type_in_functions) \(alwaysAllowOneTypeInFunctions)"
     }
 
     var typeLevel: SeverityLevelsConfiguration
-    var statementLevel: SeverityLevelsConfiguration
+    var functionLevel: SeverityLevelsConfiguration
+    var checkNestingInClosuresAndStatements: Bool
+    var alwaysAllowOneTypeInFunctions: Bool
 
     public init(typeLevelWarning: Int,
                 typeLevelError: Int?,
-                statementLevelWarning: Int,
-                statementLevelError: Int?) {
-        typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
-        statementLevel = SeverityLevelsConfiguration(warning: statementLevelWarning, error: statementLevelError)
+                functionLevelWarning: Int,
+                functionLevelError: Int?,
+                checkNestingInClosuresAndStatements: Bool = true,
+                alwaysAllowOneTypeInFunctions: Bool = false) {
+        self.typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
+        self.functionLevel = SeverityLevelsConfiguration(warning: functionLevelWarning, error: functionLevelError)
+        self.checkNestingInClosuresAndStatements = checkNestingInClosuresAndStatements
+        self.alwaysAllowOneTypeInFunctions = alwaysAllowOneTypeInFunctions
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -23,9 +31,12 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
         if let typeLevelConfiguration = configurationDict["type_level"] {
             try typeLevel.apply(configuration: typeLevelConfiguration)
         }
-        if let statementLevelConfiguration = configurationDict["statement_level"] {
-            try statementLevel.apply(configuration: statementLevelConfiguration)
+        if let functionLevelConfiguration = configurationDict["function_level"] {
+            try functionLevel.apply(configuration: functionLevelConfiguration)
         }
+        // swiftlint:disable:next line_length
+        checkNestingInClosuresAndStatements = configurationDict["check_nesting_in_closures_and_statements"] as? Bool ?? true
+        alwaysAllowOneTypeInFunctions = configurationDict["always_allow_one_type_in_functions"] as? Bool ?? false
     }
 
     func severity(with config: SeverityLevelsConfiguration, for level: Int) -> ViolationSeverity? {

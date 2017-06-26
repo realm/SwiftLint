@@ -1011,7 +1011,9 @@ extension NSObjectPreferIsEqualRuleTests {
 
 extension NestingRuleTests {
     static var allTests: [(String, (NestingRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testNestingWithDefaultConfiguration", testNestingWithDefaultConfiguration),
+        ("testNestingWithAlwaysAllowOneTypeInFunctions", testNestingWithAlwaysAllowOneTypeInFunctions),
+        ("testNestingWithoutCheckNestingInClosuresAndStatements", testNestingWithoutCheckNestingInClosuresAndStatements)
     ]
 }
 

@@ -1,10 +1,10 @@
 import SourceKittenFramework
 
-public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct NestingRule: ConfigurationProviderRule {
     public var configuration = NestingConfiguration(typeLevelWarning: 1,
                                                     typeLevelError: nil,
-                                                    statementLevelWarning: 5,
-                                                    statementLevelError: nil)
+                                                    functionLevelWarning: 2,
+                                                    functionLevelError: nil)
 
     public init() {}
 
@@ -12,79 +12,151 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
         identifier: "nesting",
         name: "Nesting",
         description: "Types should be nested at most 1 level deep, " +
-                     "and statements should be nested at most 5 levels deep.",
-        kind: .metrics,
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind -> [Example] in
-            [
-                Example("\(kind) Class0 { \(kind) Class1 {} }\n"),
-                Example("""
-                func func0() {
-                    func func1() {
-                        func func2() {
-                            func func3() {
-                                func func4() {
-                                    func func5() {
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                """)
-            ]
-        } + [Example("enum Enum0 { enum Enum1 { case Case } }")],
-        triggeringExamples: ["class", "struct", "enum"].map { kind -> Example in
-            return Example("\(kind) A { \(kind) B { ↓\(kind) C {} } }\n")
-        } + [
-            Example("""
-            func func0() {
-                func func1() {
-                    func func2() {
-                        func func3() {
-                            func func4() {
-                                func func5() {
-                                    ↓func func6() {
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            """)
-        ]
+        "and functions should be nested at most 2 levels deep.",
+		kind: .metrics,
+		nonTriggeringExamples: NestingRuleExamples.nonTriggeringExamples,
+		triggeringExamples: NestingRuleExamples.triggeringExamples
     )
 
-    public func validate(file: SwiftLintFile, kind: SwiftDeclarationKind,
-                         dictionary: SourceKittenDictionary) -> [StyleViolation] {
-        return validate(file: file, kind: kind, dictionary: dictionary, level: 0)
+    private let omittedStructureKinds: [SwiftStructureKind] =
+        [.declaration(.enumcase), .declaration(.enumelement)]
+        + SwiftDeclarationKind.variableKinds.map { .declaration($0) }
+
+    private struct ValidationArgs {
+        var typeLevel: Int = -1
+        var functionLevel: Int = -1
+        var previousKind: SwiftStructureKind?
+        var violations: [StyleViolation] = []
+
+        func with(previousKind: SwiftStructureKind?) -> ValidationArgs {
+            var args = self
+            args.previousKind = previousKind
+            return args
+        }
     }
 
-    private func validate(file: SwiftLintFile, kind: SwiftDeclarationKind, dictionary: SourceKittenDictionary,
-                          level: Int) -> [StyleViolation] {
-        var violations = [StyleViolation]()
-        let typeKinds = SwiftDeclarationKind.typeKinds
-        if let offset = dictionary.offset {
-            let (targetName, targetLevel) = typeKinds.contains(kind)
-                ? ("Types", configuration.typeLevel) : ("Statements", configuration.statementLevel)
-            if let severity = configuration.severity(with: targetLevel, for: level) {
-                let threshold = configuration.threshold(with: targetLevel, for: severity)
-                let pluralSuffix = threshold > 1 ? "s" : ""
-                violations.append(StyleViolation(
-                    ruleDescription: Self.description,
-                    severity: severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"))
+    public func validate(file: SwiftLintFile) -> [StyleViolation] {
+        return validate(file: file, substructure: file.structureDictionary.substructure, args: ValidationArgs())
+    }
+
+    private func validate(file: SwiftLintFile, substructure: [SourceKittenDictionary],
+                          args: ValidationArgs) -> [StyleViolation] {
+        return args.violations + substructure.flatMap { dictionary -> [StyleViolation] in
+            guard let kindString = dictionary.kind, let structureKind = SwiftStructureKind(kindString) else {
+                return validate(file: file, substructure: dictionary.substructure, args: args.with(previousKind: nil))
+            }
+            guard !omittedStructureKinds.contains(structureKind) else {
+                return args.violations
+            }
+            switch structureKind {
+            case let .declaration(declarationKind):
+                return validate(file: file, structureKind: structureKind,
+                                declarationKind: declarationKind, dictionary: dictionary, args: args)
+            case .expression, .statement:
+                guard configuration.checkNestingInClosuresAndStatements else {
+                    return args.violations
+                }
+                return validate(file: file, substructure: dictionary.substructure,
+                                args: args.with(previousKind: structureKind))
             }
         }
-        violations.append(contentsOf: dictionary.substructure.compactMap { subDict in
-            if let kind = subDict.declarationKind {
-                return (kind, subDict)
-            }
+    }
+
+    private func validate(file: SwiftLintFile, structureKind: SwiftStructureKind, declarationKind: SwiftDeclarationKind,
+                          dictionary: SourceKittenDictionary, args: ValidationArgs) -> [StyleViolation] {
+        let isTypeOrExtension = SwiftDeclarationKind.typeKinds.contains(declarationKind)
+            || SwiftDeclarationKind.extensionKinds.contains(declarationKind)
+        let isFunction = SwiftDeclarationKind.functionKinds.contains(declarationKind)
+
+        guard isTypeOrExtension || isFunction else {
+            return validate(file: file, substructure: dictionary.substructure,
+                            args: args.with(previousKind: structureKind))
+        }
+
+        let currentTypeLevel = isTypeOrExtension ? args.typeLevel + 1 : args.typeLevel
+        let currentFunctionLevel = isFunction ? args.functionLevel + 1 : args.functionLevel
+
+        var violations = args.violations
+
+        if let violation = levelViolation(file: file, dictionary: dictionary,
+                                          previousKind: args.previousKind,
+                                          level: isFunction ? currentFunctionLevel : currentTypeLevel,
+                                          forFunction: isFunction) {
+            violations.append(violation)
+        }
+
+        return validate(file: file, substructure: dictionary.substructure,
+                        args: ValidationArgs(
+                            typeLevel: currentTypeLevel,
+                            functionLevel: currentFunctionLevel,
+                            previousKind: structureKind,
+                            violations: violations
+            )
+        )
+    }
+
+    private func levelViolation(file: SwiftLintFile, dictionary: SourceKittenDictionary,
+                                previousKind: SwiftStructureKind?, level: Int, forFunction: Bool) -> StyleViolation? {
+        guard let offset = dictionary.offset else {
             return nil
-        }.flatMap { kind, subDict in
-            return validate(file: file, kind: kind, dictionary: subDict, level: level + 1)
-        })
-        return violations
+        }
+
+        let targetLevel = forFunction ? configuration.functionLevel : configuration.typeLevel
+        var violatingSeverity: ViolationSeverity?
+
+        if configuration.alwaysAllowOneTypeInFunctions,
+            case let .declaration(previousDeclarationKind)? = previousKind,
+            !SwiftDeclarationKind.functionKinds.contains(previousDeclarationKind) {
+            violatingSeverity = configuration.severity(with: targetLevel, for: level)
+        } else if forFunction || !configuration.alwaysAllowOneTypeInFunctions || previousKind == nil {
+            violatingSeverity = configuration.severity(with: targetLevel, for: level)
+        } else {
+            violatingSeverity = nil
+        }
+
+        guard let severity = violatingSeverity else {
+            return nil
+        }
+
+        let targetName = forFunction ? "Functions" : "Types"
+        let threshold = configuration.threshold(with: targetLevel, for: severity)
+        let pluralSuffix = threshold > 1 ? "s" : ""
+        return StyleViolation(
+            ruleDescription: Self.description,
+            severity: severity,
+            location: Location(file: file, byteOffset: offset),
+            reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"
+        )
+    }
+}
+
+private enum SwiftStructureKind: Equatable {
+    case declaration(SwiftDeclarationKind)
+    case expression(SwiftExpressionKind)
+    case statement(StatementKind)
+
+    init?(_ structureKind: String) {
+        if let declarationKind = SwiftDeclarationKind(rawValue: structureKind) {
+            self = .declaration(declarationKind)
+        } else if let expressionKind = SwiftExpressionKind(rawValue: structureKind) {
+            self = .expression(expressionKind)
+        } else if let statementKind = StatementKind(rawValue: structureKind) {
+            self = .statement(statementKind)
+        } else {
+            return nil
+        }
+    }
+
+    static func == (lhs: SwiftStructureKind, rhs: SwiftStructureKind) -> Bool {
+        switch (lhs, rhs) {
+        case let (.declaration(lhsKind), .declaration(rhsKind)):
+            return lhsKind == rhsKind
+        case let (.expression(lhsKind), .expression(rhsKind)):
+            return lhsKind == rhsKind
+        case let (.statement(lhsKind), .statement(rhsKind)):
+            return lhsKind == rhsKind
+        default:
+            return false
+        }
     }
 }

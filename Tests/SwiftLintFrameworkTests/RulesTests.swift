@@ -101,6 +101,17 @@ class RulesTests: XCTestCase {
                    testMultiByteOffsets: false)
     }
 
+    func testFirebaseRules() {
+        verifyRule(FirebaseConfigActivateRule.description)
+        verifyRule(FirebaseConfigDefaultsRule.description)
+        verifyRule(FirebaseConfigFetchRule.description)
+        verifyRule(FirebaseCoreRule.description)
+        verifyRule(FirebaseDynamicLinksCustomSchemeURLRule.description)
+        verifyRule(FirebaseDynamicLinksUniversalLinkRule.description)
+        verifyRule(FirebaseDynamicLinksSchemeURLRule.description)
+        verifyRule(FirebaseInvitesRule.description)
+    }
+
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }

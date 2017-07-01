@@ -35,7 +35,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
-            "let doubleValue = -9e-11\n"
+            "let doubleValue = -9e-11\n",
+            "let red = CGFloat((rgbaValue >> 24) & 0xff) / 255.0"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",
@@ -51,6 +52,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let foo = bar↓ !=  0\n",
             "let foo = bar↓ !==  bar2\n",
             "let v8 = Int8(1)↓  << 6\n",
+            "let v8 = 1↓ <<  6\n",
             "let v8 = 1↓ <<  (6)\n",
             "let v8 = 1↓ <<  (6)\n let foo = 1 > 2\n"
         ],
@@ -86,9 +88,11 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         let rangePattern = "\\.\\.(?:\\.|<)" // ... or ..<
         let notEqualsPattern = "\\!\\=\\=?" // != or !==
         let coalescingPattern = "\\?{2}"
+        let shiftPattern = "(?:>>|<<)"
 
-        let operators = "(?:[\(escapedOperators)%<>&]+|\(rangePattern)|\(coalescingPattern)|" +
-            "\(notEqualsPattern))"
+        let operatorsPatterns = ["[\(escapedOperators)%<>&]+", rangePattern,
+                                 coalescingPattern, notEqualsPattern, shiftPattern]
+        let operators = "(?:" + operatorsPatterns.joined(separator: "|") + ")"
 
         let oneSpace = "[^\\S\\r\\n]" // to allow lines ending with operators to be valid
         let zeroSpaces = oneSpace + "{0}"

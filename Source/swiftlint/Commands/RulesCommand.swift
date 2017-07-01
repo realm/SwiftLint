@@ -41,7 +41,7 @@ struct RulesCommand: CommandProtocol {
             return .success()
         }
 
-        let configuration = Configuration(commandLinePath: options.configurationFile)
+        let configuration = Configuration(options: options)
         let rules = ruleList(for: options, configuration: configuration)
 
         print(TextTable(ruleList: rules, configuration: configuration).render())
@@ -71,7 +71,7 @@ struct RulesCommand: CommandProtocol {
 
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
-    fileprivate let configurationFile: String
+    let configurationFile: String
     fileprivate let filterEnabled: Bool
 
     static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ filterEnabled: Bool) -> RulesOptions {

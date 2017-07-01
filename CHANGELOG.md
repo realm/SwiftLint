@@ -28,6 +28,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1630](https://github.com/realm/SwiftLint/issues/1630)
 
+* Use the directory's .swiftlint.yml when `--path` is used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1631](https://github.com/realm/SwiftLint/issues/1631)
+
 ## 0.20.0: Liquid Fabric Softener
 
 ##### Breaking

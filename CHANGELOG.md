@@ -33,6 +33,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1631](https://github.com/realm/SwiftLint/issues/1631)
 
+* Fix false positive with shift operators (`<<` and `>>`) on
+  `operator_usage_whitespace` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1648](https://github.com/realm/SwiftLint/issues/1648)
+
 ## 0.20.0: Liquid Fabric Softener
 
 ##### Breaking

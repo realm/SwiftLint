@@ -47,7 +47,11 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             "   completion: { _ in\n" +
             "       baz()\n" +
             "   }\n" +
-            ")"
+            ")",
+            "foo(param1: 1, param2: [\n" +
+            "   0,\n" +
+            "   1\n" +
+            "], param3: 0)"
         ],
         triggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
@@ -80,12 +84,12 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         }
 
         var visitedLines: Set<Int> = []
-        var previousArgumentWasMultilineBlock = false
+        var previousArgumentWasMultiline = false
 
-        let violatingOffsets: [Int] = arguments.flatMap { argument in
-            let closureArgument = isClosure(argument: argument, file: file)
+        let lastIndex = arguments.count - 1
+        let violatingOffsets: [Int] = arguments.enumerated().flatMap { idx, argument in
             defer {
-                previousArgumentWasMultilineBlock = closureArgument && isMultiline(argument: argument, file: file)
+                previousArgumentWasMultiline = isMultiline(argument: argument, file: file)
             }
 
             guard let offset = argument.offset,
@@ -101,14 +105,13 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
 
             // if this is the first element on a new line after a closure with multiple lines,
             // we reset the reference position
-            if previousArgumentWasMultilineBlock && firstVisit {
+            if previousArgumentWasMultiline && firstVisit {
                 firstArgumentPosition = (line, character)
                 return nil
             }
 
             // never trigger on a trailing closure
-            if argument.bridge() == arguments.last?.bridge(), closureArgument,
-                isAlreadyTrailingClosure(dictionary: dictionary, file: file) {
+            if idx == lastIndex, isTrailingClosure(dictionary: dictionary, file: file) {
                 return nil
             }
 
@@ -120,19 +123,6 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
-    }
-
-    private func isClosure(argument: [String: SourceKitRepresentable],
-                           file: File) -> Bool {
-        guard let offset = argument.bodyOffset,
-            let length = argument.bodyLength,
-            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
-            let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-            match.location == range.location else {
-                return false
-        }
-
-        return true
     }
 
     private func isMultiline(argument: [String: SourceKitRepresentable], file: File) -> Bool {
@@ -147,10 +137,11 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         return endLine > startLine
     }
 
-    private func isAlreadyTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func isTrailingClosure(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
         guard let offset = dictionary.offset,
             let length = dictionary.length,
-            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length) else {
+            case let start = min(offset, offset + length - 1),
+            let text = file.contents.bridge().substringWithByteRange(start: start, length: length) else {
                 return false
         }
 

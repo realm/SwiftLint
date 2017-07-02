@@ -22,6 +22,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
         identifier: "implicit_getter",
         name: "Implicit Getter",
         description: "Computed read-only properties should avoid using the get keyword.",
+        kind: .style,
         nonTriggeringExamples: [
             classScoped("var foo: Int {\n get {\n return 3\n}\n set {\n _abc = newValue \n}\n}"),
             classScoped("var foo: Int {\n return 20 \n} \n}"),

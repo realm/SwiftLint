@@ -27,12 +27,9 @@ class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
         ]
 
         let nonTriggeringExamples = ["if !boolean {}"]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["mode": "all"],
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }

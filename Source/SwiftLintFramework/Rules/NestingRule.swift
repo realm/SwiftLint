@@ -22,6 +22,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         name: "Nesting",
         description: "Types should be nested at most 1 level deep, " +
         "and statements should be nested at most 5 levels deep.",
+        kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
             ["\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +

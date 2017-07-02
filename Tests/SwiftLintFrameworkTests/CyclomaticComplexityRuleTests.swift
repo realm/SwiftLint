@@ -11,7 +11,7 @@ import SwiftLintFramework
 import XCTest
 
 class CyclomaticComplexityRuleTests: XCTestCase {
-    lazy var complexSwitchExample: String = {
+    private lazy var complexSwitchExample: String = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"
         for i in (0...30) {
@@ -22,7 +22,7 @@ class CyclomaticComplexityRuleTests: XCTestCase {
         return example
     }()
 
-    lazy var complexIfExample: String = {
+    private lazy var complexIfExample: String = {
         let nest = 22
         var example = "func nestThoseIfs() {\n"
         for i in (0...nest) {
@@ -46,29 +46,23 @@ class CyclomaticComplexityRuleTests: XCTestCase {
     func testIgnoresCaseStatementsConfigurationEnabled() {
         let baseDescription = CyclomaticComplexityRule.description
         let triggeringExamples = [complexIfExample]
-        var nonTriggeringExamples = baseDescription.nonTriggeringExamples
-        nonTriggeringExamples.append(complexSwitchExample)
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [complexSwitchExample]
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["ignores_case_statements": true],
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
 
     func testIgnoresCaseStatementsConfigurationDisabled() {
         let baseDescription = CyclomaticComplexityRule.description
-        var triggeringExamples = baseDescription.triggeringExamples
-        triggeringExamples.append(complexSwitchExample)
+        let triggeringExamples = baseDescription.triggeringExamples + [complexSwitchExample]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["ignores_case_statements": false],
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }

@@ -132,7 +132,8 @@ public final class LinterCache {
             Key.severity.rawValue: violation.severity.rawValue,
             Key.type.rawValue: violation.ruleDescription.name,
             Key.ruleID.rawValue: violation.ruleDescription.identifier,
-            Key.reason.rawValue: violation.reason
+            Key.reason.rawValue: violation.reason,
+            Key.ruleKind.rawValue: violation.ruleDescription.kind.rawValue
         ]
     }
 }
@@ -148,22 +149,31 @@ extension LinterCache {
         case severity
         case type
         case violations
+        case ruleKind = "rule_kind"
+    }
+}
+
+private extension Dictionary where Key == String {
+    subscript(_ key: LinterCache.Key) -> Value? {
+        return self[key.rawValue]
     }
 }
 
 extension StyleViolation {
     fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
-        guard let severityString = (cache[LinterCache.Key.severity.rawValue] as? String),
+        guard let severityString = cache[.severity] as? String,
             let severity = ViolationSeverity(rawValue: severityString),
-            let name = cache[LinterCache.Key.type.rawValue] as? String,
-            let ruleID = cache[LinterCache.Key.ruleID.rawValue] as? String,
-            let reason = cache[LinterCache.Key.reason.rawValue] as? String else {
+            let name = cache[.type] as? String,
+            let ruleID = cache[.ruleID] as? String,
+            let reason = cache[.reason] as? String,
+            let ruleKind = (cache[.ruleKind] as? String).flatMap(RuleKind.init(rawValue:)) else {
                 return nil
         }
 
-        let line = cache[LinterCache.Key.line.rawValue] as? Int
-        let character = cache[LinterCache.Key.character.rawValue] as? Int
-        return StyleViolation(ruleDescription: RuleDescription(identifier: ruleID, name: name, description: reason),
+        let line = cache[.line] as? Int
+        let character = cache[.character] as? Int
+        let description = RuleDescription(identifier: ruleID, name: name, description: reason, kind: ruleKind)
+        return StyleViolation(ruleDescription: description,
                               severity: severity,
                               location: Location(file: file, line: line, character: character),
                               reason: reason)

@@ -19,6 +19,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         identifier: "explicit_init",
         name: "Explicit Init",
         description: "Explicitly calling .init() should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "import Foundation; class C: NSObject { override init() { super.init() }}", // super
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self

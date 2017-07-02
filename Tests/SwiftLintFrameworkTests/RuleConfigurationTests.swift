@@ -163,11 +163,11 @@ class RuleConfigurationsTests: XCTestCase {
         var regexConfig = RegexConfiguration(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
-                                                                description: ""))
+                                                                description: "", kind: .style))
         regexConfig.name = "name"
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "name",
-                                                                description: ""))
+                                                                description: "", kind: .style))
     }
 
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {

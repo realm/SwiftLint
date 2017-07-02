@@ -17,6 +17,7 @@ public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
         identifier: "empty_count",
         name: "Empty Count",
         description: "Prefer checking `isEmpty` over comparing `count` to zero.",
+        kind: .performance,
         nonTriggeringExamples: [
             "var count = 0\n",
             "[Int]().isEmpty\n",

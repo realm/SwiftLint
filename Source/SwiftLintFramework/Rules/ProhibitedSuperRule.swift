@@ -17,6 +17,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         identifier: "prohibited_super_call",
         name: "Prohibited calls to super",
         description: "Some methods should not call super",
+        kind: .lint,
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func loadView() {\n" +

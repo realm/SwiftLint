@@ -19,6 +19,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         identifier: "object_literal",
         name: "Object Literal",
         description: "Prefer object literals over image and color inits.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "let image = #imageLiteral(resourceName: \"image.jpg\")",
             "let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)",

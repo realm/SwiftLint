@@ -18,6 +18,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         identifier: "for_where",
         name: "For Where",
         description: "`where` clauses are preferred over a single `if` inside a `for`.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "for user in users where user.id == 1 { }\n",
             // if let

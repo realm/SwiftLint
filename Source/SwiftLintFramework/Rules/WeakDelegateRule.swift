@@ -18,6 +18,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         identifier: "weak_delegate",
         name: "Weak Delegate",
         description: "Delegates should be weak to avoid reference cycles.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class Foo {\n  weak var delegate: SomeProtocol?\n}\n",
             "class Foo {\n  weak var someDelegate: SomeDelegateProtocol?\n}\n",

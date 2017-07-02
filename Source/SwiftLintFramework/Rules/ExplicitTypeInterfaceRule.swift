@@ -18,6 +18,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "class Foo {\n  var myVar: Int? = 0\n}\n",
             "class Foo {\n  let myVar: Int? = 0\n}\n",

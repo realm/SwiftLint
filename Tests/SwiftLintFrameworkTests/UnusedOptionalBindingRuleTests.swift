@@ -17,13 +17,8 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
         let triggeringExamples = baseDescription.triggeringExamples + [
             "guard let _ = try? alwaysThrows() else { return }"
         ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: baseDescription.nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
 
+        let description = baseDescription.with(triggeringExamples: triggeringExamples)
         verifyRule(description)
     }
 
@@ -33,13 +28,8 @@ class UnusedOptionalBindingRuleTests: XCTestCase {
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [
             "guard let _ = try? alwaysThrows() else { return }"
         ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples,
-                                          corrections: baseDescription.corrections)
 
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["ignore_optional_try": true])
     }
 }

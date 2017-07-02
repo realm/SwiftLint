@@ -34,6 +34,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         identifier: "closure_spacing",
         name: "Closure Spacing",
         description: "Closure expressions should have a single space inside each brace.",
+        kind: .style,
         nonTriggeringExamples: [
             "[].map ({ $0.description })",
             "[].filter { $0.contains(location) }",

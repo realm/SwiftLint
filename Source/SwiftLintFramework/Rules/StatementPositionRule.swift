@@ -21,6 +21,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         name: "Statement Position",
         description: "Else and catch should be on the same line, one space after the previous " +
                      "declaration.",
+        kind: .style,
         nonTriggeringExamples: [
             "} else if {",
             "} else {",
@@ -47,6 +48,7 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
         name: "Statement Position",
         description: "Else and catch should be on the next line, with equal indentation to the " +
                      "previous declaration.",
+        kind: .style,
         nonTriggeringExamples: [
             "  }\n  else if {",
             "    }\n    else {",

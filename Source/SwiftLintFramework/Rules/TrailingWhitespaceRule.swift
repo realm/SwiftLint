@@ -20,6 +20,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         identifier: "trailing_whitespace",
         name: "Trailing Whitespace",
         description: "Lines should not have trailing whitespace.",
+        kind: .style,
         nonTriggeringExamples: [ "let name: String\n", "//\n", "// \n",
             "let name: String //\n", "let name: String // \n" ],
         triggeringExamples: [ "let name: String \n", "/* */ let name: String \n" ],

@@ -18,7 +18,8 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "dynamic_inline",
         name: "Dynamic Inline",
-        description: "avoid using 'dynamic' and '@inline(__always)' together.",
+        description: "Avoid using 'dynamic' and '@inline(__always)' together.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class C {\ndynamic func f() {}}",
             "class C {\n@inline(__always) func f() {}}",

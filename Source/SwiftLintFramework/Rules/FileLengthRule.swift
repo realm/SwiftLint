@@ -17,6 +17,7 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         identifier: "file_length",
         name: "File Line Length",
         description: "Files should not span too many lines.",
+        kind: .metrics,
         nonTriggeringExamples: [
             repeatElement("//\n", count: 400).joined()
         ],

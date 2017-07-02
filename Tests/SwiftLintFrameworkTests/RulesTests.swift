@@ -211,11 +211,8 @@ class RulesTests: XCTestCase {
             "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
             "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
         ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
@@ -296,27 +293,18 @@ class RulesTests: XCTestCase {
         // The set of non-triggering examples is extended by a whitespace-indented empty line
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples,
-                                          corrections: baseDescription.corrections)
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+
         verifyRule(description,
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
 
         // Perform additional tests with the ignores_comments settings disabled.
         let triggeringComments = ["// \n", "let name: String // \n"]
-        let baseDescription2 = TrailingWhitespaceRule.description
-        let nonTriggeringExamples2 = baseDescription2.nonTriggeringExamples
+        let nonTriggeringExamples2 = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
-        let triggeringExamples2 = baseDescription2.triggeringExamples + triggeringComments
-        let description2 = RuleDescription(identifier: baseDescription2.identifier,
-                                           name: baseDescription2.name,
-                                           description: baseDescription2.description,
-                                           nonTriggeringExamples: nonTriggeringExamples2,
-                                           triggeringExamples: triggeringExamples2,
-                                           corrections: baseDescription2.corrections)
+        let triggeringExamples2 = baseDescription.triggeringExamples + triggeringComments
+        let description2 = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples2)
+                                          .with(triggeringExamples: triggeringExamples2)
         verifyRule(description2,
                    ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)

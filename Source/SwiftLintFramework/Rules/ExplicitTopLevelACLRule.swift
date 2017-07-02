@@ -18,6 +18,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
         identifier: "explicit_top_level_acl",
         name: "Explicit Top Level ACL",
         description: "Top-level declarations should specify Access Control Level keywords explicitly.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "internal enum A {}\n",
             "public final class B {}\n",

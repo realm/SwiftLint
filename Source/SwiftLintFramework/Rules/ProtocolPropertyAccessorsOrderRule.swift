@@ -19,6 +19,7 @@ public struct ProtocolPropertyAccessorsOrderRule: ConfigurationProviderRule, Cor
         identifier: "protocol_property_accessors_order",
         name: "Protocol Property Accessors Order",
         description: "When declaring properties in protocols, the order of accessors should be `get set`.",
+        kind: .style,
         nonTriggeringExamples: [
             "protocol Foo {\n var bar: String { get set }\n }",
             "protocol Foo {\n var bar: String { get }\n }",

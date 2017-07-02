@@ -25,6 +25,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         identifier: "type_body_length",
         name: "Type Body Length",
         description: "Type bodies should not span too many lines.",
+        kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
                 example(type, "let abc = 0\n", 199),

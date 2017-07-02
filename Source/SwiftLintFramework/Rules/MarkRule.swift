@@ -25,6 +25,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "mark",
         name: "Mark",
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
+        kind: .lint,
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",

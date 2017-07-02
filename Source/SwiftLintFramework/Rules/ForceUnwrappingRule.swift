@@ -19,6 +19,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         identifier: "force_unwrapping",
         name: "Force Unwrapping",
         description: "Force unwrapping should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "if let url = NSURL(string: query)",
             "navigationController?.pushViewController(viewController, animated: true)",

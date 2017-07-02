@@ -18,6 +18,7 @@ public struct ForceCastRule: ConfigurationProviderRule {
         identifier: "force_cast",
         name: "Force Cast",
         description: "Force casts should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"
         ],

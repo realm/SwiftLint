@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
+  or `performance`. Currently this is just used for documentation purposes
+  when you run `swiftlint rules`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 

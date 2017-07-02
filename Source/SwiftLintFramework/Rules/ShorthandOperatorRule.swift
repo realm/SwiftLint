@@ -19,6 +19,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         identifier: "shorthand_operator",
         name: "Shorthand Operator",
         description: "Prefer shorthand operators (+=, -=, *=, /=) over doing the operation and assigning.",
+        kind: .style,
         nonTriggeringExamples: allOperators.flatMap { operation in
             [
                 "foo \(operation)= 1",

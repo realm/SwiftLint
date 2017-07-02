@@ -55,6 +55,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         identifier: "private_unit_test",
         name: "Private Unit Test",
         description: "Unit tests marked private are silently skipped.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class FooTest: XCTestCase { " +
                 "func test1() {}\n " +

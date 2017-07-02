@@ -18,6 +18,7 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
         identifier: "syntactic_sugar",
         name: "Syntactic Sugar",
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "let x: [Int]",
             "let x: [Int: String]",

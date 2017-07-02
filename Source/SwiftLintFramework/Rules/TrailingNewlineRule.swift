@@ -36,6 +36,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         identifier: "trailing_newline",
         name: "Trailing Newline",
         description: "Files should have a single trailing newline.",
+        kind: .style,
         nonTriggeringExamples: [
             "let a = 0\n"
         ],

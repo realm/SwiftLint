@@ -18,6 +18,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         identifier: "empty_enum_arguments",
         name: "Empty Enum Arguments",
         description: "Arguments can be omitted when matching enums with associated types if they are not used.",
+        kind: .style,
         nonTriggeringExamples: [
             "switch foo {\n case .bar: break\n}",
             "switch foo {\n case .bar(let x): break\n}",

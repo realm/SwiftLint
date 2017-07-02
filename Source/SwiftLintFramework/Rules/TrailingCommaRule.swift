@@ -46,6 +46,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         identifier: "trailing_comma",
         name: "Trailing Comma",
         description: "Trailing commas in arrays and dictionaries should be avoided/enforced.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = [1, 2, 3]\n",
             "let foo = []\n",

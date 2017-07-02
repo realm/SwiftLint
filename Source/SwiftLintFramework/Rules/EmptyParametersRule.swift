@@ -18,6 +18,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         identifier: "empty_parameters",
         name: "Empty Parameters",
         description: "Prefer `() -> ` over `Void -> `.",
+        kind: .style,
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
             "func foo(completion: () -> Void)\n",

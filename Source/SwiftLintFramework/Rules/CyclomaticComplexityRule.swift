@@ -18,6 +18,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         identifier: "cyclomatic_complexity",
         name: "Cyclomatic Complexity",
         description: "Complexity of function bodies should be limited.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
             "func f(code: Int) -> Int {" +

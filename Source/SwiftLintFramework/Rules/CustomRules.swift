@@ -55,8 +55,9 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
         identifier: "custom_rules",
         name: "Custom Rules",
         description: "Create custom rules by providing a regex string. " +
-          "Optionally specify what syntax kinds to match against, the severity " +
-          "level, and what message to display.")
+            "Optionally specify what syntax kinds to match against, the severity " +
+        "level, and what message to display.",
+        kind: .style)
 
     public var configuration = CustomRulesConfiguration()
 

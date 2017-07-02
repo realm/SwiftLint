@@ -22,6 +22,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
+        kind: .metrics,
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",

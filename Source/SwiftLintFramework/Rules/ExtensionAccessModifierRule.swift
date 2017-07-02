@@ -18,6 +18,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         identifier: "extension_access_modifier",
         name: "Extension Access Modifier",
         description: "Prefer to use extension access modifiers",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "extension Foo: SomeProtocol {\n" +
             "   public var bar: Int { return 1 }\n" +

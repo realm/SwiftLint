@@ -18,6 +18,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         identifier: "vertical_parameter_alignment_on_call",
         name: "Vertical Parameter Alignment On Call",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a method call.",
+        kind: .style,
         nonTriggeringExamples: [
             "foo(param1: 1, param2: bar\n" +
             "    param3: false, param4: true)",

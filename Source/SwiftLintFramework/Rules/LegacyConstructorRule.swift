@@ -19,6 +19,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         identifier: "legacy_constructor",
         name: "Legacy Constructor",
         description: "Swift constructors are preferred over legacy convenience functions.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "CGPoint(x: 10, y: 10)",
             "CGPoint(x: xValue, y: yValue)",

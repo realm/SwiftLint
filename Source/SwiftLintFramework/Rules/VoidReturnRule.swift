@@ -18,6 +18,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         identifier: "void_return",
         name: "Void Return",
         description: "Prefer `-> Void` over `-> ()`.",
+        kind: .style,
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
             "let abc: () -> (VoidVoid) = {}\n",

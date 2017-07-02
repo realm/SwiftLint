@@ -101,6 +101,7 @@ extension TextTable {
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
             TextTableColumn(header: "enabled in your config"),
+            TextTableColumn(header: "kind"),
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
@@ -115,6 +116,7 @@ extension TextTable {
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
+                ruleType.description.kind.rawValue,
                 (configuredRule ?? rule).configurationDescription
             ])
         }

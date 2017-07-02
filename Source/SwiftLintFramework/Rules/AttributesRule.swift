@@ -27,6 +27,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
+        kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )

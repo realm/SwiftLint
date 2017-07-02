@@ -19,6 +19,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
         identifier: "leading_whitespace",
         name: "Leading Whitespace",
         description: "Files should not contain leading whitespace.",
+        kind: .style,
         nonTriggeringExamples: [ "//\n" ],
         triggeringExamples: [ "\n", " //\n" ],
         corrections: ["\n //": "//"]

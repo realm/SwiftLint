@@ -44,14 +44,10 @@ class ObjectLiteralRuleTests: XCTestCase {
         let nonTriggeringColorLiteralExamples = colorLiteralTriggeringExamples.map { example in
             example.replacingOccurrences(of: "↓", with: "")
         }
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringColorLiteralExamples
 
-        let description = RuleDescription(
-            identifier: baseDescription.identifier,
-            name: baseDescription.name,
-            description: baseDescription.description,
-            nonTriggeringExamples: baseDescription.nonTriggeringExamples + nonTriggeringColorLiteralExamples,
-            triggeringExamples: imageLiteralTriggeringExamples
-        )
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: imageLiteralTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": false])
     }
@@ -62,30 +58,17 @@ class ObjectLiteralRuleTests: XCTestCase {
         let nonTriggeringImageLiteralExamples = imageLiteralTriggeringExamples.map { example in
             example.replacingOccurrences(of: "↓", with: "")
         }
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringImageLiteralExamples
 
-        let description = RuleDescription(
-            identifier: baseDescription.identifier,
-            name: baseDescription.name,
-            description: baseDescription.description,
-            nonTriggeringExamples: baseDescription.nonTriggeringExamples + nonTriggeringImageLiteralExamples,
-            triggeringExamples: colorLiteralTriggeringExamples
-        )
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: colorLiteralTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["image_literal": false, "color_literal": true])
     }
 
     func testObjectLiteralWithImageAndColorLiteral() {
         // Verify ObjectLiteral rule for when image_literal & color_literal are true.
-        let baseDescription = ObjectLiteralRule.description
-
-        let description = RuleDescription(
-            identifier: baseDescription.identifier,
-            name: baseDescription.name,
-            description: baseDescription.description,
-            nonTriggeringExamples: baseDescription.nonTriggeringExamples,
-            triggeringExamples: allTriggeringExamples
-        )
-
+        let description = ObjectLiteralRule.description.with(triggeringExamples: allTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["image_literal": true, "color_literal": true])
     }
 }

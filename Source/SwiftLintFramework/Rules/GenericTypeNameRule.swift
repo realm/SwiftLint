@@ -22,6 +22,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         name: "Generic Type Name",
         description: "Generic type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 1 and 20 characters in length.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func foo<T>() {}\n",
             "func foo<T>() -> T {}\n",

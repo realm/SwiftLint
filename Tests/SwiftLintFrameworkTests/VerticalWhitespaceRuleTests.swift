@@ -18,18 +18,10 @@ class VerticalWhitespaceRuleTests: XCTestCase {
 
     func testAttributesWithMaxEmptyLines() {
         // Test with custom `max_empty_lines`
-        let maxEmptyLinesDescription = RuleDescription(
-            identifier: VerticalWhitespaceRule.description.identifier,
-            name: VerticalWhitespaceRule.description.name,
-            description: VerticalWhitespaceRule.description.description,
-            kind: VerticalWhitespaceRule.description.kind,
-            nonTriggeringExamples: [
-                "let aaaa = 0\n\n\n"
-            ],
-            triggeringExamples: [
-                "struct AAAA {}\n\n\n\n"
-            ]
-        )
+        let maxEmptyLinesDescription = VerticalWhitespaceRule.description
+            .with(nonTriggeringExamples: ["let aaaa = 0\n\n\n"])
+            .with(triggeringExamples: ["struct AAAA {}\n\n\n\n"])
+            .with(corrections: [:])
 
         verifyRule(maxEmptyLinesDescription,
                    ruleConfiguration: ["max_empty_lines": 2])

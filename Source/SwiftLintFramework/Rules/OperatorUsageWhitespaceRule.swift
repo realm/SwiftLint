@@ -35,8 +35,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
-            "let doubleValue = -9e-11\n",
-            "let red  = CGFloat((rgbaValue >> 24) & 0xff) / 255.0"
+            "let doubleValue = -9e-11\n"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",

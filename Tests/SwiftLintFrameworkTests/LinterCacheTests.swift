@@ -10,7 +10,7 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
-fileprivate struct CacheTestHelper {
+private struct CacheTestHelper {
     fileprivate let configuration: Configuration
 
     private let ruleList: RuleList
@@ -60,7 +60,7 @@ fileprivate struct CacheTestHelper {
     }
 }
 
-fileprivate class TestFileManager: LintableFileManager {
+private class TestFileManager: LintableFileManager {
     fileprivate func filesToLint(inPath: String, rootDirectory: String? = nil) -> [String] {
         return []
     }

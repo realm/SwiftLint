@@ -323,6 +323,8 @@ extension RulesTests {
         ("testExtensionAccessModifier", testExtensionAccessModifier),
         ("testFatalErrorMessage", testFatalErrorMessage),
         ("testFileLength", testFileLength),
+        ("testFileprivateRule", testFileprivateRule),
+        ("testFileprivateRuleWithConfig", testFileprivateRuleWithConfig),
         ("testFirstWhere", testFirstWhere),
         ("testForceCast", testForceCast),
         ("testForceTry", testForceTry),

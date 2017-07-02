@@ -69,6 +69,11 @@
 * Match `(Void)` as return type in the `void_return` rule.  
   [Anders Hasselqvist](https://github.com/nevil)
 
+* Added `fileprivateRule` to check for top-level usages of `fileprivate` and recommend `private` instead. This is inline with SE-0169's goal "for `fileprivate` to be used rarely". There is a also an "strict" option that will mark every `fileprivate` as a violation.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [#1469](https://github.com/realm/SwiftLint/issues/1469)
+  [#1058](https://github.com/realm/SwiftLint/issues/1058)
+
 * Add `multiline_parameters` opt-in rule that warns to either keep
   all the parameters of a method or function on the same line,
   or one per line.  

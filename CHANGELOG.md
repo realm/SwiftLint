@@ -11,6 +11,10 @@
   when you run `swiftlint rules`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add [rules documentation](Rules.md) generation.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1078](https://github.com/realm/SwiftLint/issues/1078)
+
 ##### Bug Fixes
 
 * None.

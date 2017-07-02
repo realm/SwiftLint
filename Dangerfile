@@ -9,6 +9,9 @@ has_app_changes = !git.modified_files.grep(/Source/).empty?
 has_test_changes = !git.modified_files.grep(/Tests/).empty?
 has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
 has_build_changes = !git.modified_files.grep(/Makefile|SwiftLint\.xcodeproj|SwiftLint\.xcworkspace|Package\.swift|Cartfile/).empty?
+has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_rules_changes = !git.modified_files.grep('/Source/SwiftLintFramework/Rules/').empty?
+has_rules_docs_changes = !git.modified_files.grep('Rules.md').empty?
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
@@ -27,6 +30,10 @@ end
 # Non-trivial amounts of app changes without tests
 if git.lines_of_code > 50 && has_app_changes && !has_test_changes
   warn 'This PR may need tests.'
+end
+
+if has_rules_changes && !has_rules_docs_changes
+  warn 'Make sure that the [docs](Rules.md) are updated by running the `Generate docs` scheme.'
 end
 
 # Run OSSCheck if there were app changes

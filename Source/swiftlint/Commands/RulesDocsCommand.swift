@@ -15,13 +15,21 @@ struct RulesDocsCommand: CommandProtocol {
     let function = "Generates a markdown with all rules documentation"
 
     func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
+        let rules = masterRuleList.list.sorted { $0.0 < $1.0 }.map { $0.value }
+        let rulesText = rules.map(ruleMarkdown)
+        let rulesSummary = rules.map(ruleSummary)
 
-        let rulesText = masterRuleList.list.sorted { $0.0 < $1.0 }.map { $0.value }.map(ruleMarkdown)
         var text = h1("Rules")
+        text += rulesSummary.joined()
+        text += "--------\n"
         text += rulesText.joined(separator: "\n\n")
 
         print(text)
         return .success()
+    }
+
+    private func ruleSummary(_ rule: Rule.Type) -> String {
+        return summaryItem(rule.description.name)
     }
 
     private func ruleMarkdown(_ rule: Rule.Type) -> String {
@@ -65,12 +73,13 @@ struct RulesDocsCommand: CommandProtocol {
     }
 
     private func detailsSummary(_ rule: Rule) -> String {
-        var content = "Identifier | Enabled by default | Supports autocorrection\n"
-        content += "--- | --- | ---\n"
+        var content = "Identifier | Enabled by default | Supports autocorrection | Kind \n"
+        content += "--- | --- | --- | ---\n"
         let identifier = type(of: rule).description.identifier
         let defaultStatus = rule is OptInRule ? "Disabled" : "Enabled"
         let correctable = rule is CorrectableRule ? "Yes" : "No"
-        content += "`\(identifier)` | \(defaultStatus) | \(correctable)\n\n"
+        let kind = type(of: rule).description.kind
+        content += "`\(identifier)` | \(defaultStatus) | \(correctable) | \(kind)\n\n"
 
         return content
     }
@@ -85,5 +94,10 @@ struct RulesDocsCommand: CommandProtocol {
 
     private func h3(_ text: String) -> String {
         return "\n### \(text)\n\n"
+    }
+
+    private func summaryItem(_ text: String) -> String {
+        let anchor = text.lowercased().components(separatedBy: .whitespaces).joined(separator: "-")
+        return "* [\(text)](#\(anchor))\n"
     }
 }

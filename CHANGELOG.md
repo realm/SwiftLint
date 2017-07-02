@@ -41,6 +41,10 @@
 
 ##### Enhancements
 
+* Add ../Frameworks to RPATH for running the binary from swiftlint.app
+  package.
+  [Alex Culeva](https://github.com/s2dentik)
+
 * Add support for missing triggering cases in `force_unwrapping`
   when using subscript.  
   [Otávio Lima](https://github.com/otaviolima)

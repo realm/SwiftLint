@@ -14,7 +14,7 @@ struct RulesDocsCommand: CommandProtocol {
     let verb = "rules_docs"
     let function = "Generates a markdown with all rules documentation"
 
-    func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
+    func run(_ options: RulesDocsOptions) -> Result<(), CommandantError<()>> {
         let rules = masterRuleList.list.sorted { $0.0 < $1.0 }.map { $0.value }
         let rulesText = rules.map(ruleMarkdown)
         let rulesSummary = rules.map(ruleSummary)
@@ -24,7 +24,16 @@ struct RulesDocsCommand: CommandProtocol {
         text += "--------\n"
         text += rulesText.joined(separator: "\n\n")
 
-        print(text)
+        if let path = options.path {
+            do {
+                try text.write(toFile: path, atomically: true, encoding: .utf8)
+            } catch {
+                return .failure(.usageError(description: error.localizedDescription))
+            }
+        } else {
+            queuedPrint(text)
+        }
+
         return .success()
     }
 
@@ -99,5 +108,20 @@ struct RulesDocsCommand: CommandProtocol {
     private func summaryItem(_ text: String) -> String {
         let anchor = text.lowercased().components(separatedBy: .whitespaces).joined(separator: "-")
         return "* [\(text)](#\(anchor))\n"
+    }
+}
+
+struct RulesDocsOptions: OptionsProtocol {
+    let path: String?
+
+    static func create(_ path: String?) -> RulesDocsOptions {
+        return self.init(path: path)
+    }
+
+    static func evaluate(_ mode: CommandMode) -> Result<RulesDocsOptions, CommandantError<CommandantError<()>>> {
+        return create
+            <*> mode <| Option(key: "path", defaultValue: nil,
+                               usage: "the path where the documentation should be saved. " +
+                                      "If not present, it'll be printed to the output.")
     }
 }

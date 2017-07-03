@@ -36,6 +36,7 @@ public struct FileprivateConfiguration: RuleConfiguration, Equatable {
         identifier: "fileprivate",
         name: "Limit Fileprivate",
         description: "Prefer private over fileprivate for top-level declarations",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "extension String {}",
             "private extension String {}",
@@ -61,6 +62,7 @@ public struct FileprivateConfiguration: RuleConfiguration, Equatable {
         identifier: "fileprivate",
         name: "Fileprivate Disallowed",
         description: "Fileprivate should be rare. Consider refactoring",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "extension String {}",
             "private extension String {}",

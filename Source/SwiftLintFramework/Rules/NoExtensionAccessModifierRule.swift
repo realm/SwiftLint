@@ -24,11 +24,11 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
             "\n\n extension String {}"
             ],
         triggeringExamples: [
-            "private extension String {}",
-            "public \n extension String {}",
-            "open extension String {}",
-            "internal extension String {}",
-            "fileprivate extension String {}"
+            "↓private extension String {}",
+            "↓public \n extension String {}",
+            "↓open extension String {}",
+            "↓internal extension String {}",
+            "↓fileprivate extension String {}"
         ]
     )
 
@@ -47,7 +47,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: offset))
+                           location: Location(file: file, byteOffset: aclToken.offset))
         ]
     }
 }

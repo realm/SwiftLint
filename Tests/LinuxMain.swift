@@ -126,13 +126,6 @@ extension FileHeaderRuleTests {
     ]
 }
 
-extension FilePrivateRuleTests {
-    static var allTests: [(String, (FilePrivateRuleTests) -> () throws -> Void)] = [
-        ("testFilePrivateWithDefaultConfiguration", testFilePrivateWithDefaultConfiguration),
-        ("testFilePrivateWithStrictConfiguration", testFilePrivateWithStrictConfiguration)
-    ]
-}
-
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
@@ -355,6 +348,7 @@ extension RulesTests {
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+        ("testPrivateOverFilePrivate", testPrivateOverFilePrivate),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),
@@ -369,6 +363,7 @@ extension RulesTests {
         ("testSortedImports", testSortedImports),
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),
+        ("testStrictFilePrivate", testStrictFilePrivate),
         ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
         ("testSyntacticSugar", testSyntacticSugar),
         ("testTrailingNewline", testTrailingNewline),
@@ -455,7 +450,6 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
-    testCase(FilePrivateRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),

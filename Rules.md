@@ -59,6 +59,7 @@
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Private Outlets](#private-outlets)
+* [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
@@ -71,6 +72,7 @@
 * [Shorthand Operator](#shorthand-operator)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
+* [Strict fileprivate](#strict-fileprivate)
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
@@ -5875,24 +5877,24 @@ extension String {}
 <summary>Triggering Examples</summary>
 
 ```swift
-private extension String {}
+↓private extension String {}
 ```
 
 ```swift
-public 
+↓public 
  extension String {}
 ```
 
 ```swift
-open extension String {}
+↓open extension String {}
 ```
 
 ```swift
-internal extension String {}
+↓internal extension String {}
 ```
 
 ```swift
-fileprivate extension String {}
+↓fileprivate extension String {}
 ```
 
 </details>
@@ -6846,6 +6848,99 @@ class Foo {
   @IBOutlet ↓var label: UILabel!
 }
 
+```
+
+</details>
+
+
+
+## Private over fileprivate
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`private_over_fileprivate` | Enabled | Yes | idiomatic
+
+Prefer `private` over `fileprivate` declarations.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+extension String {}
+```
+
+```swift
+private extension String {}
+```
+
+```swift
+public 
+ enum MyEnum {}
+```
+
+```swift
+open extension 
+ String {}
+```
+
+```swift
+internal extension String {}
+```
+
+```swift
+extension String {
+fileprivate func Something(){}
+}
+```
+
+```swift
+class MyClass {
+fileprivate let myInt = 4
+}
+```
+
+```swift
+class MyClass {
+fileprivate(set) var myInt = 4
+}
+```
+
+```swift
+struct Outter {
+struct Inter {
+fileprivate struct Inner {}
+}
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓fileprivate enum MyEnum {}
+```
+
+```swift
+↓fileprivate extension String {}
+```
+
+```swift
+↓fileprivate 
+ extension String {}
+```
+
+```swift
+↓fileprivate extension 
+ String {}
+```
+
+```swift
+↓fileprivate class MyClass {
+fileprivate(set) var myInt = 4
+}
 ```
 
 </details>
@@ -7883,6 +7978,89 @@ catch {
 ```swift
 ↓}
 	  catch {
+```
+
+</details>
+
+
+
+## Strict fileprivate
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`strict_fileprivate` | Disabled | No | idiomatic
+
+`fileprivate` should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+extension String {}
+```
+
+```swift
+private extension String {}
+```
+
+```swift
+public 
+ extension String {}
+```
+
+```swift
+open extension 
+ String {}
+```
+
+```swift
+internal extension String {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓fileprivate extension String {}
+```
+
+```swift
+↓fileprivate 
+ extension String {}
+```
+
+```swift
+↓fileprivate extension 
+ String {}
+```
+
+```swift
+extension String {
+↓fileprivate func Something(){}
+}
+```
+
+```swift
+class MyClass {
+↓fileprivate let myInt = 4
+}
+```
+
+```swift
+class MyClass {
+↓fileprivate(set) var myInt = 4
+}
+```
+
+```swift
+struct Outter {
+struct Inter {
+↓fileprivate struct Inner {}
+}
+}
 ```
 
 </details>

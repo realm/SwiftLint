@@ -15,10 +15,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
-* Added `fileprivate` rule to check for top-level usages of `fileprivate`
-  and recommend `private` instead. This is inline with SE-0169's goal
-  "for `fileprivate` to be used rarely". There is a also an "strict" option
-  that will mark every `fileprivate` as a violation.  
+* Add `private_over_fileprivate` correctable rule to check for top-level usages
+  of  `fileprivate` and recommend `private` instead. This is inline with
+  SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new
+  `strict_fileprivate` opt-in rule that will mark every `fileprivate`
+  as a violation (specially useful with Swift 4).  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1469](https://github.com/realm/SwiftLint/issues/1469)

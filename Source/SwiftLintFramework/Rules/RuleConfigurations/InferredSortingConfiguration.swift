@@ -27,7 +27,7 @@ public struct InferredSortingConfiguration: RuleConfiguration, Equatable {
         self.caseSensitive = caseSensitive
     }
 
-    public mutating func applyConfiguration(_ configuration: Any) throws {
+    public mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
         }
@@ -45,7 +45,7 @@ public struct InferredSortingConfiguration: RuleConfiguration, Equatable {
         }
 
         if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.applyConfiguration(severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 }

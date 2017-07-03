@@ -105,6 +105,10 @@ class RulesTests: XCTestCase {
         verifyRule(FirstWhereRule.description)
     }
 
+    func testForWhere() {
+        verifyRule(ForWhereRule.description)
+    }
+
     func testForceCast() {
         verifyRule(ForceCastRule.description)
     }
@@ -115,10 +119,6 @@ class RulesTests: XCTestCase {
 
     func testForceUnwrapping() {
         verifyRule(ForceUnwrappingRule.description)
-    }
-
-    func testForWhere() {
-        verifyRule(ForWhereRule.description)
     }
 
     func testFunctionBodyLength() {
@@ -133,12 +133,12 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitGetterRule.description)
     }
 
-    func testImplicitlyUnwrappedOptional() {
-        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
-    }
-
     func testImplicitReturn() {
         verifyRule(ImplicitReturnRule.description)
+    }
+
+    func testImplicitlyUnwrappedOptional() {
+        verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 
     func testInferredSortingRule() {
@@ -157,16 +157,16 @@ class RulesTests: XCTestCase {
         verifyRule(LegacyCGGeometryFunctionsRule.description)
     }
 
-    func testLegacyNSGeometryFunctions() {
-        verifyRule(LegacyNSGeometryFunctionsRule.description)
-    }
-
     func testLegacyConstant() {
         verifyRule(LegacyConstantRule.description)
     }
 
     func testLegacyConstructor() {
         verifyRule(LegacyConstructorRule.description)
+    }
+
+    func testLegacyNSGeometryFunctions() {
+        verifyRule(LegacyNSGeometryFunctionsRule.description)
     }
 
     func testLetVarWhitespace() {
@@ -185,16 +185,16 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNimbleOperator() {
+        verifyRule(NimbleOperatorRule.description)
+    }
+
     func testNoExtensionAccessModifierRule() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
-    }
-
-    func testNimbleOperator() {
-        verifyRule(NimbleOperatorRule.description)
     }
 
     func testOpeningBrace() {
@@ -207,10 +207,6 @@ class RulesTests: XCTestCase {
 
     func testOperatorUsageWhitespace() {
         verifyRule(OperatorUsageWhitespaceRule.description)
-    }
-
-    func testPrivateOverFilePrivate() {
-        verifyRule(PrivateOverFilePrivateRule.description)
     }
 
     func testPrivateOutlet() {
@@ -226,6 +222,10 @@ class RulesTests: XCTestCase {
 
         let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
+    }
+
+    func testPrivateOverFilePrivate() {
+        verifyRule(PrivateOverFilePrivateRule.description)
     }
 
     func testPrivateUnitTest() {
@@ -285,6 +285,10 @@ class RulesTests: XCTestCase {
         verifyRule(StrictFilePrivateRule.description)
     }
 
+    func testSuperCall() {
+        verifyRule(OverriddenSuperCallRule.description)
+    }
+
     func testSwitchCaseOnNewline() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
@@ -342,98 +346,19 @@ class RulesTests: XCTestCase {
         verifyRule(ValidIBInspectableRule.description)
     }
 
-    func testVerticalParameterAlignmentOnCall() {
-        verifyRule(VerticalParameterAlignmentOnCallRule.description)
-    }
-
     func testVerticalParameterAlignment() {
         verifyRule(VerticalParameterAlignmentRule.description)
+    }
+
+    func testVerticalParameterAlignmentOnCall() {
+        verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 
     func testVoidReturn() {
         verifyRule(VoidReturnRule.description)
     }
 
-    func testSuperCall() {
-        verifyRule(OverriddenSuperCallRule.description)
-    }
-
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-<<<<<<< HEAD
-=======
-
-}
-
-extension RulesTests {
-    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
-        return [
-            ("testClassDelegateProtocol", testClassDelegateProtocol),
-            ("testClosingBrace", testClosingBrace),
-            ("testClosureEndIndentation", testClosureEndIndentation),
-            ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacingRule", testClosureSpacingRule),
-            ("testComma", testComma),
-            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-            ("testControlStatement", testControlStatement),
-            ("testCyclomaticComplexity", testCyclomaticComplexity),
-            ("testDynamicInline", testDynamicInline),
-            ("testEmptyCount", testEmptyCount),
-            ("testEmptyParameters", testEmptyParameters),
-            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-            ("testExplicitInit", testExplicitInit),
-            ("testFileLength", testFileLength),
-            ("testFirstWhere", testFirstWhere),
-            ("testForceCast", testForceCast),
-            ("testForceTry", testForceTry),
-            // ("testForceUnwrapping", testForceUnwrapping),
-            ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCountRule", testFunctionParameterCountRule),
-            ("testImplicitGetterRule", testImplicitGetterRule),
-            ("testInferredSortingRule", testInferredSortingRule),
-            ("testLeadingWhitespace", testLeadingWhitespace),
-            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyConstant", testLegacyConstant),
-            ("testLegacyConstructor", testLegacyConstructor),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
-            ("testLineLength", testLineLength),
-            ("testMark", testMark),
-            ("testNesting", testNesting),
-            ("testNimbleOperator", testNimbleOperator),
-            ("testNumberSeparator", testNumberSeparator),
-            ("testOpeningBrace", testOpeningBrace),
-            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
-            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-            ("testPrivateOutlet", testPrivateOutlet),
-            ("testPrivateUnitTest", testPrivateUnitTest),
-            ("testProhibitedSuper", testProhibitedSuper),
-            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-            ("testRedundantVoidReturn", testRedundantVoidReturn),
-            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
-            ("testSortedImports", testSortedImports),
-            ("testStatementPosition", testStatementPosition),
-            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
-            ("testSuperCall", testSuperCall),
-            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
-            ("testSyntacticSugar", testSyntacticSugar),
-            ("testTodo", testTodo),
-            ("testTrailingNewline", testTrailingNewline),
-            ("testTrailingSemicolon", testTrailingSemicolon),
-            ("testTrailingWhitespace", testTrailingWhitespace),
-            ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
-            ("testUnusedClosureParameter", testUnusedClosureParameter),
-            ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testValidIBInspectable", testValidIBInspectable),
-            ("testVariableName", testVariableName),
-            ("testVerticalParameterAlignmentRule", testVerticalParameterAlignment),
-            ("testVerticalWhitespace", testVerticalWhitespace),
-            ("testVoidReturn", testVoidReturn),
-            ("testWeakDelegate", testWeakDelegate)
-        ]
-    }
->>>>>>> Rename EducatedSorting to InferredSorting.
 }

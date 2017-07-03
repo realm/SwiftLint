@@ -33,6 +33,10 @@
 * Improve performance when linting and correcting on Linux, matching behavior.  
   [JP Simard](https://github.com/jpsim)
   [#1577](https://github.com/realm/SwiftLint/issues/1577)
+* Add `inferred_sorting` rule that checks the order of array elements if
+  they are already partially sorted.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1038](https://github.com/realm/SwiftLint/issues/1038)
 
 ##### Bug Fixes
 
@@ -739,11 +743,6 @@
   not being used.  
   [Rafael Machado](https://github.com/rakaramos)
   [#1116](https://github.com/realm/SwiftLint/issues/1116)
-* Add `educated_sorting` rule that checks the order of array elements if
-* Add `inferred_sorting` rule that checks the order of array elements if
-  they are already partially sorted.  
-  [Jamie Edge](https://github.com/JamieEdge)
-  [#1038](https://github.com/realm/SwiftLint/issues/1038)
 
 ##### Bug Fixes
 

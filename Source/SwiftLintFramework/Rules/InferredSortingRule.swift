@@ -11,9 +11,9 @@ import SourceKittenFramework
 
 private let arrayInferredSortingReason = "Array elements should be sorted."
 
-extension Sequence where Iterator.Element == String {
+private extension Sequence where Iterator.Element == String {
     /// Determines how sorted the sequence is on a scale from 0.0 to 1.0.
-    fileprivate func sortedness(caseSensitive: Bool) -> Float {
+    func sortedness(caseSensitive: Bool) -> Float {
         guard let array = self as? [String] else {
             return 0.0
         }
@@ -78,6 +78,7 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
         identifier: "inferred_sorting",
         name: "Inferred Sorting",
         description: "Elements should be sorted in alphabetical and numerical order.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = [\"Alpha\"]\n",
             "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\"]\n",
@@ -99,22 +100,21 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
     private static let allowedKinds: [SwiftExpressionKind] = [.array]
     private static let expectedElementKind = "source.lang.swift.structure.elem.expr"
 
-    public func validateFile(_ file: File,
-                             kind: SwiftExpressionKind,
-                             dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
-        guard let bodyOffset = (dictionary["key.bodyoffset"] as? Int64).flatMap({ Int($0) }),
-            let elements = dictionary["key.elements"] as? [SourceKitRepresentable],
+    public func validate(file: File,
+                         kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard let bodyOffset = dictionary.bodyOffset,
             type(of: self).allowedKinds.contains(kind) else {
                 return []
         }
 
         let contents = file.contents.bridge()
+        let elements = dictionary.elements
 
         let items = elements.flatMap { element -> String? in
-            guard let dictionary = element as? [String: SourceKitRepresentable],
-                let elementOffset = (dictionary["key.offset"] as? Int64).flatMap({ Int($0) }),
-                let elementLength = (dictionary["key.length"] as? Int64).flatMap({ Int($0) }),
-                (dictionary["key.kind"] as? String) == type(of: self).expectedElementKind else {
+            guard let elementOffset = element.offset,
+                let elementLength = element.length,
+                element.kind == type(of: self).expectedElementKind else {
                     return nil
             }
 

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
+public struct SyntacticSugarRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -18,6 +18,7 @@ public struct SyntacticSugarRule: Rule, ConfigurationProviderRule {
         identifier: "syntactic_sugar",
         name: "Syntactic Sugar",
         description: "Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "let x: [Int]",
             "let x: [Int: String]",

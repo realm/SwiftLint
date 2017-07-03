@@ -19,6 +19,7 @@ public struct LegacyConstantRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "legacy_constant",
         name: "Legacy Constant",
         description: "Struct-scoped constants are preferred over legacy global constants.",
+        kind: .idiomatic,
         nonTriggeringExamples: LegacyConstantRuleExamples.nonTriggeringExamples,
         triggeringExamples: LegacyConstantRuleExamples.triggeringExamples,
         corrections: LegacyConstantRuleExamples.corrections

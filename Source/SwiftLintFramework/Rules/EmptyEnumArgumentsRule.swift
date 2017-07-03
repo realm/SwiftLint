@@ -18,10 +18,13 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         identifier: "empty_enum_arguments",
         name: "Empty Enum Arguments",
         description: "Arguments can be omitted when matching enums with associated types if they are not used.",
+        kind: .style,
         nonTriggeringExamples: [
             "switch foo {\n case .bar: break\n}",
             "switch foo {\n case .bar(let x): break\n}",
-            "switch foo {\n case let .bar(x): break\n}"
+            "switch foo {\n case let .bar(x): break\n}",
+            "switch (foo, bar) {\n case (_, _): break\n}",
+            "switch foo {\n case \"bar\".uppercased(): break\n}"
         ],
         triggeringExamples: [
             "switch foo {\n case .bar↓(_): break\n}",
@@ -58,6 +61,17 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
         let contents = file.contents.bridge()
 
+        let callsRanges = dictionary.substructure.flatMap { dict -> NSRange? in
+            guard dict.kind.flatMap(SwiftExpressionKind.init) == .call,
+                let offset = dict.offset,
+                let length = dict.length,
+                let range = contents.byteRangeToNSRange(start: offset, length: length) else {
+                    return nil
+            }
+
+            return range
+        }
+
         return dictionary.elements.flatMap { subDictionary -> [NSRange] in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,
@@ -67,13 +81,19 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             }
 
             return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { range, kinds in
-                guard Set(kinds).isSubset(of: [.keyword]) else {
-                    return nil
+                guard Set(kinds).isSubset(of: [.keyword]),
+                    case let byteRange = NSRange(location: offset, length: length),
+                    Set(file.syntaxMap.kinds(inByteRange: byteRange)) != [.keyword] else {
+                        return nil
                 }
 
                 // avoid matches after `where` keyworkd
                 if let whereMatch = file.match(pattern: "where", with: [.keyword], range: caseRange).first,
                     whereMatch.location < range.location {
+                    return nil
+                }
+
+                if callsRanges.first(where: range.intersects) != nil {
                     return nil
                 }
 

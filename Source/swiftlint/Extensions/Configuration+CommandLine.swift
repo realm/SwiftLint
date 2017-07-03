@@ -122,7 +122,9 @@ extension Configuration {
 
     init(options: LintOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet,
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+                  optional: optional, quiet: options.quiet,
                   enableAllRules: options.enableAllRules, cachePath: cachePath)
     }
 
@@ -136,6 +138,16 @@ extension Configuration {
     // MARK: AutoCorrect Command
 
     init(options: AutoCorrectOptions) {
-        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
+        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+                  optional: optional, quiet: options.quiet, cachePath: cachePath)
+    }
+
+    // MARK: Rules command
+
+    init(options: RulesOptions) {
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, optional: optional)
     }
 }

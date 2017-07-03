@@ -18,6 +18,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         identifier: "for_where",
         name: "For Where",
         description: "`where` clauses are preferred over a single `if` inside a `for`.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "for user in users where user.id == 1 { }\n",
             // if let
@@ -112,15 +113,14 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         let beforeIfRange = NSRange(location: offset, length: ifOffset - offset)
         let ifFinalPosition = ifOffset + ifLength
         let afterIfRange = NSRange(location: ifFinalPosition, length: offset + length - ifFinalPosition)
-        let tokens = file.syntaxMap.tokens(inByteRange: beforeIfRange) +
-            file.syntaxMap.tokens(inByteRange: afterIfRange)
+        let allKinds = file.syntaxMap.kinds(inByteRange: beforeIfRange) +
+            file.syntaxMap.kinds(inByteRange: afterIfRange)
 
-        let allKinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
-        let nonCommentKinds = allKinds.filter { kind in
+        let doesntContainComments = !allKinds.contains { kind in
             !ForWhereRule.commentKinds.contains(kind)
         }
 
-        return nonCommentKinds.isEmpty
+        return doesntContainComments
     }
 
     private func isComplexCondition(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {

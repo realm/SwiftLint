@@ -19,6 +19,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
         identifier: "shorthand_operator",
         name: "Shorthand Operator",
         description: "Prefer shorthand operators (+=, -=, *=, /=) over doing the operation and assigning.",
+        kind: .style,
         nonTriggeringExamples: allOperators.flatMap { operation in
             [
                 "foo \(operation)= 1",
@@ -95,10 +96,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
             }
 
             let kindsInCaptureGroups = byteRanges.map { range -> [SyntaxKind] in
-                range.flatMap {
-                    let tokens = file.syntaxMap.tokens(inByteRange: $0)
-                    return tokens.flatMap { SyntaxKind(rawValue: $0.type) }
-                } ?? []
+                return range.flatMap(file.syntaxMap.kinds(inByteRange:)) ?? []
             }
 
             guard kindsAreValid(kindsInCaptureGroups[0]) &&

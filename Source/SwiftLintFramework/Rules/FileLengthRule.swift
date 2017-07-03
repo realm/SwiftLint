@@ -17,6 +17,7 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
         identifier: "file_length",
         name: "File Line Length",
         description: "Files should not span too many lines.",
+        kind: .metrics,
         nonTriggeringExamples: [
             repeatElement("//\n", count: 400).joined()
         ],
@@ -28,11 +29,12 @@ public struct FileLengthRule: ConfigurationProviderRule, SourceKitFreeRule {
     public func validate(file: File) -> [StyleViolation] {
         let lineCount = file.lines.count
         for parameter in configuration.params where lineCount > parameter.value {
+            let reason = "File should contain \(configuration.warning) lines or less: " +
+                         "currently contains \(lineCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: parameter.severity,
-                location: Location(file: file.path, line: lineCount),
-                reason: "File should contain \(configuration.warning) lines or less: " +
-                        "currently contains \(lineCount)")]
+                                   severity: parameter.severity,
+                                   location: Location(file: file.path, line: lineCount),
+                                   reason: reason)]
         }
         return []
     }

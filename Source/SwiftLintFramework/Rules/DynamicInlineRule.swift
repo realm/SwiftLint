@@ -18,7 +18,8 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "dynamic_inline",
         name: "Dynamic Inline",
-        description: "avoid using 'dynamic' and '@inline(__always)' together.",
+        description: "Avoid using 'dynamic' and '@inline(__always)' together.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class C {\ndynamic func f() {}}",
             "class C {\n@inline(__always) func f() {}}",
@@ -51,15 +52,15 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
                 .last,
             inlineMatch.range.location != NSNotFound,
             case let attributeRange = NSRange(location: inlineMatch.range.location,
-                length: funcOffset - inlineMatch.range.location),
+                                              length: funcOffset - inlineMatch.range.location),
             case let alwaysInlinePattern = regex("@inline\\(\\s*__always\\s*\\)"),
             alwaysInlinePattern.firstMatch(in: file.contents, options: [], range: attributeRange) != nil
         else {
             return []
         }
         return [StyleViolation(ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, characterOffset: funcOffset))]
+                               severity: configuration.severity,
+                               location: Location(file: file, characterOffset: funcOffset))]
     }
 
     fileprivate let functionKinds: [SwiftDeclarationKind] = [

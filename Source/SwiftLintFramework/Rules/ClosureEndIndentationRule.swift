@@ -18,6 +18,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         identifier: "closure_end_indentation",
         name: "Closure End Indentation",
         description: "Closure end should have the same indentation as the line that started it.",
+        kind: .style,
         nonTriggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +

@@ -18,6 +18,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         identifier: "file_header",
         name: "File Header",
         description: "Files should have consistent header comments.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = \"Copyright\"",
             "let foo = 2 // Copyright",

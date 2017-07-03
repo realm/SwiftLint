@@ -32,6 +32,7 @@ public struct TodoRule: ConfigurationProviderRule {
         identifier: "todo",
         name: "Todo",
         description: "TODOs and FIXMEs should be avoided.",
+        kind: .lint,
         nonTriggeringExamples: [
             "// notaTODO:\n",
             "// notaFIXME:\n"

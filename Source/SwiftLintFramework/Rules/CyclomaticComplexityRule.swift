@@ -18,6 +18,7 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         identifier: "cyclomatic_complexity",
         name: "Cyclomatic Complexity",
         description: "Complexity of function bodies should be limited.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "func f1() {\nif true {\nfor _ in 1..5 { } }\nif false { }\n}",
             "func f(code: Int) -> Int {" +
@@ -48,11 +49,12 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where complexity > parameter.value {
             let offset = dictionary.offset ?? 0
+            let reason = "Function should have complexity \(configuration.length.warning) or less: " +
+                         "currently complexity equals \(complexity)"
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: parameter.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: "Function should have complexity \(configuration.length.warning) or less: " +
-                        "currently complexity equals \(complexity)")]
+                                   severity: parameter.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: reason)]
         }
 
         return []

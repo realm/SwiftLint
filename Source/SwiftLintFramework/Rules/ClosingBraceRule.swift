@@ -28,6 +28,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         name: "Closing Brace Spacing",
         description: "Closing brace with closing parenthesis " +
                      "should not have any whitespaces in the middle.",
+        kind: .style,
         nonTriggeringExamples: [
             "[].map({ })",
             "[].map(\n  { }\n)"

@@ -17,6 +17,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
         identifier: "overridden_super_call",
         name: "Overridden methods call super",
         description: "Some overridden methods should always call super",
+        kind: .lint,
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func viewWillAppear(_ animated: Bool) {\n" +
@@ -80,14 +81,14 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
 
         if callsToSuper.isEmpty {
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: "Method '\(name)' should call to super function")]
+                                   severity: configuration.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Method '\(name)' should call to super function")]
         } else if callsToSuper.count > 1 {
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: "Method '\(name)' should call to super only once")]
+                                   severity: configuration.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Method '\(name)' should call to super only once")]
         }
         return []
     }

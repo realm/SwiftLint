@@ -19,6 +19,7 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         identifier: "redundant_discardable_let",
         name: "Redundant Discardable Let",
         description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function.",
+        kind: .style,
         nonTriggeringExamples: [
             "_ = foo()\n",
             "if let _ = foo() { }\n",

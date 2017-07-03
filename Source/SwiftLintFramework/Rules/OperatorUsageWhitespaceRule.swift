@@ -20,6 +20,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         name: "Operator Usage Whitespace",
         description: "Operators should be surrounded by a single whitespace " +
                      "when they are being used.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = 1 + 2\n",
             "let foo = 1 > 2\n",
@@ -148,7 +149,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             return []
         }
 
-        return file.syntaxMap.tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
+        return file.syntaxMap.kinds(inByteRange: byteRange)
     }
 
     private func operatorInRange(file: File, range: NSRange) -> String {

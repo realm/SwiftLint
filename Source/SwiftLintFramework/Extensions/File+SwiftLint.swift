@@ -32,12 +32,21 @@ extension File {
             }
             let start = Location(file: path, line: command.line, character: command.character)
             let end = endOf(next: nextCommand)
-            regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
+            guard start < end else { continue }
+            var didSetRegion = false
+            for (index, region) in zip(regions.indices, regions) where region.start == start && region.end == end {
+                regions[index] = Region(start: start, end: end,
+                                        disabledRuleIdentifiers: disabledRules.union(region.disabledRuleIdentifiers))
+                didSetRegion = true
+            }
+            if !didSetRegion {
+                regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
+            }
         }
         return regions
     }
 
-    fileprivate func commands() -> [Command] {
+    internal func commands() -> [Command] {
         if sourcekitdFailed {
             return []
         }
@@ -295,4 +304,13 @@ extension File {
         return corrections
     }
 
+    internal func isACL(token: SyntaxToken) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+            return false
+        }
+
+        let aclString = contents.bridge().substringWithByteRange(start: token.offset,
+                                                                 length: token.length)
+        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
+    }
 }

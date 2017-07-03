@@ -18,6 +18,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         identifier: "no_extension_access_modifier",
         name: "No Extension Access Modifier",
         description: "Prefer not to use extension access modifiers",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "extension String {}",
             "\n\n extension String {}"
@@ -38,10 +39,9 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         }
 
         let syntaxTokens = file.syntaxMap.tokens
-        let parts = syntaxTokens.partitioned { offset <= $0.offset }
-        guard let aclToken = parts.first.last,
-            isACL(token: aclToken, file: file) else {
-                return []
+        let parts = syntaxTokens.prefix(while: { offset > $0.offset })
+        guard let aclToken = parts.last, file.isACL(token: aclToken) else {
+            return []
         }
 
         return [
@@ -49,16 +49,5 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
-    }
-
-    private func isACL(token: SyntaxToken, file: File) -> Bool {
-        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
-            return false
-        }
-
-        let contents = file.contents.bridge()
-        let aclString = contents.substringWithByteRange(start: token.offset,
-                                                        length: token.length)
-        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
     }
 }

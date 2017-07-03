@@ -62,8 +62,13 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
             self.allowedSymbols = Set(allowedSymbols)
         }
-        if let validatesStartWithLowercase = configurationDict["validates_start_lowercase"] as? Bool {
+
+        if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
             self.validatesStartWithLowercase = validatesStartWithLowercase
+        } else if let validatesStartWithLowercase = configurationDict["validates_start_lowercase"] as? Bool {
+            self.validatesStartWithLowercase = validatesStartWithLowercase
+            queuedPrintError("\"validates_start_lowercase\" configuration was renamed to " +
+                "\"validates_start_with_lowercase\" and will be removed in a future release.")
         }
     }
 }

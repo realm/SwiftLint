@@ -126,6 +126,13 @@ extension FileHeaderRuleTests {
     ]
 }
 
+extension FilePrivateRuleTests {
+    static var allTests: [(String, (FilePrivateRuleTests) -> () throws -> Void)] = [
+        ("testFilePrivateWithDefaultConfiguration", testFilePrivateWithDefaultConfiguration),
+        ("testFilePrivateWithStrictConfiguration", testFilePrivateWithStrictConfiguration)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
@@ -323,8 +330,6 @@ extension RulesTests {
         ("testExtensionAccessModifier", testExtensionAccessModifier),
         ("testFatalErrorMessage", testFatalErrorMessage),
         ("testFileLength", testFileLength),
-        ("testFileprivateRule", testFileprivateRule),
-        ("testFileprivateRuleWithConfig", testFileprivateRuleWithConfig),
         ("testFirstWhere", testFirstWhere),
         ("testForceCast", testForceCast),
         ("testForceTry", testForceTry),
@@ -450,6 +455,7 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
+    testCase(FilePrivateRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),

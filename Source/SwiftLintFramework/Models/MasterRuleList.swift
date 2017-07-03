@@ -35,7 +35,7 @@ public let masterRuleList = RuleList(rules: [
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
-    FileprivateRule.self,
+    FilePrivateRule.self,
     FirstWhereRule.self,
     ForWhereRule.self,
     ForceCastRule.self,

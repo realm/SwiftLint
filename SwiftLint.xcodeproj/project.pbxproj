@@ -18,8 +18,11 @@
 		094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
-		1E3C2D711EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */; };		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
+		1E3C2D711EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */; };
+		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
 		1E82F4031EE4B2A100D33439 /* ModifiersOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82F4021EE4B2A100D33439 /* ModifiersOrderRule.swift */; };
+		1EB7C8511F0C2213004BAD22 /* ModifiersOrderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */; };
+		1EB7C8531F0C45C2004BAD22 /* ModifiersOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */; };
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
 		1EF115921EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */; };
 		1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
@@ -369,8 +372,11 @@
 		094385021D5D4F78009168CF /* PrivateOutletRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRule.swift; sourceTree = "<group>"; };
 		1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YodaConditionRule.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
-		1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRule.swift; sourceTree = "<group>"; };		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
+		1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRule.swift; sourceTree = "<group>"; };
+		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
 		1E82F4021EE4B2A100D33439 /* ModifiersOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderRule.swift; sourceTree = "<group>"; };
+		1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderConfiguration.swift; sourceTree = "<group>"; };
+		1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderTests.swift; sourceTree = "<group>"; };
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
 		1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTopLevelACLRule.swift; sourceTree = "<group>"; };
 		1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosingBraceRule.swift; sourceTree = "<group>"; };
@@ -742,7 +748,7 @@
 				29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */,
 				47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */,
 				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
-				1E6E56241EE4B9650057B624 /* ModifiersOrderConfiguration.swift */,
+				1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */,
 				D93DA3CF1E699E4E00809827 /* NestingConfiguration.swift */,
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
@@ -943,7 +949,7 @@
 				3B63D46C1E1F05160057BE35 /* LineLengthConfigurationTests.swift */,
 				3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */,
 				D4C27BFF1E12DFF500DF713E /* LinterCacheTests.swift */,
-				1E6E56261EE532A50057B624 /* ModifiersOrderTests.swift */,
+				1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */,
 				D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */,
 				B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */,
 				825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */,
@@ -1486,6 +1492,7 @@
 				827169B51F48D712003FB9AF /* NoGroupingExtensionRule.swift in Sources */,
 				D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */,
 				E881985C1BEA978500333A11 /* TrailingNewlineRule.swift in Sources */,
+				1EB7C8511F0C2213004BAD22 /* ModifiersOrderConfiguration.swift in Sources */,
 				78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */,
 				D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */,
 				E881985E1BEA982100333A11 /* TypeBodyLengthRule.swift in Sources */,
@@ -1681,7 +1688,6 @@
 				C946FECB1EAE67EE007DD778 /* LetVarWhitespaceRule.swift in Sources */,
 				E881985D1BEA97EB00333A11 /* TrailingWhitespaceRule.swift in Sources */,
 				E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */,
-				1E6E56251EE4B9650057B624 /* ModifiersOrderConfiguration.swift in Sources */,
 				E816194C1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift in Sources */,
 				D4DABFD71E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift in Sources */,
 				3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */,
@@ -1747,13 +1753,13 @@
 				F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */,
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
 				47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */,
+				1EB7C8531F0C45C2004BAD22 /* ModifiersOrderTests.swift in Sources */,
 				67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */,
 				D4470D5B1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift in Sources */,
 				F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */,
 				B89F3BCE1FD5EE0200931E59 /* RequiredEnumCaseRuleTestCase.swift in Sources */,
 				C9802F2F1E0C8AEE008AB27F /* TrailingCommaRuleTests.swift in Sources */,
 				3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */,
-				1E6E56281EE5348B0057B624 /* ModifiersOrderTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
 			);

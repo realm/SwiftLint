@@ -195,8 +195,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-extension String {
-    fileprivate func split(separator: String) -> [(String, NSRange)] {
+private extension String {
+    func split(separator: String) -> [(String, NSRange)] {
         let separatorLength = separator.bridge().length
         var previousEndOffset = 0
         var result = [(String, NSRange)]()
@@ -211,7 +211,7 @@ extension String {
         return result
     }
 
-    fileprivate func trimmingWhitespaces() -> (String, NSRange) {
+    func trimmingWhitespaces() -> (String, NSRange) {
         let bridged = bridge()
         let range = NSRange(location: 0, length: bridged.length)
         guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),

@@ -13,8 +13,8 @@ import XCTest
 
 private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
-extension Configuration {
-    fileprivate var disabledRules: [String] {
+private extension Configuration {
+    var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
             !($0.init() is OptInRule)

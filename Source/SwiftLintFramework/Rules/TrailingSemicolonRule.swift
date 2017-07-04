@@ -9,8 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-extension File {
-    fileprivate func violatingTrailingSemicolonRanges() -> [NSRange] {
+private extension File {
+    func violatingTrailingSemicolonRanges() -> [NSRange] {
         return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }

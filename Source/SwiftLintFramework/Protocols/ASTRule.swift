@@ -13,12 +13,12 @@ public protocol ASTRule: Rule {
     func validate(file: File, kind: KindType, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation]
 }
 
-extension ASTRule where KindType.RawValue == String {
-    public func validate(file: File) -> [StyleViolation] {
+public extension ASTRule where KindType.RawValue == String {
+    func validate(file: File) -> [StyleViolation] {
         return validate(file: file, dictionary: file.structure.dictionary)
     }
 
-    public func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
             var violations = validate(file: file, dictionary: subDict)
 

@@ -25,7 +25,7 @@ public struct ModifiersOrderRule: OptInRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "modifiers_order",
         name: "Modifiers Order",
-        description: "Modifiers order should be consistent.",
+        description: "Modifiers order should be consistent.", kind: RuleKind.style,
         nonTriggeringExamples: [
             "@objc \npublic final class MyClass: NSObject {\n" +
             "private final func myFinal() {}\n" +

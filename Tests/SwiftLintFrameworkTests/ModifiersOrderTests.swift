@@ -17,6 +17,7 @@ class ModifiersOrderTests: XCTestCase {
             identifier: "modifiers_order",
             name: "Modifiers Order",
             description: "Modifiers order should be consistent.",
+            kind: .style,
             nonTriggeringExamples: [
                 "public class SomeClass { \n" +
                     "    static public func someFunc() {} \n" +
@@ -39,6 +40,7 @@ class ModifiersOrderTests: XCTestCase {
             identifier: "modifiers_order",
             name: "Modifiers Order",
             description: "Modifiers order should be consistent.",
+            kind: .style,
             nonTriggeringExamples: [
                 "public class SomeClass { \n" +
                     "    class public func someFunc() {} \n" +
@@ -61,6 +63,7 @@ class ModifiersOrderTests: XCTestCase {
             identifier: "modifiers_order",
             name: "Modifiers Order",
             description: "Modifiers order should be consistent.",
+            kind: .style,
             nonTriggeringExamples: [
                 "class RootClass { func myFinal() {}}\n" +
                     "internal class MyClass: RootClass {" +

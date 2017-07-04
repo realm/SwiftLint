@@ -159,8 +159,8 @@ private extension Dictionary where Key == String {
     }
 }
 
-extension StyleViolation {
-    fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
+private extension StyleViolation {
+    static func from(cache: [String: Any], file: String) -> StyleViolation? {
         guard let severityString = cache[.severity] as? String,
             let severity = ViolationSeverity(rawValue: severityString),
             let name = cache[.type] as? String,

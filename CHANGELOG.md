@@ -237,6 +237,10 @@
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
 
+* Whitespace around let/var groups.  
+  [Uncommon](https://github.com/Uncommon)
+  [#1471](https://github.com/realm/SwiftLint/issues/1471)
+
 * Add `empty_enum_arguments` correctable rule that warns against using
   silent associated values inside a `case`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

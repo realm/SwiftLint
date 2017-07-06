@@ -27,7 +27,7 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "inline_comment",
         name: "InlineComment",
-        description: "Inline comments should be in valid format.",
+        description: "Inline comments should be in valid format.", kind: RuleKind.lint,
         nonTriggeringExamples: [
             "// Good\nfunc foo() {\n}",
             "func foo() {  // Good\n}",

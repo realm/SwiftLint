@@ -205,6 +205,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testPrivateOverFilePrivate() {
+        verifyRule(PrivateOverFilePrivateRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 
@@ -271,6 +275,10 @@ class RulesTests: XCTestCase {
     func testStatementPositionUncuddled() {
         let configuration = ["statement_mode": "uncuddled_else"]
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
+    }
+
+    func testStrictFilePrivate() {
+        verifyRule(StrictFilePrivateRule.description)
     }
 
     func testSwitchCaseOnNewline() {

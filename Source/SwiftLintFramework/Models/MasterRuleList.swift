@@ -45,7 +45,7 @@ public let masterRuleList = RuleList(rules: [
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
-    ImplicitReturnRule.self,    
+    ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
     InlineCommentRule.self,
     LargeTupleRule.self,

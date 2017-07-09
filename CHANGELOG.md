@@ -1,4 +1,166 @@
-## 0.19.0-rc.1: Coin-Operated Machine RC1
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Don't count comment lines in `file_length` rule.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
+* Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
+  or `performance`. Currently this is just used for documentation purposes
+  when you run `swiftlint rules`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add [rules documentation](Rules.md) generation.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1078](https://github.com/realm/SwiftLint/issues/1078)
+
+* Add `private_over_fileprivate` correctable rule to check for top-level usages
+  of  `fileprivate` and recommend `private` instead. This is inline with
+  SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new
+  `strict_fileprivate` opt-in rule that will mark every `fileprivate`
+  as a violation (specially useful with Swift 4).  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1469](https://github.com/realm/SwiftLint/issues/1469)
+  [#1058](https://github.com/realm/SwiftLint/issues/1058)
+
+##### Bug Fixes
+
+* None.
+
+## 0.20.1: More Liquid Fabric Softener
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix typo in `FatalErrorMessageRule`.  
+  [Alexander Lash](https://github.com/abl)
+
+* Don't trigger an `extension_access_modifier` violation when all extension
+  members  are `open`, as `open extension` is not supported by Swift.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1629](https://github.com/realm/SwiftLint/issues/1629)
+
+* Don't trigger a `vertical_parameter_alignment_on_call` violation when
+  trailing closures are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1635](https://github.com/realm/SwiftLint/issues/1635)
+
+* Make `vertical_parameter_alignment_on_call` more flexible when multiline
+  parameters are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1630](https://github.com/realm/SwiftLint/issues/1630)
+  [#1643](https://github.com/realm/SwiftLint/issues/1643)
+
+* Use the directory's .swiftlint.yml when `--path` is used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1631](https://github.com/realm/SwiftLint/issues/1631)
+
+## 0.20.0: Liquid Fabric Softener
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Add support for missing triggering cases in `force_unwrapping`
+  when using subscript.  
+  [Otávio Lima](https://github.com/otaviolima)
+
+* Match `(Void)` as return type in the `void_return` rule.  
+  [Anders Hasselqvist](https://github.com/nevil)
+
+* Add `multiline_parameters` opt-in rule that warns to either keep
+  all the parameters of a method or function on the same line,
+  or one per line.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+
+* Update `function_parameter_count` rule to ignore overridden methods.  
+  [Markus Gasser](https://github.com/frenetisch-applaudierend)
+  [#1562](https://github.com/realm/SwiftLint/issues/1562)
+
+* Skip files with valid cache & no violations when auto correcting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1554](https://github.com/realm/SwiftLint/issues/1554)
+
+* Don't trigger violations from the `private_unit_test` rule when a method has
+  parameters.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1532](https://github.com/realm/SwiftLint/issues/1532)
+
+* Don't trigger violations from the `discarded_notification_center_observer`
+  rule when the observer is being returned from a function that is not marked
+  as `@discardableResult`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1525](https://github.com/realm/SwiftLint/issues/1525)
+
+* Add `extension_access_modifier` opt-in rule validating that if all the
+  declarations in a given extension have the same Access Control Level, the ACL
+  keyword should be applied to the top-level extension.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1546](https://github.com/realm/SwiftLint/issues/1546)
+
+* Add `vertical_parameter_alignment_on_call` opt-in rule that validates that
+  parameters are vertically aligned on a method call.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1037](https://github.com/realm/SwiftLint/issues/1037)
+
+* Add `code_literal` and `image_literal` boolean configuration options to
+  `object_literal` rule. They allow to only check for one or the other
+  literal type instead of both together.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1587](https://github.com/realm/SwiftLint/issues/1587)
+
+##### Bug Fixes
+
+* Fix false positive in `empty_enum_arguments` rule when calling methods.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1597](https://github.com/realm/SwiftLint/issues/1597)
+
+* Fix crash in `unused_closure_parameter` rule when using unicode identifiers.  
+  [Woo-Sik Byun](https://github.com/woosiki)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix two false positives in `force_unwrapping` rule.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#614](https://github.com/realm/SwiftLint/issues/614)
+  [#977](https://github.com/realm/SwiftLint/issues/977)
+  [#1614](https://github.com/realm/SwiftLint/issues/1614)
+
+* Fix custom rules not working correctly with comment commands.  
+  [JP Simard](https://github.com/jpsim)
+  [#1558](https://github.com/realm/SwiftLint/issues/1558)
+
+* Fix incorrectly using configuration files named `.swiftlint.yml` when they are
+  located in the same directory as a differently-named, user-provided custom
+  configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#1531](https://github.com/realm/SwiftLint/issues/1531)
+
+* Fix `empty_count` rule false positive in words that include "count".  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1622](https://github.com/realm/SwiftLint/issues/1622)
+
+* Use `validates_start_with_lowercase` key when decoding configurations for
+  `generic_type_name`, `identifier_name` and `type_name` rules. This key was
+  used on the docs, but internally `validates_start_lowercase` was used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1626](https://github.com/realm/SwiftLint/issues/1626)
+
+## 0.19.0: Coin-Operated Machine
 
 ##### Breaking
 
@@ -6,7 +168,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
 
-* Remove `missing_docs` and `valid_docs` rules since 
+* Remove `missing_docs` and `valid_docs` rules since
   they were already disabled.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1387](https://github.com/realm/SwiftLint/issues/1453)
@@ -28,17 +190,15 @@
 
 ##### Enhancements
 
-* Don't count comment lines in `file_length` rule.  
-  [Samuel Susla](https://github.com/sammy-SC)
-  [#1387](https://github.com/realm/SwiftLint/issues/1165)
-
 * Cache linter results for files unmodified since the previous linter run.  
   [Victor Pimentel](https://github.com/victorpimentel)
   [JP Simard](https://github.com/jpsim)
+  [Marcelo Fabri](https://github.com/marcelofabri)
   [#1184](https://github.com/realm/SwiftLint/issues/1184)
+  [#1550](https://github.com/realm/SwiftLint/issues/1550)
 
 * Add opt-in configurations to `generic_type_name`, `identifier_name` and
-  `type_name` rules to allow excluding non-alphanumeric characters and names 
+  `type_name` rules to allow excluding non-alphanumeric characters and names
   that start with uppercase.  
   [Javier Hernández](https://github.com/jaherhi)
   [#541](https://github.com/realm/SwiftLint/issues/541)
@@ -51,12 +211,12 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
   [#1326](https://github.com/realm/SwiftLint/issues/1326)
-  
+
 * Added `no_extension_access_modifier` opt-in rule to disallow access modifiers
   completely, à la SE-0119.  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [#1457](https://github.com/realm/SwiftLint/issues/1457)
-  
+
 * Add lowercase and missing colon checks to the `mark` rule.  
   [Jason Moore](https://github.com/xinsight)
 
@@ -65,7 +225,7 @@
   [ultimatedbz](https://github.com/ultimatedbz)
 
 * Add `explicit_top_level_acl` opt-in rule that validates that all top
-  level declarations should explicitly be marked with an Access  Control
+  level declarations should explicitly be marked with an Access Control
   Level (`private`, `fileprivate`, `internal`, `public` or `open`).  
   [J. Cheyo Jimenez](https://github.com/masters3d)
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -75,7 +235,7 @@
   keyword when it can be omitted inside closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1194](https://github.com/realm/SwiftLint/issues/1194)
-  
+
 * Add option to `unused_optional_binding` rule to ignore `try?`
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)
@@ -85,6 +245,7 @@
   silent associated values inside a `case`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1425](https://github.com/realm/SwiftLint/issues/1425)
+  [#1549](https://github.com/realm/SwiftLint/issues/1549)
 
 * Remove `file.zip` from the `Pods` directory when installing SwiftLint via
   CocoaPods.  
@@ -96,6 +257,12 @@
   in protocols.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1504](https://github.com/realm/SwiftLint/issues/1504)
+
+* Make `Region` & `Command` structs conform to `Equatable`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Make `closure_spacing` a `CorrectableRule`.  
+  [J. Cheyo Jimenez](https://github.com/masters3d)
 
 ##### Bug Fixes
 
@@ -138,6 +305,19 @@
   `Optional`, `ImplicitlyUnwrappedOptional`, `Array` or `Dictionary`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1508](https://github.com/realm/SwiftLint/issues/1508)
+
+* Fix false positives in `prohibited_super_call` & `overridden_super_call` rules
+  where calls to `super` were done in nested scopes such as `defer` blocks.  
+  [JP Simard](https://github.com/jpsim)
+  [#1301](https://github.com/realm/SwiftLint/issues/1301)
+
+* Fix non-root configurations logging configuration warnings more than once.  
+  [JP Simard](https://github.com/jpsim)
+  [#949](https://github.com/realm/SwiftLint/issues/949)
+
+* Fix some overlapping `// swiftlint` commands not being applied.  
+  [JP Simard](https://github.com/jpsim)
+  [#1388](https://github.com/realm/SwiftLint/issues/1388)
 
 ## 0.18.1: Misaligned Drum
 

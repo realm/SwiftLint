@@ -25,14 +25,7 @@ class TypeNameRuleTests: XCTestCase {
             "protocol Foo {\n associatedtype Bar$\n }"
         ]
 
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples,
-                                          corrections: baseDescription.corrections,
-                                          deprecatedAliases: baseDescription.deprecatedAliases)
-
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$"]])
     }
 
@@ -49,24 +42,9 @@ class TypeNameRuleTests: XCTestCase {
         let triggeringExamples = baseDescription.triggeringExamples
             .filter { !triggeringExamplesToRemove.contains($0) }
 
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections,
-                                          deprecatedAliases: baseDescription.deprecatedAliases)
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["validates_start_lowercase": false])
-    }
-}
-
-extension TypeNameRuleTests {
-    static var allTests: [(String, (TypeNameRuleTests) -> () throws -> Void)] {
-        return [
-            ("testTypeName", testTypeName),
-            ("testTypeNameWithAllowedSymbols", testTypeNameWithAllowedSymbols),
-            ("testTypeNameWithIgnoreStartWithLowercase", testTypeNameWithIgnoreStartWithLowercase)
-        ]
+        verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
 }

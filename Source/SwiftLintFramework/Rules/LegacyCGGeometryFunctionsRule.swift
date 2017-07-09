@@ -18,6 +18,7 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
         identifier: "legacy_cggeometry_functions",
         name: "Legacy CGGeometry Functions",
         description: "Struct extension properties and methods are preferred over legacy functions",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "rect.width",
             "rect.height",
@@ -101,8 +102,8 @@ public struct LegacyCGGeometryFunctionsRule: CorrectableRule, ConfigurationProvi
 
         return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

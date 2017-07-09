@@ -18,6 +18,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         identifier: "function_parameter_count",
         name: "Function Parameter Count",
         description: "Number of function parameters should be low.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
             "init (a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
@@ -28,7 +29,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             "func f2(p1: Int, p2: Int) { }",
             "func f(a: Int, b: Int, c: Int, d: Int, x: Int = 42) {}",
             "func f(a: [Int], b: Int, c: Int, d: Int, f: Int) -> [Int] {\n" +
-                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}"
+                "let s = a.flatMap { $0 as? [String: Int] } ?? []}}",
+            "override func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}"
         ],
         triggeringExamples: [
             "↓func f(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}",
@@ -53,6 +55,10 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
+        if functionIsOverride(attributes: dictionary.enclosedSwiftAttributes) {
+            return []
+        }
+
         let minThreshold = configuration.params.map({ $0.value }).min(by: <)
 
         let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, offset: nameOffset,
@@ -66,11 +72,12 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where parameterCount > parameter.value {
             let offset = dictionary.offset ?? 0
+            let reason = "Function should have \(configuration.warning) parameters or less: " +
+                         "it currently has \(parameterCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: parameter.severity,
-                location: Location(file: file, byteOffset: offset),
-                reason: "Function should have \(configuration.warning) parameters or less: " +
-                    "it currently has \(parameterCount)")]
+                                   severity: parameter.severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: reason)]
         }
 
         return []
@@ -116,4 +123,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return alphaNumericName == "init"
     }
 
+    fileprivate func functionIsOverride(attributes: [String]) -> Bool {
+        return attributes.contains("source.decl.attribute.override")
+    }
 }

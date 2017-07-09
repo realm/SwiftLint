@@ -20,6 +20,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         name: "Returning Whitespace",
         description: "Return arrow and return type should be separated by a single space or on a " +
                      "separate line.",
+        kind: .style,
         nonTriggeringExamples: [
             "func abc() -> Int {}\n",
             "func abc() -> [Int] {}\n",
@@ -53,8 +54,8 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file, skipParentheses: true).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

@@ -88,6 +88,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }
 
+    func testExtensionAccessModifier() {
+        verifyRule(ExtensionAccessModifierRule.description)
+    }
+
     func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }
@@ -164,6 +168,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, commentDoesntViolate: false)
     }
 
+    func testMultilineParameters() {
+        verifyRule(MultilineParametersRule.description)
+    }
+
     func testNesting() {
         verifyRule(NestingRule.description)
     }
@@ -180,10 +188,6 @@ class RulesTests: XCTestCase {
         verifyRule(NimbleOperatorRule.description)
     }
 
-    func testObjectLiteral() {
-        verifyRule(ObjectLiteralRule.description)
-    }
-
     func testOpeningBrace() {
         verifyRule(OpeningBraceRule.description)
     }
@@ -196,6 +200,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testPrivateOverFilePrivate() {
+        verifyRule(PrivateOverFilePrivateRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 
@@ -206,11 +214,8 @@ class RulesTests: XCTestCase {
             "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
             "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
         ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
@@ -267,6 +272,10 @@ class RulesTests: XCTestCase {
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
+    func testStrictFilePrivate() {
+        verifyRule(StrictFilePrivateRule.description)
+    }
+
     func testSwitchCaseOnNewline() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
@@ -291,27 +300,18 @@ class RulesTests: XCTestCase {
         // The set of non-triggering examples is extended by a whitespace-indented empty line
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                                name: baseDescription.name,
-                                         description: baseDescription.description,
-                               nonTriggeringExamples: nonTriggeringExamples,
-                                  triggeringExamples: baseDescription.triggeringExamples,
-                                         corrections: baseDescription.corrections)
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+
         verifyRule(description,
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
 
         // Perform additional tests with the ignores_comments settings disabled.
         let triggeringComments = ["// \n", "let name: String // \n"]
-        let baseDescription2 = TrailingWhitespaceRule.description
-        let nonTriggeringExamples2 = baseDescription2.nonTriggeringExamples
+        let nonTriggeringExamples2 = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
-        let triggeringExamples2 = baseDescription2.triggeringExamples + triggeringComments
-        let description2 = RuleDescription(identifier: baseDescription2.identifier,
-                                           name: baseDescription2.name,
-                                           description: baseDescription2.description,
-                                           nonTriggeringExamples: nonTriggeringExamples2,
-                                           triggeringExamples: triggeringExamples2,
-                                           corrections: baseDescription2.corrections)
+        let triggeringExamples2 = baseDescription.triggeringExamples + triggeringComments
+        let description2 = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples2)
+                                          .with(triggeringExamples: triggeringExamples2)
         verifyRule(description2,
                    ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)
@@ -333,6 +333,10 @@ class RulesTests: XCTestCase {
         verifyRule(ValidIBInspectableRule.description)
     }
 
+    func testVerticalParameterAlignmentOnCall() {
+        verifyRule(VerticalParameterAlignmentOnCallRule.description)
+    }
+
     func testVerticalParameterAlignment() {
         verifyRule(VerticalParameterAlignmentRule.description)
     }
@@ -347,85 +351,5 @@ class RulesTests: XCTestCase {
 
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
-    }
-}
-
-extension RulesTests {
-    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
-        return [
-            ("testClassDelegateProtocol", testClassDelegateProtocol),
-            ("testClosingBrace", testClosingBrace),
-            ("testComma", testComma),
-            ("testCompilerProtocolInit", testCompilerProtocolInit),
-            ("testClosureEndIndentation", testClosureEndIndentation),
-            ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacing", testClosureSpacing),
-            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-            ("testControlStatement", testControlStatement),
-            ("testCyclomaticComplexity", testCyclomaticComplexity),
-            ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
-            ("testDynamicInline", testDynamicInline),
-            ("testEmptyCount", testEmptyCount),
-            ("testEmptyEnumArguments", testEmptyEnumArguments),
-            ("testEmptyParameters", testEmptyParameters),
-            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-            ("testExplicitInit", testExplicitInit),
-            ("testExplicitTopLevelACL", testExplicitTopLevelACL),
-            ("testExplicitTypeInterface", testExplicitTypeInterface),
-            ("testFatalErrorMessage", testFatalErrorMessage),
-            ("testFileLength", testFileLength),
-            ("testFirstWhere", testFirstWhere),
-            ("testForceCast", testForceCast),
-            ("testForceTry", testForceTry),
-            // ("testForceUnwrapping", testForceUnwrapping),
-            ("testForWhere", testForWhere),
-            ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCount", testFunctionParameterCount),
-            ("testImplicitGetter", testImplicitGetter),
-            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
-            ("testImplicitReturn", testImplicitReturn),
-            ("testLargeTuple", testLargeTuple),
-            ("testLeadingWhitespace", testLeadingWhitespace),
-            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
-            ("testLegacyConstant", testLegacyConstant),
-            ("testLegacyConstructor", testLegacyConstructor),
-            ("testMark", testMark),
-            ("testNesting", testNesting),
-            ("testNimbleOperator", testNimbleOperator),
-            ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
-            ("testNotificationCenterDetachment", testNotificationCenterDetachment),
-            ("testObjectLiteral", testObjectLiteral),
-            ("testOpeningBrace", testOpeningBrace),
-            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
-            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-            ("testPrivateOutlet", testPrivateOutlet),
-            ("testPrivateUnitTest", testPrivateUnitTest),
-            ("testProhibitedSuper", testProhibitedSuper),
-            ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
-            ("testRedundantDiscardableLet", testRedundantDiscardableLet),
-            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-            ("testRedundantVoidReturn", testRedundantVoidReturn),
-            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
-            ("testShorthandOperator", testShorthandOperator),
-            ("testSortedImports", testSortedImports),
-            ("testStatementPosition", testStatementPosition),
-            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
-            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
-            ("testSyntacticSugar", testSyntacticSugar),
-            ("testTrailingNewline", testTrailingNewline),
-            ("testTrailingSemicolon", testTrailingSemicolon),
-            ("testTrailingWhitespace", testTrailingWhitespace),
-            ("testTypeBodyLength", testTypeBodyLength),
-            ("testUnusedClosureParameter", testUnusedClosureParameter),
-            ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testValidIBInspectable", testValidIBInspectable),
-            ("testVerticalParameterAlignment", testVerticalParameterAlignment),
-            ("testVoidReturn", testVoidReturn),
-            ("testSuperCall", testSuperCall),
-            ("testWeakDelegate", testWeakDelegate)
-        ]
     }
 }

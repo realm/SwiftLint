@@ -19,6 +19,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",
         description: "Implicitly unwrapped optionals should be avoided when possible.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "@IBOutlet private var label: UILabel!",
             "@IBOutlet var label: UILabel!",

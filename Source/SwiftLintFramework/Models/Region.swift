@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct Region {
+public struct Region: Equatable {
     let start: Location
     let end: Location
     let disabledRuleIdentifiers: Set<String>
@@ -37,4 +37,12 @@ public struct Region {
         let identifiers = type(of: rule).description.deprecatedAliases
         return disabledRuleIdentifiers.intersection(identifiers)
     }
+}
+
+// MARK: Equatable
+
+public func == (lhs: Region, rhs: Region) -> Bool {
+    return lhs.start == rhs.start &&
+        lhs.end == rhs.end &&
+        lhs.disabledRuleIdentifiers == rhs.disabledRuleIdentifiers
 }

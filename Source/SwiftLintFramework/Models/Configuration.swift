@@ -34,45 +34,6 @@ public struct Configuration: Equatable {
     public var configurationPath: String?     // if successfully loaded from a path
     public let cachePath: String?
 
-    internal var cacheDescription: String {
-        let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
-            var accu = accu
-            accu[type(of: element).description.identifier] = element.cacheDescription
-            return accu
-        }
-        let dict: [String: Any] = [
-            "root": rootPath ?? FileManager.default.currentDirectoryPath,
-            "rules": cacheRulesDescriptions
-        ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
-          let jsonString = String(data: jsonData, encoding: .utf8) {
-              return jsonString
-        }
-        fatalError("Could not serialize configuration for cache")
-    }
-
-    internal var cacheURL: URL {
-        let baseURL: URL
-        if let path = cachePath {
-            baseURL = URL(fileURLWithPath: path)
-        } else {
-            #if os(Linux)
-                baseURL = URL(fileURLWithPath: "/var/tmp/")
-            #else
-                baseURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            #endif
-        }
-        let folder = baseURL.appendingPathComponent("SwiftLint/\(Version.current.value)")
-
-        do {
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            queuedPrintError("Error while creating cache: " + error.localizedDescription)
-        }
-
-        return folder.appendingPathComponent("cache.json")
-    }
-
     public init?(disabledRules: [String] = [],
                  optInRules: [String] = [],
                  enableAllRules: Bool = false,
@@ -194,7 +155,13 @@ public struct Configuration: Equatable {
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
-        let fullPath = path.bridge().absolutePathRepresentation()
+        let fullPath: String
+        if let rootPath = rootPath {
+            fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
+        } else {
+            fullPath = path.bridge().absolutePathRepresentation()
+        }
+
         let fail = { (msg: String) in
             queuedPrintError("\(fullPath):\(msg)")
             fatalError("Could not read configuration file at path '\(fullPath)'")
@@ -214,6 +181,7 @@ public struct Configuration: Equatable {
             self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)!
             configurationPath = fullPath
             self.rootPath = rootPath
+            setCached(atPath: fullPath)
             return
         } catch YamlParserError.yamlParsing(let message) {
             fail(message)
@@ -221,13 +189,7 @@ public struct Configuration: Equatable {
             fail("\(error)")
         }
         self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
-    }
-
-    public init(commandLinePath: String, rootPath: String? = nil, quiet: Bool = false, enableAllRules: Bool = false,
-                cachePath: String? = nil) {
-        self.init(path: commandLinePath, rootPath: rootPath?.absolutePathStandardized(),
-                  optional: !CommandLine.arguments.contains("--config"), quiet: quiet, enableAllRules: enableAllRules,
-                  cachePath: cachePath)
+        setCached(atPath: fullPath)
     }
 
     public func lintablePaths(inPath path: String, fileManager: LintableFileManager = FileManager.default) -> [String] {
@@ -350,14 +312,20 @@ private func warnAboutDeprecations(configurationDictionary dict: [String: Any],
 
 extension Configuration {
     fileprivate func configuration(forPath path: String) -> Configuration {
+        if path == rootPath {
+            return self
+        }
+
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
-            return merge(with: Configuration(path: configurationSearchPath, rootPath: rootPath,
-                optional: false, quiet: true))
+            let fullPath = pathNSString.absolutePathRepresentation()
+            let config = Configuration.getCached(atPath: fullPath) ??
+                Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true)
+            return merge(with: config)
         }
 
         // If we are not at the root path, continue down the tree

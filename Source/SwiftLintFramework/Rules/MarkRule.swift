@@ -25,6 +25,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         identifier: "mark",
         name: "Mark",
         description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
+        kind: .lint,
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",
@@ -92,8 +93,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -101,26 +102,26 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         var result = [Correction]()
 
         result.append(contentsOf: correct(file: file,
-            pattern: spaceStartPattern,
-            replaceString: "// MARK:"))
+                                          pattern: spaceStartPattern,
+                                          replaceString: "// MARK:"))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endNonSpacePattern,
-            replaceString: "// MARK: ",
-            keepLastChar: true))
+                                          pattern: endNonSpacePattern,
+                                          replaceString: "// MARK: ",
+                                          keepLastChar: true))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endTwoOrMoreSpacePattern,
-            replaceString: "// MARK: "))
+                                          pattern: endTwoOrMoreSpacePattern,
+                                          replaceString: "// MARK: "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: twoOrMoreSpacesAfterHyphenPattern,
-            replaceString: "// MARK: - "))
+                                          pattern: twoOrMoreSpacesAfterHyphenPattern,
+                                          replaceString: "// MARK: - "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: nonSpaceOrNewlineAfterHyphenPattern,
-            replaceString: "// MARK: - ",
-            keepLastChar: true))
+                                          pattern: nonSpaceOrNewlineAfterHyphenPattern,
+                                          replaceString: "// MARK: - ",
+                                          keepLastChar: true))
 
         return result
     }

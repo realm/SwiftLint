@@ -16,7 +16,8 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",
-        description: "Functions bodies should not span too many lines."
+        description: "Functions bodies should not span too many lines.",
+        kind: .metrics
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,

@@ -19,6 +19,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
         description: "Initializing an optional variable with nil is redundant.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "var myVar: Int?\n",
             "let myVar: Int? = nil\n",

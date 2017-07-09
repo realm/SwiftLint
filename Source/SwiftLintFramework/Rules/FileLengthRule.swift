@@ -17,6 +17,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         identifier: "file_length",
         name: "File Line Length",
         description: "Files should not span too many lines.",
+        kind: .metrics,
         nonTriggeringExamples: [
             repeatElement("print(\"swiftlint\")\n", count: 400).joined(),
             (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()
@@ -27,6 +28,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
+
         let lineCountWithComments = file.lines.count
         var lineCountWithoutComments: Int?
 
@@ -46,11 +48,12 @@ public struct FileLengthRule: ConfigurationProviderRule {
         for parameter in configuration.params where lineCountWithComments > parameter.value {
             let lineCountWithoutComments = getLineCountwithoutComments()
             guard parameter.value < lineCountWithoutComments else { continue }
+            let reason = "File should contain \(configuration.warning) lines or less: " +
+                         "currently contains \(lineCountWithoutComments)"
             return [StyleViolation(ruleDescription: type(of: self).description,
-                severity: parameter.severity,
-                location: Location(file: file.path, line: lineCountWithoutComments),
-                reason: "File should contain \(configuration.warning) lines or less: " +
-                        "currently contains \(lineCountWithoutComments)")]
+                                   severity: parameter.severity,
+                                   location: Location(file: file.path, line: lineCountWithoutComments),
+                                   reason: reason)]
         }
         return []
     }

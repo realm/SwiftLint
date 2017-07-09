@@ -45,7 +45,8 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
     }
 
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
+        return RuleDescription(identifier: identifier, name: name ?? identifier,
+                               description: "", kind: .style)
     }
 
     public init(identifier: String) {

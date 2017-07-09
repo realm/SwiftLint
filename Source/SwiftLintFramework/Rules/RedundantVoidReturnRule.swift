@@ -19,6 +19,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         identifier: "redundant_void_return",
         name: "Redundant Void Return",
         description: "Returning Void in a function declaration is redundant.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func foo() {}\n",
             "func foo() -> Int {}\n",

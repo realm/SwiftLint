@@ -30,6 +30,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         name: "Opening Brace Spacing",
         description: "Opening braces should be preceded by a single space and on the same line " +
                      "as the declaration.",
+        kind: .style,
         nonTriggeringExamples: [
             "func abc() {\n}",
             "[].map() { $0 }",
@@ -69,8 +70,8 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         return file.violatingOpeningBraceRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

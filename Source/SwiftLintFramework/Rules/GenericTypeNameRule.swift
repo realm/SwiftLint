@@ -22,6 +22,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         name: "Generic Type Name",
         description: "Generic type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 1 and 20 characters in length.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func foo<T>() {}\n",
             "func foo<T>() -> T {}\n",
@@ -151,9 +152,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         return namesAndRanges.flatMap { (name, range) -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
-                case let kinds = file.syntaxMap.tokens(inByteRange: byteRange)
-                    .flatMap({ SyntaxKind(rawValue: $0.type) }),
-                kinds == [.identifier] else {
+                file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {
                     return nil
             }
 

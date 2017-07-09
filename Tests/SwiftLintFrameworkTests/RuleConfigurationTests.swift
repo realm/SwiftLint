@@ -18,7 +18,7 @@ class RuleConfigurationsTests: XCTestCase {
                        "max_length": ["warning": 170, "error": 700],
                        "excluded": "id",
                        "allowed_symbols": ["$"],
-                       "validates_start_lowercase": false] as [String: Any]
+                       "validates_start_with_lowercase": false] as [String: Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
@@ -163,11 +163,11 @@ class RuleConfigurationsTests: XCTestCase {
         var regexConfig = RegexConfiguration(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
-                                                                description: ""))
+                                                                description: "", kind: .style))
         regexConfig.name = "name"
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "name",
-                                                                description: ""))
+                                                                description: "", kind: .style))
     }
 
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
@@ -313,54 +313,5 @@ class RuleConfigurationsTests: XCTestCase {
         } catch {
             XCTFail()
         }
-    }
-}
-
-extension RuleConfigurationsTests {
-    static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
-        return [
-            ("testNameConfigurationSetsCorrectly",
-                testNameConfigurationSetsCorrectly),
-            ("testNameConfigurationThrowsOnBadConfig",
-                testNameConfigurationThrowsOnBadConfig),
-            ("testNameConfigurationMinLengthThreshold",
-                testNameConfigurationMinLengthThreshold),
-            ("testNameConfigurationMaxLengthThreshold",
-                testNameConfigurationMaxLengthThreshold),
-            ("testNestingConfigurationSetsCorrectly",
-                testNestingConfigurationSetsCorrectly),
-            ("testNestingConfigurationThrowsOnBadConfig",
-                testNestingConfigurationThrowsOnBadConfig),
-            ("testSeverityConfigurationFromString",
-                testSeverityConfigurationFromString),
-            ("testSeverityConfigurationFromDictionary",
-                testSeverityConfigurationFromDictionary),
-            ("testSeverityConfigurationThrowsOnBadConfig",
-                testSeverityConfigurationThrowsOnBadConfig),
-            ("testSeverityLevelConfigParams",
-                testSeverityLevelConfigParams),
-            ("testSeverityLevelConfigPartialParams",
-                testSeverityLevelConfigPartialParams),
-            ("testRegexConfigurationThrows",
-                testRegexConfigurationThrows),
-            ("testRegexRuleDescription",
-                testRegexRuleDescription),
-            ("testTrailingWhitespaceConfigurationThrowsOnBadConfig",
-                testTrailingWhitespaceConfigurationThrowsOnBadConfig),
-            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines",
-                testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines),
-            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments",
-                testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines",
-                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments",
-                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
-            ("testTrailingWhitespaceConfigurationCompares",
-                testTrailingWhitespaceConfigurationCompares),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration",
-                testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
-            ("testOverridenSuperCallConfigurationFromDictionary",
-                testOverridenSuperCallConfigurationFromDictionary)
-        ]
     }
 }

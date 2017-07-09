@@ -37,7 +37,7 @@ class SourceKitCrashTests: XCTestCase {
         assertHandlerCalled = false
         _ = file.syntaxTokensByLines
         XCTAssertFalse(assertHandlerCalled,
-                      "Expects assert handler was not called on accessing File.syntaxTokensByLines")
+                       "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
@@ -64,7 +64,7 @@ class SourceKitCrashTests: XCTestCase {
         assertHandlerCalled = false
         _ = file.syntaxTokensByLines
         XCTAssertTrue(assertHandlerCalled,
-                     "Expects assert handler was not called on accessing File.syntaxTokensByLines")
+                      "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testRulesWithFileThatCrashedSourceKitService() {
@@ -79,18 +79,5 @@ class SourceKitCrashTests: XCTestCase {
         _ = Linter(file: file, configuration: configuration).styleViolations
         file.sourcekitdFailed = false
         file.assertHandler = nil
-    }
-}
-
-extension SourceKitCrashTests {
-    static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] {
-        return [
-            ("testAssertHandlerIsNotCalledOnNormalFile",
-                testAssertHandlerIsNotCalledOnNormalFile),
-            ("testAssertHandlerIsCalledOnFileThatCrashedSourceKitService",
-                testAssertHandlerIsCalledOnFileThatCrashedSourceKitService),
-            ("testRulesWithFileThatCrashedSourceKitService",
-                testRulesWithFileThatCrashedSourceKitService)
-        ]
     }
 }

@@ -26,6 +26,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             "In an exception to the above, variable names may start with a capital letter " +
             "when they are declared static and immutable. Variable names should not be too " +
             "long or too short.",
+        kind: .style,
         nonTriggeringExamples: IdentifierNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: IdentifierNameRuleExamples.triggeringExamples,
         deprecatedAliases: ["variable_name"]
@@ -115,7 +116,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-fileprivate extension String {
+private extension String {
     var isViolatingCase: Bool {
         let secondIndex = characters.index(after: startIndex)
         let firstCharacter = substring(to: secondIndex)

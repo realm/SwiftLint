@@ -34,13 +34,3 @@ class TodoRuleTests: XCTestCase {
         return SwiftLintFrameworkTests.violations(string, config: config)
     }
 }
-
-extension TodoRuleTests {
-    static var allTests: [(String, (TodoRuleTests) -> () throws -> Void)] {
-        return [
-            ("testTodo", testTodo),
-            ("testTodoMessage", testTodoMessage),
-            ("testFixMeMessage", testFixMeMessage)
-        ]
-    }
-}

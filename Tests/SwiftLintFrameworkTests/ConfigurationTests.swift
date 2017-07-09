@@ -153,8 +153,18 @@ class ConfigurationTests: XCTestCase {
         return configuration
     }
 
+    private var projectMockConfig0CustomPath: Configuration {
+        return Configuration(path: projectMockYAML0CustomPath, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
+    }
+
     fileprivate var projectMockConfig2: Configuration {
         return Configuration(path: projectMockYAML2, optional: false, quiet: true)
+    }
+
+    fileprivate var projectMockConfig3: Configuration {
+        return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
+                             optional: false, quiet: true)
     }
 
     func testIsEqualTo() {
@@ -188,7 +198,20 @@ class ConfigurationTests: XCTestCase {
 
     func testLevel3() {
         XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
+                       projectMockConfig0.merge(with: projectMockConfig3))
+    }
+
+    func testNestedConfigurationWithCustomRootPath() {
+        XCTAssertEqual(projectMockConfig3,
+                       projectMockConfig0.merge(with: projectMockConfig3))
+    }
+
+    // MARK: - Testing Custom Configuration File
+
+    func testCustomConfiguration() {
+        let file = File(path: projectMockSwift0)!
+        XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
+                          projectMockConfig0CustomPath.configuration(for: file))
     }
 
     // MARK: - Testing Rules from config dictionary
@@ -246,7 +269,7 @@ class ConfigurationTests: XCTestCase {
 
 // MARK: - ProjectMock Paths
 
-fileprivate extension String {
+private extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
     }
@@ -262,7 +285,7 @@ extension XCTestCase {
     }
 }
 
-fileprivate extension XCTestCase {
+private extension XCTestCase {
 
     var projectMockPathLevel0: String {
         return bundlePath.stringByAppendingPathComponent("ProjectMock")
@@ -284,6 +307,10 @@ fileprivate extension XCTestCase {
         return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
     }
 
+    var projectMockYAML0CustomPath: String {
+        return projectMockPathLevel0.stringByAppendingPathComponent("custom.yml")
+    }
+
     var projectMockYAML2: String {
         return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
     }
@@ -302,36 +329,5 @@ fileprivate extension XCTestCase {
 
     var projectMockSwift3: String {
         return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
-    }
-}
-
-extension ConfigurationTests {
-    static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testInit", testInit),
-            ("testEmptyConfiguration", testEmptyConfiguration),
-            ("testWhitelistRules", testWhitelistRules),
-            ("testWarningThreshold_value", testWarningThreshold_value),
-            ("testWarningThreshold_nil", testWarningThreshold_nil),
-            ("testOtherRuleConfigurationsAlongsideWhitelistRules",
-                testOtherRuleConfigurationsAlongsideWhitelistRules),
-            ("testDisabledRules", testDisabledRules),
-            ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
-            ("testExcludedPaths", testExcludedPaths),
-            ("testIsEqualTo", testIsEqualTo),
-            ("testIsNotEqualTo", testIsNotEqualTo),
-            ("testMerge", testMerge),
-            ("testLevel0", testLevel0),
-            ("testLevel1", testLevel1),
-            ("testLevel2", testLevel2),
-            ("testLevel3", testLevel3),
-            ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-            ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
-            ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
-            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-            ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
-        ]
     }
 }

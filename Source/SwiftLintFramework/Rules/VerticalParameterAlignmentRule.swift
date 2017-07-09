@@ -18,6 +18,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         identifier: "vertical_parameter_alignment",
         name: "Vertical Parameter Alignment",
         description: "Function parameters should be aligned vertically if they're in multiple lines in a declaration.",
+        kind: .style,
         nonTriggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
             "                      dictionary: [String: SourceKitRepresentable]) { }\n",

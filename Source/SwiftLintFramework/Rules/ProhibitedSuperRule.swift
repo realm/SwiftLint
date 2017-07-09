@@ -17,6 +17,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         identifier: "prohibited_super_call",
         name: "Prohibited calls to super",
         description: "Some methods should not call super",
+        kind: .lint,
         nonTriggeringExamples: [
             "class VC: UIViewController {\n" +
                 "\toverride func loadView() {\n" +
@@ -46,6 +47,13 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
                     "\t\tself.method1()\n" +
                     "\t\tsuper.updateLayer()\n" +
                     "\t\tself.method2()\n" +
+                "\t}\n" +
+            "}\n",
+            "class VC: NSView {\n" +
+                "\toverride func updateLayer() {↓\n" +
+                "\t\tdefer {\n" +
+                "\t\t\tsuper.updateLayer()\n" +
+                "\t\t}\n" +
                 "\t}\n" +
             "}\n"
         ]

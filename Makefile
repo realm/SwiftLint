@@ -10,6 +10,7 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 BUILT_BUNDLE=$(TEMPORARY_FOLDER)/Applications/swiftlint.app
 SWIFTLINTFRAMEWORK_BUNDLE=$(BUILT_BUNDLE)/Contents/Frameworks/SwiftLintFramework.framework
 SWIFTLINT_EXECUTABLE=$(BUILT_BUNDLE)/Contents/MacOS/swiftlint
+XCTEST_LOCATION=.build/debug/SwiftLintPackageTests.xctest
 
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
@@ -27,6 +28,16 @@ VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionSt
 
 all: bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) build
+
+sourcery:
+	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery
+	sed -e 4,11d .sourcery/LinuxMain.generated.swift > .sourcery/LinuxMain.swift
+	sed -n 4,10p .sourcery/LinuxMain.generated.swift | cat - .sourcery/LinuxMain.swift > Tests/LinuxMain.swift
+	rm .sourcery/LinuxMain.swift .sourcery/LinuxMain.generated.swift
+	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
+	sed -e 4,11d .sourcery/MasterRuleList.generated.swift > .sourcery/MasterRuleList.swift
+	sed -n 4,10p .sourcery/MasterRuleList.generated.swift | cat - .sourcery/MasterRuleList.swift > Source/SwiftLintFramework/Models/MasterRuleList.swift
+	rm .sourcery/MasterRuleList.swift .sourcery/MasterRuleList.generated.swift
 
 bootstrap:
 	script/bootstrap
@@ -89,10 +100,11 @@ archive:
 release: package archive portable_zip
 
 docker_test:
+	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
 
 docker_htop:
-	docker run -it --rm --pid=container:swiftlint terencewestphal/htop
+	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 
 # http://irace.me/swift-profiling/
 display_compilation_time:

@@ -10,7 +10,7 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
-fileprivate struct CacheTestHelper {
+private struct CacheTestHelper {
     fileprivate let configuration: Configuration
 
     private let ruleList: RuleList
@@ -60,7 +60,7 @@ fileprivate struct CacheTestHelper {
     }
 }
 
-fileprivate class TestFileManager: LintableFileManager {
+private class TestFileManager: LintableFileManager {
     fileprivate func filesToLint(inPath: String, rootDirectory: String? = nil) -> [String] {
         return []
     }
@@ -76,11 +76,7 @@ class LinterCacheTests: XCTestCase {
 
     // MARK: Test Helpers
 
-    private var cache: LinterCache = {
-        let cache = LinterCache()
-        cache.fileManager = TestFileManager()
-        return cache
-    }()
+    private var cache = LinterCache(fileManager: TestFileManager())
 
     private func makeCacheTestHelper(dict: [String: Any]) -> CacheTestHelper {
         return CacheTestHelper(dict: dict, cache: cache)
@@ -89,8 +85,9 @@ class LinterCacheTests: XCTestCase {
     private func cacheAndValidate(violations: [StyleViolation], forFile: String, configuration: Configuration,
                                   file: StaticString = #file, line: UInt = #line) {
         cache.cache(violations: violations, forFile: forFile, configuration: configuration)
-        XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!, violations,
-                       file: file, line: line)
+        cache = cache.flushed()
+        XCTAssertEqual(cache.violations(forFile: forFile, configuration: configuration)!,
+                       violations, file: file, line: line)
     }
 
     private func cacheAndValidateNoViolationsTwoFiles(configuration: Configuration,
@@ -224,7 +221,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]inja)"]]
-            ], ruleList: RuleList(rules: CustomRules.self)
+            ],
+            ruleList: RuleList(rules: CustomRules.self)
         )!
         cacheAndValidateNoViolationsTwoFiles(configuration: initialConfig)
 
@@ -233,7 +231,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"]]
-            ], initialConfig: initialConfig
+            ],
+            initialConfig: initialConfig
         )
 
         // Addition
@@ -241,7 +240,8 @@ class LinterCacheTests: XCTestCase {
             dict: [
                 "whitelist_rules": ["custom_rules", "rule1"],
                 "custom_rules": ["rule1": ["regex": "([n,N]injas)"], "rule2": ["regex": "([k,K]ittens)"]]
-            ], initialConfig: initialConfig
+            ],
+            initialConfig: initialConfig
         )
 
         // Removal
@@ -309,37 +309,5 @@ class LinterCacheTests: XCTestCase {
                                         initialConfig: initialConfig)
         // Removal
         validateNewConfigDoesntHitCache(dict: [:], initialConfig: initialConfig)
-    }
-}
-
-extension LinterCacheTests {
-    static var allTests: [(String, (LinterCacheTests) -> () throws -> Void)] {
-        return [
-            ("testInitThrowsWhenUsingInvalidCacheFormat", testInitThrowsWhenUsingInvalidCacheFormat),
-            ("testSaveThrowsWithNoLocation", testSaveThrowsWithNoLocation),
-            ("testInitSucceeds", testInitSucceeds),
-            ("testUnchangedFilesReusesCache", testUnchangedFilesReusesCache),
-            ("testConfigFileReorderedReusesCache", testConfigFileReorderedReusesCache),
-            ("testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache",
-                testConfigFileWhitespaceAndCommentsChangedOrAddedOrRemovedReusesCache),
-            ("testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache",
-                testConfigFileUnrelatedKeysChangedOrAddedOrRemovedReusesCache),
-            ("testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers",
-                testChangedFileCausesJustThatFileToBeLintWithCacheUsedForAllOthers),
-            ("testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted",
-                testFileRemovedPreservesThatFileInTheCacheAndDoesntCauseAnyOtherFilesToBeLinted),
-            ("testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testCustomRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testDisabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testOptInRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testEnabledRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testWhitelistRulesChangedOrAddedOrRemovedCausesAllFilesToBeReLinted),
-            ("testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted",
-                testRuleConfigurationChangedOrAddedOrRemovedCausesAllFilesToBeReLinted)
-        ]
     }
 }

@@ -18,6 +18,7 @@ public struct FirstWhereRule: OptInRule, ConfigurationProviderRule {
         identifier: "first_where",
         name: "First Where",
         description: "Prefer using `.first(where:)` over `.filter { }.first` in collections.",
+        kind: .performance,
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",

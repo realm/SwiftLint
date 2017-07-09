@@ -26,6 +26,7 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         identifier: "trailing_semicolon",
         name: "Trailing Semicolon",
         description: "Lines should not have trailing semicolons.",
+        kind: .idiomatic,
         nonTriggeringExamples: [ "let a = 0\n" ],
         triggeringExamples: [
             "let a = 0↓;\n",
@@ -46,8 +47,8 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
     public func validate(file: File) -> [StyleViolation] {
         return file.violatingTrailingSemicolonRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -71,7 +72,7 @@ public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule 
         file.write(correctedContents)
         return adjustedRanges.map {
             Correction(ruleDescription: type(of: self).description,
-                location: Location(file: file, characterOffset: $0.location))
+                       location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

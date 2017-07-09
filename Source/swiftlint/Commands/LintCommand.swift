@@ -97,7 +97,8 @@ struct LintCommand: CommandProtocol {
         let description = RuleDescription(
             identifier: "warning_threshold",
             name: "Warning Threshold",
-            description: "Number of warnings thrown is above the threshold."
+            description: "Number of warnings thrown is above the threshold.",
+            kind: .lint
         )
         return StyleViolation(
             ruleDescription: description,

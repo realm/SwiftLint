@@ -19,6 +19,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         identifier: "explicit_init",
         name: "Explicit Init",
         description: "Explicitly calling .init() should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "import Foundation; class C: NSObject { override init() { super.init() }}", // super
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self
@@ -39,8 +40,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

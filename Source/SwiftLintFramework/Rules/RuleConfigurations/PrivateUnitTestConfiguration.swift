@@ -40,10 +40,6 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheD
         fatalError("Could not serialize private unit test configuration for cache")
     }
 
-    public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
-    }
-
     public init(identifier: String) {
         self.identifier = identifier
     }

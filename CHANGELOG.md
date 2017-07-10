@@ -25,6 +25,10 @@
   [#1469](https://github.com/realm/SwiftLint/issues/1469)
   [#1058](https://github.com/realm/SwiftLint/issues/1058)
 
+* Add `let_var_whitespace` opt-in rule to enforce that `let`/`var` declarations
+  should be separated by other statements by a single blank line.  
+  [Uncommon](https://github.com/Uncommon)
+
 ##### Bug Fixes
 
 * None.
@@ -236,10 +240,6 @@
   in `guard` statements.  
   [Sega-Zero](https://github.com/Sega-Zero)
   [#1432](https://github.com/realm/SwiftLint/issues/1432)
-
-* Whitespace around let/var groups.  
-  [Uncommon](https://github.com/Uncommon)
-  [#1471](https://github.com/realm/SwiftLint/issues/1471)
 
 * Add `empty_enum_arguments` correctable rule that warns against using
   silent associated values inside a `case`.  

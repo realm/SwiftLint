@@ -31,6 +31,7 @@ private var syntaxKindsByLinesCache = Cache({ file in file.syntaxKindsByLine() }
 private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine() })
 
 internal typealias AssertHandler = () -> Void
+
 private var assertHandlers = [String: AssertHandler]()
 
 private struct RebuildQueue {

@@ -7,9 +7,10 @@
 //
 
 public protocol RuleConfiguration {
+    var consoleDescription: String { get }
+
     mutating func apply(configuration: Any) throws
     func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool
-    var consoleDescription: String { get }
 }
 
 extension RuleConfiguration {

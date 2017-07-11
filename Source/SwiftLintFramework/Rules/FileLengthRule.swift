@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FileLengthRule: ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 400, error: 1000)
+    public var configuration = FileLenghtRuleConfiguration(warning: 400, error: 1000)
 
     public init() {}
 
@@ -19,16 +19,15 @@ public struct FileLengthRule: ConfigurationProviderRule {
         description: "Files should not span too many lines.",
         kind: .metrics,
         nonTriggeringExamples: [
-            repeatElement("print(\"swiftlint\")\n", count: 400).joined(),
-            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 400).joined()
         ],
         triggeringExamples: [
-            repeatElement("print(\"swiftlint\")\n", count: 401).joined()
+            repeatElement("print(\"swiftlint\")\n", count: 401).joined(),
+            (repeatElement("print(\"swiftlint\")\n", count: 400) + ["//\n"]).joined()
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-
         let lineCountWithComments = file.lines.count
         var lineCountWithoutComments: Int?
 
@@ -45,11 +44,14 @@ public struct FileLengthRule: ConfigurationProviderRule {
             return lineCount
         }
 
-        for parameter in configuration.params where lineCountWithComments > parameter.value {
-            let lineCountWithoutComments = getLineCountwithoutComments()
-            guard parameter.value < lineCountWithoutComments else { continue }
-            let reason = "File should contain \(configuration.warning) lines or less: " +
-                         "currently contains \(lineCountWithoutComments)"
+        for parameter in configuration.severityConfiguration.params where lineCountWithComments > parameter.value {
+            if !configuration.ignoreCommentOnlyLines {
+                let lineCountWithoutComments = getLineCountwithoutComments()
+                guard parameter.value < lineCountWithoutComments else { continue }
+            }
+
+            let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less: " +
+                         "currently contains \(lineCountWithoutComments ?? lineCountWithComments)"
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,
                                    location: Location(file: file.path, line: lineCountWithoutComments),

@@ -73,7 +73,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             case let nameEndPosition = nameOffset + nameLength,
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
-            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file:file) else {
+            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
                 return []
         }
 

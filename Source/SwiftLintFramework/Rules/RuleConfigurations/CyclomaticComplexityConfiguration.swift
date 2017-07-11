@@ -62,7 +62,7 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
             length = SeverityLevelsConfiguration(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
             for (string, value) in configDict {
-                guard let key = ConfigurationKey(rawValue:string) else {
+                guard let key = ConfigurationKey(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration
                 }
                 switch (key, value) {

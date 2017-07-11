@@ -66,7 +66,7 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
             let parts = syntaxTokens.prefix { offset > $0.offset }
             guard let lastKind = parts.last,
                 SyntaxKind(rawValue: lastKind.type) == .attributeBuiltin,
-                let aclName = contents.substringWithByteRange(start:lastKind.offset, length: lastKind.length),
+                let aclName = contents.substringWithByteRange(start: lastKind.offset, length: lastKind.length),
                 AccessControlLevel(description: aclName) == .fileprivate,
                 let range = contents.byteRangeToNSRange(start: lastKind.offset, length: lastKind.length) else {
                     return nil

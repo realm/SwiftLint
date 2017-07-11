@@ -67,7 +67,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "rules_docs"
+            argument = "generate-docs"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

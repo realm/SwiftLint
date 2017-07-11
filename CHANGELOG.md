@@ -8,7 +8,7 @@
 
 * Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
-  when you run `swiftlint rules` or `swiftlint rules_docs`.  
+  when you run `swiftlint rules` or `swiftlint generate-docs`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add [rules documentation](Rules.md) generation.  

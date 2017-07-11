@@ -45,6 +45,7 @@
 * [Legacy Constant](#legacy-constant)
 * [Legacy Constructor](#legacy-constructor)
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
+* [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
 * [Mark](#mark)
 * [Multiline Parameters](#multiline-parameters)
@@ -5042,6 +5043,105 @@ rect1.intersects(rect2)
 
 ```swift
 ↓NSIntersectsRect(rect1, rect2)
+```
+
+</details>
+
+
+
+## Variable Declaration Whitespace
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`let_var_whitespace` | Disabled | No | style
+
+Let and var should be separated from other statements by a blank line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let a = 0
+var x = 1
+
+x = 2
+
+```
+
+```swift
+a = 5
+
+var x = 1
+
+```
+
+```swift
+struct X {
+	var a = 0
+}
+
+```
+
+```swift
+let a = 1 +
+	2
+let b = 5
+
+```
+
+```swift
+var x: Int {
+	return 0
+}
+
+```
+
+```swift
+var x: Int {
+	let a = 0
+
+	return a
+}
+
+```
+
+```swift
+#if os(macOS)
+let a = 0
+#endif
+
+```
+
+```swift
+@available(swift 4)
+let a = 0
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var x = 1
+↓x = 2
+
+```
+
+```swift
+a = 5
+↓var x = 1
+
+```
+
+```swift
+struct X {
+	let a
+	↓func x() {}
+}
+
 ```
 
 </details>

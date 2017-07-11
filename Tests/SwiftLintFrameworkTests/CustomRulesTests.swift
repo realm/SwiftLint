@@ -11,7 +11,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class CustomRulesTests: XCTestCase {
+internal class CustomRulesTests: XCTestCase {
 
     func testCustomRuleConfigurationSetsCorrectly() {
         let configDict = ["my_custom_rule": ["name": "MyCustomRule",

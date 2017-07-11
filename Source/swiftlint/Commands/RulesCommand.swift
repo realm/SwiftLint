@@ -27,7 +27,7 @@ private func print(ruleDescription desc: RuleDescription) {
     }
 }
 
-struct RulesCommand: CommandProtocol {
+internal struct RulesCommand: CommandProtocol {
     let verb = "rules"
     let function = "Display the list of rules and their identifiers"
 
@@ -69,7 +69,7 @@ struct RulesCommand: CommandProtocol {
     }
 }
 
-struct RulesOptions: OptionsProtocol {
+internal struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
     let configurationFile: String
     fileprivate let filterEnabled: Bool

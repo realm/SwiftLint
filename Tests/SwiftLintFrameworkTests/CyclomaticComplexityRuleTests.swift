@@ -10,7 +10,7 @@ import Foundation
 import SwiftLintFramework
 import XCTest
 
-class CyclomaticComplexityRuleTests: XCTestCase {
+internal class CyclomaticComplexityRuleTests: XCTestCase {
     private lazy var complexSwitchExample: String = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"

@@ -10,7 +10,7 @@ import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
-class RulesTests: XCTestCase {
+internal class RulesTests: XCTestCase {
 
     func testClassDelegateProtocol() {
         verifyRule(ClassDelegateProtocolRule.description)

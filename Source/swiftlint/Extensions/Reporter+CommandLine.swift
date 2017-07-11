@@ -19,7 +19,7 @@ extension Reporter {
     }
 }
 
-func reporterFrom(options: LintOptions, configuration: Configuration) -> Reporter.Type {
+internal func reporterFrom(options: LintOptions, configuration: Configuration) -> Reporter.Type {
     let string = options.reporter.isEmpty ? configuration.reporter : options.reporter
     return reporterFrom(identifier: string)
 }

@@ -10,7 +10,7 @@ import Commandant
 import Result
 import SwiftLintFramework
 
-struct VersionCommand: CommandProtocol {
+internal struct VersionCommand: CommandProtocol {
     let verb = "version"
     let function = "Display the current version of SwiftLint"
 

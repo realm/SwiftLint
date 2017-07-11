@@ -10,7 +10,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-struct RuleWithLevelsMock: ConfigurationProviderRule {
+internal struct RuleWithLevelsMock: ConfigurationProviderRule {
     var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
     static let description = RuleDescription(identifier: "severity_level_mock",
@@ -22,7 +22,7 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
     func validate(file: File) -> [StyleViolation] { return [] }
 }
 
-class RuleTests: XCTestCase {
+internal class RuleTests: XCTestCase {
 
     fileprivate struct RuleMock1: Rule {
         var configurationDescription: String { return "N/A" }

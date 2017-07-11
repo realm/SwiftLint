@@ -11,7 +11,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class ReporterTests: XCTestCase {
+internal class ReporterTests: XCTestCase {
 
     func testReporterFromString() {
         let reporters: [Reporter.Type] = [

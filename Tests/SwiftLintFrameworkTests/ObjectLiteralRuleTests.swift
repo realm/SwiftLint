@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class ObjectLiteralRuleTests: XCTestCase {
+internal class ObjectLiteralRuleTests: XCTestCase {
     // MARK: - Instance Properties
     private let imageLiteralTriggeringExamples = ["", ".init"].flatMap { (method: String) -> [String] in
         ["UI", "NS"].flatMap { (prefix: String) -> [String] in

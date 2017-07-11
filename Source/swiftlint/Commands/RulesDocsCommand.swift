@@ -10,7 +10,7 @@ import Commandant
 import Result
 import SwiftLintFramework
 
-struct RulesDocsCommand: CommandProtocol {
+internal struct RulesDocsCommand: CommandProtocol {
     let verb = "rules_docs"
     let function = "Generates markdown documentation for all rules"
 
@@ -111,7 +111,7 @@ struct RulesDocsCommand: CommandProtocol {
     }
 }
 
-struct RulesDocsOptions: OptionsProtocol {
+internal struct RulesDocsOptions: OptionsProtocol {
     let path: String?
 
     static func create(_ path: String?) -> RulesDocsOptions {

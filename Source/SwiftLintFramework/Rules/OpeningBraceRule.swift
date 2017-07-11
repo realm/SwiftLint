@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
-extension File {
-    fileprivate func violatingOpeningBraceRanges() -> [NSRange] {
+private extension File {
+    func violatingOpeningBraceRanges() -> [NSRange] {
         return match(pattern: "((?:[^( ]|[\\s(][\\s]+)\\{)",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
                      excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{")

@@ -11,7 +11,7 @@ import SourceKittenFramework
 import SwiftLintFramework
 import XCTest
 
-let config: Configuration = {
+internal let config: Configuration = {
     let directory = #file.bridge()
         .deletingLastPathComponent.bridge()
         .deletingLastPathComponent.bridge()
@@ -20,7 +20,7 @@ let config: Configuration = {
     return Configuration(path: Configuration.fileName)
 }()
 
-class IntegrationTests: XCTestCase {
+internal class IntegrationTests: XCTestCase {
 
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.

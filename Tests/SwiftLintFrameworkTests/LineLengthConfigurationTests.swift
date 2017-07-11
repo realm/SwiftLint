@@ -10,7 +10,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class LineLengthConfigurationTests: XCTestCase {
+internal class LineLengthConfigurationTests: XCTestCase {
     func testLineLengthConfigurationInitializerSetsLength() {
         let warning = 100
         let error = 150

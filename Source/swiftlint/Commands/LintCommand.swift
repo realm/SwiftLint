@@ -13,7 +13,7 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-struct LintCommand: CommandProtocol {
+internal struct LintCommand: CommandProtocol {
     let verb = "lint"
     let function = "Print lint warnings and errors (default command)"
 
@@ -124,7 +124,7 @@ struct LintCommand: CommandProtocol {
     }
 }
 
-struct LintOptions: OptionsProtocol {
+internal struct LintOptions: OptionsProtocol {
     let path: String
     let useSTDIN: Bool
     let configurationFile: String

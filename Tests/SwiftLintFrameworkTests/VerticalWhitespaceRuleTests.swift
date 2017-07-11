@@ -9,7 +9,7 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class VerticalWhitespaceRuleTests: XCTestCase {
+internal class VerticalWhitespaceRuleTests: XCTestCase {
 
     func testVerticalWhitespaceWithDefaultConfiguration() {
         // Test with default parameters

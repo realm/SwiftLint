@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class GenericTypeNameRuleTests: XCTestCase {
+internal class GenericTypeNameRuleTests: XCTestCase {
 
     func testGenericTypeName() {
         verifyRule(GenericTypeNameRule.description)

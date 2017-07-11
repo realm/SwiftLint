@@ -12,7 +12,7 @@ import XCTest
 
 // swiftlint:disable type_body_length
 
-class RuleConfigurationsTests: XCTestCase {
+internal class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],

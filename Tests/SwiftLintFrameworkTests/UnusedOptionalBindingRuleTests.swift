@@ -10,7 +10,7 @@ import Foundation
 @testable import SwiftLintFramework
 import XCTest
 
-class UnusedOptionalBindingRuleTests: XCTestCase {
+internal class UnusedOptionalBindingRuleTests: XCTestCase {
 
     func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description

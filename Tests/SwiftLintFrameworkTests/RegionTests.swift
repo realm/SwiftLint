@@ -11,7 +11,7 @@ import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
 
-class RegionTests: XCTestCase {
+internal class RegionTests: XCTestCase {
 
     // MARK: Regions From Files
 

@@ -10,7 +10,7 @@ import Commandant
 import Result
 import SwiftLintFramework
 
-struct AutoCorrectCommand: CommandProtocol {
+internal struct AutoCorrectCommand: CommandProtocol {
     let verb = "autocorrect"
     let function = "Automatically correct warnings and errors"
 
@@ -41,7 +41,7 @@ struct AutoCorrectCommand: CommandProtocol {
     }
 }
 
-struct AutoCorrectOptions: OptionsProtocol {
+internal struct AutoCorrectOptions: OptionsProtocol {
     let path: String
     let configurationFile: String
     let useScriptInputFiles: Bool

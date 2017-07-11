@@ -172,9 +172,9 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
 // MARK: Type Colon Rule
 
-extension ColonRule {
+private extension ColonRule {
 
-    fileprivate var pattern: String {
+    var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.
         let spacingRegex = configuration.flexibleRightSpacing ? "(?:\\s{0})" : "(?:\\s{0}|\\s{2,})"
@@ -193,7 +193,7 @@ extension ColonRule {
                "\\S)"          // lazily to the first non-whitespace character.
     }
 
-    fileprivate func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
+    func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in

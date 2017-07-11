@@ -25,8 +25,8 @@ extension CharacterSet {
     }
 }
 
-extension Character {
-    fileprivate var unicodeScalar: UnicodeScalar {
+private extension Character {
+    var unicodeScalar: UnicodeScalar {
         let characterString = String(self)
         let scalars = characterString.unicodeScalars
 

@@ -15,6 +15,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
+* Enable extension_access_modifier rule.  
+  [masters3d](https://github.com/masters3d)
+
 * Add `private_over_fileprivate` correctable rule to check for top-level usages
   of  `fileprivate` and recommend `private` instead. This is in line with
   SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new

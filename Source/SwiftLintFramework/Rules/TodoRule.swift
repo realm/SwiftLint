@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-extension SyntaxKind {
+public extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
-    public var isCommentLike: Bool {
+    var isCommentLike: Bool {
         return [
             SyntaxKind.comment,
             .commentMark,

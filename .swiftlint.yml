@@ -20,6 +20,7 @@ opt_in_rules:
   - object_literal
   - number_separator
   - prohibited_super_call
+  - extension_access_modifier
   - fatal_error_message
   - vertical_parameter_alignment_on_call
   - let_var_whitespace

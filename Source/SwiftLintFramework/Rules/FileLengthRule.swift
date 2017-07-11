@@ -45,7 +45,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         }
 
         for parameter in configuration.severityConfiguration.params where lineCountWithComments > parameter.value {
-            if !configuration.ignoreCommentOnlyLines {
+            if configuration.ignoreCommentOnlyLines {
                 let lineCountWithoutComments = getLineCountwithoutComments()
                 guard parameter.value < lineCountWithoutComments else { continue }
             }

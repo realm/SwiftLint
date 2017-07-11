@@ -170,7 +170,7 @@
 		D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */; };
 		D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */; };
 		D4DA1DFA1E18D6200037413D /* LargeTupleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */; };
-		D4DA1DFC1E19CD300037413D /* RulesDocsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFB1E19CD300037413D /* RulesDocsCommand.swift */; };
+		D4DA1DFC1E19CD300037413D /* GenerateDocsCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFB1E19CD300037413D /* GenerateDocsCommand.swift */; };
 		D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
 		D4DABFD31E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */; };
 		D4DABFD71E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */; };
@@ -478,7 +478,7 @@
 		D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShorthandOperatorRule.swift; sourceTree = "<group>"; };
 		D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompilerProtocolInitRule.swift; sourceTree = "<group>"; };
 		D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LargeTupleRule.swift; sourceTree = "<group>"; };
-		D4DA1DFB1E19CD300037413D /* RulesDocsCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesDocsCommand.swift; sourceTree = "<group>"; };
+		D4DA1DFB1E19CD300037413D /* GenerateDocsCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenerateDocsCommand.swift; sourceTree = "<group>"; };
 		D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberSeparatorConfiguration.swift; sourceTree = "<group>"; };
 		D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardedNotificationCenterObserverRule.swift; sourceTree = "<group>"; };
 		D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterDetachmentRule.swift; sourceTree = "<group>"; };
@@ -858,7 +858,7 @@
 				E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */,
 				E861519A1B0573B900C54AC0 /* LintCommand.swift */,
 				83894F211B0C928A006214E1 /* RulesCommand.swift */,
-				D4DA1DFB1E19CD300037413D /* RulesDocsCommand.swift */,
+				D4DA1DFB1E19CD300037413D /* GenerateDocsCommand.swift */,
 				E83A0B341A5D382B0041A60A /* VersionCommand.swift */,
 			);
 			path = Commands;
@@ -1501,7 +1501,7 @@
 				E861519B1B0573B900C54AC0 /* LintCommand.swift in Sources */,
 				D0E7B65619E9C76900EDBA4D /* main.swift in Sources */,
 				83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */,
-				D4DA1DFC1E19CD300037413D /* RulesDocsCommand.swift in Sources */,
+				D4DA1DFC1E19CD300037413D /* GenerateDocsCommand.swift in Sources */,
 				E84E07471C13F95300F11122 /* AutoCorrectCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

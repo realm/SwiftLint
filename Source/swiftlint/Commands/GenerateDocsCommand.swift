@@ -10,8 +10,8 @@ import Commandant
 import Result
 import SwiftLintFramework
 
-struct RulesDocsCommand: CommandProtocol {
-    let verb = "rules_docs"
+struct GenerateDocsCommand: CommandProtocol {
+    let verb = "generate-docs"
     let function = "Generates markdown documentation for all rules"
 
     func run(_ options: RulesDocsOptions) -> Result<(), CommandantError<()>> {

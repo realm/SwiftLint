@@ -29,6 +29,10 @@
   should be separated from other statements by a single blank line.  
   [Uncommon](https://github.com/Uncommon)
 
+* Add support for optional `error` severity level configuration.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1647](https://github.com/realm/SwiftLint/issues/1647)
+
 ##### Bug Fixes
 
 * None.

@@ -12,7 +12,7 @@ import SwiftLintFramework
 
 struct RulesDocsCommand: CommandProtocol {
     let verb = "rules_docs"
-    let function = "Generates a markdown with all rules documentation"
+    let function = "Generates markdown documentation for all rules"
 
     func run(_ options: RulesDocsOptions) -> Result<(), CommandantError<()>> {
         let rules = masterRuleList.list.sorted { $0.0 < $1.0 }.map { $0.value }

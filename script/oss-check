@@ -16,20 +16,20 @@ require 'optparse'
   branch: 'HEAD',
   iterations: 5,
   skip_clean: false,
-  verbose: false,
+  verbose: false
 }
 
 OptionParser.new do |opts|
-  opts.on("--branch BRANCH", "compares the performance of BRANCH against 'master'") do |branch|
+  opts.on('--branch BRANCH', "compares the performance of BRANCH against 'master'") do |branch|
     @options[:branch] = branch
   end
-  opts.on("--iterations N", Integer, "iterates lint N times on each repositories") do |iterations|
+  opts.on('--iterations N', Integer, 'iterates lint N times on each repositories') do |iterations|
     @options[:iterations] = iterations
   end
-  opts.on("--skip-clean", "skip cleaning on completion") do |skip_clean|
+  opts.on('--skip-clean', 'skip cleaning on completion') do |skip_clean|
     @options[:skip_clean] = skip_clean
   end
-  opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+  opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
     @options[:verbose] = v
   end
 end.parse!
@@ -94,17 +94,17 @@ end
 def perform(*args)
   commands = args
   if @options[:verbose]
-    commands.each { |x|
+    commands.each do |x|
       puts(x)
       system(x)
-    }
+    end
   else
     commands.each { |x| `#{x}` }
   end
 end
 
 def validate_state_to_run
-  if `git symbolic-ref HEAD --short`.strip == 'master' and @options[:branch] == 'HEAD'
+  if `git symbolic-ref HEAD --short`.strip == 'master' && @options[:branch] == 'HEAD'
     fail "can't run osscheck without '--branch' option from 'master' as the script compares " \
          "the performance of this branch against 'master'"
   end
@@ -150,11 +150,13 @@ def generate_reports(branch)
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = "../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode"
+      command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
         puts command if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
-          file << stdout.read.chomp
+          while line = stdout.gets
+            file.puts line
+          end
           if branch == 'branch'
             repo.branch_exit_value = wait_thr.value
           else
@@ -184,7 +186,7 @@ end
 def build(branch)
   puts "Building #{branch}"
 
-  dir="#{@working_dir}/builds"
+  dir = "#{@working_dir}/builds"
   target = branch == 'master' ? @effective_master_commitish : @options[:branch]
   if File.directory?(dir)
     perform("cd #{dir}; git checkout #{target}")
@@ -236,7 +238,7 @@ end
 
 def clean_up
   FileUtils.rm_rf(@working_dir)
-  perform("git worktree prune")
+  perform('git worktree prune')
 end
 
 ################################
@@ -269,7 +271,7 @@ make_directory_structure
 @effective_master_commitish = `git merge-base master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
-['branch', 'master'].each do |branch|
+%w[branch master].each do |branch|
   build(branch)
   generate_reports(branch)
 end
@@ -278,4 +280,4 @@ end
 diff_and_report_changes_to_danger
 
 # Clean up
-clean_up if !@options[:skip_clean]
+clean_up unless @options[:skip_clean]

@@ -2,7 +2,8 @@
 
 ##### Breaking
 
-* None.
+* Xcode 8.3 or later and Swift 3.1 or later are required to build.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements
 
@@ -28,6 +29,10 @@
 * Add `let_var_whitespace` opt-in rule to enforce that `let`/`var` declarations
   should be separated from other statements by a single blank line.  
   [Uncommon](https://github.com/Uncommon)
+
+* Improve performance when linting and correcting on Linux, matching behavior.  
+  [JP Simard](https://github.com/jpsim)
+  [#1577](https://github.com/realm/SwiftLint/issues/1577)
 
 ##### Bug Fixes
 

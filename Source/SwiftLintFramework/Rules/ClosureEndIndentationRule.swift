@@ -106,7 +106,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         let contents = file.contents.bridge()
         guard let range = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let match = newLineRegex.matches(in: file.contents, options: [],
-                                             range: range).last?.rangeAt(1),
+                                             range: range).last?.range(at: 1),
             let methodByteRange = contents.NSRangeToByteRange(start: match.location,
                                                               length: match.length) else {
             return nameOffset

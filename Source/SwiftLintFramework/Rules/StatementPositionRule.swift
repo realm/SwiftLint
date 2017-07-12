@@ -156,11 +156,11 @@ private extension StatementPositionRule {
             if match.numberOfRanges != 5 {
                 return match
             }
-            if match.rangeAt(2).length == 0 {
+            if match.range(at: 2).length == 0 {
                 return match
             }
-            let range1 = match.rangeAt(1)
-            let range2 = match.rangeAt(3)
+            let range1 = match.range(at: 1)
+            let range2 = match.range(at: 3)
             let whitespace1 = contents.substring(from: range1.location, length: range1.length)
             let whitespace2 = contents.substring(from: range2.location, length: range2.length)
             if whitespace1 == whitespace2 {
@@ -209,9 +209,9 @@ private extension StatementPositionRule {
         var corrections = [Correction]()
 
         for match in validMatches.reversed() {
-            let range1 = match.rangeAt(1)
-            let range2 = match.rangeAt(3)
-            let newlineRange = match.rangeAt(2)
+            let range1 = match.range(at: 1)
+            let range2 = match.range(at: 3)
+            let newlineRange = match.range(at: 2)
             var whitespace = contents.bridge().substring(with: range1)
             let newLines: String
             if newlineRange.location != NSNotFound {

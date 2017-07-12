@@ -87,7 +87,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
         return matches
             .filter { $0.1.filter(kinds.contains).isEmpty }
             .filter { kind != .guard || !containsOptionalTry(at: $0.0.range, of: file) }
-            .map { $0.0.rangeAt(1) }
+            .map { $0.0.range(at: 1) }
     }
 
     private func containsOptionalTry(at range: NSRange, of file: File) -> Bool {

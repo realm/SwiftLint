@@ -17,7 +17,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positive on `force_unwrapping` rule when declaring
+  local variable with implicity unwrapped type.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#1710](https://github.com/realm/SwiftLint/issues/1710)
 
 ## 0.21.0: Vintage Washboard
 

@@ -64,7 +64,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             let nameLength = dictionary.nameLength,
             let nameRange = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let paramStart = regex(pattern).firstMatch(in: file.contents,
-                                                       options: [], range: nameRange)?.rangeAt(1).location,
+                                                       options: [], range: nameRange)?.range(at: 1).location,
             let (startLine, startCharacter) = contents.lineAndCharacter(forCharacterOffset: paramStart),
             let (endLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset + nameLength - 1),
             endLine > startLine else {
@@ -77,7 +77,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
         let violationLocations = linesRange.flatMap { lineIndex -> Int? in
             let line = file.lines[lineIndex - 1]
             guard let paramRange = paramRegex.firstMatch(in: file.contents, options: [],
-                                                         range: line.range)?.rangeAt(1),
+                                                         range: line.range)?.range(at: 1),
                 let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramRange.location),
                 paramCharacter != startCharacter else {
                     return nil

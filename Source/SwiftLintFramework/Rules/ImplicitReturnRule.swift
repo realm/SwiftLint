@@ -79,7 +79,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
                     return nil
             }
 
-            return result.rangeAt(1)
+            return result.range(at: 1)
         }
     }
 }

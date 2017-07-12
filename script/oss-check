@@ -185,7 +185,7 @@ def build(branch)
   puts "Building #{branch}"
 
   dir="#{@working_dir}/builds"
-  target = branch == 'master' ? 'origin/master' : @options[:branch]
+  target = branch == 'master' ? @effective_master_commitish : @options[:branch]
   if File.directory?(dir)
     perform("cd #{dir}; git checkout #{target}")
   else
@@ -265,6 +265,8 @@ $stdout.sync = true
 validate_state_to_run
 setup_repos
 make_directory_structure
+
+@effective_master_commitish = `git merge-base master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
 ['branch', 'master'].each do |branch|

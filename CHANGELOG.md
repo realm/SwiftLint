@@ -31,7 +31,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positive on `redundant_discardable_let` rule when using
+  `while` statements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1669](https://github.com/realm/SwiftLint/issues/1669)
 
 ## 0.20.1: More Liquid Fabric Softener
 

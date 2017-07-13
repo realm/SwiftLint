@@ -28,33 +28,30 @@ public struct FileLengthRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let lineCountWithComments = file.lines.count
-        var lineCountWithoutComments: Int?
-
-        func getLineCountwithoutComments() -> Int {
-            if let lineCount = lineCountWithoutComments {
-                return lineCount
-            }
+        func getLineCountWithoutComments() -> Int {
             let commentKinds = Set(SyntaxKind.commentKinds())
             let lineCount = file.syntaxKindsByLines.filter { kinds in
                 return !kinds.filter { !commentKinds.contains($0) }.isEmpty
             }.count
-
-            lineCountWithoutComments = lineCount
             return lineCount
         }
 
-        for parameter in configuration.severityConfiguration.params where lineCountWithComments > parameter.value {
-            if configuration.ignoreCommentOnlyLines {
-                let lineCountWithoutComments = getLineCountwithoutComments()
-                guard parameter.value < lineCountWithoutComments else { continue }
-            }
+        var lineCount = file.lines.count
 
+        let hasViolation = configuration.severityConfiguration.params.contains {
+            $0.value < lineCount
+        }
+
+        if hasViolation && configuration.ignoreCommentOnlyLines {
+            lineCount = getLineCountWithoutComments()
+        }
+
+        for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
             let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less: " +
-                         "currently contains \(lineCountWithoutComments ?? lineCountWithComments)"
+                         "currently contains \(lineCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,
-                                   location: Location(file: file.path, line: lineCountWithoutComments),
+                                   location: Location(file: file.path, line: lineCount),
                                    reason: reason)]
         }
         return []

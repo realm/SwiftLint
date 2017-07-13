@@ -53,7 +53,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 8.0 or later).
+`git submodule update --init --recursive; make install` (Xcode 8.3 or later).
 
 ## Usage
 
@@ -90,7 +90,8 @@ Alternatively, if you've installed SwiftLint via CocoaPods the script should loo
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
-⚠ ️This plugin will not work with Xcode 8 without disabling SIP. This is not recommended.
+⚠ ️This plugin will not work with Xcode 8 or later without disabling SIP.
+This is not recommended.
 
 ### AppCode
 
@@ -169,6 +170,17 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 On Linux, SourceKit is expected to be located in
 `/usr/lib/libsourcekitdInProc.so` or specified by the `LINUX_SOURCEKIT_LIB_PATH`
 environment variable.
+
+### Swift Version Support
+
+Here's a reference of which SwiftLint version to use for a given Swift version.
+
+| Swift version | Last supported SwiftLint release |
+| ------------- | -------------------------------- |
+| Swift 1.x     | SwiftLint 0.1.2                  |
+| Swift 2.x     | SwiftLint 0.18.1                 |
+| Swift 3.x     | Latest                           |
+| Swift 4.x     | Latest                           |
 
 ## Rules
 

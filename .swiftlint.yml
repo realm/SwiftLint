@@ -22,6 +22,7 @@ opt_in_rules:
   - prohibited_super_call
   - fatal_error_message
   - vertical_parameter_alignment_on_call
+  - let_var_whitespace
 
 file_header:
   required_pattern: |

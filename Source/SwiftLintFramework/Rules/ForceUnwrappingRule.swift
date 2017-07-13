@@ -84,8 +84,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                                 file: File) -> NSRange? {
         if match.numberOfRanges < 3 { return nil }
 
-        let firstRange = match.rangeAt(1)
-        let secondRange = match.rangeAt(2)
+        let firstRange = match.range(at: 1)
+        let secondRange = match.range(at: 2)
 
         guard let matchByteFirstRange = nsstring
             .NSRangeToByteRange(start: firstRange.location, length: firstRange.length),

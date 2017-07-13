@@ -339,6 +339,7 @@ extension RulesTests {
         ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
         ("testLegacyConstant", testLegacyConstant),
         ("testLegacyConstructor", testLegacyConstructor),
+        ("testLetVarWhitespace", testLetVarWhitespace),
         ("testMark", testMark),
         ("testMultilineParameters", testMultilineParameters),
         ("testNesting", testNesting),

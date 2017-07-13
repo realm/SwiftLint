@@ -68,8 +68,8 @@ struct AutoCorrectOptions: OptionsProtocol {
                                defaultValue: false,
                                usage: "should reformat the Swift files")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the directory of the cache used when linting")
+                               usage: "the directory of the cache used when correcting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
-                               usage: "ignore cache when linting")
+                               usage: "ignore cache when correcting")
     }
 }

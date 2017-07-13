@@ -35,7 +35,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         }
 
         var numberOfParameters = 0
-        var linesWithParameters: Set<Int> = []
+        var linesWithParameters = Set<Int>()
 
         for structure in dictionary.substructure {
             guard

@@ -118,7 +118,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
                                                          to: foundRange.lowerBound)
                 let location = validBraces[startIndex].location
                 let length = validBraces[startIndex + 1 ].location + 1 - location
-                ranges.append(NSRange(location:location, length: length))
+                ranges.append(NSRange(location: location, length: length))
                 bracesAsString.replaceSubrange(foundRange, with: "")
                 validBraces.removeSubrange(startIndex...startIndex + 1)
             }

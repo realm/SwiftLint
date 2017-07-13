@@ -2,7 +2,8 @@
 
 ##### Breaking
 
-* None.
+* Xcode 8.3 or later and Swift 3.1 or later are required to build.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Enhancements
 
@@ -12,7 +13,7 @@
 
 * Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
-  when you run `swiftlint rules`.  
+  when you run `swiftlint rules` or `swiftlint generate-docs`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add [rules documentation](Rules.md) generation.  
@@ -20,18 +21,29 @@
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
 * Add `private_over_fileprivate` correctable rule to check for top-level usages
-  of  `fileprivate` and recommend `private` instead. This is inline with
+  of  `fileprivate` and recommend `private` instead. This is in line with
   SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new
   `strict_fileprivate` opt-in rule that will mark every `fileprivate`
-  as a violation (specially useful with Swift 4).  
+  as a violation (especially useful with Swift 4).  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1469](https://github.com/realm/SwiftLint/issues/1469)
   [#1058](https://github.com/realm/SwiftLint/issues/1058)
 
+* Add `let_var_whitespace` opt-in rule to enforce that `let`/`var` declarations
+  should be separated from other statements by a single blank line.  
+  [Uncommon](https://github.com/Uncommon)
+
+* Improve performance when linting and correcting on Linux, matching behavior.  
+  [JP Simard](https://github.com/jpsim)
+  [#1577](https://github.com/realm/SwiftLint/issues/1577)
+
 ##### Bug Fixes
 
-* None.
+* Fix false positive on `redundant_discardable_let` rule when using
+  `while` statements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1669](https://github.com/realm/SwiftLint/issues/1669)
 
 ## 0.20.1: More Liquid Fabric Softener
 
@@ -49,7 +61,7 @@
   [Alexander Lash](https://github.com/abl)
 
 * Don't trigger an `extension_access_modifier` violation when all extension
-  members  are `open`, as `open extension` is not supported by Swift.  
+  members are `open`, as `open extension` is not supported by Swift.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1629](https://github.com/realm/SwiftLint/issues/1629)
 
@@ -64,7 +76,7 @@
   [#1630](https://github.com/realm/SwiftLint/issues/1630)
   [#1643](https://github.com/realm/SwiftLint/issues/1643)
 
-* Use the directory's .swiftlint.yml when `--path` is used.  
+* Use the directory's `.swiftlint.yml` when `--path` is used.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1631](https://github.com/realm/SwiftLint/issues/1631)
 
@@ -76,8 +88,7 @@
 
 ##### Enhancements
 
-* Add support for missing triggering cases in `force_unwrapping`
-  when using subscript.  
+* Detect more violations of `force_unwrapping` when using subscripts.  
   [Otávio Lima](https://github.com/otaviolima)
 
 * Match `(Void)` as return type in the `void_return` rule.  

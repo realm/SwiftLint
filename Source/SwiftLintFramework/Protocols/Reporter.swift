@@ -8,8 +8,9 @@
 
 public protocol Reporter: CustomStringConvertible {
     static var identifier: String { get }
-    static func generateReport(_ violations: [StyleViolation]) -> String
     static var isRealtime: Bool { get }
+
+    static func generateReport(_ violations: [StyleViolation]) -> String
 }
 
 public func reporterFrom(identifier: String) -> Reporter.Type {

@@ -82,7 +82,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
-                                                        range: range)?.rangeAt(1) else {
+                                                        range: range)?.range(at: 1) else {
                     return []
             }
 
@@ -101,7 +101,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
             let range = contents.byteRangeToNSRange(start: start, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1) else {
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1) else {
                 return []
         }
 
@@ -116,7 +116,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1),
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1),
             match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file) else {
             return []
         }
@@ -219,7 +219,7 @@ extension String {
             return (self, range)
         }
 
-        let trimmedRange = match.rangeAt(1)
+        let trimmedRange = match.range(at: 1)
         return (bridged.substring(with: trimmedRange), trimmedRange)
     }
 }

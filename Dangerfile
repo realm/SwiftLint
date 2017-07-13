@@ -3,15 +3,17 @@ require 'open3'
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
+modified_files = git.modified_files + git.added_files
+
 # Sometimes its a README fix, or something like that - which isn't relevant for
 # including in a CHANGELOG for example
-has_app_changes = !git.modified_files.grep(/Source/).empty?
-has_test_changes = !git.modified_files.grep(/Tests/).empty?
-has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
-has_build_changes = !git.modified_files.grep(/Makefile|SwiftLint\.xcodeproj|SwiftLint\.xcworkspace|Package\.swift|Cartfile/).empty?
-has_danger_changes = !git.modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
-has_rules_changes = !git.modified_files.grep('/Source/SwiftLintFramework/Rules/').empty?
-has_rules_docs_changes = !git.modified_files.grep('Rules.md').empty?
+has_app_changes = !modified_files.grep(/Source/).empty?
+has_test_changes = !modified_files.grep(/Tests/).empty?
+has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_build_changes = !modified_files.grep(/Makefile|SwiftLint\.xcodeproj|SwiftLint\.xcworkspace|Package\.swift|Cartfile/).empty?
+has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
+has_rules_changes = !modified_files.grep(/Source\/SwiftLintFramework\/Rules/).empty?
+has_rules_docs_changes = !modified_files.grep(/Rules\.md/).empty?
 
 # Add a CHANGELOG entry for app changes
 if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
@@ -49,7 +51,7 @@ if has_app_changes || has_danger_changes || has_build_changes
   lines = nil
   file = Tempfile.new('violations')
 
-  Open3.popen3("script/oss-check 2> #{file.path}") do |_, stdout, _, _|
+  Open3.popen3("script/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
     while char = stdout.getc
       print char
     end

@@ -111,8 +111,8 @@ def validate_state_to_run
 end
 
 def make_directory_structure
-  ["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
-    FileUtils.mkdir_p(dir)
+  ['branch_reports', 'master_reports'].each do |dir|
+    FileUtils.mkdir_p("#{@working_dir}/#{dir}")
   end
 end
 
@@ -152,7 +152,7 @@ def generate_reports(branch)
       start = Time.now
       command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
-        puts command if @options[:verbose]
+        puts "\n#{command}" if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           while line = stdout.gets
             file.puts line
@@ -236,6 +236,10 @@ def diff_and_report_changes_to_danger
   end
 end
 
+def fetch_origin
+  perform('git fetch origin')
+end
+
 def clean_up
   FileUtils.rm_rf(@working_dir)
   perform('git worktree prune')
@@ -267,8 +271,9 @@ $stdout.sync = true
 validate_state_to_run
 setup_repos
 make_directory_structure
+fetch_origin
 
-@effective_master_commitish = `git merge-base master #{@options[:branch]}`
+@effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|

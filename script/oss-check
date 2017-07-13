@@ -152,7 +152,7 @@ def generate_reports(branch)
       start = Time.now
       command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
-        puts command if @options[:verbose]
+        puts "\n#{command}" if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           while line = stdout.gets
             file.puts line

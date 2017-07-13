@@ -268,7 +268,9 @@ validate_state_to_run
 setup_repos
 make_directory_structure
 
-@effective_master_commitish = `git merge-base master #{@options[:branch]}`
+`git fetch origin`
+
+@effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|

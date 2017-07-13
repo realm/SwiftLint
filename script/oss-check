@@ -152,7 +152,7 @@ def generate_reports(branch)
       start = Time.now
       command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
-        puts command if @options[:verbose]
+        puts "\n#{command}" if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           while line = stdout.gets
             file.puts line
@@ -268,7 +268,9 @@ validate_state_to_run
 setup_repos
 make_directory_structure
 
-@effective_master_commitish = `git merge-base master #{@options[:branch]}`
+`git fetch origin`
+
+@effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|

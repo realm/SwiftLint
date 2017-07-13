@@ -9,6 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable file_length
+// The nested configuration part could probably be split up in another file
+
 private enum ConfigurationKey: String {
     case cachePath = "cache_path"
     case disabledRules = "disabled_rules"
@@ -29,6 +32,9 @@ public struct Configuration: Equatable {
     public let excluded: [String]             // excluded
     public let reporter: String               // reporter (xcode, json, csv, checkstyle)
     public var warningThreshold: Int?         // warning threshold
+    fileprivate let disabledRules: [String]
+    fileprivate let optInRules: [String]
+    fileprivate let whitelistRules: [String]
     public let rules: [Rule]
     public var rootPath: String?              // the root path to search for nested configurations
     public var configurationPath: String?     // if successfully loaded from a path
@@ -52,11 +58,6 @@ public struct Configuration: Equatable {
                 "configuration specified version \(pinnedVersion).")
         }
 
-        self.included = included
-        self.excluded = excluded
-        self.reporter = reporter
-        self.cachePath = cachePath
-
         let configuredRules = configuredRules
             ?? (try? ruleList.configuredRules(with: [:]))
             ?? []
@@ -79,10 +80,8 @@ public struct Configuration: Equatable {
             return nil
         }
 
-        // set the config threshold to the threshold provided in the config file
-        self.warningThreshold = warningThreshold
-
         // Precedence is enableAllRules > whitelistRules > everything else
+        let rules: [Rule]
         if enableAllRules {
             rules = configuredRules
         } else if !whitelistRules.isEmpty {
@@ -103,6 +102,38 @@ public struct Configuration: Equatable {
                 return optInRules.contains(id) || !(rule is OptInRule)
             }
         }
+        self.init(disabledRules: disabledRules,
+                  optInRules: optInRules,
+                  whitelistRules: whitelistRules,
+                  included: included,
+                  excluded: excluded,
+                  warningThreshold: warningThreshold,
+                  reporter: reporter,
+                  rules: rules,
+                  cachePath: cachePath)
+    }
+
+    fileprivate init(disabledRules: [String] = [],
+                     optInRules: [String] = [],
+                     whitelistRules: [String] = [],
+                     included: [String] = [],
+                     excluded: [String] = [],
+                     warningThreshold: Int? = nil,
+                     reporter: String = XcodeReporter.identifier,
+                     rules: [Rule] = [],
+                     cachePath: String? = nil) {
+
+        self.disabledRules = disabledRules
+        self.optInRules = optInRules
+        self.whitelistRules = whitelistRules
+        self.included = included
+        self.excluded = excluded
+        self.reporter = reporter
+        self.cachePath = cachePath
+        self.rules = rules
+
+        // set the config threshold to the threshold provided in the config file
+        self.warningThreshold = warningThreshold
     }
 
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
@@ -337,11 +368,62 @@ extension Configuration {
         return self
     }
 
-    // Currently merge simply overrides the current configuration with the new configuration.
-    // This requires that all configuration files be fully specified. In the future this should be
-    // improved to do a more intelligent merge allowing for partial nested configurations.
+    private struct HashableRule: Hashable {
+        let rule: Rule
+
+        static func == (lhs: HashableRule, rhs: HashableRule) -> Bool {
+            // Don't use `isEqualTo` in case its internal implementation changes from
+            // using the identifier to something else, which could mess up with the `Set`
+            return type(of: lhs.rule).description.identifier == type(of: rhs.rule).description.identifier
+        }
+
+        var hashValue: Int {
+            return type(of: rule).description.identifier.hashValue
+        }
+    }
+
     internal func merge(with configuration: Configuration) -> Configuration {
-        return configuration
+        var rules: [Rule] = []
+        if !configuration.whitelistRules.isEmpty {
+            // Use an intermediate set to filter out duplicate rules when merging configurations
+            // (always use the nested rule first if it exists)
+            var ruleSet = Set<HashableRule>(configuration.rules.map { HashableRule(rule: $0) })
+            ruleSet.formUnion(self.rules.map { HashableRule(rule: $0) })
+            rules = ruleSet.map { $0.rule }.filter { rule in
+                return configuration.whitelistRules.contains(type(of: rule).description.identifier)
+            }
+        } else {
+            // Same here
+            var ruleSet = Set<HashableRule>(configuration.rules
+                // Enable rules that are opt-in by the nested configuration
+                .filter { rule in
+                    return configuration.optInRules.contains(type(of: rule).description.identifier)
+                }
+                .map { HashableRule(rule: $0) })
+            // And disable rules that are disabled by the nested configuration
+            ruleSet.formUnion(self.rules
+                .filter { rule in
+                    return !configuration.disabledRules.contains(type(of: rule).description.identifier)
+                }.map { HashableRule(rule: $0) })
+            rules = ruleSet.map { $0.rule }
+        }
+        var nestedConfiguration = Configuration(
+            disabledRules: [],
+            optInRules: [],
+            included: configuration.included, // Always use the nested included directories
+            excluded: configuration.excluded, // Always use the nested excluded directories
+            // The minimum warning threshold if both exist, otherwise the nested,
+            // and if it doesn't exist try to use the parent one
+            warningThreshold: self.warningThreshold.map { warningThreshold in
+                return configuration.warningThreshold.map {
+                    min($0, warningThreshold)
+                } ?? warningThreshold
+            } ?? configuration.warningThreshold,
+            reporter: self.reporter, // Always use the parent reporter
+            rules: rules,
+            cachePath: self.cachePath) // Always use the parent cache path
+        nestedConfiguration.rootPath = configuration.rootPath
+        return nestedConfiguration
     }
 }
 

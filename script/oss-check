@@ -96,7 +96,7 @@ def perform(*args)
   if @options[:verbose]
     commands.each do |x|
       puts(x)
-      system(x)
+      puts(`#{x}`)
     end
   else
     commands.each { |x| `#{x}` }

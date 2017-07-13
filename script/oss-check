@@ -194,6 +194,8 @@ def build(branch)
     perform("git fetch && git worktree add --detach #{dir} #{target}")
   end
 
+  puts `git rev-parse HEAD` if @options[:verbose]
+
   build_command = "cd #{dir}; swift build -c release"
 
   perform(build_command)

@@ -152,7 +152,7 @@ def generate_reports(branch)
       start = Time.now
       command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
-        puts command if @options[:verbose]
+        puts "\n#{command}" if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
           while line = stdout.gets
             file.puts line
@@ -192,6 +192,11 @@ def build(branch)
     perform("cd #{dir}; git checkout #{target}")
   else
     perform("git fetch && git worktree add --detach #{dir} #{target}")
+  end
+
+  if @options[:verbose]
+    puts "Current git HEAD: #{`cd #{dir}; git rev-parse HEAD`}"
+    puts "Remotes: #{`cd #{dir}; git remote -v`}"
   end
 
   build_command = "cd #{dir}; swift build -c release"
@@ -249,17 +254,17 @@ end
 @working_dir = 'osscheck'
 @repos = [
   Repo.new('Aerial', 'JohnCoates/Aerial'),
-  Repo.new('Alamofire', 'Alamofire/Alamofire'),
-  Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
-  Repo.new('Kickstarter', 'kickstarter/ios-oss'),
-  Repo.new('Moya', 'Moya/Moya'),
-  Repo.new('Nimble', 'Quick/Nimble'),
-  Repo.new('Quick', 'Quick/Quick'),
-  Repo.new('Realm', 'realm/realm-cocoa'),
-  Repo.new('SourceKitten', 'jpsim/SourceKitten'),
-  Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
-  Repo.new('Swift', 'apple/swift'),
-  Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
+  # Repo.new('Alamofire', 'Alamofire/Alamofire'),
+  # Repo.new('Firefox', 'mozilla-mobile/firefox-ios'),
+  # Repo.new('Kickstarter', 'kickstarter/ios-oss'),
+  # Repo.new('Moya', 'Moya/Moya'),
+  # Repo.new('Nimble', 'Quick/Nimble'),
+  # Repo.new('Quick', 'Quick/Quick'),
+  # Repo.new('Realm', 'realm/realm-cocoa'),
+  # Repo.new('SourceKitten', 'jpsim/SourceKitten'),
+  # Repo.new('Sourcery', 'krzysztofzablocki/Sourcery'),
+  # Repo.new('Swift', 'apple/swift'),
+  # Repo.new('WordPress', 'wordpress-mobile/WordPress-iOS')
 ]
 
 # Prep

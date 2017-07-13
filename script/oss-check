@@ -96,7 +96,7 @@ def perform(*args)
   if @options[:verbose]
     commands.each do |x|
       puts(x)
-      puts(`#{x}`)
+      system(x)
     end
   else
     commands.each { |x| `#{x}` }
@@ -195,8 +195,8 @@ def build(branch)
   end
 
   if @options[:verbose]
-    puts "Current git HEAD: #{`git rev-parse HEAD`}"
-    puts "Remotes: #{`git remote -v`}"
+    puts "Current git HEAD: #{`cd #{dir}; git rev-parse HEAD`}"
+    puts "Remotes: #{`cd #{dir}; git remote -v`}"
   end
 
   build_command = "cd #{dir}; swift build -c release"
@@ -273,9 +273,7 @@ validate_state_to_run
 setup_repos
 make_directory_structure
 
-`git fetch origin`
-
-@effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`
+@effective_master_commitish = `git merge-base master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
 %w[branch master].each do |branch|

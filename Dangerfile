@@ -49,7 +49,7 @@ if has_app_changes || has_danger_changes || has_build_changes
   lines = nil
   file = Tempfile.new('violations')
 
-  Open3.popen3("script/oss-check 2> #{file.path}") do |_, stdout, _, _|
+  Open3.popen3("script/oss-check --iterations 1 -v 2> #{file.path}") do |_, stdout, _, _|
     while char = stdout.getc
       print char
     end

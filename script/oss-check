@@ -111,8 +111,8 @@ def validate_state_to_run
 end
 
 def make_directory_structure
-  ["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
-    FileUtils.mkdir_p(dir)
+  ['branch_reports', 'master_reports'].each do |dir|
+    FileUtils.mkdir_p("#{@working_dir}/#{dir}")
   end
 end
 

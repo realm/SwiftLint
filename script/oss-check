@@ -237,7 +237,7 @@ def diff_and_report_changes_to_danger
 end
 
 def fetch_origin
-  `git fetch origin`
+  perform('git fetch origin')
 end
 
 def clean_up

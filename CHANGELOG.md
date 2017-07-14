@@ -5,8 +5,10 @@
 * Xcode 8.3 or later and Swift 3.1 or later are required to build.  
   [Norio Nomura](https://github.com/norio-nomura)
   
-* Nested configurations will now be merged with parent configurations, rather than replace them.  
-  [Stéphane Copin](https://github.com/stephanecopin/)
+* Nested configurations will now be merged with parent configurations, rather
+  than replace them.  
+  [Stéphane Copin](https://github.com/stephanecopin)
+  [JP Simard](https://github.com/jpsim)
 
 ##### Enhancements
 
@@ -40,7 +42,8 @@
   [#1577](https://github.com/realm/SwiftLint/issues/1577)
   
 * Add support for merging nested configurations with parent configurations.  
-  [Stéphane Copin](https://github.com/stephanecopin/)
+  [Stéphane Copin](https://github.com/stephanecopin)
+  [JP Simard](https://github.com/jpsim)
   [#676](https://github.com/realm/SwiftLint/issues/676)
 
 * Don't trigger `implicit_getter` violations when attributes (such as `mutating`

@@ -11,25 +11,36 @@ import SourceKittenFramework
 
 private let arrayInferredSortingReason = "Array elements should be sorted."
 
-private extension Sequence where Iterator.Element == String {
+private protocol InferredSortingItem: Comparable {
+    static func sorted(items: [Self], caseSensitive: Bool) -> [Self]
+}
+
+extension Double: InferredSortingItem {
+    static func sorted(items: [Double], caseSensitive: Bool) -> [Double] {
+        return items.sorted()
+    }
+}
+
+extension String: InferredSortingItem {
+    static func sorted(items: [String], caseSensitive: Bool) -> [String] {
+        // Due to a bug in Swift, String.sorted() is case-insensitive on Linux.
+        // https://bugs.swift.org/browse/SR-530
+        #if os(Linux)
+            return items.sorted(by:) {
+                let x = $0.bridge()
+                return (caseSensitive ? x.compare($1) : x.caseInsensitiveCompare($1)) == .orderedAscending
+            }
+        #else
+            return caseSensitive ? items.sorted() : items.sorted(by:) { $0.lowercased() < $1.lowercased() }
+        #endif
+    }
+}
+
+private extension Array where Element: InferredSortingItem {
     /// Determines how sorted the sequence is on a scale from 0.0 to 1.0.
     func sortedness(caseSensitive: Bool) -> Float {
-        guard let array = self as? [String] else {
-            return 0.0
-        }
-
-        let sortedArray: [String] = {
-            // Due to a bug in Swift, String.sorted() is case-insensitive on Linux.
-            // https://bugs.swift.org/browse/SR-530
-            #if os(Linux)
-                return array.sorted(by:) {
-                    let x = $0.bridge()
-                    return (caseSensitive ? x.compare($1) : x.caseInsensitiveCompare($1)) == .orderedAscending
-                }
-            #else
-                return caseSensitive ? array.sorted() : array.sorted(by:) { $0.lowercased() < $1.lowercased() }
-            #endif
-        }()
+        let array = self
+        let sortedArray = Element.sorted(items: array, caseSensitive: caseSensitive)
         let startIndex = array.startIndex
         let maxIndex = array.endIndex - 1
         var score = 0
@@ -87,7 +98,9 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
             "let foo = [\"Bravo\", \"Alpha\"]\n",
             "let foo = [\"Charlie\", \"Alpha\", \"Bravo\"]\n",
             "let foo = [\"Charlie\", \"Bravo\", \"Alpha\"]\n",
-            "let foo = []\n"
+            "let foo = []\n",
+            "let stats = [3_000, 4_000, 5_000, 7_000, 8_000, 13_000, 14_000, 15_000, 17_000, 18_000]\n",
+            "let stats = [3_000, 4_000, 5_000, 7_000, 8_000, 13000, 14_000, 15_000, 17_000, 18_000]\n"
         ],
         triggeringExamples: [
             "let foo = [\"Alpha\", \"Bravo\", \"Charlie\", \"Delta\", \"Echo\", \"Foxtrot\", \"Golf\", \"Hotel\"," +
@@ -108,27 +121,60 @@ public struct InferredSortingRule: ASTRule, ConfigurationProviderRule, OptInRule
                 return []
         }
 
-        let contents = file.contents.bridge()
-        let elements = dictionary.elements
-
-        let items = elements.flatMap { element -> String? in
+        let itemsRanges = dictionary.elements.flatMap { element -> NSRange? in
             guard let elementOffset = element.offset,
                 let elementLength = element.length,
                 element.kind == type(of: self).expectedElementKind else {
                     return nil
             }
 
-            return contents.substringWithByteRange(start: elementOffset, length: elementLength)
+            return NSRange(location: elementOffset, length: elementLength)
         }
 
-        guard items.count >= configuration.minimumItems else {
+        guard itemsRanges.count >= configuration.minimumItems else {
             return []
         }
 
-        return violations(items: items, file: file, offset: bodyOffset)
+        if let items = numberElements(from: itemsRanges, file: file) {
+            return violations(items: items, file: file, offset: bodyOffset)
+        } else {
+            let items = stringElements(from: itemsRanges, file: file)
+            return violations(items: items, file: file, offset: bodyOffset)
+        }
     }
 
-    private func violations(items: [String], file: File, offset: Int) -> [StyleViolation] {
+    private func numberElements(from elements: [NSRange], file: File) -> [Double]? {
+        let contents = file.contents.bridge()
+        var result = [Double]()
+        for range in elements {
+            let tokens = file.syntaxMap.tokens(inByteRange: range)
+            guard tokens == [numberToken(range: range)],
+                let substring = contents.substringWithByteRange(start: range.location, length: range.length),
+                let value = Double(substring.replacingOccurrences(of: "_", with: "")) else {
+                    return nil
+            }
+
+            result.append(value)
+        }
+
+        return result
+    }
+
+    private func numberToken(range: NSRange) -> SyntaxToken {
+        return SyntaxToken(type: SyntaxKind.number.rawValue, offset: range.location, length: range.length)
+    }
+
+    private func stringElements(from elements: [NSRange], file: File) -> [String] {
+        let contents = file.contents.bridge()
+        let elements = elements.flatMap {
+            contents.substringWithByteRange(start: $0.location, length: $0.length)
+        }
+
+        return elements
+    }
+
+    private func violations<T: InferredSortingItem>(items: [T], file: File,
+                                                    offset: Int) -> [StyleViolation] {
         let sortedness = items.sortedness(caseSensitive: configuration.caseSensitive)
 
         if sortedness < 1.0 && sortedness >= configuration.threshold {

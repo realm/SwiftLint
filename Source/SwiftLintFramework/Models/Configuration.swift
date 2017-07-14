@@ -237,19 +237,20 @@ private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [St
 
 private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
     // Validate that rule identifiers aren't listed multiple times
-    if Set(identifiers).count != identifiers.count {
-        let duplicateRules = identifiers.reduce([String: Int]()) { accu, element in
-            var accu = accu
-            accu[element] = (accu[element] ?? 0) + 1
-            return accu
-        }.filter { $0.1 > 1 }
-        queuedPrintError(duplicateRules.map { rule in
-            "configuration error: '\(rule.0)' is listed \(rule.1) times"
-        }.joined(separator: "\n"))
-        return true
+
+    guard Set(identifiers).count != identifiers.count else {
+        return false
     }
 
-    return false
+    let duplicateRules = identifiers.reduce([String: Int]()) { accu, element in
+        var accu = accu
+        accu[element] = (accu[element] ?? 0) + 1
+        return accu
+    }.filter { $0.1 > 1 }
+    queuedPrintError(duplicateRules.map { rule in
+        "configuration error: '\(rule.0)' is listed \(rule.1) times"
+    }.joined(separator: "\n"))
+    return true
 }
 
 private func defaultStringArray(_ object: Any?) -> [String] {

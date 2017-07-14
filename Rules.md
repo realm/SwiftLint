@@ -4028,6 +4028,23 @@ class Foo {
 
 ```
 
+```swift
+var _objCTaggedPointerBits: UInt {
+   @inline(__always) get { return 0 }
+}
+
+```
+
+```swift
+var next: Int? {
+   mutating get {
+       defer { self.count += 1 }
+       return self.count
+   }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4075,6 +4092,19 @@ var foo: Int {
 } 
 } 
 }
+```
+
+```swift
+class Foo {
+  @objc func bar() { }
+var foo: Int {
+ ↓get {
+ return 20 
+} 
+} 
+}
+}
+
 ```
 
 </details>
@@ -7293,6 +7323,11 @@ guard let _ = foo() else { return }
 
 ```swift
 let _: ExplicitType = foo()
+```
+
+```swift
+while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }
+
 ```
 
 </details>

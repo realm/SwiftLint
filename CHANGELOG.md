@@ -34,6 +34,12 @@
   [JP Simard](https://github.com/jpsim)
   [#1577](https://github.com/realm/SwiftLint/issues/1577)
 
+* Don't trigger `implicit_getter` violations when attributes (such as `mutating`
+  or `@inline`) are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1309](https://github.com/realm/SwiftLint/issues/1309)
+  [#1589](https://github.com/realm/SwiftLint/issues/1589)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

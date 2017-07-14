@@ -7,7 +7,9 @@
 
 ##### Enhancements
 
-* Don't count comment lines in `file_length` rule.  
+* Add `ignore_comment_only_lines` boolean configuration option
+  to `file_length` rule. With the option enabled, `file_length` will
+  ignore lines which have only comments.  
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
 

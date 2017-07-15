@@ -7,7 +7,7 @@
 
 ##### Enhancements
 
-* Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
+* Rules are now categorized as `lint`, `idiomatic`, `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
   when you run `swiftlint rules` or `swiftlint generate-docs`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -17,7 +17,7 @@
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
 * Add `private_over_fileprivate` correctable rule to check for top-level usages
-  of  `fileprivate` and recommend `private` instead. This is in line with
+  of `fileprivate` and recommend `private` instead. This is in line with
   SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new
   `strict_fileprivate` opt-in rule that will mark every `fileprivate`
   as a violation (especially useful with Swift 4).  
@@ -29,8 +29,10 @@
 * Add `let_var_whitespace` opt-in rule to enforce that `let`/`var` declarations
   should be separated from other statements by a single blank line.  
   [Uncommon](https://github.com/Uncommon)
+  [#1461](https://github.com/realm/SwiftLint/issues/1461)
 
-* Improve performance when linting and correcting on Linux, matching behavior.  
+* Improve performance when linting and correcting on Linux,
+  matching macOS behavior.  
   [JP Simard](https://github.com/jpsim)
   [#1577](https://github.com/realm/SwiftLint/issues/1577)
 

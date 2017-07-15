@@ -49,6 +49,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1669](https://github.com/realm/SwiftLint/issues/1669)
 
+* Fix all custom rules not being applied when any rule is configured
+  incorrectly.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1586](https://github.com/realm/SwiftLint/issues/1586)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

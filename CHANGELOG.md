@@ -42,6 +42,11 @@
   [#1309](https://github.com/realm/SwiftLint/issues/1309)
   [#1589](https://github.com/realm/SwiftLint/issues/1589)
 
+* Add `--use-tabs` option to `AutoCorrectOptions`, enabling formatting using
+  tabs over spaces.  
+  [Cody Winton](https://github.com/codytwinton)
+  [#1327](https://github.com/realm/SwiftLint/issues/1327)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

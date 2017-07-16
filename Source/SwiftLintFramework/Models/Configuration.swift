@@ -103,6 +103,12 @@ public struct Configuration: Equatable {
                 return optInRules.contains(id) || !(rule is OptInRule)
             }
         }
+
+        if !enableAllRules {
+            validateConfiguredRulesAreEnabled(configuredRules: configuredRules, rules: rules,
+                                              whitelistRules: whitelistRules, optInRules: optInRules,
+                                              disabledRules: disabledRules)
+        }
     }
 
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
@@ -216,6 +222,32 @@ public struct Configuration: Equatable {
             return configuration(forPath: containingDir)
         }
         return self
+    }
+
+    private func validateConfiguredRulesAreEnabled(configuredRules: [Rule], rules: [Rule],
+                                                   whitelistRules: [String], optInRules: [String],
+                                                   disabledRules: [String]) {
+        for rule in configuredRules {
+            guard !rules.contains(where: { type(of: $0) == type(of: rule) }) else {
+                continue
+            }
+
+            let identifier = type(of: rule).description.identifier
+            let message = "Found a configuration for \(identifier)"
+            guard whitelistRules.isEmpty else {
+                queuedPrintError("\(message), but it is not present on " +
+                                 "\(ConfigurationKey.whitelistRules.rawValue)")
+                continue
+            }
+
+            if rule is OptInRule, !optInRules.contains(identifier) {
+                queuedPrintError("\(message), but it is not enabled on " +
+                                 "\(ConfigurationKey.optInRules.rawValue)")
+            } else {
+                queuedPrintError("\(message), but it is disabled on " +
+                                 "\(ConfigurationKey.disabledRules.rawValue)")
+            }
+        }
     }
 }
 

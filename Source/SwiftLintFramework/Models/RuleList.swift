@@ -41,6 +41,7 @@ public struct RuleList {
 
         for (key, configuration) in dictionary {
             guard let identifier = identifier(for: key), let ruleType = list[identifier] else {
+                queuedPrintError("Unknown rule for identifier: '\(key)'. Maybe there's a typo?")
                 continue
             }
             guard rules[identifier] == nil else {

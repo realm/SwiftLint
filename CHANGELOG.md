@@ -47,6 +47,10 @@
   [Cody Winton](https://github.com/codytwinton)
   [#1327](https://github.com/realm/SwiftLint/issues/1327)
 
+* Warn if a configured rule is not enabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1350](https://github.com/realm/SwiftLint/issues/1350)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

@@ -43,10 +43,66 @@ extension Configuration {
         return self
     }
 
-    // Currently merge simply overrides the current configuration with the new configuration.
-    // This requires that all configuration files be fully specified. In the future this should be
-    // improved to do a more intelligent merge allowing for partial nested configurations.
+    private struct HashableRule: Hashable {
+        let rule: Rule
+
+        static func == (lhs: HashableRule, rhs: HashableRule) -> Bool {
+            // Don't use `isEqualTo` in case its internal implementation changes from
+            // using the identifier to something else, which could mess up with the `Set`
+            return type(of: lhs.rule).description.identifier == type(of: rhs.rule).description.identifier
+        }
+
+        var hashValue: Int {
+            return type(of: rule).description.identifier.hashValue
+        }
+    }
+
+    private func mergingRules(with configuration: Configuration) -> [Rule] {
+        guard configuration.whitelistRules.isEmpty else {
+            // Use an intermediate set to filter out duplicate rules when merging configurations
+            // (always use the nested rule first if it exists)
+            return Set(configuration.rules.map(HashableRule.init))
+                .union(rules.map(HashableRule.init))
+                .map { $0.rule }
+                .filter { rule in
+                    return configuration.whitelistRules.contains(type(of: rule).description.identifier)
+                }
+        }
+
+        // Same here
+        return Set(
+            configuration.rules
+                // Enable rules that are opt-in by the nested configuration
+                .filter { rule in
+                    return configuration.optInRules.contains(type(of: rule).description.identifier)
+                }
+                .map(HashableRule.init)
+        )
+        // And disable rules that are disabled by the nested configuration
+        .union(
+            rules.filter { rule in
+                return !configuration.disabledRules.contains(type(of: rule).description.identifier)
+            }.map(HashableRule.init)
+        )
+        .map { $0.rule }
+    }
+
     internal func merge(with configuration: Configuration) -> Configuration {
-        return configuration
+        return Configuration(
+            disabledRules: [],
+            optInRules: [],
+            whitelistRules: [],
+            included: configuration.included, // Always use the nested included directories
+            excluded: configuration.excluded, // Always use the nested excluded directories
+            // The minimum warning threshold if both exist, otherwise the nested,
+            // and if it doesn't exist try to use the parent one
+            warningThreshold: warningThreshold.map { warningThreshold in
+                return min(configuration.warningThreshold ?? .max, warningThreshold)
+            } ?? configuration.warningThreshold,
+            reporter: reporter, // Always use the parent reporter
+            rules: mergingRules(with: configuration),
+            cachePath: cachePath, // Always use the parent cache path
+            rootPath: configuration.rootPath
+        )
     }
 }

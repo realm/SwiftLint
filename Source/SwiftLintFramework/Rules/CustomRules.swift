@@ -37,7 +37,7 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
             do {
                 try ruleConfiguration.apply(configuration: value)
             } catch {
-                queuedPrintError("Invalid configuration for custom rule \(key).")
+                queuedPrintError("Invalid configuration for custom rule '\(key)'.")
                 continue
             }
 

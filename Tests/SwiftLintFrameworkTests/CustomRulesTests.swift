@@ -44,19 +44,15 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
-    // sourcery: skipTestOnLinux
-    // (check https://bugs.swift.org/browse/SR-5477)
     func testCustomRuleConfigurationIgnoreInvalidRules() throws {
-        let configDict = ["my_custom_rule": ["name": "MyCustomRule",
-                                             "message": "Message",
-                                             "regex": "regex",
-                                             "match_kinds": "comment",
-                                             "severity": "error"],
-                          "invalid_rule": ["name": "InvalidRule",
-                                           "message": "Message",
-                                           "regex": "{", // not a valid regex
-                                           "match_kinds": "comment",
-                                           "severity": "error"]]
+        let configDict = [
+            "my_custom_rule": ["name": "MyCustomRule",
+                               "message": "Message",
+                               "regex": "regex",
+                               "match_kinds": "comment",
+                               "severity": "error"],
+            "invalid_rule": ["name": "InvalidRule"] // missing `regex`
+        ]
         var customRulesConfig = CustomRulesConfiguration()
         try customRulesConfig.apply(configuration: configDict)
 

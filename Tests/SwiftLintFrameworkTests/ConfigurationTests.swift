@@ -63,6 +63,11 @@ class ConfigurationTests: XCTestCase {
         FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
     }
 
+    func testEnableAllRulesConfiguration() {
+        let configuration = Configuration(dict: [:], ruleList: masterRuleList, enableAllRules: true, cachePath: nil)!
+        XCTAssertEqual(configuration.rules.count, masterRuleList.list.count)
+    }
+
     func testWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let config = Configuration(dict: ["whitelist_rules": whitelist])!
@@ -114,11 +119,6 @@ class ConfigurationTests: XCTestCase {
             type(of: $0).description.identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
-
-        // Duplicate
-        let duplicateConfig = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
-        XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
     }
 
     func testDisabledRulesWithUnknownRule() {
@@ -135,6 +135,20 @@ class ConfigurationTests: XCTestCase {
             type(of: $0).description.identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
+    }
+
+    func testDuplicatedRules() {
+        let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
+        XCTAssert(duplicateConfig1 == nil, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig2 = Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
+        XCTAssert(duplicateConfig2 == nil, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig3 = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
+        XCTAssert(duplicateConfig3 == nil, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
     }
 
     private class TestFileManager: LintableFileManager {

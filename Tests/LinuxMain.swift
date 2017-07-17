@@ -83,7 +83,6 @@ extension CustomRulesTests {
     static var allTests: [(String, (CustomRulesTests) -> () throws -> Void)] = [
         ("testCustomRuleConfigurationSetsCorrectly", testCustomRuleConfigurationSetsCorrectly),
         ("testCustomRuleConfigurationThrows", testCustomRuleConfigurationThrows),
-        ("testCustomRuleConfigurationIgnoreInvalidRules", testCustomRuleConfigurationIgnoreInvalidRules),
         ("testCustomRules", testCustomRules),
         ("testLocalDisableCustomRule", testLocalDisableCustomRule),
         ("testLocalDisableCustomRuleWithMultipleRules", testLocalDisableCustomRuleWithMultipleRules),

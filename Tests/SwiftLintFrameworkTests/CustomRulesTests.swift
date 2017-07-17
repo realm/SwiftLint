@@ -44,6 +44,8 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
+    // sourcery: skipTestOnLinux
+    // (check https://bugs.swift.org/browse/SR-5477)
     func testCustomRuleConfigurationIgnoreInvalidRules() throws {
         let configDict = ["my_custom_rule": ["name": "MyCustomRule",
                                              "message": "Message",

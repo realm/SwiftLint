@@ -23,8 +23,14 @@ public struct Configuration: Equatable {
     public var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
 
+    // MARK: Rules Properties
+
     // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
     public let rules: [Rule]
+
+    internal let disabledRules: [String]
+    internal let optInRules: [String]
+    internal let whitelistRules: [String]
 
     // MARK: Initializers
 
@@ -45,11 +51,6 @@ public struct Configuration: Equatable {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
         }
-
-        self.included = included
-        self.excluded = excluded
-        self.reporter = reporter
-        self.cachePath = cachePath
 
         let configuredRules = configuredRules
             ?? (try? ruleList.configuredRules(with: [:]))
@@ -73,10 +74,8 @@ public struct Configuration: Equatable {
             return nil
         }
 
-        // set the config threshold to the threshold provided in the config file
-        self.warningThreshold = warningThreshold
-
         // Precedence is enableAllRules > whitelistRules > everything else
+        let rules: [Rule]
         if enableAllRules {
             rules = configuredRules
         } else if !whitelistRules.isEmpty {
@@ -97,6 +96,40 @@ public struct Configuration: Equatable {
                 return optInRules.contains(id) || !(rule is OptInRule)
             }
         }
+        self.init(disabledRules: disabledRules,
+                  optInRules: optInRules,
+                  whitelistRules: whitelistRules,
+                  included: included,
+                  excluded: excluded,
+                  warningThreshold: warningThreshold,
+                  reporter: reporter,
+                  rules: rules,
+                  cachePath: cachePath)
+    }
+
+    internal init(disabledRules: [String],
+                  optInRules: [String],
+                  whitelistRules: [String],
+                  included: [String],
+                  excluded: [String],
+                  warningThreshold: Int?,
+                  reporter: String,
+                  rules: [Rule],
+                  cachePath: String?,
+                  rootPath: String? = nil) {
+
+        self.disabledRules = disabledRules
+        self.optInRules = optInRules
+        self.whitelistRules = whitelistRules
+        self.included = included
+        self.excluded = excluded
+        self.reporter = reporter
+        self.cachePath = cachePath
+        self.rules = rules
+        self.rootPath = rootPath
+
+        // set the config threshold to the threshold provided in the config file
+        self.warningThreshold = warningThreshold
     }
 
     private init(_ configuration: Configuration) {

@@ -192,25 +192,6 @@ public struct Configuration: Equatable {
         setCached(atPath: fullPath)
     }
 
-    public func lintablePaths(inPath path: String, fileManager: LintableFileManager = FileManager.default) -> [String] {
-        // If path is a Swift file, skip filtering with excluded/included paths
-        if path.bridge().isSwiftFile() && path.isFile {
-            return [path]
-        }
-        let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let excludedPaths = excluded.flatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
-        }
-        let includedPaths = included.flatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
-        }
-        return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
-    }
-
-    public func lintableFiles(inPath path: String) -> [File] {
-        return lintablePaths(inPath: path).flatMap { File(path: $0) }
-    }
-
     public func configuration(for file: File) -> Configuration {
         if let containingDir = file.path?.bridge().deletingLastPathComponent {
             return configuration(forPath: containingDir)

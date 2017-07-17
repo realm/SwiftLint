@@ -230,6 +230,7 @@
 		E881985F1BEA987C00333A11 /* TypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */; };
 		E88198601BEA98F000333A11 /* IdentifierNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */; };
 		E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */; };
+		E889D8C51F1D11A200058332 /* Configuration+LintableFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */; };
 		E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */; };
 		E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6E1B09843F00A66CB0 /* Location.swift */; };
 		E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */; };
@@ -521,6 +522,7 @@
 		E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingSemicolonRule.swift; sourceTree = "<group>"; };
 		E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxKind+SwiftLint.swift"; sourceTree = "<group>"; };
+		E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+LintableFiles.swift"; sourceTree = "<group>"; };
 		E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleViolation.swift; sourceTree = "<group>"; };
 		E88DEA6E1B09843F00A66CB0 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViolationSeverity.swift; sourceTree = "<group>"; };
@@ -1026,6 +1028,7 @@
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
 				D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */,
 				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
+				E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
@@ -1358,6 +1361,7 @@
 				6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */,
 				D4C0E46F1E3D973600C560F2 /* ForWhereRule.swift in Sources */,
 				E86396C51BADAC15002C9E88 /* XcodeReporter.swift in Sources */,
+				E889D8C51F1D11A200058332 /* Configuration+LintableFiles.swift in Sources */,
 				094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */,
 				3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */,
 				2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */,

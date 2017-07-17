@@ -78,7 +78,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
         let pattern = "typealias\\s+\\w+?\\s*" + genericTypePattern + "\\s*="
-        return file.match(pattern: pattern).flatMap { (range, tokens) -> [(String, Int)] in
+        return file.match(pattern: pattern).flatMap { range, tokens -> [(String, Int)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
@@ -149,7 +149,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let contents = file.contents.bridge()
-        return namesAndRanges.flatMap { (name, range) -> (String, Int)? in
+        return namesAndRanges.flatMap { name, range -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
                 file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {

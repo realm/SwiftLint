@@ -30,7 +30,7 @@ extension Configuration {
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             let fullPath = pathNSString.absolutePathRepresentation()
             let config = Configuration.getCached(atPath: fullPath) ??
-                Configuration(path: configurationSearchPath, rootPath: rootPath, optional: false, quiet: true)
+                Configuration(path: configurationSearchPath, rootPath: fullPath, optional: false, quiet: true)
             return merge(with: config)
         }
 

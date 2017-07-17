@@ -23,6 +23,8 @@ private extension Configuration {
     }
 }
 
+// swiftlint:disable type_body_length
+
 class ConfigurationTests: XCTestCase {
 
     func testInit() {
@@ -253,10 +255,10 @@ class ConfigurationTests: XCTestCase {
     }
 
     func testNestedWhitelistedRules() {
-        let baseConfiguration = Configuration(optInRules: [ForceTryRule.description.identifier,
-                                                           ForceCastRule.description.identifier],
-                                              enableAllRules: true)!
-        let whitelistedConfiguration = Configuration(whitelistRules: [TodoRule.description.identifier])!
+        let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
+                                                                  optIn: [ForceTryRule.description.identifier,
+                                                                           ForceCastRule.description.identifier]))!
+        let whitelistedConfiguration = Configuration(rulesMode: .whitelisted([TodoRule.description.identifier]))!
         XCTAssertTrue(baseConfiguration.rules.contains(where: { $0 is TodoRule }))
         XCTAssertEqual(whitelistedConfiguration.rules.count, 1)
         XCTAssertTrue(whitelistedConfiguration.rules[0] is TodoRule)

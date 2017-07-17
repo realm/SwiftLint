@@ -75,7 +75,7 @@ class SourceKitCrashTests: XCTestCase {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
         }
         // swiftlint:disable:next force_unwrapping
-        let configuration = Configuration(whitelistRules: allRuleIdentifiers)!
+        let configuration = Configuration(rulesMode: .whitelisted(allRuleIdentifiers))!
         _ = Linter(file: file, configuration: configuration).styleViolations
         file.sourcekitdFailed = false
         file.assertHandler = nil

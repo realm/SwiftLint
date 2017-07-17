@@ -1000,7 +1000,6 @@
 				D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */,
 				E80E018C1B92C0F60078EB70 /* Command.swift */,
 				E809EDA01B8A71DF00399043 /* Configuration.swift */,
-				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
 				3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */,
 				E8B67C3D1C095E6300FDED8E /* Correction.swift */,
 				E812249B1B04FADC001783D2 /* Linter.swift */,
@@ -1026,6 +1025,7 @@
 			children = (
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
 				D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */,
+				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,

@@ -83,6 +83,7 @@
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
 * [Type Name](#type-name)
+* [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -12130,6 +12131,52 @@ protocol Foo {
 protocol Foo {
  associatedtype ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  }
+```
+
+</details>
+
+
+
+## Unneeded Parentheses in Closure Argument
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`unneeded_parentheses_in_closure_argument` | Enabled | Yes | style
+
+Parentheses are not needed when declaring closure arguments.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = { (bar: Int) in }
+
+```
+
+```swift
+let foo = { bar in }
+
+```
+
+```swift
+let foo = { bar -> Bool in return true }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+call(arg: { ↓(bar) in })
+
+```
+
+```swift
+let foo = { ↓(bar) -> Bool in return true }
+
 ```
 
 </details>

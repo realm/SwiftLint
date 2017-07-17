@@ -99,6 +99,16 @@ public struct Configuration: Equatable {
         }
     }
 
+    private init(_ configuration: Configuration) {
+        included = configuration.included
+        excluded = configuration.excluded
+        warningThreshold = configuration.warningThreshold
+        reporter = configuration.reporter
+        rules = configuration.rules
+        cachePath = configuration.cachePath
+        rootPath = configuration.rootPath
+    }
+
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
         let fullPath: String
@@ -106,6 +116,12 @@ public struct Configuration: Equatable {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
         } else {
             fullPath = path.bridge().absolutePathRepresentation()
+        }
+
+        if let cachedConfig = Configuration.getCached(atPath: fullPath) {
+            self.init(cachedConfig)
+            configurationPath = fullPath
+            return
         }
 
         let fail = { (msg: String) in

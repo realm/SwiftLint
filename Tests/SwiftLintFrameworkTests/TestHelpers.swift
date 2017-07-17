@@ -116,10 +116,10 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Con
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
-            return Configuration(whitelistRules: [identifier], configuredRules: [configuredRule])
+            return Configuration(rulesMode: .whitelisted([identifier]), configuredRules: [configuredRule])
         }
     }
-    return Configuration(whitelistRules: [identifier])
+    return Configuration(rulesMode: .whitelisted([identifier]))
 }
 
 private func testCorrection(_ correction: (String, String),

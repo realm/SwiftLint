@@ -58,40 +58,43 @@ extension Configuration {
     }
 
     private func mergingRules(with configuration: Configuration) -> [Rule] {
-        guard configuration.whitelistRules.isEmpty else {
+        switch configuration.rulesMode {
+        case .allEnabled:
+            // Technically not possible yet as it's not configurable in a .swiftlint.yml file,
+            // but implemented for completeness
+            return configuration.rules
+        case .whitelisted(let whitelistedRules):
             // Use an intermediate set to filter out duplicate rules when merging configurations
             // (always use the nested rule first if it exists)
             return Set(configuration.rules.map(HashableRule.init))
                 .union(rules.map(HashableRule.init))
                 .map { $0.rule }
                 .filter { rule in
-                    return configuration.whitelistRules.contains(type(of: rule).description.identifier)
+                    return whitelistedRules.contains(type(of: rule).description.identifier)
                 }
+        case .default(let disabled, let optIn):
+            // Same here
+            return Set(
+                configuration.rules
+                    // Enable rules that are opt-in by the nested configuration
+                    .filter { rule in
+                        return optIn.contains(type(of: rule).description.identifier)
+                    }
+                    .map(HashableRule.init)
+                )
+                // And disable rules that are disabled by the nested configuration
+                .union(
+                    rules.filter { rule in
+                        return !disabled.contains(type(of: rule).description.identifier)
+                    }.map(HashableRule.init)
+                )
+                .map { $0.rule }
         }
-
-        // Same here
-        return Set(
-            configuration.rules
-                // Enable rules that are opt-in by the nested configuration
-                .filter { rule in
-                    return configuration.optInRules.contains(type(of: rule).description.identifier)
-                }
-                .map(HashableRule.init)
-        )
-        // And disable rules that are disabled by the nested configuration
-        .union(
-            rules.filter { rule in
-                return !configuration.disabledRules.contains(type(of: rule).description.identifier)
-            }.map(HashableRule.init)
-        )
-        .map { $0.rule }
     }
 
     internal func merge(with configuration: Configuration) -> Configuration {
         return Configuration(
-            disabledRules: [],
-            optInRules: [],
-            whitelistRules: [],
+            rulesMode: configuration.rulesMode, // Use the rulesMode used to build the merged configuration
             included: configuration.included, // Always use the nested included directories
             excluded: configuration.excluded, // Always use the nested excluded directories
             // The minimum warning threshold if both exist, otherwise the nested,

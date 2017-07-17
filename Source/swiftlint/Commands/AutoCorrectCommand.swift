@@ -19,8 +19,9 @@ struct AutoCorrectCommand: CommandProtocol {
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
 
         return configuration.visitLintableFiles(path: options.path, action: "Correcting",
-                                                quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
-                                                cache: cache) { linter in
+                                                quiet: options.quiet,
+                                                useScriptInputFiles: options.useScriptInputFiles,
+                                                cache: cache, parallel: true) { linter in
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })

@@ -47,6 +47,10 @@
   [Cody Winton](https://github.com/codytwinton)
   [#1327](https://github.com/realm/SwiftLint/issues/1327)
 
+* Improve `autocorrect` performance by running it in parallel.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1578](https://github.com/realm/SwiftLint/issues/1578)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

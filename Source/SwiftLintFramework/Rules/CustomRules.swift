@@ -33,7 +33,14 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 
         for (key, value) in configurationDict {
             var ruleConfiguration = RegexConfiguration(identifier: key)
-            try ruleConfiguration.apply(configuration: value)
+
+            do {
+                try ruleConfiguration.apply(configuration: value)
+            } catch {
+                queuedPrintError("Invalid configuration for custom rule \(key).")
+                continue
+            }
+
             customRuleConfigurations.append(ruleConfiguration)
         }
     }

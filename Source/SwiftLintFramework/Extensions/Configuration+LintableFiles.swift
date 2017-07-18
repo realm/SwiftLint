@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Glob
 import SourceKittenFramework
 
 extension Configuration {
@@ -21,14 +22,16 @@ extension Configuration {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let excludedPaths = excluded.flatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
+        let excludedPaths = excluded.flatMap { excludedPath -> [String] in
+            if excludedPath.containsWildcards {
+                return Glob.filesToLint(inPath: excludedPath, rootDirectory: rootPath)
+            } else {
+                return fileManager.filesToLint(inPath: excludedPath, rootDirectory: rootPath)
+            }
         }
         let includedPaths = included.flatMap {
             fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }
-        return (pathsForPath + includedPaths).filter {
-            !excludedPaths.contains($0)
-        }
+        return (pathsForPath + includedPaths).filter({ !excludedPaths.contains($0) })
     }
 }

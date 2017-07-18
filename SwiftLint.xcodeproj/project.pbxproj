@@ -1539,6 +1539,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1549,6 +1550,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1563,7 +1565,7 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=150";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;
@@ -1631,6 +1633,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Profile;
 		};
@@ -1645,7 +1648,7 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=150";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;
@@ -1677,6 +1680,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Test;
 		};
@@ -1691,7 +1695,7 @@
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=150";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;

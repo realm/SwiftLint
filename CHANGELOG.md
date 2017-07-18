@@ -51,6 +51,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1578](https://github.com/realm/SwiftLint/issues/1578)
 
+* Support building with Xcode 9 beta 3 in Swift 3.2 mode.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

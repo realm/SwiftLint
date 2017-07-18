@@ -54,6 +54,10 @@
 * Support building with Xcode 9 beta 3 in Swift 3.2 mode.  
   [JP Simard](https://github.com/jpsim)
 
+* Add support for optional `error` severity level configuration.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1647](https://github.com/realm/SwiftLint/issues/1647)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

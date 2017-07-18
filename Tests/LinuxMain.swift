@@ -271,6 +271,8 @@ extension RuleConfigurationsTests {
         ("testSeverityConfigurationThrowsOnBadConfig", testSeverityConfigurationThrowsOnBadConfig),
         ("testSeverityLevelConfigParams", testSeverityLevelConfigParams),
         ("testSeverityLevelConfigPartialParams", testSeverityLevelConfigPartialParams),
+        ("testSeverityLevelConfigApplyNilErrorValue", testSeverityLevelConfigApplyNilErrorValue),
+        ("testSeverityLevelConfigApplyMissingErrorValue", testSeverityLevelConfigApplyMissingErrorValue),
         ("testRegexConfigurationThrows", testRegexConfigurationThrows),
         ("testRegexRuleDescription", testRegexRuleDescription),
         ("testTrailingWhitespaceConfigurationThrowsOnBadConfig", testTrailingWhitespaceConfigurationThrowsOnBadConfig),

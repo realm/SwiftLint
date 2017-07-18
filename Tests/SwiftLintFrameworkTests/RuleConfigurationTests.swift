@@ -151,6 +151,18 @@ class RuleConfigurationsTests: XCTestCase {
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 17)])
     }
 
+    func testSeverityLevelConfigApplyNilErrorValue() throws {
+        var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
+        try severityConfig.apply(configuration: ["error": nil, "warning": 18])
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
+    }
+
+    func testSeverityLevelConfigApplyMissingErrorValue() throws {
+        var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
+        try severityConfig.apply(configuration: ["warning": 18])
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
+    }
+
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration(identifier: "")

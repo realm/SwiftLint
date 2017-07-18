@@ -34,7 +34,7 @@ struct GenerateDocsCommand: CommandProtocol {
             queuedPrint(text)
         }
 
-        return .success()
+        return .success(())
     }
 
     private func ruleSummary(_ rule: Rule.Type) -> String {

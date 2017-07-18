@@ -44,7 +44,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
-            let description = type(of: self).description
+            let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
             if !isFunction {
@@ -65,7 +65,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                         "\(configuration.minLengthThreshold) and " +
                         "\(configuration.maxLengthThreshold) characters long: '\(name)'"
                     return [
-                        StyleViolation(ruleDescription: type(of: self).description,
+                        StyleViolation(ruleDescription: Swift.type(of: self).description,
                                        severity: severity,
                                        location: Location(file: file, byteOffset: offset),
                                        reason: reason)

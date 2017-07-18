@@ -56,6 +56,7 @@
 
 * Add support for optional `error` severity level configuration.  
   [Jamie Edge](https://github.com/JamieEdge)
+  [Marcelo Fabri](https://github.com/marcelofabri)
   [#1647](https://github.com/realm/SwiftLint/issues/1647)
 
 ##### Bug Fixes

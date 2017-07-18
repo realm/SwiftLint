@@ -1,0 +1,13 @@
+language: generic
+install:
+  - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
+script: swift test
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.3
+    - os: linux
+      dist: trusty
+      sudo: required
+  allow_failures:
+    - os: linux

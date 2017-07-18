@@ -14,5 +14,6 @@ let package = Package(
     .Package(url: "https://github.com/jpsim/SourceKitten.git", majorVersion: 0, minor: 18),
     .Package(url: "https://github.com/jpsim/Yams.git", majorVersion: 0, minor: 3),
     .Package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", majorVersion: 0, minor: 5),
+    .Package(url: "https://github.com/xzeror/Glob", majorVersion: 1, minor: 0),
   ]
 )

@@ -73,7 +73,7 @@ struct LintCommand: CommandProtocol {
         } else if strictWithViolations {
             exit(3)
         }
-        return .success()
+        return .success(())
     }
 
     private static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {

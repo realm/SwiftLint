@@ -38,14 +38,14 @@ struct RulesCommand: CommandProtocol {
             }
 
             print(ruleDescription: rule.description)
-            return .success()
+            return .success(())
         }
 
         let configuration = Configuration(options: options)
         let rules = ruleList(for: options, configuration: configuration)
 
         print(TextTable(ruleList: rules, configuration: configuration).render())
-        return .success()
+        return .success(())
     }
 
     private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {

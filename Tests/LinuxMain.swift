@@ -53,6 +53,7 @@ extension ConfigurationTests {
     static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] = [
         ("testInit", testInit),
         ("testEmptyConfiguration", testEmptyConfiguration),
+        ("testInitWithRelativePathAndRootPath", testInitWithRelativePathAndRootPath),
         ("testWhitelistRules", testWhitelistRules),
         ("testWarningThreshold_value", testWarningThreshold_value),
         ("testWarningThreshold_nil", testWarningThreshold_nil),

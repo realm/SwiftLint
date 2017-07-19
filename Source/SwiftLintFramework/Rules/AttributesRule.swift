@@ -156,7 +156,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
         let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return Set(allAttributes.flatMap { (token, hasParameter) -> String? in
+        return Set(allAttributes.flatMap { token, hasParameter -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)

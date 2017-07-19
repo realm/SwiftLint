@@ -329,6 +329,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
+    func testUnneededParenthesesInClosureArgument() {
+        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }

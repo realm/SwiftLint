@@ -59,6 +59,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1647](https://github.com/realm/SwiftLint/issues/1647)
 
+* Add `unneeded_parentheses_in_closure_argument` opt-in correctable rule that
+  warns against using parentheses around argument declarations in closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1483](https://github.com/realm/SwiftLint/issues/1483)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

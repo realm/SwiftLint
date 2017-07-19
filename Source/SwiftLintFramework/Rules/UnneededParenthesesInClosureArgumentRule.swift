@@ -10,7 +10,7 @@ import Foundation
 import Foundation
 import SourceKittenFramework
 
-public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule {
+public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

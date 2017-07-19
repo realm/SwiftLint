@@ -59,8 +59,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1647](https://github.com/realm/SwiftLint/issues/1647)
 
-* Add `unneeded_parentheses_in_closure_argument` correctable rule that warns
-  against using parentheses around argument declarations in closures.  
+* Add `unneeded_parentheses_in_closure_argument` opt-in correctable rule that
+  warns against using parentheses around argument declarations in closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1483](https://github.com/realm/SwiftLint/issues/1483)
 

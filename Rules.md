@@ -12141,7 +12141,7 @@ protocol Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`unneeded_parentheses_in_closure_argument` | Enabled | Yes | style
+`unneeded_parentheses_in_closure_argument` | Disabled | Yes | style
 
 Parentheses are not needed when declaring closure arguments.
 

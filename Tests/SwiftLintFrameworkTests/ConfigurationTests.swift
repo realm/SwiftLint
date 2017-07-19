@@ -44,6 +44,23 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
     }
 
+    func testInitWithRelativePathAndRootPath() {
+        let previousWorkingDir = FileManager.default.currentDirectoryPath
+        let rootPath = projectMockSwift0
+        let expectedConfig = projectMockConfig0
+        FileManager.default.changeCurrentDirectoryPath(projectMockPathLevel0)
+
+        let config = Configuration(path: ".swiftlint.yml", rootPath: rootPath,
+                                   optional: false, quiet: true)
+
+        XCTAssertEqual(config.disabledRules, expectedConfig.disabledRules)
+        XCTAssertEqual(config.included, expectedConfig.included)
+        XCTAssertEqual(config.excluded, expectedConfig.excluded)
+        XCTAssertEqual(config.reporter, expectedConfig.reporter)
+
+        FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
+    }
+
     func testWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let config = Configuration(dict: ["whitelist_rules": whitelist])!

@@ -76,6 +76,11 @@
   [Jamie Edge](https://github.com/JamieEdge)
   [#1586](https://github.com/realm/SwiftLint/issues/1586)
 
+* Fix crash when using `--config` with a relative path and 
+  `--path` with a file.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1694](https://github.com/realm/SwiftLint/issues/1694)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

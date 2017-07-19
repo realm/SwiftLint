@@ -112,7 +112,7 @@ public struct Configuration: Equatable {
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
                 optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
         let fullPath: String
-        if let rootPath = rootPath {
+        if let rootPath = rootPath, rootPath.isDirectory() {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
         } else {
             fullPath = path.bridge().absolutePathRepresentation()
@@ -200,4 +200,19 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
         "configuration error: '\(rule.0)' is listed \(rule.1) times"
     }.joined(separator: "\n"))
     return true
+}
+
+private extension String {
+    func isDirectory() -> Bool {
+        var isDir: ObjCBool = false
+        if FileManager.default.fileExists(atPath: self, isDirectory: &isDir) {
+            #if os(Linux)
+                return isDir
+            #else
+                return isDir.boolValue
+            #endif
+        }
+
+        return false
+    }
 }

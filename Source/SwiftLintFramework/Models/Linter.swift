@@ -16,8 +16,8 @@ private struct LintResult {
     let deprecatedToValidIDPairs: [(String, String)]
 }
 
-extension Rule {
-    fileprivate func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
+private extension Rule {
+    func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }

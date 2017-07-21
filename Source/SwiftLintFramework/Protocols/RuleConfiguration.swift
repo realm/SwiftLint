@@ -19,8 +19,8 @@ extension RuleConfiguration {
     }
 }
 
-extension RuleConfiguration where Self: Equatable {
-    public func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
+public extension RuleConfiguration where Self: Equatable {
+    func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
         return self == ruleConfiguration as? Self
     }
 }

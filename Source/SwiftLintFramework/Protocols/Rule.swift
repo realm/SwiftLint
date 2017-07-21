@@ -46,19 +46,19 @@ public protocol SourceKitFreeRule: Rule {}
 // MARK: - ConfigurationProviderRule conformance to Configurable
 
 public extension ConfigurationProviderRule {
-    public init(configuration: Any) throws {
+    init(configuration: Any) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)
     }
 
-    public func isEqualTo(_ rule: Rule) -> Bool {
+    func isEqualTo(_ rule: Rule) -> Bool {
         if let rule = rule as? Self {
             return configuration.isEqualTo(rule.configuration)
         }
         return false
     }
 
-    public var configurationDescription: String {
+    var configurationDescription: String {
         return configuration.consoleDescription
     }
 }

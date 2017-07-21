@@ -198,6 +198,11 @@ class RulesTests: XCTestCase {
 
     func testOperatorUsageWhitespace() {
         verifyRule(OperatorUsageWhitespaceRule.description)
+
+        let description = OperatorUsageWhitespaceRule.description
+            .with(nonTriggeringExamples: ["#!/usr/bin/env swift\n"])
+            .with(triggeringExamples: []).with(corrections: [:])
+        verifyRule(description, skipCommentTests: true, skipStringTests: true, testMultiByteOffsets: false)
     }
 
     func testPrivateOverFilePrivate() {

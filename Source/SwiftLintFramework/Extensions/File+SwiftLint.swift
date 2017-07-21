@@ -52,11 +52,20 @@ extension File {
         }
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment]).flatMap { range in
+        return skipShebangCommands() + match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
+    }
+
+    private func skipShebangCommands() -> [Command] {
+        guard contents.hasPrefix("#!") else {
+            return []
+        }
+
+        return Command(action: .disable, ruleIdentifiers: masterRuleList.allValidIdentifiers(),
+                       line: 0, modifier: .next).expand()
     }
 
     fileprivate func endOf(next command: Command?) -> Location {

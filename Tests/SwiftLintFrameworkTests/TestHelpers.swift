@@ -65,8 +65,8 @@ private func render(locations: [Location], in contents: String) -> String {
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
 
-extension Configuration {
-    fileprivate func assertCorrection(_ before: String, expected: String) {
+private extension Configuration {
+    func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
                 XCTFail("couldn't generate temporary path for assertCorrection()")
@@ -106,8 +106,8 @@ extension Configuration {
     }
 }
 
-extension String {
-    fileprivate func toStringLiteral() -> String {
+private extension String {
+    func toStringLiteral() -> String {
         return "\"" + replacingOccurrences(of: "\n", with: "\\n") + "\""
     }
 }

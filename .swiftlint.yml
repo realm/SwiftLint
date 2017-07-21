@@ -24,6 +24,7 @@ opt_in_rules:
   - vertical_parameter_alignment_on_call
   - let_var_whitespace
   - unneeded_parentheses_in_closure_argument
+  - extension_access_modifier
 
 file_header:
   required_pattern: |

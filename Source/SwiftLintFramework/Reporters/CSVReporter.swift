@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension String {
-    fileprivate func escapedForCSV() -> String {
+private extension String {
+    func escapedForCSV() -> String {
         let escapedString = replacingOccurrences(of: "\"", with: "\"\"")
         if escapedString.contains(",") || escapedString.contains("\n") {
             return "\"\(escapedString)\""

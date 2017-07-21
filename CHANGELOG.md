@@ -8,13 +8,6 @@
 ##### Enhancements
 
 * Rules are now categorized as `lint`, `idiomatic`, `style`, `metrics`
-* Add `ignore_comment_only_lines` boolean configuration option
-  to `file_length` rule. With the option enabled, `file_length` will
-  ignore lines which have only comments.  
-  [Samuel Susla](https://github.com/sammy-SC)
-  [#1387](https://github.com/realm/SwiftLint/issues/1165)
-
-* Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
   when you run `swiftlint rules` or `swiftlint generate-docs`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -75,6 +68,12 @@
   not enabled in the configuration.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `ignore_comment_only_lines` boolean configuration option
+  to `file_length` rule. With the option enabled, `file_length` will
+  ignore lines which have only comments.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using
@@ -100,9 +99,7 @@
 
 ##### Enhancements
 
-* Don't count comment lines in `file_length` rule.  
-  [Samuel Susla](https://github.com/sammy-SC)
-  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+* None.
 
 ##### Bug Fixes
 

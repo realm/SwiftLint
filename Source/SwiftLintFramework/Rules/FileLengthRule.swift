@@ -9,7 +9,7 @@
 import SourceKittenFramework
 
 public struct FileLengthRule: ConfigurationProviderRule {
-    public var configuration = FileLenghtRuleConfiguration(warning: 400, error: 1000)
+    public var configuration = FileLengthRuleConfiguration(warning: 400, error: 1000)
 
     public init() {}
 
@@ -28,22 +28,21 @@ public struct FileLengthRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        func getLineCountWithoutComments() -> Int {
+        func lineCountWithoutComments() -> Int {
             let commentKinds = Set(SyntaxKind.commentKinds())
             let lineCount = file.syntaxKindsByLines.filter { kinds in
-                return !kinds.filter { !commentKinds.contains($0) }.isEmpty
+                return !Set(kinds).isSubset(of: commentKinds)
             }.count
             return lineCount
         }
 
         var lineCount = file.lines.count
-
         let hasViolation = configuration.severityConfiguration.params.contains {
             $0.value < lineCount
         }
 
         if hasViolation && configuration.ignoreCommentOnlyLines {
-            lineCount = getLineCountWithoutComments()
+            lineCount = lineCountWithoutComments()
         }
 
         for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
@@ -54,6 +53,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
                                    location: Location(file: file.path, line: lineCount),
                                    reason: reason)]
         }
+
         return []
     }
 }

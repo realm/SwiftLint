@@ -14,12 +14,13 @@ private enum ConfigurationKey: String {
     case ignoreCommentOnlyLines = "ignore_comment_only_lines"
 }
 
-public struct FileLenghtRuleConfiguration: RuleConfiguration, Equatable {
+public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
     private(set) var ignoreCommentOnlyLines: Bool
     private(set) var severityConfiguration: SeverityLevelsConfiguration
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", ignore_comment_only_lines: \(ignoreCommentOnlyLines)"
+        return severityConfiguration.consoleDescription +
+            "\(ConfigurationKey.ignoreCommentOnlyLines.rawValue): \(ignoreCommentOnlyLines)"
     }
 
     public init(warning: Int, error: Int?, ignoreCommentOnlyLines: Bool = false) {
@@ -54,9 +55,10 @@ public struct FileLenghtRuleConfiguration: RuleConfiguration, Equatable {
         }
 
     }
-}
 
-public func == (lhs: FileLenghtRuleConfiguration,
-                rhs: FileLenghtRuleConfiguration) -> Bool {
-    return lhs.ignoreCommentOnlyLines == rhs.ignoreCommentOnlyLines
+    public static func == (lhs: FileLengthRuleConfiguration,
+                           rhs: FileLengthRuleConfiguration) -> Bool {
+        return lhs.ignoreCommentOnlyLines == rhs.ignoreCommentOnlyLines &&
+            lhs.severityConfiguration == rhs.severityConfiguration
+    }
 }

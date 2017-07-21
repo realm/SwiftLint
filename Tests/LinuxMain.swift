@@ -130,7 +130,8 @@ extension FileHeaderRuleTests {
 
 extension FileLenghtRuleTests {
     static var allTests: [(String, (FileLenghtRuleTests) -> () throws -> Void)] = [
-        ("testFileLengthRuleIgnoringLinesWithOnlyComments", testFileLengthRuleIgnoringLinesWithOnlyComments)
+        ("testFileLengthWithDefaultConfiguration", testFileLengthWithDefaultConfiguration),
+        ("testFileLengthIgnoringLinesWithOnlyComments", testFileLengthIgnoringLinesWithOnlyComments)
     ]
 }
 
@@ -332,7 +333,6 @@ extension RulesTests {
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExtensionAccessModifier", testExtensionAccessModifier),
         ("testFatalErrorMessage", testFatalErrorMessage),
-        ("testFileLength", testFileLength),
         ("testFirstWhere", testFirstWhere),
         ("testForceCast", testForceCast),
         ("testForceTry", testForceTry),

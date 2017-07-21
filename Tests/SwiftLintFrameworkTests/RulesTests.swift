@@ -96,11 +96,6 @@ class RulesTests: XCTestCase {
         verifyRule(FatalErrorMessageRule.description)
     }
 
-    func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
-    }
-
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }

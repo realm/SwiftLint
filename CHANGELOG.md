@@ -64,6 +64,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1483](https://github.com/realm/SwiftLint/issues/1483)
 
+* Add `--disabled` flag to `swiftlint rules` to print only rules that are
+  not enabled in the configuration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

@@ -202,10 +202,7 @@ class RulesTests: XCTestCase {
     }
 
     func testOperatorUsageWhitespace() {
-#if !swift(>=3.2)
-        // Test crashes SourceKit with Swift 3.2 or later
         verifyRule(OperatorUsageWhitespaceRule.description)
-#endif
     }
 
     func testPrivateOverFilePrivate() {

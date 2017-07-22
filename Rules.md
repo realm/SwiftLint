@@ -6645,6 +6645,8 @@ let range = 1..<3
 
 ```swift
 #if swift(>=3.0)
+    foo()
+#endif
 
 ```
 

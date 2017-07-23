@@ -170,7 +170,7 @@ class RulesTests: XCTestCase {
     }
 
     func testMark() {
-        verifyRule(MarkRule.description, commentDoesntViolate: false)
+        verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
     func testMultilineParameters() {

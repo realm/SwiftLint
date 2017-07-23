@@ -77,6 +77,7 @@
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
+* [Trailing Closure](#trailing-closure)
 * [Trailing Comma](#trailing-comma)
 * [Trailing Newline](#trailing-newline)
 * [Trailing Semicolon](#trailing-semicolon)
@@ -8997,6 +8998,77 @@ TODOs and FIXMEs should be avoided.
 
 ```swift
 /** ↓TODO: */
+
+```
+
+</details>
+
+
+
+## Trailing Closure
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`trailing_closure` | Disabled | No | style
+
+Trailing closure syntax should be used whenever possible
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo.map { $0 + 1 }
+
+```
+
+```swift
+foo.bar()
+
+```
+
+```swift
+foo.reduce(0) { $0 + 1 }
+
+```
+
+```swift
+if let foo = bar.map({ $0 + 1 }) { }
+
+```
+
+```swift
+foo.something(param1: { $0 }, param2: { $0 + 1 })
+
+```
+
+```swift
+offsets.sorted { $0.offset < $1.offset }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓foo.map({ $0 + 1 })
+
+```
+
+```swift
+↓foo.reduce(0, combine: { $0 + 1 })
+
+```
+
+```swift
+↓offsets.sorted(by: { $0.offset < $1.offset })
+
+```
+
+```swift
+↓foo.something(0, { $0 + 1 })
 
 ```
 

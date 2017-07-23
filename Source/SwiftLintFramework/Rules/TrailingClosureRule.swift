@@ -17,7 +17,8 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "trailing_closure",
         name: "Trailing Closure",
-        description: "Trailing closure syntax should be used whenever possible",
+        description: "Trailing closure syntax should be used whenever possible.",
+        kind: .style,
         nonTriggeringExamples: [
             "foo.map { $0 + 1 }\n",
             "foo.bar()\n",

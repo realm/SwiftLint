@@ -74,6 +74,10 @@
   [Samuel Susla](https://github.com/sammy-SC)
   [#1387](https://github.com/realm/SwiftLint/issues/1165)
 
+* Improve `file_header` rule description.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1492](https://github.com/realm/SwiftLint/issues/1492)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

@@ -2302,7 +2302,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `file_header` | Disabled | No | style
 
-Files should have consistent header comments.
+Header comments should be consistent with project patterns.
 
 ### Examples
 

@@ -5342,6 +5342,15 @@ MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'
 ↓// MARK - bad
 ```
 
+```swift
+↓//MARK:- Top-Level bad mark
+↓//MARK:- Another bad mark
+struct MarkTest {}
+↓// MARK:- Bad mark
+extension MarkTest {}
+
+```
+
 </details>
 
 

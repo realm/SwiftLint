@@ -85,6 +85,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1694](https://github.com/realm/SwiftLint/issues/1694)
 
+* Fix `mark` rule corrections generating invalid code in some cases.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1029](https://github.com/realm/SwiftLint/issues/1029)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

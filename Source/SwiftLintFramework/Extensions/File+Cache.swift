@@ -102,9 +102,7 @@ private struct Cache<T> {
     }
 
     fileprivate mutating func invalidate(_ file: File) {
-        if let key = file.path {
-            doLocked { values.removeValue(forKey: key) }
-        }
+        doLocked { values.removeValue(forKey: file.cacheKey) }
     }
 
     fileprivate mutating func clear() {

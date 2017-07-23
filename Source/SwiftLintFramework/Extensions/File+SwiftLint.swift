@@ -244,6 +244,7 @@ extension File {
             fatalError("can't write file to \(path)")
         }
         contents = string
+        invalidateCache()
         lines = contents.bridge().lines()
     }
 

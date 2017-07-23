@@ -128,6 +128,13 @@ extension FileHeaderRuleTests {
     ]
 }
 
+extension FileLenghtRuleTests {
+    static var allTests: [(String, (FileLenghtRuleTests) -> () throws -> Void)] = [
+        ("testFileLengthWithDefaultConfiguration", testFileLengthWithDefaultConfiguration),
+        ("testFileLengthIgnoringLinesWithOnlyComments", testFileLengthIgnoringLinesWithOnlyComments)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
@@ -326,7 +333,6 @@ extension RulesTests {
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExtensionAccessModifier", testExtensionAccessModifier),
         ("testFatalErrorMessage", testFatalErrorMessage),
-        ("testFileLength", testFileLength),
         ("testFirstWhere", testFirstWhere),
         ("testForceCast", testForceCast),
         ("testForceTry", testForceTry),
@@ -456,6 +462,7 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
+    testCase(FileLenghtRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),

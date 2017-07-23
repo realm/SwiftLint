@@ -68,6 +68,12 @@
   not enabled in the configuration.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `ignore_comment_only_lines` boolean configuration option
+  to `file_length` rule. With the option enabled, `file_length` will
+  ignore lines which have only comments.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

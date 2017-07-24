@@ -68,7 +68,7 @@ public struct Configuration: Equatable {
         case .whitelisted(let whitelistedRuleIdentifiers):
             let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
                 ruleIdentifiers: whitelistedRuleIdentifiers.map(handleAliasWithRuleList),
-                with: validRuleIdentifiers)
+                validRuleIdentifiers: validRuleIdentifiers)
             // Validate that rule identifiers aren't listed multiple times
             if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
                 return nil
@@ -79,10 +79,10 @@ public struct Configuration: Equatable {
         case .default(let disabledRuleIdentifiers, let optInRuleIdentifiers):
             let validDisabledRuleIdentifiers = validateRuleIdentifiers(
                 ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
-                with: validRuleIdentifiers)
+                validRuleIdentifiers: validRuleIdentifiers)
             let validOptInRuleIdentifiers = validateRuleIdentifiers(
                 ruleIdentifiers: optInRuleIdentifiers.map(handleAliasWithRuleList),
-                with: validRuleIdentifiers)
+                validRuleIdentifiers: validRuleIdentifiers)
             // Same here
             if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
                 || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
@@ -196,7 +196,7 @@ public struct Configuration: Equatable {
 
 // MARK: Identifier Validation
 
-private func validateRuleIdentifiers(ruleIdentifiers: [String], with validRuleIdentifiers: [String]) -> [String] {
+private func validateRuleIdentifiers(ruleIdentifiers: [String], validRuleIdentifiers: [String]) -> [String] {
     // Validate that all rule identifiers map to a defined rule
     let invalidRuleIdentifiers = ruleIdentifiers.filter { !validRuleIdentifiers.contains($0) }
     if !invalidRuleIdentifiers.isEmpty {

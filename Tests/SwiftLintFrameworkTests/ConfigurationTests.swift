@@ -21,10 +21,6 @@ private extension Configuration {
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
     }
-
-    fileprivate func contains<T: Rule>(rule: T.Type) -> Bool {
-        return rules.contains(where: { $0 is T })
-    }
 }
 
 // swiftlint:disable type_body_length
@@ -184,111 +180,12 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Configuration Equality
 
-    fileprivate var projectMockConfig0: Configuration {
-        var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
-        configuration.rootPath = projectMockPathLevel0
-        return configuration
-    }
-
-    private var projectMockConfig0CustomPath: Configuration {
-        return Configuration(path: projectMockYAML0CustomPath, rootPath: projectMockPathLevel0,
-                             optional: false, quiet: true)
-    }
-
-    fileprivate var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
-    }
-
-    fileprivate var projectMockConfig3: Configuration {
-        return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
-                             optional: false, quiet: true)
-    }
-
     func testIsEqualTo() {
         XCTAssertEqual(projectMockConfig0, projectMockConfig0)
     }
 
     func testIsNotEqualTo() {
         XCTAssertNotEqual(projectMockConfig0, projectMockConfig2)
-    }
-
-    // MARK: - Testing Nested Configurations
-
-    func testMerge() {
-        XCTAssertFalse(projectMockConfig0.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(projectMockConfig2.contains(rule: ForceCastRule.self))
-        let config0Merge2 = projectMockConfig0.merge(with: projectMockConfig2)
-        XCTAssertFalse(config0Merge2.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(projectMockConfig0.contains(rule: TodoRule.self))
-        XCTAssertTrue(projectMockConfig2.contains(rule: TodoRule.self))
-        XCTAssertTrue(config0Merge2.contains(rule: TodoRule.self))
-        XCTAssertFalse(projectMockConfig3.contains(rule: TodoRule.self))
-        XCTAssertFalse(config0Merge2.merge(with: projectMockConfig3).contains(rule: TodoRule.self))
-    }
-
-    func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift0)!),
-                       projectMockConfig0)
-    }
-
-    func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift1)!),
-                       projectMockConfig0)
-    }
-
-    func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift2)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
-    }
-
-    func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(with: projectMockConfig3))
-    }
-
-    func testNestedConfigurationWithCustomRootPath() {
-        XCTAssertNotEqual(projectMockConfig0.rootPath, projectMockConfig3.rootPath)
-        XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig3).rootPath, projectMockConfig3.rootPath)
-    }
-
-    func testMergedWarningThreshold() {
-        func configuration(forWarningThreshold warningThreshold: Int?) -> Configuration {
-            return Configuration(warningThreshold: warningThreshold,
-                                 reporter: XcodeReporter.identifier,
-                                 ruleList: masterRuleList)!
-        }
-        XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merge(with: configuration(forWarningThreshold: 2)).warningThreshold,
-                       2)
-        XCTAssertEqual(configuration(forWarningThreshold: nil)
-            .merge(with: configuration(forWarningThreshold: 2)).warningThreshold,
-                       2)
-        XCTAssertEqual(configuration(forWarningThreshold: 3)
-            .merge(with: configuration(forWarningThreshold: nil)).warningThreshold,
-                       3)
-        XCTAssertEqual(configuration(forWarningThreshold: nil)
-            .merge(with: configuration(forWarningThreshold: nil)).warningThreshold,
-                       nil)
-    }
-
-    func testNestedWhitelistedRules() {
-        let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
-                                                                  optIn: [ForceTryRule.description.identifier,
-                                                                          ForceCastRule.description.identifier]))!
-        let whitelistedConfiguration = Configuration(rulesMode: .whitelisted([TodoRule.description.identifier]))!
-        XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
-        XCTAssertEqual(whitelistedConfiguration.rules.count, 1)
-        XCTAssertTrue(whitelistedConfiguration.rules[0] is TodoRule)
-        let mergedConfiguration1 = baseConfiguration.merge(with: whitelistedConfiguration)
-        XCTAssertEqual(mergedConfiguration1.rules.count, 1)
-        XCTAssertTrue(mergedConfiguration1.rules[0] is TodoRule)
-
-        // Also test the other way around
-        let mergedConfiguration2 = whitelistedConfiguration.merge(with: baseConfiguration)
-        XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the whitelisted rules
-        XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
-        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
-        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
 
     // MARK: - Testing Custom Configuration File
@@ -350,69 +247,4 @@ class ConfigurationTests: XCTestCase {
         XCTAssert(configuration.rules.isEmpty)
     }
 
-}
-
-// MARK: - ProjectMock Paths
-
-private extension String {
-    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return bridge().appendingPathComponent(pathComponent)
-    }
-}
-
-extension XCTestCase {
-    var bundlePath: String {
-        #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
-        #else
-            return Bundle(for: type(of: self)).resourcePath!
-        #endif
-    }
-}
-
-private extension XCTestCase {
-
-    var projectMockPathLevel0: String {
-        return bundlePath.stringByAppendingPathComponent("ProjectMock")
-    }
-
-    var projectMockPathLevel1: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level1")
-    }
-
-    var projectMockPathLevel2: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level2")
-    }
-
-    var projectMockPathLevel3: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
-    }
-
-    var projectMockYAML0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockYAML0CustomPath: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("custom.yml")
-    }
-
-    var projectMockYAML2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockSwift0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level0.swift")
-    }
-
-    var projectMockSwift1: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level1.swift")
-    }
-
-    var projectMockSwift2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level2.swift")
-    }
-
-    var projectMockSwift3: String {
-        return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
-    }
 }

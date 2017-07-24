@@ -13,6 +13,12 @@ import XCTest
 
 private let violationMarker = "↓"
 
+extension String {
+    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
+        return bridge().appendingPathComponent(pathComponent)
+    }
+}
+
 let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
 func violations(_ string: String, config: Configuration = Configuration()) -> [StyleViolation] {

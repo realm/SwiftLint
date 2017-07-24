@@ -21,6 +21,10 @@ private extension Configuration {
         }).map({ $0.description.identifier }))
         return defaultRuleIDs.subtracting(configuredRuleIDs).sorted(by: <)
     }
+
+    fileprivate func contains<T: Rule>(rule: T.Type) -> Bool {
+        return rules.contains(where: { $0 is T })
+    }
 }
 
 // swiftlint:disable type_body_length
@@ -139,15 +143,15 @@ class ConfigurationTests: XCTestCase {
 
     func testDuplicatedRules() {
         let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
-        XCTAssert(duplicateConfig1 == nil, "initializing Configuration with duplicate rules in " +
+        XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
 
         let duplicateConfig2 = Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
-        XCTAssert(duplicateConfig2 == nil, "initializing Configuration with duplicate rules in " +
+        XCTAssertNil(duplicateConfig2, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
 
         let duplicateConfig3 = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
-        XCTAssert(duplicateConfig3 == nil, "initializing Configuration with duplicate rules in " +
+        XCTAssertNil(duplicateConfig3, "initializing Configuration with duplicate rules in " +
             "Dictionary should fail")
     }
 
@@ -211,16 +215,15 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Testing Nested Configurations
 
     func testMerge() {
-        XCTAssertFalse(projectMockConfig0.rules.contains(where: { $0 is ForceCastRule }))
-        XCTAssertTrue(projectMockConfig2.rules.contains(where: { $0 is ForceCastRule }))
+        XCTAssertFalse(projectMockConfig0.contains(rule: ForceCastRule.self))
+        XCTAssertTrue(projectMockConfig2.contains(rule: ForceCastRule.self))
         let config0Merge2 = projectMockConfig0.merge(with: projectMockConfig2)
-        XCTAssertFalse(config0Merge2.rules.contains(where: { $0 is ForceCastRule }))
-        XCTAssertTrue(projectMockConfig0.rules.contains(where: { $0 is TodoRule }))
-        XCTAssertTrue(projectMockConfig2.rules.contains(where: { $0 is TodoRule }))
-        XCTAssertTrue(config0Merge2.rules.contains(where: { $0 is TodoRule }))
-        XCTAssertFalse(projectMockConfig3.rules.contains(where: { $0 is TodoRule }))
-        XCTAssertFalse(config0Merge2.merge(with: projectMockConfig3)
-            .rules.contains(where: { $0 is TodoRule }))
+        XCTAssertFalse(config0Merge2.contains(rule: ForceCastRule.self))
+        XCTAssertTrue(projectMockConfig0.contains(rule: TodoRule.self))
+        XCTAssertTrue(projectMockConfig2.contains(rule: TodoRule.self))
+        XCTAssertTrue(config0Merge2.contains(rule: TodoRule.self))
+        XCTAssertFalse(projectMockConfig3.contains(rule: TodoRule.self))
+        XCTAssertFalse(config0Merge2.merge(with: projectMockConfig3).contains(rule: TodoRule.self))
     }
 
     func testLevel0() {
@@ -271,9 +274,9 @@ class ConfigurationTests: XCTestCase {
     func testNestedWhitelistedRules() {
         let baseConfiguration = Configuration(rulesMode: .default(disabled: [],
                                                                   optIn: [ForceTryRule.description.identifier,
-                                                                           ForceCastRule.description.identifier]))!
+                                                                          ForceCastRule.description.identifier]))!
         let whitelistedConfiguration = Configuration(rulesMode: .whitelisted([TodoRule.description.identifier]))!
-        XCTAssertTrue(baseConfiguration.rules.contains(where: { $0 is TodoRule }))
+        XCTAssertTrue(baseConfiguration.contains(rule: TodoRule.self))
         XCTAssertEqual(whitelistedConfiguration.rules.count, 1)
         XCTAssertTrue(whitelistedConfiguration.rules[0] is TodoRule)
         let mergedConfiguration1 = baseConfiguration.merge(with: whitelistedConfiguration)
@@ -283,9 +286,9 @@ class ConfigurationTests: XCTestCase {
         // Also test the other way around
         let mergedConfiguration2 = whitelistedConfiguration.merge(with: baseConfiguration)
         XCTAssertEqual(mergedConfiguration2.rules.count, 3) // 2 opt-ins + 1 from the whitelisted rules
-        XCTAssertTrue(mergedConfiguration2.rules.contains(where: { $0 is TodoRule }))
-        XCTAssertTrue(mergedConfiguration2.rules.contains(where: { $0 is ForceCastRule }))
-        XCTAssertTrue(mergedConfiguration2.rules.contains(where: { $0 is ForceTryRule }))
+        XCTAssertTrue(mergedConfiguration2.contains(rule: TodoRule.self))
+        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
+        XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
 
     // MARK: - Testing Custom Configuration File

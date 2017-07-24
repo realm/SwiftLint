@@ -126,7 +126,7 @@ extension Configuration {
                   ruleList: ruleList,
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
-                  cachePath: cachePath ?? cachePath)
+                  cachePath: cachePath)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

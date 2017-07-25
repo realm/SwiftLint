@@ -72,7 +72,7 @@
   to `file_length` rule. With the option enabled, `file_length` will
   ignore lines which have only comments.  
   [Samuel Susla](https://github.com/sammy-SC)
-  [#1387](https://github.com/realm/SwiftLint/issues/1165)
+  [#1165](https://github.com/realm/SwiftLint/issues/1165)
 
 * Improve `file_header` rule description.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -231,12 +231,12 @@
 
 * Remove support for Swift 2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+  [#1453](https://github.com/realm/SwiftLint/issues/1453)
 
 * Remove `missing_docs` and `valid_docs` rules since
   they were already disabled.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+  [#1453](https://github.com/realm/SwiftLint/issues/1453)
 
 * Add `modificationDate(forFileAtPath:)` function requirement to
   `LintableFileManager` protocol.  
@@ -1250,7 +1250,7 @@
 * `ForceUnwrappingRule` did not recognize force unwraps in return statements
   using subscript.  
   [Norio Nomura](https://github.com/norio-nomura)
-  [#813](https://github.com/realm/SwiftLint/issues/813)  
+  [#813](https://github.com/realm/SwiftLint/issues/813)
 
 ## 0.12.0: Vertical Laundry
 

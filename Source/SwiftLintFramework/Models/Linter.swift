@@ -35,7 +35,7 @@ private extension Rule {
         }
 
         let (disabledViolationsAndRegions, enabledViolationsAndRegions) = violations.map { violation in
-            return (violation, regions.first(where: { $0.contains(violation.location) }))
+            return (violation, regions.first { $0.contains(violation.location) })
         }.partitioned { _, region in
             return region?.isRuleEnabled(self) ?? true
         }

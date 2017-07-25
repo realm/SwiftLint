@@ -102,7 +102,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         }
 
         let offsets = violationOffsets(for: returnSubstring, initialOffset: returnRange.location)
-        return offsets.sorted(by: { $0.offset < $1.offset })
+        return offsets.sorted { $0.offset < $1.offset }
     }
 
     private func violationOffsets(for text: String, initialOffset: Int = 0) -> [(offset: Int, size: Int)] {

@@ -377,6 +377,7 @@ extension RulesTests {
         ("testStrictFilePrivate", testStrictFilePrivate),
         ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
         ("testSyntacticSugar", testSyntacticSugar),
+        ("testTrailingClosure", testTrailingClosure),
         ("testTrailingNewline", testTrailingNewline),
         ("testTrailingSemicolon", testTrailingSemicolon),
         ("testTrailingWhitespace", testTrailingWhitespace),

@@ -62,7 +62,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//MARK: - comment": "// MARK: - comment",
             "↓// MARK:- comment": "// MARK: - comment",
             "↓// MARK: -comment": "// MARK: - comment",
-            issue1029Example: issue1029Corretion
+            issue1029Example: issue1029Correction
         ]
     )
 
@@ -169,7 +169,7 @@ private let issue1029Example = "↓//MARK:- Top-Level bad mark\n" +
                                "↓// MARK:- Bad mark\n" +
                                "extension MarkTest {}\n"
 
-private let issue1029Corretion = "// MARK: - Top-Level bad mark\n" +
+private let issue1029Correction = "// MARK: - Top-Level bad mark\n" +
                                  "// MARK: - Another bad mark\n" +
                                  "struct MarkTest {}\n" +
                                  "// MARK: - Bad mark\n" +

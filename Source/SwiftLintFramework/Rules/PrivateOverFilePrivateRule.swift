@@ -26,22 +26,22 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
             "open extension \n String {}",
             "internal extension String {}",
             "extension String {\nfileprivate func Something(){}\n}",
+            "fileprivate extension String {\nfileprivate func Something(){}\n}",
+            "fileprivate extension String {}",
+            "fileprivate \n extension String {}",
+            "fileprivate extension \n String {}",
             "class MyClass {\nfileprivate let myInt = 4\n}",
             "class MyClass {\nfileprivate(set) var myInt = 4\n}",
             "struct Outter {\nstruct Inter {\nfileprivate struct Inner {}\n}\n}"
         ],
         triggeringExamples: [
             "↓fileprivate enum MyEnum {}",
-            "↓fileprivate extension String {}",
-            "↓fileprivate \n extension String {}",
-            "↓fileprivate extension \n String {}",
+            "↓fileprivate \n enum MyEnum {}",
+            "↓fileprivate enum \n MyEnum {}",
             "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}"
         ],
         corrections: [
             "↓fileprivate enum MyEnum {}": "private enum MyEnum {}",
-            "↓fileprivate extension String {}": "private extension String {}",
-            "↓fileprivate \n extension String {}": "private \n extension String {}",
-            "↓fileprivate extension \n String {}": "private extension \n String {}",
             "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}":
                 "private class MyClass {\nfileprivate(set) var myInt = 4\n}"
         ]
@@ -59,7 +59,8 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
         let contents = file.contents.bridge()
 
         return file.structure.dictionary.substructure.flatMap { dictionary -> NSRange? in
-            guard let offset = dictionary.offset else {
+            guard let offset = dictionary.offset,
+                dictionary.kind.flatMap(SwiftDeclarationKind.init) != .extension else {
                 return nil
             }
 

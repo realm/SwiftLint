@@ -32,7 +32,8 @@ class FileHeaderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
-                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
+                   stringDoesntViolate: false, skipCommentTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testFileHeaderWithRequiredPattern() {

@@ -9,11 +9,11 @@
 import SwiftLintFramework
 import XCTest
 
-class FileLenghtRuleTests: XCTestCase {
+class FileLengthRuleTests: XCTestCase {
 
     func testFileLengthWithDefaultConfiguration() {
         verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testFileLengthIgnoringLinesWithOnlyComments() {
@@ -30,6 +30,6 @@ class FileLenghtRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["ignore_comment_only_lines": true],
-                   testMultiByteOffsets: false)
+                   testMultiByteOffsets: false, testShebang: false)
     }
 }

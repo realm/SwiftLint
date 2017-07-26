@@ -164,7 +164,7 @@ public struct LetVarWhitespaceRule: OptInRule {
             }
         }
 
-        let conditionals = ["#if", "#elseif", "#else", "#endif", "@available"]
+        let conditionals = ["#if", "#elseif", "#else", "#endif", "@available", "#!"]
         let conditionalLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
             return conditionals.contains(where: trimmed.hasPrefix)

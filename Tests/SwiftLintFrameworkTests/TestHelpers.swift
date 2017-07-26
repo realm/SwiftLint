@@ -135,6 +135,10 @@ private func addEmoji(_ string: String) -> String {
     return "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(string)"
 }
 
+private func addShebang(_ string: String) -> String {
+    return "#!/usr/bin/env swift\n\(string)"
+}
+
 extension XCTestCase {
     // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
@@ -143,7 +147,8 @@ extension XCTestCase {
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,
                     skipStringTests: Bool = false,
-                    testMultiByteOffsets: Bool = true) {
+                    testMultiByteOffsets: Bool = true,
+                    testShebang: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
             XCTFail()
             return
@@ -156,6 +161,11 @@ extension XCTestCase {
         if testMultiByteOffsets {
             verifyExamples(triggers: triggers.map(addEmoji),
                            nonTriggers: nonTriggers.map(addEmoji), configuration: config)
+        }
+
+        if testShebang {
+            verifyExamples(triggers: triggers.map(addShebang),
+                           nonTriggers: nonTriggers.map(addShebang), configuration: config)
         }
 
         // Comment doesn't violate

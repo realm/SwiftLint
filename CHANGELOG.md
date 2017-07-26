@@ -87,6 +87,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1294](https://github.com/realm/SwiftLint/issues/1294)
 
+* Add support for excluding files using globs (e.g. /**/*Test*.swift) 
+  [Andrey Ostanin](https://github.com/xzeror)
+  [#1220](https://github.com/realm/SwiftLint/issues/1220)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

@@ -7444,6 +7444,26 @@ fileprivate func Something(){}
 ```
 
 ```swift
+fileprivate extension String {
+fileprivate func Something(){}
+}
+```
+
+```swift
+fileprivate extension String {}
+```
+
+```swift
+fileprivate 
+ extension String {}
+```
+
+```swift
+fileprivate extension 
+ String {}
+```
+
+```swift
 class MyClass {
 fileprivate let myInt = 4
 }
@@ -7472,17 +7492,13 @@ fileprivate struct Inner {}
 ```
 
 ```swift
-↓fileprivate extension String {}
-```
-
-```swift
 ↓fileprivate 
- extension String {}
+ enum MyEnum {}
 ```
 
 ```swift
-↓fileprivate extension 
- String {}
+↓fileprivate enum 
+ MyEnum {}
 ```
 
 ```swift
@@ -9011,7 +9027,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `trailing_closure` | Disabled | No | style
 
-Trailing closure syntax should be used whenever possible
+Trailing closure syntax should be used whenever possible.
 
 ### Examples
 

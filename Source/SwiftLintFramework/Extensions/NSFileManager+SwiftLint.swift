@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Glob
 
 public protocol LintableFileManager {
     func filesToLint(inPath: String, rootDirectory: String?) -> [String]
@@ -21,8 +22,12 @@ extension FileManager: LintableFileManager {
             .standardizingPath
 
         // if path is a file, it won't be returned in `enumerator(atPath:)`
-        if absolutePath.bridge().isSwiftFile() && absolutePath.isFile {
+        if absolutePath.bridge().isSwiftFile() && absolutePath.isFile && !absolutePath.containsWildcards {
             return [absolutePath]
+        }
+
+        if absolutePath.containsWildcards {
+            return globEnumerator(atPath: absolutePath).flatMap({ $0 })
         }
 
         return enumerator(atPath: absolutePath)?.flatMap { element -> String? in
@@ -35,5 +40,17 @@ extension FileManager: LintableFileManager {
 
     public func modificationDate(forFileAtPath path: String) -> Date? {
         return (try? attributesOfItem(atPath: path))?[.modificationDate] as? Date
+    }
+}
+
+// MARK: Globs support
+extension FileManager {
+    static let globBehavior = Glob.Behavior(supportsGlobstar: true,
+                                            includesFilesFromRootOfGlobstar: true,
+                                            includesDirectoriesInResults: false,
+                                            includesFilesInResultsIfTrailingSlash: false)
+
+    internal func globEnumerator(atPath path: String) -> Glob {
+        return Glob(pattern: path, behavior: FileManager.globBehavior)
     }
 }

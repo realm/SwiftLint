@@ -85,7 +85,6 @@
 		6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7048DB7A1F25A5CF005133E2 /* Glob.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7048DB791F25A5CF005133E2 /* Glob.framework */; };
-		7048DB7D1F25A738005133E2 /* Glob+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7048DB7B1F25A716005133E2 /* Glob+SwiftLint.swift */; };
 		7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementPositionConfiguration.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
 		78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */; };
@@ -387,7 +386,6 @@
 		6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxMap+SwiftLint.swift"; sourceTree = "<group>"; };
 		6CC898A61EA0E1EF003DC0E2 /* CannedEmojiReporterOutputNonObjC.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedEmojiReporterOutputNonObjC.txt; sourceTree = "<group>"; };
 		7048DB791F25A5CF005133E2 /* Glob.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Glob.framework; path = "../../Library/Developer/Xcode/DerivedData/SwiftLint-bpbqmnklgldkzqgjogmjkoxgimmi/Build/Products/Debug/Glob.framework"; sourceTree = "<group>"; };
-		7048DB7B1F25A716005133E2 /* Glob+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Glob+SwiftLint.swift"; sourceTree = "<group>"; };
 		707F48981F21BA6500A6094F /* Glob.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Glob.framework; path = "Carthage/Checkouts/Glob/build/Debug-iphoneos/Glob.framework"; sourceTree = "<group>"; };
 		725094881D0855760039B353 /* StatementPositionConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementPositionConfiguration.swift; sourceTree = "<group>"; };
 		78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverriddenSuperCallRule.swift; sourceTree = "<group>"; };
@@ -1084,7 +1082,6 @@
 				37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */,
 				24E17F701B1481FF008195BE /* File+Cache.swift */,
 				E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */,
-				7048DB7B1F25A716005133E2 /* Glob+SwiftLint.swift */,
 				E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */,
 				3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */,
 				3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */,
@@ -1392,7 +1389,6 @@
 				D44254271DB9C15C00492EA4 /* SyntacticSugarRule.swift in Sources */,
 				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
-				7048DB7D1F25A738005133E2 /* Glob+SwiftLint.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				D4DABFD51E2B350F009617B6 /* TrailingClosureRule.swift in Sources */,
 				D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */,

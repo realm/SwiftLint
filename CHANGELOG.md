@@ -108,6 +108,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1029](https://github.com/realm/SwiftLint/issues/1029)
 
+* Fix false positive in `empty_enum_arguments` rule when using wildcards and
+  `where` clauses.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1722](https://github.com/realm/SwiftLint/issues/1722)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

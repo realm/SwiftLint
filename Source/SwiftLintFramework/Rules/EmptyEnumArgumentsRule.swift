@@ -9,6 +9,12 @@
 import Foundation
 import SourceKittenFramework
 
+private func wrapInSwitch(variable: String = "foo", _ str: String) -> String {
+    return  "switch \(variable) {\n" +
+            "    \(str): break\n" +
+            "}"
+}
+
 public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -20,27 +26,24 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         description: "Arguments can be omitted when matching enums with associated types if they are not used.",
         kind: .style,
         nonTriggeringExamples: [
-            "switch foo {\n case .bar: break\n}",
-            "switch foo {\n case .bar(let x): break\n}",
-            "switch foo {\n case let .bar(x): break\n}",
-            "switch (foo, bar) {\n case (_, _): break\n}",
-            "switch foo {\n case \"bar\".uppercased(): break\n}"
+            wrapInSwitch("case .bar"),
+            wrapInSwitch(".bar(let x)"),
+            wrapInSwitch("case let .bar(x)"),
+            wrapInSwitch(variable: "(foo, bar)", "case (_, _)"),
+            wrapInSwitch("case \"bar\".uppercased()"),
+            wrapInSwitch(variable: "(foo, bar)", "case (_, _) where !something")
         ],
         triggeringExamples: [
-            "switch foo {\n case .bar↓(_): break\n}",
-            "switch foo {\n case .bar↓(): break\n}",
-            "switch foo {\n case .bar↓(_), .bar2↓(_): break\n}",
-            "switch foo {\n case .bar↓() where method() > 2: break\n}"
+            wrapInSwitch("case .bar↓(_)"),
+            wrapInSwitch("case .bar↓()"),
+            wrapInSwitch("case .bar↓(_), .bar2↓(_)"),
+            wrapInSwitch("case .bar↓() where method() > 2")
         ],
         corrections: [
-            "switch foo {\n case .bar↓(_): break\n}":
-                "switch foo {\n case .bar: break\n}",
-            "switch foo {\n case .bar↓(): break\n}":
-                "switch foo {\n case .bar: break\n}",
-            "switch foo {\n case .bar↓(_), .bar2↓(_): break\n}":
-                "switch foo {\n case .bar, .bar2: break\n}",
-            "switch foo {\n case .bar↓() where method() > 2: break\n}":
-                "switch foo {\n case .bar where method() > 2: break\n}"
+            wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
+            wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
+            wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),
+            wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2")
         ]
     )
 
@@ -88,12 +91,22 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                 }
 
                 // avoid matches after `where` keyworkd
-                if let whereMatch = file.match(pattern: "where", with: [.keyword], range: caseRange).first,
-                    whereMatch.location < range.location {
-                    return nil
+                if let whereRange = file.match(pattern: "where", with: [.keyword], range: caseRange).first {
+                    if whereRange.location < range.location {
+                        return nil
+                    }
+
+                    // avoid matches in "(_, _) where"
+                    if let whereByteRange = contents.NSRangeToByteRange(start: whereRange.location,
+                                                                        length: whereRange.length),
+                        case let length = whereByteRange.location - offset,
+                        case let byteRange = NSRange(location: offset, length: length),
+                        Set(file.syntaxMap.kinds(inByteRange: byteRange)) == [.keyword] {
+                        return nil
+                    }
                 }
 
-                if callsRanges.first(where: range.intersects) != nil {
+                if callsRanges.contains(where: range.intersects) {
                     return nil
                 }
 

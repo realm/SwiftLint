@@ -1738,31 +1738,37 @@ Arguments can be omitted when matching enums with associated types if they are n
 
 ```swift
 switch foo {
- case .bar: break
+    case .bar: break
 }
 ```
 
 ```swift
 switch foo {
- case .bar(let x): break
+    .bar(let x): break
 }
 ```
 
 ```swift
 switch foo {
- case let .bar(x): break
+    case let .bar(x): break
 }
 ```
 
 ```swift
 switch (foo, bar) {
- case (_, _): break
+    case (_, _): break
 }
 ```
 
 ```swift
 switch foo {
- case "bar".uppercased(): break
+    case "bar".uppercased(): break
+}
+```
+
+```swift
+switch (foo, bar) {
+    case (_, _) where !something: break
 }
 ```
 
@@ -1772,25 +1778,25 @@ switch foo {
 
 ```swift
 switch foo {
- case .bar↓(_): break
+    case .bar↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(): break
+    case .bar↓(): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(_), .bar2↓(_): break
+    case .bar↓(_), .bar2↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓() where method() > 2: break
+    case .bar↓() where method() > 2: break
 }
 ```
 
@@ -9011,7 +9017,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `trailing_closure` | Disabled | No | style
 
-Trailing closure syntax should be used whenever possible
+Trailing closure syntax should be used whenever possible.
 
 ### Examples
 

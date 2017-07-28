@@ -1744,7 +1744,7 @@ switch foo {
 
 ```swift
 switch foo {
-    .bar(let x): break
+    case .bar(let x): break
 }
 ```
 

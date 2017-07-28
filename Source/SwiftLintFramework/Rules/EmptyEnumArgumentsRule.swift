@@ -27,7 +27,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         kind: .style,
         nonTriggeringExamples: [
             wrapInSwitch("case .bar"),
-            wrapInSwitch(".bar(let x)"),
+            wrapInSwitch("case .bar(let x)"),
             wrapInSwitch("case let .bar(x)"),
             wrapInSwitch(variable: "(foo, bar)", "case (_, _)"),
             wrapInSwitch("case \"bar\".uppercased()"),

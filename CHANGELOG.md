@@ -113,6 +113,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1722](https://github.com/realm/SwiftLint/issues/1722)
 
+* Fix false positive in `large_tuple` rule when using throwing closure.  
+  [Liquidsoul](https://github.com/liquidsoul)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

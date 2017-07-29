@@ -2,6 +2,7 @@
 # Rules
 
 * [Attributes](#attributes)
+* [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
 * [Closure End Indentation](#closure-end-indentation)
@@ -433,6 +434,49 @@ func foo(completionHandler: @escaping () -> Void)
 
  @discardableResult
  ↓func a() -> Int
+```
+
+</details>
+
+
+
+## Block Based KVO
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`block_based_kvo` | Enabled | No | idiomatic
+
+Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
+   print(change.newValue)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {}
+}
+```
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: Dictionary<NSKeyValueChangeKey, Any>?,
+                               context: UnsafeMutableRawPointer?) {}
+}
 ```
 
 </details>

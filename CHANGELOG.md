@@ -87,6 +87,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1294](https://github.com/realm/SwiftLint/issues/1294)
 
+* Add `block_based_kvo` rule that enforces the usage of the new block based
+  KVO API added on Swift 3.2 and later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1714](https://github.com/realm/SwiftLint/issues/1714)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

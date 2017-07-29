@@ -12,6 +12,12 @@ import XCTest
 // swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
+    func testBlockBasedKVO() {
+        #if swift(>=3.2)
+            verifyRule(BlockBasedKVORule.description)
+        #endif
+    }
+
     func testClassDelegateProtocol() {
         verifyRule(ClassDelegateProtocolRule.description)
     }

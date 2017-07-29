@@ -4782,6 +4782,21 @@ let foo: (Int, Int, Int) -> Void
 ```
 
 ```swift
+let foo: (Int, Int, Int) throws -> Void
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) -> Void)
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) throws -> Void)
+
+```
+
+```swift
 var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!
 
 ```

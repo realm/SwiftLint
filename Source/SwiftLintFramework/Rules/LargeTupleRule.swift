@@ -40,6 +40,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo() throws -> (Int, Int)\n",
             "func foo() throws -> (Int, Int) {}\n",
             "let foo: (Int, Int, Int) -> Void\n",
+            "let foo: (Int, Int, Int) throws -> Void\n",
+            "func foo(bar: (Int, String, Float) -> Void)\n",
+            "func foo(bar: (Int, String, Float) throws -> Void)\n",
             "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!\n",
             "func getDictionaryAndInt() -> (Dictionary<Int, String>, Int)?\n",
             "func getGenericTypeAndInt() -> (Type<Int, String, Float>, Int)?\n"
@@ -203,7 +206,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\A\\s*->")
+        let arrowRegex = regex("\\A(\\s*throws)?\\s*->")
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
 

@@ -38,7 +38,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             ") -> [StyleViolation]\n",
             "func regex(_ pattern: String,\n" +
             "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
-            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n"
+            "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n",
+            "func foo(a: Void,\n         b: [String: String] =\n           [:]) {\n}\n"
         ],
         triggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +
@@ -53,43 +54,55 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind) else {
+        guard SwiftDeclarationKind.functionKinds().contains(kind),
+            let startOffset = dictionary.nameOffset,
+            let length = dictionary.nameLength,
+            case let endOffset = startOffset + length else {
             return []
         }
 
+        let params = dictionary.substructure.filter { subDict in
+            return subDict.kind.flatMap(SwiftDeclarationKind.init) == .varParameter &&
+                (subDict.offset ?? .max) < endOffset
+        }
+
+        guard params.count > 1 else {
+            return []
+        }
+
+        // swiftlint:disable:next nesting
+        struct OffsetLineAndCharacter {
+            let byteOffset: Int
+            let line: Int
+            let character: Int
+        }
+
         let contents = file.contents.bridge()
-        let pattern = "\\(\\s*(\\S)"
 
-        guard let nameOffset = dictionary.nameOffset,
-            let nameLength = dictionary.nameLength,
-            let nameRange = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
-            let paramStart = regex(pattern).firstMatch(in: file.contents,
-                                                       options: [], range: nameRange)?.range(at: 1).location,
-            let (startLine, startCharacter) = contents.lineAndCharacter(forCharacterOffset: paramStart),
-            let (endLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset + nameLength - 1),
-            endLine > startLine else {
-                return []
-        }
-
-        let paramRegex = regex("^\\s*(.*?):", options: [.anchorsMatchLines])
-
-        let linesRange = (startLine + 1)...endLine
-        let violationLocations = linesRange.flatMap { lineIndex -> Int? in
-            let line = file.lines[lineIndex - 1]
-            guard let paramRange = paramRegex.firstMatch(in: file.contents, options: [],
-                                                         range: line.range)?.range(at: 1),
-                let (_, paramCharacter) = contents.lineAndCharacter(forCharacterOffset: paramRange.location),
-                paramCharacter != startCharacter else {
-                    return nil
+        let paramLocations = params.flatMap { paramDict -> OffsetLineAndCharacter? in
+            guard let byteOffset = paramDict.offset,
+                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                return nil
             }
-
-            return paramRange.location
+            return OffsetLineAndCharacter(byteOffset: byteOffset,
+                                          line: lineAndChar.line,
+                                          character: lineAndChar.character)
         }
 
-        return violationLocations.map {
+        var violationOffsets = [Int]()
+        let firstParam = paramLocations[0]
+
+        for (index, param) in paramLocations.enumerated() where index > 0 && param.line > firstParam.line {
+            let previousParam = paramLocations[index - 1]
+            if previousParam.line < param.line && firstParam.character != param.character {
+                violationOffsets.append(param.byteOffset)
+            }
+        }
+
+        return violationOffsets.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0))
+                           location: Location(file: file, byteOffset: $0))
         }
     }
 }

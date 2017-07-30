@@ -13270,6 +13270,14 @@ func regex(_ pattern: String,
 
 ```
 
+```swift
+func foo(a: Void,
+         b: [String: String] =
+           [:]) {
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

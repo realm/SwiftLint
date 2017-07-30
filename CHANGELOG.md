@@ -121,6 +121,10 @@
 * Fix false positive in `large_tuple` rule when using throwing closure.  
   [Liquidsoul](https://github.com/liquidsoul)
 
+* Make `vertical_parameter_alignment` more robust, fixing false positives and
+  detecting previously missed violations.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.20.1: More Liquid Fabric Softener
 
 ##### Breaking

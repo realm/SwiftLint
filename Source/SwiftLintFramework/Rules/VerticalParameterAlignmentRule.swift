@@ -70,39 +70,30 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             return []
         }
 
-        // swiftlint:disable:next nesting
-        struct OffsetLineAndCharacter {
-            let byteOffset: Int
-            let line: Int
-            let character: Int
-        }
-
         let contents = file.contents.bridge()
 
-        let paramLocations = params.flatMap { paramDict -> OffsetLineAndCharacter? in
+        let paramLocations = params.flatMap { paramDict -> Location? in
             guard let byteOffset = paramDict.offset,
                 let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
                 return nil
             }
-            return OffsetLineAndCharacter(byteOffset: byteOffset,
-                                          line: lineAndChar.line,
-                                          character: lineAndChar.character)
+            return Location(file: file.path, line: lineAndChar.line, character: lineAndChar.character)
         }
 
-        var violationOffsets = [Int]()
-        let firstParam = paramLocations[0]
+        var violationLocations = [Location]()
+        let firstParamLoc = paramLocations[0]
 
-        for (index, param) in paramLocations.enumerated() where index > 0 && param.line > firstParam.line {
-            let previousParam = paramLocations[index - 1]
-            if previousParam.line < param.line && firstParam.character != param.character {
-                violationOffsets.append(param.byteOffset)
+        for (index, paramLoc) in paramLocations.enumerated() where index > 0 && paramLoc.line! > firstParamLoc.line! {
+            let previousParamLoc = paramLocations[index - 1]
+            if previousParamLoc.line! < paramLoc.line! && firstParamLoc.character! != paramLoc.character! {
+                violationLocations.append(paramLoc)
             }
         }
 
-        return violationOffsets.map {
+        return violationLocations.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
+                           location: $0)
         }
     }
 }

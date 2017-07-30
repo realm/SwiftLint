@@ -13278,6 +13278,11 @@ func foo(a: Void,
 
 ```
 
+```swift
+func foo(data: (size: CGSize,
+                identifier: String)) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

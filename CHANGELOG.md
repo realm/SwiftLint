@@ -124,6 +124,7 @@
 * Make `vertical_parameter_alignment` more robust, fixing false positives and
   detecting previously missed violations.  
   [JP Simard](https://github.com/jpsim)
+  [#1488](https://github.com/realm/SwiftLint/issues/1488)
 
 ## 0.20.1: More Liquid Fabric Softener
 

@@ -39,7 +39,9 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
             "func regex(_ pattern: String,\n" +
             "           options: NSRegularExpression.Options = [.anchorsMatchLines,\n" +
             "                                                   .dotMatchesLineSeparators]) -> NSRegularExpression\n",
-            "func foo(a: Void,\n         b: [String: String] =\n           [:]) {\n}\n"
+            "func foo(a: Void,\n         b: [String: String] =\n           [:]) {\n}\n",
+            "func foo(data: (size: CGSize,\n" +
+            "                identifier: String)) {}"
         ],
         triggeringExamples: [
             "func validateFunction(_ file: File, kind: SwiftDeclarationKind,\n" +

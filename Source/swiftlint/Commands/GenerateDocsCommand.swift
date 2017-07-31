@@ -14,7 +14,7 @@ struct GenerateDocsCommand: CommandProtocol {
     let verb = "generate-docs"
     let function = "Generates markdown documentation for all rules"
 
-    func run(_ options: RulesDocsOptions) -> Result<(), CommandantError<()>> {
+    func run(_ options: GenerateDocsOptions) -> Result<(), CommandantError<()>> {
         let rules = masterRuleList.list.sorted { $0.0 < $1.0 }.map { $0.value }
         let rulesText = rules.map(ruleMarkdown)
         let rulesSummary = rules.map(ruleSummary)
@@ -111,14 +111,14 @@ struct GenerateDocsCommand: CommandProtocol {
     }
 }
 
-struct RulesDocsOptions: OptionsProtocol {
+struct GenerateDocsOptions: OptionsProtocol {
     let path: String?
 
-    static func create(_ path: String?) -> RulesDocsOptions {
+    static func create(_ path: String?) -> GenerateDocsOptions {
         return self.init(path: path)
     }
 
-    static func evaluate(_ mode: CommandMode) -> Result<RulesDocsOptions, CommandantError<CommandantError<()>>> {
+    static func evaluate(_ mode: CommandMode) -> Result<GenerateDocsOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| Option(key: "path", defaultValue: nil,
                                usage: "the path where the documentation should be saved. " +

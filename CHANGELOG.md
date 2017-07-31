@@ -92,6 +92,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1714](https://github.com/realm/SwiftLint/issues/1714)
 
+* Make `file_header` rule ignore doc comments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1719](https://github.com/realm/SwiftLint/issues/1719)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

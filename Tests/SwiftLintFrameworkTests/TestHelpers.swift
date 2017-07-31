@@ -147,6 +147,7 @@ extension XCTestCase {
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,
                     skipStringTests: Bool = false,
+                    skipDisableCommandTests: Bool = false,
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
@@ -184,7 +185,12 @@ extension XCTestCase {
             )
         }
 
-        let disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+        let disableCommands: [String]
+        if skipDisableCommandTests {
+            disableCommands = []
+        } else {
+            disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+        }
 
         // "disable" commands doesn't violate
         for command in disableCommands {

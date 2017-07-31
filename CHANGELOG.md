@@ -88,7 +88,7 @@
   [#1294](https://github.com/realm/SwiftLint/issues/1294)
 
 * Add `block_based_kvo` rule that enforces the usage of the new block based
-  KVO API added on Swift 3.2 and later.  
+  KVO API added when linting with Swift 3.2 or later.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1714](https://github.com/realm/SwiftLint/issues/1714)
 

@@ -16,6 +16,7 @@
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
+* [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -1621,6 +1622,91 @@ func foo() -> Any {
    return ↓nc.addObserver(forName: .NSSystemTimeZoneDidChange, object: nil, queue: nil, using: { })
 }
 
+```
+
+</details>
+
+
+
+## Discouraged Direct Initialization
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_direct_init` | Disabled | No | lint
+
+Discouraged direct initialization of types that can be harmful.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = UIDevice.current
+```
+
+```swift
+let foo = Bundle.main
+```
+
+```swift
+let foo = Bundle(path: "bar")
+```
+
+```swift
+let foo = Bundle(identifier: "bar")
+```
+
+```swift
+let foo = Bundle.init(path: "bar")
+```
+
+```swift
+let foo = Bundle.init(identifier: "bar")
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓UIDevice()
+```
+
+```swift
+↓Bundle()
+```
+
+```swift
+let foo = ↓UIDevice()
+```
+
+```swift
+let foo = ↓Bundle()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())
+```
+
+```swift
+↓UIDevice.init()
+```
+
+```swift
+↓Bundle.init()
+```
+
+```swift
+let foo = ↓UIDevice.init()
+```
+
+```swift
+let foo = ↓Bundle.init()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())
 ```
 
 </details>

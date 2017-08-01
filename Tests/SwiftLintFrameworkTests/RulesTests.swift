@@ -206,10 +206,6 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
-    func testPrivateOverFilePrivate() {
-        verifyRule(PrivateOverFilePrivateRule.description)
-    }
-
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 

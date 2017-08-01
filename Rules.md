@@ -7537,20 +7537,6 @@ fileprivate struct Inner {}
 ```
 
 ```swift
-↓fileprivate extension String {}
-```
-
-```swift
-↓fileprivate 
- extension String {}
-```
-
-```swift
-↓fileprivate extension 
- String {}
-```
-
-```swift
 ↓fileprivate class MyClass {
 fileprivate(set) var myInt = 4
 }

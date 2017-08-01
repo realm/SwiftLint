@@ -123,8 +123,10 @@ extension FileHeaderRuleTests {
         ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration),
         ("testFileHeaderWithRequiredString", testFileHeaderWithRequiredString),
         ("testFileHeaderWithRequiredPattern", testFileHeaderWithRequiredPattern),
+        ("testFileHeaderWithRequiredStringAndURLComment", testFileHeaderWithRequiredStringAndURLComment),
         ("testFileHeaderWithForbiddenString", testFileHeaderWithForbiddenString),
-        ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern)
+        ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern),
+        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment)
     ]
 }
 

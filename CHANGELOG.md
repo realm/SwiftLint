@@ -371,6 +371,11 @@
 * Make `closure_spacing` a `CorrectableRule`.  
   [J. Cheyo Jimenez](https://github.com/masters3d)
 
+* Add `file_name` opt-in rule validating that file names contain the name of a
+  type or extension declared in the file (if any).  
+  [JP Simard](https://github.com/jpsim)
+  [#1420](https://github.com/realm/SwiftLint/issues/1420)
+
 ##### Bug Fixes
 
 * `emoji` and `checkstyle` reporter output report sorted by file name.  

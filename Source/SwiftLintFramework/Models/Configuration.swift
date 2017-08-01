@@ -10,6 +10,12 @@ import Foundation
 import SourceKittenFramework
 
 public struct Configuration: Equatable {
+    // Represents how a Configuration object can be configured with regards to rules.
+    public enum RulesMode {
+        case `default`(disabled: [String], optIn: [String])
+        case whitelisted([String])
+        case allEnabled
+    }
 
     // MARK: Properties
 
@@ -23,15 +29,16 @@ public struct Configuration: Equatable {
     public var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
 
+    // MARK: Rules Properties
+
     // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules
     public let rules: [Rule]
 
+    internal let rulesMode: RulesMode
+
     // MARK: Initializers
 
-    public init?(disabledRules: [String] = [],
-                 optInRules: [String] = [],
-                 enableAllRules: Bool = false,
-                 whitelistRules: [String] = [],
+    public init?(rulesMode: RulesMode = .default(disabled: [], optIn: []),
                  included: [String] = [],
                  excluded: [String] = [],
                  warningThreshold: Int? = nil,
@@ -46,60 +53,80 @@ public struct Configuration: Equatable {
                 "configuration specified version \(pinnedVersion).")
         }
 
-        self.included = included
-        self.excluded = excluded
-        self.reporter = reporter
-        self.cachePath = cachePath
-
         let configuredRules = configuredRules
             ?? (try? ruleList.configuredRules(with: [:]))
             ?? []
 
-        let handleAliasWithRuleList = { (alias: String) -> String in
-            return ruleList.identifier(for: alias) ?? alias
+        let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
+
+        let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+
+        let rules: [Rule]
+        switch rulesMode {
+        case .allEnabled:
+            rules = configuredRules
+        case .whitelisted(let whitelistedRuleIdentifiers):
+            let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
+                ruleIdentifiers: whitelistedRuleIdentifiers.map(handleAliasWithRuleList),
+                validRuleIdentifiers: validRuleIdentifiers)
+            // Validate that rule identifiers aren't listed multiple times
+            if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
+                return nil
+            }
+            rules = configuredRules.filter { rule in
+                return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
+            }
+        case .default(let disabledRuleIdentifiers, let optInRuleIdentifiers):
+            let validDisabledRuleIdentifiers = validateRuleIdentifiers(
+                ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
+                validRuleIdentifiers: validRuleIdentifiers)
+            let validOptInRuleIdentifiers = validateRuleIdentifiers(
+                ruleIdentifiers: optInRuleIdentifiers.map(handleAliasWithRuleList),
+                validRuleIdentifiers: validRuleIdentifiers)
+            // Same here
+            if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
+                || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
+
+                return nil
+            }
+            rules = configuredRules.filter { rule in
+                let id = type(of: rule).description.identifier
+                if validDisabledRuleIdentifiers.contains(id) { return false }
+                return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
+            }
         }
+        self.init(rulesMode: rulesMode,
+                  included: included,
+                  excluded: excluded,
+                  warningThreshold: warningThreshold,
+                  reporter: reporter,
+                  rules: rules,
+                  cachePath: cachePath)
+    }
 
-        let disabledRules = disabledRules.map(handleAliasWithRuleList)
-        let optInRules = optInRules.map(handleAliasWithRuleList)
-        let whitelistRules = whitelistRules.map(handleAliasWithRuleList)
+    internal init(rulesMode: RulesMode,
+                  included: [String],
+                  excluded: [String],
+                  warningThreshold: Int?,
+                  reporter: String,
+                  rules: [Rule],
+                  cachePath: String?,
+                  rootPath: String? = nil) {
 
-        // Validate that all rule identifiers map to a defined rule
-        let validRuleIdentifiers = validateRuleIdentifiers(configuredRules: configuredRules,
-                                                           disabledRules: disabledRules)
-        let validDisabledRules = disabledRules.filter(validRuleIdentifiers.contains)
-
-        // Validate that rule identifiers aren't listed multiple times
-        if containsDuplicateIdentifiers(validDisabledRules) {
-            return nil
-        }
+        self.rulesMode = rulesMode
+        self.included = included
+        self.excluded = excluded
+        self.reporter = reporter
+        self.cachePath = cachePath
+        self.rules = rules
+        self.rootPath = rootPath
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
-
-        // Precedence is enableAllRules > whitelistRules > everything else
-        if enableAllRules {
-            rules = configuredRules
-        } else if !whitelistRules.isEmpty {
-            if !disabledRules.isEmpty || !optInRules.isEmpty {
-                queuedPrintError("'\(Key.disabledRules.rawValue)' or " +
-                    "'\(Key.optInRules.rawValue)' cannot be used in combination " +
-                    "with '\(Key.whitelistRules.rawValue)'")
-                return nil
-            }
-
-            rules = configuredRules.filter { rule in
-                return whitelistRules.contains(type(of: rule).description.identifier)
-            }
-        } else {
-            rules = configuredRules.filter { rule in
-                let id = type(of: rule).description.identifier
-                if validDisabledRules.contains(id) { return false }
-                return optInRules.contains(id) || !(rule is OptInRule)
-            }
-        }
     }
 
     private init(_ configuration: Configuration) {
+        rulesMode = configuration.rulesMode
         included = configuration.included
         excluded = configuration.excluded
         warningThreshold = configuration.warningThreshold
@@ -128,9 +155,10 @@ public struct Configuration: Equatable {
             queuedPrintError("\(fullPath):\(msg)")
             fatalError("Could not read configuration file at path '\(fullPath)'")
         }
+        let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {
             if !optional { fail("File not found.") }
-            self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
+            self.init(rulesMode: rulesMode, cachePath: cachePath)!
             self.rootPath = rootPath
             return
         }
@@ -150,7 +178,7 @@ public struct Configuration: Equatable {
         } catch {
             fail("\(error)")
         }
-        self.init(enableAllRules: enableAllRules, cachePath: cachePath)!
+        self.init(rulesMode: rulesMode, cachePath: cachePath)!
         setCached(atPath: fullPath)
     }
 
@@ -168,20 +196,18 @@ public struct Configuration: Equatable {
 
 // MARK: Identifier Validation
 
-private func validateRuleIdentifiers(configuredRules: [Rule], disabledRules: [String]) -> [String] {
+private func validateRuleIdentifiers(ruleIdentifiers: [String], validRuleIdentifiers: [String]) -> [String] {
     // Validate that all rule identifiers map to a defined rule
-    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
-
-    let invalidRules = disabledRules.filter { !validRuleIdentifiers.contains($0) }
-    if !invalidRules.isEmpty {
-        for invalidRule in invalidRules {
-            queuedPrintError("configuration error: '\(invalidRule)' is not a valid rule identifier")
+    let invalidRuleIdentifiers = ruleIdentifiers.filter { !validRuleIdentifiers.contains($0) }
+    if !invalidRuleIdentifiers.isEmpty {
+        for invalidRuleIdentifier in invalidRuleIdentifiers {
+            queuedPrintError("configuration error: '\(invalidRuleIdentifier)' is not a valid rule identifier")
         }
         let listOfValidRuleIdentifiers = validRuleIdentifiers.joined(separator: "\n")
         queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
     }
 
-    return validRuleIdentifiers
+    return ruleIdentifiers.filter(validRuleIdentifiers.contains)
 }
 
 private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {

@@ -112,6 +112,15 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
+extension DiscouragedDirectInitRuleTests {
+    static var allTests: [(String, (DiscouragedDirectInitRuleTests) -> () throws -> Void)] = [
+        ("testDiscouragedDirectInitWithDefaultConfiguration", testDiscouragedDirectInitWithDefaultConfiguration),
+        ("testDiscouragedDirectInitWithConfiguredSeverity", testDiscouragedDirectInitWithConfiguredSeverity),
+        ("testDiscouragedDirectInitWithNewIncludedTypes", testDiscouragedDirectInitWithNewIncludedTypes),
+        ("testDiscouragedDirectInitWithReplacedTypes", testDiscouragedDirectInitWithReplacedTypes)
+    ]
+}
+
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
@@ -476,6 +485,7 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),

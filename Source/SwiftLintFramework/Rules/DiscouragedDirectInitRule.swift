@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DiscouragedDirectInitRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct DiscouragedDirectInitRule: ASTRule, ConfigurationProviderRule {
     public var configuration = DiscouragedDirectInitConfiguration()
 
     public init() {}

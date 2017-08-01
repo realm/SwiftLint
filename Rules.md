@@ -1632,7 +1632,7 @@ func foo() -> Any {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`discouraged_direct_init` | Disabled | No | lint
+`discouraged_direct_init` | Enabled | No | lint
 
 Discouraged direct initialization of types that can be harmful.
 

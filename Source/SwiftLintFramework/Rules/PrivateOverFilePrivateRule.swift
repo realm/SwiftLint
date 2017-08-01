@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, CorrectableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = PrivateOverFilePrivateRuleConfiguration()
 
     public init() {}
 
@@ -32,16 +32,10 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
         ],
         triggeringExamples: [
             "↓fileprivate enum MyEnum {}",
-            "↓fileprivate extension String {}",
-            "↓fileprivate \n extension String {}",
-            "↓fileprivate extension \n String {}",
             "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}"
         ],
         corrections: [
             "↓fileprivate enum MyEnum {}": "private enum MyEnum {}",
-            "↓fileprivate extension String {}": "private extension String {}",
-            "↓fileprivate \n extension String {}": "private \n extension String {}",
-            "↓fileprivate extension \n String {}": "private extension \n String {}",
             "↓fileprivate class MyClass {\nfileprivate(set) var myInt = 4\n}":
                 "private class MyClass {\nfileprivate(set) var myInt = 4\n}"
         ]
@@ -50,6 +44,7 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file).map {
             StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
@@ -60,6 +55,11 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
 
         return file.structure.dictionary.substructure.flatMap { dictionary -> NSRange? in
             guard let offset = dictionary.offset else {
+                return nil
+            }
+
+            if !configuration.validateExtensions &&
+                dictionary.kind.flatMap(SwiftDeclarationKind.init) == .extension {
                 return nil
             }
 

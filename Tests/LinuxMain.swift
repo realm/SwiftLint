@@ -244,6 +244,14 @@ extension ObjectLiteralRuleTests {
     ]
 }
 
+extension PrivateOverFilePrivateRuleTests {
+    static var allTests: [(String, (PrivateOverFilePrivateRuleTests) -> () throws -> Void)] = [
+        ("testPrivateOverFilePrivateWithDefaultConfiguration", testPrivateOverFilePrivateWithDefaultConfiguration),
+        ("testPrivateOverFilePrivateValidatingExtensions", testPrivateOverFilePrivateValidatingExtensions),
+        ("testPrivateOverFilePrivateNotValidatingExtensions", testPrivateOverFilePrivateNotValidatingExtensions)
+    ]
+}
+
 extension RegionTests {
     static var allTests: [(String, (RegionTests) -> () throws -> Void)] = [
         ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
@@ -362,7 +370,6 @@ extension RulesTests {
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-        ("testPrivateOverFilePrivate", testPrivateOverFilePrivate),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),
@@ -483,6 +490,7 @@ XCTMain([
     testCase(LinterCacheTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
+    testCase(PrivateOverFilePrivateRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),

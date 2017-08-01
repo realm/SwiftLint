@@ -17,7 +17,7 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", included: \(discouragedInits)"
+        return severityConfiguration.consoleDescription + ", types: \(discouragedInits)"
     }
 
     public var severity: ViolationSeverity {
@@ -46,8 +46,8 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let included = [String].array(of: configuration["types"]) {
-            discouragedInits = Set(included + included.map(toExplicitInitMethod))
+        if let types = [String].array(of: configuration["types"]) {
+            discouragedInits = Set(types + types.map(toExplicitInitMethod))
         }
     }
 

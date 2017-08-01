@@ -50,6 +50,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }

@@ -307,6 +307,9 @@ identifier_name:
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 ```
 
+You can also use environment variables in your configuration file,
+by using `${SOME_VARIABLE}` in a string.
+
 #### Defining Custom Rules
 
 You can define custom regex-based rules in you configuration file using the

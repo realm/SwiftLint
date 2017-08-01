@@ -107,6 +107,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1424](https://github.com/realm/SwiftLint/issues/1424)
 
+* Add `discouraged_direct_init` opt-in rule that discourages direct
+  initialization of certain types.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1306](https://github.com/realm/SwiftLint/issues/1306)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

@@ -24,6 +24,7 @@ public let masterRuleList = RuleList(rules: [
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,
+    DiscouragedDirectInitRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyEnumArgumentsRule.self,

@@ -7509,6 +7509,26 @@ fileprivate func Something(){}
 ```
 
 ```swift
+fileprivate extension String {
+fileprivate func Something(){}
+}
+```
+
+```swift
+fileprivate extension String {}
+```
+
+```swift
+fileprivate 
+ extension String {}
+```
+
+```swift
+fileprivate extension 
+ String {}
+```
+
+```swift
 class MyClass {
 fileprivate let myInt = 4
 }
@@ -7537,17 +7557,13 @@ fileprivate struct Inner {}
 ```
 
 ```swift
-↓fileprivate extension String {}
-```
-
-```swift
 ↓fileprivate 
- extension String {}
+ enum MyEnum {}
 ```
 
 ```swift
-↓fileprivate extension 
- String {}
+↓fileprivate enum 
+ MyEnum {}
 ```
 
 ```swift

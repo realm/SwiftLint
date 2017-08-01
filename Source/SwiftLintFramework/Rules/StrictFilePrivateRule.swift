@@ -41,6 +41,7 @@ public struct StrictFilePrivateRule: OptInRule, ConfigurationProviderRule {
         // Mark all fileprivate occurences as a violation
         return file.match(pattern: "fileprivate", with: [.attributeBuiltin]).map {
             StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }

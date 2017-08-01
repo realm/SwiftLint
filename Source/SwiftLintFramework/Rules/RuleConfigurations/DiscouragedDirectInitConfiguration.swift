@@ -46,7 +46,7 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
 
-        if let included = [String].array(of: configuration["included"]) {
+        if let included = [String].array(of: configuration["types"]) {
             discouragedInits = Set(included + included.map(toExplicitInitMethod))
         }
     }

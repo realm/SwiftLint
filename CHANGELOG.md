@@ -96,6 +96,17 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1719](https://github.com/realm/SwiftLint/issues/1719)
 
+* Allow using environment variables in a configuration file in the form of
+  `${SOME_VARIABLE}`. The variables will be expanded when the configuration
+  is first loaded.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1512](https://github.com/realm/SwiftLint/issues/1512)
+
+* Treat `yes`, `no`, `on` and `off` as strings (and not booleans) when loading
+  configuration files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1424](https://github.com/realm/SwiftLint/issues/1424)
+
 ##### Bug Fixes
 
 * Fix false positive on `redundant_discardable_let` rule when using

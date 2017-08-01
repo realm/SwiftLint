@@ -446,6 +446,11 @@ extension YamlParserTests {
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] = [
         ("testParseEmptyString", testParseEmptyString),
         ("testParseValidString", testParseValidString),
+        ("testParseReplacesEnvVar", testParseReplacesEnvVar),
+        ("testParseTreatNoAsString", testParseTreatNoAsString),
+        ("testParseTreatYesAsString", testParseTreatYesAsString),
+        ("testParseTreatOnAsString", testParseTreatOnAsString),
+        ("testParseTreatOffAsString", testParseTreatOffAsString),
         ("testParseInvalidStringThrows", testParseInvalidStringThrows)
     ]
 }

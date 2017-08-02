@@ -13761,7 +13761,7 @@ class Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`xctfail_message_rule` | Enabled | No | idiomatic
+`xctfail_message` | Enabled | No | idiomatic
 
 An XCTFail call should include a description of the assertion.
 

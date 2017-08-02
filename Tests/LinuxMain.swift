@@ -65,14 +65,6 @@ extension ConfigurationTests {
         ("testExcludedPaths", testExcludedPaths),
         ("testIsEqualTo", testIsEqualTo),
         ("testIsNotEqualTo", testIsNotEqualTo),
-        ("testMerge", testMerge),
-        ("testLevel0", testLevel0),
-        ("testLevel1", testLevel1),
-        ("testLevel2", testLevel2),
-        ("testLevel3", testLevel3),
-        ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
-        ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedWhitelistedRules", testNestedWhitelistedRules),
         ("testCustomConfiguration", testCustomConfiguration),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
@@ -80,7 +72,15 @@ extension ConfigurationTests {
         ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
         ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
         ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-        ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
+        ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias),
+        ("testMerge", testMerge),
+        ("testLevel0", testLevel0),
+        ("testLevel1", testLevel1),
+        ("testLevel2", testLevel2),
+        ("testLevel3", testLevel3),
+        ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
+        ("testMergedWarningThreshold", testMergedWarningThreshold),
+        ("testNestedWhitelistedRules", testNestedWhitelistedRules)
     ]
 }
 

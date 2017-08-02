@@ -362,4 +362,8 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
+
+    func testXCTFailMessage() {
+        verifyRule(XCTFailMessageRule.description)
+    }
 }

@@ -103,5 +103,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
-    WeakDelegateRule.self
+    WeakDelegateRule.self,
+    XCTFailMessageRule.self
 ])

@@ -17,18 +17,52 @@ private struct LintResult {
 }
 
 private extension Rule {
+    static func superfluousDisableCommandViolations(regions: [Region],
+                                                    allViolations: [StyleViolation]) -> [StyleViolation] {
+        guard !regions.isEmpty else {
+            return []
+        }
+        let allIDs = description.allIdentifiers
+        let regionsDisablingCurrentRule = regions.filter { region in
+            return !region.disabledRuleIdentifiers.intersection(allIDs).isEmpty
+        }
+
+        return regionsDisablingCurrentRule.flatMap { region -> StyleViolation? in
+            let noViolationsInDisabledRegion = !allViolations.contains { violation in
+                return region.contains(violation.location)
+            }
+            guard noViolationsInDisabledRegion else {
+                return nil
+            }
+            let superfluousDisableCommandDescription = RuleDescription(
+                identifier: "superfluous_disable_command",
+                name: "Superfluous Disable Command",
+                description: "SwiftLint 'disable' commands are superfluous when the disabled rule would not have " +
+                             "triggered a violation in the disabled region.",
+                kind: .lint
+            )
+            return StyleViolation(
+                ruleDescription: superfluousDisableCommandDescription,
+                severity: .error,
+                location: region.start,
+                reason: "SwiftLint rule '\(description.identifier)' did not trigger a violation in the disabled " +
+                        "region. Please remove the disable command.")
+        }
+    }
+
     func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }
+
+        let ruleID = Self.description.identifier
 
         let violations: [StyleViolation]
         let ruleTime: (String, Double)?
         if benchmark {
             let start = Date()
             violations = validate(file: file)
-            let id = type(of: self).description.identifier
-            ruleTime = (id, -start.timeIntervalSinceNow)
+            ruleTime = (ruleID, -start.timeIntervalSinceNow)
         } else {
             violations = validate(file: file)
             ruleTime = nil
@@ -40,13 +74,26 @@ private extension Rule {
             return region?.isRuleEnabled(self) ?? true
         }
 
-        let enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+        let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
+            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: [ruleID]) : regions,
+            allViolations: violations
+        )
+
+        let enabledViolations: [StyleViolation]
+        if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
+            enabledViolations = enabledViolationsAndRegions.flatMap { violation, _ in
+                if violation.location.line == 1 { return nil }
+                return violation
+            }
+        } else {
+            enabledViolations = enabledViolationsAndRegions.map { $0.0 }
+        }
         let deprecatedToValidIDPairs = disabledViolationsAndRegions.flatMap { _, region -> [(String, String)] in
             let identifiers = region?.deprecatedAliasesDisabling(rule: self) ?? []
-            return identifiers.map { ($0, type(of: self).description.identifier) }
+            return identifiers.map { ($0, ruleID) }
         }
 
-        return LintResult(violations: enabledViolations, ruleTime: ruleTime,
+        return LintResult(violations: enabledViolations + superfluousDisableCommandViolations, ruleTime: ruleTime,
                           deprecatedToValidIDPairs: deprecatedToValidIDPairs)
     }
 }

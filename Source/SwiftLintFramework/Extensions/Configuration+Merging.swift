@@ -44,15 +44,15 @@ extension Configuration {
     }
 
     private struct HashableRule: Hashable {
-        let rule: Rule
+        fileprivate let rule: Rule
 
-        static func == (lhs: HashableRule, rhs: HashableRule) -> Bool {
+        fileprivate static func == (lhs: HashableRule, rhs: HashableRule) -> Bool {
             // Don't use `isEqualTo` in case its internal implementation changes from
             // using the identifier to something else, which could mess up with the `Set`
             return type(of: lhs.rule).description.identifier == type(of: rhs.rule).description.identifier
         }
 
-        var hashValue: Int {
+        fileprivate var hashValue: Int {
             return type(of: rule).description.identifier.hashValue
         }
     }

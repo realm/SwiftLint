@@ -50,8 +50,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "dict[\"abc\"]↓!.bar(\"B\")",
             "if dict[\"a\"]↓!!!! {",
             "var foo: [Bool]! = dict[\"abc\"]↓!",
-            "context(\"abc\") {" +
-                "var foo: [Bool]! = dict[\"abc\"]↓!" +
+            "context(\"abc\") {\n" +
+            "  var foo: [Bool]! = dict[\"abc\"]↓!\n" +
             "}",
             "open var computed: String { return foo.bar↓! }"
         ]

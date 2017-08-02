@@ -4054,7 +4054,9 @@ var foo: [Bool]! = dict["abc"]↓!
 ```
 
 ```swift
-context("abc") {var foo: [Bool]! = dict["abc"]↓!}
+context("abc") {
+  var foo: [Bool]! = dict["abc"]↓!
+}
 ```
 
 ```swift

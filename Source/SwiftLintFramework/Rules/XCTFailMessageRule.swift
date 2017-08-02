@@ -15,7 +15,7 @@ public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule {
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "xctfail_message_rule",
+        identifier: "xctfail_message",
         name: "XCTFail Message",
         description: "An XCTFail call should include a description of the assertion.",
         kind: .idiomatic,

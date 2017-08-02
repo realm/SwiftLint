@@ -6,7 +6,7 @@
 
 ##### Enhancements
 
-* Add `xctfail_message_rule` opt-in rule to enforce XCTFail
+* Add `xctfail_message` opt-in rule to enforce XCTFail
   calls to include a description of the assertion.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1370](https://github.com/realm/SwiftLint/issues/1370)

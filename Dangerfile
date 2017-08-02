@@ -10,13 +10,11 @@ modified_files = git.modified_files + git.added_files
 has_app_changes = !modified_files.grep(/Source/).empty?
 has_test_changes = !modified_files.grep(/Tests/).empty?
 has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
-has_build_changes = !modified_files.grep(/Makefile|SwiftLint\.xcodeproj|SwiftLint\.xcworkspace|Package\.swift|Cartfile/).empty?
-has_danger_changes = !modified_files.grep(/Dangerfile|script\/oss-check|Gemfile/).empty?
 has_rules_changes = !modified_files.grep(/Source\/SwiftLintFramework\/Rules/).empty?
-has_rules_docs_changes = !modified_files.grep(/Rules\.md/).empty?
+has_rules_docs_changes = !modified_files.include?('Rules.md')
 
 # Add a CHANGELOG entry for app changes
-if !git.modified_files.include?('CHANGELOG.md') && has_app_changes
+if !modified_files.include?('CHANGELOG.md') && has_app_changes
   warn("Please include a CHANGELOG entry to credit yourself! \nYou can find it at [CHANGELOG.md](https://github.com/realm/SwiftLint/blob/master/CHANGELOG.md).")
     markdown <<-MARKDOWN
 Here's an example of your CHANGELOG entry:
@@ -29,6 +27,8 @@ Here's an example of your CHANGELOG entry:
 MARKDOWN
 end
 
+return unless has_app_changes || has_danger_changes
+
 # Non-trivial amounts of app changes without tests
 if git.lines_of_code > 50 && has_app_changes && !has_test_changes
   warn 'This PR may need tests.'
@@ -39,37 +39,35 @@ if has_rules_changes && !has_rules_docs_changes
 end
 
 # Run OSSCheck if there were app changes
-if has_app_changes || has_danger_changes || has_build_changes
-  def non_empty_lines(lines)
-    lines.split(/\n+/).reject(&:empty?)
+
+def non_empty_lines(lines)
+  lines.split(/\n+/).reject(&:empty?)
+end
+
+def parse_line(line)
+  line.split(':', 2).last.strip
+end
+
+file = Tempfile.new('violations')
+
+Open3.popen3("script/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
+  while char = stdout.getc
+    print char
   end
+end
 
-  def parse_line(line)
-    line.split(':', 2).last.strip
-  end
+lines = file.read.chomp
+file.close
+file.unlink
 
-  lines = nil
-  file = Tempfile.new('violations')
-
-  Open3.popen3("script/oss-check -v 2> #{file.path}") do |_, stdout, _, _|
-    while char = stdout.getc
-      print char
-    end
-  end
-
-  lines = file.read.chomp
-  file.close
-  file.unlink
-
-  non_empty_lines(lines).each do |line|
-    if line.start_with? 'Permanently added the RSA host key for IP address'
-      # Don't report to Danger
-    elsif line.start_with? 'Message:'
-      message parse_line(line)
-    elsif line.start_with? 'Warning:'
-      warn parse_line(line)
-    elsif line.start_with? 'Error:'
-      fail parse_line(line)
-    end
+non_empty_lines(lines).each do |line|
+  if line.start_with? 'Permanently added the RSA host key for IP address'
+    # Don't report to Danger
+  elsif line.start_with? 'Message:'
+    message parse_line(line)
+  elsif line.start_with? 'Warning:'
+    warn parse_line(line)
+  elsif line.start_with? 'Error:'
+    fail parse_line(line)
   end
 end

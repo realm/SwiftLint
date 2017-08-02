@@ -23,8 +23,7 @@ private extension Configuration {
     }
 }
 
-// swiftlint:disable type_body_length
-
+// swiftlint:disable:next type_body_length
 class ConfigurationTests: XCTestCase {
 
     func testInit() {

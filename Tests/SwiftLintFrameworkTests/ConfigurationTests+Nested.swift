@@ -13,7 +13,7 @@ import XCTest
 
 private extension Configuration {
     func contains<T: Rule>(rule: T.Type) -> Bool {
-        return rules.contains(where: { $0 is T })
+        return rules.contains { $0 is T }
     }
 }
 

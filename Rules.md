@@ -4001,6 +4001,10 @@ var a: [Int]!
 private var myProperty: (Void -> Void)!
 ```
 
+```swift
+func foo(_ options: [AnyHashable: Any]!) {
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4047,6 +4051,14 @@ if dict["a"]↓!!!! {
 
 ```swift
 var foo: [Bool]! = dict["abc"]↓!
+```
+
+```swift
+context("abc") {var foo: [Bool]! = dict["abc"]↓!}
+```
+
+```swift
+open var computed: String { return foo.bar↓! }
 ```
 
 </details>

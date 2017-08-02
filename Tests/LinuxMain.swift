@@ -409,7 +409,8 @@ extension RulesTests {
         ("testVerticalParameterAlignment", testVerticalParameterAlignment),
         ("testVoidReturn", testVoidReturn),
         ("testSuperCall", testSuperCall),
-        ("testWeakDelegate", testWeakDelegate)
+        ("testWeakDelegate", testWeakDelegate),
+        ("testXCTFailMessage", testXCTFailMessage)
     ]
 }
 

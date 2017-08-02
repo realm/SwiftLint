@@ -96,6 +96,7 @@
 * [Vertical Whitespace](#vertical-whitespace)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
+* [XCTFail Message](#xctfail-message)
 --------
 
 ## Attributes
@@ -13750,6 +13751,51 @@ class Foo {
   ↓var scrollDelegate: ScrollDelegate?
 }
 
+```
+
+</details>
+
+
+
+## XCTFail Message
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`xctfail_message_rule` | Enabled | No | idiomatic
+
+An XCTFail call should include a description of the assertion.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    XCTFail("bar")
+}
+```
+
+```swift
+func testFoo() {
+    XCTFail(bar)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    ↓XCTFail()
+}
+```
+
+```swift
+func testFoo() {
+    ↓XCTFail("")
+}
 ```
 
 </details>

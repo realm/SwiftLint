@@ -112,6 +112,15 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
+extension DiscouragedDirectInitRuleTests {
+    static var allTests: [(String, (DiscouragedDirectInitRuleTests) -> () throws -> Void)] = [
+        ("testDiscouragedDirectInitWithDefaultConfiguration", testDiscouragedDirectInitWithDefaultConfiguration),
+        ("testDiscouragedDirectInitWithConfiguredSeverity", testDiscouragedDirectInitWithConfiguredSeverity),
+        ("testDiscouragedDirectInitWithNewIncludedTypes", testDiscouragedDirectInitWithNewIncludedTypes),
+        ("testDiscouragedDirectInitWithReplacedTypes", testDiscouragedDirectInitWithReplacedTypes)
+    ]
+}
+
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
@@ -123,8 +132,10 @@ extension FileHeaderRuleTests {
         ("testFileHeaderWithDefaultConfiguration", testFileHeaderWithDefaultConfiguration),
         ("testFileHeaderWithRequiredString", testFileHeaderWithRequiredString),
         ("testFileHeaderWithRequiredPattern", testFileHeaderWithRequiredPattern),
+        ("testFileHeaderWithRequiredStringAndURLComment", testFileHeaderWithRequiredStringAndURLComment),
         ("testFileHeaderWithForbiddenString", testFileHeaderWithForbiddenString),
-        ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern)
+        ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern),
+        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment)
     ]
 }
 
@@ -242,6 +253,14 @@ extension ObjectLiteralRuleTests {
     ]
 }
 
+extension PrivateOverFilePrivateRuleTests {
+    static var allTests: [(String, (PrivateOverFilePrivateRuleTests) -> () throws -> Void)] = [
+        ("testPrivateOverFilePrivateWithDefaultConfiguration", testPrivateOverFilePrivateWithDefaultConfiguration),
+        ("testPrivateOverFilePrivateValidatingExtensions", testPrivateOverFilePrivateValidatingExtensions),
+        ("testPrivateOverFilePrivateNotValidatingExtensions", testPrivateOverFilePrivateNotValidatingExtensions)
+    ]
+}
+
 extension RegionTests {
     static var allTests: [(String, (RegionTests) -> () throws -> Void)] = [
         ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
@@ -312,6 +331,7 @@ extension RuleTests {
 
 extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
+        ("testBlockBasedKVO", testBlockBasedKVO),
         ("testClassDelegateProtocol", testClassDelegateProtocol),
         ("testClosingBrace", testClosingBrace),
         ("testClosureEndIndentation", testClosureEndIndentation),
@@ -359,7 +379,6 @@ extension RulesTests {
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-        ("testPrivateOverFilePrivate", testPrivateOverFilePrivate),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),
@@ -443,6 +462,11 @@ extension YamlParserTests {
     static var allTests: [(String, (YamlParserTests) -> () throws -> Void)] = [
         ("testParseEmptyString", testParseEmptyString),
         ("testParseValidString", testParseValidString),
+        ("testParseReplacesEnvVar", testParseReplacesEnvVar),
+        ("testParseTreatNoAsString", testParseTreatNoAsString),
+        ("testParseTreatYesAsString", testParseTreatYesAsString),
+        ("testParseTreatOnAsString", testParseTreatOnAsString),
+        ("testParseTreatOffAsString", testParseTreatOffAsString),
         ("testParseInvalidStringThrows", testParseInvalidStringThrows)
     ]
 }
@@ -461,6 +485,7 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
@@ -475,6 +500,7 @@ XCTMain([
     testCase(LinterCacheTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
+    testCase(PrivateOverFilePrivateRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RuleConfigurationsTests.allTests),

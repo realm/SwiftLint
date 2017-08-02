@@ -2,6 +2,20 @@
 
 ##### Breaking
 
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
+## 0.21.0: Vintage Washboard
+
+##### Breaking
+
 * Xcode 8.3 or later and Swift 3.1 or later are required to build.  
   [Norio Nomura](https://github.com/norio-nomura)
 
@@ -87,6 +101,31 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1294](https://github.com/realm/SwiftLint/issues/1294)
 
+* Add `block_based_kvo` rule that enforces the usage of the new block based
+  KVO API added when linting with Swift 3.2 or later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1714](https://github.com/realm/SwiftLint/issues/1714)
+
+* Make `file_header` rule ignore doc comments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1719](https://github.com/realm/SwiftLint/issues/1719)
+
+* Allow using environment variables in a configuration file in the form of
+  `${SOME_VARIABLE}`. The variables will be expanded when the configuration
+  is first loaded.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1512](https://github.com/realm/SwiftLint/issues/1512)
+
+* Treat `yes`, `no`, `on` and `off` as strings (and not booleans) when loading
+  configuration files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1424](https://github.com/realm/SwiftLint/issues/1424)
+
+* Add `discouraged_direct_init` rule that discourages direct
+  initialization of certain types.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1306](https://github.com/realm/SwiftLint/issues/1306)
+  
 * Add support for excluding files using globs (e.g. /**/*Test*.swift) 
   [Andrey Ostanin](https://github.com/xzeror)
   [#1220](https://github.com/realm/SwiftLint/issues/1220)
@@ -111,6 +150,19 @@
 * Fix `mark` rule corrections generating invalid code in some cases.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1029](https://github.com/realm/SwiftLint/issues/1029)
+
+* Fix false positive in `empty_enum_arguments` rule when using wildcards and
+  `where` clauses.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1722](https://github.com/realm/SwiftLint/issues/1722)
+
+* Fix false positive in `large_tuple` rule when using throwing closure.  
+  [Liquidsoul](https://github.com/liquidsoul)
+
+* Make `vertical_parameter_alignment` more robust, fixing false positives and
+  detecting previously missed violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#1488](https://github.com/realm/SwiftLint/issues/1488)
 
 ## 0.20.1: More Liquid Fabric Softener
 

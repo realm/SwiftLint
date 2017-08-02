@@ -2,6 +2,7 @@
 # Rules
 
 * [Attributes](#attributes)
+* [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
 * [Closure End Indentation](#closure-end-indentation)
@@ -15,6 +16,7 @@
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
+* [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -433,6 +435,49 @@ func foo(completionHandler: @escaping () -> Void)
 
  @discardableResult
  ↓func a() -> Int
+```
+
+</details>
+
+
+
+## Block Based KVO
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`block_based_kvo` | Enabled | No | idiomatic
+
+Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
+   print(change.newValue)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {}
+}
+```
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: Dictionary<NSKeyValueChangeKey, Any>?,
+                               context: UnsafeMutableRawPointer?) {}
+}
 ```
 
 </details>
@@ -1583,6 +1628,91 @@ func foo() -> Any {
 
 
 
+## Discouraged Direct Initialization
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_direct_init` | Enabled | No | lint
+
+Discouraged direct initialization of types that can be harmful.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = UIDevice.current
+```
+
+```swift
+let foo = Bundle.main
+```
+
+```swift
+let foo = Bundle(path: "bar")
+```
+
+```swift
+let foo = Bundle(identifier: "bar")
+```
+
+```swift
+let foo = Bundle.init(path: "bar")
+```
+
+```swift
+let foo = Bundle.init(identifier: "bar")
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓UIDevice()
+```
+
+```swift
+↓Bundle()
+```
+
+```swift
+let foo = ↓UIDevice()
+```
+
+```swift
+let foo = ↓Bundle()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())
+```
+
+```swift
+↓UIDevice.init()
+```
+
+```swift
+↓Bundle.init()
+```
+
+```swift
+let foo = ↓UIDevice.init()
+```
+
+```swift
+let foo = ↓Bundle.init()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())
+```
+
+</details>
+
+
+
 ## Dynamic Inline
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -1738,31 +1868,37 @@ Arguments can be omitted when matching enums with associated types if they are n
 
 ```swift
 switch foo {
- case .bar: break
+    case .bar: break
 }
 ```
 
 ```swift
 switch foo {
- case .bar(let x): break
+    case .bar(let x): break
 }
 ```
 
 ```swift
 switch foo {
- case let .bar(x): break
+    case let .bar(x): break
 }
 ```
 
 ```swift
 switch (foo, bar) {
- case (_, _): break
+    case (_, _): break
 }
 ```
 
 ```swift
 switch foo {
- case "bar".uppercased(): break
+    case "bar".uppercased(): break
+}
+```
+
+```swift
+switch (foo, bar) {
+    case (_, _) where !something: break
 }
 ```
 
@@ -1772,25 +1908,25 @@ switch foo {
 
 ```swift
 switch foo {
- case .bar↓(_): break
+    case .bar↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(): break
+    case .bar↓(): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(_), .bar2↓(_): break
+    case .bar↓(_), .bar2↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓() where method() > 2: break
+    case .bar↓() where method() > 2: break
 }
 ```
 
@@ -4732,6 +4868,21 @@ let foo: (Int, Int, Int) -> Void
 ```
 
 ```swift
+let foo: (Int, Int, Int) throws -> Void
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) -> Void)
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) throws -> Void)
+
+```
+
+```swift
 var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!
 
 ```
@@ -7472,20 +7623,6 @@ fileprivate struct Inner {}
 ```
 
 ```swift
-↓fileprivate extension String {}
-```
-
-```swift
-↓fileprivate 
- extension String {}
-```
-
-```swift
-↓fileprivate extension 
- String {}
-```
-
-```swift
 ↓fileprivate class MyClass {
 fileprivate(set) var myInt = 4
 }
@@ -9011,7 +9148,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `trailing_closure` | Disabled | No | style
 
-Trailing closure syntax should be used whenever possible
+Trailing closure syntax should be used whenever possible.
 
 ### Examples
 
@@ -13203,6 +13340,19 @@ func regex(_ pattern: String,
            options: NSRegularExpression.Options = [.anchorsMatchLines,
                                                    .dotMatchesLineSeparators]) -> NSRegularExpression
 
+```
+
+```swift
+func foo(a: Void,
+         b: [String: String] =
+           [:]) {
+}
+
+```
+
+```swift
+func foo(data: (size: CGSize,
+                identifier: String)) {}
 ```
 
 </details>

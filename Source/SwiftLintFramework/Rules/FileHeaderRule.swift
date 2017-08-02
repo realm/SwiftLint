@@ -42,7 +42,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         var lastToken: SyntaxToken?
 
         for token in file.syntaxTokensByLines.joined() {
-            guard let kind = SyntaxKind(rawValue: token.type), kind.isCommentLike else {
+            guard let kind = SyntaxKind(rawValue: token.type), kind.isFileHeaderKind else {
                 // found a token that is not a comment, which means it's not the top of the file
                 // so we can just skip the remaining tokens
                 break
@@ -109,5 +109,11 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 location: Location(file: file, characterOffset: $0)
             )
         }
+    }
+}
+
+private extension SyntaxKind {
+    var isFileHeaderKind: Bool {
+        return self == .comment || self == .commentURL
     }
 }

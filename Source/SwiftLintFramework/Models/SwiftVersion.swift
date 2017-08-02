@@ -7,16 +7,26 @@
 //
 
 import Foundation
+import SourceKittenFramework
 
 enum SwiftVersion {
     case three
+    case four
 
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available
         if let envVersion = ProcessInfo.processInfo.environment["SWIFTLINT_SWIFT_VERSION"] {
             switch envVersion {
-            default:    return .three
+            case "4":
+                return .four
+            default:
+                return .three
             }
+        }
+
+        let file = File(contents: "#if swift(>=4.0)\nprint(0)\n#endif")
+        if !file.structure.dictionary.substructure.isEmpty {
+            return .four
         }
 
         return .three

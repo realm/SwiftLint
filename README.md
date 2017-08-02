@@ -307,6 +307,9 @@ identifier_name:
 reporter: "xcode" # reporter type (xcode, json, csv, checkstyle, junit, html, emoji)
 ```
 
+You can also use environment variables in your configuration file,
+by using `${SOME_VARIABLE}` in a string.
+
 #### Defining Custom Rules
 
 You can define custom regex-based rules in you configuration file using the
@@ -315,8 +318,8 @@ following syntax:
 ```yaml
 custom_rules:
   pirates_beat_ninjas: # rule identifier
-    included: ".*.swift" # regex that defines paths to include during linting. optional.
-    excluded: ".*Test.swift" # regex that defines paths to exclude during linting. optional
+    included: ".*\\.swift" # regex that defines paths to include during linting. optional.
+    excluded: ".*Test\\.swift" # regex that defines paths to exclude during linting. optional
     name: "Pirates Beat Ninjas" # rule name. optional.
     regex: "([n,N]inja)" # matching pattern
     match_kinds: # SyntaxKinds to match. optional.

@@ -10,6 +10,7 @@
 
 public let masterRuleList = RuleList(rules: [
     AttributesRule.self,
+    BlockBasedKVORule.self,
     ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,
     ClosureEndIndentationRule.self,
@@ -23,6 +24,7 @@ public let masterRuleList = RuleList(rules: [
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,
+    DiscouragedDirectInitRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyEnumArgumentsRule.self,

@@ -12,6 +12,12 @@ import XCTest
 // swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
+    func testBlockBasedKVO() {
+        #if swift(>=3.2)
+            verifyRule(BlockBasedKVORule.description)
+        #endif
+    }
+
     func testClassDelegateProtocol() {
         verifyRule(ClassDelegateProtocolRule.description)
     }
@@ -198,10 +204,6 @@ class RulesTests: XCTestCase {
 
     func testOperatorUsageWhitespace() {
         verifyRule(OperatorUsageWhitespaceRule.description)
-    }
-
-    func testPrivateOverFilePrivate() {
-        verifyRule(PrivateOverFilePrivateRule.description)
     }
 
     func testPrivateOutlet() {

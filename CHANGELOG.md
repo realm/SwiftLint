@@ -135,6 +135,11 @@
 
 ##### Bug Fixes
 
+* Fix false positive on `force_unwrapping` rule when declaring
+  local variable with implicity unwrapped type.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#1710](https://github.com/realm/SwiftLint/issues/1710)
+
 * Fix false positive on `redundant_discardable_let` rule when using
   `while` statements.  
   [Marcelo Fabri](https://github.com/marcelofabri)

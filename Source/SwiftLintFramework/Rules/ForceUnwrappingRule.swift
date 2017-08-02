@@ -35,7 +35,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "print(\"\\(xVar)!\")",
             "var test = (!bar)",
             "var a: [Int]!",
-            "private var myProperty: (Void -> Void)!"
+            "private var myProperty: (Void -> Void)!",
+            "func foo(_ options: [AnyHashable: Any]!) {"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -48,7 +49,11 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let a = dict[\"abc\"]↓!.contains(\"B\")",
             "dict[\"abc\"]↓!.bar(\"B\")",
             "if dict[\"a\"]↓!!!! {",
-            "var foo: [Bool]! = dict[\"abc\"]↓!"
+            "var foo: [Bool]! = dict[\"abc\"]↓!",
+            "context(\"abc\") {" +
+                "var foo: [Bool]! = dict[\"abc\"]↓!" +
+            "}",
+            "open var computed: String { return foo.bar↓! }"
         ]
     )
 
@@ -63,8 +68,13 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // capture previous of "!"
     // http://userguide.icu-project.org/strings/regexp
     private static let pattern = "([^\\s\\p{Ps}])(!+)"
+    // Match any variable declaration
+    // Has a small bug in @Iboutlet due suffix "let"
+    // But that does not compromise the filtering for var declarations
+    private static let varDeclarionPattern = "[[:blank:]]?(?:let|var)[[:blank:]]+[^=\\v{]*!"
 
     private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
+    private static let varDeclarationRegularExpression = regex(varDeclarionPattern, options: [])
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
 
@@ -73,9 +83,20 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: nsstring.length)
         let syntaxMap = file.syntaxMap
+
+        let varDeclarationRanges = ForceUnwrappingRule.varDeclarationRegularExpression
+            .matches(in: contents, options: [], range: range)
+            .flatMap { match -> NSRange? in
+                return match.range
+            }
+
         return ForceUnwrappingRule.regularExpression
             .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
+                if match.range.intersects(varDeclarationRanges) {
+                    return nil
+                }
+
                 return violationRange(match: match, nsstring: nsstring, syntaxMap: syntaxMap, file: file)
             }
     }

@@ -151,7 +151,7 @@ extension XCTestCase {
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
-            XCTFail()
+            XCTFail("Failed to create configuration")
             return
         }
 

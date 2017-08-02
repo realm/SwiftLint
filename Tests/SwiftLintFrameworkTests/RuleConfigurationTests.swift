@@ -93,7 +93,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertEqual(nestingConfig.typeLevel.error, 17)
             XCTAssertEqual(nestingConfig.statementLevel.error, 18)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure nested configurations")
         }
     }
 
@@ -116,7 +116,7 @@ class RuleConfigurationsTests: XCTestCase {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure severity from string")
         }
     }
 
@@ -128,7 +128,7 @@ class RuleConfigurationsTests: XCTestCase {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure severity from dictionary")
         }
     }
 
@@ -223,7 +223,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertFalse(configuration.ignoresEmptyLines)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply ignores_empty_lines")
         }
     }
 
@@ -239,7 +239,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertFalse(configuration.ignoresComments)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply ignores_comments")
         }
     }
 
@@ -274,7 +274,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: ["severity": "error"])
             XCTAssert(configuration.severityConfiguration.severity == .error)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply severity")
         }
     }
 
@@ -290,7 +290,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf1)")
         }
 
         let conf2 = [
@@ -307,7 +307,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf2)")
         }
 
         let conf3 = [
@@ -323,7 +323,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf3)")
         }
     }
 }

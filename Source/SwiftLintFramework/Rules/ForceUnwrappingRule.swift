@@ -71,10 +71,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // Match any variable declaration
     // Has a small bug in @IBOutlet due suffix "let"
     // But that does not compromise the filtering for var declarations
-    private static let varDeclarionPattern = "[[:blank:]]?(?:let|var)[[:blank:]]+[^=\\v{]*!"
+    private static let varDeclarationPattern = "\\s?(?:let|var)\\s+[^=\\v{]*!"
 
-    private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
-    private static let varDeclarationRegularExpression = regex(varDeclarionPattern, options: [])
+    private static let regularExpression = regex(pattern)
+    private static let varDeclarationRegularExpression = regex(varDeclarationPattern)
     private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
 

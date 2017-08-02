@@ -146,7 +146,6 @@ private func addShebang(_ string: String) -> String {
 }
 
 extension XCTestCase {
-    // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,

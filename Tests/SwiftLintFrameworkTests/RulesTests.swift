@@ -9,7 +9,6 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
     func testBlockBasedKVO() {

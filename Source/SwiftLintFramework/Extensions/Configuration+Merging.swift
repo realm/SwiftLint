@@ -25,6 +25,10 @@ extension Configuration {
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
 
+        if configurationSearchPath == configurationPath {
+            return self
+        }
+
         // If a configuration exists and it isn't us, load and merge the configurations
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {

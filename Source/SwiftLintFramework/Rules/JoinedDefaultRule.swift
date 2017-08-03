@@ -25,7 +25,9 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
             "let foo = bar.joined(separator: toto)"
         ],
         triggeringExamples: [
-            "let foo = bar.joined(separator: \"\")"
+            "let foo = bar.joined(↓separator: \"\")",
+            "let foo = bar.filter(toto)\n" +
+            "             .joined(↓separator: \"\")"
         ]
     )
 
@@ -34,25 +36,23 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
             kind == .call,
-            let offset = dictionary.offset,
-            let name = dictionary.name,
-            name.hasSuffix(".joined"),
-            passesDefaultSeparator(dictionary: dictionary, file: file)
+            dictionary.name?.hasSuffix(".joined") == true,
+            let defaultSeparatorOffset = defaultSeparatorOffset(dictionary: dictionary, file: file)
             else {
                 return []
         }
 
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: offset))]
+                               location: Location(file: file, byteOffset: defaultSeparatorOffset))]
     }
 
-    private func passesDefaultSeparator(dictionary: [String: SourceKitRepresentable], file: File) -> Bool {
+    private func defaultSeparatorOffset(dictionary: [String: SourceKitRepresentable], file: File) -> Int? {
         guard
             let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength else { return false }
+            let bodyLength = dictionary.bodyLength else { return nil }
 
         let body = file.contents.bridge().substringWithByteRange(start: bodyOffset, length: bodyLength)
-        return body == "separator: \"\""
+        return body == "separator: \"\"" ? bodyOffset : nil
     }
 }

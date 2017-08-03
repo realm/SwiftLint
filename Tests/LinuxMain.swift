@@ -344,6 +344,7 @@ extension RulesTests {
         ("testBlockBasedKVO", testBlockBasedKVO),
         ("testClassDelegateProtocol", testClassDelegateProtocol),
         ("testClosingBrace", testClosingBrace),
+        ("testClosureBodyLength", testClosureBodyLength),
         ("testClosureEndIndentation", testClosureEndIndentation),
         ("testClosureParameterPosition", testClosureParameterPosition),
         ("testClosureSpacing", testClosureSpacing),

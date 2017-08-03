@@ -128,6 +128,9 @@ struct LintOptions: OptionsProtocol {
     let path: String
     let useSTDIN: Bool
     let configurationFile: String
+    let configurationDefaults: String?
+    let configurationOverrides: String?
+    let ignoreNestedConfigurations: Bool
     let strict: Bool
     let lenient: Bool
     let useScriptInputFiles: Bool
@@ -139,10 +142,10 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { lenient in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
-        }}}}}}}}}}}
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ configurationDefaults: String?) -> (_ configurationOverrides: String?) -> (_ ignoreNestedConfigurations: Bool) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { configurationDefaults in { configurationOverrides in { ignoreNestedConfigurations in { strict in { lenient in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, configurationDefaults: configurationDefaults, configurationOverrides: configurationOverrides, ignoreNestedConfigurations: ignoreNestedConfigurations, strict: strict, lenient: lenient, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
+        }}}}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -152,6 +155,9 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| Option(key: "use-stdin", defaultValue: false,
                                usage: "lint standard input")
             <*> mode <| configOption
+            <*> mode <| configDefaultsOption
+            <*> mode <| configOverridesOption
+            <*> mode <| ignoreNestedConfigsOption
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
             <*> mode <| Option(key: "lenient", defaultValue: false,

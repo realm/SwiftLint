@@ -124,7 +124,9 @@ extension Configuration {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
         self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
-                  optional: optional, quiet: options.quiet,
+                  optional: optional,
+                  defaults: options.configurationDefaults, overrides: options.configurationOverrides,
+                  ignoreNested: options.ignoreNestedConfigurations, quiet: options.quiet,
                   enableAllRules: options.enableAllRules, cachePath: cachePath)
     }
 
@@ -141,13 +143,17 @@ extension Configuration {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
         self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
-                  optional: optional, quiet: options.quiet, cachePath: cachePath)
+                  optional: optional,
+                  defaults: options.configurationDefaults, overrides: options.configurationOverrides,
+                  ignoreNested: options.ignoreNestedConfigurations,
+                  quiet: options.quiet, cachePath: cachePath)
     }
 
     // MARK: Rules command
 
     init(options: RulesOptions) {
         let optional = !CommandLine.arguments.contains("--config")
-        self.init(path: options.configurationFile, optional: optional)
+        self.init(path: options.configurationFile, optional: optional,
+                  defaults: options.configurationDefaults, overrides: options.configurationOverrides)
     }
 }

@@ -45,6 +45,9 @@ struct AutoCorrectCommand: CommandProtocol {
 struct AutoCorrectOptions: OptionsProtocol {
     let path: String
     let configurationFile: String
+    let configurationDefaults: String?
+    let configurationOverrides: String?
+    let ignoreNestedConfigurations: Bool
     let useScriptInputFiles: Bool
     let quiet: Bool
     let format: Bool
@@ -53,10 +56,10 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useTabs: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { format in { cachePath in { ignoreCache in { useTabs in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
-        }}}}}}}
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ configurationDefaults: String?) -> (_ configurationOverrides: String?) -> (_ ignoreNestedConfigurations: Bool) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { configurationDefaults in { configurationOverrides in { ignoreNestedConfigurations in { useScriptInputFiles in { quiet in { format in { cachePath in { ignoreCache in { useTabs in
+            self.init(path: path, configurationFile: configurationFile, configurationDefaults: configurationDefaults, configurationOverrides: configurationOverrides, ignoreNestedConfigurations: ignoreNestedConfigurations, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
+        }}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -64,6 +67,9 @@ struct AutoCorrectOptions: OptionsProtocol {
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
+            <*> mode <| configDefaultsOption
+            <*> mode <| configOverridesOption
+            <*> mode <| ignoreNestedConfigsOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")
             <*> mode <| Option(key: "format",

@@ -78,22 +78,28 @@ struct RulesCommand: CommandProtocol {
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
     let configurationFile: String
+    let configurationDefaults: String?
+    let configurationOverrides: String?
     fileprivate let onlyEnabledRules: Bool
     fileprivate let onlyDisabledRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> RulesOptions {
-        return { ruleID in { onlyEnabledRules in { onlyDisabledRules in
+    static func create(_ configurationFile: String) -> (_ configurationDefaults: String?) -> (_ configurationOverrides: String?) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> RulesOptions {
+        return { configurationDefaults in { configurationOverrides in { ruleID in { onlyEnabledRules in { onlyDisabledRules in
             self.init(ruleID: (ruleID.isEmpty ? nil : ruleID),
                       configurationFile: configurationFile,
+                      configurationDefaults: configurationDefaults,
+                      configurationOverrides: configurationOverrides,
                       onlyEnabledRules: onlyEnabledRules,
                       onlyDisabledRules: onlyDisabledRules)
-        }}}
+        }}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
         return create
             <*> mode <| configOption
+            <*> mode <| configDefaultsOption
+            <*> mode <| configOverridesOption
             <*> mode <| Argument(defaultValue: "",
                                  usage: "the rule identifier to display description for")
             <*> mode <| Switch(flag: "e",

@@ -19,6 +19,20 @@ let configOption = Option(key: "config",
                           defaultValue: Configuration.fileName,
                           usage: "the path to SwiftLint's configuration file")
 
+let configDefaultsOption = Option<String?>(key: "config-defaults",
+                                           defaultValue: nil,
+                                           usage: "the path of an external configuration file " +
+                                                  "to use as the root of the merge tree")
+
+let configOverridesOption = Option<String?>(key: "config-overrides",
+                                            defaultValue: nil,
+                                            usage: "the path of an external configuration file " +
+                                                   "to append to the end of each branch of the merge tree")
+
+let ignoreNestedConfigsOption = Option(key: "ignore-nested-configs",
+                                       defaultValue: false,
+                                       usage: "ignores nested configuration files")
+
 let useScriptInputFilesOption = Option(key: "use-script-input-files",
                                        defaultValue: false,
                                        usage: "read SCRIPT_INPUT_FILE* environment variables " +

@@ -27,6 +27,9 @@ public struct Configuration: Equatable {
     public var warningThreshold: Int?     // warning threshold
     public var rootPath: String?          // the root path to search for nested configurations
     public var configurationPath: String? // if successfully loaded from a path
+    public var defaults: Ref<Configuration>?  // --config-defaults
+    public var overrides: Ref<Configuration>? // --config-overrides
+    public var ignoreNested: Bool = false     // --ignore-nested-configs
     public let cachePath: String?
 
     // MARK: Rules Properties
@@ -136,8 +139,28 @@ public struct Configuration: Equatable {
         rootPath = configuration.rootPath
     }
 
-    public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
+    // swiftlint:disable:next function_body_length
+    public init(path: String = Configuration.fileName, rootPath: String? = nil, optional: Bool = true,
+                defaults: String? = nil, overrides: String? = nil, ignoreNested: Bool = false,
+                quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
+
+        defer {
+            if let defaultsPath = defaults {
+                // The defaults must inherit all but the path
+                // (i.e. quiet, enableAllRules & cachePath)
+                // because the root will not be merged into the defaults
+                // if merging is prevented by --ignore-nested-configs.
+                self.defaults = Ref(Configuration(path: defaultsPath, optional: false,
+                                                  overrides: overrides, ignoreNested: ignoreNested,
+                                                  quiet: quiet, enableAllRules: enableAllRules,
+                                                  cachePath: cachePath))
+            }
+            if let overridesPath = overrides {
+                self.overrides = Ref(Configuration(path: overridesPath, optional: false))
+            }
+            self.ignoreNested = ignoreNested
+        }
+
         let fullPath: String
         if let rootPath = rootPath, rootPath.isDirectory() {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
@@ -240,5 +263,15 @@ private extension String {
         }
 
         return false
+    }
+}
+
+public class Ref<T> {
+    // Indirection to allow one configuration to store another as a property
+
+    public let value: T
+
+    public init(_ value: T) {
+        self.value = value
     }
 }

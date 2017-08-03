@@ -9,8 +9,11 @@
 import Foundation
 import SourceKittenFramework
 
-private func buildExample(codeLinesCount: Int, commentLinesCount: Int, emptyLinesCount: Int) -> String {
-    return "foo.bar {\n" +
+private func buildExample(_ violationSymbol: String = "",
+                          codeLinesCount: Int,
+                          commentLinesCount: Int,
+                          emptyLinesCount: Int) -> String {
+    return "foo.bar {" + violationSymbol + "\n" +
         repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
         repeatElement("\t// toto\n", count: commentLinesCount).joined() +
         repeatElement("\t\n", count: emptyLinesCount).joined() +
@@ -36,10 +39,10 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
             buildExample(codeLinesCount: 20, commentLinesCount: 100, emptyLinesCount: 100)
         ],
         triggeringExamples: [
-            "↓" + buildExample(codeLinesCount: 21, commentLinesCount: 0, emptyLinesCount: 0),
-            "↓" + buildExample(codeLinesCount: 50, commentLinesCount: 99, emptyLinesCount: 99),
-            "↓" + buildExample(codeLinesCount: 99, commentLinesCount: 100, emptyLinesCount: 100),
-            "↓" + buildExample(codeLinesCount: 100, commentLinesCount: 100, emptyLinesCount: 100)
+            buildExample("↓", codeLinesCount: 21, commentLinesCount: 0, emptyLinesCount: 0),
+            buildExample("↓", codeLinesCount: 50, commentLinesCount: 99, emptyLinesCount: 99),
+            buildExample("↓", codeLinesCount: 99, commentLinesCount: 100, emptyLinesCount: 100),
+            buildExample("↓", codeLinesCount: 100, commentLinesCount: 100, emptyLinesCount: 100)
         ]
     )
 
@@ -48,7 +51,6 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
             kind == .call,
-            let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
             case let contents = file.contents.bridge(),
@@ -70,7 +72,7 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
 
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: parameter.severity,
-                                  location: Location(file: file, byteOffset: offset),
+                                  location: Location(file: file, byteOffset: bodyOffset),
                                   reason: reason)
         }
     }

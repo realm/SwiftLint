@@ -85,6 +85,7 @@
 		6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7048DB7A1F25A5CF005133E2 /* Glob.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7048DB791F25A5CF005133E2 /* Glob.framework */; };
+		7067CEE11F2AF06D008EC8D0 /* Glob+SwiftLintTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7067CEE01F2AF06D008EC8D0 /* Glob+SwiftLintTests.swift */; };
 		7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementPositionConfiguration.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
 		78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */; };
@@ -386,6 +387,7 @@
 		6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxMap+SwiftLint.swift"; sourceTree = "<group>"; };
 		6CC898A61EA0E1EF003DC0E2 /* CannedEmojiReporterOutputNonObjC.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CannedEmojiReporterOutputNonObjC.txt; sourceTree = "<group>"; };
 		7048DB791F25A5CF005133E2 /* Glob.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Glob.framework; path = "../../Library/Developer/Xcode/DerivedData/SwiftLint-bpbqmnklgldkzqgjogmjkoxgimmi/Build/Products/Debug/Glob.framework"; sourceTree = "<group>"; };
+		7067CEE01F2AF06D008EC8D0 /* Glob+SwiftLintTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Glob+SwiftLintTests.swift"; sourceTree = "<group>"; };
 		707F48981F21BA6500A6094F /* Glob.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Glob.framework; path = "Carthage/Checkouts/Glob/build/Debug-iphoneos/Glob.framework"; sourceTree = "<group>"; };
 		725094881D0855760039B353 /* StatementPositionConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementPositionConfiguration.swift; sourceTree = "<group>"; };
 		78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverriddenSuperCallRule.swift; sourceTree = "<group>"; };
@@ -874,6 +876,8 @@
 				D0D1212219E878CC005E4BAA /* Configuration */,
 				3B12C9BE1C3209AC000B423F /* Resources */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
+				D45255C71F0932F8003C9B56 /* RuleDescription+Examples.swift */,
+				7067CEE01F2AF06D008EC8D0 /* Glob+SwiftLintTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Tests/SwiftLintFrameworkTests;
@@ -1539,6 +1543,7 @@
 				67EB4DFC1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift in Sources */,
 				3B30C4A11C3785B300E04027 /* YamlParserTests.swift in Sources */,
 				3B20CD0A1EB699380069EF2E /* GenericTypeNameRuleTests.swift in Sources */,
+				7067CEE11F2AF06D008EC8D0 /* Glob+SwiftLintTests.swift in Sources */,
 				D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */,
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
 				47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */,

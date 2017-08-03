@@ -367,6 +367,7 @@ extension RulesTests {
         ("testImplicitGetter", testImplicitGetter),
         ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
         ("testImplicitReturn", testImplicitReturn),
+        ("testJoinedDefaultParameter", testJoinedDefaultParameter),
         ("testLargeTuple", testLargeTuple),
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),

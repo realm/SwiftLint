@@ -142,6 +142,10 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitReturnRule.description)
     }
 
+    func testJoinedDefaultParameter() {
+        verifyRule(JoinedDefaultParameterRule.description)
+    }
+
     func testLargeTuple() {
         verifyRule(LargeTupleRule.description)
     }

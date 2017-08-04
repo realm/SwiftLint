@@ -15,7 +15,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
 
     func testVerticalWhitespaceWithDefaultConfiguration() {
         // Test with default parameters
-        verifyRule(VerticalWhitespaceRule.description, skipDisableCommandTests: true)
+        verifyRule(VerticalWhitespaceRule.description)
     }
 
     func testAttributesWithMaxEmptyLines() {
@@ -26,7 +26,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
             .with(corrections: [:])
 
         verifyRule(maxEmptyLinesDescription,
-                   ruleConfiguration: ["max_empty_lines": 2], skipDisableCommandTests: true)
+                   ruleConfiguration: ["max_empty_lines": 2])
     }
 
     func testAutoCorrectionWithMaxEmptyLines() {

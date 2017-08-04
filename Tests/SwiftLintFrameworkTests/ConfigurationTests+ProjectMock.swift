@@ -74,4 +74,12 @@ extension ConfigurationTests {
         return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
                              optional: false, quiet: true)
     }
+
+    var projectMockDefaults: String {
+        return bundlePath.stringByAppendingPathComponent("defaults.yml")
+    }
+
+    var projectMockOverrides: String {
+        return bundlePath.stringByAppendingPathComponent("overrides.yml")
+    }
 }

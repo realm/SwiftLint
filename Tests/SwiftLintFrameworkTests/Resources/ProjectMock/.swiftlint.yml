@@ -1,5 +1,7 @@
 disabled_rules:
   - force_cast
+opt_in_rules:
+  - comma
 included:
   - "everything"
 excluded:

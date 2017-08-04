@@ -30,6 +30,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1271](https://github.com/realm/SwiftLint/issues/1271)
 
+* Truncate long configuration console descriptions to 80 characters when running
+  `swiftlint rules`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1002](https://github.com/realm/SwiftLint/issues/1002)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  
@@ -54,6 +59,11 @@
 * Fix false positive in `class_delegate_protocol` rule when using Swift 4.0.1.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1856](https://github.com/realm/SwiftLint/issues/1856)
+
+* Print multi-line configuration values in a single line when running
+  `swiftlint rules` to avoid breaking the table format.  
+  [JP Simard](https://github.com/jpsim)
+  [#1002](https://github.com/realm/SwiftLint/issues/1002)
 
 ## 0.22.0: Wrinkle-free
 
@@ -109,7 +119,7 @@
 
 * Invalidate cache when Swift version changes.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  
+
 * Add `pattern_matching_keywords` opt-in rule to enforce moving `let` and `var`
   keywords outside tuples in a `switch`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

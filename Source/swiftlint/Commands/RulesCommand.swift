@@ -119,6 +119,15 @@ extension TextTable {
         ]
         self.init(columns: columns)
         let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
+        func truncate(_ string: String) -> String {
+            let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
+            let truncatedEndIndex = stringWithNoNewlines.index(stringWithNoNewlines.startIndex, offsetBy: 77,
+                                                               limitedBy: stringWithNoNewlines.endIndex)
+            if let truncatedEndIndex = truncatedEndIndex {
+                return stringWithNoNewlines.substring(to: truncatedEndIndex) + "..."
+            }
+            return stringWithNoNewlines
+        }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule = configuration.rules.first { rule in
@@ -131,7 +140,7 @@ extension TextTable {
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
                 (configuredRule ?? rule).configurationDescription
-            ])
+            ].map(truncate))
         }
     }
 }

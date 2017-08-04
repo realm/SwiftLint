@@ -171,7 +171,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLetVarWhitespace() {
-        verifyRule(LetVarWhitespaceRule.description, skipDisableCommandTests: true)
+        verifyRule(LetVarWhitespaceRule.description)
     }
 
     func testMark() {

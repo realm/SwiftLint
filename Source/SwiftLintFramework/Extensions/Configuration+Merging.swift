@@ -18,29 +18,57 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootPath {
+        if ignoreNested {
+            if let commandLineDefaults = defaults?.value {
+                // --config-defaults is lowest in the tree
+                return commandLineDefaults
+            } else {
+                // when no --config-defaults, the root directory is lowest in the tree
+                return self
+            }
+        }
+
+        var merged = mergeConfigurationFiles(upTo: path)
+        if let commandLineDefaults = defaults?.value {
+            // add --config-defaults underneath
+            merged = commandLineDefaults.merge(with: merged)
+        }
+        if let commandLineOverrides = overrides?.value {
+            // add --config-overrides on top
+            merged = merged.merge(with: commandLineOverrides)
+        }
+        return merged
+    }
+
+    private func mergeConfigurationFiles(upTo path: String) -> Configuration {
+        if path == rootPath || path == "/" {
             return self
         }
 
         let pathNSString = path.bridge()
         let configurationSearchPath = pathNSString.appendingPathComponent(Configuration.fileName)
+        if configurationSearchPath == configurationPath {
+            // We are the configuration, no need to read from the disk again, just return self
+            return self
+        }
 
-        // If a configuration exists and it isn't us, load and merge the configurations
+        // We are not at the root path, so get the parent configuration
+        let parent = mergeConfigurationFiles(upTo: path.bridge().deletingLastPathComponent)
+
+        // If a configuration exists, load it
         if configurationSearchPath != configurationPath &&
             FileManager.default.fileExists(atPath: configurationSearchPath) {
             let fullPath = pathNSString.absolutePathRepresentation()
             let config = Configuration.getCached(atPath: fullPath) ??
                 Configuration(path: configurationSearchPath, rootPath: fullPath, optional: false, quiet: true)
-            return merge(with: config)
-        }
 
-        // If we are not at the root path, continue down the tree
-        if path != rootPath && path != "/" {
-            return configuration(forPath: pathNSString.deletingLastPathComponent)
-        }
+            // merge the changes specified in this directory on top of the parent
+            return parent.merge(with: config)
 
-        // If nothing else, return self
-        return self
+        } else {
+            // no changes specified in this directory, so just return the parent
+            return parent
+        }
     }
 
     private struct HashableRule: Hashable {

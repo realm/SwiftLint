@@ -9,17 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-private func buildExample(_ violationSymbol: String = "",
-                          codeLinesCount: Int,
-                          commentLinesCount: Int,
-                          emptyLinesCount: Int) -> String {
-    return "foo.bar {" + violationSymbol + "\n" +
-        repeatElement("\tlet a = 0\n", count: codeLinesCount).joined() +
-        repeatElement("\t// toto\n", count: commentLinesCount).joined() +
-        repeatElement("\t\n", count: emptyLinesCount).joined() +
-    "}"
-}
-
 public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 20, error: 100)
 
@@ -30,50 +19,55 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
         name: "Closure Body Length",
         description: "Closure bodies should not span too many lines.",
         kind: .metrics,
-        nonTriggeringExamples: [
-            buildExample(codeLinesCount: 1, commentLinesCount: 0, emptyLinesCount: 0),
-            buildExample(codeLinesCount: 1, commentLinesCount: 99, emptyLinesCount: 99),
-            buildExample(codeLinesCount: 1, commentLinesCount: 100, emptyLinesCount: 100),
-            buildExample(codeLinesCount: 20, commentLinesCount: 0, emptyLinesCount: 0),
-            buildExample(codeLinesCount: 20, commentLinesCount: 99, emptyLinesCount: 99),
-            buildExample(codeLinesCount: 20, commentLinesCount: 100, emptyLinesCount: 100)
-        ],
-        triggeringExamples: [
-            buildExample("↓", codeLinesCount: 21, commentLinesCount: 0, emptyLinesCount: 0),
-            buildExample("↓", codeLinesCount: 50, commentLinesCount: 99, emptyLinesCount: 99),
-            buildExample("↓", codeLinesCount: 99, commentLinesCount: 100, emptyLinesCount: 100),
-            buildExample("↓", codeLinesCount: 100, commentLinesCount: 100, emptyLinesCount: 100)
-        ]
+        nonTriggeringExamples: ClosureBodyLengthRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard
-            kind == .call,
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            case let contents = file.contents.bridge(),
-            contents.substringWithByteRange(start: bodyOffset - 1, length: 1) == "{",
-            let startLine = contents.lineAndCharacter(forByteOffset: bodyOffset)?.line,
-            let endLine = contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
-            else {
-                return []
-        }
+        guard kind == .call else { return [] }
 
-        return configuration.params.flatMap { parameter in
-            let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(startLine,
-                                                                                           endLine,
-                                                                                           parameter.value)
-            guard exceeds else { return nil }
+        return findClosures(on: dictionary)
+            .flatMap { closureDictionary -> (Int, Int, Int)? in
+                guard
+                    let bodyOffset = closureDictionary.bodyOffset,
+                    let bodyLength = closureDictionary.bodyLength,
+                    case let contents = file.contents.bridge(),
+                    let startLine = contents.lineAndCharacter(forByteOffset: bodyOffset)?.line,
+                    let endLine = contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
+                    else { return nil }
 
-            let reason = "Closure body should span \(configuration.warning) lines or less " +
-                "excluding comments and whitespace: currently spans \(lineCount) " + "lines"
+                return (offset: bodyOffset, startLine: startLine, endLine: endLine)
+            }
+            .flatMap { offset, startLine, endLine -> [StyleViolation] in
+                return configuration.params.flatMap { parameter -> StyleViolation? in
+                    let (exceeds, count) = file.exceedsLineCountExcludingCommentsAndWhitespace(startLine,
+                                                                                               endLine,
+                                                                                               parameter.value)
+                    guard exceeds else { return nil }
 
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: parameter.severity,
-                                  location: Location(file: file, byteOffset: bodyOffset),
-                                  reason: reason)
-        }
+                    let reason = "Closure body should span \(configuration.warning) lines or less " +
+                        "excluding comments and whitespace: currently spans \(count) " + "lines"
+
+                    return StyleViolation(ruleDescription: type(of: self).description,
+                                          severity: parameter.severity,
+                                          location: Location(file: file, byteOffset: offset),
+                                          reason: reason)
+                }
+            }
+    }
+
+    // MARK: - Private
+
+    private func findClosures(on dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+        let trailingClosures = dictionary.substructure
+            .filter { $0.kind == StatementKind.brace.rawValue }
+
+        let closuresAsArgument = dictionary.substructure
+            .filter { $0.kind == SwiftExpressionKind.argument.rawValue }
+            .flatMap { $0.substructure.filter { $0.kind == StatementKind.brace.rawValue } }
+
+        return trailingClosures + closuresAsArgument
     }
 }

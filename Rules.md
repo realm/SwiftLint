@@ -625,8 +625,11 @@ Closure bodies should not span too many lines.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+foo.bar { $0 }
+```
+
+```swift
 foo.bar {
-	let a = 0
 }
 ```
 
@@ -643,184 +646,6 @@ foo.bar {
 	// toto
 	// toto
 	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -836,213 +661,6 @@ foo.bar {
 
 ```swift
 foo.bar {
-	let a = 0
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
-```
-
-```swift
-foo.bar {
-	let a = 0
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1079,14 +697,6 @@ foo.bar {
 	let a = 0
 	let a = 0
 	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
 	// toto
 	// toto
 	// toto
@@ -1097,184 +707,6 @@ foo.bar {
 	// toto
 	// toto
 	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -1289,7 +721,53 @@ foo.bar {
 ```
 
 ```swift
-foo.bar {
+foo.bar({
+})
+```
+
+```swift
+foo.bar({
+	let a = 0
+})
+```
+
+```swift
+foo.bar({
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1310,207 +788,119 @@ foo.bar {
 	let a = 0
 	let a = 0
 	let a = 0
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}, anotherLabel: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}) {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
 }
+```
+
+```swift
+let foo: Bar = {
+	let bar = Bar()
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	return bar
+}()
 ```
 
 </details>
@@ -1540,6 +930,7 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
+	let a = 0
 }
 ```
 
@@ -1574,27 +965,6 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
 	// toto
 	// toto
 	// toto
@@ -1605,184 +975,6 @@ foo.bar {↓
 	// toto
 	// toto
 	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -1797,7 +989,7 @@ foo.bar {↓
 ```
 
 ```swift
-foo.bar {↓
+foo.bar({↓
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1820,6 +1012,11 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1835,6 +1032,11 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1857,6 +1059,7 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
+}, anotherLabel: {↓
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1879,6 +1082,11 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
 	let a = 0
 	let a = 0
 	let a = 0
@@ -1897,211 +1105,46 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}) {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
 }
 ```
 
 ```swift
-foo.bar {↓
+let foo: Bar = {↓
+	let bar = Bar()
 	let a = 0
 	let a = 0
 	let a = 0
@@ -2121,288 +1164,8 @@ foo.bar {↓
 	let a = 0
 	let a = 0
 	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	let a = 0
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	// toto
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
+	return bar
+}()
 ```
 
 </details>

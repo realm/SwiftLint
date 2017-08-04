@@ -69,6 +69,7 @@
 		623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */; };
 		623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
+		625BD08C1F345E4B00B0CE51 /* ClosureBodyLengthRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625BD08B1F345E4B00B0CE51 /* ClosureBodyLengthRuleExamples.swift */; };
 		62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
 		626D02971F31CBCC0054788D /* XCTFailMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */; };
 		629C60D91F43906700B4AF92 /* SingleTestClassRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */; };
@@ -387,6 +388,7 @@
 		6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRule.swift; sourceTree = "<group>"; };
 		623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRule.swift; sourceTree = "<group>"; };
 		623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRuleExamples.swift; sourceTree = "<group>"; };
+		625BD08B1F345E4B00B0CE51 /* ClosureBodyLengthRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureBodyLengthRuleExamples.swift; sourceTree = "<group>"; };
 		62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRule.swift; sourceTree = "<group>"; };
 		626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTFailMessageRule.swift; sourceTree = "<group>"; };
 		629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTestClassRule.swift; sourceTree = "<group>"; };
@@ -950,6 +952,7 @@
 				D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */,
 				1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */,
 				62A6E7941F3344CF003A0479 /* ClosureBodyLengthRule.swift */,
+				625BD08B1F345E4B00B0CE51 /* ClosureBodyLengthRuleExamples.swift */,
 				D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */,
 				D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */,
 				1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */,
@@ -1489,6 +1492,7 @@
 				00B8D9791E2D1223004E0EEC /* LegacyConstantRuleExamples.swift in Sources */,
 				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */,
 				D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */,
+				625BD08C1F345E4B00B0CE51 /* ClosureBodyLengthRuleExamples.swift in Sources */,
 				7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */,
 				E81619531BFC162C00946723 /* QueuedPrint.swift in Sources */,
 				E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */,

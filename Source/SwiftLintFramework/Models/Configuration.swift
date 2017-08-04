@@ -213,7 +213,8 @@ public struct Configuration: Equatable {
             (lhs.reporter == rhs.reporter) &&
             (lhs.configurationPath == rhs.configurationPath) &&
             (lhs.rootPath == lhs.rootPath) &&
-            (lhs.rules == rhs.rules)
+            (lhs.rules.sorted(by: { String(describing: $0) < String(describing: $1) })
+                == rhs.rules.sorted(by: { String(describing: $0) < String(describing: $1) }))
     }
 }
 

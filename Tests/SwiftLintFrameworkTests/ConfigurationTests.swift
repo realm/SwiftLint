@@ -195,6 +195,22 @@ class ConfigurationTests: XCTestCase {
                           projectMockConfig0CustomPath.configuration(for: file))
     }
 
+    func testConfigurationWithSwiftFileAsRoot() {
+        let configuration = Configuration(path: projectMockYAML0,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
+    }
+
+    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+        let configuration = Configuration(path: projectMockYAML0CustomPath,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
+    }
+
     // MARK: - Testing Rules from config dictionary
 
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)

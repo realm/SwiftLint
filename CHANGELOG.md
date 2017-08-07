@@ -15,6 +15,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1370](https://github.com/realm/SwiftLint/issues/1370)
 
+* Add `joined_default_parameter` opt-in rule to discourage
+  explicit usage of the default separator.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1093](https://github.com/realm/SwiftLint/issues/1093)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

@@ -41,6 +41,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
 * [Leading Whitespace](#leading-whitespace)
 * [Legacy CGGeometry Functions](#legacy-cggeometry-functions)
@@ -4813,6 +4814,48 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## Joined Default Parameter
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`joined_default_parameter` | Disabled | No | idiomatic
+
+Discouraged explicit usage of the default separator.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = bar.joined()
+```
+
+```swift
+let foo = bar.joined(separator: ",")
+```
+
+```swift
+let foo = bar.joined(separator: toto)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let foo = bar.joined(separator: ↓"")
+```
+
+```swift
+let foo = bar.filter(toto)
+             .joined(separator: ↓"")
 ```
 
 </details>

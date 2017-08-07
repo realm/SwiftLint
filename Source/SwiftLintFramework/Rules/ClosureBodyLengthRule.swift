@@ -28,7 +28,7 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else { return [] }
 
-        return findClosures(on: dictionary)
+        return findClosures(in: dictionary)
             .flatMap { closureDictionary -> (Int, Int, Int)? in
                 guard
                     let bodyOffset = closureDictionary.bodyOffset,
@@ -60,12 +60,11 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
 
     // MARK: - Private
 
-    private func findClosures(on dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+    private func findClosures(in dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
         let trailingClosures = dictionary.substructure
             .filter { $0.kind == StatementKind.brace.rawValue }
 
-        let closuresAsArgument = dictionary.substructure
-            .filter { $0.kind == SwiftExpressionKind.argument.rawValue }
+        let closuresAsArgument = dictionary.enclosedArguments
             .flatMap { $0.substructure.filter { $0.kind == StatementKind.brace.rawValue } }
 
         return trailingClosures + closuresAsArgument

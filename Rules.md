@@ -4824,7 +4824,7 @@ func foo(int: Int!) {}
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`joined_default_parameter` | Disabled | No | idiomatic
+`joined_default_parameter` | Disabled | Yes | idiomatic
 
 Discouraged explicit usage of the default separator.
 

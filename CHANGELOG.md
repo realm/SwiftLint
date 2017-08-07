@@ -25,6 +25,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1721](https://github.com/realm/SwiftLint/issues/1721)
 
+* Make `joined_default_parameter` correctable.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1757](https://github.com/realm/SwiftLint/issues/1757)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

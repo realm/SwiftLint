@@ -16,8 +16,8 @@ extension Configuration {
 
     internal func lintablePaths(inPath path: String,
                                 fileManager: LintableFileManager = FileManager.default) -> [String] {
-        // If path is a Swift file, skip filtering with excluded/included paths
-        if path.bridge().isSwiftFile() && path.isFile {
+        // If path is a file, skip filtering with excluded/included paths
+        if path.isFile {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []

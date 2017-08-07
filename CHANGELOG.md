@@ -20,6 +20,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1093](https://github.com/realm/SwiftLint/issues/1093)
 
+* Files with extensions other than `.swift` can now be used as argument
+  to `--file` when linting or autocorrecting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1721](https://github.com/realm/SwiftLint/issues/1721)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

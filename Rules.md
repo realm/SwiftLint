@@ -4850,7 +4850,12 @@ let foo = bar.joined(separator: toto)
 <summary>Triggering Examples</summary>
 
 ```swift
-let foo = bar.joined(separator: "")
+let foo = bar.joined(separator: ↓"")
+```
+
+```swift
+let foo = bar.filter(toto)
+             .joined(separator: ↓"")
 ```
 
 </details>

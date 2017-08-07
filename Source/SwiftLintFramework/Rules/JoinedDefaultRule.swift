@@ -25,9 +25,9 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
             "let foo = bar.joined(separator: toto)"
         ],
         triggeringExamples: [
-            "let foo = bar.joined(↓separator: \"\")",
+            "let foo = bar.joined(separator: ↓\"\")",
             "let foo = bar.filter(toto)\n" +
-            "             .joined(↓separator: \"\")"
+            "             .joined(separator: ↓\"\")"
         ]
     )
 
@@ -49,10 +49,16 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
 
     private func defaultSeparatorOffset(dictionary: [String: SourceKitRepresentable], file: File) -> Int? {
         guard
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength else { return nil }
+            dictionary.enclosedArguments.count == 1,
+            let argument = dictionary.enclosedArguments.first,
+            let argumentBodyOffset = argument.bodyOffset,
+            let argumentBodyLength = argument.bodyLength,
+            argument.name == "separator"
+            else {
+                return nil
+        }
 
-        let body = file.contents.bridge().substringWithByteRange(start: bodyOffset, length: bodyLength)
-        return body == "separator: \"\"" ? bodyOffset : nil
+        let body = file.contents.bridge().substringWithByteRange(start: argumentBodyOffset, length: argumentBodyLength)
+        return body == "\"\"" ? argumentBodyOffset : nil
     }
 }

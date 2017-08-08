@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
-                                                                        severity: SeverityConfiguration(.warning))
+                                                                        severity: .warning)
 
     public init() {}
 
@@ -70,7 +70,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity.severity,
+                           severity: configuration.severity,
                            location: location)
         ]
     }

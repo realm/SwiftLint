@@ -9,32 +9,33 @@
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var mandatoryComma: Bool
+    public let parameters: [ParameterDefinition]
+    private(set) var mandatoryCommaParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", mandatory_comma: \(mandatoryComma)"
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
+
+    var mandatoryComma: Bool {
+        return mandatoryCommaParameter.value
     }
 
     public init(mandatoryComma: Bool = false) {
-        self.mandatoryComma = mandatoryComma
+        mandatoryCommaParameter = Parameter(key: "mandatory_comma",
+                                            default: mandatoryComma,
+                                            description: "")
+        parameters = [mandatoryCommaParameter, severityParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        mandatoryComma = (configuration["mandatory_comma"] as? Bool == true)
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try mandatoryCommaParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
-}
 
-public func == (lhs: TrailingCommaConfiguration,
-                rhs: TrailingCommaConfiguration) -> Bool {
-    return lhs.mandatoryComma == rhs.mandatoryComma &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: TrailingCommaConfiguration,
+                           rhs: TrailingCommaConfiguration) -> Bool {
+        return lhs.mandatoryComma == rhs.mandatoryComma &&
+            lhs.severityParameter == rhs.severityParameter
+    }
 }

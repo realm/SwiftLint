@@ -84,7 +84,8 @@ class TrailingCommaRuleTests: XCTestCase {
         )
     }
 
-    private func trailingCommaViolations(_ string: String, ruleConfiguration: Any? = nil) -> [StyleViolation] {
+    private func trailingCommaViolations(_ string: String,
+                                         ruleConfiguration: [String: Any]? = nil) -> [StyleViolation] {
         let config = makeConfig(ruleConfiguration, TrailingCommaRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
     }

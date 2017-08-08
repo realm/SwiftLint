@@ -42,44 +42,43 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "tearDown()"
     ]
 
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var excluded: [String] = []
-    var included: [String] = ["*"]
+    public let parameters: [ParameterDefinition]
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private var excludedParameter: ArrayParameter<String>
+    private var includedParameter: ArrayParameter<String>
 
     public private(set) var resolvedMethodNames: [String]
 
-    init() {
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
+
+    var excluded: [String] {
+        return excludedParameter.value
+    }
+
+    var included: [String] {
+        return includedParameter.value
+    }
+
+    public init(excluded: [String] = [], included: [String] = ["*"]) {
+        excludedParameter = ArrayParameter(key: "excluded",
+                                           default: excluded,
+                                           description: "How serious")
+        includedParameter = ArrayParameter(key: "apply_to_dictionaries",
+                                           default: included,
+                                           description: "How serious")
+        parameters = [excludedParameter, includedParameter, severityParameter]
         resolvedMethodNames = defaultIncluded
-    }
-
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
-            ", excluded: [\(excluded)]" +
-            ", included: [\(included)]"
-    }
-
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let excluded = [String].array(of: configuration["excluded"]) {
-            self.excluded = excluded
-        }
-
-        if let included = [String].array(of: configuration["included"]) {
-            self.included = included
-        }
-
         resolvedMethodNames = calculateResolvedMethodNames()
     }
 
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
+    public mutating func apply(configuration: [String: Any]) throws {
+        try severityParameter.parse(from: configuration)
+        try excludedParameter.parse(from: configuration)
+        try includedParameter.parse(from: configuration)
+
+        resolvedMethodNames = calculateResolvedMethodNames()
     }
 
     private func calculateResolvedMethodNames() -> [String] {
@@ -91,11 +90,12 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         names = names.filter { !excluded.contains($0) }
         return names
     }
-}
 
-public func == (lhs: OverridenSuperCallConfiguration,
-                rhs: OverridenSuperCallConfiguration) -> Bool {
-    return lhs.excluded == rhs.excluded &&
-        lhs.included == rhs.included &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: OverridenSuperCallConfiguration,
+                    rhs: OverridenSuperCallConfiguration) -> Bool {
+        return lhs.excluded == rhs.excluded &&
+            lhs.included == rhs.included &&
+            lhs.severity == rhs.severity
+    }
+
 }

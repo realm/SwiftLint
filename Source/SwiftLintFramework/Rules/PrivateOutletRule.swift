@@ -60,7 +60,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severityConfiguration.severity,
+                           severity: configuration.severity,
                            location: location)
         ]
     }

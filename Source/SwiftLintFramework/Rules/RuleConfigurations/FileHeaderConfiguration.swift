@@ -9,11 +9,41 @@
 import Foundation
 
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private var requiredString: String?
-    private var requiredPattern: String?
-    private var forbiddenString: String?
-    private var forbiddenPattern: String?
+    public let parameters: [ParameterDefinition]
+
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private var requiredStringParameter = OptionalParameter<String>(key: "required_string", default: nil,
+                                                                    description: "")
+    private var requiredPatternParameter = OptionalParameter<String>(key: "required_pattern", default: nil,
+                                                                    description: "")
+    private var forbiddenStringParameter = OptionalParameter<String>(key: "forbidden_string", default: nil,
+                                                                     description: "")
+    private var forbiddenPatternParameter = OptionalParameter<String>(key: "forbidden_pattern", default: nil,
+                                                                      description: "")
+
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
+
+    public mutating func apply(configuration: [String: Any]) throws {
+        try severityParameter.parse(from: configuration)
+        try requiredStringParameter.parse(from: configuration)
+        try requiredPatternParameter.parse(from: configuration)
+        try forbiddenStringParameter.parse(from: configuration)
+        try forbiddenPatternParameter.parse(from: configuration)
+
+        if let requiredString = requiredStringParameter.value {
+            requiredRegex = try .cached(pattern: requiredString, options: [.ignoreMetacharacters])
+        } else if let requiredPattern = requiredPatternParameter.value {
+            requiredRegex = try .cached(pattern: requiredPattern)
+        }
+
+        if let forbiddenString = forbiddenStringParameter.value {
+            forbiddenRegex = try .cached(pattern: forbiddenString, options: [.ignoreMetacharacters])
+        } else if let forbiddenPattern = forbiddenPatternParameter.value {
+            forbiddenRegex = try .cached(pattern: forbiddenPattern)
+        }
+    }
 
     private var _forbiddenRegex: NSRegularExpression?
 
@@ -37,50 +67,18 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
-    public var consoleDescription: String {
-        let requiredStringDescription = requiredString ?? "None"
-        let requiredPatternDescription = requiredPattern ?? "None"
-        let forbiddenStringDescription = forbiddenString ?? "None"
-        let forbiddenPatternDescription = forbiddenPattern ?? "None"
-        return severityConfiguration.consoleDescription +
-            ", required_string: \(requiredStringDescription)" +
-            ", required_pattern: \(requiredPatternDescription)" +
-            ", forbidden_string: \(forbiddenStringDescription)" +
-            ", forbidden_pattern: \(forbiddenPatternDescription)"
+    public init() {
+        parameters = [requiredStringParameter, requiredPatternParameter,
+                      forbiddenStringParameter, forbiddenPatternParameter,
+                      severityParameter]
     }
 
-    public init() {}
-
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: String] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let requiredString = configuration["required_string"] {
-            self.requiredString = requiredString
-            requiredRegex = try NSRegularExpression(pattern: requiredString,
-                                                    options: [.ignoreMetacharacters])
-        } else if let requiredPattern = configuration["required_pattern"] {
-            self.requiredPattern = requiredPattern
-            requiredRegex = try .cached(pattern: requiredPattern)
-        }
-
-        if let forbiddenString = configuration["forbidden_string"] {
-            self.forbiddenString = forbiddenString
-            forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
-                                                     options: [.ignoreMetacharacters])
-        } else if let forbiddenPattern = configuration["forbidden_pattern"] {
-            self.forbiddenPattern = forbiddenPattern
-            forbiddenRegex = try .cached(pattern: forbiddenPattern)
-        }
-
-        if let severityString = configuration["severity"] {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+    public static func == (lhs: FileHeaderConfiguration,
+                           rhs: FileHeaderConfiguration) -> Bool {
+        return lhs.severity == rhs.severity &&
+            lhs.requiredStringParameter == rhs.requiredStringParameter &&
+            lhs.requiredPatternParameter == rhs.requiredPatternParameter &&
+            lhs.forbiddenStringParameter == rhs.forbiddenStringParameter &&
+            lhs.forbiddenPatternParameter == rhs.forbiddenPatternParameter
     }
-}
-
-public func == (lhs: FileHeaderConfiguration,
-                rhs: FileHeaderConfiguration) -> Bool {
-    return lhs.severityConfiguration == rhs.severityConfiguration
 }

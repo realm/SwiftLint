@@ -14,15 +14,15 @@ class LineLengthConfigurationTests: XCTestCase {
     func testLineLengthConfigurationInitializerSetsLength() {
         let warning = 100
         let error = 150
-        let length1 = SeverityLevelsConfiguration(warning: warning, error: error)
         let configuration1 = LineLengthConfiguration(warning: warning,
                                                      error: error)
-        XCTAssertEqual(configuration1.length, length1)
+        XCTAssertEqual(configuration1.warningLengthParameter.value, 100)
+        XCTAssertEqual(configuration1.errorLengthParameter.value, 150)
 
-        let length2 = SeverityLevelsConfiguration(warning: warning, error: nil)
         let configuration2 = LineLengthConfiguration(warning: warning,
                                                      error: nil)
-        XCTAssertEqual(configuration2.length, length2)
+        XCTAssertEqual(configuration2.warningLengthParameter.value, 100)
+        XCTAssertNil(configuration2.errorLengthParameter.value)
     }
 
     func testLineLengthConfigurationInitialiserSetsIgnoresURLs() {
@@ -77,19 +77,10 @@ class LineLengthConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.params, [RuleParameter(severity: .warning, value: 13)])
     }
 
-    func testLineLengthConfigurationThrowsOnBadConfig() {
-        let config = "unknown"
-        var configuration = LineLengthConfiguration(warning: 100, error: 150)
-        checkError(ConfigurationError.unknownConfiguration) {
-            try configuration.apply(configuration: config)
-        }
-    }
-
     func testLineLengthConfigurationThrowsOnBadConfigValues() {
         let badConfigs: [[String: Any]] = [
             ["warning": true],
-            ["ignores_function_declarations": 300],
-            ["unsupported_key": "unsupported key is unsupported"]
+            ["ignores_function_declarations": 300]
         ]
 
         for badConfig in badConfigs {
@@ -100,35 +91,11 @@ class LineLengthConfigurationTests: XCTestCase {
         }
     }
 
-    func testLineLengthConfigurationApplyConfigurationWithArray() {
-        var configuration = LineLengthConfiguration(warning: 0, error: 0)
-
-        let warning1 = 100
-        let error1 = 100
-        let length1 = SeverityLevelsConfiguration(warning: warning1, error: error1)
-        let config1 = [warning1, error1]
-
-        let warning2 = 150
-        let length2 = SeverityLevelsConfiguration(warning: warning2, error: nil)
-        let config2 = [warning2]
-
-        do {
-            try configuration.apply(configuration: config1)
-            XCTAssertEqual(configuration.length, length1)
-
-            try configuration.apply(configuration: config2)
-            XCTAssertEqual(configuration.length, length2)
-        } catch {
-            XCTFail("Failed to apply configuration with array")
-        }
-    }
-
     func testLineLengthConfigurationApplyConfigurationWithDictionary() {
         var configuration = LineLengthConfiguration(warning: 0, error: 0)
 
         let warning1 = 100
         let error1 = 100
-        let length1 = SeverityLevelsConfiguration(warning: warning1, error: error1)
         let config1: [String: Any] = ["warning": warning1,
                                       "error": error1,
                                       "ignores_urls": true,
@@ -137,29 +104,30 @@ class LineLengthConfigurationTests: XCTestCase {
 
         let warning2 = 200
         let error2 = 200
-        let length2 = SeverityLevelsConfiguration(warning: warning2, error: error2)
         let config2: [String: Int] = ["warning": warning2, "error": error2]
 
-        let length3 = SeverityLevelsConfiguration(warning: warning2, error: error2)
         let config3: [String: Bool] = ["ignores_urls": false,
                                        "ignores_function_declarations": false,
                                        "ignores_comments": false]
 
         do {
             try configuration.apply(configuration: config1)
-            XCTAssertEqual(configuration.length, length1)
+            XCTAssertEqual(configuration.warningLengthParameter.value, warning1)
+            XCTAssertEqual(configuration.errorLengthParameter.value, error1)
             XCTAssertTrue(configuration.ignoresURLs)
             XCTAssertTrue(configuration.ignoresFunctionDeclarations)
             XCTAssertTrue(configuration.ignoresComments)
 
             try configuration.apply(configuration: config2)
-            XCTAssertEqual(configuration.length, length2)
+            XCTAssertEqual(configuration.warningLengthParameter.value, warning2)
+            XCTAssertEqual(configuration.errorLengthParameter.value, error2)
             XCTAssertTrue(configuration.ignoresURLs)
             XCTAssertTrue(configuration.ignoresFunctionDeclarations)
             XCTAssertTrue(configuration.ignoresComments)
 
             try configuration.apply(configuration: config3)
-            XCTAssertEqual(configuration.length, length3)
+            XCTAssertEqual(configuration.warningLengthParameter.value, warning2)
+            XCTAssertEqual(configuration.errorLengthParameter.value, error2)
             XCTAssertFalse(configuration.ignoresURLs)
             XCTAssertFalse(configuration.ignoresFunctionDeclarations)
             XCTAssertFalse(configuration.ignoresComments)

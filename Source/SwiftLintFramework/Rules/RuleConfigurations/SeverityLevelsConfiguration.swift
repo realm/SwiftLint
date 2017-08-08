@@ -9,25 +9,33 @@
 import Foundation
 
 public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        let errorString: String
-        if let errorValue = error {
-            errorString = ", error: \(errorValue)"
-        } else {
-            errorString = ""
-        }
-        return "warning: \(warning)" + errorString
+    public let parameters: [ParameterDefinition]
+    private(set) var warningParameter: Parameter<Int>
+    private(set) var errorParameter: OptionalParameter<Int>
+
+    var warning: Int {
+        return warningParameter.value
     }
 
-    public var shortConsoleDescription: String {
-        if let errorValue = error {
-            return "w/e: \(warning)/\(errorValue)"
-        }
-        return "w: \(warning)"
+    var error: Int? {
+        return errorParameter.value
     }
 
-    var warning: Int
-    var error: Int?
+    public init(warning: Int, error: Int?) {
+        warningParameter = Parameter(key: "warning",
+                                     default: warning,
+                                     description: "How serious")
+        errorParameter = OptionalParameter(key: "error",
+                                           default: error,
+                                           description: "How serious")
+
+        parameters = [warningParameter, errorParameter]
+    }
+
+    public mutating func apply(configuration: [String: Any]) throws {
+        try warningParameter.parse(from: configuration)
+        try errorParameter.parse(from: configuration)
+    }
 
     var params: [RuleParameter<Int>] {
         if let error = error {
@@ -35,19 +43,6 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
                     RuleParameter(severity: .warning, value: warning)]
         }
         return [RuleParameter(severity: .warning, value: warning)]
-    }
-
-    public mutating func apply(configuration: Any) throws {
-        if let configurationArray = [Int].array(of: configuration), !configurationArray.isEmpty {
-            warning = configurationArray[0]
-            error = (configurationArray.count > 1) ? configurationArray[1] : nil
-        } else if let configDict = configuration as? [String: Int?],
-            !configDict.isEmpty, Set(configDict.keys).isSubset(of: ["warning", "error"]) {
-            warning = (configDict["warning"] as? Int) ?? warning
-            error = configDict["error"] as? Int
-        } else {
-            throw ConfigurationError.unknownConfiguration
-        }
     }
 }
 

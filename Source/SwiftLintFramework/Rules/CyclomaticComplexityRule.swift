@@ -49,7 +49,8 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
 
         for parameter in configuration.params where complexity > parameter.value {
             let offset = dictionary.offset ?? 0
-            let reason = "Function should have complexity \(configuration.length.warning) or less: " +
+            let threshold = configuration.warningLengthParameter.value
+            let reason = "Function should have complexity \(threshold) or less: " +
                          "currently complexity equals \(complexity)"
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,

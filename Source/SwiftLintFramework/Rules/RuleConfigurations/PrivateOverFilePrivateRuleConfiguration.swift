@@ -9,25 +9,29 @@
 import Foundation
 
 public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
-    public var validateExtensions = false
+    public let parameters: [ParameterDefinition]
+    private var validateExtensionsParameter: Parameter<Bool>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", validate_extensions: \(validateExtensions)"
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
-    // MARK: - RuleConfiguration
+    var validateExtensions: Bool {
+        return validateExtensionsParameter.value
+    }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
+    public init(validateExtensions: Bool = false) {
+        validateExtensionsParameter = Parameter(key: "validate_extensions",
+                                                default: validateExtensions,
+                                                description: "How serious")
 
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+        parameters = [validateExtensionsParameter, severityParameter]
+    }
 
-        validateExtensions = configuration["validate_extensions"] as? Bool ?? false
+    public mutating func apply(configuration: [String: Any]) throws {
+        try validateExtensionsParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
 
     // MARK: - Equatable
@@ -35,6 +39,6 @@ public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equata
     public static func == (lhs: PrivateOverFilePrivateRuleConfiguration,
                            rhs: PrivateOverFilePrivateRuleConfiguration) -> Bool {
         return lhs.validateExtensions == rhs.validateExtensions &&
-            lhs.severityConfiguration == rhs.severityConfiguration
+            lhs.severity == rhs.severity
     }
 }

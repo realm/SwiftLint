@@ -9,7 +9,7 @@
 import Foundation
 
 // swiftlint:disable:next type_name
-public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
+public enum ImplicitlyUnwrappedOptionalModeConfiguration: String, YamlLoadable {
     case all = "all"
     case allExceptIBOutlets = "all_except_iboutlets"
 
@@ -24,31 +24,30 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
 }
 
 public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable {
-    private(set) var severity: SeverityConfiguration
-    private(set) var mode: ImplicitlyUnwrappedOptionalModeConfiguration
+    public let parameters: [ParameterDefinition]
+    private var modeParameter: Parameter<ImplicitlyUnwrappedOptionalModeConfiguration>
+    private var severityParameter: Parameter<ViolationSeverity>
 
-    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severity: SeverityConfiguration) {
-        self.mode = mode
-        self.severity = severity
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
-    public var consoleDescription: String {
-        return severity.consoleDescription +
-            ", mode: \(mode)"
+    var mode: ImplicitlyUnwrappedOptionalModeConfiguration {
+        return modeParameter.value
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
+    init(mode: ImplicitlyUnwrappedOptionalModeConfiguration, severity: ViolationSeverity) {
+        modeParameter = Parameter(key: "mode",
+                                  default: mode,
+                                  description: "How serious")
+        severityParameter = SeverityConfiguration(severity).severityParameter
 
-        if let modeString = configuration["mode"] {
-            try mode = ImplicitlyUnwrappedOptionalModeConfiguration(value: modeString)
-        }
+        parameters = [modeParameter, severityParameter]
+    }
 
-        if let severityString = configuration["severity"] as? String {
-            try severity.apply(configuration: severityString)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try modeParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
 
     public static func == (lhs: ImplicitlyUnwrappedOptionalConfiguration,

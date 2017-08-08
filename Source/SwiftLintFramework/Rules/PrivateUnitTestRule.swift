@@ -24,37 +24,18 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
             let className = inheritedTypes.first else { return nil }
         return className
     }
-
-    var parameters: [[String: SourceKitRepresentable]] {
-        return substructure.filter { dict in
-            guard let kind = dict.kind.flatMap(SwiftDeclarationKind.init) else {
-                return false
-            }
-
-            return kind == .varParameter
-        }
-    }
 }
 
 public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider {
 
-    public var configuration: PrivateUnitTestConfiguration = {
-        var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")
-        configuration.message = "Unit test marked `private` will not be run by XCTest."
-        configuration.regex = regex("XCTestCase")
-        return configuration
-    }()
-
-    internal var cacheDescription: String {
-        return configuration.cacheDescription
-    }
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "private_unit_test",
         name: "Private Unit Test",
-        description: "Unit tests marked private are silently skipped.",
+        description: "Unit test marked `private` will not be run by XCTest.",
         kind: .lint,
         nonTriggeringExamples: [
             "class FooTest: XCTestCase { " +
@@ -139,11 +120,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
     }
 
     private func isTestClass(_ dictionary: [String: SourceKitRepresentable]) -> Bool {
-        guard let regex = configuration.regex, let superclass = dictionary.superclass else {
-            return false
-        }
-        let range = NSRange(location: 0, length: superclass.bridge().length)
-        return !regex.matches(in: superclass, options: [], range: range).isEmpty
+        return dictionary.superclass == "XCTestCase"
     }
 
     private func validateFunction(file: File,
@@ -151,7 +128,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         guard let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
             kind == .functionMethodInstance,
             let name = dictionary.name, name.hasPrefix("test"),
-            dictionary.parameters.isEmpty else {
+            dictionary.enclosedVarParameters.isEmpty else {
                 return []
         }
         return validateAccessControlLevel(file: file, dictionary: dictionary)
@@ -162,8 +139,7 @@ public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDesc
         guard let acl = AccessControlLevel(dictionary), acl.isPrivate else { return [] }
         let offset = dictionary.offset ?? 0
         return [StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: Location(file: file, byteOffset: offset),
-                               reason: configuration.message)]
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: offset))]
     }
 }

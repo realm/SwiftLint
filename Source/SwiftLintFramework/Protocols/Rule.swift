@@ -13,7 +13,7 @@ public protocol Rule {
     var configurationDescription: String { get }
 
     init() // Rules need to be able to be initialized with default values
-    init(configuration: Any) throws
+    init(configuration: [String: Any]) throws
 
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
@@ -46,7 +46,7 @@ public protocol SourceKitFreeRule: Rule {}
 // MARK: - ConfigurationProviderRule conformance to Configurable
 
 public extension ConfigurationProviderRule {
-    init(configuration: Any) throws {
+    init(configuration: [String: Any]) throws {
         self.init()
         try self.configuration.apply(configuration: configuration)
     }

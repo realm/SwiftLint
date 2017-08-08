@@ -8,14 +8,19 @@
 
 public protocol RuleConfiguration {
     var consoleDescription: String { get }
+    var parameters: [ParameterDefinition] { get }
 
-    mutating func apply(configuration: Any) throws
+    mutating func apply(configuration: [String: Any]) throws
     func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool
 }
 
 extension RuleConfiguration {
     internal var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? consoleDescription
+    }
+
+    public var consoleDescription: String {
+        return parameters.map { $0.parameterDescription }.joined(separator: ", ")
     }
 }
 

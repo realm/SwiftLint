@@ -30,7 +30,7 @@ class RuleTests: XCTestCase {
                                                  description: "", kind: .style)
 
         init() {}
-        init(configuration: Any) throws { self.init() }
+        init(configuration: [String: Any]) throws { self.init() }
 
         func validate(file: File) -> [StyleViolation] {
             return []
@@ -43,7 +43,7 @@ class RuleTests: XCTestCase {
                                                  description: "", kind: .style)
 
         init() {}
-        init(configuration: Any) throws { self.init() }
+        init(configuration: [String: Any]) throws { self.init() }
 
         func validate(file: File) -> [StyleViolation] {
             return []
@@ -71,63 +71,34 @@ class RuleTests: XCTestCase {
         XCTAssertFalse([RuleMock1(), RuleMock2()] == [RuleMock1()])
     }
 
-    func testSeverityLevelRuleInitsWithConfigDictionary() {
+    func testSeverityLevelRuleInitsWithConfigDictionary() throws {
         let config = ["warning": 17, "error": 7]
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = 7
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
+        let rule = try RuleWithLevelsMock(configuration: config)
+
+        XCTAssertEqual(rule.configuration.warning, 17)
+        XCTAssertEqual(rule.configuration.error, 7)
     }
 
-    func testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary() {
+    func testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary() throws {
         let config = ["warning": 17]
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = nil
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
+        let rule = try RuleWithLevelsMock(configuration: config)
+
+        XCTAssertEqual(rule.configuration.warning, 17)
+        XCTAssertEqual(rule.configuration.error, rule.configuration.errorParameter.default)
     }
 
-    func testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary() {
+    func testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary() throws {
         let config = ["error": 17]
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.error = 17
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
+        let rule = try RuleWithLevelsMock(configuration: config)
+
+        XCTAssertEqual(rule.configuration.warning, rule.configuration.warningParameter.default)
+        XCTAssertEqual(rule.configuration.error, 17)
     }
 
-    func testSeverityLevelRuleInitsWithConfigArray() {
-        let config = [17, 7] as Any
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = 7
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
-    }
-
-    func testSeverityLevelRuleInitsWithSingleValueConfigArray() {
-        let config = [17] as Any
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = nil
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
-    }
-
-    func testSeverityLevelRuleInitsWithLiteral() {
-        let config = 17 as Any
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        var comp = RuleWithLevelsMock()
-        comp.configuration.warning = 17
-        comp.configuration.error = nil
-        XCTAssertEqual(rule?.isEqualTo(comp), true)
-    }
-
-    func testSeverityLevelRuleNotEqual() {
-        let config = 17 as Any
-        let rule = try? RuleWithLevelsMock(configuration: config)
-        XCTAssertEqual(rule?.isEqualTo(RuleWithLevelsMock()), false)
+    func testSeverityLevelRuleNotEqual() throws {
+        let config = ["warning": 17]
+        let rule = try RuleWithLevelsMock(configuration: config)
+        XCTAssertEqual(rule.isEqualTo(RuleWithLevelsMock()), false)
     }
 
     func testDifferentSeverityLevelRulesNotEqual() {

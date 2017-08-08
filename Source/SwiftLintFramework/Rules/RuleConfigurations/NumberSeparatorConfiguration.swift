@@ -7,49 +7,44 @@
 //
 
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var minimumLength: Int
-    private(set) var minimumFractionLength: Int?
+    public let parameters: [ParameterDefinition]
+    private var minimumLengthParameter: Parameter<Int>
+    private var minimumFractionLengthParameter: OptionalParameter<Int>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        let minimumFractionLengthDescription: String
-        if let minimumFractionLength = minimumFractionLength {
-            minimumFractionLengthDescription = ", minimum_fraction_length: \(minimumFractionLength)"
-        } else {
-            minimumFractionLengthDescription = ""
-        }
-        return severityConfiguration.consoleDescription
-            + ", minimum_length: \(minimumLength)"
-            + minimumFractionLengthDescription
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
+
+    var minimumLength: Int {
+        return minimumLengthParameter.value
+    }
+
+    var minimumFractionLength: Int? {
+        return minimumFractionLengthParameter.value
     }
 
     public init(minimumLength: Int, minimumFractionLength: Int?) {
-        self.minimumLength = minimumLength
-        self.minimumFractionLength = minimumFractionLength
+        minimumLengthParameter = Parameter(key: "minimum_length",
+                                           default: minimumLength,
+                                           description: "How serious")
+        minimumFractionLengthParameter = OptionalParameter(key: "minimum_fraction_length",
+                                                           default: minimumFractionLength,
+                                                           description: "How serious")
+
+        parameters = [minimumLengthParameter, minimumFractionLengthParameter, severityParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let minimumLength = configuration["minimum_length"] as? Int {
-            self.minimumLength = minimumLength
-        }
-
-        if let minimumFractionLength = configuration["minimum_fraction_length"] as? Int {
-            self.minimumFractionLength = minimumFractionLength
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try minimumLengthParameter.parse(from: configuration)
+        try minimumFractionLengthParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
 
     public static func == (lhs: NumberSeparatorConfiguration,
                            rhs: NumberSeparatorConfiguration) -> Bool {
         return lhs.minimumLength == rhs.minimumLength &&
             lhs.minimumFractionLength == rhs.minimumFractionLength &&
-            lhs.severityConfiguration == rhs.severityConfiguration
+            lhs.severity == rhs.severity
     }
 }

@@ -9,32 +9,43 @@
 import Foundation
 
 public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var imageLiteral = true
-    private(set) var colorLiteral = true
+    public let parameters: [ParameterDefinition]
+    private var imageLiteralParameter: Parameter<Bool>
+    private var colorLiteralParameter: Parameter<Bool>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription
-            + ", image_literal: \(imageLiteral)"
-            + ", color_literal: \(colorLiteral)"
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
+    var imageLiteral: Bool {
+        return imageLiteralParameter.value
+    }
 
-        imageLiteral = configuration["image_literal"] as? Bool ?? true
-        colorLiteral = configuration["color_literal"] as? Bool ?? true
+    var colorLiteral: Bool {
+        return colorLiteralParameter.value
+    }
 
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+    public init(imageLiteral: Bool = true, colorLiteral: Bool = true) {
+        imageLiteralParameter = Parameter(key: "image_literal",
+                                          default: imageLiteral,
+                                          description: "How serious")
+        colorLiteralParameter = Parameter(key: "color_literal",
+                                          default: colorLiteral,
+                                          description: "How serious")
+
+        parameters = [imageLiteralParameter, colorLiteralParameter, severityParameter]
+    }
+
+    public mutating func apply(configuration: [String: Any]) throws {
+        try imageLiteralParameter.parse(from: configuration)
+        try colorLiteralParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
 
     public static func == (lhs: ObjectLiteralConfiguration,
                            rhs: ObjectLiteralConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
+        return lhs.severity == rhs.severity &&
             lhs.imageLiteral == rhs.imageLiteral &&
             lhs.colorLiteral == rhs.colorLiteral
     }

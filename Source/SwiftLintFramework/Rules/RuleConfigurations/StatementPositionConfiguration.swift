@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum StatementModeConfiguration: String {
+public enum StatementModeConfiguration: String, YamlLoadable {
     case `default` = "default"
     case uncuddledElse = "uncuddled_else"
 
@@ -24,33 +24,31 @@ public enum StatementModeConfiguration: String {
 }
 
 public struct StatementConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        return "(statement_mode) \(statementMode.rawValue), " +
-            "(severity) \(severity.consoleDescription)"
+    public let parameters: [ParameterDefinition]
+    private(set) var statementModeParameter: Parameter<StatementModeConfiguration>
+    private(set) var severityParameter: Parameter<ViolationSeverity>
+
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
-    var statementMode: StatementModeConfiguration
-    var severity: SeverityConfiguration
+    var statementMode: StatementModeConfiguration {
+        return statementModeParameter.value
+    }
 
     public init(statementMode: StatementModeConfiguration,
-                severity: SeverityConfiguration) {
-        self.statementMode = statementMode
-        self.severity = severity
+                severity: ViolationSeverity) {
+        statementModeParameter = Parameter(key: "statement_mode", default: statementMode, description: "")
+        severityParameter = SeverityConfiguration(severity).severityParameter
+        parameters = [statementModeParameter, severityParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-        if let statementModeConfiguration = configurationDict["statement_mode"] {
-            try statementMode = StatementModeConfiguration(value: statementModeConfiguration)
-        }
-        if let severityConfiguration = configurationDict["severity"] {
-            try severity.apply(configuration: severityConfiguration)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try statementModeParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
-}
 
-public func == (lhs: StatementConfiguration, rhs: StatementConfiguration) -> Bool {
-    return lhs.statementMode == rhs.statementMode && lhs.severity == rhs.severity
+    public static func == (lhs: StatementConfiguration, rhs: StatementConfiguration) -> Bool {
+        return lhs.statementMode == rhs.statementMode && lhs.severity == rhs.severity
+    }
 }

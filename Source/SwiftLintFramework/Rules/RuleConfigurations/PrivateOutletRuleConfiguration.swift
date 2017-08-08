@@ -9,32 +9,34 @@
 import Foundation
 
 public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var allowPrivateSet = false
+    public let parameters: [ParameterDefinition]
+    private var allowPrivateSetParameter: Parameter<Bool>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", allow_private_set: \(allowPrivateSet)"
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
-    public init(allowPrivateSet: Bool) {
-        self.allowPrivateSet = allowPrivateSet
+    var allowPrivateSet: Bool {
+        return allowPrivateSetParameter.value
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
+    public init(allowPrivateSet: Bool = false) {
+        allowPrivateSetParameter = Parameter(key: "allow_private_set",
+                                             default: allowPrivateSet,
+                                             description: "How serious")
 
-        allowPrivateSet = (configuration["allow_private_set"] as? Bool == true)
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+        parameters = [allowPrivateSetParameter, severityParameter]
     }
-}
 
-public func == (lhs: PrivateOutletRuleConfiguration,
-                rhs: PrivateOutletRuleConfiguration) -> Bool {
-    return lhs.allowPrivateSet == rhs.allowPrivateSet &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public mutating func apply(configuration: [String: Any]) throws {
+        try allowPrivateSetParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
+    }
+
+    static public func == (lhs: PrivateOutletRuleConfiguration,
+                           rhs: PrivateOutletRuleConfiguration) -> Bool {
+        return lhs.allowPrivateSet == rhs.allowPrivateSet &&
+            lhs.severity == rhs.severity
+    }
 }

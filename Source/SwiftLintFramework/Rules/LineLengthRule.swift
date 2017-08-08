@@ -77,7 +77,8 @@ public struct LineLengthRule: ConfigurationProviderRule {
             let length = strippedString.characters.count
 
             for param in configuration.params where length > param.value {
-                let reason = "Line should be \(configuration.length.warning) characters or less: " +
+                let threshold = configuration.warningLengthParameter.value
+                let reason = "Line should be \(threshold) characters or less: " +
                              "currently \(length) characters"
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: param.severity,

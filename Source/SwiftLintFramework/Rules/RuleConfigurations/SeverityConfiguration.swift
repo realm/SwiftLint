@@ -9,28 +9,22 @@
 import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        return severity.rawValue
-    }
+    public let parameters: [ParameterDefinition]
+    private(set) var severityParameter: Parameter<ViolationSeverity>
 
-    var severity: ViolationSeverity
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
 
     public init(_ severity: ViolationSeverity) {
-        self.severity = severity
+        severityParameter = Parameter(key: "severity",
+                                      default: severity,
+                                      description: "How serious")
+        parameters = [severityParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        let configString = configuration as? String
-        let configDict = configuration as? [String: Any]
-        guard let severityString: String = configString ?? configDict?["severity"] as? String,
-            let severity = severity(fromString: severityString) else {
-            throw ConfigurationError.unknownConfiguration
-        }
-        self.severity = severity
-    }
-
-    fileprivate func severity(fromString string: String) -> ViolationSeverity? {
-        return ViolationSeverity(rawValue: string.lowercased())
+    public mutating func apply(configuration: [String: Any]) throws {
+        try severityParameter.parse(from: configuration)
     }
 }
 

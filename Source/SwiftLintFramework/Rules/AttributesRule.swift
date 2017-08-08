@@ -73,7 +73,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             let location = idx + range.location
 
             return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severityConfiguration.severity,
+                                  severity: configuration.severity,
                                   location: Location(file: file, characterOffset: location))
         }
     }
@@ -182,7 +182,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severityConfiguration.severity,
+                           severity: configuration.severity,
                            location: location)
         ]
     }

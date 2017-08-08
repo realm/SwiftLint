@@ -9,6 +9,18 @@
 import Foundation
 import SourceKittenFramework
 
+private struct RegularExpression: YamlLoadable {
+    var regex: NSRegularExpression
+
+    public static func load(from node: Any) throws -> RegularExpression {
+        guard let string = node as? String else {
+            throw YamlLoadableError.invalid
+        }
+
+        return try RegularExpression(regex: .cached(pattern: string))
+    }
+}
+
 public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?

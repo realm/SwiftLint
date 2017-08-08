@@ -215,7 +215,7 @@ class ConfigurationTests: XCTestCase {
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)
 
     func testConfiguresCorrectlyFromDict() throws {
-        let ruleConfiguration = [1, 2]
+        let ruleConfiguration = ["warning": 1, "error": 2]
         let config = [RuleWithLevelsMock.description.identifier: ruleConfiguration]
         let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])
@@ -230,7 +230,7 @@ class ConfigurationTests: XCTestCase {
     // MARK: - Aliases
 
     func testConfiguresCorrectlyFromDeprecatedAlias() throws {
-        let ruleConfiguration = [1, 2]
+        let ruleConfiguration = ["warning": 1, "error": 2]
         let config = ["mock": ruleConfiguration]
         let rules = try testRuleList.configuredRules(with: config)
         XCTAssertTrue(rules == [try RuleWithLevelsMock(configuration: ruleConfiguration)])

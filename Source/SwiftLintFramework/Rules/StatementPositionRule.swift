@@ -12,7 +12,7 @@ import SourceKittenFramework
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = StatementConfiguration(statementMode: .default,
-                                                      severity: SeverityConfiguration(.warning))
+                                                      severity: .warning)
 
     public init() {}
 
@@ -103,7 +103,7 @@ private extension StatementPositionRule {
     func defaultValidate(file: File) -> [StyleViolation] {
         return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).flatMap { range in
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity.severity,
+                           severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }
@@ -138,7 +138,7 @@ private extension StatementPositionRule {
     func uncuddledValidate(file: File) -> [StyleViolation] {
         return uncuddledViolationRanges(in: file).flatMap { range in
             StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
-                           severity: configuration.severity.severity,
+                           severity: configuration.severity,
                            location: Location(file: file, characterOffset: range.location))
         }
     }

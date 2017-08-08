@@ -9,38 +9,41 @@
 import Foundation
 
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
-    var severityConfiguration = SeverityConfiguration(.warning)
-    var ignoresEmptyLines = false
-    var ignoresComments = true
+    public let parameters: [ParameterDefinition]
+    private var ignoresEmptyLinesParameter: Parameter<Bool>
+    private var ignoresCommentsParameter: Parameter<Bool>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
-            ", ignores_empty_lines: \(ignoresEmptyLines)" +
-            ", ignores_comments: \(ignoresComments)"
+    var ignoresEmptyLines: Bool {
+        return ignoresEmptyLinesParameter.value
+    }
+
+    var ignoresComments: Bool {
+        return ignoresCommentsParameter.value
+    }
+
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
     public init(ignoresEmptyLines: Bool, ignoresComments: Bool) {
-        self.ignoresEmptyLines = ignoresEmptyLines
-        self.ignoresComments = ignoresComments
+        ignoresEmptyLinesParameter = Parameter(key: "ignores_empty_lines", default: ignoresEmptyLines,
+                                               description: "")
+        ignoresCommentsParameter = Parameter(key: "ignores_comments", default: ignoresComments,
+                                             description: "")
+        parameters = [ignoresEmptyLinesParameter, ignoresCommentsParameter, severityParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        ignoresEmptyLines = (configuration["ignores_empty_lines"] as? Bool == true)
-        ignoresComments = (configuration["ignores_comments"] as? Bool == true)
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try ignoresEmptyLinesParameter.parse(from: configuration)
+        try ignoresCommentsParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
     }
-}
 
-public func == (lhs: TrailingWhitespaceConfiguration,
-                rhs: TrailingWhitespaceConfiguration) -> Bool {
-    return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines &&
-        lhs.ignoresComments == rhs.ignoresComments &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    static public func == (lhs: TrailingWhitespaceConfiguration,
+                           rhs: TrailingWhitespaceConfiguration) -> Bool {
+        return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines &&
+            lhs.ignoresComments == rhs.ignoresComments &&
+            lhs.severityParameter == rhs.severityParameter
+    }
 }

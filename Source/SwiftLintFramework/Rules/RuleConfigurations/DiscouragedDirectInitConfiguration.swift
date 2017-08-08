@@ -14,46 +14,34 @@ private func toExplicitInitMethod(typeName: String) -> String {
 }
 
 public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
-    public var severityConfiguration = SeverityConfiguration(.warning)
+    public let parameters: [ParameterDefinition]
+    private var typesParameter: ArrayParameter<String>
+    private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", types: \(discouragedInits)"
-    }
-
-    public var severity: ViolationSeverity {
-        return severityConfiguration.severity
+    var severity: ViolationSeverity {
+        return severityParameter.value
     }
 
     private(set) public var discouragedInits: Set<String>
 
-    private let defaultDiscouragedInits = [
-        "Bundle",
-        "UIDevice"
-    ]
-
-    init() {
-        discouragedInits = Set(defaultDiscouragedInits + defaultDiscouragedInits.map(toExplicitInitMethod))
+    public init(types: [String] = ["Bundle", "UIDevice"]) {
+        typesParameter = ArrayParameter(key: "types", default: types,
+                                        description: "")
+        parameters = [typesParameter, severityParameter]
+        discouragedInits = Set(types + types.map(toExplicitInitMethod))
     }
 
-    // MARK: - RuleConfiguration
-
-    public mutating func apply(configuration: Any) throws {
-        guard let configuration = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let severityString = configuration["severity"] as? String {
-            try severityConfiguration.apply(configuration: severityString)
-        }
-
-        if let types = [String].array(of: configuration["types"]) {
-            discouragedInits = Set(types + types.map(toExplicitInitMethod))
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try typesParameter.parse(from: configuration)
+        try severityParameter.parse(from: configuration)
+        let types = typesParameter.value
+        discouragedInits = Set(types + types.map(toExplicitInitMethod))
     }
 
     // MARK: - Equatable
 
-    public static func == (lhs: DiscouragedDirectInitConfiguration, rhs: DiscouragedDirectInitConfiguration) -> Bool {
-        return lhs.discouragedInits == rhs.discouragedInits && lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: DiscouragedDirectInitConfiguration,
+                           rhs: DiscouragedDirectInitConfiguration) -> Bool {
+        return lhs.discouragedInits == rhs.discouragedInits && lhs.severity == rhs.severity
     }
 }

@@ -57,9 +57,9 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      language = ""
       launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
+      useCustomWorkingDirectory = "YES"
+      customWorkingDirectory = "/Users/marcelofabri/dev/SwiftLint"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "NO"
       debugXPCServices = "NO"
@@ -79,6 +79,10 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "lint --no-cache"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "autocorrect --path file.txt  --config /Users/marcelofabri/dev/SwiftLint/.swiftlint.yml --no-cache"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

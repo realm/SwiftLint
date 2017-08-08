@@ -27,7 +27,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
     public func validate(file: File) -> [StyleViolation] {
         return violatingRanges(in: file).map { range, _ in
             return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severityConfiguration.severity,
+                                  severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location))
         }
     }

@@ -47,6 +47,10 @@ public struct RuleList {
                 throw RuleListError.duplicatedConfigurations(rule: ruleType)
             }
             do {
+                guard let configuration = configuration as? [String: Any] else {
+                    throw ConfigurationError.unknownConfiguration
+                }
+
                 let configuredRule = try ruleType.init(configuration: configuration)
                 rules[identifier] = configuredRule
             } catch {

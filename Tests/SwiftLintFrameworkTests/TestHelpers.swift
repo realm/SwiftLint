@@ -118,7 +118,7 @@ private extension String {
     }
 }
 
-internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
+internal func makeConfig(_ ruleConfiguration: [String: Any]?, _ identifier: String) -> Configuration? {
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
@@ -147,7 +147,7 @@ private func addShebang(_ string: String) -> String {
 
 extension XCTestCase {
     func verifyRule(_ ruleDescription: RuleDescription,
-                    ruleConfiguration: Any? = nil,
+                    ruleConfiguration: [String: Any]? = nil,
                     commentDoesntViolate: Bool = true,
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,

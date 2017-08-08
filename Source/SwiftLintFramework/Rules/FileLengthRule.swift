@@ -37,7 +37,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
         }
 
         var lineCount = file.lines.count
-        let hasViolation = configuration.severityConfiguration.params.contains {
+        let hasViolation = configuration.params.contains {
             $0.value < lineCount
         }
 
@@ -45,8 +45,9 @@ public struct FileLengthRule: ConfigurationProviderRule {
             lineCount = lineCountWithoutComments()
         }
 
-        for parameter in configuration.severityConfiguration.params where lineCount > parameter.value {
-            let reason = "File should contain \(configuration.severityConfiguration.warning) lines or less: " +
+        for parameter in configuration.params where lineCount > parameter.value {
+            let threshold = configuration.warningLengthParameter.value
+            let reason = "File should contain \(threshold) lines or less: " +
                          "currently contains \(lineCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,

@@ -37,7 +37,6 @@ private var assertHandlers = [String: AssertHandler]()
 private struct RebuildQueue {
     private let lock = NSLock()
     private var queue = [Structure]()
-    private var allDeclarationsByType = [String: [String]]()
 
     mutating func append(_ structure: Structure) {
         lock.lock()
@@ -49,32 +48,6 @@ private struct RebuildQueue {
         lock.lock()
         defer { lock.unlock() }
         queue.removeAll(keepingCapacity: false)
-        allDeclarationsByType.removeAll(keepingCapacity: false)
-    }
-
-    // Must hold lock when calling
-    private mutating func rebuildIfNecessary() {
-        guard !queue.isEmpty else { return }
-        let allDeclarationsByType = queue.flatMap { structure -> (String, [String])? in
-            guard let firstSubstructureDict = structure.dictionary.substructure.first,
-                let name = firstSubstructureDict.name,
-                let kind = (firstSubstructureDict.kind).flatMap(SwiftDeclarationKind.init),
-                kind == .protocol,
-                case let substructure = firstSubstructureDict.substructure,
-                !substructure.isEmpty else {
-                    return nil
-            }
-            return (name, substructure.flatMap({ $0.name }))
-        }
-        allDeclarationsByType.forEach { self.allDeclarationsByType[$0.0] = $0.1 }
-        queue.removeAll(keepingCapacity: false)
-    }
-
-    mutating func getAllDeclarationsByType() -> [String: [String]] {
-        lock.lock()
-        defer { lock.unlock() }
-        rebuildIfNecessary()
-        return allDeclarationsByType
     }
 }
 
@@ -213,9 +186,5 @@ extension File {
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()
         syntaxKindsByLinesCache.clear()
-    }
-
-    internal static var allDeclarationsByType: [String: [String]] {
-        return queueForRebuild.getAllDeclarationsByType()
     }
 }

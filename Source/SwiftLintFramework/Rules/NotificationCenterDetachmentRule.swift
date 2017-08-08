@@ -36,7 +36,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         }
     }
 
-    func violationOffsets(file: File, dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func violationOffsets(file: File,
+                                  dictionary: [String: SourceKitRepresentable]) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
             guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {

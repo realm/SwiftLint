@@ -9,7 +9,7 @@
 import Foundation
 
 extension Configuration {
-    internal enum Key: String {
+    private enum Key: String {
         case cachePath = "cache_path"
         case disabledRules = "disabled_rules"
         case enabledRules = "enabled_rules" // deprecated in favor of optInRules

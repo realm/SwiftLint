@@ -15,19 +15,16 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1370](https://github.com/realm/SwiftLint/issues/1370)
 
-* Add `joined_default_parameter` opt-in rule to discourage
+* Add `joined_default_parameter` correctable opt-in rule to discourage
   explicit usage of the default separator.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1093](https://github.com/realm/SwiftLint/issues/1093)
+  [#1757](https://github.com/realm/SwiftLint/issues/1757)
 
 * Files with extensions other than `.swift` can now be used as argument
   to `--file` when linting or autocorrecting.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1721](https://github.com/realm/SwiftLint/issues/1721)
-
-* Make `joined_default_parameter` correctable.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1757](https://github.com/realm/SwiftLint/issues/1757)
 
 ##### Bug Fixes
 

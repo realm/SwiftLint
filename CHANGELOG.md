@@ -26,6 +26,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1721](https://github.com/realm/SwiftLint/issues/1721)
 
+* Sugared `Optional<()>` return types,  `()?`, Void?, `()!`, and Void!
+  no longer triggr the `redundant_void_return` rule.  
+  [Ryan Booker](https://github.com/ryanbooker)
+  [#1761](https://github.com/realm/SwiftLint/issues/1761)
+ 
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

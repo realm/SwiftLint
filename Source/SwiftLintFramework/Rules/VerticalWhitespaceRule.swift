@@ -39,7 +39,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             "// bca \n\n\n": "// bca \n\n"
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
-    
+
     private var configuredDescriptionReason: String {
         guard configuration.maxEmptyLines == 1 else {
             return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines."

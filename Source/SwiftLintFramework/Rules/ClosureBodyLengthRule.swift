@@ -23,13 +23,15 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
         triggeringExamples: ClosureBodyLengthRuleExamples.triggeringExamples
     )
 
+    private typealias ClosureBounds = (offset: Int, startLine: Int, endLine: Int)
+
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call else { return [] }
 
         return findClosures(in: dictionary)
-            .flatMap { closureDictionary -> (Int, Int, Int)? in
+            .flatMap { closureDictionary -> ClosureBounds? in
                 guard
                     let bodyOffset = closureDictionary.bodyOffset,
                     let bodyLength = closureDictionary.bodyLength,
@@ -38,12 +40,12 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
                     let endLine = contents.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
                     else { return nil }
 
-                return (offset: bodyOffset, startLine: startLine, endLine: endLine)
+                return ClosureBounds(offset: bodyOffset, startLine: startLine, endLine: endLine)
             }
-            .flatMap { offset, startLine, endLine -> [StyleViolation] in
+            .flatMap { closureBounds -> [StyleViolation] in
                 return configuration.params.flatMap { parameter -> StyleViolation? in
-                    let (exceeds, count) = file.exceedsLineCountExcludingCommentsAndWhitespace(startLine,
-                                                                                               endLine,
+                    let (exceeds, count) = file.exceedsLineCountExcludingCommentsAndWhitespace(closureBounds.startLine,
+                                                                                               closureBounds.endLine,
                                                                                                parameter.value)
                     guard exceeds else { return nil }
 
@@ -52,7 +54,7 @@ public struct ClosureBodyLengthRule: ASTRule, OptInRule, ConfigurationProviderRu
 
                     return StyleViolation(ruleDescription: type(of: self).description,
                                           severity: parameter.severity,
-                                          location: Location(file: file, byteOffset: offset),
+                                          location: Location(file: file, byteOffset: closureBounds.offset),
                                           reason: reason)
                 }
             }

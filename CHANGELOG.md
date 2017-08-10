@@ -48,6 +48,7 @@
   `redundant_void_return` rule.  
   [Ryan Booker](https://github.com/ryanbooker)
   [#1761](https://github.com/realm/SwiftLint/issues/1761)
+
 * Add `closure_body_length` rule to enforce the maximum number of lines
   a closure should have.  
   [Ornithologist Coder](https://github.com/ornithocoder)

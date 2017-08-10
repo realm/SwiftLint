@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-private let descriptionReason = "Limit vertical whitespace to a single empty line."
+private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line."
 
 public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
 
@@ -20,7 +20,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
     public static let description = RuleDescription(
         identifier: "vertical_whitespace",
         name: "Vertical Whitespace",
-        description: descriptionReason,
+        description: defaultDescriptionReason,
         kind: .style,
         nonTriggeringExamples: [
             "let abc = 0\n",
@@ -39,6 +39,13 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             "// bca \n\n\n": "// bca \n\n"
         ] // End of line autocorrections are handled by Trailing Newline Rule.
     )
+    
+    private var configuredDescriptionReason: String {
+        guard configuration.maxEmptyLines == 1 else {
+            return "Limit vertical whitespace to maximum \(configuration.maxEmptyLines) empty lines."
+        }
+        return defaultDescriptionReason
+    }
 
     public func validate(file: File) -> [StyleViolation] {
         let linesSections = violatingLineSections(in: file)
@@ -54,7 +61,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file.path, line: eachLastLine.index),
-                    reason: descriptionReason + " Currently \(eachSectionCount + 1)."
+                    reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
                 ))
             }
         }
@@ -120,9 +127,10 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
         var indexOfLinesToDelete = [Int]()
 
-        for eachLine in linesSections {
-            let start = eachLine.lastLine.index - eachLine.linesToRemove
-            indexOfLinesToDelete.append(contentsOf: start..<eachLine.lastLine.index)
+        for section in linesSections {
+            let linesToRemove = section.linesToRemove - configuration.maxEmptyLines + 1
+            let start = section.lastLine.index - linesToRemove
+            indexOfLinesToDelete.append(contentsOf: start..<section.lastLine.index)
         }
 
         var correctedLines = [String]()

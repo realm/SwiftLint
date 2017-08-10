@@ -61,7 +61,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
             let contents = file.contents.bridge()
             guard let name = contents.substringWithByteRange(start: nameToken.offset,
                                                              length: nameToken.length) else {
-                                                                return []
+                return []
             }
 
             return validate(name: name, file: file, offset: nameToken.offset)

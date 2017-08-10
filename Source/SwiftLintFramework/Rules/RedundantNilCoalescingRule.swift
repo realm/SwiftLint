@@ -9,8 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-extension File {
-    fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
+private extension File {
+    func violatingRedundantNilCoalescingRanges() -> [NSRange] {
         // {whitespace} ?? {whitespace} nil {word boundary}
         return match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
     }

@@ -78,11 +78,11 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
         let pattern = "typealias\\s+\\w+?\\s*" + genericTypePattern + "\\s*="
-        return file.match(pattern: pattern).flatMap { (range, tokens) -> [(String, Int)] in
+        return file.match(pattern: pattern).flatMap { range, tokens -> [(String, Int)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
                 let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
-                                                        range: range)?.rangeAt(1) else {
+                                                        range: range)?.range(at: 1) else {
                     return []
             }
 
@@ -101,7 +101,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
             let range = contents.byteRangeToNSRange(start: start, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1) else {
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1) else {
                 return []
         }
 
@@ -116,7 +116,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.rangeAt(1),
+            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1),
             match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file) else {
             return []
         }
@@ -149,7 +149,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let contents = file.contents.bridge()
-        return namesAndRanges.flatMap { (name, range) -> (String, Int)? in
+        return namesAndRanges.flatMap { name, range -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
                 file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {
@@ -195,8 +195,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-extension String {
-    fileprivate func split(separator: String) -> [(String, NSRange)] {
+private extension String {
+    func split(separator: String) -> [(String, NSRange)] {
         let separatorLength = separator.bridge().length
         var previousEndOffset = 0
         var result = [(String, NSRange)]()
@@ -211,7 +211,7 @@ extension String {
         return result
     }
 
-    fileprivate func trimmingWhitespaces() -> (String, NSRange) {
+    func trimmingWhitespaces() -> (String, NSRange) {
         let bridged = bridge()
         let range = NSRange(location: 0, length: bridged.length)
         guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),
@@ -219,7 +219,7 @@ extension String {
             return (self, range)
         }
 
-        let trimmedRange = match.rangeAt(1)
+        let trimmedRange = match.range(at: 1)
         return (bridged.substring(with: trimmedRange), trimmedRange)
     }
 }

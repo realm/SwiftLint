@@ -14,7 +14,7 @@ import XCTest
 {% for type in types.classes|based:"XCTestCase" %}
 extension {{ type.name }} {
     static var allTests: [(String, ({{ type.name }}) -> () throws -> Void)] = [
-    {% for method in type.methods where method.parameters.count == 0 and method.shortName|hasPrefix:"test" %}    ("{{ method.shortName }}", {{ method.shortName }}){% if not forloop.last %},{% endif %}
+    {% for method in type.methods where method.parameters.count == 0 and method.shortName|hasPrefix:"test" and method|!annotated:"skipTestOnLinux" %}    ("{{ method.shortName }}", {{ method.shortName }}){% if not forloop.last %},{% endif %}
     {% endfor %}]
 }
 

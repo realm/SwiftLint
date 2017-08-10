@@ -10,9 +10,9 @@ import Foundation
 import SourceKittenFramework
 
 public struct Region: Equatable {
-    let start: Location
-    let end: Location
-    let disabledRuleIdentifiers: Set<String>
+    public let start: Location
+    public let end: Location
+    public let disabledRuleIdentifiers: Set<String>
 
     public init(start: Location, end: Location, disabledRuleIdentifiers: Set<String>) {
         self.start = start

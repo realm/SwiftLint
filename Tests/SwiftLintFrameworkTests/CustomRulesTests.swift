@@ -44,6 +44,24 @@ class CustomRulesTests: XCTestCase {
         }
     }
 
+    func testCustomRuleConfigurationIgnoreInvalidRules() throws {
+        let configDict = [
+            "my_custom_rule": ["name": "MyCustomRule",
+                               "message": "Message",
+                               "regex": "regex",
+                               "match_kinds": "comment",
+                               "severity": "error"],
+            "invalid_rule": ["name": "InvalidRule"] // missing `regex`
+        ]
+        var customRulesConfig = CustomRulesConfiguration()
+        try customRulesConfig.apply(configuration: configDict)
+
+        XCTAssertEqual(customRulesConfig.customRuleConfigurations.count, 1)
+
+        let identifier = customRulesConfig.customRuleConfigurations.first?.description.identifier
+        XCTAssertEqual(identifier, "my_custom_rule")
+    }
+
     func testCustomRules() {
         let (regexConfig, customRules) = getCustomRules()
 

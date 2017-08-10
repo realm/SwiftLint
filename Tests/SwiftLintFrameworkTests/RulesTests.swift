@@ -12,6 +12,12 @@ import XCTest
 // swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
+    func testBlockBasedKVO() {
+        #if swift(>=3.2)
+            verifyRule(BlockBasedKVORule.description)
+        #endif
+    }
+
     func testClassDelegateProtocol() {
         verifyRule(ClassDelegateProtocolRule.description)
     }
@@ -96,11 +102,6 @@ class RulesTests: XCTestCase {
         verifyRule(FatalErrorMessageRule.description)
     }
 
-    func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
-    }
-
     func testFirstWhere() {
         verifyRule(FirstWhereRule.description)
     }
@@ -150,7 +151,7 @@ class RulesTests: XCTestCase {
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false)
+        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false, testShebang: false)
     }
 
     func testLegacyCGGeometryFunctions() {
@@ -169,8 +170,12 @@ class RulesTests: XCTestCase {
         verifyRule(LegacyConstructorRule.description)
     }
 
+    func testLetVarWhitespace() {
+        verifyRule(LetVarWhitespaceRule.description)
+    }
+
     func testMark() {
-        verifyRule(MarkRule.description, commentDoesntViolate: false)
+        verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
     func testMultilineParameters() {
@@ -203,10 +208,6 @@ class RulesTests: XCTestCase {
 
     func testOperatorUsageWhitespace() {
         verifyRule(OperatorUsageWhitespaceRule.description)
-    }
-
-    func testPrivateOverFilePrivate() {
-        verifyRule(PrivateOverFilePrivateRule.description)
     }
 
     func testPrivateOutlet() {
@@ -289,6 +290,10 @@ class RulesTests: XCTestCase {
         verifyRule(SyntacticSugarRule.description)
     }
 
+    func testTrailingClosure() {
+        verifyRule(TrailingClosureRule.description)
+    }
+
     func testTrailingNewline() {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)
@@ -326,6 +331,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
+    func testUnneededParenthesesInClosureArgument() {
+        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }
@@ -356,5 +365,9 @@ class RulesTests: XCTestCase {
 
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
+    }
+
+    func testXCTFailMessage() {
+        verifyRule(XCTFailMessageRule.description)
     }
 }

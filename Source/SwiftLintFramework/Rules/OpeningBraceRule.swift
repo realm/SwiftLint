@@ -11,8 +11,8 @@ import SourceKittenFramework
 
 private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
 
-extension File {
-    fileprivate func violatingOpeningBraceRanges() -> [NSRange] {
+private extension File {
+    func violatingOpeningBraceRanges() -> [NSRange] {
         return match(pattern: "((?:[^( ]|[\\s(][\\s]+)\\{)",
                      excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
                      excludingPattern: "(?:if|guard|while)\\n[^\\{]+?[\\s\\t\\n]\\{")
@@ -102,7 +102,11 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         guard let indexRange = contents.nsrangeToIndexRange(violatingRange) else {
             return (contents, nil)
         }
+#if swift(>=4.0)
+        let capturedString = String(contents[indexRange])
+#else
         let capturedString = contents[indexRange]
+#endif
         var adjustedRange = violatingRange
         var correctString = " {"
 

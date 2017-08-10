@@ -84,7 +84,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
                 return []
         }
 
-        var visitedLines: Set<Int> = []
+        var visitedLines = Set<Int>()
         var previousArgumentWasMultiline = false
 
         let lastIndex = arguments.count - 1

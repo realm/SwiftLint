@@ -2,13 +2,54 @@
 
 ##### Breaking
 
-* None.
+* Nested configurations will now be merged with parent configurations rather
+  than replace them outright.  
+  [Stéphane Copin](https://github.com/stephanecopin)
+  [JP Simard](https://github.com/jpsim)
+  [#676](https://github.com/realm/SwiftLint/issues/676)
 
 ##### Enhancements
 
-* Rules are now categorized as `lint`, `idiomatic`,  `style`, `metrics`
+* Add `xctfail_message` rule to enforce XCTFail
+  calls to include a description of the assertion.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1370](https://github.com/realm/SwiftLint/issues/1370)
+
+* Add `joined_default_parameter` correctable opt-in rule to discourage
+  explicit usage of the default separator.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1093](https://github.com/realm/SwiftLint/issues/1093)
+  [#1757](https://github.com/realm/SwiftLint/issues/1757)
+
+* Files with extensions other than `.swift` can now be used as argument
+  to `--file` when linting or autocorrecting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1721](https://github.com/realm/SwiftLint/issues/1721)
+
+* Allow `()?`, `Void?`, `()!`, and `Void!` as return types in
+  `redundant_void_return` rule.  
+  [Ryan Booker](https://github.com/ryanbooker)
+  [#1761](https://github.com/realm/SwiftLint/issues/1761)
+
+##### Bug Fixes
+
+* Fix false positive on `force_unwrapping` rule when declaring
+  local variable with implicity unwrapped type.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#1710](https://github.com/realm/SwiftLint/issues/1710)
+
+## 0.21.0: Vintage Washboard
+
+##### Breaking
+
+* Xcode 8.3 or later and Swift 3.1 or later are required to build.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
+##### Enhancements
+
+* Rules are now categorized as `lint`, `idiomatic`, `style`, `metrics`
   or `performance`. Currently this is just used for documentation purposes
-  when you run `swiftlint rules`.  
+  when you run `swiftlint rules` or `swiftlint generate-docs`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Add [rules documentation](Rules.md) generation.  
@@ -16,18 +57,134 @@
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
 * Add `private_over_fileprivate` correctable rule to check for top-level usages
-  of  `fileprivate` and recommend `private` instead. This is inline with
+  of `fileprivate` and recommend `private` instead. This is in line with
   SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new
   `strict_fileprivate` opt-in rule that will mark every `fileprivate`
-  as a violation (specially useful with Swift 4).  
+  as a violation (especially useful with Swift 4).  
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1469](https://github.com/realm/SwiftLint/issues/1469)
   [#1058](https://github.com/realm/SwiftLint/issues/1058)
 
+* Add `let_var_whitespace` opt-in rule to enforce that `let`/`var` declarations
+  should be separated from other statements by a single blank line.  
+  [Uncommon](https://github.com/Uncommon)
+  [#1461](https://github.com/realm/SwiftLint/issues/1461)
+
+* Improve performance when linting and correcting on Linux,
+  matching macOS behavior.  
+  [JP Simard](https://github.com/jpsim)
+  [#1577](https://github.com/realm/SwiftLint/issues/1577)
+
+* Don't trigger `implicit_getter` violations when attributes (such as `mutating`
+  or `@inline`) are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1309](https://github.com/realm/SwiftLint/issues/1309)
+  [#1589](https://github.com/realm/SwiftLint/issues/1589)
+
+* Add `--use-tabs` option to `AutoCorrectOptions`, enabling formatting using
+  tabs over spaces.  
+  [Cody Winton](https://github.com/codytwinton)
+  [#1327](https://github.com/realm/SwiftLint/issues/1327)
+
+* Improve `autocorrect` performance by running it in parallel.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1578](https://github.com/realm/SwiftLint/issues/1578)
+
+* Support building with Xcode 9 beta 3 in Swift 3.2 mode.  
+  [JP Simard](https://github.com/jpsim)
+
+* Add support for optional `error` severity level configuration.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1647](https://github.com/realm/SwiftLint/issues/1647)
+
+* Add `unneeded_parentheses_in_closure_argument` opt-in correctable rule that
+  warns against using parentheses around argument declarations in closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1483](https://github.com/realm/SwiftLint/issues/1483)
+
+* Add `--disabled` flag to `swiftlint rules` to print only rules that are
+  not enabled in the configuration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `ignore_comment_only_lines` boolean configuration option
+  to `file_length` rule. With the option enabled, `file_length` will
+  ignore lines which have only comments.  
+  [Samuel Susla](https://github.com/sammy-SC)
+  [#1165](https://github.com/realm/SwiftLint/issues/1165)
+
+* Improve `file_header` rule description.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1492](https://github.com/realm/SwiftLint/issues/1492)
+
+* Add `trailing_closure` opt-in rule that validates that trailing
+  closure syntax should be used whenever possible.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#54](https://github.com/realm/SwiftLint/issues/54)
+
+* Shebang (`#!`) in the beginning of a file is now ignored by all rules.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1294](https://github.com/realm/SwiftLint/issues/1294)
+
+* Add `block_based_kvo` rule that enforces the usage of the new block based
+  KVO API added when linting with Swift 3.2 or later.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1714](https://github.com/realm/SwiftLint/issues/1714)
+
+* Make `file_header` rule ignore doc comments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1719](https://github.com/realm/SwiftLint/issues/1719)
+
+* Allow using environment variables in a configuration file in the form of
+  `${SOME_VARIABLE}`. The variables will be expanded when the configuration
+  is first loaded.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1512](https://github.com/realm/SwiftLint/issues/1512)
+
+* Treat `yes`, `no`, `on` and `off` as strings (and not booleans) when loading
+  configuration files.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1424](https://github.com/realm/SwiftLint/issues/1424)
+
+* Add `discouraged_direct_init` rule that discourages direct
+  initialization of certain types.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1306](https://github.com/realm/SwiftLint/issues/1306)
+
 ##### Bug Fixes
 
-* None.
+* Fix false positive on `redundant_discardable_let` rule when using
+  `while` statements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1669](https://github.com/realm/SwiftLint/issues/1669)
+
+* Fix all custom rules not being applied when any rule is configured
+  incorrectly.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1586](https://github.com/realm/SwiftLint/issues/1586)
+
+* Fix crash when using `--config` with a relative path and 
+  `--path` with a file.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1694](https://github.com/realm/SwiftLint/issues/1694)
+
+* Fix `mark` rule corrections generating invalid code in some cases.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1029](https://github.com/realm/SwiftLint/issues/1029)
+
+* Fix false positive in `empty_enum_arguments` rule when using wildcards and
+  `where` clauses.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1722](https://github.com/realm/SwiftLint/issues/1722)
+
+* Fix false positive in `large_tuple` rule when using throwing closure.  
+  [Liquidsoul](https://github.com/liquidsoul)
+
+* Make `vertical_parameter_alignment` more robust, fixing false positives and
+  detecting previously missed violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#1488](https://github.com/realm/SwiftLint/issues/1488)
 
 ## 0.20.1: More Liquid Fabric Softener
 
@@ -45,7 +202,7 @@
   [Alexander Lash](https://github.com/abl)
 
 * Don't trigger an `extension_access_modifier` violation when all extension
-  members  are `open`, as `open extension` is not supported by Swift.  
+  members are `open`, as `open extension` is not supported by Swift.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1629](https://github.com/realm/SwiftLint/issues/1629)
 
@@ -60,7 +217,7 @@
   [#1630](https://github.com/realm/SwiftLint/issues/1630)
   [#1643](https://github.com/realm/SwiftLint/issues/1643)
 
-* Use the directory's .swiftlint.yml when `--path` is used.  
+* Use the directory's `.swiftlint.yml` when `--path` is used.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1631](https://github.com/realm/SwiftLint/issues/1631)
 
@@ -72,8 +229,7 @@
 
 ##### Enhancements
 
-* Add support for missing triggering cases in `force_unwrapping`
-  when using subscript.  
+* Detect more violations of `force_unwrapping` when using subscripts.  
   [Otávio Lima](https://github.com/otaviolima)
 
 * Match `(Void)` as return type in the `void_return` rule.  
@@ -162,12 +318,12 @@
 
 * Remove support for Swift 2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+  [#1453](https://github.com/realm/SwiftLint/issues/1453)
 
 * Remove `missing_docs` and `valid_docs` rules since
   they were already disabled.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1387](https://github.com/realm/SwiftLint/issues/1453)
+  [#1453](https://github.com/realm/SwiftLint/issues/1453)
 
 * Add `modificationDate(forFileAtPath:)` function requirement to
   `LintableFileManager` protocol.  
@@ -1186,7 +1342,7 @@
 * `ForceUnwrappingRule` did not recognize force unwraps in return statements
   using subscript.  
   [Norio Nomura](https://github.com/norio-nomura)
-  [#813](https://github.com/realm/SwiftLint/issues/813)  
+  [#813](https://github.com/realm/SwiftLint/issues/813)
 
 ## 0.12.0: Vertical Laundry
 

@@ -52,11 +52,20 @@ extension File {
         }
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment]).flatMap { range in
+        return skipShebangCommands() + match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
+    }
+
+    private func skipShebangCommands() -> [Command] {
+        guard contents.hasPrefix("#!") else {
+            return []
+        }
+
+        return Command(action: .disable, ruleIdentifiers: masterRuleList.allValidIdentifiers(),
+                       line: 0, modifier: .next).expand()
     }
 
     fileprivate func endOf(next command: Command?) -> Location {
@@ -244,6 +253,7 @@ extension File {
             fatalError("can't write file to \(path)")
         }
         contents = string
+        invalidateCache()
         lines = contents.bridge().lines()
     }
 
@@ -251,9 +261,9 @@ extension File {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
-            let region = fileRegions.first(where: {
+            let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
-            })
+            }
             return region?.isRuleEnabled(rule) ?? true
         }
         return violatingRanges

@@ -32,7 +32,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let range = 1...3\n",
             "let range = 1 ... 3\n",
             "let range = 1..<3\n",
-            "#if swift(>=3.0)\n",
+            "#if swift(>=3.0)\n    foo()\n#endif\n",
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",

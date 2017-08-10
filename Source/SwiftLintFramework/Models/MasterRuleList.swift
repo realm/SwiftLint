@@ -10,6 +10,7 @@
 
 public let masterRuleList = RuleList(rules: [
     AttributesRule.self,
+    BlockBasedKVORule.self,
     ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,
     ClosureEndIndentationRule.self,
@@ -23,6 +24,7 @@ public let masterRuleList = RuleList(rules: [
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,
+    DiscouragedDirectInitRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyEnumArgumentsRule.self,
@@ -54,6 +56,7 @@ public let masterRuleList = RuleList(rules: [
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
     LegacyNSGeometryFunctionsRule.self,
+    LetVarWhitespaceRule.self,
     LineLengthRule.self,
     MarkRule.self,
     MultilineParametersRule.self,
@@ -85,12 +88,14 @@ public let masterRuleList = RuleList(rules: [
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
     TodoRule.self,
+    TrailingClosureRule.self,
     TrailingCommaRule.self,
     TrailingNewlineRule.self,
     TrailingSemicolonRule.self,
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
     TypeNameRule.self,
+    UnneededParenthesesInClosureArgumentRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
     UnusedOptionalBindingRule.self,
@@ -99,5 +104,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalParameterAlignmentRule.self,
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
-    WeakDelegateRule.self
+    WeakDelegateRule.self,
+    XCTFailMessageRule.self
 ])

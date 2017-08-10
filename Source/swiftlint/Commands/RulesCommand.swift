@@ -38,18 +38,22 @@ struct RulesCommand: CommandProtocol {
             }
 
             print(ruleDescription: rule.description)
-            return .success()
+            return .success(())
+        }
+
+        if options.onlyDisabledRules && options.onlyEnabledRules {
+            return .failure(.usageError(description: "You can't use --disabled and --enabled at the same time."))
         }
 
         let configuration = Configuration(options: options)
         let rules = ruleList(for: options, configuration: configuration)
 
         print(TextTable(ruleList: rules, configuration: configuration).render())
-        return .success()
+        return .success(())
     }
 
     private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
-        guard options.filterEnabled else {
+        guard options.onlyEnabledRules || options.onlyDisabledRules else {
             return masterRuleList
         }
 
@@ -58,7 +62,9 @@ struct RulesCommand: CommandProtocol {
                 return type(of: rule).description.identifier == ruleID
             }
 
-            guard configuredRule != nil else {
+            if options.onlyEnabledRules && configuredRule == nil {
+                return nil
+            } else if options.onlyDisabledRules && configuredRule != nil {
                 return nil
             }
 
@@ -72,13 +78,17 @@ struct RulesCommand: CommandProtocol {
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
     let configurationFile: String
-    fileprivate let filterEnabled: Bool
+    fileprivate let onlyEnabledRules: Bool
+    fileprivate let onlyDisabledRules: Bool
 
-    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ filterEnabled: Bool) -> RulesOptions {
-        return { ruleID in { filterEnabled in
-            // swiftlint:disable:next line_length
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile, filterEnabled: filterEnabled)
-        }}
+    // swiftlint:disable line_length
+    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> RulesOptions {
+        return { ruleID in { onlyEnabledRules in { onlyDisabledRules in
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID),
+                      configurationFile: configurationFile,
+                      onlyEnabledRules: onlyEnabledRules,
+                      onlyDisabledRules: onlyDisabledRules)
+        }}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
@@ -89,6 +99,9 @@ struct RulesOptions: OptionsProtocol {
             <*> mode <| Switch(flag: "e",
                                key: "enabled",
                                usage: "only display enabled rules")
+            <*> mode <| Switch(flag: "d",
+                               key: "disabled",
+                               usage: "only display disabled rules")
     }
 }
 

@@ -13,6 +13,12 @@ import XCTest
 
 private let violationMarker = "↓"
 
+extension String {
+    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
+        return bridge().appendingPathComponent(pathComponent)
+    }
+}
+
 let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
 func violations(_ string: String, config: Configuration = Configuration()) -> [StyleViolation] {
@@ -65,8 +71,8 @@ private func render(locations: [Location], in contents: String) -> String {
     return (["```"] + contents + ["```"]).joined(separator: "\n")
 }
 
-extension Configuration {
-    fileprivate func assertCorrection(_ before: String, expected: String) {
+private extension Configuration {
+    func assertCorrection(_ before: String, expected: String) {
         guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
                 XCTFail("couldn't generate temporary path for assertCorrection()")
@@ -106,8 +112,8 @@ extension Configuration {
     }
 }
 
-extension String {
-    fileprivate func toStringLiteral() -> String {
+private extension String {
+    func toStringLiteral() -> String {
         return "\"" + replacingOccurrences(of: "\n", with: "\\n") + "\""
     }
 }
@@ -116,10 +122,10 @@ internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Con
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
-            return Configuration(whitelistRules: [identifier], configuredRules: [configuredRule])
+            return Configuration(rulesMode: .whitelisted([identifier]), configuredRules: [configuredRule])
         }
     }
-    return Configuration(whitelistRules: [identifier])
+    return Configuration(rulesMode: .whitelisted([identifier]))
 }
 
 private func testCorrection(_ correction: (String, String),
@@ -135,6 +141,10 @@ private func addEmoji(_ string: String) -> String {
     return "/* 👨‍👩‍👧‍👦👨‍👩‍👧‍👦👨‍👩‍👧‍👦 */\n\(string)"
 }
 
+private func addShebang(_ string: String) -> String {
+    return "#!/usr/bin/env swift\n\(string)"
+}
+
 extension XCTestCase {
     // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
@@ -143,9 +153,11 @@ extension XCTestCase {
                     stringDoesntViolate: Bool = true,
                     skipCommentTests: Bool = false,
                     skipStringTests: Bool = false,
-                    testMultiByteOffsets: Bool = true) {
+                    skipDisableCommandTests: Bool = false,
+                    testMultiByteOffsets: Bool = true,
+                    testShebang: Bool = true) {
         guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
-            XCTFail()
+            XCTFail("Failed to create configuration")
             return
         }
 
@@ -156,6 +168,11 @@ extension XCTestCase {
         if testMultiByteOffsets {
             verifyExamples(triggers: triggers.map(addEmoji),
                            nonTriggers: nonTriggers.map(addEmoji), configuration: config)
+        }
+
+        if testShebang {
+            verifyExamples(triggers: triggers.map(addShebang),
+                           nonTriggers: nonTriggers.map(addShebang), configuration: config)
         }
 
         // Comment doesn't violate
@@ -174,7 +191,12 @@ extension XCTestCase {
             )
         }
 
-        let disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+        let disableCommands: [String]
+        if skipDisableCommandTests {
+            disableCommands = []
+        } else {
+            disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
+        }
 
         // "disable" commands doesn't violate
         for command in disableCommands {

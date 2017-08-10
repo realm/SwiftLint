@@ -19,8 +19,9 @@ struct AutoCorrectCommand: CommandProtocol {
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
 
         return configuration.visitLintableFiles(path: options.path, action: "Correcting",
-                                                quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
-                                                cache: cache) { linter in
+                                                quiet: options.quiet,
+                                                useScriptInputFiles: options.useScriptInputFiles,
+                                                cache: cache, parallel: true) { linter in
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
@@ -28,7 +29,7 @@ struct AutoCorrectCommand: CommandProtocol {
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                                                           useTabs: false, indentWidth: 4)
+                                                           useTabs: options.useTabs, indentWidth: 4)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }
@@ -36,7 +37,7 @@ struct AutoCorrectCommand: CommandProtocol {
             if !options.quiet {
                 queuedPrintError("Done correcting \(files.count) files!")
             }
-            return .success()
+            return .success(())
         }
     }
 }
@@ -49,12 +50,13 @@ struct AutoCorrectOptions: OptionsProtocol {
     let format: Bool
     let cachePath: String
     let ignoreCache: Bool
+    let useTabs: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { format in { cachePath in { ignoreCache in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, cachePath: cachePath, ignoreCache: ignoreCache)
-        }}}}}}
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { format in { cachePath in { ignoreCache in { useTabs in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
+        }}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -68,8 +70,11 @@ struct AutoCorrectOptions: OptionsProtocol {
                                defaultValue: false,
                                usage: "should reformat the Swift files")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the directory of the cache used when linting")
+                               usage: "the directory of the cache used when correcting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
-                               usage: "ignore cache when linting")
+                               usage: "ignore cache when correcting")
+            <*> mode <| Option(key: "use-tabs",
+                               defaultValue: false,
+                               usage: "should use tabs over spaces when reformatting")
     }
 }

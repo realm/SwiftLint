@@ -9,10 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
-
-extension File {
-    fileprivate func violatingClosingBraceRanges() -> [NSRange] {
+private extension File {
+    func violatingClosingBraceRanges() -> [NSRange] {
         return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }

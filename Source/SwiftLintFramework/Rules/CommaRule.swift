@@ -104,12 +104,12 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                 if match.numberOfRanges != 5 { return nil } // Number of Groups in regexp
 
                 var indexStartRange = 1
-                if match.rangeAt(indexStartRange).location == NSNotFound {
+                if match.range(at: indexStartRange).location == NSNotFound {
                     indexStartRange += 2
                 }
 
                 // check first captured range
-                let firstRange = match.rangeAt(indexStartRange)
+                let firstRange = match.range(at: indexStartRange)
                 guard let matchByteFirstRange = nsstring
                     .NSRangeToByteRange(start: firstRange.location, length: firstRange.length)
                     else { return nil }
@@ -128,7 +128,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
                 }
 
                 // check second captured range
-                let secondRange = match.rangeAt(indexStartRange + 1)
+                let secondRange = match.range(at: indexStartRange + 1)
                 guard let matchByteSecondRange = nsstring
                     .NSRangeToByteRange(start: secondRange.location, length: secondRange.length)
                     else { return nil }

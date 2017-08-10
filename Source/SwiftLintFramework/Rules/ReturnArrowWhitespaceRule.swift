@@ -78,7 +78,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
             guard result.numberOfRanges > (replacementsByIndex.keys.max() ?? 0) else { break }
 
             for (index, string) in replacementsByIndex {
-                if let range = contents.nsrangeToIndexRange(result.rangeAt(index)) {
+                if let range = contents.nsrangeToIndexRange(result.range(at: index)) {
                     contents.replaceSubrange(range, with: string)
                     break
                 }

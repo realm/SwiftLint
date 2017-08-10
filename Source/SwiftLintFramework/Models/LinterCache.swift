@@ -138,8 +138,8 @@ public final class LinterCache {
     }
 }
 
-extension LinterCache {
-    fileprivate enum Key: String {
+private extension LinterCache {
+    enum Key: String {
         case character
         case configuration
         case lastModification = "last_modification"
@@ -159,8 +159,8 @@ private extension Dictionary where Key == String {
     }
 }
 
-extension StyleViolation {
-    fileprivate static func from(cache: [String: Any], file: String) -> StyleViolation? {
+private extension StyleViolation {
+    static func from(cache: [String: Any], file: String) -> StyleViolation? {
         guard let severityString = cache[.severity] as? String,
             let severity = ViolationSeverity(rawValue: severityString),
             let name = cache[.type] as? String,

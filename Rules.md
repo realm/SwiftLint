@@ -2,6 +2,7 @@
 # Rules
 
 * [Attributes](#attributes)
+* [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
 * [Closure End Indentation](#closure-end-indentation)
@@ -15,6 +16,7 @@
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
+* [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -39,12 +41,14 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
 * [Leading Whitespace](#leading-whitespace)
 * [Legacy CGGeometry Functions](#legacy-cggeometry-functions)
 * [Legacy Constant](#legacy-constant)
 * [Legacy Constructor](#legacy-constructor)
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
+* [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
 * [Mark](#mark)
 * [Multiline Parameters](#multiline-parameters)
@@ -76,12 +80,14 @@
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
+* [Trailing Closure](#trailing-closure)
 * [Trailing Comma](#trailing-comma)
 * [Trailing Newline](#trailing-newline)
 * [Trailing Semicolon](#trailing-semicolon)
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
 * [Type Name](#type-name)
+* [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -91,6 +97,7 @@
 * [Vertical Whitespace](#vertical-whitespace)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
+* [XCTFail Message](#xctfail-message)
 --------
 
 ## Attributes
@@ -430,6 +437,49 @@ func foo(completionHandler: @escaping () -> Void)
 
  @discardableResult
  ↓func a() -> Int
+```
+
+</details>
+
+
+
+## Block Based KVO
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`block_based_kvo` | Enabled | No | idiomatic
+
+Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let observer = foo.observe(\.value, options: [.new]) { (foo, change) in
+   print(change.newValue)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: [NSKeyValueChangeKey : Any]?,
+                               context: UnsafeMutableRawPointer?) {}
+}
+```
+
+```swift
+class Foo: NSObject {
+   override ↓func observeValue(forKeyPath keyPath: String?, of object: Any?,
+                               change: Dictionary<NSKeyValueChangeKey, Any>?,
+                               context: UnsafeMutableRawPointer?) {}
+}
 ```
 
 </details>
@@ -1580,6 +1630,91 @@ func foo() -> Any {
 
 
 
+## Discouraged Direct Initialization
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_direct_init` | Enabled | No | lint
+
+Discouraged direct initialization of types that can be harmful.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = UIDevice.current
+```
+
+```swift
+let foo = Bundle.main
+```
+
+```swift
+let foo = Bundle(path: "bar")
+```
+
+```swift
+let foo = Bundle(identifier: "bar")
+```
+
+```swift
+let foo = Bundle.init(path: "bar")
+```
+
+```swift
+let foo = Bundle.init(identifier: "bar")
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓UIDevice()
+```
+
+```swift
+↓Bundle()
+```
+
+```swift
+let foo = ↓UIDevice()
+```
+
+```swift
+let foo = ↓Bundle()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle(), device: ↓UIDevice())
+```
+
+```swift
+↓UIDevice.init()
+```
+
+```swift
+↓Bundle.init()
+```
+
+```swift
+let foo = ↓UIDevice.init()
+```
+
+```swift
+let foo = ↓Bundle.init()
+```
+
+```swift
+let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())
+```
+
+</details>
+
+
+
 ## Dynamic Inline
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -1735,31 +1870,37 @@ Arguments can be omitted when matching enums with associated types if they are n
 
 ```swift
 switch foo {
- case .bar: break
+    case .bar: break
 }
 ```
 
 ```swift
 switch foo {
- case .bar(let x): break
+    case .bar(let x): break
 }
 ```
 
 ```swift
 switch foo {
- case let .bar(x): break
+    case let .bar(x): break
 }
 ```
 
 ```swift
 switch (foo, bar) {
- case (_, _): break
+    case (_, _): break
 }
 ```
 
 ```swift
 switch foo {
- case "bar".uppercased(): break
+    case "bar".uppercased(): break
+}
+```
+
+```swift
+switch (foo, bar) {
+    case (_, _) where !something: break
 }
 ```
 
@@ -1769,25 +1910,25 @@ switch foo {
 
 ```swift
 switch foo {
- case .bar↓(_): break
+    case .bar↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(): break
+    case .bar↓(): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓(_), .bar2↓(_): break
+    case .bar↓(_), .bar2↓(_): break
 }
 ```
 
 ```swift
 switch foo {
- case .bar↓() where method() > 2: break
+    case .bar↓() where method() > 2: break
 }
 ```
 
@@ -2300,7 +2441,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `file_header` | Disabled | No | style
 
-Files should have consistent header comments.
+Header comments should be consistent with project patterns.
 
 ### Examples
 
@@ -2362,406 +2503,406 @@ Files should not span too many lines.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
 
 ```
 
@@ -2770,406 +2911,811 @@ Files should not span too many lines.
 <summary>Triggering Examples</summary>
 
 ```swift
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+
+```
+
+```swift
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
+print("swiftlint")
 //
 
 ```
@@ -3456,6 +4002,10 @@ var a: [Int]!
 private var myProperty: (Void -> Void)!
 ```
 
+```swift
+func foo(_ options: [AnyHashable: Any]!) {
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -3502,6 +4052,16 @@ if dict["a"]↓!!!! {
 
 ```swift
 var foo: [Bool]! = dict["abc"]↓!
+```
+
+```swift
+context("abc") {
+  var foo: [Bool]! = dict["abc"]↓!
+}
+```
+
+```swift
+open var computed: String { return foo.bar↓! }
 ```
 
 </details>
@@ -4027,6 +4587,23 @@ class Foo {
 
 ```
 
+```swift
+var _objCTaggedPointerBits: UInt {
+   @inline(__always) get { return 0 }
+}
+
+```
+
+```swift
+var next: Int? {
+   mutating get {
+       defer { self.count += 1 }
+       return self.count
+   }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4074,6 +4651,19 @@ var foo: Int {
 } 
 } 
 }
+```
+
+```swift
+class Foo {
+  @objc func bar() { }
+var foo: Int {
+ ↓get {
+ return 20 
+} 
+} 
+}
+}
+
 ```
 
 </details>
@@ -4230,6 +4820,48 @@ func foo(int: Int!) {}
 
 
 
+## Joined Default Parameter
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`joined_default_parameter` | Disabled | Yes | idiomatic
+
+Discouraged explicit usage of the default separator.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = bar.joined()
+```
+
+```swift
+let foo = bar.joined(separator: ",")
+```
+
+```swift
+let foo = bar.joined(separator: toto)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let foo = bar.joined(↓separator: "")
+```
+
+```swift
+let foo = bar.filter(toto)
+             .joined(↓separator: "")
+```
+
+</details>
+
+
+
 ## Large Tuple
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -4290,6 +4922,21 @@ func foo() throws -> (Int, Int) {}
 
 ```swift
 let foo: (Int, Int, Int) -> Void
+
+```
+
+```swift
+let foo: (Int, Int, Int) throws -> Void
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) -> Void)
+
+```
+
+```swift
+func foo(bar: (Int, String, Float) throws -> Void)
 
 ```
 
@@ -5048,6 +5695,105 @@ rect1.intersects(rect2)
 
 
 
+## Variable Declaration Whitespace
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`let_var_whitespace` | Disabled | No | style
+
+Let and var should be separated from other statements by a blank line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let a = 0
+var x = 1
+
+x = 2
+
+```
+
+```swift
+a = 5
+
+var x = 1
+
+```
+
+```swift
+struct X {
+	var a = 0
+}
+
+```
+
+```swift
+let a = 1 +
+	2
+let b = 5
+
+```
+
+```swift
+var x: Int {
+	return 0
+}
+
+```
+
+```swift
+var x: Int {
+	let a = 0
+
+	return a
+}
+
+```
+
+```swift
+#if os(macOS)
+let a = 0
+#endif
+
+```
+
+```swift
+@available(swift 4)
+let a = 0
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var x = 1
+↓x = 2
+
+```
+
+```swift
+a = 5
+↓var x = 1
+
+```
+
+```swift
+struct X {
+	let a
+	↓func x() {}
+}
+
+```
+
+</details>
+
+
+
 ## Line Length
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -5209,6 +5955,15 @@ MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'
 
 ```swift
 ↓// MARK - bad
+```
+
+```swift
+↓//MARK:- Top-Level bad mark
+↓//MARK:- Another bad mark
+struct MarkTest {}
+↓// MARK:- Bad mark
+extension MarkTest {}
+
 ```
 
 </details>
@@ -6514,6 +7269,8 @@ let range = 1..<3
 
 ```swift
 #if swift(>=3.0)
+    foo()
+#endif
 
 ```
 
@@ -6924,20 +7681,6 @@ fileprivate struct Inner {}
 ```
 
 ```swift
-↓fileprivate extension String {}
-```
-
-```swift
-↓fileprivate 
- extension String {}
-```
-
-```swift
-↓fileprivate extension 
- String {}
-```
-
-```swift
 ↓fileprivate class MyClass {
 fileprivate(set) var myInt = 4
 }
@@ -7193,6 +7936,11 @@ guard let _ = foo() else { return }
 
 ```swift
 let _: ExplicitType = foo()
+```
+
+```swift
+while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }
+
 ```
 
 </details>
@@ -8445,6 +9193,77 @@ TODOs and FIXMEs should be avoided.
 
 ```swift
 /** ↓TODO: */
+
+```
+
+</details>
+
+
+
+## Trailing Closure
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`trailing_closure` | Disabled | No | style
+
+Trailing closure syntax should be used whenever possible.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo.map { $0 + 1 }
+
+```
+
+```swift
+foo.bar()
+
+```
+
+```swift
+foo.reduce(0) { $0 + 1 }
+
+```
+
+```swift
+if let foo = bar.map({ $0 + 1 }) { }
+
+```
+
+```swift
+foo.something(param1: { $0 }, param2: { $0 + 1 })
+
+```
+
+```swift
+offsets.sorted { $0.offset < $1.offset }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓foo.map({ $0 + 1 })
+
+```
+
+```swift
+↓foo.reduce(0, combine: { $0 + 1 })
+
+```
+
+```swift
+↓offsets.sorted(by: { $0.offset < $1.offset })
+
+```
+
+```swift
+↓foo.something(0, { $0 + 1 })
 
 ```
 
@@ -12001,6 +12820,52 @@ protocol Foo {
 
 
 
+## Unneeded Parentheses in Closure Argument
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`unneeded_parentheses_in_closure_argument` | Disabled | Yes | style
+
+Parentheses are not needed when declaring closure arguments.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = { (bar: Int) in }
+
+```
+
+```swift
+let foo = { bar in }
+
+```
+
+```swift
+let foo = { bar -> Bool in return true }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+call(arg: { ↓(bar) in })
+
+```
+
+```swift
+let foo = { ↓(bar) -> Bool in return true }
+
+```
+
+</details>
+
+
+
 ## Unused Closure Parameter
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -12535,6 +13400,19 @@ func regex(_ pattern: String,
 
 ```
 
+```swift
+func foo(a: Void,
+         b: [String: String] =
+           [:]) {
+}
+
+```
+
+```swift
+func foo(data: (size: CGSize,
+                identifier: String)) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -12930,6 +13808,51 @@ class Foo {
   ↓var scrollDelegate: ScrollDelegate?
 }
 
+```
+
+</details>
+
+
+
+## XCTFail Message
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`xctfail_message` | Enabled | No | idiomatic
+
+An XCTFail call should include a description of the assertion.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    XCTFail("bar")
+}
+```
+
+```swift
+func testFoo() {
+    XCTFail(bar)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    ↓XCTFail()
+}
+```
+
+```swift
+func testFoo() {
+    ↓XCTFail("")
+}
 ```
 
 </details>

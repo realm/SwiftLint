@@ -17,6 +17,10 @@ matrix:
       env: JOB=Linux3.1
       sudo: required
       services: docker
+    - script: set -o pipefail && script/cibuild | xcpretty
+      env: JOB=Xcode9
+      os: osx
+      osx_image: xcode9
 notifications:
   email: false
   slack: realmio:vPdpsG9NLDo2DNlbqtcMAQuE

@@ -92,7 +92,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
     }
 
     public static func == (lhs: OverridenSuperCallConfiguration,
-                    rhs: OverridenSuperCallConfiguration) -> Bool {
+                           rhs: OverridenSuperCallConfiguration) -> Bool {
         return lhs.excluded == rhs.excluded &&
             lhs.included == rhs.included &&
             lhs.severity == rhs.severity

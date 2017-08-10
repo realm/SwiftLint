@@ -43,7 +43,7 @@ extension Int: YamlLoadable {
 }
 
 public extension Optional where Wrapped: YamlLoadable {
-    static func load(from node: Any) throws -> Optional<Wrapped> {
+    static func load(from node: Any) throws -> Wrapped? {
         if let value = node as? Wrapped {
             return value
         }

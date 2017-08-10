@@ -15,7 +15,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private var requiredStringParameter = OptionalParameter<String>(key: "required_string", default: nil,
                                                                     description: "")
     private var requiredPatternParameter = OptionalParameter<String>(key: "required_pattern", default: nil,
-                                                                    description: "")
+                                                                     description: "")
     private var forbiddenStringParameter = OptionalParameter<String>(key: "forbidden_string", default: nil,
                                                                      description: "")
     private var forbiddenPatternParameter = OptionalParameter<String>(key: "forbidden_pattern", default: nil,

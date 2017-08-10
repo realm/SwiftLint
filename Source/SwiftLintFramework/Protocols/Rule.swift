@@ -11,6 +11,7 @@ import SourceKittenFramework
 public protocol Rule {
     static var description: RuleDescription { get }
     var configurationDescription: String { get }
+    var parameters: [ParameterDefinition] { get }
 
     init() // Rules need to be able to be initialized with default values
     init(configuration: [String: Any]) throws
@@ -60,6 +61,10 @@ public extension ConfigurationProviderRule {
 
     var configurationDescription: String {
         return configuration.consoleDescription
+    }
+
+    var parameters: [ParameterDefinition] {
+        return configuration.parameters
     }
 }
 

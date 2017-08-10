@@ -26,6 +26,7 @@ public protocol ParameterDefinition {
     var key: String { get }
     var parameterDescription: String { get }
     var description: String { get }
+    var defaultValueDescription: String { get }
 }
 
 public protocol ParameterProtocol: ParameterDefinition {
@@ -44,6 +45,10 @@ public struct Parameter<T: YamlLoadable & Equatable>: ParameterProtocol, Equatab
 
     public var parameterDescription: String {
         return "\(key): \(value)"
+    }
+
+    public var defaultValueDescription: String {
+        return "\(`default`)"
     }
 
     public init(key: String, default: T, description: String) {
@@ -78,6 +83,11 @@ public struct OptionalParameter<T: YamlLoadable & Equatable>: ParameterProtocol,
         return "\(key): \(value)"
     }
 
+    public var defaultValueDescription: String {
+        let value: Any = `default` ?? "<null>"
+        return "\(value)"
+    }
+
     public init(key: String, default: T?, description: String) {
         self.key = key
         self.default = `default`
@@ -107,6 +117,10 @@ struct ArrayParameter<T: YamlLoadable & Equatable>: ParameterProtocol, Equatable
 
     public var parameterDescription: String {
         return "\(key): \(value)"
+    }
+
+    public var defaultValueDescription: String {
+        return "\(`default`)"
     }
 
     public init(key: String, default: [T], description: String) {

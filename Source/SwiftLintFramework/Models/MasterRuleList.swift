@@ -75,6 +75,7 @@ public let masterRuleList = RuleList(rules: [
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
     ProtocolPropertyAccessorsOrderRule.self,
+    QuickDiscouragedCallRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,

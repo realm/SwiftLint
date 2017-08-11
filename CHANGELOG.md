@@ -35,6 +35,10 @@
   to contain a single QuickSpec or XCTestCase class.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1779](https://github.com/realm/SwiftLint/issues/1779)
+* Add `quick_discouraged_call` opt-in rule to discourage calls and object
+  initialization inside 'describe' and 'context' block in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1781](https://github.com/realm/SwiftLint/issues/1781)
 
 ##### Bug Fixes
 

@@ -237,8 +237,8 @@ class RulesTests: XCTestCase {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 
-    func testSingleTestClass() {
-        verifyRule(SingleTestClassRule.description)
+    func testQuickDiscouragedCall() {
+        verifyRule(QuickDiscouragedCallRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -267,6 +267,10 @@ class RulesTests: XCTestCase {
 
     func testShorthandOperator() {
         verifyRule(ShorthandOperatorRule.description)
+    }
+
+    func testSingleTestClass() {
+        verifyRule(SingleTestClassRule.description)
     }
 
     func testSortedImports() {

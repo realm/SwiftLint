@@ -84,7 +84,11 @@ fi
 Alternatively, if you've installed SwiftLint via CocoaPods the script should look like this:
 
 ```bash
-"${PODS_ROOT}/SwiftLint/swiftlint"
+if which ${PODS_ROOT}/SwiftLint/swiftlint >/dev/null; then
+  ${PODS_ROOT}/SwiftLint/swiftlint
+else
+  echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+fi
 ```
 
 #### Format on Save Xcode Plugin

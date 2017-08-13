@@ -143,7 +143,11 @@ class RulesTests: XCTestCase {
     }
 
     func testInlineComment() {
-        verifyRule(InlineCommentRule.description, commentDoesntViolate: false)
+        verifyRule(InlineCommentRule.description)
+    }
+
+    func testJoinedDefaultParameter() {
+        verifyRule(JoinedDefaultParameterRule.description)
     }
 
     func testLargeTuple() {

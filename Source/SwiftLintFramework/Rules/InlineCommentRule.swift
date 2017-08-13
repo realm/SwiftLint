@@ -10,13 +10,13 @@ import Foundation
 import SourceKittenFramework
 
 private let nonSpace = "[^\\s]"
-private let nonNewLine = "[^\\n]"
+private let noNewLine = "[^\\n]"
 private let nonOrOneSpace = "\\s{0,1}"
 private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
-private let endOfStatement = "[{}?(),]+"
+private let endOfStatement = "[{},?()\\]\\],:;]++\(noNewLine)"
 
 public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 
@@ -27,7 +27,8 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "inline_comment",
         name: "InlineComment",
-        description: "Inline comments should be in valid format.", kind: RuleKind.lint,
+        description: "Inline comments should be in valid format.",
+        kind: RuleKind.lint,
         nonTriggeringExamples: [
             "// Good\nfunc foo() {\n}",
             "func foo() {  // Good\n}",
@@ -58,7 +59,8 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRanges(in: file, matching: pattern).map {
+        let t = violationRanges(in: file, matching: pattern)
+        return t.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -72,6 +74,7 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
+
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }

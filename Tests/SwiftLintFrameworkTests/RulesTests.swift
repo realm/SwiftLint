@@ -143,7 +143,7 @@ class RulesTests: XCTestCase {
     }
 
     func testInlineComment() {
-        verifyRule(InlineCommentRule.description)
+        verifyRule(InlineCommentRule.description, skipCommentTests: true)
     }
 
     func testJoinedDefaultParameter() {

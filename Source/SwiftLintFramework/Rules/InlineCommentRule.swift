@@ -10,13 +10,13 @@ import Foundation
 import SourceKittenFramework
 
 private let nonSpace = "[^\\s]"
-private let noNewLine = "[^\\n]"
+private let noNewLine = "(?!\\n)"
 private let nonOrOneSpace = "\\s{0,1}"
 private let twoSpace = "\\s{2}"
 private let twoOrMoreSpace = "\\s{2,}"
 private let threeOrMoreSpace = "\\s{3,}"
 private let comment = "//"
-private let endOfStatement = "[{},?()\\]\\],:;]++\(noNewLine)"
+private let endOfStatement = "[{}()?,:;]++\(noNewLine)"
 
 public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 

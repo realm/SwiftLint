@@ -146,7 +146,7 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             // removes lines by skipping them from correctedLines
             if Set(indexOfLinesToDelete).contains(currentLine.index) {
                 let description = type(of: self).description
-                let location = Location(file: file.path, line: currentLine.index)
+                let location = Location(file: file, characterOffset: currentLine.range.location)
 
                 //reports every line that is being deleted
                 corrections.append(Correction(ruleDescription: description, location: location))

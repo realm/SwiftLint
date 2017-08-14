@@ -38,9 +38,11 @@
   [Otávio Lima](https://github.com/otaviolima)
   [#1710](https://github.com/realm/SwiftLint/issues/1710)
 
-* Fix the warning message and autocorrection of `vertical-whitespace` rule to display the maximum empty lines allowed if `maxEmptyLines` is greater than 1.  
-[Hossam Ghareeb](https://github.com/hossamghareeb)
-[#1763](https://github.com/realm/SwiftLint/issues/1763)
+* Fix the warning message and autocorrection of `vertical_whitespace` rule to
+  display the maximum empty lines allowed if `max_empty_lines` is greater
+  than 1.  
+  [Hossam Ghareeb](https://github.com/hossamghareeb)
+  [#1763](https://github.com/realm/SwiftLint/issues/1763)
 
 ## 0.21.0: Vintage Washboard
 

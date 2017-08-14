@@ -29,14 +29,14 @@ class VerticalWhitespaceRuleTests: XCTestCase {
                    ruleConfiguration: ["max_empty_lines": 2])
     }
 
-    func testAutoCorrection() {
+    func testAutoCorrectionWithMaxEmptyLines() {
         let maxEmptyLinesDescription = VerticalWhitespaceRule.description
             .with(nonTriggeringExamples: [])
             .with(triggeringExamples: [])
             .with(corrections: [
                 "let b = 0\n\n↓\n↓\n↓\n\nclass AAA {}\n": "let b = 0\n\n\nclass AAA {}\n",
                 "let b = 0\n\n\nclass AAA {}\n": "let b = 0\n\n\nclass AAA {}\n"
-                ])
+            ])
 
         verifyRule(maxEmptyLinesDescription,
                    ruleConfiguration: ["max_empty_lines": 2])
@@ -53,7 +53,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to maximum 2 empty lines. Currently 3.")
         } else {
-            XCTFail("A vertical white space violation should have been triggered!")
+            XCTFail("A vertical whitespace violation should have been triggered!")
         }
     }
 
@@ -63,7 +63,7 @@ class VerticalWhitespaceRuleTests: XCTestCase {
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to a single empty line. Currently 3.")
         } else {
-            XCTFail("A vertical white space violation should have been triggered!")
+            XCTFail("A vertical whitespace violation should have been triggered!")
         }
     }
 }

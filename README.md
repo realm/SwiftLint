@@ -108,6 +108,20 @@ To integrate SwiftLint with [Atom](https://atom.io/), install the
 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
 APM.
 
+### fastlane
+
+You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/#swiftlint) to run SwiftLint as part of your fastlane process.
+
+```ruby
+swiftlint(
+  mode: :lint,                          # SwiftLint mode: :lint (default) or :autocorrect
+  output_file: "swiftlint.result.json", # The path of the output file (optional)
+  config_file: ".swiftlint-ci.yml",     # The path of the configuration file (optional)
+  ignore_exit_status: true    # Allow fastlane to continue even if SwiftLint returns a non-zero exit status
+)
+```
+
+
 ### Command Line
 
 ```

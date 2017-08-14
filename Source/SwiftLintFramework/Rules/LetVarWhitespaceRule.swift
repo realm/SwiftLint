@@ -28,7 +28,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             "var x: Int {\n\treturn 0\n}\n",
             "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n",
             "#if os(macOS)\nlet a = 0\n#endif\n",
-            "@available(swift 4)\nlet a = 0\n"
+            "@available(swift 4)\nlet a = 0\n",
+            "class C {\n\t@objc\n\tvar s: String = \"\"\n}",
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
@@ -165,13 +166,13 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             }
         }
 
-        let conditionals = ["#if", "#elseif", "#else", "#endif", "@available", "#!"]
-        let conditionalLines = file.lines.filter {
+        let directives = ["#if", "#elseif", "#else", "#endif", "@available", "@objc", "#!"]
+        let directiveLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
-            return conditionals.contains(where: trimmed.hasPrefix)
+            return directives.contains(where: trimmed.hasPrefix)
         }
 
-        result.formUnion(conditionalLines.map { $0.index - 1 })
+        result.formUnion(directiveLines.map { $0.index - 1 })
         return result
     }
 }

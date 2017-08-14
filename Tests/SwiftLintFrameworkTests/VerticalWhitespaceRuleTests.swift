@@ -11,7 +11,7 @@ import XCTest
 
 class VerticalWhitespaceRuleTests: XCTestCase {
 
-    private let ruleID = "vertical_whitespace"
+    private let ruleID = VerticalWhitespaceRule.description.identifier
 
     func testVerticalWhitespaceWithDefaultConfiguration() {
         // Test with default parameters
@@ -38,14 +38,18 @@ class VerticalWhitespaceRuleTests: XCTestCase {
         let verticalWhiteSpaceViolation = allViolations.first(where: { $0.ruleDescription.identifier == ruleID })
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to maximum 2 empty lines. Currently 3.")
+        } else {
+            XCTFail("A vertical white space violation should have been triggered!")
         }
     }
 
-    func testVilationMessageWithDefaultConfiguration() {
+    func testViolationMessageWithDefaultConfiguration() {
         let allViolations = violations("let aaaa = 0\n\n\n\nlet bbb = 2\n")
         let verticalWhiteSpaceViolation = allViolations.first(where: { $0.ruleDescription.identifier == ruleID })
         if let violation = verticalWhiteSpaceViolation {
             XCTAssertEqual(violation.reason, "Limit vertical whitespace to a single empty line. Currently 3.")
+        } else {
+            XCTFail("A vertical white space violation should have been triggered!")
         }
     }
 }

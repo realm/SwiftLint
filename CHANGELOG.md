@@ -1,5 +1,10 @@
 ## Master
 
+##### New Rule
+* Hardcoded rules.  
+  [RishabhTayal](https://github.com/RishabhTayal)
+  [#1377](https://github.com/realm/SwiftLint/issues/issue_number)
+  
 ##### Breaking
 
 * Nested configurations will now be merged with parent configurations rather

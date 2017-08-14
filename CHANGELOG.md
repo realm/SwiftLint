@@ -1,9 +1,4 @@
 ## Master
-
-##### New Rule
-* Hardcoded rules.  
-  [RishabhTayal](https://github.com/RishabhTayal)
-  [#1377](https://github.com/realm/SwiftLint/issues/issue_number)
   
 ##### Breaking
 
@@ -14,6 +9,9 @@
   [#676](https://github.com/realm/SwiftLint/issues/676)
 
 ##### Enhancements
+* Add Hardcoded rules.   
+  [RishabhTayal](https://github.com/RishabhTayal)
+  [#1377](https://github.com/realm/SwiftLint/issues/1377)
 
 * Add `xctfail_message` rule to enforce XCTFail
   calls to include a description of the assertion.  

@@ -9,9 +9,9 @@
 import Foundation
 import SourceKittenFramework
 
-extension SyntaxKind {
+public extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
-    public var isCommentLike: Bool {
+    var isCommentLike: Bool {
         return [
             SyntaxKind.comment,
             .commentMark,
@@ -32,6 +32,7 @@ public struct TodoRule: ConfigurationProviderRule {
         identifier: "todo",
         name: "Todo",
         description: "TODOs and FIXMEs should be avoided.",
+        kind: .lint,
         nonTriggeringExamples: [
             "// notaTODO:\n",
             "// notaFIXME:\n"

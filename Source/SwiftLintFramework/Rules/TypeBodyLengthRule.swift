@@ -25,6 +25,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
         identifier: "type_body_length",
         name: "Type Body Length",
         description: "Type bodies should not span too many lines.",
+        kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap({ type in
             [
                 example(type, "let abc = 0\n", 199),
@@ -56,12 +57,12 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
                         startLine, endLine, parameter.value
                     )
                     if exceeds {
+                        let reason = "Type body should span \(configuration.warning) lines or less " +
+                            "excluding comments and whitespace: currently spans \(lineCount) lines"
                         return [StyleViolation(ruleDescription: type(of: self).description,
-                            severity: parameter.severity,
-                            location: Location(file: file, byteOffset: offset),
-                            reason: "Type body should span \(configuration.warning) lines or less " +
-                                "excluding comments and whitespace: currently spans \(lineCount) " +
-                                "lines")]
+                                               severity: parameter.severity,
+                                               location: Location(file: file, byteOffset: offset),
+                                               reason: reason)]
                     }
                 }
             }

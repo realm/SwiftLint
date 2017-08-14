@@ -18,6 +18,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
+        kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
         triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
         corrections: NumberSeparatorRuleExamples.corrections

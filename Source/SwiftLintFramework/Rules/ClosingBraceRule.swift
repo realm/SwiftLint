@@ -9,10 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-private let whitespaceAndNewlineCharacterSet = CharacterSet.whitespacesAndNewlines
-
-extension File {
-    fileprivate func violatingClosingBraceRanges() -> [NSRange] {
+private extension File {
+    func violatingClosingBraceRanges() -> [NSRange] {
         return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
     }
 }
@@ -28,6 +26,7 @@ public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule {
         name: "Closing Brace Spacing",
         description: "Closing brace with closing parenthesis " +
                      "should not have any whitespaces in the middle.",
+        kind: .style,
         nonTriggeringExamples: [
             "[].map({ })",
             "[].map(\n  { }\n)"

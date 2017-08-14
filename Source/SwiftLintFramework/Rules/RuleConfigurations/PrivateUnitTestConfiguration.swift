@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
+public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
@@ -25,8 +25,19 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable {
         return "\(severity.rawValue): \(regex.pattern)"
     }
 
-    public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
+    internal var cacheDescription: String {
+        var dict = [String: Any]()
+        dict["identifier"] = identifier
+        dict["name"] = name
+        dict["message"] = message
+        dict["regex"] = regex.pattern
+        dict["included"] = included?.pattern
+        dict["severity"] = severityConfiguration.consoleDescription
+        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
+        }
+        fatalError("Could not serialize private unit test configuration for cache")
     }
 
     public init(identifier: String) {

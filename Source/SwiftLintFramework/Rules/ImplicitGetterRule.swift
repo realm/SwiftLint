@@ -22,6 +22,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
         identifier: "implicit_getter",
         name: "Implicit Getter",
         description: "Computed read-only properties should avoid using the get keyword.",
+        kind: .style,
         nonTriggeringExamples: [
             classScoped("var foo: Int {\n get {\n return 3\n}\n set {\n _abc = newValue \n}\n}"),
             classScoped("var foo: Int {\n return 20 \n} \n}"),
@@ -42,22 +43,35 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
             "    }\n" +
             "    return Bar().bar\n" +
             "  }\n" +
+            "}\n",
+            "var _objCTaggedPointerBits: UInt {\n" +
+            "   @inline(__always) get { return 0 }\n" +
+            "}\n",
+            "var next: Int? {\n" +
+            "   mutating get {\n" +
+            "       defer { self.count += 1 }\n" +
+            "       return self.count\n" +
+            "   }\n" +
             "}\n"
         ],
         triggeringExamples: [
             classScoped("var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
             classScoped("var foo: Int {\n ↓get{\n return 20 \n} \n} \n}"),
             classScoped("static var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"),
-            "var foo: Int {\n ↓get {\n return 20 \n} \n} \n}"
+            "var foo: Int {\n ↓get {\n return 20 \n} \n} \n}",
+            classScoped("@objc func bar() { }\nvar foo: Int {\n ↓get {\n return 20 \n} \n} \n}")
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\bget\\b"
+        let pattern = "\\{[^\\{]*?\\s+get\\b"
+        let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
         let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).flatMap { _, tokens in
-            guard tokens.count == 1, let token = tokens.first,
-                SyntaxKind(rawValue: token.type) == .keyword else {
-                return nil
+            let kinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
+            guard let token = tokens.last,
+                SyntaxKind(rawValue: token.type) == .keyword,
+                attributesKinds.intersection(kinds).isEmpty else {
+                    return nil
             }
 
             return token

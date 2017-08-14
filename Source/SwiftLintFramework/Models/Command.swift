@@ -30,12 +30,12 @@ private extension Scanner {
 }
 #endif
 
-public struct Command {
+public struct Command: Equatable {
     public enum Action: String {
         case enable
         case disable
 
-        fileprivate func inverse() -> Action {
+        internal func inverse() -> Action {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
@@ -53,7 +53,7 @@ public struct Command {
     internal let ruleIdentifiers: [String]
     internal let line: Int
     internal let character: Int?
-    private let modifier: Modifier?
+    internal let modifier: Modifier?
 
     public init(action: Action, ruleIdentifiers: [String], line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil) {
@@ -105,20 +105,30 @@ public struct Command {
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,
-                    character: Int.max)
+                        character: Int.max)
             ]
         }
     }
+}
+
+// MARK: Equatable
+
+public func == (lhs: Command, rhs: Command) -> Bool {
+    return lhs.action == rhs.action &&
+        lhs.ruleIdentifiers == rhs.ruleIdentifiers &&
+        lhs.line == rhs.line &&
+        lhs.character == rhs.character &&
+        lhs.modifier == rhs.modifier
 }

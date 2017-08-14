@@ -13,10 +13,10 @@ import Yams
 
 class YamlSwiftLintTests: XCTestCase {
 
-    func testFlattenYaml() {
+    func testFlattenYaml() throws {
         do {
-            guard let yamlDict = try Yams.load(yaml: getTestYaml()) as? [String: Any] else {
-                XCTFail()
+            guard let yamlDict = try Yams.load(yaml: try getTestYaml()) as? [String: Any] else {
+                XCTFail("Failed to load YAML from file")
                 return
             }
 
@@ -48,16 +48,7 @@ class YamlSwiftLintTests: XCTestCase {
         }
     }
 
-    private func getTestYaml() -> String {
-        // swiftlint:disable:next force_try
-        return try! String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
-    }
-}
-
-extension YamlSwiftLintTests {
-    static var allTests: [(String, (YamlSwiftLintTests) -> () throws -> Void)] {
-        return [
-            ("testFlattenYaml", testFlattenYaml)
-        ]
+    private func getTestYaml() throws -> String {
+        return try String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
     }
 }

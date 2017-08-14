@@ -16,6 +16,6 @@ struct VersionCommand: CommandProtocol {
 
     func run(_ options: NoOptions<CommandantError<()>>) -> Result<(), CommandantError<()>> {
         print(Version.current.value)
-        return .success()
+        return .success(())
     }
 }

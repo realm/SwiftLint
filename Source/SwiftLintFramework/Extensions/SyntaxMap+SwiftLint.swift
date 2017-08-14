@@ -33,4 +33,8 @@ extension SyntaxMap {
         }
         return Array(tokensBeginningIntersect)
     }
+
+    internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {
+        return tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
+    }
 }

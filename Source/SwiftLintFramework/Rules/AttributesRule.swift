@@ -27,6 +27,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
+        kind: .style,
         nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
         triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
@@ -155,7 +156,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
         let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return Set(allAttributes.flatMap { (token, hasParameter) -> String? in
+        return Set(allAttributes.flatMap { token, hasParameter -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
@@ -181,8 +182,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: location)
+                           severity: configuration.severityConfiguration.severity,
+                           location: location)
         ]
     }
 

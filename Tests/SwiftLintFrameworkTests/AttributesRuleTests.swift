@@ -18,25 +18,24 @@ class AttributesRuleTests: XCTestCase {
 
     func testAttributesWithAlwaysOnSameLine() {
         // Test with custom `always_on_same_line`
-        let alwaysOnSameLineDescription = RuleDescription(
-            identifier: AttributesRule.description.identifier,
-            name: AttributesRule.description.name,
-            description: AttributesRule.description.description,
-            nonTriggeringExamples: [
-                "@objc var x: String",
-                "@objc func foo()",
-                "@nonobjc\n func foo()",
-                "class Foo {\n" +
-                    "@objc private var object: RLMWeakObjectHandle?\n" +
-                    "@objc private var property: RLMProperty?\n" +
-                "}"
-            ],
-            triggeringExamples: [
-                "@objc\n ↓var x: String",
-                "@objc\n ↓func foo()",
-                "@nonobjc ↓func foo()"
-            ]
-        )
+        let nonTriggeringExamples = [
+            "@objc var x: String",
+            "@objc func foo()",
+            "@nonobjc\n func foo()",
+            "class Foo {\n" +
+                "@objc private var object: RLMWeakObjectHandle?\n" +
+                "@objc private var property: RLMProperty?\n" +
+            "}"
+        ]
+        let triggeringExamples = [
+            "@objc\n ↓var x: String",
+            "@objc\n ↓func foo()",
+            "@nonobjc ↓func foo()"
+        ]
+
+        let alwaysOnSameLineDescription = AttributesRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(alwaysOnSameLineDescription,
                    ruleConfiguration: ["always_on_same_line": ["@objc"]])
@@ -45,33 +44,22 @@ class AttributesRuleTests: XCTestCase {
 
     func testAttributesWithAlwaysOnLineAbove() {
         // Test with custom `always_on_line_above`
-        let alwaysOnNewLineDescription = RuleDescription(
-            identifier: AttributesRule.description.identifier,
-            name: AttributesRule.description.name,
-            description: AttributesRule.description.description,
-            nonTriggeringExamples: [
-                "@objc\n var x: String",
-                "@objc\n func foo()",
-                "@nonobjc\n func foo()"
-            ],
-            triggeringExamples: [
-                "@objc ↓var x: String",
-                "@objc ↓func foo()",
-                "@nonobjc ↓func foo()"
-            ]
-        )
+        let nonTriggeringExamples = [
+            "@objc\n var x: String",
+            "@objc\n func foo()",
+            "@nonobjc\n func foo()"
+        ]
+        let triggeringExamples = [
+            "@objc ↓var x: String",
+            "@objc ↓func foo()",
+            "@nonobjc ↓func foo()"
+        ]
+
+        let alwaysOnNewLineDescription = AttributesRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(alwaysOnNewLineDescription,
                    ruleConfiguration: ["always_on_line_above": ["@objc"]])
-    }
-}
-
-extension AttributesRuleTests {
-    static var allTests: [(String, (AttributesRuleTests) -> () throws -> Void)] {
-        return [
-            ("testAttributesWithDefaultConfiguration", testAttributesWithDefaultConfiguration),
-            ("testAttributesWithAlwaysOnSameLine", testAttributesWithAlwaysOnSameLine),
-            ("testAttributesWithAlwaysOnLineAbove", testAttributesWithAlwaysOnLineAbove)
-        ]
     }
 }

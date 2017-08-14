@@ -18,18 +18,22 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
         identifier: "explicit_top_level_acl",
         name: "Explicit Top Level ACL",
         description: "Top-level declarations should specify Access Control Level keywords explicitly.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "internal enum A {}\n",
             "public final class B {}\n",
             "private struct C {}\n",
             "internal enum A {\n enum B {}\n}",
             "internal final class Foo {}",
-            "internal\nclass Foo {}"
+            "internal\nclass Foo {}",
+            "internal func a() {}\n"
         ],
         triggeringExamples: [
             "enum A {}\n",
             "final class B {}\n",
-            "struct C {}\n"
+            "struct C {}\n",
+            "func a() {}\n",
+            "internal let a = 0\nfunc b() {}\n"
         ]
     )
 
@@ -48,14 +52,15 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
         }
 
         // find all "internal" tokens
-        let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin])
         let contents = file.contents.bridge()
+        let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin]).flatMap {
+            contents.NSRangeToByteRange(start: $0.location, length: $0.length)
+        }
 
         let violationOffsets = internalTypesOffsets.filter { typeOffset in
             // find the last "internal" token before the type
             guard let previousInternalByteRange = lastInternalByteRange(before: typeOffset,
-                                                                        in: allInternalRanges,
-                                                                        contents: contents) else {
+                                                                        in: allInternalRanges) else {
                 // didn't find a candidate token, so we are sure it's a violation
                 return true
             }
@@ -64,11 +69,9 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
             // attributeBuiltin (`final` for example) tokens between them
             let length = typeOffset - previousInternalByteRange.location
             let range = NSRange(location: previousInternalByteRange.location, length: length)
-            let internalBelongsToType = file.syntaxMap.tokens(inByteRange: range).filter {
-                SyntaxKind(rawValue: $0.type) != .attributeBuiltin
-            }.isEmpty
+            let internalDoesntBelongToType = Set(file.syntaxMap.kinds(inByteRange: range)) != [.attributeBuiltin]
 
-            return !internalBelongsToType
+            return internalDoesntBelongToType
         }
 
         return violationOffsets.map {
@@ -78,13 +81,8 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    private func lastInternalByteRange(before typeOffset: Int, in ranges: [NSRange],
-                                       contents: NSString) -> NSRange? {
-        let firstPartition = ranges.partitioned(by: { $0.location > typeOffset }).first
-        guard let range = firstPartition.last else {
-            return nil
-        }
-
-        return contents.NSRangeToByteRange(start: range.location, length: range.length)
+    private func lastInternalByteRange(before typeOffset: Int, in ranges: [NSRange]) -> NSRange? {
+        let firstPartition = ranges.prefix(while: { typeOffset > $0.location })
+        return firstPartition.last
     }
 }

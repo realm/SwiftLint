@@ -18,6 +18,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         identifier: "nimble_operator",
         name: "Nimble Operator",
         description: "Prefer Nimble operator overloads over free matcher functions.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "expect(seagull.squawk) != \"Hi!\"\n",
             "expect(\"Hi!\") == \"Hi!\"\n",
@@ -73,8 +74,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -124,11 +125,11 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 }
 
-extension String {
+private extension String {
     /// Returns corrected string if the correction is possible, otherwise returns nil.
-    fileprivate func replace(function name: NimbleOperatorRule.MatcherFunction,
-                             with operators: NimbleOperatorRule.Operators,
-                             in range: NSRange) -> String? {
+    func replace(function name: NimbleOperatorRule.MatcherFunction,
+                 with operators: NimbleOperatorRule.Operators,
+                 in range: NSRange) -> String? {
 
         let anything = "\\s*(.*?)\\s*"
 

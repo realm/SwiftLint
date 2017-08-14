@@ -37,7 +37,7 @@ class SourceKitCrashTests: XCTestCase {
         assertHandlerCalled = false
         _ = file.syntaxTokensByLines
         XCTAssertFalse(assertHandlerCalled,
-                      "Expects assert handler was not called on accessing File.syntaxTokensByLines")
+                       "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testAssertHandlerIsCalledOnFileThatCrashedSourceKitService() {
@@ -64,33 +64,18 @@ class SourceKitCrashTests: XCTestCase {
         assertHandlerCalled = false
         _ = file.syntaxTokensByLines
         XCTAssertTrue(assertHandlerCalled,
-                     "Expects assert handler was not called on accessing File.syntaxTokensByLines")
+                      "Expects assert handler was not called on accessing File.syntaxTokensByLines")
     }
 
     func testRulesWithFileThatCrashedSourceKitService() {
-        // swiftlint:disable:next force_unwrapping
         let file = File(path: #file)!
         file.sourcekitdFailed = true
         file.assertHandler = {
             XCTFail("If this called, rule's SourceKitFreeRule is not properly configured")
         }
-        // swiftlint:disable:next force_unwrapping
-        let configuration = Configuration(whitelistRules: allRuleIdentifiers)!
+        let configuration = Configuration(rulesMode: .whitelisted(allRuleIdentifiers))!
         _ = Linter(file: file, configuration: configuration).styleViolations
         file.sourcekitdFailed = false
         file.assertHandler = nil
-    }
-}
-
-extension SourceKitCrashTests {
-    static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] {
-        return [
-            ("testAssertHandlerIsNotCalledOnNormalFile",
-                testAssertHandlerIsNotCalledOnNormalFile),
-            ("testAssertHandlerIsCalledOnFileThatCrashedSourceKitService",
-                testAssertHandlerIsCalledOnFileThatCrashedSourceKitService),
-            ("testRulesWithFileThatCrashedSourceKitService",
-                testRulesWithFileThatCrashedSourceKitService)
-        ]
     }
 }

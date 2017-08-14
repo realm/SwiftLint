@@ -119,7 +119,7 @@ class LineLengthConfigurationTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertEqual(configuration.length, length2)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration with array")
         }
     }
 
@@ -164,7 +164,7 @@ class LineLengthConfigurationTests: XCTestCase {
             XCTAssertFalse(configuration.ignoresFunctionDeclarations)
             XCTAssertFalse(configuration.ignoresComments)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration with dictionary")
         }
     }
 
@@ -190,28 +190,5 @@ class LineLengthConfigurationTests: XCTestCase {
                                                      options: [.ignoreFunctionDeclarations,
                                                                .ignoreComments])
         XCTAssertTrue(configuration2 == configuration6)
-    }
-}
-
-extension LineLengthConfigurationTests {
-    static var allTests: [(String, (LineLengthConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testLineLengthConfigurationInitializerSetsLength",
-             testLineLengthConfigurationInitializerSetsLength),
-            ("testLineLengthConfigurationInitialiserSetsIgnoresURLs",
-             testLineLengthConfigurationInitialiserSetsIgnoresURLs),
-            ("testLineLengthConfigurationPartialParams",
-             testLineLengthConfigurationPartialParams),
-            ("testLineLengthConfigurationParams",
-             testLineLengthConfigurationParams),
-            ("testLineLengthConfigurationThrowsOnBadConfig",
-             testLineLengthConfigurationThrowsOnBadConfig),
-            ("testLineLengthConfigurationApplyConfigurationWithArray",
-             testLineLengthConfigurationApplyConfigurationWithArray),
-            ("testLineLengthConfigurationApplyConfigurationWithDictionary",
-             testLineLengthConfigurationApplyConfigurationWithDictionary),
-            ("testLineLengthConfigurationCompares",
-             testLineLengthConfigurationCompares)
-        ]
     }
 }

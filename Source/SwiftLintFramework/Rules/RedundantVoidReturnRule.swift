@@ -19,6 +19,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         identifier: "redundant_void_return",
         name: "Redundant Void Return",
         description: "Returning Void in a function declaration is redundant.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "func foo() {}\n",
             "func foo() -> Int {}\n",
@@ -26,7 +27,11 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             "func foo() -> VoidResponse\n",
             "let foo: Int -> Void\n",
             "func foo() -> Int -> () {}\n",
-            "let foo: Int -> ()\n"
+            "let foo: Int -> ()\n",
+            "func foo() -> ()?\n",
+            "func foo() -> ()!\n",
+            "func foo() -> Void?\n",
+            "func foo() -> Void!\n"
         ],
         triggeringExamples: [
             "func foo()↓ -> Void {}\n",
@@ -42,7 +47,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
         ]
     )
 
-    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))"
+    private let pattern = "\\s*->\\s*(?:Void\\b|\\(\\s*\\))(?![?!])"
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {

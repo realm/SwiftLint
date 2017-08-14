@@ -9,8 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
-extension File {
-    fileprivate func violatingRedundantNilCoalescingRanges() -> [NSRange] {
+private extension File {
+    func violatingRedundantNilCoalescingRanges() -> [NSRange] {
         // {whitespace} ?? {whitespace} nil {word boundary}
         return match(pattern: "\\s?\\?{2}\\s*nil\\b", with: [.keyword])
     }
@@ -27,6 +27,7 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
         name: "Redundant Nil Coalescing",
         description: "nil coalescing operator is only evaluated if the lhs is nil" +
             ", coalescing operator with nil as rhs is redundant",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "var myVar: Int?; myVar ?? 0\n"
         ],
@@ -43,8 +44,8 @@ public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, Configurat
     public func validate(file: File) -> [StyleViolation] {
         return file.violatingRedundantNilCoalescingRanges().map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

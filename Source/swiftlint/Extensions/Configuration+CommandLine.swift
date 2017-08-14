@@ -121,8 +121,11 @@ extension Configuration {
     // MARK: Lint Command
 
     init(options: LintOptions) {
-        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet,
-                  enableAllRules: options.enableAllRules)
+        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+                  optional: optional, quiet: options.quiet,
+                  enableAllRules: options.enableAllRules, cachePath: cachePath)
     }
 
     func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
@@ -135,6 +138,16 @@ extension Configuration {
     // MARK: AutoCorrect Command
 
     init(options: AutoCorrectOptions) {
-        self.init(commandLinePath: options.configurationFile, rootPath: options.path, quiet: options.quiet)
+        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+                  optional: optional, quiet: options.quiet, cachePath: cachePath)
+    }
+
+    // MARK: Rules command
+
+    init(options: RulesOptions) {
+        let optional = !CommandLine.arguments.contains("--config")
+        self.init(path: options.configurationFile, optional: optional)
     }
 }

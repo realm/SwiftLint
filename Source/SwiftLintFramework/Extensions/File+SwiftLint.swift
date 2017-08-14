@@ -32,22 +32,40 @@ extension File {
             }
             let start = Location(file: path, line: command.line, character: command.character)
             let end = endOf(next: nextCommand)
-            regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
+            guard start < end else { continue }
+            var didSetRegion = false
+            for (index, region) in zip(regions.indices, regions) where region.start == start && region.end == end {
+                regions[index] = Region(start: start, end: end,
+                                        disabledRuleIdentifiers: disabledRules.union(region.disabledRuleIdentifiers))
+                didSetRegion = true
+            }
+            if !didSetRegion {
+                regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
+            }
         }
         return regions
     }
 
-    fileprivate func commands() -> [Command] {
+    internal func commands() -> [Command] {
         if sourcekitdFailed {
             return []
         }
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment]).flatMap { range in
+        return skipShebangCommands() + match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
+    }
+
+    private func skipShebangCommands() -> [Command] {
+        guard contents.hasPrefix("#!") else {
+            return []
+        }
+
+        return Command(action: .disable, ruleIdentifiers: masterRuleList.allValidIdentifiers(),
+                       line: 0, modifier: .next).expand()
     }
 
     fileprivate func endOf(next command: Command?) -> Location {
@@ -235,6 +253,7 @@ extension File {
             fatalError("can't write file to \(path)")
         }
         contents = string
+        invalidateCache()
         lines = contents.bridge().lines()
     }
 
@@ -242,9 +261,9 @@ extension File {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
-            let region = fileRegions.first(where: {
+            let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
-            })
+            }
             return region?.isRuleEnabled(rule) ?? true
         }
         return violatingRanges
@@ -295,4 +314,13 @@ extension File {
         return corrections
     }
 
+    internal func isACL(token: SyntaxToken) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+            return false
+        }
+
+        let aclString = contents.bridge().substringWithByteRange(start: token.offset,
+                                                                 length: token.length)
+        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
+    }
 }

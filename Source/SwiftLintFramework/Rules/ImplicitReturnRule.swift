@@ -18,6 +18,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         identifier: "implicit_return",
         name: "Implicit Return",
         description: "Prefer implicit returns in closures.",
+        kind: .style,
         nonTriggeringExamples: [
             "foo.map { $0 + 1 }",
             "foo.map({ $0 + 1 })",
@@ -78,7 +79,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
                     return nil
             }
 
-            return result.rangeAt(1)
+            return result.range(at: 1)
         }
     }
 }

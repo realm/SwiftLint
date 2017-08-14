@@ -9,7 +9,7 @@
 import Foundation
 
 public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
-    var defaultIncluded = [
+    private let defaultIncluded = [
         //NSObject
         "awakeFromNib()",
         "prepareForInterfaceBuilder()",

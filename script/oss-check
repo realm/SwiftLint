@@ -6,6 +6,33 @@
 
 require 'fileutils'
 require 'open3'
+require 'optparse'
+
+################################
+# Options
+################################
+
+@options = {
+  branch: 'HEAD',
+  iterations: 5,
+  skip_clean: false,
+  verbose: false
+}
+
+OptionParser.new do |opts|
+  opts.on('--branch BRANCH', "compares the performance of BRANCH against 'master'") do |branch|
+    @options[:branch] = branch
+  end
+  opts.on('--iterations N', Integer, 'iterates lint N times on each repositories') do |iterations|
+    @options[:iterations] = iterations
+  end
+  opts.on('--skip-clean', 'skip cleaning on completion') do |skip_clean|
+    @options[:skip_clean] = skip_clean
+  end
+  opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
+    @options[:verbose] = v
+  end
+end.parse!
 
 ################################
 # Classes
@@ -64,20 +91,28 @@ def fail(str)
   exit
 end
 
+def perform(*args)
+  commands = args
+  if @options[:verbose]
+    commands.each do |x|
+      puts(x)
+      system(x)
+    end
+  else
+    commands.each { |x| `#{x}` }
+  end
+end
+
 def validate_state_to_run
-  repo_clean = `git status --porcelain`.empty?
-
-  fail 'git repo needs to be clean to run oss-check. Aborting.' unless repo_clean
-
-  if `git symbolic-ref HEAD --short`.strip == 'master'
-    fail "can't run osscheck from 'master' as the script compares " \
+  if `git symbolic-ref HEAD --short`.strip == 'master' && @options[:branch] == 'HEAD'
+    fail "can't run osscheck without '--branch' option from 'master' as the script compares " \
          "the performance of this branch against 'master'"
   end
 end
 
 def make_directory_structure
-  ["#{@working_dir}/branch_reports", "#{@working_dir}/master_reports"].each do |dir|
-    FileUtils.mkdir_p(dir)
+  ['branch_reports', 'master_reports'].each do |dir|
+    FileUtils.mkdir_p("#{@working_dir}/#{dir}")
   end
 end
 
@@ -96,7 +131,7 @@ def setup_repos
   @repos.each do |repo|
     dir = "#{@working_dir}/#{repo.name}"
     puts "Cloning #{repo}"
-    `git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null`
+    perform("git clone #{repo.git_url} --depth 1 #{dir} 2> /dev/null")
     if repo.name == 'Swift'
       File.open("#{dir}/.swiftlint.yml", 'w') do |file|
         file << 'included: stdlib'
@@ -111,14 +146,17 @@ end
 def generate_reports(branch)
   @repos.each do |repo|
     Dir.chdir("#{@working_dir}/#{repo.name}") do
-      iterations = 5
+      iterations = @options[:iterations]
       print "Linting #{iterations} iterations of #{repo} with #{branch}: 1"
       durations = []
       start = Time.now
-      command = '../../.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
+      command = '../builds/.build/release/swiftlint lint --no-cache --enable-all-rules --reporter xcode'
       File.open("../#{branch}_reports/#{repo}.txt", 'w') do |file|
+        puts "\n#{command}" if @options[:verbose]
         Open3.popen3(command) do |_, stdout, _, wait_thr|
-          file << stdout.read.chomp
+          while line = stdout.gets
+            file.puts line
+          end
           if branch == 'branch'
             repo.branch_exit_value = wait_thr.value
           else
@@ -130,6 +168,7 @@ def generate_reports(branch)
       for i in 2..iterations
         print "..#{i}"
         start = Time.now
+        puts command if @options[:verbose]
         Open3.popen3(command) { |_, stdout, _, _| stdout.read }
         durations << Time.now - start
       end
@@ -145,17 +184,27 @@ def generate_reports(branch)
 end
 
 def build(branch)
-  `git fetch && git checkout origin/master` if branch == 'master'
-
-  build_command = 'swift build -c release'
-
   puts "Building #{branch}"
-  `#{build_command}`
+
+  dir = "#{@working_dir}/builds"
+  target = branch == 'master' ? @effective_master_commitish : @options[:branch]
+  if File.directory?(dir)
+    perform("cd #{dir}; git checkout #{target}")
+  else
+    perform("git fetch && git worktree add --detach #{dir} #{target}")
+  end
+
+  build_command = "cd #{dir}; swift build -c release"
+
+  perform(build_command)
   return if $?.success?
 
   # Couldn't build, start fresh
-  FileUtils.rm_rf %w[Packages .build]
+  Dir.chdir(dir) do
+    FileUtils.rm_rf %w[Packages .build]
+  end
   return_value = nil
+  puts build_command if @options[:verbose]
   Open3.popen3(build_command) do |_, stdout, _, wait_thr|
     puts stdout.read.chomp
     return_value = wait_thr.value
@@ -187,10 +236,13 @@ def diff_and_report_changes_to_danger
   end
 end
 
+def fetch_origin
+  perform('git fetch origin')
+end
+
 def clean_up
-  `git reset --hard HEAD`
   FileUtils.rm_rf(@working_dir)
-  `git checkout -`
+  perform('git worktree prune')
 end
 
 ################################
@@ -219,9 +271,12 @@ $stdout.sync = true
 validate_state_to_run
 setup_repos
 make_directory_structure
+fetch_origin
+
+@effective_master_commitish = `git merge-base origin/master #{@options[:branch]}`
 
 # Build & generate reports for branch & master
-['branch', 'master'].each do |branch|
+%w[branch master].each do |branch|
   build(branch)
   generate_reports(branch)
 end
@@ -230,4 +285,4 @@ end
 diff_and_report_changes_to_danger
 
 # Clean up
-clean_up
+clean_up unless @options[:skip_clean]

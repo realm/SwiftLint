@@ -18,6 +18,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         identifier: "class_delegate_protocol",
         name: "Class Delegate Protocol",
         description: "Delegate protocols should be class-only so they can be weakly referenced.",
+        kind: .lint,
         nonTriggeringExamples: [
             "protocol FooDelegate: class {}\n",
             "protocol FooDelegate: class, BarDelegate {}\n",

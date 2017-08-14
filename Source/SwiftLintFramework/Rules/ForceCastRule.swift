@@ -18,6 +18,7 @@ public struct ForceCastRule: ConfigurationProviderRule {
         identifier: "force_cast",
         name: "Force Cast",
         description: "Force casts should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "NSNumber() as? Int\n"
         ],
@@ -27,8 +28,8 @@ public struct ForceCastRule: ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         return file.match(pattern: "as!", with: [.keyword]).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 }

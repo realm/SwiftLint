@@ -28,6 +28,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         identifier: "large_tuple",
         name: "Large Tuple",
         description: "Tuples shouldn't have too many members. Create a custom type instead.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "let foo: (Int, Int)\n",
             "let foo: (start: Int, end: Int)\n",
@@ -39,6 +40,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo() throws -> (Int, Int)\n",
             "func foo() throws -> (Int, Int) {}\n",
             "let foo: (Int, Int, Int) -> Void\n",
+            "let foo: (Int, Int, Int) throws -> Void\n",
+            "func foo(bar: (Int, String, Float) -> Void)\n",
+            "func foo(bar: (Int, String, Float) throws -> Void)\n",
             "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!\n",
             "func getDictionaryAndInt() -> (Dictionary<Int, String>, Int)?\n",
             "func getGenericTypeAndInt() -> (Type<Int, String, Float>, Int)?\n"
@@ -101,7 +105,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         }
 
         let offsets = violationOffsets(for: returnSubstring, initialOffset: returnRange.location)
-        return offsets.sorted(by: { $0.offset < $1.offset })
+        return offsets.sorted { $0.offset < $1.offset }
     }
 
     private func violationOffsets(for text: String, initialOffset: Int = 0) -> [(offset: Int, size: Int)] {
@@ -202,7 +206,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\A\\s*->")
+        let arrowRegex = regex("\\A(?:\\s*throws)?\\s*->")
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
 

@@ -19,6 +19,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         identifier: "legacy_constructor",
         name: "Legacy Constructor",
         description: "Swift constructors are preferred over legacy convenience functions.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "CGPoint(x: 10, y: 10)",
             "CGPoint(x: xValue, y: yValue)",
@@ -106,8 +107,8 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
 
         return file.match(pattern: pattern, with: [.identifier]).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 

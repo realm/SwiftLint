@@ -11,6 +11,7 @@ import SourceKittenFramework
 
 public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
+
     private static let supportedTypes = ValidIBInspectableRule.createSupportedTypes()
 
     public init() {}
@@ -20,6 +21,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         name: "Valid IBInspectable",
         description: "@IBInspectable should be applied to variables only, have its type explicit " +
             "and be of a supported type",
+        kind: .lint,
         nonTriggeringExamples: [
             "class Foo {\n  @IBInspectable private var x: Int\n}\n",
             "class Foo {\n  @IBInspectable private var x: String?\n}\n",
@@ -115,7 +117,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
             "NSRect"
         ]
 
-        let intTypes = ["", "8", "16", "32", "64"].flatMap { size in
+        let intTypes: [String] = ["", "8", "16", "32", "64"].flatMap { size in
             ["U", ""].flatMap { (sign: String) -> String in
                 "\(sign)Int\(size)"
             }

@@ -1,5 +1,5 @@
 //
-//  ConditionalReturnsOnNewline.swift
+//  ConditionalReturnsOnNewlineRule.swift
 //  SwiftLint
 //
 //  Created by Rohan Dhaimade on 12/8/16.
@@ -9,8 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptInRule {
-    public let configurationDescription = "N/A"
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -19,6 +18,7 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
         identifier: "conditional_returns_on_newline",
         name: "Conditional Returns on Newline",
         description: "Conditional statements should always return on the next line",
+        kind: .style,
         nonTriggeringExamples: [
             "guard true else {\n return true\n}",
             "guard true,\n let x = true else {\n return true\n}",
@@ -50,8 +50,8 @@ public struct ConditionalReturnsOnNewline: ConfigurationProviderRule, Rule, OptI
                 content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.0.location))
         }
     }
 

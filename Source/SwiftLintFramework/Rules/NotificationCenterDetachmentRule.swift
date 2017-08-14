@@ -18,6 +18,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         identifier: "notification_center_detachment",
         name: "Notification Center Detachment",
         description: "An object should only remove itself as an observer in `deinit`.",
+        kind: .lint,
         nonTriggeringExamples: NotificationCenterDetachmentRuleExamples.nonTriggeringExamples,
         triggeringExamples: NotificationCenterDetachmentRuleExamples.triggeringExamples
     )
@@ -35,7 +36,8 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
         }
     }
 
-    func violationOffsets(file: File, dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func violationOffsets(file: File,
+                                  dictionary: [String: SourceKitRepresentable]) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
             guard let kindString = subDict.kind,
                 let kind = SwiftExpressionKind(rawValue: kindString) else {

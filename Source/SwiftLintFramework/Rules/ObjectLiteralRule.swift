@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
 
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ObjectLiteralConfiguration()
 
     public init() {}
 
@@ -19,6 +19,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         identifier: "object_literal",
         name: "Object Literal",
         description: "Prefer object literals over image and color inits.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "let image = #imageLiteral(resourceName: \"image.jpg\")",
             "let color = #colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)",
@@ -45,14 +46,14 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .call,
             let offset = dictionary.offset,
-            isImageNamedInit(dictionary: dictionary, file: file) ||
-                isColorInit(dictionary: dictionary, file: file) else {
+            (configuration.imageLiteral && isImageNamedInit(dictionary: dictionary, file: file)) ||
+                (configuration.colorLiteral && isColorInit(dictionary: dictionary, file: file)) else {
             return []
         }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }
@@ -107,6 +108,6 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
 
         let range = NSRange(location: offset, length: length)
-        return Set(file.syntaxMap.tokens(inByteRange: range).flatMap({ SyntaxKind(rawValue: $0.type) }))
+        return Set(file.syntaxMap.kinds(inByteRange: range))
     }
 }

@@ -22,6 +22,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
+        kind: .metrics,
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",
@@ -69,18 +70,19 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 strippedString = strippedString.strippingURLs
             }
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#colorLiteral")
+                                           withDelimiter: "#colorLiteral")
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#imageLiteral")
+                                           withDelimiter: "#imageLiteral")
 
             let length = strippedString.characters.count
 
             for param in configuration.params where length > param.value {
+                let reason = "Line should be \(configuration.length.warning) characters or less: " +
+                             "currently \(length) characters"
                 return StyleViolation(ruleDescription: type(of: self).description,
-                    severity: param.severity,
-                    location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.length.warning) characters or less: " +
-                        "currently \(length) characters")
+                                      severity: param.severity,
+                                      location: Location(file: file.path, line: line.index),
+                                      reason: reason)
             }
             return nil
         }

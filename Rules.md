@@ -67,6 +67,7 @@
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
+* [Quick Single Spec](#quick-single-spec)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -7900,6 +7901,50 @@ protocol Foo {
 protocol Foo {
  var bar: String { ↓set get }
  }
+```
+
+</details>
+
+
+
+## Quick Single Spec
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_single_spec` | Disabled | No | style
+
+Test files should contain a single QuickSpec class.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class FooTests {  }
+
+```
+
+```swift
+class FooTests: QuickSpec {  }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+↓class TotoTests: QuickSpec {  }
+
 ```
 
 </details>

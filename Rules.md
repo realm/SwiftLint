@@ -67,7 +67,6 @@
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
-* [Quick Single Spec](#quick-single-spec)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -75,6 +74,7 @@
 * [Redundant Void Return](#redundant-void-return)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
+* [Single Test Class](#single-test-class)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
@@ -7907,50 +7907,6 @@ protocol Foo {
 
 
 
-## Quick Single Spec
-
-Identifier | Enabled by default | Supports autocorrection | Kind 
---- | --- | --- | ---
-`quick_single_spec` | Disabled | No | style
-
-Test files should contain a single QuickSpec class.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-class FooTests {  }
-
-```
-
-```swift
-class FooTests: QuickSpec {  }
-
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-↓class FooTests: QuickSpec {  }
-↓class BarTests: QuickSpec {  }
-
-```
-
-```swift
-↓class FooTests: QuickSpec {  }
-↓class BarTests: QuickSpec {  }
-↓class TotoTests: QuickSpec {  }
-
-```
-
-</details>
-
-
-
 ## Redundant Discardable Let
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -8677,6 +8633,74 @@ n = n + i / outputLength
 
 ```swift
 n = n - i / outputLength
+```
+
+</details>
+
+
+
+## Single Test Class
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`single_test_class` | Disabled | No | style
+
+Test files should contain a single QuickSpec or XCTestCase class.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class FooTests {  }
+
+```
+
+```swift
+class FooTests: QuickSpec {  }
+
+```
+
+```swift
+class FooTests: XCTestCase {  }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+↓class TotoTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+↓class TotoTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+
 ```
 
 </details>

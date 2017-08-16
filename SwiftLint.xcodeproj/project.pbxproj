@@ -69,7 +69,7 @@
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
 		62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
 		626D02971F31CBCC0054788D /* XCTFailMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */; };
-		629C60D91F43906700B4AF92 /* QuickSingleSpecRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* QuickSingleSpecRule.swift */; };
+		629C60D91F43906700B4AF92 /* SingleTestClassRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */; };
 		62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */; };
 		62A6E7931F3317E3003A0479 /* JoinedDefaultRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */; };
 		67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */; };
@@ -378,7 +378,7 @@
 		6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRule.swift; sourceTree = "<group>"; };
 		62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRule.swift; sourceTree = "<group>"; };
 		626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTFailMessageRule.swift; sourceTree = "<group>"; };
-		629C60D81F43906700B4AF92 /* QuickSingleSpecRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickSingleSpecRule.swift; sourceTree = "<group>"; };
+		629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTestClassRule.swift; sourceTree = "<group>"; };
 		62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitConfiguration.swift; sourceTree = "<group>"; };
 		62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinedDefaultRule.swift; sourceTree = "<group>"; };
 		62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRuleTests.swift; sourceTree = "<group>"; };
@@ -998,7 +998,7 @@
 				B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */,
 				009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */,
 				D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */,
-				629C60D81F43906700B4AF92 /* QuickSingleSpecRule.swift */,
+				629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */,
 				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */,
@@ -1438,7 +1438,7 @@
 				D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */,
 				D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */,
 				D4DA1DF41E17511D0037413D /* CompilerProtocolInitRule.swift in Sources */,
-				629C60D91F43906700B4AF92 /* QuickSingleSpecRule.swift in Sources */,
+				629C60D91F43906700B4AF92 /* SingleTestClassRule.swift in Sources */,
 				621061BF1ED57E640082D51E /* MultilineParametersRuleExamples.swift in Sources */,
 				D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,

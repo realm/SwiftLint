@@ -388,7 +388,7 @@ extension RulesTests {
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),
         ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
-        ("testQuickSingleSpec", testQuickSingleSpec),
+        ("testSingleTestClass", testSingleTestClass),
         ("testRedundantDiscardableLet", testRedundantDiscardableLet),
         ("testRedundantNilCoalescing", testRedundantNilCoalescing),
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),

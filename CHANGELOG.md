@@ -31,8 +31,8 @@
   [Ryan Booker](https://github.com/ryanbooker)
   [#1761](https://github.com/realm/SwiftLint/issues/1761)
 
-* Add `quick_single_spec` opt-in rule to enforce test files
-  to contain a single QuickSpec classes.  
+* Add `single_test_class` opt-in rule to enforce test files
+  to contain a single QuickSpec or XCTestCase class.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1779](https://github.com/realm/SwiftLint/issues/1779)
 

@@ -237,8 +237,8 @@ class RulesTests: XCTestCase {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
     }
 
-    func testQuickSingleSpec() {
-        verifyRule(QuickSingleSpecRule.description)
+    func testSingleTestClass() {
+        verifyRule(SingleTestClassRule.description)
     }
 
     func testRedundantDiscardableLet() {

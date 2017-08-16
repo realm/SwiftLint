@@ -1,5 +1,5 @@
 //
-//  QuickInitializationRuleExamples.swift
+//  QuickDiscouragedCallRuleExamples.swift
 //  SwiftLint
 //
 //  Created by Ornithologist Coder on 8/11/17.

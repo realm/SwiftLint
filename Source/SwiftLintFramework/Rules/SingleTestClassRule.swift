@@ -12,8 +12,6 @@ import SourceKittenFramework
 public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
-    public init() {}
-
     public static let description = RuleDescription(
         identifier: "single_test_class",
         name: "Single Test Class",
@@ -34,35 +32,33 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
         ]
     )
 
+    private let testClasses = ["QuickSpec", "XCTestCase"]
+
+    public init() {}
+
     public func validate(file: File) -> [StyleViolation] {
         let classes = testClasses(in: file)
 
         guard classes.count > 1 else { return [] }
 
-        return classes.flatMap(toViolation(in: file, configuration: configuration, numberOfSpecs: classes.count))
-    }
-
-    // MARK: - Private
-
-    private func testClasses(in file: File) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter {
-            !$0.inheritedTypes.filter { testClasses().contains($0) }.isEmpty
-        }
-    }
-
-    private func toViolation(in file: File,
-                             configuration: SeverityConfiguration,
-                             numberOfSpecs: Int) -> ([String: SourceKitRepresentable]) -> StyleViolation? {
-        return { dictionary in
+        return classes.flatMap { dictionary in
             guard let offset = dictionary.offset else { return nil }
+
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
                                   location: Location(file: file, byteOffset: offset),
-                                  reason: "\(numberOfSpecs) test classes found in this file.")
+                                  reason: "\(classes.count) test classes found in this file.")
         }
     }
 
-    private func testClasses() -> [String] {
-        return ["QuickSpec", "XCTestCase"]
+    private func testClasses(in file: File) -> [[String: SourceKitRepresentable]] {
+        return file.structure.dictionary.substructure.filter { dictionary in
+            guard
+                let kind = dictionary.kind,
+                SwiftDeclarationKind(rawValue: kind) == .class
+                else { return false }
+
+            return !dictionary.inheritedTypes.filter { testClasses.contains($0) }.isEmpty
+        }
     }
 }

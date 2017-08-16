@@ -8223,6 +8223,26 @@ let foo: Int -> ()
 
 ```
 
+```swift
+func foo() -> ()?
+
+```
+
+```swift
+func foo() -> ()!
+
+```
+
+```swift
+func foo() -> Void?
+
+```
+
+```swift
+func foo() -> Void!
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

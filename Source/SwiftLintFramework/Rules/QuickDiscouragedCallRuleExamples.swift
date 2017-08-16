@@ -112,36 +112,36 @@ internal struct QuickDiscouragedCallRuleExamples {
         "       }\n" +
         "   }\n" +
         "}\n",
-        "class TotoTests: QuickSpec\n" +
-        "   override func spec()\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
         "       context(\"foo\") {\n" +
         "           let foo = ↓Foo()\n" +
         "       }\n" +
         "   }\n" +
         "}\n",
-        "class TotoTests: QuickSpec\n" +
-        "   override func spec()\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
         "       sharedExamples(\"foo\") {\n" +
         "           let foo = ↓Foo()\n" +
         "       }\n" +
         "   }\n" +
         "}\n",
-        "class TotoTests: QuickSpec\n" +
-        "   override func spec()\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
         "       describe(\"foo\") {\n" +
         "           ↓foo()\n" +
         "       }\n" +
         "   }\n" +
         "}\n",
-        "class TotoTests: QuickSpec\n" +
-        "   override func spec()\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
         "       context(\"foo\") {\n" +
         "           ↓foo()\n" +
         "       }\n" +
         "   }\n" +
         "}\n",
-        "class TotoTests: QuickSpec\n" +
-        "   override func spec()\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
         "       sharedExamples(\"foo\") {\n" +
         "           ↓foo()\n" +
         "       }\n" +

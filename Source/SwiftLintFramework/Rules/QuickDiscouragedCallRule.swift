@@ -9,8 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-// swiftlint:disable identifier_name
-
 public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -20,7 +18,7 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
         identifier: "quick_discouraged_call",
         name: "Quick Discouraged Call",
         description: "Discouraged call inside 'describe' and/or 'context' block.",
-        kind: .style,
+        kind: .lint,
         nonTriggeringExamples: QuickDiscouragedCallRuleExamples.nonTriggeringExamples,
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
@@ -33,14 +31,15 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
             kind == .call,
             let name = dictionary.name,
             let kindName = QuickCallKind(rawValue: name),
-            QuickCallKind.restrictiveKinds().contains(kindName)
+            QuickCallKind.restrictiveKinds.contains(kindName)
             else { return [] }
 
         return violationOffsets(in: dictionary.enclosedArguments)
             .map {
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
+                               location: Location(file: file, byteOffset: $0),
+                               reason: "Discouraged call inside a '\(name)' block.")
             }
     }
 
@@ -87,8 +86,7 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
     }
 }
 
-// MARK: - Private
-
+// swiftlint:disable identifier_name
 private enum QuickCallKind: String {
     case describe
     case context
@@ -101,7 +99,6 @@ private enum QuickCallKind: String {
     case it
     case pending
 
-    static func restrictiveKinds() -> [QuickCallKind] {
-        return [.describe, .context, .sharedExamples]
-    }
+    static let restrictiveKinds: [QuickCallKind] = [.describe, .context, .sharedExamples]
 }
+// swiftlint:enabled identifier_name

@@ -7912,7 +7912,7 @@ protocol Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`quick_discouraged_call` | Disabled | No | style
+`quick_discouraged_call` | Disabled | No | lint
 
 Discouraged call inside 'describe' and/or 'context' block.
 
@@ -8057,8 +8057,8 @@ class TotoTests: QuickSpec {
 ```
 
 ```swift
-class TotoTests: QuickSpec
-   override func spec()
+class TotoTests: QuickSpec {
+   override func spec() {
        context("foo") {
            let foo = ↓Foo()
        }
@@ -8068,8 +8068,8 @@ class TotoTests: QuickSpec
 ```
 
 ```swift
-class TotoTests: QuickSpec
-   override func spec()
+class TotoTests: QuickSpec {
+   override func spec() {
        sharedExamples("foo") {
            let foo = ↓Foo()
        }
@@ -8079,8 +8079,8 @@ class TotoTests: QuickSpec
 ```
 
 ```swift
-class TotoTests: QuickSpec
-   override func spec()
+class TotoTests: QuickSpec {
+   override func spec() {
        describe("foo") {
            ↓foo()
        }
@@ -8090,8 +8090,8 @@ class TotoTests: QuickSpec
 ```
 
 ```swift
-class TotoTests: QuickSpec
-   override func spec()
+class TotoTests: QuickSpec {
+   override func spec() {
        context("foo") {
            ↓foo()
        }
@@ -8101,8 +8101,8 @@ class TotoTests: QuickSpec
 ```
 
 ```swift
-class TotoTests: QuickSpec
-   override func spec()
+class TotoTests: QuickSpec {
+   override func spec() {
        sharedExamples("foo") {
            ↓foo()
        }

@@ -1,5 +1,5 @@
 //
-//  QuickSpecLimitRule.swift
+//  SingleTestClassRule.swift
 //  SwiftLint
 //
 //  Created by Ornithologist Coder on 8/15/17.
@@ -35,16 +35,16 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let specs = quickSpecs(in: file)
+        let classes = testClasses(in: file)
 
-        guard specs.count > 1 else { return [] }
+        guard classes.count > 1 else { return [] }
 
-        return specs.flatMap(toViolation(in: file, configuration: configuration, numberOfSpecs: specs.count))
+        return classes.flatMap(toViolation(in: file, configuration: configuration, numberOfSpecs: classes.count))
     }
 
     // MARK: - Private
 
-    private func quickSpecs(in file: File) -> [[String: SourceKitRepresentable]] {
+    private func testClasses(in file: File) -> [[String: SourceKitRepresentable]] {
         return file.structure.dictionary.substructure.filter {
             !$0.inheritedTypes.filter { testClasses().contains($0) }.isEmpty
         }

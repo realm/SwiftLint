@@ -29,7 +29,8 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
             "↓class FooTests: QuickSpec {  }\n↓class BarTests: QuickSpec {  }\n↓class TotoTests: QuickSpec {  }\n",
             "↓class FooTests: XCTestCase {  }\n↓class BarTests: XCTestCase {  }\n",
             "↓class FooTests: XCTestCase {  }\n↓class BarTests: XCTestCase {  }\n↓class TotoTests: XCTestCase {  }\n",
-            "↓class FooTests: QuickSpec {  }\n↓class BarTests: XCTestCase {  }\n"
+            "↓class FooTests: QuickSpec {  }\n↓class BarTests: XCTestCase {  }\n",
+            "↓class FooTests: QuickSpec {  }\n↓class BarTests: XCTestCase {  }\nclass TotoTests {  }\n"
         ]
     )
 

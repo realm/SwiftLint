@@ -8703,6 +8703,13 @@ class FooTests: XCTestCase {  }
 
 ```
 
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+class TotoTests {  }
+
+```
+
 </details>
 
 

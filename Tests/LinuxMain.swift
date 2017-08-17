@@ -395,6 +395,7 @@ extension RulesTests {
         ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),
         ("testShorthandOperator", testShorthandOperator),
+        ("testSingleTestClass", testSingleTestClass),
         ("testSortedImports", testSortedImports),
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),

@@ -82,23 +82,31 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
             return token
         }
 
-        let violatingTokens = getTokens.filter { token -> Bool in
+        let violatingLocations = getTokens.flatMap { token -> (Int, SwiftDeclarationKind?)? in
             // the last element is the deepest structure
             guard let dict = declarations(forByteOffset: token.offset, structure: file.structure).last else {
-                return false
+                return nil
             }
 
             // If there's a setter, `get` is allowed
-            return dict.setterAccessibility == nil
+            guard dict.setterAccessibility == nil else {
+                return nil
+            }
+
+            let kind = dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:))
+            return (token.offset, kind)
         }
 
-        return violatingTokens.map { token in
-            // Violation found!
-            let location = Location(file: file, byteOffset: token.offset)
+        return violatingLocations.map { offset, kind in
+            let reason = kind.map { kind -> String in
+                let kind = kind == .functionSubscript ? "subscripts" : "properties"
+                return "Computed read-only \(kind) should avoid using the get keyword."
+            }
 
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
-                                  location: location)
+                                  location: Location(file: file, byteOffset: offset),
+                                  reason: reason)
         }
     }
 

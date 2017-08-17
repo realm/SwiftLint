@@ -56,9 +56,8 @@ extension ConfigurationTests {
     }
 
     var projectMockConfig0: Configuration {
-        var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
-        configuration.rootPath = projectMockPathLevel0
-        return configuration
+        return Configuration(path: projectMockYAML0, rootPath: projectMockPathLevel0,
+                             optional: false, quiet: true)
     }
 
     var projectMockConfig0CustomPath: Configuration {

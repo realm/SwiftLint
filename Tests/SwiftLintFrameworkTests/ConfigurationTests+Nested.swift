@@ -94,4 +94,27 @@ extension ConfigurationTests {
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
+
+    func testDefaults() {
+        let root = Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel0,
+                                 defaults: projectMockDefaults)
+        let merged = root.configuration(for: File(path: projectMockSwift0)!)
+        XCTAssert(!merged.contains(rule: ColonRule.self)) // Default applied.
+        XCTAssert(merged.contains(rule: CommaRule.self)) // Default overridden.
+    }
+
+    func testOverrides() {
+        let root = Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel0,
+                                 overrides: projectMockOverrides)
+        let merged = root.configuration(for: File(path: projectMockSwift3)!)
+        XCTAssert(merged.contains(rule: ForceTryRule.self)) // Override applied.
+        XCTAssert(!merged.contains(rule: TodoRule.self)) // Unaffected not stomped.
+    }
+
+    func testIgnoreNested() {
+        let root = Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel0,
+                                 ignoreNested: true)
+        let merged = root.configuration(for: File(path: projectMockSwift3)!)
+        XCTAssert(merged.contains(rule: ForceTryRule.self)) // Nested ignored.
+    }
 }

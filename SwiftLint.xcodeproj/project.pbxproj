@@ -56,6 +56,8 @@
 		3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */; };
 		3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
 		3BDB224B1C345B4900473680 /* ProjectMock in Resources */ = {isa = PBXBuildFile; fileRef = 3BDB224A1C345B4900473680 /* ProjectMock */; };
+		3FA6DA941F341F0500522BD1 /* defaults.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3FA6DA921F341ED800522BD1 /* defaults.yml */; };
+		3FA6DA951F341F0500522BD1 /* overrides.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3FA6DA931F341ED800522BD1 /* overrides.yml */; };
 		47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */; };
 		47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */; };
 		47ACC89C1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */; };
@@ -364,6 +366,8 @@
 		3BCC04D31C502BAB006073C3 /* RuleConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleConfigurationTests.swift; sourceTree = "<group>"; };
 		3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YamlParser.swift; sourceTree = "<group>"; };
 		3BDB224A1C345B4900473680 /* ProjectMock */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProjectMock; sourceTree = "<group>"; };
+		3FA6DA921F341ED800522BD1 /* defaults.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = defaults.yml; sourceTree = "<group>"; };
+		3FA6DA931F341ED800522BD1 /* overrides.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = overrides.yml; sourceTree = "<group>"; };
 		47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfiguration.swift; sourceTree = "<group>"; };
 		47ACC8991E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalConfigurationTests.swift; sourceTree = "<group>"; };
 		47ACC89B1E7DCFA00088EEB2 /* ImplicitlyUnwrappedOptionalRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImplicitlyUnwrappedOptionalRuleTests.swift; sourceTree = "<group>"; };
@@ -631,6 +635,8 @@
 			isa = PBXGroup;
 			children = (
 				3B12C9BF1C3209AC000B423F /* test.yml */,
+				3FA6DA921F341ED800522BD1 /* defaults.yml */,
+				3FA6DA931F341ED800522BD1 /* overrides.yml */,
 				3BDB224A1C345B4900473680 /* ProjectMock */,
 				F9D73F021D0CF15E00222FC4 /* test.txt */,
 				B3935250C8E0DBACFB27E021 /* CannedHTMLReporterOutput.html */,
@@ -1233,6 +1239,8 @@
 			files = (
 				3B12C9C11C3209CB000B423F /* test.yml in Resources */,
 				F9D73F031D0CF15E00222FC4 /* test.txt in Resources */,
+				3FA6DA941F341F0500522BD1 /* defaults.yml in Resources */,
+				3FA6DA951F341F0500522BD1 /* overrides.yml in Resources */,
 				3BDB224B1C345B4900473680 /* ProjectMock in Resources */,
 				B3935797FF80C7F97953D375 /* CannedHTMLReporterOutput.html in Resources */,
 				B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */,

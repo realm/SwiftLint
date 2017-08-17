@@ -8,6 +8,11 @@
   [JP Simard](https://github.com/jpsim)
   [#676](https://github.com/realm/SwiftLint/issues/676)
 
+  * Several command line options allow interaction with the merging process.
+    (See `swiftlint help lint`.)  
+    [Jeremy David Giesbrecht](https://github.com/SDGGiesbrecht)
+    [##1693](https://github.com/realm/SwiftLint/issues/1693)
+
 ##### Enhancements
 
 * Add `xctfail_message` rule to enforce XCTFail

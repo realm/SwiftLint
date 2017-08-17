@@ -80,7 +80,10 @@ extension ConfigurationTests {
         ("testLevel3", testLevel3),
         ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
-        ("testNestedWhitelistedRules", testNestedWhitelistedRules)
+        ("testNestedWhitelistedRules", testNestedWhitelistedRules),
+        ("testDefaults", testDefaults),
+        ("testOverrides", testOverrides),
+        ("testIgnoreNested", testIgnoreNested)
     ]
 }
 

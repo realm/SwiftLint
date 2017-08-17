@@ -390,6 +390,7 @@ extension RulesTests {
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),
         ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
+        ("testSingleTestClass", testSingleTestClass),
         ("testRedundantDiscardableLet", testRedundantDiscardableLet),
         ("testRedundantNilCoalescing", testRedundantNilCoalescing),
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
@@ -397,7 +398,6 @@ extension RulesTests {
         ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),
         ("testShorthandOperator", testShorthandOperator),
-        ("testSingleTestClass", testSingleTestClass),
         ("testSortedImports", testSortedImports),
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),
@@ -463,7 +463,10 @@ extension UnusedOptionalBindingRuleTests {
 extension VerticalWhitespaceRuleTests {
     static var allTests: [(String, (VerticalWhitespaceRuleTests) -> () throws -> Void)] = [
         ("testVerticalWhitespaceWithDefaultConfiguration", testVerticalWhitespaceWithDefaultConfiguration),
-        ("testAttributesWithMaxEmptyLines", testAttributesWithMaxEmptyLines)
+        ("testAttributesWithMaxEmptyLines", testAttributesWithMaxEmptyLines),
+        ("testAutoCorrectionWithMaxEmptyLines", testAutoCorrectionWithMaxEmptyLines),
+        ("testViolationMessageWithMaxEmptyLines", testViolationMessageWithMaxEmptyLines),
+        ("testViolationMessageWithDefaultConfiguration", testViolationMessageWithDefaultConfiguration)
     ]
 }
 

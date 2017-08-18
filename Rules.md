@@ -79,6 +79,7 @@
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
+* [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
@@ -9135,6 +9136,16 @@ struct Inter {
 ```
 
 </details>
+
+
+
+## Superfluous Disable Command
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`superfluous_disable_command` | Enabled | No | lint
+
+SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
 
 
 

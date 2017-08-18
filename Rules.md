@@ -67,6 +67,7 @@
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
+* [Quick Discouraged Call](#quick-discouraged-call)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -7901,6 +7902,231 @@ protocol Foo {
 protocol Foo {
  var bar: String { ↓set get }
  }
+```
+
+</details>
+
+
+
+## Quick Discouraged Call
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_call` | Disabled | No | lint
+
+Discouraged call inside 'describe' and/or 'context' block.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           afterEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           describe("bar") {
+           }
+           context("bar") {
+           }
+           it("bar") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+          itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           it("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests {
+   override func spec() {
+       describe("foo") {
+           let foo = Foo()
+       }
+   }
+}
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               let foo = ↓Foo()
+           }
+           context("bar") {
+               let foo = ↓Foo()
+               ↓foo.bar()
+               it("does something") {
+                   let foo = Foo()
+                   foo.toto()
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               context("foo") {
+                   beforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+                   it("bar") {
+                   }
+                   context("foo") {
+                       let foo = ↓Foo()
+                   }
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           ↓foo()
+       }
+   }
+}
+
 ```
 
 </details>

@@ -18,8 +18,9 @@ private struct LintResult {
 
 private extension Rule {
     static func superfluousDisableCommandViolations(regions: [Region],
+                                                    superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
                                                     allViolations: [StyleViolation]) -> [StyleViolation] {
-        guard !regions.isEmpty else {
+        guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
         let allIDs = description.allIdentifiers
@@ -28,29 +29,27 @@ private extension Rule {
         }
 
         return regionsDisablingCurrentRule.flatMap { region -> StyleViolation? in
+            guard region.isRuleEnabled(superfluousDisableCommandRule) else {
+                return nil
+            }
+
             let noViolationsInDisabledRegion = !allViolations.contains { violation in
                 return region.contains(violation.location)
             }
             guard noViolationsInDisabledRegion else {
                 return nil
             }
-            let superfluousDisableCommandDescription = RuleDescription(
-                identifier: "superfluous_disable_command",
-                name: "Superfluous Disable Command",
-                description: "SwiftLint 'disable' commands are superfluous when the disabled rule would not have " +
-                             "triggered a violation in the disabled region.",
-                kind: .lint
-            )
+
             return StyleViolation(
-                ruleDescription: superfluousDisableCommandDescription,
-                severity: .error,
+                ruleDescription: type(of: superfluousDisableCommandRule).description,
+                severity: superfluousDisableCommandRule.configuration.severity,
                 location: region.start,
-                reason: "SwiftLint rule '\(description.identifier)' did not trigger a violation in the disabled " +
-                        "region. Please remove the disable command.")
+                reason: superfluousDisableCommandRule.reason(for: self))
         }
     }
 
-    func lint(file: File, regions: [Region], benchmark: Bool) -> LintResult? {
+    func lint(file: File, regions: [Region], benchmark: Bool,
+              superfluousDisableCommandRule: SuperfluousDisableCommandRule?) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }
@@ -76,6 +75,7 @@ private extension Rule {
 
         let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
             regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: [ruleID]) : regions,
+            superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations
         )
 
@@ -122,8 +122,12 @@ public struct Linter {
             queuedPrintError("Most rules will be skipped because sourcekitd has failed.")
         }
         let regions = file.regions()
+        let superfluousDisableCommandRule = rules.first(where: {
+            $0 is SuperfluousDisableCommandRule
+        }) as? SuperfluousDisableCommandRule
         let validationResults = rules.parallelFlatMap {
-            $0.lint(file: self.file, regions: regions, benchmark: benchmark)
+            $0.lint(file: self.file, regions: regions, benchmark: benchmark,
+                    superfluousDisableCommandRule: superfluousDisableCommandRule)
         }
         let violations = validationResults.flatMap { $0.violations }
         let ruleTimes = validationResults.flatMap { $0.ruleTime }

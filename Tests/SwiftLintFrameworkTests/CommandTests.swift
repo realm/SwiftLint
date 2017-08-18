@@ -231,4 +231,48 @@ class CommandTests: XCTestCase {
             "superfluous_disable_command"
         )
     }
+
+    func testSuperfluousDisableCommandsDisabled() {
+        XCTAssertEqual(
+            violations("// swiftlint:disable superfluous_disable_command nesting\nprint(123)\n"),
+            []
+        )
+        XCTAssertEqual(
+            violations("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n"),
+            []
+        )
+        XCTAssertEqual(
+            violations("print(123) // swiftlint:disable:this superfluous_disable_command nesting\n"),
+            []
+        )
+        XCTAssertEqual(
+            violations("print(123)\n// swiftlint:disable:previous superfluous_disable_command nesting\n"),
+            []
+        )
+    }
+
+    func testSuperfluousDisableCommandsDisabledOnConfiguration() {
+        let rulesMode = Configuration.RulesMode.default(disabled: ["superfluous_disable_command"], optIn: [])
+        guard let configuration = Configuration(rulesMode: rulesMode) else {
+            XCTFail("Failed to create configuration.")
+            return
+        }
+
+        XCTAssertEqual(
+            violations("// swiftlint:disable nesting\nprint(123)\n", config: configuration),
+            []
+        )
+        XCTAssertEqual(
+            violations("// swiftlint:disable:next nesting\nprint(123)\n", config: configuration),
+            []
+        )
+        XCTAssertEqual(
+            violations("print(123) // swiftlint:disable:this nesting\n", config: configuration),
+            []
+        )
+        XCTAssertEqual(
+            violations("print(123)\n// swiftlint:disable:previous nesting\n", config: configuration),
+            []
+        )
+    }
 }

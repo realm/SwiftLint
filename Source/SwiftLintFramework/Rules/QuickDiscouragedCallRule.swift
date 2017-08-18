@@ -32,6 +32,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
         let specDeclarations = testClasses.flatMap { classDict in
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
+                    $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
                     $0.enclosedSwiftAttributes.contains("source.decl.attribute.override")
             }
         }
@@ -54,9 +55,9 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
         }
     }
 
-    public func validate(file: File,
-                         kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validate(file: File,
+                          kind: SwiftExpressionKind,
+                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         // is it a call to a restricted method?
         guard
             kind == .call,

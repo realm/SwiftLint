@@ -69,6 +69,20 @@ internal struct QuickDiscouragedCallRuleExamples {
     ]
 
     static let triggeringExamples: [String]  = [
+        "class TotoTests {\n" +
+        "   override func spec() {\n" +
+        "       describe(\"foo\") {\n" +
+        "           let foo = Foo()\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n" +
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       describe(\"foo\") {\n" +
+        "           let foo = ↓Foo()\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
         "class TotoTests: QuickSpec {\n" +
         "   override func spec() {\n" +
         "       describe(\"foo\") {\n" +

@@ -26,12 +26,21 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        // is it a call to a restricted method?
         guard
-            fileContainsQuickSpec(file: file),
             kind == .call,
             let name = dictionary.name,
             let kindName = QuickCallKind(rawValue: name),
             QuickCallKind.restrictiveKinds.contains(kindName)
+            else { return [] }
+
+        // and is this call within the bounds of a QuickSpec calls?
+        guard
+            let callBounds = structureBounds(dictionary: dictionary),
+            !quickSpec(file: file)
+                .flatMap(structureBounds)
+                .filter(contains(offset: callBounds.offset))
+                .isEmpty
             else { return [] }
 
         return violationOffsets(in: dictionary.enclosedArguments)
@@ -40,16 +49,32 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: $0),
                                reason: "Discouraged call inside a '\(name)' block.")
-            }
+        }
     }
 
     // MARK: - Private
 
-    private func fileContainsQuickSpec(file: File) -> Bool {
-        return !file.structure.dictionary.substructure.filter { $0.inheritedTypes.contains("QuickSpec") }.isEmpty
+    typealias StructureBounds = (offset: Int, length: Int)
+    typealias ViolationOffset = Int
+
+    private func quickSpec(file: File) -> [[String: SourceKitRepresentable]] {
+        return file.structure.dictionary.substructure.filter { $0.inheritedTypes.contains("QuickSpec") }
     }
 
-    typealias ViolationOffset = Int
+    private func structureBounds(dictionary: [String: SourceKitRepresentable]) -> StructureBounds? {
+        guard
+            let offset = dictionary.offset,
+            let length = dictionary.length
+            else { return nil }
+
+        return StructureBounds(offset: offset, length: length)
+    }
+
+    private func contains(offset: Int) -> (StructureBounds) -> Bool {
+        return { structureBounds in
+            structureBounds.offset..<(structureBounds.offset + structureBounds.length) ~= offset
+        }
+    }
 
     private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [ViolationOffset] {
         return substructure.flatMap { dictionary -> [ViolationOffset] in

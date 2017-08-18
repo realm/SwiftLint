@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -23,6 +23,37 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
         triggeringExamples: QuickDiscouragedCallRuleExamples.triggeringExamples
     )
 
+    public func validate(file: File) -> [StyleViolation] {
+        let testClasses = file.structure.dictionary.substructure.filter {
+            return $0.inheritedTypes.contains("QuickSpec") &&
+                $0.kind.flatMap(SwiftDeclarationKind.init) == .class
+        }
+
+        let specDeclarations = testClasses.flatMap { classDict in
+            return classDict.substructure.filter {
+                return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
+                    $0.enclosedSwiftAttributes.contains("source.decl.attribute.override")
+            }
+        }
+
+        return specDeclarations.flatMap {
+            validate(file: file, dictionary: $0)
+        }
+    }
+
+    private func validate(file: File, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        return dictionary.substructure.flatMap { subDict -> [StyleViolation] in
+            var violations = validate(file: file, dictionary: subDict)
+
+            if let kindString = subDict.kind,
+                let kind = SwiftExpressionKind(rawValue: kindString) {
+                violations += validate(file: file, kind: kind, dictionary: subDict)
+            }
+
+            return violations
+        }
+    }
+
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -34,55 +65,21 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
             QuickCallKind.restrictiveKinds.contains(kindName)
             else { return [] }
 
-        // and is this call within the bounds of a QuickSpec calls?
-        guard
-            let callBounds = structureBounds(dictionary: dictionary),
-            !quickSpec(file: file)
-                .flatMap(structureBounds)
-                .filter(contains(offset: callBounds.offset))
-                .isEmpty
-            else { return [] }
-
-        return violationOffsets(in: dictionary.enclosedArguments)
-            .map {
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0),
-                               reason: "Discouraged call inside a '\(name)' block.")
-            }
-    }
-
-    // MARK: - Private
-
-    typealias StructureBounds = (offset: Int, length: Int)
-    typealias ViolationOffset = Int
-
-    private func quickSpec(file: File) -> [[String: SourceKitRepresentable]] {
-        return file.structure.dictionary.substructure.filter { $0.inheritedTypes.contains("QuickSpec") }
-    }
-
-    private func structureBounds(dictionary: [String: SourceKitRepresentable]) -> StructureBounds? {
-        guard
-            let offset = dictionary.offset,
-            let length = dictionary.length
-            else { return nil }
-
-        return StructureBounds(offset: offset, length: length)
-    }
-
-    private func contains(offset: Int) -> (StructureBounds) -> Bool {
-        return { structureBounds in
-            structureBounds.offset..<(structureBounds.offset + structureBounds.length) ~= offset
+        return violationOffsets(in: dictionary.enclosedArguments).map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: $0),
+                           reason: "Discouraged call inside a '\(name)' block.")
         }
     }
 
-    private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [ViolationOffset] {
-        return substructure.flatMap { dictionary -> [ViolationOffset] in
+    private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [Int] {
+        return substructure.flatMap { dictionary -> [Int] in
             return dictionary.substructure.flatMap(toViolationOffsets)
         }
     }
 
-    private func toViolationOffsets(dictionary: [String: SourceKitRepresentable]) -> [ViolationOffset] {
+    private func toViolationOffsets(dictionary: [String: SourceKitRepresentable]) -> [Int] {
         guard
             let kind = dictionary.kind,
             let offset = dictionary.offset
@@ -98,7 +95,7 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
         return dictionary.substructure.flatMap(toViolationOffset)
     }
 
-    private func toViolationOffset(dictionary: [String: SourceKitRepresentable]) -> ViolationOffset? {
+    private func toViolationOffset(dictionary: [String: SourceKitRepresentable]) -> Int? {
         guard
             let name = dictionary.name,
             let offset = dictionary.offset,
@@ -111,7 +108,6 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
     }
 }
 
-// swiftlint:disable identifier_name
 private enum QuickCallKind: String {
     case describe
     case context
@@ -121,9 +117,8 @@ private enum QuickCallKind: String {
     case beforeSuite
     case afterEach
     case afterSuite
-    case it
+    case it // swiftlint:disable:this identifier_name
     case pending
 
-    static let restrictiveKinds: [QuickCallKind] = [.describe, .context, .sharedExamples]
+    static let restrictiveKinds: Set<QuickCallKind> = [.describe, .context, .sharedExamples]
 }
-// swiftlint:enabled identifier_name

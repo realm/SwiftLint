@@ -8002,6 +8002,24 @@ class TotoTests: QuickSpec {
 <summary>Triggering Examples</summary>
 
 ```swift
+class TotoTests {
+   override func spec() {
+       describe("foo") {
+           let foo = Foo()
+       }
+   }
+}
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
 class TotoTests: QuickSpec {
    override func spec() {
        describe("foo") {

@@ -49,7 +49,7 @@ public struct QuickDiscouragedCallRule: ASTRule, OptInRule, ConfigurationProvide
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: $0),
                                reason: "Discouraged call inside a '\(name)' block.")
-        }
+            }
     }
 
     // MARK: - Private

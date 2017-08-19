@@ -2138,23 +2138,8 @@ enum Numbers: String {
 
 ```swift
 enum Numbers: String {
- case one = "one", two = "two"
-}
-
-```
-
-```swift
-enum Numbers: String {
  case one = "ONE"
  case two = "TWO"
-}
-
-```
-
-```swift
-enum Numbers: String {
- case one = "ONE"
- case two = "two"
 }
 
 ```

@@ -14,7 +14,7 @@ private let noNewLine = "(?!\\n)"
 private let twoOrMoreSpaces = "\\s{2,}"
 private let nonSpaceOrTwoOrMoreSpaces = "(?:\(nonSpace)|\(twoOrMoreSpaces))"
 private let comment = "//"
-private let endOfStatement = "[{}()?,:;]++\(noNewLine)"
+private let endOfStatement = "[{}(),:;?]++\(noNewLine)"
 
 public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
 
@@ -25,7 +25,7 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "inline_comment",
         name: "InlineComment",
-        description: "Inline comments should be in valid format.",
+        description: "Inline comments should be in valid format. There should only be one space on both sides of '//'",
         kind: .lint,
         nonTriggeringExamples: [
             "// Good\nfunc foo() {\n}",
@@ -35,48 +35,58 @@ public struct InlineCommentRule: ConfigurationProviderRule, OptInRule {
             "class Foo {var foo = [1, // Good\n2]\n}"
         ],
         triggeringExamples: [
-        "func foo() { ↓//Wrong\n}",
-        "func foo() { ↓//  Wrong\n}",
-        "func foo() {↓// Wrong\n}",
-        "func foo() {   ↓// Wrong\n}",
-        "class Foo {\nvar foo: Date?  ↓// Wrong\n}",
-        "class Foo {var foo = Date()↓// Wrong\n}",
-        "class Foo {var foo = [1, ↓//Wrong\n2]\n}"
+        "func foo() { ↓//Wrong 1\n}",
+        "func foo() { //   ↓ Wrong 2\n}",
+        "func foo() {↓// Wrong 3\n}",
+        "func foo() {   ↓// Wrong 4\n}",
+        "class Foo {\nvar foo: Date?  ↓// Wrong 5\n}",
+        "class Foo {var foo = Date()↓// Wrong 6\n}",
+        "class Foo {var foo = [1, ↓//Wrong 7\n2]\n}"
         ]
     )
 
     private let inlineStartPattern = "(?:\(endOfStatement)\(nonSpaceOrTwoOrMoreSpaces)\(comment))"
-    private let inlineEndPattern = "(?:\(endOfStatement)\\s{1}\(comment)\(nonSpaceOrTwoOrMoreSpaces))"
+    private let inlineEndNonSpacePattern = "(?:\(endOfStatement)\\s{1}\(comment)\(nonSpace))"
+    private let inlineEndTwoOrMoreSpacesPattern = "(?:\(endOfStatement)\\s{1}\(comment)\(twoOrMoreSpaces))"
 
-    private var pattern: String {
+    typealias InlinePattern = (pattern: String, offset: Int)
+
+    private var patterns: [InlinePattern] {
         return [
-            inlineStartPattern,
-            inlineEndPattern
-            ].joined(separator: "|")
+            (inlineStartPattern, 1),
+            (inlineEndNonSpacePattern, 1),
+            (inlineEndTwoOrMoreSpacesPattern, 0)
+            ]
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRanges(in: file, matching: pattern).map {
+        var violationsRange = [NSRange]()
+
+        patterns.forEach({ (arg: (pattern: String, offset: Int)) in
+            violationsRange.append(contentsOf: violationRanges(in: file, matching: arg.pattern, offset: arg.offset))
+        })
+
+        return violationsRange.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
         }
     }
 
-    private func violationRanges(in file: File, matching pattern: String) -> [NSRange] {
+    private func violationRanges(in file: File, matching pattern: String, offset: Int) -> [NSRange] {
         let nsstring = file.contents.bridge()
 
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
         }.flatMap { range, syntaxTokens in
-            let identifierRange = nsstring
-                .byteRangeToNSRange(start: syntaxTokens[0].offset + syntaxTokens[0].length, length: 0)
+                let identifierRange = nsstring
+                    .byteRangeToNSRange(start: syntaxTokens[0].offset + syntaxTokens[0].length, length: 0)
 
-            var commentStart = range
-            commentStart.location -= 1
-            commentStart.location += range.length - 2 // Sets the "pointer" right before the comment starts
+                var commentStart = range
+                commentStart.location -= 1
+                commentStart.location += range.length - offset // Sets the "pointer" where the comment starts
 
-            return identifierRange.map { NSUnionRange($0, commentStart) }
+                return identifierRange.map { NSUnionRange($0, commentStart) }
         }
     }
 }

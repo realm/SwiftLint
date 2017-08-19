@@ -22,6 +22,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit Associated Enum Value](#explicit-associated-enum-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
@@ -2082,6 +2083,111 @@ UIView.animateWithDuration(0.3, animations: {
 ```swift
 [1, 2].map↓(  ) { number in
  number + 1 
+}
+
+```
+
+</details>
+
+
+
+## Explicit Associated Enum Value
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_associated_enum_value` | Disabled | No | idiomatic
+
+Enums should be explicitly assigned their associated values.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Numbers {
+ case int(Int)
+ case short(Int16)
+}
+
+```
+
+```swift
+enum Numbers: Int {
+ case one = 1
+ case two = 2
+}
+
+```
+
+```swift
+enum Numbers: Double {
+ case one = 1.1
+ case two = 2.2
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "one"
+ case two = "two"
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "one", two = "two"
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "ONE"
+ case two = "TWO"
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "ONE"
+ case two = "two"
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Numbers: Int {
+ case one = 10, ↓two, three = 30
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one
+ case ↓two
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one, two = "two"
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one, ↓two
 }
 
 ```

@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct GroupingExtensionBanRule: Rule, OptInRule, ConfigurationProviderRule {
+public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

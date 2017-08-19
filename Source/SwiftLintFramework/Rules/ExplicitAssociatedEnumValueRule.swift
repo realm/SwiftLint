@@ -57,7 +57,7 @@ public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, Configuration
 
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .flatMap { substructureElements(of: $0, matching: .enumelement) }
-            .flatMap(enumElementsMissingInitExpr(_:))
+            .flatMap(enumElementsMissingInitExpr)
             .flatMap { $0.offset }
 
         return locs
@@ -66,7 +66,7 @@ public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, Configuration
     private func substructureElements(of dict: [String: SourceKitRepresentable],
                                       matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
         return dict.substructure
-            .filter { $0.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) == kind }
+            .filter { $0.kind.flatMap(SwiftDeclarationKind.init) == kind }
     }
 
     private func enumElementsMissingInitExpr(

@@ -40,11 +40,10 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
 
         return elements
             .filter { $0.kind == .extension && susceptibleNames.contains($0.name) }
-            .flatMap { $0.offset }
             .map {
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
-                               location: Location(file: file, byteOffset: $0))
+                               location: Location(file: file, byteOffset: $0.offset))
             }
     }
 

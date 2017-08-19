@@ -129,6 +129,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
+    func testGroupingExtensionBan() {
+        verifyRule(GroupingExtensionBanRule.description)
+    }
+
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }

@@ -45,6 +45,7 @@ public let masterRuleList = RuleList(rules: [
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
+    GroupingExtensionBanRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,

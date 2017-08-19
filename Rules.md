@@ -37,6 +37,7 @@
 * [Function Body Length](#function-body-length)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
+* [Grouping Extension Ban](#grouping-extension-ban)
 * [Identifier Name](#identifier-name)
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
@@ -4356,6 +4357,63 @@ enum Foo<↓TTTTTTTTTTTTTTTTTTTTT> {}
 
 ```swift
 enum Foo<↓type> {}
+
+```
+
+</details>
+
+
+
+## Grouping Extension Ban
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`grouping_extension_ban` | Disabled | No | idiomatic
+
+Extensions shouldn't be used to group code within the same source file.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+protocol Food {}
+extension Food {}
+
+```
+
+```swift
+class Apples {}
+extension Oranges {}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Fruit {}
+↓extension Fruit {}
+
+```
+
+```swift
+↓extension Tea: Error {}
+struct Tea {}
+
+```
+
+```swift
+class Ham { class Spam {}}
+↓extension Ham.Spam {}
+
+```
+
+```swift
+extension External { struct Gotcha {}}
+↓extension External.Gotcha {}
 
 ```
 

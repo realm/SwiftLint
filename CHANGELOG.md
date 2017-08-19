@@ -52,6 +52,10 @@
 
 * Invalidate cache when Swift version changes.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+* Add `explicit_associated_enum_value` opt-in rule to allow refactoring the
+  Swift API without breaking the API contract.  
+  [Mazyod](https://github.com/mazyod)
+  [#1778](https://github.com/realm/SwiftLint/issues/1778)
 
 ##### Bug Fixes
 

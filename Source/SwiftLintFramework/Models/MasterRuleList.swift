@@ -30,6 +30,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyEnumArgumentsRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
+    ExplicitAssociatedEnumValueRule.self,
     ExplicitInitRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,

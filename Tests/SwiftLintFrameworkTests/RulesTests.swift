@@ -80,6 +80,10 @@ class RulesTests: XCTestCase {
     func testEmptyParenthesesWithTrailingClosure() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
+    
+    func testExplicitAssociatedEnumValue() {
+        verifyRule(ExplicitAssociatedEnumValueRule.description)
+    }
 
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)

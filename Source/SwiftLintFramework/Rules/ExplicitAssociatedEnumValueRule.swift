@@ -24,9 +24,7 @@ public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, Configuration
             "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
             "enum Numbers: Double {\n case one = 1.1\n case two = 2.2\n}\n",
             "enum Numbers: String {\n case one = \"one\"\n case two = \"two\"\n}\n",
-            "enum Numbers: String {\n case one = \"one\", two = \"two\"\n}\n",
-            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"TWO\"\n}\n",
-            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"two\"\n}\n"
+            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"TWO\"\n}\n"
         ],
         triggeringExamples: [
             "enum Numbers: Int {\n case one = 10, ↓two, three = 30\n}\n",

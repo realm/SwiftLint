@@ -266,7 +266,7 @@ class LinterCacheTests: XCTestCase {
 
         // Change
         validateNewConfigDoesntHitCache(dict: ["opt_in_rules": ["empty_count"]], initialConfig: initialConfig)
-        // Aules addition
+        // Rules addition
         validateNewConfigDoesntHitCache(dict: ["opt_in_rules": ["attributes", "empty_count"]],
                                         initialConfig: initialConfig)
         // Removal
@@ -309,5 +309,21 @@ class LinterCacheTests: XCTestCase {
                                         initialConfig: initialConfig)
         // Removal
         validateNewConfigDoesntHitCache(dict: [:], initialConfig: initialConfig)
+    }
+
+    func testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted() {
+        let fileManager = TestFileManager()
+        cache = LinterCache(fileManager: fileManager, swiftVersion: .three)
+        let helper = makeCacheTestHelper(dict: [:])
+        let file = "foo.swift"
+        let violations = helper.makeViolations(file: file)
+
+        cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
+        let swift3Cache = cache
+
+        cache = LinterCache(fileManager: fileManager, swiftVersion: .four)
+
+        XCTAssertNotNil(swift3Cache.violations(forFile: file, configuration: helper.configuration))
+        XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
     }
 }

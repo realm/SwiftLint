@@ -10,6 +10,10 @@
 
 ##### Enhancements
 
+* Add `is_disjoint` rule to encourage using `Set.isDisjoint(with:)` over
+  `Set.intersection(_:).isEmpty`.  
+  [JP Simard](https://github.com/jpsim)
+
 * Add `xctfail_message` rule to enforce XCTFail
   calls to include a description of the assertion.  
   [Ornithologist Coder](https://github.com/ornithocoder)

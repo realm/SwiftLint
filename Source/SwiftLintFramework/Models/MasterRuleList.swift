@@ -87,6 +87,7 @@ public let masterRuleList = RuleList(rules: [
     SortedImportsRule.self,
     StatementPositionRule.self,
     StrictFilePrivateRule.self,
+    SuperfluousDisableCommandRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
     TodoRule.self,

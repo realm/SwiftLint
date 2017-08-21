@@ -53,19 +53,14 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             return []
         }
 
-        var violations = [StyleViolation]()
-        for (eachLastLine, eachSectionCount) in linesSections {
-            // Skips violations for areas where the rule is disabled
-            if !file.ruleEnabled(violatingRanges: [eachLastLine.range], for: self).isEmpty {
-                violations.append(StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file.path, line: eachLastLine.index),
-                    reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
-                ))
-            }
+        return linesSections.map { eachLastLine, eachSectionCount in
+            return StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: configuration.severityConfiguration.severity,
+                location: Location(file: file.path, line: eachLastLine.index),
+                reason: configuredDescriptionReason + " Currently \(eachSectionCount + 1)."
+            )
         }
-        return violations
     }
 
     private typealias LineSection = (lastLine: Line, linesToRemove: Int)

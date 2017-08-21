@@ -21,7 +21,7 @@ extension String {
 
 let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
-func violations(_ string: String, config: Configuration = Configuration()) -> [StyleViolation] {
+func violations(_ string: String, config: Configuration = Configuration()!) -> [StyleViolation] {
     File.clearCaches()
     let stringStrippingMarkers = string.replacingOccurrences(of: violationMarker, with: "")
     let file = File(contents: stringStrippingMarkers)
@@ -146,7 +146,6 @@ private func addShebang(_ string: String) -> String {
 }
 
 extension XCTestCase {
-    // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,

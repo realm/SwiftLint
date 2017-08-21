@@ -9,7 +9,6 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
     func testBlockBasedKVO() {
@@ -151,7 +150,8 @@ class RulesTests: XCTestCase {
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false, testShebang: false)
+        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testLegacyCGGeometryFunctions() {

@@ -45,7 +45,10 @@ extension CommandTests {
         ("testNoModifierCommandExpandsToItself", testNoModifierCommandExpandsToItself),
         ("testExpandPreviousCommand", testExpandPreviousCommand),
         ("testExpandThisCommand", testExpandThisCommand),
-        ("testExpandNextCommand", testExpandNextCommand)
+        ("testExpandNextCommand", testExpandNextCommand),
+        ("testSuperfluousDisableCommands", testSuperfluousDisableCommands),
+        ("testSuperfluousDisableCommandsDisabled", testSuperfluousDisableCommandsDisabled),
+        ("testSuperfluousDisableCommandsDisabledOnConfiguration", testSuperfluousDisableCommandsDisabledOnConfiguration)
     ]
 }
 

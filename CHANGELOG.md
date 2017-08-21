@@ -21,7 +21,7 @@
   [#1093](https://github.com/realm/SwiftLint/issues/1093)
   [#1757](https://github.com/realm/SwiftLint/issues/1757)
 
-* Files with extensions other than `.swift` can now be used as argument
+* Files with extensions other than `.swift` can now be used as arguments
   to `--file` when linting or autocorrecting.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1721](https://github.com/realm/SwiftLint/issues/1721)
@@ -31,10 +31,11 @@
   [Ryan Booker](https://github.com/ryanbooker)
   [#1761](https://github.com/realm/SwiftLint/issues/1761)
 
-* Add `single_test_class` opt-in rule to enforce test files
-  to contain a single QuickSpec or XCTestCase class.  
+* Add `single_test_class` opt-in rule to validate that test files
+  only contain a single `QuickSpec` or `XCTestCase` subclass.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1779](https://github.com/realm/SwiftLint/issues/1779)
+
 * Produce an error when a `// swiftlint:disable` command does not silence
   any violations.  
   [JP Simard](https://github.com/jpsim)
@@ -61,8 +62,8 @@
   [Hossam Ghareeb](https://github.com/hossamghareeb)
   [#1763](https://github.com/realm/SwiftLint/issues/1763)
 
-* Fix using wrong configuration when using `--path` and when there is
-  a configuration in a parent directory.  
+* Fix for the wrong configuration being used when using `--path` and a
+  configuration exists in a parent directory.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1744](https://github.com/realm/SwiftLint/issues/1744)
 

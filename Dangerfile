@@ -3,7 +3,7 @@ require 'open3'
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
-# Ensure a clean commits history
+# Ensure a clean commit history
 if git.commits.any? { |c| c.message =~ /^Merge branch '#{github.branch_for_base}'/ }
   fail('Please rebase to get rid of the merge commits in this PR')
 end

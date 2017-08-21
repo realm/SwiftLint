@@ -34,7 +34,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
         }
         for parameter in configuration.params {
             let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                startLine, endLine, parameter.value
+                startLine, endLine, parameter.value, inclusive: false
             )
             guard exceeds else { continue }
             return [StyleViolation(ruleDescription: type(of: self).description,

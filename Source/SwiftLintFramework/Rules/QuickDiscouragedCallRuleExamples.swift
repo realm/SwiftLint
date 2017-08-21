@@ -8,8 +8,6 @@
 
 import Foundation
 
-// swiftlint:disable type_body_length
-
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [String] = [
         "class TotoTests: QuickSpec {\n" +

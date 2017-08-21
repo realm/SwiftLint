@@ -13,7 +13,8 @@ private func example(_ type: String,
                      _ count: Int,
                      _ add: String = "") -> String {
     return "\(type) Abc {\n" +
-        repeatElement(template, count: count).joined() + "\(add)}\n"
+        repeatElement(template, count: count).joined() + "\(add)" +
+    "}"
 }
 
 public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
@@ -54,7 +55,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
             if let startLine = startLine?.line, let endLine = endLine?.line {
                 for parameter in configuration.params {
                     let (exceeds, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(
-                        startLine, endLine, parameter.value
+                        startLine, endLine, parameter.value, inclusive: false
                     )
                     if exceeds {
                         let reason = "Type body should span \(configuration.warning) lines or less " +

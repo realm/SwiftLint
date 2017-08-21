@@ -84,20 +84,16 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 Location(file: file, byteOffset: $0.offset)
             } ?? Location(file: file.path, line: 1)
             return [
-                StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: location
-                )
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severityConfiguration.severity,
+                               location: location)
             ]
         }
 
         return violationsOffsets.map {
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, characterOffset: $0)
-            )
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: $0))
         }
     }
 

@@ -92,12 +92,7 @@ extension Configuration {
             var filesAndConfigurations = [(File, Configuration)]()
             filesAndConfigurations.reserveCapacity(fileCount)
             for (config, files) in filesPerConfiguration {
-                let newConfig: Configuration
-                if cache != nil {
-                    newConfig = config.withPrecomputedCacheDescription()
-                } else {
-                    newConfig = config
-                }
+                let newConfig = cache != nil ? config.withPrecomputedCacheDescription() : config
                 filesAndConfigurations += files.map { ($0, newConfig) }
             }
             if parallel {

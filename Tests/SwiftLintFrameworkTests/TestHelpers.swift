@@ -183,18 +183,14 @@ extension XCTestCase {
 
         // Comment doesn't violate
         if !skipCommentTests {
-            XCTAssertEqual(
-                triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
-                commentDoesntViolate ? 0 : triggers.count
-            )
+            XCTAssertEqual(triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
+                           commentDoesntViolate ? 0 : triggers.count)
         }
 
         // String doesn't violate
         if !skipStringTests {
-            XCTAssertEqual(
-                triggers.flatMap({ violations($0.toStringLiteral(), config: config) }).count,
-                stringDoesntViolate ? 0 : triggers.count
-            )
+            XCTAssertEqual(triggers.flatMap({ violations($0.toStringLiteral(), config: config) }).count,
+                           stringDoesntViolate ? 0 : triggers.count)
         }
 
         let disableCommands: [String]
@@ -226,7 +222,6 @@ extension XCTestCase {
                 config.assertCorrection(expectedCleaned, expected: expectedCleaned)
             }
         }
-
     }
 
     private func verifyExamples(triggers: [String], nonTriggers: [String],

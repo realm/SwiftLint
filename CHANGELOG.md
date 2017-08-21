@@ -66,6 +66,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1744](https://github.com/realm/SwiftLint/issues/1744)
 
+* Fix false positive on `unused_enumerated` rule with complex variable
+  bindings.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1787](https://github.com/realm/SwiftLint/issues/1787)
+
 ## 0.21.0: Vintage Washboard
 
 ##### Breaking

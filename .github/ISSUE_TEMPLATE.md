@@ -7,8 +7,8 @@
 
 If this is a bug report, please ignore this section.
 
-If this is a new rule request, please ignore all sections below this one, label
-this issue as `rule-request` and describe:
+If this is a new rule request, please ignore all sections below this one, format
+this issue's title as `Rule Request: [Rule Name]` and describe:
 
 1. Why should this rule be added? Share links to existing discussion about what
    the community thinks about this.

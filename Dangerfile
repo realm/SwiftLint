@@ -67,7 +67,7 @@ file.unlink
 
 non_empty_lines(lines).each do |line|
   puts line
-  if line.start_with? 'Permanently added the RSA host key for IP address'
+  if line.include? 'Permanently added the RSA host key for IP address'
     # Don't report to Danger
   elsif line.start_with? 'Message:'
     message parse_line(line)

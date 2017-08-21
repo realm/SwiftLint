@@ -122,7 +122,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         if index >= kindsByLine.count {
             return false
         }
-        return !kinds.intersection(kindsByLine[index]).isEmpty
+        return !kinds.isDisjoint(with: kindsByLine[index])
     }
 
 }

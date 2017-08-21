@@ -201,7 +201,7 @@ private extension ColonRule {
             if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {
                 return false
             }
-            return Set(syntaxKinds).intersection(commentAndStringKindsSet).isEmpty
+            return Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)

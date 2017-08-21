@@ -25,7 +25,7 @@ private extension Rule {
         }
         let allIDs = description.allIdentifiers
         let regionsDisablingCurrentRule = regions.filter { region in
-            return !region.disabledRuleIdentifiers.intersection(allIDs).isEmpty
+            return !region.disabledRuleIdentifiers.isDisjoint(with: allIDs)
         }
 
         return regionsDisablingCurrentRule.flatMap { region -> StyleViolation? in

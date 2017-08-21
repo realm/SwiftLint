@@ -313,17 +313,18 @@ class LinterCacheTests: XCTestCase {
 
     func testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted() {
         let fileManager = TestFileManager()
-        cache = LinterCache(fileManager: fileManager, swiftVersion: .three)
+        cache = LinterCache(fileManager: fileManager)
         let helper = makeCacheTestHelper(dict: [:])
         let file = "foo.swift"
         let violations = helper.makeViolations(file: file)
 
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
-        let swift3Cache = cache
+        let thisSwiftVersionCache = cache
 
-        cache = LinterCache(fileManager: fileManager, swiftVersion: .four)
+        let differentSwiftVersion: SwiftVersion = (SwiftVersion.current == .three) ? .four : .three
+        cache = LinterCache(fileManager: fileManager, swiftVersion: differentSwiftVersion)
 
-        XCTAssertNotNil(swift3Cache.violations(forFile: file, configuration: helper.configuration))
+        XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))
         XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
     }
 }

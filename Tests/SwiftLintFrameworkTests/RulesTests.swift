@@ -141,6 +141,10 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitReturnRule.description)
     }
 
+    func testIsDisjoint() {
+        verifyRule(IsDisjointRule.description)
+    }
+
     func testJoinedDefaultParameter() {
         verifyRule(JoinedDefaultParameterRule.description)
     }

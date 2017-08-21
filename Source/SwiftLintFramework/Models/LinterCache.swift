@@ -78,7 +78,7 @@ public final class LinterCache {
         filesCache[file] = [
             Key.violations.rawValue: violations.map(dictionary(for:)),
             Key.lastModification.rawValue: lastModification.timeIntervalSinceReferenceDate,
-            Key.swiftVersion.rawValue: SwiftVersion.current.rawValue
+            Key.swiftVersion.rawValue: swiftVersion.rawValue
         ]
         writeCache[configurationDescription] = filesCache
         lock.unlock()

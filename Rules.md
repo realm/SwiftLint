@@ -13399,6 +13399,11 @@ for idx in bar.indices { }
 
 ```
 
+```swift
+for (section, (event, _)) in data.enumerated() {}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

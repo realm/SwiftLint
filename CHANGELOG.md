@@ -45,6 +45,9 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1781](https://github.com/realm/SwiftLint/issues/1781)
 
+* Invalidate cache when Swift version changes.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

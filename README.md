@@ -217,7 +217,7 @@ directory to see their implementation.
 `opt_in_rules` are disabled by default (i.e., you have to explicitly enable them
 in your configuration file).
 
-Guidelines on when to implement a rule as opt-in:
+Guidelines on when to mark a rule as opt-in:
 
 * A rule that can have many false positives (e.g. `empty_count`)
 * A rule that is too slow

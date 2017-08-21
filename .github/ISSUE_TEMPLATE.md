@@ -15,6 +15,8 @@ this issue as `rule-request` and describe:
 2. Provide several examples of what _would_ and _wouldn't_ trigger violations.
 3. Should the rule be configurable, if so what parameters should be configurable?
 4. Should the rule be opt-in or enabled by default? Why?
+   See [README.md](../README.md#opt-in-rules) for guidelines on when to mark a
+   rule as opt-in.
 
 ### Bug Report
 

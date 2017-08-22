@@ -122,8 +122,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
-            guard attributesTokens.intersection(alwaysOnNewLineAttributes).isEmpty &&
-                previousAttributes.intersection(alwaysOnSameLineAttributes).isEmpty else {
+            guard attributesTokens.isDisjoint(with: alwaysOnNewLineAttributes) &&
+                previousAttributes.isDisjoint(with: alwaysOnSameLineAttributes) else {
                 return true
             }
 

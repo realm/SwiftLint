@@ -52,7 +52,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         // Check if @objc
         let objcAttributes: Set<String> = ["source.decl.attribute.objc",
                                            "source.decl.attribute.objc.name"]
-        let isObjc = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes).isEmpty
+        let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)
         guard !isObjc else {
             return []
         }

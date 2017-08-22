@@ -120,8 +120,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
               let length = statement.length else {
             return nil
         }
-        let startLine = file.line(for: offset, startFrom: 0)
-        let endLine = file.line(for: offset + length, startFrom: startLine)
+        let startLine = file.line(byteOffset: offset, startFrom: 0)
+        let endLine = file.line(byteOffset: offset + length, startFrom: max(startLine, 0))
 
         return (startLine, endLine)
     }
@@ -155,8 +155,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
                 // Exclude the body where the accessors are
                 if let bodyOffset = statement.bodyOffset,
                    let bodyLength = statement.bodyLength {
-                    let bodyStart = file.line(for: bodyOffset, startFrom: startLine) + 1
-                    let bodyEnd = file.line(for: bodyOffset + bodyLength, startFrom: bodyStart) - 1
+                    let bodyStart = file.line(byteOffset: bodyOffset, startFrom: startLine) + 1
+                    let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength, startFrom: bodyStart) - 1
 
                     if bodyStart <= bodyEnd {
                         lines.subtract(Set(bodyStart...bodyEnd))
@@ -181,8 +181,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
 
         for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue ||
                                             token.type == SyntaxKind.docComment.rawValue {
-            let startLine = file.line(for: token.offset, startFrom: 0)
-            let endLine = file.line(for: token.offset + token.length, startFrom: startLine)
+            let startLine = file.line(byteOffset: token.offset, startFrom: 0)
+            let endLine = file.line(byteOffset: token.offset + token.length, startFrom: startLine)
 
             if startLine <= endLine {
                 result.formUnion(Set(startLine...endLine))
@@ -203,7 +203,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     // other than let/var
     private func attributeLineNumbers(file: File) -> Set<Int> {
         let matches = file.match(pattern: "[@a-z]+", with: [.attributeBuiltin])
-        let matchLines = matches.map { file.line(for:$0.location) }
+        let matchLines = matches.map { file.line(offset: $0.location) }
 
         return Set<Int>(matchLines)
     }
@@ -221,7 +221,8 @@ private extension SwiftDeclarationKind {
 }
 
 private extension File {
-    func line(for byteOffset: Int, startFrom: Int = 0) -> Int {
+    // Zero-based line number for the given a byte offset
+    func line(byteOffset: Int, startFrom: Int = 0) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
 
@@ -229,6 +230,18 @@ private extension File {
                 return index
             }
         }
-        return 0
+        return -1
+    }
+    
+    // Zero-based line number for the given a character offset
+    func line(offset: Int, startFrom: Int = 0) -> Int {
+        for index in startFrom..<lines.count {
+            let line = lines[index]
+            
+            if line.range.location + line.range.length > offset {
+                return index
+            }
+        }
+        return -1
     }
 }

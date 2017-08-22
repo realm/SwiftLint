@@ -41,6 +41,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
 * [Leading Whitespace](#leading-whitespace)
@@ -4817,6 +4818,51 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## Is Disjoint
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`is_disjoint` | Enabled | No | idiomatic
+
+Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
+```
+
+```swift
+let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)
+```
+
+```swift
+_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)
+```
+
+```swift
+_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty
+```
+
+```swift
+let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty
 ```
 
 </details>

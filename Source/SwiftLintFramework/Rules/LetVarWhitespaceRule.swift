@@ -45,7 +45,10 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let varLines = varLetLineNumbers(file: file, structure: file.structure.dictionary.substructure)
+        var attributeLines = attributeLineNumbers(file: file)
+        let varLines = varLetLineNumbers(file: file,
+                                         structure: file.structure.dictionary.substructure,
+                                         attributeLines: &attributeLines)
         let skippedLines = skippedLineNumbers(file: file)
         var violations = [StyleViolation]()
 
@@ -127,9 +130,10 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     }
 
     // Collects all the line numbers containing var or let declarations
-    private func varLetLineNumbers(file: File, structure: [[String: SourceKitRepresentable]]) -> Set<Int> {
+    private func varLetLineNumbers(file: File,
+                                   structure: [[String: SourceKitRepresentable]],
+                                   attributeLines: inout Set<Int>) -> Set<Int> {
         var result = Set<Int>()
-        var attributeLines = attributeLineNumbers(file: file)
 
         for statement in structure {
             guard let kind = statement.kind,
@@ -168,7 +172,9 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             let substructure = statement.substructure
 
             if !substructure.isEmpty {
-                result.formUnion(varLetLineNumbers(file: file, structure: substructure))
+                result.formUnion(varLetLineNumbers(file: file,
+                                                   structure: substructure,
+                                                   attributeLines: &attributeLines))
             }
         }
         return result

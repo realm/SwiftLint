@@ -232,12 +232,12 @@ private extension File {
         }
         return -1
     }
-    
+
     // Zero-based line number for the given a character offset
     func line(offset: Int, startFrom: Int = 0) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
-            
+
             if line.range.location + line.range.length > offset {
                 return index
             }

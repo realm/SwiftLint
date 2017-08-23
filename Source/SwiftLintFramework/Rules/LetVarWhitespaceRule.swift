@@ -30,7 +30,9 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             "#if os(macOS)\nlet a = 0\n#endif\n",
             "@available(swift 4)\nlet a = 0\n",
             "class C {\n\t@objc\n\tvar s: String = \"\"\n}",
-            "class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n"
+            "class C {\n\t@objc\n\tfunc a() {}\n}",
+            "class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n",
+            "@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
@@ -147,13 +149,14 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
                 }
             }
             if SwiftDeclarationKind.varKinds.contains(where: { $0.rawValue == kind }) {
-                var lines = Set(startLine...endLine)
-                let previousLine = startLine - 1
+                var lines = Set(startLine...((endLine < 0) ? file.lines.count : endLine))
+                var previousLine = startLine - 1
 
                 // Include preceding attributes
-                if attributeLines.contains(previousLine) {
+                while attributeLines.contains(previousLine) {
                     lines.insert(previousLine)
                     attributeLines.remove(previousLine)
+                    previousLine -= 1
                 }
 
                 // Exclude the body where the accessors are
@@ -208,7 +211,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     // Collects all the line numbers containing attributes but not declarations
     // other than let/var
     private func attributeLineNumbers(file: File) -> Set<Int> {
-        let matches = file.match(pattern: "[@a-z]+", with: [.attributeBuiltin])
+        let matches = file.match(pattern: "[@_a-z]+", with: [.attributeBuiltin])
         let matchLines = matches.map { file.line(offset: $0.location) }
 
         return Set<Int>(matchLines)

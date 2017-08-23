@@ -52,6 +52,11 @@
 
 * Invalidate cache when Swift version changes.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Add `pattern_matching_keywords` rule to enforce moving `let` and `var`
+  keywords outside tuples in a `switch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
 
 * Add `explicit_enum_raw_value` opt-in rule to allow refactoring the
   Swift API without breaking the API contract.  

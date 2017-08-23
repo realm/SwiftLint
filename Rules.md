@@ -64,6 +64,7 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
+* [Pattern Matching Keywords](#pattern-matching-keywords)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
@@ -7683,6 +7684,129 @@ class VC: UIViewController {
 	}
 }
 
+```
+
+</details>
+
+
+
+## Pattern Matching Keywords
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`pattern_matching_keywords` | Enabled | No | idiomatic
+
+Combine multiple pattern matching bindings by moving keywords out of tuples.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+    default: break
+}
+```
+
+```swift
+switch foo {
+    case 1: break
+}
+```
+
+```swift
+switch foo {
+    case bar: break
+}
+```
+
+```swift
+switch foo {
+    case let (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x): break
+}
+```
+
+```swift
+switch foo {
+    case let .foo(x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x), .bar(let x): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x, var y): break
+}
+```
+
+```swift
+switch foo {
+    case var (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(var x): break
+}
+```
+
+```swift
+switch foo {
+    case var .foo(x, y): break
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+    case (↓let x,  ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓let x, ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break
+}
+```
+
+```swift
+switch foo {
+    case (↓var x,  ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓var x, ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
+}
 ```
 
 </details>

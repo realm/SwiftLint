@@ -130,6 +130,12 @@ extension DiscouragedDirectInitRuleTests {
     ]
 }
 
+extension DocumentationTests {
+    static var allTests: [(String, (DocumentationTests) -> () throws -> Void)] = [
+        ("testRulesDocumentationIsUpdated", testRulesDocumentationIsUpdated)
+    ]
+}
+
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
@@ -504,6 +510,7 @@ XCTMain([
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
+    testCase(DocumentationTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),

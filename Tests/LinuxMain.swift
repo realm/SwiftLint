@@ -132,7 +132,6 @@ extension DiscouragedDirectInitRuleTests {
 
 extension DocumentationTests {
     static var allTests: [(String, (DocumentationTests) -> () throws -> Void)] = [
-        ("testRulesDocumentationIsUpdated", testRulesDocumentationIsUpdated)
     ]
 }
 

@@ -16,6 +16,7 @@ private let projectRoot = #file.bridge()
     .deletingLastPathComponent
 
 class DocumentationTests: XCTestCase {
+    // sourcery:skipTestOnLinux
     func testRulesDocumentationIsUpdated() throws {
         let docsPath = "\(projectRoot)/Rules.md"
         let existingDocs = try String(contentsOfFile: docsPath)

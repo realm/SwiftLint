@@ -64,7 +64,7 @@ You can also build from source by cloning this project and running
 To get a high-level overview of recommended ways to integrate SwiftLint into your project,
 we encourage you to watch this presentation or read the transcript:
 
-[![Presentation](assets/presentation.jpg)](https://realm.io/news/slug-jp-simard-swiftlint)
+[![Presentation](assets/presentation.jpg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
 
 ### Xcode
 

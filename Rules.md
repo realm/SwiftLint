@@ -7694,7 +7694,7 @@ class VC: UIViewController {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`pattern_matching_keywords` | Enabled | No | idiomatic
+`pattern_matching_keywords` | Disabled | No | idiomatic
 
 Combine multiple pattern matching bindings by moving keywords out of tuples.
 

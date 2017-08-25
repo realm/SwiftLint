@@ -9,19 +9,32 @@
 import Foundation
 
 public struct NameConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        return "(min_length) \(minLength.shortConsoleDescription), " +
-            "(max_length) \(maxLength.shortConsoleDescription), " +
-            "excluded: \(excluded.sorted()), " +
-            "allowed_symbols: \(allowedSymbols.sorted()), " +
-            "validates_start_with_lowercase: \(validatesStartWithLowercase)"
+    private var minLengthParameter: Parameter<SeverityLevelsConfiguration>
+    private var maxLengthParameter: Parameter<SeverityLevelsConfiguration>
+    private var excludedParameter: ArrayParameter<String>
+    private var allowedSymbolsParameter: ArrayParameter<String>
+    private var validatesStartWithLowercaseParameter: Parameter<Bool>
+    public var parameters: [ParameterDefinition]
+
+    var minLength: SeverityLevelsConfiguration {
+        return minLengthParameter.value
     }
 
-    var minLength: SeverityLevelsConfiguration
-    var maxLength: SeverityLevelsConfiguration
-    var excluded: Set<String>
-    var allowedSymbols: Set<String>
-    var validatesStartWithLowercase: Bool
+    var maxLength: SeverityLevelsConfiguration {
+        return maxLengthParameter.value
+    }
+
+    var excluded: Set<String> {
+        return Set(excludedParameter.value)
+    }
+
+    var allowedSymbols: Set<String> {
+        return Set(allowedSymbolsParameter.value)
+    }
+
+    var validatesStartWithLowercase: Bool {
+        return validatesStartWithLowercaseParameter.value
+    }
 
     var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
@@ -32,44 +45,32 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     }
 
     public init(minLengthWarning: Int,
-                minLengthError: Int,
+                minLengthError: Int?,
                 maxLengthWarning: Int,
-                maxLengthError: Int,
+                maxLengthError: Int?,
                 excluded: [String] = [],
                 allowedSymbols: [String] = [],
                 validatesStartWithLowercase: Bool = true) {
-        minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
-        maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
-        self.excluded = Set(excluded)
-        self.allowedSymbols = Set(allowedSymbols)
-        self.validatesStartWithLowercase = validatesStartWithLowercase
+        let minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
+        let maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
+
+        minLengthParameter = Parameter(key: "min_length", default: minLength, description: "")
+        maxLengthParameter = Parameter(key: "max_length", default: maxLength, description: "")
+        excludedParameter = ArrayParameter(key: "excluded", default: excluded, description: "")
+        allowedSymbolsParameter = ArrayParameter(key: "allowed_symbols", default: allowedSymbols, description: "")
+        validatesStartWithLowercaseParameter = Parameter(key: "validates_start_with_lowercase",
+                                                         default: validatesStartWithLowercase, description: "")
+
+        parameters = [minLengthParameter, maxLengthParameter, excludedParameter,
+                      allowedSymbolsParameter, validatesStartWithLowercaseParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let minLengthConfiguration = configurationDict["min_length"] {
-            try minLength.apply(configuration: minLengthConfiguration)
-        }
-        if let maxLengthConfiguration = configurationDict["max_length"] {
-            try maxLength.apply(configuration: maxLengthConfiguration)
-        }
-        if let excluded = [String].array(of: configurationDict["excluded"]) {
-            self.excluded = Set(excluded)
-        }
-        if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
-            self.allowedSymbols = Set(allowedSymbols)
-        }
-
-        if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
-            self.validatesStartWithLowercase = validatesStartWithLowercase
-        } else if let validatesStartWithLowercase = configurationDict["validates_start_lowercase"] as? Bool {
-            self.validatesStartWithLowercase = validatesStartWithLowercase
-            queuedPrintError("\"validates_start_lowercase\" configuration was renamed to " +
-                "\"validates_start_with_lowercase\" and will be removed in a future release.")
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try minLengthParameter.parse(from: configuration)
+        try maxLengthParameter.parse(from: configuration)
+        try excludedParameter.parse(from: configuration)
+        try allowedSymbolsParameter.parse(from: configuration)
+        try validatesStartWithLowercaseParameter.parse(from: configuration)
     }
 }
 

@@ -28,6 +28,7 @@ class RuleTests: XCTestCase {
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "",
                                                  description: "", kind: .style)
+        let parameters: [ParameterDefinition] = []
 
         init() {}
         init(configuration: [String: Any]) throws { self.init() }
@@ -41,6 +42,7 @@ class RuleTests: XCTestCase {
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock2", name: "",
                                                  description: "", kind: .style)
+        let parameters: [ParameterDefinition] = []
 
         init() {}
         init(configuration: [String: Any]) throws { self.init() }

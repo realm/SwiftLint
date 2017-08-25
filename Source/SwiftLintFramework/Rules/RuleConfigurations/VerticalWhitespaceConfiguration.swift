@@ -11,7 +11,10 @@ public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
     private var maxEmptyLinesParameter: Parameter<Int>
     private var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    var severity: ViolationSeverity {
+        return severityParameter.value
+    }
+
     var maxEmptyLines: Int {
         return maxEmptyLinesParameter.value
     }
@@ -31,6 +34,6 @@ public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
     public static func == (lhs: VerticalWhitespaceConfiguration,
                            rhs: VerticalWhitespaceConfiguration) -> Bool {
         return lhs.maxEmptyLines == rhs.maxEmptyLines &&
-            lhs.severityParameter == rhs.severityParameter
+            lhs.severity == rhs.severity
     }
 }

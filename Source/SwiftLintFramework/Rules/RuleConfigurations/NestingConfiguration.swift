@@ -9,33 +9,33 @@
 import Foundation
 
 public struct NestingConfiguration: RuleConfiguration, Equatable {
-    public var consoleDescription: String {
-        return "(type_level) \(typeLevel.shortConsoleDescription), " +
-            "(statement_level) \(statementLevel.shortConsoleDescription)"
+    private var typeLevelParameter: Parameter<SeverityLevelsConfiguration>
+    private var statementLevelParameter: Parameter<SeverityLevelsConfiguration>
+    public var parameters: [ParameterDefinition]
+
+    public var typeLevel: SeverityLevelsConfiguration {
+        return typeLevelParameter.value
     }
 
-    var typeLevel: SeverityLevelsConfiguration
-    var statementLevel: SeverityLevelsConfiguration
+    public var statementLevel: SeverityLevelsConfiguration {
+        return statementLevelParameter.value
+    }
 
     public init(typeLevelWarning: Int,
                 typeLevelError: Int?,
                 statementLevelWarning: Int,
                 statementLevelError: Int?) {
-        typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
-        statementLevel = SeverityLevelsConfiguration(warning: statementLevelWarning, error: statementLevelError)
+        let typeLevel = SeverityLevelsConfiguration(warning: typeLevelWarning, error: typeLevelError)
+        let statementLevel = SeverityLevelsConfiguration(warning: statementLevelWarning, error: statementLevelError)
+
+        typeLevelParameter = Parameter(key: "type_level", default: typeLevel, description: "")
+        statementLevelParameter = Parameter(key: "statement_level", default: statementLevel, description: "")
+        parameters = [typeLevelParameter, statementLevelParameter]
     }
 
-    public mutating func apply(configuration: Any) throws {
-        guard let configurationDict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-
-        if let typeLevelConfiguration = configurationDict["type_level"] {
-            try typeLevel.apply(configuration: typeLevelConfiguration)
-        }
-        if let statementLevelConfiguration = configurationDict["statement_level"] {
-            try statementLevel.apply(configuration: statementLevelConfiguration)
-        }
+    public mutating func apply(configuration: [String: Any]) throws {
+        try typeLevelParameter.parse(from: configuration)
+        try statementLevelParameter.parse(from: configuration)
     }
 
     func severity(with config: SeverityLevelsConfiguration, for level: Int) -> ViolationSeverity? {
@@ -53,9 +53,9 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
         case .warning: return config.warning
         }
     }
-}
 
-public func == (lhs: NestingConfiguration, rhs: NestingConfiguration) -> Bool {
-    return lhs.typeLevel == rhs.typeLevel
-        && lhs.statementLevel == rhs.statementLevel
+    public static func == (lhs: NestingConfiguration, rhs: NestingConfiguration) -> Bool {
+        return lhs.typeLevelParameter == rhs.typeLevelParameter
+            && lhs.statementLevelParameter == rhs.statementLevelParameter
+    }
 }

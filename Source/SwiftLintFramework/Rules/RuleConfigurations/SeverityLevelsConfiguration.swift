@@ -46,6 +46,22 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     }
 }
 
+extension SeverityLevelsConfiguration: YamlLoadable {
+    public static func load(from node: Any) throws -> SeverityLevelsConfiguration {
+        guard let dict = node as? [String: Int] else {
+            throw ConfigurationError.unknownConfiguration
+        }
+
+        var configuration = SeverityLevelsConfiguration(warning: 0, error: nil)
+        try configuration.apply(configuration: dict)
+        if configuration.warning == 0 {
+            throw ConfigurationError.unknownConfiguration
+        }
+
+        return configuration
+    }
+}
+
 public func == (lhs: SeverityLevelsConfiguration, rhs: SeverityLevelsConfiguration) -> Bool {
     return lhs.warning == rhs.warning && lhs.error == rhs.error
 }

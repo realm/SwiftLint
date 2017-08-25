@@ -73,7 +73,7 @@ public struct OptionalParameter<T: YamlLoadable & Equatable>: ParameterProtocol,
     public let `default`: T?
     public let description: String
     public var value: T? {
-        return _value ?? `default`
+        return _value
     }
 
     private var _value: T?
@@ -92,11 +92,12 @@ public struct OptionalParameter<T: YamlLoadable & Equatable>: ParameterProtocol,
         self.key = key
         self.default = `default`
         self.description = description
+        _value = `default`
     }
 
     public mutating func parse(from configuration: [String: Any]) throws {
-        if configuration[key] != nil, let value = try T?.load(from: configuration[key] as Any) {
-            _value = value
+        if configuration[key] != nil {
+            _value = try T?.load(from: configuration[key] as Any)
         }
     }
 

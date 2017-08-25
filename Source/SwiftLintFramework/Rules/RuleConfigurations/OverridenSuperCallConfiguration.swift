@@ -65,7 +65,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         excludedParameter = ArrayParameter(key: "excluded",
                                            default: excluded,
                                            description: "How serious")
-        includedParameter = ArrayParameter(key: "apply_to_dictionaries",
+        includedParameter = ArrayParameter(key: "included",
                                            default: included,
                                            description: "How serious")
         parameters = [excludedParameter, includedParameter, severityParameter]

@@ -13,10 +13,10 @@ import XCTest
 // swiftlint:disable type_body_length
 
 class RuleConfigurationsTests: XCTestCase {
-    func testNameConfigurationSetsCorrectly() {
+    func testNameConfigurationSetsCorrectly() throws {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
-                       "excluded": "id",
+                       "excluded": ["id"],
                        "allowed_symbols": ["$"],
                        "validates_start_with_lowercase": false] as [String: Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
@@ -30,23 +30,9 @@ class RuleConfigurationsTests: XCTestCase {
                                      excluded: ["id"],
                                      allowedSymbols: ["$"],
                                      validatesStartWithLowercase: false)
-        do {
-            try nameConfig.apply(configuration: config)
-            XCTAssertEqual(nameConfig, comp)
-        } catch {
-            XCTFail("Did not configure correctly")
-        }
-    }
 
-    func testNameConfigurationThrowsOnBadConfig() {
-        let config = 17
-        var nameConfig = NameConfiguration(minLengthWarning: 0,
-                                           minLengthError: 0,
-                                           maxLengthWarning: 0,
-                                           maxLengthError: 0)
-        checkError(ConfigurationError.unknownConfiguration) {
-            try nameConfig.apply(configuration: config)
-        }
+        try nameConfig.apply(configuration: config)
+        XCTAssertEqual(nameConfig, comp)
     }
 
     func testNameConfigurationMinLengthThreshold() {
@@ -57,7 +43,11 @@ class RuleConfigurationsTests: XCTestCase {
                                            excluded: [])
         XCTAssertEqual(nameConfig.minLengthThreshold, 17)
 
-        nameConfig.minLength.error = nil
+        nameConfig = NameConfiguration(minLengthWarning: 7,
+                                       minLengthError: nil,
+                                       maxLengthWarning: 0,
+                                       maxLengthError: 0,
+                                       excluded: [])
         XCTAssertEqual(nameConfig.minLengthThreshold, 7)
     }
 
@@ -69,7 +59,11 @@ class RuleConfigurationsTests: XCTestCase {
                                            excluded: [])
         XCTAssertEqual(nameConfig.maxLengthThreshold, 7)
 
-        nameConfig.maxLength.error = nil
+        nameConfig = NameConfiguration(minLengthWarning: 0,
+                                       minLengthError: 0,
+                                       maxLengthWarning: 17,
+                                       maxLengthError: nil,
+                                       excluded: [])
         XCTAssertEqual(nameConfig.maxLengthThreshold, 17)
     }
 
@@ -97,29 +91,6 @@ class RuleConfigurationsTests: XCTestCase {
         }
     }
 
-    func testNestingConfigurationThrowsOnBadConfig() {
-        let config = 17
-        var nestingConfig = NestingConfiguration(typeLevelWarning: 0,
-                                                 typeLevelError: nil,
-                                                 statementLevelWarning: 0,
-                                                 statementLevelError: nil)
-        checkError(ConfigurationError.unknownConfiguration) {
-            try nestingConfig.apply(configuration: config)
-        }
-    }
-
-    func testSeverityConfigurationFromString() {
-        let config = "Warning"
-        let comp = SeverityConfiguration(.warning)
-        var severityConfig = SeverityConfiguration(.error)
-        do {
-            try severityConfig.apply(configuration: config)
-            XCTAssertEqual(severityConfig, comp)
-        } catch {
-            XCTFail("Failed to configure severity from string")
-        }
-    }
-
     func testSeverityConfigurationFromDictionary() {
         let config = ["severity": "warning"]
         let comp = SeverityConfiguration(.warning)
@@ -129,14 +100,6 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertEqual(severityConfig, comp)
         } catch {
             XCTFail("Failed to configure severity from dictionary")
-        }
-    }
-
-    func testSeverityConfigurationThrowsOnBadConfig() {
-        let config = 17
-        var severityConfig = SeverityConfiguration(.warning)
-        checkError(ConfigurationError.unknownConfiguration) {
-            try severityConfig.apply(configuration: config)
         }
     }
 
@@ -153,43 +116,36 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testSeverityLevelConfigApplyNilErrorValue() throws {
         var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
-        try severityConfig.apply(configuration: ["error": nil, "warning": 18])
+        let error: Int? = nil
+        try severityConfig.apply(configuration: ["error": error as Any, "warning": 18])
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
     }
 
     func testSeverityLevelConfigApplyMissingErrorValue() throws {
         var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
         try severityConfig.apply(configuration: ["warning": 18])
-        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .error, value: 20),
+                                               RuleParameter(severity: .warning, value: 18)])
     }
 
-    func testRegexConfigurationThrows() {
-        let config = 17
-        var regexConfig = RegexConfiguration(identifier: "")
-        checkError(ConfigurationError.unknownConfiguration) {
-            try regexConfig.apply(configuration: config)
-        }
-    }
+//    func testRegexConfigurationThrows() {
+//        let config = 17
+//        var regexConfig = RegexConfiguration(identifier: "")
+//        checkError(ConfigurationError.unknownConfiguration) {
+//            try regexConfig.apply(configuration: config)
+//        }
+//    }
 
-    func testRegexRuleDescription() {
-        var regexConfig = RegexConfiguration(identifier: "regex")
-        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
-                                                                name: "regex",
-                                                                description: "", kind: .style))
-        regexConfig.name = "name"
-        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
-                                                                name: "name",
-                                                                description: "", kind: .style))
-    }
-
-    func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
-        let config = "unknown"
-        var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
-                                                            ignoresComments: true)
-        checkError(ConfigurationError.unknownConfiguration) {
-            try configuration.apply(configuration: config)
-        }
-    }
+//    func testRegexRuleDescription() {
+//        var regexConfig = RegexConfiguration(identifier: "regex")
+//        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
+//                                                                name: "regex",
+//                                                                description: "", kind: .style))
+//        regexConfig.name = "name"
+//        XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
+//                                                                name: "name",
+//                                                                description: "", kind: .style))
+//    }
 
     func testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines() {
         let configuration1 = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
@@ -268,11 +224,10 @@ class RuleConfigurationsTests: XCTestCase {
     func testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration() {
         var configuration = TrailingWhitespaceConfiguration(ignoresEmptyLines: false,
                                                             ignoresComments: true)
-        configuration.severityConfiguration.severity = .warning
 
         do {
             try configuration.apply(configuration: ["severity": "error"])
-            XCTAssert(configuration.severityConfiguration.severity == .error)
+            XCTAssert(configuration.severity == .error)
         } catch {
             XCTFail("Failed to apply severity")
         }
@@ -282,10 +237,10 @@ class RuleConfigurationsTests: XCTestCase {
         var configuration = OverridenSuperCallConfiguration()
         XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
 
-        let conf1 = ["severity": "error", "excluded": "viewWillAppear(_:)"]
+        let conf1: [String: Any] = ["severity": "error", "excluded": ["viewWillAppear(_:)"]]
         do {
             try configuration.apply(configuration: conf1)
-            XCTAssert(configuration.severityConfiguration.severity == .error)
+            XCTAssert(configuration.severity == .error)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
@@ -295,12 +250,12 @@ class RuleConfigurationsTests: XCTestCase {
 
         let conf2 = [
             "severity": "error",
-            "excluded": "viewWillAppear(_:)",
+            "excluded": ["viewWillAppear(_:)"],
             "included": ["*", "testMethod1()", "testMethod2(_:)"]
         ] as [String: Any]
         do {
             try configuration.apply(configuration: conf2)
-            XCTAssert(configuration.severityConfiguration.severity == .error)
+            XCTAssert(configuration.severity == .error)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
@@ -312,12 +267,12 @@ class RuleConfigurationsTests: XCTestCase {
 
         let conf3 = [
             "severity": "warning",
-            "excluded": "*",
+            "excluded": ["*"],
             "included": ["testMethod1()", "testMethod2(_:)"]
         ] as [String: Any]
         do {
             try configuration.apply(configuration: conf3)
-            XCTAssert(configuration.severityConfiguration.severity == .warning)
+            XCTAssert(configuration.severity == .warning)
             XCTAssert(configuration.resolvedMethodNames.count == 2)
             XCTAssertFalse(configuration.resolvedMethodNames.contains("*"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))

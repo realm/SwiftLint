@@ -76,7 +76,7 @@ public struct Configuration: Equatable {
             rules = configuredRules.filter { rule in
                 return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
             }
-        case .default(let disabledRuleIdentifiers, let optInRuleIdentifiers):
+        case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
             let validDisabledRuleIdentifiers = validateRuleIdentifiers(
                 ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
                 validRuleIdentifiers: validRuleIdentifiers)

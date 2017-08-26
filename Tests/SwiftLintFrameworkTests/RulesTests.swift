@@ -130,7 +130,7 @@ class RulesTests: XCTestCase {
     }
 
     func testGroupingExtensionBan() {
-        verifyRule(GroupingExtensionBanRule.description)
+        verifyRule(NoGroupingExtensionRule.description)
     }
 
     func testImplicitGetter() {

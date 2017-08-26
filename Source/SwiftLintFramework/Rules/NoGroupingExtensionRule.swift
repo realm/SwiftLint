@@ -1,5 +1,5 @@
 //
-//  GroupingExtensionBanRule.swift
+//  NoGroupingExtensionRule.swift
 //  SwiftLint
 //
 //  Created by Mazyad Alabduljaleel on 8/20/17.
@@ -9,14 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
+public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "grouping_extension_ban",
-        name: "Grouping Extension Ban",
+        identifier: "no_grouping_extension",
+        name: "No Grouping Extension",
         description: "Extensions shouldn't be used to group code within the same source file.",
         kind: .idiomatic,
         nonTriggeringExamples: [

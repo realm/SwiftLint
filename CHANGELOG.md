@@ -52,7 +52,7 @@
 
 * Invalidate cache when Swift version changes.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-* Add `grouping_extension_ban` opt-in rule to disallow the use of extensions
+
 * Add `no_grouping_extension` opt-in rule to disallow the use of extensions
   for code grouping purposes within the same file.  
   [Mazyod](https://github.com/mazyod)

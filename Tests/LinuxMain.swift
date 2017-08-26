@@ -370,7 +370,7 @@ extension RulesTests {
         ("testForWhere", testForWhere),
         ("testFunctionBodyLength", testFunctionBodyLength),
         ("testFunctionParameterCount", testFunctionParameterCount),
-        ("testGroupingExtensionBan", testGroupingExtensionBan),
+        ("testNoGroupingExtension", testNoGroupingExtension),
         ("testImplicitGetter", testImplicitGetter),
         ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
         ("testImplicitReturn", testImplicitReturn),

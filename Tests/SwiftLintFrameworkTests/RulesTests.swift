@@ -129,7 +129,7 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testGroupingExtensionBan() {
+    func testNoGroupingExtension() {
         verifyRule(NoGroupingExtensionRule.description)
     }
 

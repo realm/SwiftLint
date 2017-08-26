@@ -51,22 +51,21 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
                                  ofTypes types: [SwiftDeclarationKind],
                                  namespace: [String] = []) -> [Element] {
 
-        return dictionary.substructure
-            .flatMap { subDict -> [Element] in
+        return dictionary.substructure.flatMap { subDict -> [Element] in
 
-                var elements: [Element] = []
-                guard let element = Element(dictionary: subDict, namespace: namespace) else {
-                    return elements
-                }
-
-                if types.contains(element.kind) {
-                    elements.append(element)
-                }
-
-                elements += findAllElements(in: subDict, ofTypes: types, namespace: [element.name])
-
+            var elements: [Element] = []
+            guard let element = Element(dictionary: subDict, namespace: namespace) else {
                 return elements
             }
+
+            if types.contains(element.kind) {
+                elements.append(element)
+            }
+
+            elements += findAllElements(in: subDict, ofTypes: types, namespace: [element.name])
+
+            return elements
+        }
     }
 }
 

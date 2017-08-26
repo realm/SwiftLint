@@ -218,6 +218,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testPatternMatchingKeywords() {
+        verifyRule(PatternMatchingKeywordsRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 

@@ -70,26 +70,23 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
     }
 }
 
-extension GroupingExtensionBanRule {
+private struct Element {
 
-    struct Element {
+    let name: String
+    let kind: SwiftDeclarationKind
+    let offset: Int
 
-        let name: String
-        let kind: SwiftDeclarationKind
-        let offset: Int
+    init?(dictionary: [String: SourceKitRepresentable], namespace: [String]) {
 
-        init?(dictionary: [String: SourceKitRepresentable], namespace: [String]) {
-
-            guard let name = dictionary.name,
-                let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-                let offset = dictionary.offset
-                else {
-                    return nil
-            }
-
-            self.name = (namespace + [name]).joined(separator: ".")
-            self.kind = kind
-            self.offset = offset
+        guard let name = dictionary.name,
+            let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
+            let offset = dictionary.offset
+            else {
+                return nil
         }
+
+        self.name = (namespace + [name]).joined(separator: ".")
+        self.kind = kind
+        self.offset = offset
     }
 }

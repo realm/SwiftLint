@@ -24,13 +24,14 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
             "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
             "enum Numbers: Double {\n case one = 1.1\n case two = 2.2\n}\n",
             "enum Numbers: String {\n case one = \"one\"\n case two = \"two\"\n}\n",
-            "enum Numbers: String {\n case one = \"ONE\"\n case two = \"TWO\"\n}\n"
+            "protocol Algebra {}\nenum Numbers: Algebra {\n case one\n}\n"
         ],
         triggeringExamples: [
             "enum Numbers: Int {\n case one = 10, ↓two, three = 30\n}\n",
+            "enum Numbers: NSInteger {\n case ↓one\n}\n",
             "enum Numbers: String {\n case ↓one\n case ↓two\n}\n",
             "enum Numbers: String {\n case ↓one, two = \"two\"\n}\n",
-            "enum Numbers: String {\n case ↓one, ↓two\n}\n"
+            "enum Numbers: Decimal {\n case ↓one, ↓two\n}\n"
         ]
     )
 
@@ -40,8 +41,18 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
             return []
         }
 
-        // Check if it's an associated value enum
-        guard !dictionary.inheritedTypes.isEmpty else {
+        // Check if it's an enum which supports raw values
+        let implicitRawValueTypes: [Any] = [
+            Int.self, Int8.self, Int16.self, Int32.self, Int64.self,
+            UInt.self, UInt8.self, UInt16.self, UInt32.self, UInt64.self,
+            Double.self, Float.self, Float80.self, Decimal.self, NSNumber.self,
+            NSDecimalNumber.self, "NSInteger", String.self
+        ]
+
+        let implicitRawValueSet = Set(implicitRawValueTypes.map(String.init(describing:)))
+        let enumInheritedTypesSet = Set(dictionary.inheritedTypes)
+
+        guard !implicitRawValueSet.isDisjoint(with: enumInheritedTypesSet) else {
             return []
         }
 

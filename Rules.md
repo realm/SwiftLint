@@ -22,6 +22,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
@@ -41,6 +42,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
 * [Leading Whitespace](#leading-whitespace)
@@ -62,11 +64,13 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
+* [Pattern Matching Keywords](#pattern-matching-keywords)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
+* [Quick Discouraged Call](#quick-discouraged-call)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -74,9 +78,11 @@
 * [Redundant Void Return](#redundant-void-return)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
+* [Single Test Class](#single-test-class)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
+* [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
@@ -2078,6 +2084,103 @@ UIView.animateWithDuration(0.3, animations: {
 ```swift
 [1, 2].map↓(  ) { number in
  number + 1 
+}
+
+```
+
+</details>
+
+
+
+## Explicit Enum Raw Value
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_enum_raw_value` | Disabled | No | idiomatic
+
+Enums should be explicitly assigned their raw values.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Numbers {
+ case int(Int)
+ case short(Int16)
+}
+
+```
+
+```swift
+enum Numbers: Int {
+ case one = 1
+ case two = 2
+}
+
+```
+
+```swift
+enum Numbers: Double {
+ case one = 1.1
+ case two = 2.2
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "one"
+ case two = "two"
+}
+
+```
+
+```swift
+protocol Algebra {}
+enum Numbers: Algebra {
+ case one
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Numbers: Int {
+ case one = 10, ↓two, three = 30
+}
+
+```
+
+```swift
+enum Numbers: NSInteger {
+ case ↓one
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one
+ case ↓two
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one, two = "two"
+}
+
+```
+
+```swift
+enum Numbers: Decimal {
+ case ↓one, ↓two
 }
 
 ```
@@ -4820,6 +4923,51 @@ func foo(int: Int!) {}
 
 
 
+## Is Disjoint
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`is_disjoint` | Enabled | No | idiomatic
+
+Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
+```
+
+```swift
+let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)
+```
+
+```swift
+_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)
+```
+
+```swift
+_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty
+```
+
+```swift
+let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty
+```
+
+</details>
+
+
+
 ## Joined Default Parameter
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -5777,6 +5925,7 @@ var x = 1
 ```
 
 ```swift
+
 a = 5
 ↓var x = 1
 
@@ -7541,6 +7690,129 @@ class VC: UIViewController {
 
 
 
+## Pattern Matching Keywords
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`pattern_matching_keywords` | Disabled | No | idiomatic
+
+Combine multiple pattern matching bindings by moving keywords out of tuples.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+    default: break
+}
+```
+
+```swift
+switch foo {
+    case 1: break
+}
+```
+
+```swift
+switch foo {
+    case bar: break
+}
+```
+
+```swift
+switch foo {
+    case let (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x): break
+}
+```
+
+```swift
+switch foo {
+    case let .foo(x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x), .bar(let x): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x, var y): break
+}
+```
+
+```swift
+switch foo {
+    case var (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(var x): break
+}
+```
+
+```swift
+switch foo {
+    case var .foo(x, y): break
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+    case (↓let x,  ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓let x, ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break
+}
+```
+
+```swift
+switch foo {
+    case (↓var x,  ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓var x, ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
+}
+```
+
+</details>
+
+
+
 ## Private Outlets
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -7906,6 +8178,231 @@ protocol Foo {
 
 
 
+## Quick Discouraged Call
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_call` | Disabled | No | lint
+
+Discouraged call inside 'describe' and/or 'context' block.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           afterEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           describe("bar") {
+           }
+           context("bar") {
+           }
+           it("bar") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+          itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           it("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests {
+   override func spec() {
+       describe("foo") {
+           let foo = Foo()
+       }
+   }
+}
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               let foo = ↓Foo()
+           }
+           context("bar") {
+               let foo = ↓Foo()
+               ↓foo.bar()
+               it("does something") {
+                   let foo = Foo()
+                   foo.toto()
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               context("foo") {
+                   beforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+                   it("bar") {
+                   }
+                   context("foo") {
+                       let foo = ↓Foo()
+                   }
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+</details>
+
+
+
 ## Redundant Discardable Let
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -8220,6 +8717,26 @@ func foo() -> Int -> () {}
 
 ```swift
 let foo: Int -> ()
+
+```
+
+```swift
+func foo() -> ()?
+
+```
+
+```swift
+func foo() -> ()!
+
+```
+
+```swift
+func foo() -> Void?
+
+```
+
+```swift
+func foo() -> Void!
 
 ```
 
@@ -8618,6 +9135,81 @@ n = n - i / outputLength
 
 
 
+## Single Test Class
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`single_test_class` | Disabled | No | style
+
+Test files should contain a single QuickSpec or XCTestCase class.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class FooTests {  }
+
+```
+
+```swift
+class FooTests: QuickSpec {  }
+
+```
+
+```swift
+class FooTests: XCTestCase {  }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+↓class TotoTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+↓class TotoTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+class TotoTests {  }
+
+```
+
+</details>
+
+
+
 ## Sorted Imports
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -8812,6 +9404,16 @@ struct Inter {
 ```
 
 </details>
+
+
+
+## Superfluous Disable Command
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`superfluous_disable_command` | Enabled | No | lint
+
+SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
 
 
 
@@ -13062,6 +13664,11 @@ for (idx, _) in bar.something() { }
 
 ```swift
 for idx in bar.indices { }
+
+```
+
+```swift
+for (section, (event, _)) in data.enumerated() {}
 
 ```
 

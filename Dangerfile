@@ -3,6 +3,11 @@ require 'open3'
 # Warn when there is a big PR
 warn('Big PR') if git.lines_of_code > 500
 
+# Ensure a clean commit history
+if git.commits.any? { |c| c.message =~ /^Merge branch '#{github.branch_for_base}'/ }
+  fail('Please rebase to get rid of the merge commits in this PR')
+end
+
 modified_files = git.modified_files + git.added_files
 
 # Sometimes its a README fix, or something like that - which isn't relevant for
@@ -61,8 +66,7 @@ file.close
 file.unlink
 
 non_empty_lines(lines).each do |line|
-  puts line
-  if line.start_with? 'Permanently added the RSA host key for IP address'
+  if line.include? 'Permanently added the RSA host key for IP address'
     # Don't report to Danger
   elsif line.start_with? 'Message:'
     message parse_line(line)

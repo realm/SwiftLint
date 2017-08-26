@@ -18,7 +18,7 @@ extension Configuration {
     }
 
     private func configuration(forPath path: String) -> Configuration {
-        if path == rootPath {
+        if path == rootDirectory {
             return self
         }
 
@@ -41,6 +41,30 @@ extension Configuration {
 
         // If nothing else, return self
         return self
+    }
+
+    private var rootDirectory: String? {
+        guard let rootPath = rootPath else {
+            return nil
+        }
+
+        var isDirectoryObjC: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: rootPath, isDirectory: &isDirectoryObjC) else {
+            return nil
+        }
+
+        let isDirectory: Bool
+        #if os(Linux)
+            isDirectory = isDirectoryObjC
+        #else
+            isDirectory = isDirectoryObjC.boolValue
+        #endif
+
+        if isDirectory {
+            return rootPath
+        } else {
+            return rootPath.bridge().deletingLastPathComponent
+        }
     }
 
     private struct HashableRule: Hashable {
@@ -72,7 +96,7 @@ extension Configuration {
                 .filter { rule in
                     return whitelistedRules.contains(type(of: rule).description.identifier)
                 }
-        case .default(let disabled, let optIn):
+        case let .default(disabled, optIn):
             // Same here
             return Set(
                 configuration.rules

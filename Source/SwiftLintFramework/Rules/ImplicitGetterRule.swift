@@ -70,7 +70,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
             let kinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
             guard let token = tokens.last,
                 SyntaxKind(rawValue: token.type) == .keyword,
-                attributesKinds.intersection(kinds).isEmpty else {
+                attributesKinds.isDisjoint(with: kinds) else {
                     return nil
             }
 

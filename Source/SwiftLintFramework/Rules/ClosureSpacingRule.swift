@@ -126,24 +126,20 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         }
 
         // matching ranges of `{...}`
-        let matchedUpBraces = matchBraces(validBraceLocations: validBraces(in: file))
-
-        var violationRanges = matchedUpBraces.filter {
-            // removes enclosing brances to just content
-            let content = file.contents.substring(from: $0.location + 1, length: $0.length - 2)
-            if content.isEmpty || content == " " {
-                // case when {} is not a closure
-                return false
+        return matchBraces(validBraceLocations: validBraces(in: file))
+            .filter {
+                // removes enclosing brances to just content
+                let content = file.contents.substring(from: $0.location + 1, length: $0.length - 2)
+                if content.isEmpty || content == " " {
+                    // case when {} is not a closure
+                    return false
+                }
+                let cleaned = content.trimmingCharacters(in: .whitespaces)
+                return content != " " + cleaned + " "
             }
-            let cleaned = content.trimmingCharacters(in: .whitespaces)
-            return content != " " + cleaned + " "
-        }
-
-        // filter out ranges where rule is disabled
-        violationRanges = file.ruleEnabled(violatingRanges: violationRanges, for: self)
-
-        // testing infrastructure expects sorted locations.
-        return violationRanges.sorted(by: { $0.location < $1.location })
+            .sorted {
+                $0.location < $1.location
+            }
     }
 
     public func validate(file: File) -> [StyleViolation] {
@@ -162,7 +158,9 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     public func correct(file: File) -> [Correction] {
-        var matches = removeNested(findViolations(file: file))
+        var matches = removeNested(findViolations(file: file)).filter {
+            !file.ruleEnabled(violatingRanges: [$0], for: self).isEmpty
+        }
         guard !matches.isEmpty else { return [] }
 
         // `matches` should be sorted by location from `findViolations`.

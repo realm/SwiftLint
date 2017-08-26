@@ -9,7 +9,6 @@
 import SwiftLintFramework
 import XCTest
 
-// swiftlint:disable file_length
 class RulesTests: XCTestCase {
 
     func testBlockBasedKVO() {
@@ -82,6 +81,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testExplicitEnumRawValue() {
+        verifyRule(ExplicitEnumRawValueRule.description)
+    }
+
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }
@@ -144,6 +147,9 @@ class RulesTests: XCTestCase {
 
     func testInlineComment() {
         verifyRule(InlineCommentRule.description, skipCommentTests: true)
+      
+    func testIsDisjoint() {
+        verifyRule(IsDisjointRule.description)
     }
 
     func testJoinedDefaultParameter() {
@@ -155,7 +161,8 @@ class RulesTests: XCTestCase {
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false, testShebang: false)
+        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testLegacyCGGeometryFunctions() {
@@ -214,6 +221,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testPatternMatchingKeywords() {
+        verifyRule(PatternMatchingKeywordsRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 
@@ -239,6 +250,10 @@ class RulesTests: XCTestCase {
 
     func testProtocolPropertyAccessorsOrder() {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
+    }
+
+    func testQuickDiscouragedCall() {
+        verifyRule(QuickDiscouragedCallRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -267,6 +282,10 @@ class RulesTests: XCTestCase {
 
     func testShorthandOperator() {
         verifyRule(ShorthandOperatorRule.description)
+    }
+
+    func testSingleTestClass() {
+        verifyRule(SingleTestClassRule.description)
     }
 
     func testSortedImports() {

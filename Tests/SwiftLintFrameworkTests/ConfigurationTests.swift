@@ -23,7 +23,6 @@ private extension Configuration {
     }
 }
 
-// swiftlint:disable:next type_body_length
 class ConfigurationTests: XCTestCase {
 
     func testInit() {
@@ -193,6 +192,22 @@ class ConfigurationTests: XCTestCase {
         let file = File(path: projectMockSwift0)!
         XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
                           projectMockConfig0CustomPath.configuration(for: file))
+    }
+
+    func testConfigurationWithSwiftFileAsRoot() {
+        let configuration = Configuration(path: projectMockYAML0,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
+    }
+
+    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+        let configuration = Configuration(path: projectMockYAML0CustomPath,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
     // MARK: - Testing Rules from config dictionary

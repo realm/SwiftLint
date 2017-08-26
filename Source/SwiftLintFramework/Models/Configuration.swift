@@ -21,12 +21,12 @@ public struct Configuration: Equatable {
 
     public static let fileName = ".swiftlint.yml"
 
-    public let included: [String]         // included
-    public let excluded: [String]         // excluded
-    public let reporter: String           // reporter (xcode, json, csv, checkstyle)
-    public var warningThreshold: Int?     // warning threshold
-    public var rootPath: String?          // the root path to search for nested configurations
-    public var configurationPath: String? // if successfully loaded from a path
+    public let included: [String]                      // included
+    public let excluded: [String]                      // excluded
+    public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
+    public let warningThreshold: Int?                  // warning threshold
+    public private(set) var rootPath: String?          // the root path to search for nested configurations
+    public private(set) var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
 
     // MARK: Rules Properties
@@ -76,7 +76,7 @@ public struct Configuration: Equatable {
             rules = configuredRules.filter { rule in
                 return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
             }
-        case .default(let disabledRuleIdentifiers, let optInRuleIdentifiers):
+        case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
             let validDisabledRuleIdentifiers = validateRuleIdentifiers(
                 ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
                 validRuleIdentifiers: validRuleIdentifiers)

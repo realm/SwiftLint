@@ -5,7 +5,7 @@
 //  Created by Scott Hoyt on 12/28/15.
 //  Copyright © 2015 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.7.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.8.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -30,6 +30,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyEnumArgumentsRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
+    ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,
@@ -49,6 +50,7 @@ public let masterRuleList = RuleList(rules: [
     ImplicitGetterRule.self,
     ImplicitReturnRule.self,
     ImplicitlyUnwrappedOptionalRule.self,
+    IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
     InlineCommentRule.self,
     LargeTupleRule.self,
@@ -71,11 +73,13 @@ public let masterRuleList = RuleList(rules: [
     OperatorFunctionWhitespaceRule.self,
     OperatorUsageWhitespaceRule.self,
     OverriddenSuperCallRule.self,
+    PatternMatchingKeywordsRule.self,
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
     PrivateUnitTestRule.self,
     ProhibitedSuperRule.self,
     ProtocolPropertyAccessorsOrderRule.self,
+    QuickDiscouragedCallRule.self,
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,
@@ -83,9 +87,11 @@ public let masterRuleList = RuleList(rules: [
     RedundantVoidReturnRule.self,
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
+    SingleTestClassRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
     StrictFilePrivateRule.self,
+    SuperfluousDisableCommandRule.self,
     SwitchCaseOnNewlineRule.self,
     SyntacticSugarRule.self,
     TodoRule.self,

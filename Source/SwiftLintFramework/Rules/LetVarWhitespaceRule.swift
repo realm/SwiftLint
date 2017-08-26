@@ -32,7 +32,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
-            "a = 5\n↓var x = 1\n",
+            "\na = 5\n↓var x = 1\n",
             // This case doesn't work because of an apparent limitation in SourceKit
             // "var x: Int {\n\tlet a = 0\n\t↓return a\n}\n",
             "struct X {\n\tlet a\n\t↓func x() {}\n}\n"

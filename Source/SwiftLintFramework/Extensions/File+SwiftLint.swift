@@ -20,10 +20,17 @@ internal func regex(_ pattern: String,
 }
 
 extension File {
-    internal func regions() -> [Region] {
+    internal func regions(restrictingRuleIdentifiers: [String]? = nil) -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<String>()
-        let commands = self.commands()
+        let commands: [Command]
+        if let restrictingRuleIdentifiers = restrictingRuleIdentifiers {
+            commands = self.commands().filter { command in
+                return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
+            }
+        } else {
+            commands = self.commands()
+        }
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
@@ -52,20 +59,11 @@ extension File {
         }
         let contents = self.contents.bridge()
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return skipShebangCommands() + match(pattern: pattern, with: [.comment]).flatMap { range in
+        return match(pattern: pattern, with: [.comment]).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
-    }
-
-    private func skipShebangCommands() -> [Command] {
-        guard contents.hasPrefix("#!") else {
-            return []
-        }
-
-        return Command(action: .disable, ruleIdentifiers: masterRuleList.allValidIdentifiers(),
-                       line: 0, modifier: .next).expand()
     }
 
     fileprivate func endOf(next command: Command?) -> Location {

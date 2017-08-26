@@ -30,7 +30,7 @@ public struct Region: Equatable {
 
     public func isRuleDisabled(_ rule: Rule) -> Bool {
         let identifiers = type(of: rule).description.allIdentifiers
-        return !disabledRuleIdentifiers.intersection(identifiers).isEmpty
+        return !disabledRuleIdentifiers.isDisjoint(with: identifiers)
     }
 
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {

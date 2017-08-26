@@ -10,6 +10,10 @@
 
 ##### Enhancements
 
+* Add `is_disjoint` rule to encourage using `Set.isDisjoint(with:)` over
+  `Set.intersection(_:).isEmpty`.  
+  [JP Simard](https://github.com/jpsim)
+
 * Add `xctfail_message` rule to enforce XCTFail
   calls to include a description of the assertion.  
   [Ornithologist Coder](https://github.com/ornithocoder)
@@ -21,7 +25,7 @@
   [#1093](https://github.com/realm/SwiftLint/issues/1093)
   [#1757](https://github.com/realm/SwiftLint/issues/1757)
 
-* Files with extensions other than `.swift` can now be used as argument
+* Files with extensions other than `.swift` can now be used as arguments
   to `--file` when linting or autocorrecting.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1721](https://github.com/realm/SwiftLint/issues/1721)
@@ -31,12 +35,56 @@
   [Ryan Booker](https://github.com/ryanbooker)
   [#1761](https://github.com/realm/SwiftLint/issues/1761)
 
+* Add `single_test_class` opt-in rule to validate that test files
+  only contain a single `QuickSpec` or `XCTestCase` subclass.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1779](https://github.com/realm/SwiftLint/issues/1779)
+
+* Produce an error when a `// swiftlint:disable` command does not silence
+  any violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#1102](https://github.com/realm/SwiftLint/issues/1102)
+
+* Add `quick_discouraged_call` opt-in rule to discourage calls and object
+  initialization inside 'describe' and 'context' block in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1781](https://github.com/realm/SwiftLint/issues/1781)
+
+* Invalidate cache when Swift version changes.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Add `pattern_matching_keywords` opt-in rule to enforce moving `let` and `var`
+  keywords outside tuples in a `switch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
+* Add `explicit_enum_raw_value` opt-in rule to allow refactoring the
+  Swift API without breaking the API contract.  
+  [Mazyod](https://github.com/mazyod)
+  [#1778](https://github.com/realm/SwiftLint/issues/1778)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring
   local variable with implicity unwrapped type.  
   [Otávio Lima](https://github.com/otaviolima)
   [#1710](https://github.com/realm/SwiftLint/issues/1710)
+
+* Fix the warning message and autocorrection of `vertical_whitespace` rule to
+  display the maximum empty lines allowed if `max_empty_lines` is greater
+  than 1.  
+  [Hossam Ghareeb](https://github.com/hossamghareeb)
+  [#1763](https://github.com/realm/SwiftLint/issues/1763)
+
+* Fix for the wrong configuration being used when using `--path` and a
+  configuration exists in a parent directory.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1744](https://github.com/realm/SwiftLint/issues/1744)
+
+* Fix false positive on `unused_enumerated` rule with complex variable
+  bindings.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1787](https://github.com/realm/SwiftLint/issues/1787)
 
 ## 0.21.0: Vintage Washboard
 

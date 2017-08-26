@@ -34,7 +34,7 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
 
         let elements = findAllElements(in: file.structure.dictionary,
-                                       ofTypes: [.class, .enum, .struct, .extension])
+                                       of: [.class, .enum, .struct, .extension])
 
         let susceptibleNames = Set(elements.flatMap { $0.kind != .extension ? $0.name : nil })
 
@@ -48,7 +48,7 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
     }
 
     private func findAllElements(in dictionary: [String: SourceKitRepresentable],
-                                 ofTypes types: [SwiftDeclarationKind],
+                                 of types: Set<SwiftDeclarationKind>,
                                  namespace: [String] = []) -> [Element] {
 
         return dictionary.substructure.flatMap { subDict -> [Element] in
@@ -62,7 +62,7 @@ public struct GroupingExtensionBanRule: OptInRule, ConfigurationProviderRule {
                 elements.append(element)
             }
 
-            elements += findAllElements(in: subDict, ofTypes: types, namespace: [element.name])
+            elements += findAllElements(in: subDict, of: types, namespace: [element.name])
 
             return elements
         }

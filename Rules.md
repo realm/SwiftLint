@@ -2095,7 +2095,7 @@ UIView.animateWithDuration(0.3, animations: {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`explicit_associated_enum_value` | Disabled | No | idiomatic
+`explicit_enum_raw_value` | Disabled | No | idiomatic
 
 Enums should be explicitly assigned their raw values.
 
@@ -2137,9 +2137,9 @@ enum Numbers: String {
 ```
 
 ```swift
-enum Numbers: String {
- case one = "ONE"
- case two = "TWO"
+protocol Algebra {}
+enum Numbers: Algebra {
+ case one
 }
 
 ```
@@ -2151,6 +2151,13 @@ enum Numbers: String {
 ```swift
 enum Numbers: Int {
  case one = 10, ↓two, three = 30
+}
+
+```
+
+```swift
+enum Numbers: NSInteger {
+ case ↓one
 }
 
 ```
@@ -2171,7 +2178,7 @@ enum Numbers: String {
 ```
 
 ```swift
-enum Numbers: String {
+enum Numbers: Decimal {
  case ↓one, ↓two
 }
 

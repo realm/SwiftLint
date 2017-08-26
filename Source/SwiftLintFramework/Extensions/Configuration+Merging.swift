@@ -96,7 +96,7 @@ extension Configuration {
                 .filter { rule in
                     return whitelistedRules.contains(type(of: rule).description.identifier)
                 }
-        case .default(let disabled, let optIn):
+        case let .default(disabled, optIn):
             // Same here
             return Set(
                 configuration.rules

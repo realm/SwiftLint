@@ -22,6 +22,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
@@ -64,6 +65,7 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
+* [Pattern Matching Keywords](#pattern-matching-keywords)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
@@ -2083,6 +2085,103 @@ UIView.animateWithDuration(0.3, animations: {
 ```swift
 [1, 2].map↓(  ) { number in
  number + 1 
+}
+
+```
+
+</details>
+
+
+
+## Explicit Enum Raw Value
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_enum_raw_value` | Disabled | No | idiomatic
+
+Enums should be explicitly assigned their raw values.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Numbers {
+ case int(Int)
+ case short(Int16)
+}
+
+```
+
+```swift
+enum Numbers: Int {
+ case one = 1
+ case two = 2
+}
+
+```
+
+```swift
+enum Numbers: Double {
+ case one = 1.1
+ case two = 2.2
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "one"
+ case two = "two"
+}
+
+```
+
+```swift
+protocol Algebra {}
+enum Numbers: Algebra {
+ case one
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Numbers: Int {
+ case one = 10, ↓two, three = 30
+}
+
+```
+
+```swift
+enum Numbers: NSInteger {
+ case ↓one
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one
+ case ↓two
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one, two = "two"
+}
+
+```
+
+```swift
+enum Numbers: Decimal {
+ case ↓one, ↓two
 }
 
 ```
@@ -7643,6 +7742,129 @@ class VC: UIViewController {
 	}
 }
 
+```
+
+</details>
+
+
+
+## Pattern Matching Keywords
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`pattern_matching_keywords` | Disabled | No | idiomatic
+
+Combine multiple pattern matching bindings by moving keywords out of tuples.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+    default: break
+}
+```
+
+```swift
+switch foo {
+    case 1: break
+}
+```
+
+```swift
+switch foo {
+    case bar: break
+}
+```
+
+```swift
+switch foo {
+    case let (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x): break
+}
+```
+
+```swift
+switch foo {
+    case let .foo(x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x), .bar(let x): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x, var y): break
+}
+```
+
+```swift
+switch foo {
+    case var (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(var x): break
+}
+```
+
+```swift
+switch foo {
+    case var .foo(x, y): break
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+    case (↓let x,  ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓let x, ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break
+}
+```
+
+```swift
+switch foo {
+    case (↓var x,  ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓var x, ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
+}
 ```
 
 </details>

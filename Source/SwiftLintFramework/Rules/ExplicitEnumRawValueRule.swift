@@ -1,5 +1,5 @@
 //
-//  ExplicitAssociatedEnumValueRule.swift
+//  ExplicitEnumRawValueRule.swift
 //  SwiftLint
 //
 //  Created by Mazyad Alabduljaleel on 8/19/17.
@@ -9,15 +9,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "explicit_associated_enum_value",
-        name: "Explicit Associated Enum Value",
-        description: "Enums should be explicitly assigned their associated values.",
+        identifier: "explicit_enum_raw_value",
+        name: "Explicit Enum Raw Value",
+        description: "Enums should be explicitly assigned their raw values.",
         kind: .idiomatic,
         nonTriggeringExamples: [
             "enum Numbers {\n case int(Int)\n case short(Int16)\n}\n",
@@ -45,7 +45,7 @@ public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, Configuration
             return []
         }
 
-        let violations = violatingOffsetsForEnum(dictionary: dictionary, file: file)
+        let violations = violatingOffsetsForEnum(dictionary: dictionary)
         return violations.map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
@@ -53,7 +53,7 @@ public struct ExplicitAssociatedEnumValueRule: ASTRule, OptInRule, Configuration
         }
     }
 
-    private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
+    private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable]) -> [Int] {
 
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .flatMap { substructureElements(of: $0, matching: .enumelement) }

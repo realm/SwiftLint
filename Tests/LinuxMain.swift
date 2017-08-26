@@ -358,7 +358,7 @@ extension RulesTests {
         ("testEmptyEnumArguments", testEmptyEnumArguments),
         ("testEmptyParameters", testEmptyParameters),
         ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-        ("testExplicitAssociatedEnumValue", testExplicitAssociatedEnumValue),
+        ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
         ("testExplicitTopLevelACL", testExplicitTopLevelACL),
         ("testExplicitTypeInterface", testExplicitTypeInterface),

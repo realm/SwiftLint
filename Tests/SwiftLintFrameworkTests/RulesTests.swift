@@ -81,8 +81,8 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
-    func testExplicitAssociatedEnumValue() {
-        verifyRule(ExplicitAssociatedEnumValueRule.description)
+    func testExplicitEnumRawValue() {
+        verifyRule(ExplicitEnumRawValueRule.description)
     }
 
     func testExplicitInit() {

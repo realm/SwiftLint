@@ -22,7 +22,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
-* [Explicit Associated Enum Value](#explicit-associated-enum-value)
+* [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
@@ -2091,13 +2091,13 @@ UIView.animateWithDuration(0.3, animations: {
 
 
 
-## Explicit Associated Enum Value
+## Explicit Enum Raw Value
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
 `explicit_associated_enum_value` | Disabled | No | idiomatic
 
-Enums should be explicitly assigned their associated values.
+Enums should be explicitly assigned their raw values.
 
 ### Examples
 

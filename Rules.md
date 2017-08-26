@@ -37,7 +37,7 @@
 * [Function Body Length](#function-body-length)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
-* [Grouping Extension Ban](#grouping-extension-ban)
+* [No Grouping Extension](#no-grouping-extension)
 * [Identifier Name](#identifier-name)
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
@@ -4364,11 +4364,11 @@ enum Foo<↓type> {}
 
 
 
-## Grouping Extension Ban
+## No Grouping Extension
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`grouping_extension_ban` | Disabled | No | idiomatic
+`no_grouping_extension` | Disabled | No | idiomatic
 
 Extensions shouldn't be used to group code within the same source file.
 

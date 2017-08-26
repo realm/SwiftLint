@@ -147,7 +147,8 @@ class RulesTests: XCTestCase {
 
     func testInlineComment() {
         verifyRule(InlineCommentRule.description, skipCommentTests: true)
-      
+    }
+    
     func testIsDisjoint() {
         verifyRule(IsDisjointRule.description)
     }

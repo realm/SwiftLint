@@ -68,6 +68,10 @@
   [Mazyod](https://github.com/mazyod)
   [#1767](https://github.com/realm/SwiftLint/issues/1767)
 
+* Improve `syntactic_sugar` violation message to be type-specific.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1803](https://github.com/realm/SwiftLint/issues/1803)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

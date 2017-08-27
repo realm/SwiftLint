@@ -135,10 +135,6 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testNoGroupingExtension() {
-        verifyRule(NoGroupingExtensionRule.description)
-    }
-
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
@@ -204,6 +200,10 @@ class RulesTests: XCTestCase {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 
+    func testNoGroupingExtension() {
+        verifyRule(NoGroupingExtensionRule.description)
+    }
+    
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }

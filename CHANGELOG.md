@@ -63,6 +63,11 @@
   [Mazyod](https://github.com/mazyod)
   [#1778](https://github.com/realm/SwiftLint/issues/1778)
 
+* Add `no_grouping_extension` opt-in rule to disallow the use of extensions
+  for code grouping purposes within the same file.  
+  [Mazyod](https://github.com/mazyod)
+  [#1767](https://github.com/realm/SwiftLint/issues/1767)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

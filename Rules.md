@@ -57,6 +57,7 @@
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
 * [No Extension Access Modifier](#no-extension-access-modifier)
+* [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
 * [Number Separator](#number-separator)
 * [Object Literal](#object-literal)
@@ -6799,6 +6800,63 @@ extension String {}
 
 ```swift
 ↓fileprivate extension String {}
+```
+
+</details>
+
+
+
+## No Grouping Extension
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`no_grouping_extension` | Disabled | No | idiomatic
+
+Extensions shouldn't be used to group code within the same source file.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+protocol Food {}
+extension Food {}
+
+```
+
+```swift
+class Apples {}
+extension Oranges {}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Fruit {}
+↓extension Fruit {}
+
+```
+
+```swift
+↓extension Tea: Error {}
+struct Tea {}
+
+```
+
+```swift
+class Ham { class Spam {}}
+↓extension Ham.Spam {}
+
+```
+
+```swift
+extension External { struct Gotcha {}}
+↓extension External.Gotcha {}
+
 ```
 
 </details>

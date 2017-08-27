@@ -9,6 +9,8 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_body_length
+
 class RulesTests: XCTestCase {
 
     func testBlockBasedKVO() {
@@ -196,6 +198,10 @@ class RulesTests: XCTestCase {
 
     func testNoExtensionAccessModifierRule() {
         verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
+    func testNoGroupingExtension() {
+        verifyRule(NoGroupingExtensionRule.description)
     }
 
     func testNotificationCenterDetachment() {

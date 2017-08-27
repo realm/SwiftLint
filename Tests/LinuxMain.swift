@@ -387,6 +387,7 @@ extension RulesTests {
         ("testMultilineParameters", testMultilineParameters),
         ("testNesting", testNesting),
         ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
+        ("testNoGroupingExtension", testNoGroupingExtension),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),
         ("testOpeningBrace", testOpeningBrace),

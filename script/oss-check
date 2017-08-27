@@ -214,6 +214,8 @@ def build(branch)
 end
 
 def diff_and_report_changes_to_danger
+  @repos.each { |repo| message repo.duration_report }
+
   @repos.each do |repo|
     if repo.master_exit_value != repo.branch_exit_value
       warn "This PR changed the exit value when running on #{repo.name}: " \
@@ -232,7 +234,6 @@ def diff_and_report_changes_to_danger
     (branch - master).each do |violation|
       warn "This PR introduced a violation in #{repo.name}: [#{violation}](#{convert_to_link(repo, violation)})"
     end
-    message repo.duration_report
   end
 end
 

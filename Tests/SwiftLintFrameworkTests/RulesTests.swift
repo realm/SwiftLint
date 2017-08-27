@@ -203,7 +203,7 @@ class RulesTests: XCTestCase {
     func testNoGroupingExtension() {
         verifyRule(NoGroupingExtensionRule.description)
     }
-    
+
     func testNotificationCenterDetachment() {
         verifyRule(NotificationCenterDetachmentRule.description)
     }

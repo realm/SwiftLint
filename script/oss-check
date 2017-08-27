@@ -7,6 +7,7 @@
 require 'fileutils'
 require 'open3'
 require 'optparse'
+require 'erb'
 
 ################################
 # Options
@@ -227,10 +228,12 @@ def diff_and_report_changes_to_danger
     master = non_empty_lines("#{@working_dir}/master_reports/#{repo.name}.txt")
 
     (master - branch).each do |fixed|
-      message "This PR fixed a violation in #{repo.name}: [#{fixed}](#{convert_to_link(repo, fixed)})"
+      escaped_message = ERB::Util.html_escape fixed
+      message "This PR fixed a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, fixed)})"
     end
     (branch - master).each do |violation|
-      warn "This PR introduced a violation in #{repo.name}: [#{violation}](#{convert_to_link(repo, violation)})"
+      escaped_message = ERB::Util.html_escape violation
+      warn "This PR introduced a violation in #{repo.name}: [#{escaped_message}](#{convert_to_link(repo, violation)})"
     end
     message repo.duration_report
   end

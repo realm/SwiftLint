@@ -62,6 +62,7 @@ public let masterRuleList = RuleList(rules: [
     LineLengthRule.self,
     MarkRule.self,
     MultilineParametersRule.self,
+    MultipleClosuresWithTrailingClosureRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,

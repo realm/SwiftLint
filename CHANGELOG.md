@@ -72,6 +72,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1803](https://github.com/realm/SwiftLint/issues/1803)
 
+* Add `multiple_closures_with_trailing_closure` rule that disallows trailing
+  closure syntax when passing more than one closure argument to a function.  
+  [Erik Strottmann](https://github.com/erikstrottmann)
+  [#1801](https://github.com/realm/SwiftLint/issues/1801)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

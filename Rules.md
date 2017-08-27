@@ -54,6 +54,7 @@
 * [Line Length](#line-length)
 * [Mark](#mark)
 * [Multiline Parameters](#multiline-parameters)
+* [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
 * [No Extension Access Modifier](#no-extension-access-modifier)
@@ -6515,6 +6516,67 @@ class Foo {
 class Foo {
    class func ↓foo(param1: Int, param2: Bool,
                    param3: [String]) { }
+}
+```
+
+</details>
+
+
+
+## Multiple Closures with Trailing Closure
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`multiple_closures_with_trailing_closure` | Enabled | No | style
+
+Trailing closure syntax should not be used when passing more than one closure argument.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo.map { $0 + 1 }
+
+```
+
+```swift
+foo.reduce(0) { $0 + $1 }
+
+```
+
+```swift
+if let foo = bar.map({ $0 + 1 }) {
+
+}
+
+```
+
+```swift
+foo.something(param1: { $0 }, param2: { $0 + 1 })
+
+```
+
+```swift
+UIView.animate(withDuration: 1.0) {
+    someView.alpha = 0.0
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo.something(param1: { $0 }) ↓{ $0 + 1 }
+```
+
+```swift
+UIView.animate(withDuration: 1.0, animations: {
+    someView.alpha = 0.0
+}) ↓{ _ in
+    someView.removeFromSuperview()
 }
 ```
 

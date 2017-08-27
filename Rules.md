@@ -9682,7 +9682,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `syntactic_sugar` | Enabled | No | idiomatic
 
-Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>
+Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
 
 ### Examples
 

@@ -9,6 +9,8 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable type_body_length
+
 class RulesTests: XCTestCase {
 
     func testBlockBasedKVO() {

@@ -104,6 +104,10 @@
   [Erik Strottmann](https://github.com/erikstrottmann)
   [#1801](https://github.com/realm/SwiftLint/issues/1801)
 
+* Warn if a configured rule is not enabled.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1350](https://github.com/realm/SwiftLint/issues/1350)
+
 ##### Bug Fixes
 
 * Fix false positive on `force_unwrapping` rule when declaring

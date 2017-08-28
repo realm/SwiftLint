@@ -64,7 +64,7 @@ extension Configuration {
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
 
-        let configuredRules: [Rule]
+        let configuredRules: [ConfiguredRule]
         do {
             configuredRules = try ruleList.configuredRules(with: dict)
         } catch RuleListError.duplicatedConfigurations(let ruleType) {
@@ -99,7 +99,7 @@ extension Configuration {
                   warningThreshold: Int?,
                   reporter: String = XcodeReporter.identifier,
                   ruleList: RuleList = masterRuleList,
-                  configuredRules: [Rule]?,
+                  configuredRules: [ConfiguredRule]?,
                   swiftlintVersion: String?,
                   cachePath: String?) {
 
@@ -162,6 +162,36 @@ extension Configuration {
         for (deprecatedIdentifier, identifier) in deprecatedUsages {
             queuedPrintError("'\(deprecatedIdentifier)' rule has been renamed to '\(identifier)' and will be " +
                 "completely removed in a future release.")
+        }
+    }
+
+    internal static func validateConfiguredRulesAreEnabled(rulesMode: Configuration.RulesMode,
+                                                           configuredRules: [ConfiguredRule]) {
+        let rulesWithConfiguration = configuredRules.flatMap {
+            $0.isDefaultConfiguration ? nil : $0.rule
+        }
+
+        for rule in rulesWithConfiguration {
+            let identifiers = type(of: rule).description.allIdentifiers
+            let message = "Found a configuration for '\(type(of: rule).description.identifier)' rule"
+
+            switch rulesMode {
+            case .allEnabled:
+                return
+            case .whitelisted(let whitelist):
+                if Set(whitelist).isDisjoint(with: identifiers) {
+                    queuedPrintError("\(message), but it is not present on " +
+                        "'\(Key.whitelistRules.rawValue)'")
+                }
+            case let .default(disabled: disabledRules, optIn: optInRules):
+                if rule is OptInRule, Set(optInRules).isDisjoint(with: identifiers) {
+                    queuedPrintError("\(message), but it is not enabled on " +
+                        "'\(Key.optInRules.rawValue)'")
+                } else if Set(disabledRules).isSuperset(of: identifiers) {
+                    queuedPrintError("\(message), but it is disabled on " +
+                        "'\(Key.disabledRules.rawValue)'")
+                }
+            }
         }
     }
 }

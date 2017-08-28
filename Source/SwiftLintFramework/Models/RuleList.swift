@@ -12,6 +12,11 @@ public enum RuleListError: Error {
     case duplicatedConfigurations(rule: Rule.Type)
 }
 
+public struct ConfiguredRule {
+    public let rule: Rule
+    public let isDefaultConfiguration: Bool
+}
+
 public struct RuleList {
     public let list: [String: Rule.Type]
     private let aliases: [String: String]
@@ -36,8 +41,8 @@ public struct RuleList {
         aliases = tmpAliases
     }
 
-    internal func configuredRules(with dictionary: [String: Any]) throws -> [Rule] {
-        var rules = [String: Rule]()
+    internal func configuredRules(with dictionary: [String: Any]) throws -> [ConfiguredRule] {
+        var rules = [String: ConfiguredRule]()
 
         for (key, configuration) in dictionary {
             guard let identifier = identifier(for: key), let ruleType = list[identifier] else {
@@ -48,15 +53,15 @@ public struct RuleList {
             }
             do {
                 let configuredRule = try ruleType.init(configuration: configuration)
-                rules[identifier] = configuredRule
+                rules[identifier] = ConfiguredRule(rule: configuredRule, isDefaultConfiguration: false)
             } catch {
                 queuedPrintError("Invalid configuration for '\(identifier)'. Falling back to default.")
-                rules[identifier] = ruleType.init()
+                rules[identifier] = ConfiguredRule(rule: ruleType.init(), isDefaultConfiguration: true)
             }
         }
 
         for (identifier, ruleType) in list where rules[identifier] == nil {
-            rules[identifier] = ruleType.init()
+            rules[identifier] = ConfiguredRule(rule: ruleType.init(), isDefaultConfiguration: true)
         }
 
         return Array(rules.values)

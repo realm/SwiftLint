@@ -9,6 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
+// swiftlint:disable file_length
 // swiftlint:disable type_body_length
 
 class RulesTests: XCTestCase {
@@ -190,6 +191,10 @@ class RulesTests: XCTestCase {
 
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
+    }
+
+    func testMultipleClosuresWithTrailingClosure() {
+        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
     }
 
     func testNesting() {

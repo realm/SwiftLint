@@ -385,6 +385,7 @@ extension RulesTests {
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testMark", testMark),
         ("testMultilineParameters", testMultilineParameters),
+        ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
         ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
         ("testNoGroupingExtension", testNoGroupingExtension),

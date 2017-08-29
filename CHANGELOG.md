@@ -100,6 +100,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1787](https://github.com/realm/SwiftLint/issues/1787)
 
+* Fix incorrect violations and autocorrections on 
+  `unneeded_parentheses_in_closure_argument` rule that were generated in some
+  cases (mainly when using chained method calls with closures).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.21.0: Vintage Washboard
 
 ##### Breaking

@@ -150,7 +150,7 @@ extension Configuration {
         }
 
         // Deprecation warning for rules
-        let deprecatedRulesIdentifiers = ruleList.list.flatMap { (identifier, rule) -> [(String, String)] in
+        let deprecatedRulesIdentifiers = ruleList.list.flatMap { identifier, rule -> [(String, String)] in
             return rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 

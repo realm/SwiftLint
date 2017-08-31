@@ -7413,59 +7413,103 @@ guard
 { }
 ```
 
+```swift
+struct Rule {}
+
+```
+
+```swift
+struct Parent {
+	struct Child {
+		let foo: Int
+	}
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-func abc(↓){
+func abc()↓{
 }
 ```
 
 ```swift
-func abc()↓
-	{ }
+func abc()
+	↓{ }
 ```
 
 ```swift
-[].map(↓){ $0 }
+[].map()↓{ $0 }
 ```
 
 ```swift
-[].map↓( { } )
+[].map( ↓{ } )
 ```
 
 ```swift
-if let a = b{ }
+if let a = b↓{ }
 ```
 
 ```swift
-while a == b{ }
+while a == b↓{ }
 ```
 
 ```swift
-guard let a = b else{ }
+guard let a = b else↓{ }
 ```
 
 ```swift
 if
 	let a = b,
 	let c = d
-	where a == c{ }
+	where a == c↓{ }
 ```
 
 ```swift
 while
 	let a = b,
 	let c = d
-	where a == c{ }
+	where a == c↓{ }
 ```
 
 ```swift
 guard
 	let a = b,
 	let c = d
-	where a == c else{ }
+	where a == c else↓{ }
+```
+
+```swift
+struct Rule↓{}
+
+```
+
+```swift
+struct Rule
+↓{
+}
+
+```
+
+```swift
+struct Rule
+
+	↓{
+}
+
+```
+
+```swift
+struct Parent {
+	struct Child
+	↓{
+		let foo: Int
+	}
+}
+
 ```
 
 </details>

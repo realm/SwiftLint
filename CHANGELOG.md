@@ -10,7 +10,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Improve how `opening_brace` rule reports violations locations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1811](https://github.com/realm/SwiftLint/issues/1811)  
 
 ## 0.22.0: Wrinkle-free
 

@@ -65,6 +65,11 @@
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
 
+* Ignore SwiftLint commands (`swiftlint:(disable|enable)`) in `file_header`
+  rule, making it work better with `superfluous_disable_command` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1810](https://github.com/realm/SwiftLint/issues/1810)  
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking

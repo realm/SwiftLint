@@ -53,13 +53,14 @@ extension File {
         return regions
     }
 
-    internal func commands() -> [Command] {
+    internal func commands(in range: NSRange? = nil) -> [Command] {
         if sourcekitdFailed {
             return []
         }
         let contents = self.contents.bridge()
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment]).flatMap { range in
+        return match(pattern: pattern, with: [.comment], range: range).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()

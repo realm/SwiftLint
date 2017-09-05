@@ -32,7 +32,8 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             "class C {\n\t@objc\n\tvar s: String = \"\"\n}",
             "class C {\n\t@objc\n\tfunc a() {}\n}",
             "class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n",
-            "@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n"
+            "@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n",
+            "// swiftlint:disable superfluous_disable_command\n// swiftlint:disable force_cast\n\nlet x = bar as! Bar"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",

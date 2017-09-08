@@ -166,6 +166,8 @@
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
 		D47F31151EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */; };
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */; };
+		D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */; };
+		D48B51231F4F5E4B0068AB98 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */; };
 		D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE61DF191380006E05D /* AttributesRuleTests.swift */; };
 		D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */; };
 		D4A893351E15824100BF954D /* SwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A893341E15824100BF954D /* SwiftVersion.swift */; };
@@ -500,6 +502,8 @@
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
 		D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolPropertyAccessorsOrderRule.swift; sourceTree = "<group>"; };
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRulesExamples.swift; sourceTree = "<group>"; };
+		D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Documentation.swift"; sourceTree = "<group>"; };
+		D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationTests.swift; sourceTree = "<group>"; };
 		D4998DE61DF191380006E05D /* AttributesRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleTests.swift; sourceTree = "<group>"; };
 		D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRuleTests.swift; sourceTree = "<group>"; };
 		D4A893341E15824100BF954D /* SwiftVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftVersion.swift; sourceTree = "<group>"; };
@@ -857,6 +861,7 @@
 				67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */,
 				67EB4DFB1E4CD7F5004E9ACD /* CyclomaticComplexityRuleTests.swift */,
 				62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */,
+				D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */,
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
 				29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */,
@@ -1087,6 +1092,7 @@
 				E80E018E1B92C1350078EB70 /* Region.swift */,
 				83D71E261B131EB5000395DE /* RuleDescription.swift */,
 				E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */,
+				D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */,
 				D401D9251ED85EF0005DA5D4 /* RuleKind.swift */,
 				E88DEA781B098D4400A66CB0 /* RuleParameter.swift */,
 				E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */,
@@ -1529,6 +1535,7 @@
 				3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */,
 				D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */,
 				C3DE5DAC1E7DF9CA00761483 /* FatalErrorMessageRule.swift in Sources */,
+				D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */,
 				8FC9F5111F4B8E48006826C1 /* IsDisjointRule.swift in Sources */,
 				4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */,
 				E86396C21BADAAE5002C9E88 /* Reporter.swift in Sources */,
@@ -1561,6 +1568,7 @@
 				29FFC37D1F157BDE007E4825 /* FileLengthRuleTests.swift in Sources */,
 				006204DE1E1E4E0A00FFFBE1 /* VerticalWhitespaceRuleTests.swift in Sources */,
 				02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */,
+				D48B51231F4F5E4B0068AB98 /* DocumentationTests.swift in Sources */,
 				D4CA758F1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift in Sources */,
 				D4DB92251E628898005DE9C1 /* TodoRuleTests.swift in Sources */,
 				D4348EEA1C46122C007707FB /* FunctionBodyLengthRuleTests.swift in Sources */,

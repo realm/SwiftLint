@@ -5916,6 +5916,43 @@ let a = 0
 
 ```
 
+```swift
+class C {
+	@objc
+	var s: String = ""
+}
+```
+
+```swift
+class C {
+	@objc
+	func a() {}
+}
+```
+
+```swift
+class C {
+	var x = 0
+	lazy
+	var y = 0
+}
+
+```
+
+```swift
+@available(OSX, introduced: 10.6)
+@available(*, deprecated)
+var x = 0
+
+```
+
+```swift
+// swiftlint:disable superfluous_disable_command
+// swiftlint:disable force_cast
+
+let x = bar as! Bar
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -5938,6 +5975,25 @@ struct X {
 	let a
 	↓func x() {}
 }
+
+```
+
+```swift
+var x = 0
+↓@objc func f() {}
+
+```
+
+```swift
+var x = 0
+↓@objc
+	func f() {}
+
+```
+
+```swift
+@objc func f() {}
+var x = 0
 
 ```
 
@@ -13630,6 +13686,10 @@ let foo = { ↓(bar) -> Bool in return true }
 
 ```swift
 foo.map { ($0, $0) }.forEach { ↓(x, y) in }
+```
+
+```swift
+foo.bar { [weak self] ↓(x, y) in }
 ```
 
 </details>

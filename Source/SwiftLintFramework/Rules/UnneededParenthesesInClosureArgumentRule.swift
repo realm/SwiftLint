@@ -28,13 +28,15 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         triggeringExamples: [
             "call(arg: { ↓(bar) in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n",
-            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }"
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }",
+            "foo.bar { [weak self] ↓(x, y) in }"
         ],
         corrections: [
             "call(arg: { ↓(bar) in })\n": "call(arg: { bar in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n": "let foo = { bar -> Bool in return true }\n",
             "method { ↓(foo, bar) in }\n": "method { foo, bar in }\n",
-            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }": "foo.map { ($0, $0) }.forEach { x, y in }"
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }": "foo.map { ($0, $0) }.forEach { x, y in }",
+            "foo.bar { [weak self] ↓(x, y) in }": "foo.bar { [weak self] x, y in }"
         ]
     )
 
@@ -47,7 +49,8 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let pattern = "\\{\\s*(\\([^:}]+\\))\\s*(in|->)"
+        let capturesPattern = "(?:\\[[^\\]]+\\])?"
+        let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+\\))\\s*(in|->)"
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         return regex(pattern).matches(in: file.contents, options: [], range: range).flatMap { match -> NSRange? in

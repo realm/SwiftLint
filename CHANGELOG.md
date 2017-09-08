@@ -12,7 +12,12 @@
 
 * Improve how `opening_brace` rule reports violations locations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1811](https://github.com/realm/SwiftLint/issues/1811)  
+  [#1811](https://github.com/realm/SwiftLint/issues/1811)
+
+* Fix false negatives in `unneeded_parentheses_in_closure_argument` rule
+  when using capture lists.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1817](https://github.com/realm/SwiftLint/issues/1817)
 
 ## 0.22.0: Wrinkle-free
 

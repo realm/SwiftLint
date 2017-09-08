@@ -121,6 +121,12 @@
   cases (mainly when using chained method calls with closures).  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
+  rule.  
+  [David Catmull](https://github.com/Uncommon)
+  [#1770](https://github.com/realm/SwiftLint/issues/1770)
+  [#1812](https://github.com/realm/SwiftLint/issues/1812)
+
 ## 0.21.0: Vintage Washboard
 
 ##### Breaking

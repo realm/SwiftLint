@@ -13632,6 +13632,10 @@ let foo = { ↓(bar) -> Bool in return true }
 foo.map { ($0, $0) }.forEach { ↓(x, y) in }
 ```
 
+```swift
+foo.bar { [weak self] ↓(x, y) in }
+```
+
 </details>
 
 

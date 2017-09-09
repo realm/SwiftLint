@@ -19,6 +19,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1817](https://github.com/realm/SwiftLint/issues/1817)
 
+* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
+  rule.  
+  [David Catmull](https://github.com/Uncommon)
+  [#1770](https://github.com/realm/SwiftLint/issues/1770)
+  [#1812](https://github.com/realm/SwiftLint/issues/1812)
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking
@@ -125,12 +131,6 @@
   `unneeded_parentheses_in_closure_argument` rule that were generated in some
   cases (mainly when using chained method calls with closures).  
   [Marcelo Fabri](https://github.com/marcelofabri)
-
-* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
-  rule.  
-  [David Catmull](https://github.com/Uncommon)
-  [#1770](https://github.com/realm/SwiftLint/issues/1770)
-  [#1812](https://github.com/realm/SwiftLint/issues/1812)
 
 ## 0.21.0: Vintage Washboard
 

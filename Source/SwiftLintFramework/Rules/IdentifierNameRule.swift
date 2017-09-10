@@ -118,16 +118,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
 private extension String {
     var isViolatingCase: Bool {
-        let secondIndex = characters.index(after: startIndex)
-        let firstCharacter = substring(to: secondIndex)
+        let firstCharacter = String(self[startIndex])
         guard firstCharacter.isUppercase() else {
             return false
         }
         guard characters.count > 1 else {
             return true
         }
-        let range = secondIndex..<characters.index(after: secondIndex)
-        let secondCharacter = substring(with: range)
+        let secondCharacter = String(self[characters.index(after: startIndex)])
         return secondCharacter.isLowercase()
     }
 

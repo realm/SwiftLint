@@ -67,11 +67,11 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
                     return nil
             }
 
-            let type = contents.substring(with: result.range(at: 1))
+            let typeString = contents.substring(with: result.range(at: 1))
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location),
-                                  reason: message(for: type))
+                                  reason: message(for: typeString))
 
         }
     }
@@ -105,26 +105,26 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
     }
 
     private func message(for originalType: String) -> String {
-        let type: String
+        let typeString: String
         let sugaredType: String
 
         switch originalType {
         case "Optional":
-            type = "Optional<Int>"
+            typeString = "Optional<Int>"
             sugaredType = "Int?"
         case "ImplicitlyUnwrappedOptional":
-            type = "ImplicitlyUnwrappedOptional<Int>"
+            typeString = "ImplicitlyUnwrappedOptional<Int>"
             sugaredType = "Int!"
         case "Array":
-            type = "Array<Int>"
+            typeString = "Array<Int>"
             sugaredType = "[Int]"
         case "Dictionary":
-            type = "Dictionary<String, Int>"
+            typeString = "Dictionary<String, Int>"
             sugaredType = "[String: Int]"
         default:
             return type(of: self).description.description
         }
 
-        return "Shorthand syntactic sugar should be used, i.e. \(sugaredType) instead of \(type)."
+        return "Shorthand syntactic sugar should be used, i.e. \(sugaredType) instead of \(typeString)."
     }
 }

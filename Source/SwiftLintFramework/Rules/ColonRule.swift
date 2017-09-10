@@ -41,7 +41,13 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "let abc = [Void: Void]()\n",
             "let abc = [1: [3: 2], 3: 4]\n",
             "let abc = [\"string\": \"string\"]\n",
-            "let abc = [\"string:string\": \"string\"]\n"
+            "let abc = [\"string:string\": \"string\"]\n",
+            "let abc: [String: Int]\n",
+            "func foo(bar: [String: Int]) {}\n",
+            "func foo() -> [String: Int] { return [:] }\n",
+            "let abc: Any\n",
+            "let abc: [Any: Int]\n",
+            "let abc: [String: Any]\n"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -71,7 +77,16 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "let abc = [Void↓:  Void]()\n",
             "let abc = [Void↓ :  Void]()\n",
             "let abc = [1: [3↓ : 2], 3: 4]\n",
-            "let abc = [1: [3↓ : 2], 3↓:  4]\n"
+            "let abc = [1: [3↓ : 2], 3↓:  4]\n",
+            "let abc: [↓String : Int]\n",
+            "let abc: [↓String:Int]\n",
+            "func foo(bar: [↓String : Int]) {}\n",
+            "func foo(bar: [↓String:Int]) {}\n",
+            "func foo() -> [↓String : Int] { return [:] }\n",
+            "func foo() -> [↓String:Int] { return [:] }\n",
+            "let ↓abc : Any\n",
+            "let abc: [↓Any : Int]\n",
+            "let abc: [↓String : Any]\n"
         ],
         corrections: [
             "let ↓abc:Void\n": "let abc: Void\n",
@@ -101,7 +116,16 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "let abc = [Void↓:  Void]()\n": "let abc = [Void: Void]()\n",
             "let abc = [Void↓ :  Void]()\n": "let abc = [Void: Void]()\n",
             "let abc = [1: [3↓ : 2], 3: 4]\n": "let abc = [1: [3: 2], 3: 4]\n",
-            "let abc = [1: [3↓ : 2], 3↓:  4]\n": "let abc = [1: [3: 2], 3: 4]\n"
+            "let abc = [1: [3↓ : 2], 3↓:  4]\n": "let abc = [1: [3: 2], 3: 4]\n",
+            "let abc: [↓String : Int]\n": "let abc: [String: Int]\n",
+            "let abc: [↓String:Int]\n": "let abc: [String: Int]\n",
+            "func foo(bar: [↓String : Int]) {}\n": "func foo(bar: [String: Int]) {}\n",
+            "func foo(bar: [↓String:Int]) {}\n": "func foo(bar: [String: Int]) {}\n",
+            "func foo() -> [↓String : Int] { return [:] }\n": "func foo() -> [String: Int] { return [:] }\n",
+            "func foo() -> [↓String:Int] { return [:] }\n": "func foo() -> [String: Int] { return [:] }\n",
+            "let ↓abc : Any\n": "let abc: Any\n",
+            "let abc: [↓Any : Int]\n": "let abc: [Any: Int]\n",
+            "let abc: [↓String : Any]\n": "let abc: [String: Any]\n"
         ]
     )
 
@@ -198,15 +222,47 @@ private extension ColonRule {
         let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
-            if !syntaxKinds.starts(with: [.identifier, .typeidentifier]) {
+
+            guard syntaxKinds.count == 2 else {
                 return false
             }
+
+            let validKinds: Bool
+            switch (syntaxKinds[0], syntaxKinds[1]) {
+            case (.identifier, .typeidentifier),
+                 (.typeidentifier, .typeidentifier):
+                validKinds = true
+            case (.identifier, .keyword),
+                 (.typeidentifier, .keyword):
+                validKinds = file.isTypeLike(token: syntaxTokens[1])
+            case (.keyword, .typeidentifier):
+                validKinds = file.isTypeLike(token: syntaxTokens[0])
+            default:
+                validKinds = false
+            }
+
+            guard validKinds else {
+                return false
+            }
+
             return Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
         }.flatMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }
+    }
+}
+
+private extension File {
+    func isTypeLike(token: SyntaxToken) -> Bool {
+        guard let text = contents.bridge().substringWithByteRange(start: token.offset,
+                                                                  length: token.length) else {
+            return false
+        }
+
+        let firstLetter = text.characters.first.map { String($0) }
+        return firstLetter == firstLetter?.capitalized
     }
 }
 

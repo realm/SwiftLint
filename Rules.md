@@ -979,6 +979,36 @@ let abc = ["string:string": "string"]
 
 ```
 
+```swift
+let abc: [String: Int]
+
+```
+
+```swift
+func foo(bar: [String: Int]) {}
+
+```
+
+```swift
+func foo() -> [String: Int] { return [:] }
+
+```
+
+```swift
+let abc: Any
+
+```
+
+```swift
+let abc: [Any: Int]
+
+```
+
+```swift
+let abc: [String: Any]
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1120,6 +1150,51 @@ let abc = [1: [3↓ : 2], 3: 4]
 
 ```swift
 let abc = [1: [3↓ : 2], 3↓:  4]
+
+```
+
+```swift
+let abc: [↓String : Int]
+
+```
+
+```swift
+let abc: [↓String:Int]
+
+```
+
+```swift
+func foo(bar: [↓String : Int]) {}
+
+```
+
+```swift
+func foo(bar: [↓String:Int]) {}
+
+```
+
+```swift
+func foo() -> [↓String : Int] { return [:] }
+
+```
+
+```swift
+func foo() -> [↓String:Int] { return [:] }
+
+```
+
+```swift
+let ↓abc : Any
+
+```
+
+```swift
+let abc: [↓Any : Int]
+
+```
+
+```swift
+let abc: [↓String : Any]
 
 ```
 

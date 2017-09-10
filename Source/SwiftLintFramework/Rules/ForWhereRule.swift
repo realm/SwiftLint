@@ -85,7 +85,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func forBody(dictionary: [String: SourceKitRepresentable]) -> [String : SourceKitRepresentable]? {
+    private func forBody(dictionary: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
         return dictionary.substructure.first(where: { subDict -> Bool in
             subDict.kind.flatMap(StatementKind.init) == .brace
         })

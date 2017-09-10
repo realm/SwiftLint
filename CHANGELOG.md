@@ -19,6 +19,14 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1817](https://github.com/realm/SwiftLint/issues/1817)
 
+##### Enhancements
+
+* Add `switch_case_alignment` rule checking that case and default statements
+  should vertically align with the enclosing switch statement itself.
+ 
+[Austin Lu](https://github.com/austinlu)
+[#1833](https://github.com/realm/SwiftLint/issues/1833)
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking

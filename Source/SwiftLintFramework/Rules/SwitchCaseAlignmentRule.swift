@@ -52,6 +52,10 @@ public struct SwitchCaseAlignmentRule: OptInRule, ConfigurationProviderRule {
             "    print('One')\n" +
             "default:\n" +
             "    print('Some other number')\n" +
+            "}",
+            "enum Container: Int {\n" +
+            "case zero = 0" +
+            "case one = 1" +
             "}"
         ],
         triggeringExamples: [
@@ -82,13 +86,16 @@ public struct SwitchCaseAlignmentRule: OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         var violations: [StyleViolation] = []
-        var indentsOnEnclosingSwitch = -1
+        var indentsOnEnclosingSwitch: Int?
 
         for line in file.lines {
             let content = line.content
             // cache the indentation of any `switch` statement
             if let range = range(for: SwitchCaseAlignmentRule.switchKeyword, line: line, file: file) {
                 indentsOnEnclosingSwitch = content.distance(from: content.startIndex, to: range.lowerBound)
+            }
+            guard let indentsOnEnclosingSwitch = indentsOnEnclosingSwitch else {
+                continue
             }
             // check alignment of any `case` and `default` statements
             validateAlignment(for: SwitchCaseAlignmentRule.caseKeyword,
@@ -104,12 +111,14 @@ public struct SwitchCaseAlignmentRule: OptInRule, ConfigurationProviderRule {
     }
 
     // Attempt to find a keyword's range within a given line, excluding comments and strings
-    private func range(for keyword: String, line: Line, file: File) -> Range<String.Index>? {
+    private func range(for keyword: String,
+                       line: Line,
+                       file: File) -> Range<String.Index>? {
         let content = line.content
         // exclude occurances of keyword in comments and strings
         let filteredMatches = file.match(pattern: "\\s*\(keyword)",
-            excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
-            range: line.range)
+                                         excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+                                         range: line.range)
         if !filteredMatches.isEmpty &&
             content.trimmingCharacters(in: .whitespaces).hasPrefix(keyword) {
             return content.range(of: keyword)
@@ -124,11 +133,13 @@ public struct SwitchCaseAlignmentRule: OptInRule, ConfigurationProviderRule {
                                    expectedIndents: Int) -> StyleViolation? {
         let content = line.content
         if let range = range(for: keyword, line: line, file: file) {
-            let keywordIndents = content.distance(from: content.startIndex, to: range.lowerBound)
+            let keywordIndents = content.distance(from: content.startIndex,
+                                                  to: range.lowerBound)
             if keywordIndents != expectedIndents {
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: configuration.severity,
-                                      location: Location(file: file, characterOffset: line.range.location + keywordIndents))
+                                      location: Location(file: file,
+                                                         characterOffset: line.range.location + keywordIndents))
             }
         }
         // keyword isn't present in a non-comment and non-string type

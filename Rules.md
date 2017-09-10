@@ -1019,6 +1019,14 @@ class Foo<T: Equatable> {}
 
 ```
 
+```swift
+switch foo {
+case .bar:
+    _ = something()
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

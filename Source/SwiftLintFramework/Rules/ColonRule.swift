@@ -49,7 +49,11 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "let abc: [Any: Int]\n",
             "let abc: [String: Any]\n",
             "class Foo: Bar {}\n",
-            "class Foo<T: Equatable> {}\n"
+            "class Foo<T: Equatable> {}\n",
+            "switch foo {\n" +
+            "case .bar:\n" +
+            "    _ = something()\n" +
+            "}\n"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -266,13 +270,13 @@ private extension ColonRule {
 
 private extension File {
     func isTypeLike(token: SyntaxToken) -> Bool {
-        guard let text = contents.bridge().substringWithByteRange(start: token.offset,
-                                                                  length: token.length) else {
-            return false
+        let nsstring = contents.bridge()
+        guard let text = nsstring.substringWithByteRange(start: token.offset, length: token.length),
+            let firstLetter = text.unicodeScalars.first else {
+                return false
         }
 
-        let firstLetter = text.characters.first.map { String($0) }
-        return firstLetter == firstLetter?.capitalized
+        return CharacterSet.uppercaseLetters.contains(firstLetter)
     }
 }
 

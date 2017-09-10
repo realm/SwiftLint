@@ -84,8 +84,9 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                                           length: violatingRange.length - 2)
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange),
                 let updatedRange = correctedContents.nsrangeToIndexRange(correctingRange) {
-                let updatedArguments = correctedContents.substring(with: updatedRange)
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: updatedArguments)
+                let updatedArguments = correctedContents[updatedRange]
+                correctedContents = correctedContents.replacingCharacters(in: indexRange,
+                                                                          with: String(updatedArguments))
                 adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }

@@ -314,7 +314,7 @@ class RulesTests: XCTestCase {
     }
 
     func testSwitchCaseAlignment() {
-        verifyRule(SwitchCaseAlignmentRule.description, skipCommentTests: true)
+        verifyRule(SwitchCaseAlignmentRule.description)
     }
 
     func testSwitchCaseOnNewline() {

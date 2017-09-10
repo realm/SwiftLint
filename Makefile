@@ -103,6 +103,10 @@ docker_test:
 	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
 	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
 
+docker_test_4:
+	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:4020170908a swift test
+
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
 

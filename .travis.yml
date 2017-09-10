@@ -13,8 +13,16 @@ matrix:
       env: JOB=SPM
       os: osx
       osx_image: xcode8.3
+    - script: swift test
+      env: JOB=SPM-Swift4
+      os: osx
+      osx_image: xcode9
     - script: make docker_test
       env: JOB=Linux3.1
+      sudo: required
+      services: docker
+    - script: make docker_test_4
+      env: JOB=Linux4.0
       sudo: required
       services: docker
     - script: set -o pipefail && script/cibuild | xcpretty

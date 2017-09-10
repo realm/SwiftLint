@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `switch_case_alignment` rule checking that case and default statements
+  should vertically align with the enclosing switch statement itself. 
+  [Austin Lu](https://github.com/austinlu)
+  [#1833](https://github.com/realm/SwiftLint/issues/1833)
 
 ##### Bug Fixes
 
@@ -19,13 +22,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1817](https://github.com/realm/SwiftLint/issues/1817)
 
-##### Enhancements
-
-* Add `switch_case_alignment` rule checking that case and default statements
-  should vertically align with the enclosing switch statement itself.
- 
-[Austin Lu](https://github.com/austinlu)
-[#1833](https://github.com/realm/SwiftLint/issues/1833)
+* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
+  rule.  
+  [David Catmull](https://github.com/Uncommon)
+  [#1770](https://github.com/realm/SwiftLint/issues/1770)
+  [#1812](https://github.com/realm/SwiftLint/issues/1812)
 
 ## 0.22.0: Wrinkle-free
 
@@ -133,12 +134,6 @@
   `unneeded_parentheses_in_closure_argument` rule that were generated in some
   cases (mainly when using chained method calls with closures).  
   [Marcelo Fabri](https://github.com/marcelofabri)
-
-* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
-  rule.  
-  [David Catmull](https://github.com/Uncommon)
-  [#1770](https://github.com/realm/SwiftLint/issues/1770)
-  [#1812](https://github.com/realm/SwiftLint/issues/1812)
 
 ## 0.21.0: Vintage Washboard
 

@@ -74,7 +74,11 @@ public struct TodoRule: ConfigurationProviderRule {
             let index = message.index(message.startIndex,
                                       offsetBy: maxLengthOfMessage,
                                       limitedBy: message.endIndex) ?? message.endIndex
+#if swift(>=4.0)
+            message = message[..<index] + "..."
+#else
             message = message.substring(to: index) + "..."
+#endif
         }
 
         if message.isEmpty {

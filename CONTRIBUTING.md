@@ -27,7 +27,7 @@ machine. This will update source files to reflect these changes.
 ## Documentation
 
 If you're making changes to the `description` property of a rule or
-creating a new rule, make sure to run the `Generate docs` scheme
+creating a new rule, make sure to run the unit tests
 before pushing your changes. This will update the documentation
 ([Rules.md](Rules.md)) to reflect these changes.
 

@@ -82,7 +82,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should only contain alphanumeric characters: '\(name)'")]
         } else if configuration.validatesStartWithLowercase &&
-            !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+            !String(name[name.startIndex]).isUppercase() {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: .error,
                                    location: Location(file: file, byteOffset: offset),

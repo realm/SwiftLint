@@ -34,7 +34,11 @@ extension String {
         if let aclString = dict.accessibility,
            let acl = AccessControlLevel(identifier: aclString),
             acl.isPrivate && characters.first == "_" {
+#if swift(>=4.0)
+            return String(self[index(after: startIndex)...])
+#else
             return substring(from: index(after: startIndex))
+#endif
         }
         return self
     }
@@ -43,7 +47,7 @@ extension String {
         let nsrange = NSRange(location: range.lowerBound,
                               length: range.upperBound - range.lowerBound)
         if let indexRange = nsrangeToIndexRange(nsrange) {
-            return substring(with: indexRange)
+            return String(self[indexRange])
         }
         fatalError("invalid range")
     }
@@ -53,7 +57,11 @@ extension String {
             return self[from..<from + length]
         }
         let index = characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!
+#if swift(>=4.0)
+        return String(self[index...])
+#else
         return substring(from: index)
+#endif
     }
 
     internal func lastIndex(of search: String) -> Int? {

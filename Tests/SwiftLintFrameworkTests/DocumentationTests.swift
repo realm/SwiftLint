@@ -24,8 +24,8 @@ class DocumentationTests: XCTestCase {
 
         XCTAssertEqual(existingDocs, updatedDocs)
 
-        let overwrite = false // set this to true to overwrite existing docs with the generated ones
-        if existingDocs != updatedDocs && overwrite {
+        if existingDocs != updatedDocs {
+            // Overwrite Rules.md with latest version
             try updatedDocs.data(using: .utf8)?.write(to: URL(fileURLWithPath: docsPath))
         }
     }

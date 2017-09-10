@@ -1009,6 +1009,16 @@ let abc: [String: Any]
 
 ```
 
+```swift
+class Foo: Bar {}
+
+```
+
+```swift
+class Foo<T: Equatable> {}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1195,6 +1205,26 @@ let abc: [↓Any : Int]
 
 ```swift
 let abc: [↓String : Any]
+
+```
+
+```swift
+class ↓Foo : Bar {}
+
+```
+
+```swift
+class ↓Foo:Bar {}
+
+```
+
+```swift
+class Foo<↓T:Equatable> {}
+
+```
+
+```swift
+class Foo<↓T : Equatable> {}
 
 ```
 

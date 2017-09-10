@@ -47,7 +47,9 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "func foo() -> [String: Int] { return [:] }\n",
             "let abc: Any\n",
             "let abc: [Any: Int]\n",
-            "let abc: [String: Any]\n"
+            "let abc: [String: Any]\n",
+            "class Foo: Bar {}\n",
+            "class Foo<T: Equatable> {}\n"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -86,7 +88,11 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "func foo() -> [↓String:Int] { return [:] }\n",
             "let ↓abc : Any\n",
             "let abc: [↓Any : Int]\n",
-            "let abc: [↓String : Any]\n"
+            "let abc: [↓String : Any]\n",
+            "class ↓Foo : Bar {}\n",
+            "class ↓Foo:Bar {}\n",
+            "class Foo<↓T:Equatable> {}\n",
+            "class Foo<↓T : Equatable> {}\n"
         ],
         corrections: [
             "let ↓abc:Void\n": "let abc: Void\n",
@@ -125,7 +131,11 @@ public struct ColonRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
             "func foo() -> [↓String:Int] { return [:] }\n": "func foo() -> [String: Int] { return [:] }\n",
             "let ↓abc : Any\n": "let abc: Any\n",
             "let abc: [↓Any : Int]\n": "let abc: [Any: Int]\n",
-            "let abc: [↓String : Any]\n": "let abc: [String: Any]\n"
+            "let abc: [↓String : Any]\n": "let abc: [String: Any]\n",
+            "class ↓Foo : Bar {}\n": "class Foo: Bar {}\n",
+            "class ↓Foo:Bar {}\n": "class Foo: Bar {}\n",
+            "class Foo<↓T:Equatable> {}\n": "class Foo<T: Equatable> {}\n",
+            "class Foo<↓T : Equatable> {}\n": "class Foo<T: Equatable> {}\n"
         ]
     )
 

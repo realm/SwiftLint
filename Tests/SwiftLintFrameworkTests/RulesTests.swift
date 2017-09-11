@@ -104,6 +104,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExtensionAccessModifierRule.description)
     }
 
+    func testFallthrough() {
+        verifyRule(FallthroughRule.description)
+    }
+
     func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
     }

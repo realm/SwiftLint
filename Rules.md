@@ -27,6 +27,7 @@
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
 * [Extension Access Modifier](#extension-access-modifier)
+* [Fallthrough](#fallthrough)
 * [Fatal Error Message](#fatal-error-message)
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
@@ -2484,6 +2485,43 @@ extension Foo {
 public extension Foo {
    public ↓func bar() {}
    public ↓func baz() {}
+}
+```
+
+</details>
+
+
+
+## Fallthrough
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`fallthrough` | Disabled | No | idiomatic
+
+Fallthrough should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar, .bar2, .bar3:
+    something()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    ↓fallthrough
+case .bar2:
+    something()
 }
 ```
 

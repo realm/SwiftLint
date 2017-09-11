@@ -6,7 +6,9 @@
 
 ##### Enhancements
 
-* None.
+* Add `fallthrough` opt-in rule that flags usage of `fallthrough`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1834](https://github.com/realm/SwiftLint/issues/1834)
 
 ##### Bug Fixes
 

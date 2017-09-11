@@ -9793,9 +9793,9 @@ SwiftLint 'disable' commands are superfluous when the disabled rule would not ha
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`switch_case_alignment` | Disabled | No | style
+`switch_case_alignment` | Enabled | No | style
 
-Case statements should vertically align with the enclosing switch statement itself.
+Case statements should vertically align with the enclosing switch statement.
 
 ### Examples
 

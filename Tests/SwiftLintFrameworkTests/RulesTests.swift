@@ -317,6 +317,10 @@ class RulesTests: XCTestCase {
         verifyRule(StrictFilePrivateRule.description)
     }
 
+    func testSwitchCaseAlignment() {
+        verifyRule(SwitchCaseAlignmentRule.description)
+    }
+
     func testSwitchCaseOnNewline() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }

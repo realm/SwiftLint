@@ -295,7 +295,9 @@
 
 ##### Enhancements
 
-* None.
+* Add `switch_case_alignment` opt-in rule to `check` case and `default`
+  statements vertically align with the enclosing `switch` statement itself.  
+  [Austin Lu](https://github.com/austinlu)
 
 ##### Bug Fixes
 

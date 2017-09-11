@@ -85,6 +85,7 @@
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
 * [Superfluous Disable Command](#superfluous-disable-command)
+* [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
@@ -9634,6 +9635,99 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `superfluous_disable_command` | Enabled | No | lint
 
 SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
+
+
+
+## Switch and Case Statement Alignment
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`switch_case_alignment` | Disabled | No | style
+
+Case statements should vertically align with the enclosing switch statement itself.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch someBool {
+case true: // case 1
+    print('red')
+case false:
+    /*
+    case 2
+    */
+    if case let .someEnum(val) = someFunc() {
+        print('blue')
+    }
+}
+enum SomeEnum {
+    case innocent
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+    case true:
+        print('red')
+    case false:
+        print('blue')
+    }
+}
+```
+
+```swift
+switch someInt {
+// comments ignored
+case 0:
+    // zero case
+    print('Zero')
+case 1:
+    print('One')
+default:
+    print('Some other number')
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch someBool {
+    ↓case true:
+         print('red')
+    ↓case false:
+         print('blue')
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+        ↓case true:
+            print('red')
+    case false:
+        print('blue')
+    }
+}
+```
+
+```swift
+switch someInt {
+    ↓case 0:
+    print('Zero')
+case 1:
+    print('One')
+    ↓default:
+    print('Some other number')
+}
+```
+
+</details>
 
 
 

@@ -14,6 +14,9 @@
   (e.g. `[String: Int]`) and when using `Any`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1074](https://github.com/realm/SwiftLint/issues/1811)
+* Add `switch_case_alignment` opt-in rule to `check` case and `default`  
+  statements vertically align with the enclosing `switch` statement itself.
+  [Austin Lu](https://github.com/austinlu)
 
 ##### Bug Fixes
 

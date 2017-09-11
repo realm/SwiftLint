@@ -2496,7 +2496,7 @@ public extension Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`fallthrough` | Disabled | No | idiomatic
+`fallthrough` | Enabled | No | idiomatic
 
 Fallthrough should be avoided.
 

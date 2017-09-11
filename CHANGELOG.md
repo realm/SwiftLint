@@ -9,8 +9,9 @@
 * Add `fallthrough` rule that flags usage of `fallthrough`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1834](https://github.com/realm/SwiftLint/issues/1834)
-* Add `switch_case_alignment` opt-in rule to `check` case and `default`
-  statements vertically align with the enclosing `switch` statement itself.  
+
+* Add `switch_case_alignment` opt-in rule to `check` case and `default`  
+  statements vertically align with the enclosing `switch` statement itself.
   [Austin Lu](https://github.com/austinlu)
 
 ##### Bug Fixes

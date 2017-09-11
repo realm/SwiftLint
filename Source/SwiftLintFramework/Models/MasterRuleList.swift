@@ -35,6 +35,7 @@ public let masterRuleList = RuleList(rules: [
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,
     ExtensionAccessModifierRule.self,
+    FallthroughRule.self,
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,

@@ -152,30 +152,22 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // check deepest kind matching range in structure is a typeAnnotation
     private func isTypeAnnotation(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
-        guard let lastKind = kinds.last else {
+        guard let lastItem = kinds.last,
+            let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
+            SwiftDeclarationKind.variableKinds().contains(lastKind) else {
+                return false
+        }
+
+        // range is in some "source.lang.swift.decl.var.*"
+        let byteOffset = lastItem.byteRange.location
+        let byteLength = byteRange.location - byteOffset
+        if let varDeclarationString = contents.substringWithByteRange(start: byteOffset, length: byteLength),
+            varDeclarationString.contains("=") {
+            // if declarations contains "=", range is not type annotation
             return false
         }
-        switch lastKind.kind {
-        // range is in some "source.lang.swift.decl.var.*"
-        case SwiftDeclarationKind.varClass.rawValue: fallthrough
-        case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
-        case SwiftDeclarationKind.varInstance.rawValue: fallthrough
-        case SwiftDeclarationKind.varParameter.rawValue: fallthrough
-        case SwiftDeclarationKind.varLocal.rawValue: fallthrough
-        case SwiftDeclarationKind.varStatic.rawValue:
-            let byteOffset = lastKind.byteRange.location
-            let byteLength = byteRange.location - byteOffset
-            if let varDeclarationString = contents
-                .substringWithByteRange(start: byteOffset, length: byteLength),
-                varDeclarationString.contains("=") {
-                    // if declarations contains "=", range is not type annotation
-                    return false
-            }
-            // range is type annotation of declaration
-            return true
-        default:
-            break
-        }
-        return false
+
+        // range is type annotation of declaration
+        return true
     }
 }

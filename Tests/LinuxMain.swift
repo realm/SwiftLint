@@ -368,6 +368,7 @@ extension RulesTests {
         ("testExplicitTopLevelACL", testExplicitTopLevelACL),
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExtensionAccessModifier", testExtensionAccessModifier),
+        ("testFallthrough", testFallthrough),
         ("testFatalErrorMessage", testFatalErrorMessage),
         ("testFirstWhere", testFirstWhere),
         ("testForceCast", testForceCast),

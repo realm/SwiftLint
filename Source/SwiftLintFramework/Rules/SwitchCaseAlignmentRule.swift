@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SwitchCaseAlignmentRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -17,7 +17,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, OptInRule, ConfigurationProvider
     public static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
-        description: "Case statements should vertically align with the enclosing switch statement itself.",
+        description: "Case statements should vertically align with the enclosing switch statement.",
         kind: .style,
         nonTriggeringExamples: [
             "switch someBool {\n" +

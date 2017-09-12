@@ -418,6 +418,7 @@ extension RulesTests {
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),
         ("testStrictFilePrivate", testStrictFilePrivate),
+        ("testSwitchCaseAlignment", testSwitchCaseAlignment),
         ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
         ("testSyntacticSugar", testSyntacticSugar),
         ("testTrailingClosure", testTrailingClosure),

@@ -10,6 +10,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1834](https://github.com/realm/SwiftLint/issues/1834)
 
+* Improve `colon` rule to catch violations in dictionary types
+  (e.g. `[String: Int]`) and when using `Any`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1074](https://github.com/realm/SwiftLint/issues/1811)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

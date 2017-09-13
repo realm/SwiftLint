@@ -1028,6 +1028,21 @@ case .bar:
 
 ```
 
+```swift
+object.method(x: 5, y: "string")
+
+```
+
+```swift
+object.method(x: 5, y:
+              "string")
+```
+
+```swift
+object.method(5, y: "string")
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1234,6 +1249,21 @@ class Foo<↓T:Equatable> {}
 
 ```swift
 class Foo<↓T : Equatable> {}
+
+```
+
+```swift
+object.method(x: 5, y↓ : "string")
+
+```
+
+```swift
+object.method(x↓:5, y: "string")
+
+```
+
+```swift
+object.method(x↓:  5, y: "string")
 
 ```
 

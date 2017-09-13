@@ -165,6 +165,9 @@
 		D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
 		D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
 		D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
+		D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */; };
+		D47EF4821F69E34D0012C4CA /* ColonRule+Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */; };
+		D47EF4841F69E3D60012C4CA /* ColonRule+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */; };
 		D47F31151EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */; };
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */; };
 		D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */; };
@@ -503,6 +506,9 @@
 		D47079AE1DFE520000027086 /* VoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoidReturnRule.swift; sourceTree = "<group>"; };
 		D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseOnNewlineRule.swift; sourceTree = "<group>"; };
 		D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRule.swift; sourceTree = "<group>"; };
+		D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColonRule+FunctionCall.swift"; sourceTree = "<group>"; };
+		D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColonRule+Dictionary.swift"; sourceTree = "<group>"; };
+		D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ColonRule+Type.swift"; sourceTree = "<group>"; };
 		D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProtocolPropertyAccessorsOrderRule.swift; sourceTree = "<group>"; };
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRulesExamples.swift; sourceTree = "<group>"; };
 		D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Documentation.swift"; sourceTree = "<group>"; };
@@ -960,6 +966,9 @@
 				D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */,
 				1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
+				D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */,
+				D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */,
+				D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */,
 				695BE9CE1BDFD92B0071E985 /* CommaRule.swift */,
 				D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */,
 				93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */,
@@ -1415,6 +1424,7 @@
 				D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */,
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */,
+				D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */,
 				D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */,
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
 				D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */,
@@ -1458,6 +1468,7 @@
 				E80E018F1B92C1350078EB70 /* Region.swift in Sources */,
 				E88198581BEA956C00333A11 /* FunctionBodyLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,
+				D47EF4841F69E3D60012C4CA /* ColonRule+Type.swift in Sources */,
 				3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfiguration.swift in Sources */,
 				D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */,
 				6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */,
@@ -1486,6 +1497,7 @@
 				D48AE2CC1DFB58C5001C6A4A /* AttributesRulesExamples.swift in Sources */,
 				E88DEA6F1B09843F00A66CB0 /* Location.swift in Sources */,
 				D43B046B1E075905004016AF /* ClosureEndIndentationRule.swift in Sources */,
+				D47EF4821F69E34D0012C4CA /* ColonRule+Dictionary.swift in Sources */,
 				D93DA3D11E699E6300809827 /* NestingConfiguration.swift in Sources */,
 				C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */,
 				93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */,

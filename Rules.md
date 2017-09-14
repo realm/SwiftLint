@@ -6343,8 +6343,9 @@ var x = 0
 ```
 
 ```swift
-@objc func f() {}
-var x = 0
+@objc func f() {
+}
+↓var x = 0
 
 ```
 

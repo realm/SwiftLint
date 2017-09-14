@@ -43,7 +43,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             "struct X {\n\tlet a\n\t↓func x() {}\n}\n",
             "var x = 0\n↓@objc func f() {}\n",
             "var x = 0\n↓@objc\n\tfunc f() {}\n",
-            "@objc func f() {}\nvar x = 0\n"
+            "@objc func f() {\n}\n↓var x = 0\n"
         ]
     )
 

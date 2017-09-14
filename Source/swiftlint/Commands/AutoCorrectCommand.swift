@@ -25,7 +25,7 @@ struct AutoCorrectCommand: CommandProtocol {
             let corrections = linter.correct()
             if !corrections.isEmpty && !options.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator:"\n"))
+                queuedPrint(correctionLogs.joined(separator: "\n"))
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,

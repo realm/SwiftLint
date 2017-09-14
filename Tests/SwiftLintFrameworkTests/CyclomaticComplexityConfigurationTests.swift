@@ -28,7 +28,7 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
                                                                ignoresCaseStatements: true)
         XCTAssertTrue(configuration1.ignoresCaseStatements)
 
-        let configuration2 = CyclomaticComplexityConfiguration(warning:0, error: 30)
+        let configuration2 = CyclomaticComplexityConfiguration(warning: 0, error: 30)
         XCTAssertFalse(configuration2.ignoresCaseStatements)
     }
 

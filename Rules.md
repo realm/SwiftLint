@@ -4075,6 +4075,13 @@ for user in users {
 
 ```swift
 for user in users {
+   if var id = user.id { }
+}
+
+```
+
+```swift
+for user in users {
    if user.id == 1 { } else { }
 }
 

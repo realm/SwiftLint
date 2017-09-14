@@ -36,6 +36,10 @@
   [#1770](https://github.com/realm/SwiftLint/issues/1770)
   [#1812](https://github.com/realm/SwiftLint/issues/1812)
 
+* Fix false positives in `for_where` rule when using `if var` inside `for`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1838](https://github.com/realm/SwiftLint/issues/1838)
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking

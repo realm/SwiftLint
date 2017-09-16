@@ -10518,7 +10518,7 @@ class TotoTests {  }
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`sorted_imports` | Disabled | No | style
+`sorted_imports` | Disabled | Yes | style
 
 Imports should be sorted.
 

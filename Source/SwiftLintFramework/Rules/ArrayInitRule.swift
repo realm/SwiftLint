@@ -101,8 +101,10 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
                 return
             }
 
-            let set = CharacterSet(charactersIn: "{}").union(.whitespacesAndNewlines)
-            let processedSubstring = substring.trimmingCharacters(in: set)
+            let processedSubstring = substring
+                .trimmingCharacters(in: CharacterSet(charactersIn: "{}"))
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
             if !processedSubstring.isEmpty {
                 stop.pointee = true
                 containsContent = true

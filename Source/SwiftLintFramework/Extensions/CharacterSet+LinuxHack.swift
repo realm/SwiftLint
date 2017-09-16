@@ -10,7 +10,10 @@ import Foundation
 
 extension CharacterSet {
     func isSuperset(ofCharactersIn string: String) -> Bool {
-        #if os(Linux)
+        #if swift(>=4.0) || os(macOS)
+            let otherSet = CharacterSet(charactersIn: string)
+            return isSuperset(of: otherSet)
+        #else
             // workaround for https://bugs.swift.org/browse/SR-3485
             let chars = Set(string.characters)
             for char in chars where !contains(char.unicodeScalar) {
@@ -18,9 +21,6 @@ extension CharacterSet {
             }
 
             return true
-        #else
-            let otherSet = CharacterSet(charactersIn: string)
-            return isSuperset(of: otherSet)
         #endif
     }
 }

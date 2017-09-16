@@ -140,7 +140,22 @@ foo.map { $1 }
 ```
 
 ```swift
-let set = Set(array)
+foo.map { $0() }
+
+```
+
+```swift
+foo.map { ((), $0) }
+
+```
+
+```swift
+foo.map { $0! }
+
+```
+
+```swift
+foo.map { $0! /* force unwrap */ }
 
 ```
 
@@ -154,12 +169,12 @@ let set = Set(array)
 ```
 
 ```swift
-↓foo.map { $0 } 
+↓foo.map { $0 }
 
 ```
 
 ```swift
-↓foo.map { return $0 } 
+↓foo.map { return $0 }
 
 ```
 
@@ -188,6 +203,11 @@ let set = Set(array)
 ↓foo.map { elem -> String in
    elem
 }
+
+```
+
+```swift
+↓foo.map { $0 /* a comment */ }
 
 ```
 

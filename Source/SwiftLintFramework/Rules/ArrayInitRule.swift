@@ -23,12 +23,15 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
             "Array(foo)\n",
             "foo.map { $0.0 }\n",
             "foo.map { $1 }\n",
-            "let set = Set(array)\n"
+            "foo.map { $0() }\n",
+            "foo.map { ((), $0) }\n",
+            "foo.map { $0! }\n",
+            "foo.map { $0! /* force unwrap */ }\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 })\n",
-            "↓foo.map { $0 } \n",
-            "↓foo.map { return $0 } \n",
+            "↓foo.map { $0 }\n",
+            "↓foo.map { return $0 }\n",
             "↓foo.map { elem in\n" +
             "   elem\n" +
             "}\n",
@@ -40,7 +43,8 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
             "}\n",
             "↓foo.map { elem -> String in\n" +
             "   elem\n" +
-            "}\n"
+            "}\n",
+            "↓foo.map { $0 /* a comment */ }\n"
         ]
     )
 
@@ -63,7 +67,10 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
         }
 
         guard isShortParameterStyleViolation(file: file, tokens: tokens) ||
-            isParameterStyleViolation(file: file, dictionary: dictionary, tokens: tokens) else {
+            isParameterStyleViolation(file: file, dictionary: dictionary, tokens: tokens),
+            let lastToken = tokens.last,
+            case let bodyEndPosition = bodyOffset + bodyLength,
+            !containsTrailingContent(lastToken: lastToken, bodyEndPosition: bodyEndPosition, file: file) else {
                 return []
         }
 
@@ -72,6 +79,37 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
+    }
+
+    private func containsTrailingContent(lastToken: SyntaxToken,
+                                         bodyEndPosition: Int,
+                                         file: File) -> Bool {
+        let lastTokenEnd = lastToken.offset + lastToken.length
+        let remainingLength = bodyEndPosition - lastTokenEnd
+        let nsstring = file.contents.bridge()
+        let remainingRange = NSRange(location: lastTokenEnd, length: remainingLength)
+        let remainingTokens = file.syntaxMap.tokens(inByteRange: remainingRange)
+        let ranges = NSMutableIndexSet(indexesIn: remainingRange)
+
+        for token in remainingTokens {
+            ranges.remove(in: NSRange(location: token.offset, length: token.length))
+        }
+
+        var containsContent = false
+        ranges.enumerateRanges(options: []) { range, stop in
+            guard let substring = nsstring.substringWithByteRange(start: range.location, length: range.length) else {
+                return
+            }
+
+            let set = CharacterSet(charactersIn: "{}").union(.whitespacesAndNewlines)
+            let processedSubstring = substring.trimmingCharacters(in: set)
+            if !processedSubstring.isEmpty {
+                stop.pointee = true
+                containsContent = true
+            }
+        }
+
+        return containsContent
     }
 
     private func isShortParameterStyleViolation(file: File, tokens: [SyntaxToken]) -> Bool {

@@ -26,6 +26,7 @@ opt_in_rules:
   - unneeded_parentheses_in_closure_argument
   - extension_access_modifier
   - pattern_matching_keywords
+  - array_init
 
 file_header:
   required_pattern: |

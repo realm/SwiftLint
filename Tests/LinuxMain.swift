@@ -346,6 +346,7 @@ extension RuleTests {
 
 extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
+        ("testArrayInit", testArrayInit),
         ("testBlockBasedKVO", testBlockBasedKVO),
         ("testClassDelegateProtocol", testClassDelegateProtocol),
         ("testClosingBrace", testClosingBrace),

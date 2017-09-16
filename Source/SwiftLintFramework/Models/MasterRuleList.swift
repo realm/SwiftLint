@@ -9,6 +9,7 @@
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
+    ArrayInitRule.self,
     AttributesRule.self,
     BlockBasedKVORule.self,
     ClassDelegateProtocolRule.self,

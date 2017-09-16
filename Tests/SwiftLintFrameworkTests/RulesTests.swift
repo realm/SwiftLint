@@ -14,6 +14,10 @@ import XCTest
 
 class RulesTests: XCTestCase {
 
+    func testArrayInit() {
+        verifyRule(ArrayInitRule.description)
+    }
+
     func testBlockBasedKVO() {
         #if swift(>=3.2)
             verifyRule(BlockBasedKVORule.description)

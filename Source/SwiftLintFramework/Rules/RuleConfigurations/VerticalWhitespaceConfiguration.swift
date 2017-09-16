@@ -7,15 +7,14 @@
 //
 
 public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var maxEmptyLinesParameter: Parameter<Int>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var maxEmptyLinesParameter: Parameter<Int>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var maxEmptyLines: Int {
+    public var maxEmptyLines: Int {
         return maxEmptyLinesParameter.value
     }
 
@@ -23,7 +22,6 @@ public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
         maxEmptyLinesParameter = Parameter(key: "max_empty_lines",
                                            default: maxEmptyLines,
                                            description: "How serious")
-        parameters = [maxEmptyLinesParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

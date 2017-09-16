@@ -7,15 +7,14 @@
 //
 
 public struct UnusedOptionalBindingConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var ignoreOptionalTryParameter: Parameter<Bool>
     private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var ignoreOptionalTry: Bool {
+    public var ignoreOptionalTry: Bool {
         return ignoreOptionalTryParameter.value
     }
 
@@ -23,7 +22,6 @@ public struct UnusedOptionalBindingConfiguration: RuleConfiguration, Equatable {
         ignoreOptionalTryParameter = Parameter(key: "ignore_optional_try",
                                                default: ignoreOptionalTry,
                                                description: "")
-        parameters = [ignoreOptionalTryParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

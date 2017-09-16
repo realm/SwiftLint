@@ -1,0 +1,20 @@
+//
+//  RuleConfigurationsParameters.swift
+//  SwiftLint
+//
+//  Created by Marcelo Fabri on 09/16/17.
+//  Copyright © 2017 Realm. All rights reserved.
+//
+
+{% for configuration in types.based.RuleConfiguration %}
+public extension {{ configuration.name }} {
+    var parameters: [ParameterDefinition] {
+        return [
+          {% for variable in configuration.storedVariables where variable.name|hasSuffix:"Parameter" %}
+          {{ variable.name }}{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ]
+    }
+}
+
+{% endfor %}

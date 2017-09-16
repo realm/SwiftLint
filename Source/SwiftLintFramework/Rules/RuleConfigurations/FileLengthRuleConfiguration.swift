@@ -9,12 +9,11 @@
 import Foundation
 
 public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var warningLengthParameter: Parameter<Int>
-    private var errorLengthParameter: OptionalParameter<Int>
-    private var ignoreCommentOnlyLinesParameter: Parameter<Bool>
+    private(set) var errorLengthParameter: OptionalParameter<Int>
+    private(set) var ignoreCommentOnlyLinesParameter: Parameter<Bool>
 
-    var ignoreCommentOnlyLines: Bool {
+    public var ignoreCommentOnlyLines: Bool {
         return ignoreCommentOnlyLinesParameter.value
     }
 
@@ -25,8 +24,6 @@ public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
         ignoreCommentOnlyLinesParameter = Parameter(key: "ignore_comment_only_lines",
                                                     default: ignoreCommentOnlyLines,
                                                     description: "")
-
-        parameters = [warningLengthParameter, errorLengthParameter, ignoreCommentOnlyLinesParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

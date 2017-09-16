@@ -10,10 +10,9 @@ import Foundation
 import SourceKittenFramework
 
 public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var warningLengthParameter: Parameter<Int>
     private(set) var errorLengthParameter: OptionalParameter<Int>
-    private var ignoresCaseStatementsParameter: Parameter<Bool>
+    private(set) var ignoresCaseStatementsParameter: Parameter<Bool>
 
     public init(warning: Int, error: Int?, ignoresCaseStatements: Bool = false) {
         let levelsConfiguration = SeverityLevelsConfiguration(warning: warning, error: error)
@@ -22,8 +21,6 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         ignoresCaseStatementsParameter = Parameter(key: "ignores_case_statements",
                                                    default: ignoresCaseStatements,
                                                    description: "")
-
-        parameters = [warningLengthParameter, errorLengthParameter, ignoresCaseStatementsParameter]
         updateComplexityStatements()
     }
 

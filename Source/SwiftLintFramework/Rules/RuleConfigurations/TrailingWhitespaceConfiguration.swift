@@ -9,20 +9,19 @@
 import Foundation
 
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var ignoresEmptyLinesParameter: Parameter<Bool>
-    private var ignoresCommentsParameter: Parameter<Bool>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var ignoresEmptyLinesParameter: Parameter<Bool>
+    private(set) var ignoresCommentsParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var ignoresEmptyLines: Bool {
+    public var ignoresEmptyLines: Bool {
         return ignoresEmptyLinesParameter.value
     }
 
-    var ignoresComments: Bool {
+    public var ignoresComments: Bool {
         return ignoresCommentsParameter.value
     }
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
@@ -31,7 +30,6 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
                                                description: "")
         ignoresCommentsParameter = Parameter(key: "ignores_comments", default: ignoresComments,
                                              description: "")
-        parameters = [ignoresEmptyLinesParameter, ignoresCommentsParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

@@ -9,15 +9,14 @@
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var mandatoryCommaParameter: Parameter<Bool>
     private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var mandatoryComma: Bool {
+    public var mandatoryComma: Bool {
         return mandatoryCommaParameter.value
     }
 
@@ -25,7 +24,6 @@ public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
         mandatoryCommaParameter = Parameter(key: "mandatory_comma",
                                             default: mandatoryComma,
                                             description: "")
-        parameters = [mandatoryCommaParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

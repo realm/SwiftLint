@@ -9,15 +9,14 @@
 import Foundation
 
 public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var warningParameter: Parameter<Int>
     private(set) var errorParameter: OptionalParameter<Int>
 
-    var warning: Int {
+    public var warning: Int {
         return warningParameter.value
     }
 
-    var error: Int? {
+    public var error: Int? {
         return errorParameter.value
     }
 
@@ -28,8 +27,6 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
         errorParameter = OptionalParameter(key: "error",
                                            default: error,
                                            description: "How serious")
-
-        parameters = [warningParameter, errorParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

@@ -9,20 +9,19 @@
 import Foundation
 
 public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
-    private var excludedParameter: ArrayParameter<String>
-    private var includedParameter: ArrayParameter<String>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var excludedParameter: ArrayParameter<String>
+    private(set) var includedParameter: ArrayParameter<String>
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var excluded: [String] {
+    public var excluded: [String] {
         return excludedParameter.value
     }
 
-    var included: [String] {
+    public var included: [String] {
         return includedParameter.value
     }
 
@@ -33,7 +32,6 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
         includedParameter = ArrayParameter(key: "apply_to_dictionaries",
                                            default: included,
                                            description: "How serious")
-        parameters = [excludedParameter, includedParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

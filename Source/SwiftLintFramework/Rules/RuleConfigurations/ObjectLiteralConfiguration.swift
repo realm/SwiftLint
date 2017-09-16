@@ -9,20 +9,19 @@
 import Foundation
 
 public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var imageLiteralParameter: Parameter<Bool>
-    private var colorLiteralParameter: Parameter<Bool>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var imageLiteralParameter: Parameter<Bool>
+    private(set) var colorLiteralParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var imageLiteral: Bool {
+    public var imageLiteral: Bool {
         return imageLiteralParameter.value
     }
 
-    var colorLiteral: Bool {
+    public var colorLiteral: Bool {
         return colorLiteralParameter.value
     }
 
@@ -33,8 +32,6 @@ public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
         colorLiteralParameter = Parameter(key: "color_literal",
                                           default: colorLiteral,
                                           description: "How serious")
-
-        parameters = [imageLiteralParameter, colorLiteralParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

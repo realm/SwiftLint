@@ -7,20 +7,19 @@
 //
 
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var minimumLengthParameter: Parameter<Int>
-    private var minimumFractionLengthParameter: OptionalParameter<Int>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var minimumLengthParameter: Parameter<Int>
+    private(set) var minimumFractionLengthParameter: OptionalParameter<Int>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var minimumLength: Int {
+    public var minimumLength: Int {
         return minimumLengthParameter.value
     }
 
-    var minimumFractionLength: Int? {
+    public var minimumFractionLength: Int? {
         return minimumFractionLengthParameter.value
     }
 
@@ -31,8 +30,6 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
         minimumFractionLengthParameter = OptionalParameter(key: "minimum_fraction_length",
                                                            default: minimumFractionLength,
                                                            description: "How serious")
-
-        parameters = [minimumLengthParameter, minimumFractionLengthParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

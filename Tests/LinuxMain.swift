@@ -213,9 +213,7 @@ extension LineLengthConfigurationTests {
         ("testLineLengthConfigurationInitialiserSetsIgnoresComments", testLineLengthConfigurationInitialiserSetsIgnoresComments),
         ("testLineLengthConfigurationParams", testLineLengthConfigurationParams),
         ("testLineLengthConfigurationPartialParams", testLineLengthConfigurationPartialParams),
-        ("testLineLengthConfigurationThrowsOnBadConfig", testLineLengthConfigurationThrowsOnBadConfig),
         ("testLineLengthConfigurationThrowsOnBadConfigValues", testLineLengthConfigurationThrowsOnBadConfigValues),
-        ("testLineLengthConfigurationApplyConfigurationWithArray", testLineLengthConfigurationApplyConfigurationWithArray),
         ("testLineLengthConfigurationApplyConfigurationWithDictionary", testLineLengthConfigurationApplyConfigurationWithDictionary),
         ("testLineLengthConfigurationCompares", testLineLengthConfigurationCompares)
     ]
@@ -303,21 +301,14 @@ extension ReporterTests {
 extension RuleConfigurationsTests {
     static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
-        ("testNameConfigurationThrowsOnBadConfig", testNameConfigurationThrowsOnBadConfig),
         ("testNameConfigurationMinLengthThreshold", testNameConfigurationMinLengthThreshold),
         ("testNameConfigurationMaxLengthThreshold", testNameConfigurationMaxLengthThreshold),
         ("testNestingConfigurationSetsCorrectly", testNestingConfigurationSetsCorrectly),
-        ("testNestingConfigurationThrowsOnBadConfig", testNestingConfigurationThrowsOnBadConfig),
-        ("testSeverityConfigurationFromString", testSeverityConfigurationFromString),
         ("testSeverityConfigurationFromDictionary", testSeverityConfigurationFromDictionary),
-        ("testSeverityConfigurationThrowsOnBadConfig", testSeverityConfigurationThrowsOnBadConfig),
         ("testSeverityLevelConfigParams", testSeverityLevelConfigParams),
         ("testSeverityLevelConfigPartialParams", testSeverityLevelConfigPartialParams),
         ("testSeverityLevelConfigApplyNilErrorValue", testSeverityLevelConfigApplyNilErrorValue),
         ("testSeverityLevelConfigApplyMissingErrorValue", testSeverityLevelConfigApplyMissingErrorValue),
-        ("testRegexConfigurationThrows", testRegexConfigurationThrows),
-        ("testRegexRuleDescription", testRegexRuleDescription),
-        ("testTrailingWhitespaceConfigurationThrowsOnBadConfig", testTrailingWhitespaceConfigurationThrowsOnBadConfig),
         ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines", testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines),
         ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments", testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments),
         ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines", testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines),
@@ -336,9 +327,6 @@ extension RuleTests {
         ("testSeverityLevelRuleInitsWithConfigDictionary", testSeverityLevelRuleInitsWithConfigDictionary),
         ("testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary", testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary),
         ("testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary", testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary),
-        ("testSeverityLevelRuleInitsWithConfigArray", testSeverityLevelRuleInitsWithConfigArray),
-        ("testSeverityLevelRuleInitsWithSingleValueConfigArray", testSeverityLevelRuleInitsWithSingleValueConfigArray),
-        ("testSeverityLevelRuleInitsWithLiteral", testSeverityLevelRuleInitsWithLiteral),
         ("testSeverityLevelRuleNotEqual", testSeverityLevelRuleNotEqual),
         ("testDifferentSeverityLevelRulesNotEqual", testDifferentSeverityLevelRulesNotEqual)
     ]

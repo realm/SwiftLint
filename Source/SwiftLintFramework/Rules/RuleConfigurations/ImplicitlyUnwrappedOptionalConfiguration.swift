@@ -24,9 +24,8 @@ public enum ImplicitlyUnwrappedOptionalModeConfiguration: String, YamlLoadable {
 }
 
 public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var modeParameter: Parameter<ImplicitlyUnwrappedOptionalModeConfiguration>
-    private var severityParameter: Parameter<ViolationSeverity>
+    private(set) var modeParameter: Parameter<ImplicitlyUnwrappedOptionalModeConfiguration>
+    private(set) var severityParameter: Parameter<ViolationSeverity>
 
     var severity: ViolationSeverity {
         return severityParameter.value
@@ -41,8 +40,6 @@ public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equat
                                   default: mode,
                                   description: "How serious")
         severityParameter = SeverityConfiguration(severity).severityParameter
-
-        parameters = [modeParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

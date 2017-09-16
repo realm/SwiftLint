@@ -24,15 +24,14 @@ public enum StatementModeConfiguration: String, YamlLoadable {
 }
 
 public struct StatementConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var statementModeParameter: Parameter<StatementModeConfiguration>
     private(set) var severityParameter: Parameter<ViolationSeverity>
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var statementMode: StatementModeConfiguration {
+    public var statementMode: StatementModeConfiguration {
         return statementModeParameter.value
     }
 
@@ -40,7 +39,6 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
                 severity: ViolationSeverity) {
         statementModeParameter = Parameter(key: "statement_mode", default: statementMode, description: "")
         severityParameter = SeverityConfiguration(severity).severityParameter
-        parameters = [statementModeParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

@@ -9,10 +9,9 @@
 import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var severityParameter: Parameter<ViolationSeverity>
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
@@ -20,7 +19,6 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
         severityParameter = Parameter(key: "severity",
                                       default: severity,
                                       description: "How serious")
-        parameters = [severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

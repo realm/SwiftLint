@@ -9,17 +9,16 @@
 import Foundation
 
 public struct AttributesConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var alwaysOnSameLineParameter: ArrayParameter<String>
-    private var alwaysOnNewLineParameter: ArrayParameter<String>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var alwaysOnSameLineParameter: ArrayParameter<String>
+    private(set) var alwaysOnNewLineParameter: ArrayParameter<String>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    private(set) var alwaysOnSameLine = Set<String>()
-    private(set) var alwaysOnNewLine = Set<String>()
+    private(set) public var alwaysOnSameLine = Set<String>()
+    private(set) public var alwaysOnNewLine = Set<String>()
 
     public init(alwaysOnSameLine: [String] = ["@IBAction", "@NSManaged"],
                 alwaysInNewLine: [String] = []) {
@@ -27,7 +26,6 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
                                                    description: "")
         alwaysOnNewLineParameter = ArrayParameter(key: "always_on_line_above", default: alwaysInNewLine,
                                                   description: "")
-        parameters = [alwaysOnSameLineParameter, alwaysOnNewLineParameter, severityParameter]
 
         self.alwaysOnSameLine = Set(alwaysOnSameLine)
         self.alwaysOnNewLine = Set(alwaysOnNewLine)

@@ -9,9 +9,8 @@
 import Foundation
 
 public struct NestingConfiguration: RuleConfiguration, Equatable {
-    private var typeLevelParameter: Parameter<SeverityLevelsConfiguration>
-    private var statementLevelParameter: Parameter<SeverityLevelsConfiguration>
-    public var parameters: [ParameterDefinition]
+    private(set) var typeLevelParameter: Parameter<SeverityLevelsConfiguration>
+    private(set) var statementLevelParameter: Parameter<SeverityLevelsConfiguration>
 
     public var typeLevel: SeverityLevelsConfiguration {
         return typeLevelParameter.value
@@ -30,7 +29,6 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
 
         typeLevelParameter = Parameter(key: "type_level", default: typeLevel, description: "")
         statementLevelParameter = Parameter(key: "statement_level", default: statementLevel, description: "")
-        parameters = [typeLevelParameter, statementLevelParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

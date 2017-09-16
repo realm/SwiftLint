@@ -9,15 +9,14 @@
 import Foundation
 
 public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var validateExtensionsParameter: Parameter<Bool>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var validateExtensionsParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var validateExtensions: Bool {
+    public var validateExtensions: Bool {
         return validateExtensionsParameter.value
     }
 
@@ -25,8 +24,6 @@ public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equata
         validateExtensionsParameter = Parameter(key: "validate_extensions",
                                                 default: validateExtensions,
                                                 description: "How serious")
-
-        parameters = [validateExtensionsParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

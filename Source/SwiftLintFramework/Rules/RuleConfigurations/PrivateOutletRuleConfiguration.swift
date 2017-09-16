@@ -9,15 +9,14 @@
 import Foundation
 
 public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var allowPrivateSetParameter: Parameter<Bool>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var allowPrivateSetParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var allowPrivateSet: Bool {
+    public var allowPrivateSet: Bool {
         return allowPrivateSetParameter.value
     }
 
@@ -25,8 +24,6 @@ public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
         allowPrivateSetParameter = Parameter(key: "allow_private_set",
                                              default: allowPrivateSet,
                                              description: "How serious")
-
-        parameters = [allowPrivateSetParameter, severityParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

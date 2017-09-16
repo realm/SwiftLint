@@ -34,10 +34,16 @@ sourcery:
 	sed -e 4,11d .sourcery/LinuxMain.generated.swift > .sourcery/LinuxMain.swift
 	sed -n 4,10p .sourcery/LinuxMain.generated.swift | cat - .sourcery/LinuxMain.swift > Tests/LinuxMain.swift
 	rm .sourcery/LinuxMain.swift .sourcery/LinuxMain.generated.swift
+
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
 	sed -e 4,11d .sourcery/MasterRuleList.generated.swift > .sourcery/MasterRuleList.swift
 	sed -n 4,10p .sourcery/MasterRuleList.generated.swift | cat - .sourcery/MasterRuleList.swift > Source/SwiftLintFramework/Models/MasterRuleList.swift
 	rm .sourcery/MasterRuleList.swift .sourcery/MasterRuleList.generated.swift
+
+	sourcery --sources Source/SwiftLintFramework/Rules/RuleConfigurations --templates .sourcery/RuleConfigurationsParameters.stencil --output .sourcery
+	sed -e 4,11d .sourcery/RuleConfigurationsParameters.generated.swift > .sourcery/RuleConfigurationsParameters.swift
+	sed -n 4,10p .sourcery/RuleConfigurationsParameters.generated.swift | cat - .sourcery/RuleConfigurationsParameters.swift > Source/SwiftLintFramework/Models/RuleConfigurationsParameters.swift
+	rm .sourcery/RuleConfigurationsParameters.swift .sourcery/RuleConfigurationsParameters.generated.swift
 
 bootstrap:
 	script/bootstrap

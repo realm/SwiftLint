@@ -13,7 +13,6 @@
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
 * [Control Statement](#control-statement)
-* [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
@@ -117,6 +116,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `attributes` | Disabled | No | style
 
 Attributes should be on their own lines in functions and types, but on the same line as variables and imports.
+
+Key | Default value | Description 
+--- | --- | ---
+`always_on_same_line` | ["@IBAction", "@NSManaged"] | 
+`always_on_line_above` | [] | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -461,6 +467,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer the new block based KVO API with keypaths when using Swift 3.2 or later.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -503,6 +514,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `class_delegate_protocol` | Enabled | No | lint
 
 Delegate protocols should be class-only so they can be weakly referenced.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -581,6 +597,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Closing brace with closing parenthesis should not have any whitespaces in the middle.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -619,6 +640,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `closure_end_indentation` | Disabled | No | style
 
 Closure end should have the same indentation as the line that started it.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -696,6 +722,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `closure_parameter_position` | Enabled | No | style
 
 Closure parameters should be on the same line as opening brace.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -847,6 +878,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Closure expressions should have a single space inside each brace.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -899,6 +935,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `colon` | Enabled | Yes | style
 
 Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+`flexible_right_spacing` | false | How serious
+`apply_to_dictionaries` | true | How serious
+
 
 ### Examples
 
@@ -1279,6 +1322,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 There should be no space before and one after any comma.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -1354,6 +1402,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` shouldn't be called directly.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -1394,6 +1447,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `conditional_returns_on_newline` | Disabled | No | style
 
 Conditional statements should always return on the next line
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -1473,6 +1531,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `control_statement` | Enabled | No | style
 
 if,for,while,do statements shouldn't wrap their conditionals in parentheses.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -1642,16 +1705,6 @@ do { ; } ↓while (condition) {
 
 
 
-## Custom Rules
-
-Identifier | Enabled by default | Supports autocorrection | Kind 
---- | --- | --- | ---
-`custom_rules` | Enabled | No | style
-
-Create custom rules by providing a regex string. Optionally specify what syntax kinds to match against, the severity level, and what message to display.
-
-
-
 ## Cyclomatic Complexity
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -1659,6 +1712,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `cyclomatic_complexity` | Enabled | No | metrics
 
 Complexity of function bodies should be limited.
+
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 10 | How serious
+`error` | 20 | How serious
+`ignores_case_statements` | false | 
+
 
 ### Examples
 
@@ -1736,6 +1796,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 When registering for a notification using a block, the opaque observer that is returned should be stored so it can be removed later.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -1790,6 +1855,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `discouraged_direct_init` | Enabled | No | lint
 
 Discouraged direct initialization of types that can be harmful.
+
+Key | Default value | Description 
+--- | --- | ---
+`types` | ["Bundle", "UIDevice"] | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -1876,6 +1947,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Avoid using 'dynamic' and '@inline(__always)' together.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
+
 ### Examples
 
 <details>
@@ -1944,6 +2020,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `empty_count` | Disabled | No | performance
 
 Prefer checking `isEmpty` over comparing `count` to zero.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
 
 ### Examples
 
@@ -2015,6 +2096,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `empty_enum_arguments` | Enabled | Yes | style
 
 Arguments can be omitted when matching enums with associated types if they are not used.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2097,6 +2183,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer `() -> ` over `Void -> `.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -2167,6 +2258,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `empty_parentheses_with_trailing_closure` | Enabled | Yes | style
 
 When using trailing closures, empty parentheses should be avoided after the method call.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2246,6 +2342,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `explicit_enum_raw_value` | Disabled | No | idiomatic
 
 Enums should be explicitly assigned their raw values.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2344,6 +2445,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Explicitly calling .init() should be avoided.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -2392,6 +2498,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `explicit_top_level_acl` | Disabled | No | idiomatic
 
 Top-level declarations should specify Access Control Level keywords explicitly.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2475,6 +2586,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Properties should have a type interface
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -2553,6 +2669,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `extension_access_modifier` | Disabled | No | idiomatic
 
 Prefer to use extension access modifiers
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2644,6 +2765,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Fallthrough should be avoided.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -2680,6 +2806,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `fatal_error_message` | Disabled | No | idiomatic
 
 A fatalError call should have a message.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2729,6 +2860,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `file_header` | Disabled | No | style
 
 Header comments should be consistent with project patterns.
+
+Key | Default value | Description 
+--- | --- | ---
+`required_string` | <null> | 
+`required_pattern` | <null> | 
+`forbidden_string` | <null> | 
+`forbidden_pattern` | <null> | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -2783,6 +2923,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `file_length` | Enabled | No | metrics
 
 Files should not span too many lines.
+
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 400 | How serious
+`error` | 1000 | How serious
+`ignore_comment_only_lines` | false | 
+
 
 ### Examples
 
@@ -4019,6 +4166,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer using `.first(where:)` over `.filter { }.first` in collections.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -4085,6 +4237,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `for_where` | Enabled | No | idiomatic
 
 `where` clauses are preferred over a single `if` inside a `for`.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -4179,6 +4336,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Force casts should be avoided.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
+
 ### Examples
 
 <details>
@@ -4210,6 +4372,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Force tries should be avoided.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
+
 ### Examples
 
 <details>
@@ -4238,6 +4405,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `force_unwrapping` | Disabled | No | idiomatic
 
 Force unwrapping should be avoided.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -4370,6 +4542,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Functions bodies should not span too many lines.
 
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 40 | How serious
+`error` | 100 | How serious
+
+
 
 
 ## Function Parameter Count
@@ -4379,6 +4557,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `function_parameter_count` | Enabled | No | metrics
 
 Number of function parameters should be low.
+
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 5 | How serious
+`error` | 8 | How serious
+
 
 ### Examples
 
@@ -4459,6 +4643,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `generic_type_name` | Enabled | No | idiomatic
 
 Generic type name should only contain alphanumeric characters, start with an uppercase character and span between 1 and 20 characters in length.
+
+Key | Default value | Description 
+--- | --- | ---
+`min_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 1, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(0), description: "How serious", _value: Optional(0))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 1, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(0), description: "How serious", _value: Optional(0))) | 
+`max_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 20, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(1000), description: "How serious", _value: Optional(1000))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 20, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(1000), description: "How serious", _value: Optional(1000))) | 
+`excluded` | [] | 
+`allowed_symbols` | [] | 
+`validates_start_with_lowercase` | true | 
+
 
 ### Examples
 
@@ -4661,6 +4854,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Identifier names should only contain alphanumeric characters and start with a lowercase character or should only contain capital letters. In an exception to the above, variable names may start with a capital letter when they are declared static and immutable. Variable names should not be too long or too short.
 
+Key | Default value | Description 
+--- | --- | ---
+`min_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 3, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(2), description: "How serious", _value: Optional(2))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 3, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(2), description: "How serious", _value: Optional(2))) | 
+`max_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 40, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(60), description: "How serious", _value: Optional(60))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 40, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(60), description: "How serious", _value: Optional(60))) | 
+`excluded` | [] | 
+`allowed_symbols` | [] | 
+`validates_start_with_lowercase` | true | 
+
+
 ### Examples
 
 <details>
@@ -4773,6 +4975,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `implicit_getter` | Enabled | No | style
 
 Computed read-only properties should avoid using the get keyword.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -4972,6 +5179,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer implicit returns in closures.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -5032,6 +5244,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `implicitly_unwrapped_optional` | Disabled | No | idiomatic
 
 Implicitly unwrapped optionals should be avoided when possible.
+
+Key | Default value | Description 
+--- | --- | ---
+`mode` | allExceptIBOutlets | How serious
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -5122,6 +5340,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -5167,6 +5390,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Discouraged explicit usage of the default separator.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -5208,6 +5436,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `large_tuple` | Enabled | No | metrics
 
 Tuples shouldn't have too many members. Create a custom type instead.
+
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 2 | How serious
+`error` | 3 | How serious
+
 
 ### Examples
 
@@ -5370,6 +5604,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Files should not contain leading whitespace.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -5405,6 +5644,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `legacy_cggeometry_functions` | Enabled | Yes | idiomatic
 
 Struct extension properties and methods are preferred over legacy functions
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -5587,6 +5831,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Struct-scoped constants are preferred over legacy global constants.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -5687,6 +5936,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `legacy_constructor` | Enabled | Yes | idiomatic
 
 Swift constructors are preferred over legacy convenience functions.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -5869,6 +6123,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Struct extension properties and methods are preferred over legacy functions
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -6042,6 +6301,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Let and var should be separated from other statements by a blank line.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -6198,6 +6462,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Lines should not span too many characters.
 
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 120 | How serious
+`error` | 200 | How serious
+`ignores_urls` | false | 
+`ignores_function_declarations` | false | 
+`ignores_comments` | false | 
+
+
 ### Examples
 
 <details>
@@ -6248,6 +6521,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `mark` | Enabled | Yes | lint
 
 MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -6373,6 +6651,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `multiline_parameters` | Disabled | No | style
 
 Functions and methods parameters should be either on the same line, or one per line.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -6776,6 +7059,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Trailing closure syntax should not be used when passing more than one closure argument.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -6836,6 +7124,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `nesting` | Enabled | No | metrics
 
 Types should be nested at most 1 level deep, and statements should be nested at most 5 levels deep.
+
+Key | Default value | Description 
+--- | --- | ---
+`type_level` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 1, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: nil, description: "How serious", _value: nil)], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 1, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: nil, description: "How serious", _value: nil)) | 
+`statement_level` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 5, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: nil, description: "How serious", _value: nil)], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 5, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: nil, description: "How serious", _value: nil)) | 
+
 
 ### Examples
 
@@ -6954,6 +7248,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer Nimble operator overloads over free matcher functions.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -7069,6 +7368,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer not to use extension access modifiers
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
+
 ### Examples
 
 <details>
@@ -7120,6 +7424,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `no_grouping_extension` | Disabled | No | idiomatic
 
 Extensions shouldn't be used to group code within the same source file.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -7178,6 +7487,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 An object should only remove itself as an observer in `deinit`.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -7225,6 +7539,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `number_separator` | Disabled | Yes | style
 
 Underscores should be used as thousand separator in large decimal numbers.
+
+Key | Default value | Description 
+--- | --- | ---
+`minimum_length` | 0 | How serious
+`minimum_fraction_length` | <null> | How serious
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -7487,6 +7808,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer object literals over image and color inits.
 
+Key | Default value | Description 
+--- | --- | ---
+`image_literal` | true | How serious
+`color_literal` | true | How serious
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -7603,6 +7931,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `opening_brace` | Enabled | Yes | style
 
 Opening braces should be preceded by a single space and on the same line as the declaration.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -7768,6 +8101,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `operator_usage_whitespace` | Disabled | Yes | style
 
 Operators should be surrounded by a single whitespace when they are being used.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -7944,6 +8282,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Operators should be surrounded by a single whitespace when defining them.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8009,6 +8352,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `overridden_super_call` | Disabled | No | lint
 
 Some overridden methods should always call super
+
+Key | Default value | Description 
+--- | --- | ---
+`excluded` | [] | How serious
+`included` | ["*"] | How serious
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -8106,6 +8456,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `pattern_matching_keywords` | Disabled | No | idiomatic
 
 Combine multiple pattern matching bindings by moving keywords out of tuples.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -8230,6 +8585,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 IBOutlets should be private to avoid leaking UIKit to higher layers.
 
+Key | Default value | Description 
+--- | --- | ---
+`allow_private_set` | false | How serious
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8299,6 +8660,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `private_over_fileprivate` | Enabled | Yes | idiomatic
 
 Prefer `private` over `fileprivate` declarations.
+
+Key | Default value | Description 
+--- | --- | ---
+`validate_extensions` | false | How serious
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -8377,7 +8744,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `private_unit_test` | Enabled | No | lint
 
-Unit tests marked private are silently skipped.
+Unit test marked `private` will not be run by XCTest.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -8472,6 +8844,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Some methods should not call super
 
+Key | Default value | Description 
+--- | --- | ---
+`excluded` | [] | How serious
+`apply_to_dictionaries` | ["*"] | How serious
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8550,6 +8929,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 When declaring properties in protocols, the order of accessors should be `get set`.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8594,6 +8978,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `quick_discouraged_call` | Disabled | No | lint
 
 Discouraged call inside 'describe' and/or 'context' block.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -8820,6 +9209,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8875,6 +9269,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 nil coalescing operator is only evaluated if the lhs is nil, coalescing operator with nil as rhs is redundant
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -8910,6 +9309,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `redundant_optional_initialization` | Enabled | Yes | idiomatic
 
 Initializing an optional variable with nil is redundant.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -9007,6 +9411,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 String enum values can be omitted when they are equal to the enumcase name.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -9088,6 +9497,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `redundant_void_return` | Enabled | Yes | idiomatic
 
 Returning Void in a function declaration is redundant.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -9189,6 +9603,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Return arrow and return type should be separated by a single space or on a separate line.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -9281,6 +9700,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `shorthand_operator` | Enabled | No | style
 
 Prefer shorthand operators (+=, -=, *=, /=) over doing the operation and assigning.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
 
 ### Examples
 
@@ -9552,6 +9976,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Test files should contain a single QuickSpec or XCTestCase class.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -9627,6 +10056,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Imports should be sorted.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -9671,6 +10105,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `statement_position` | Enabled | Yes | style
 
 Else and catch should be on the same line, one space after the previous declaration.
+
+Key | Default value | Description 
+--- | --- | ---
+`statement_mode` | default | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -9740,6 +10180,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `strict_fileprivate` | Disabled | No | idiomatic
 
 `fileprivate` should be avoided.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -9824,6 +10269,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | error | How serious
+
+
 
 
 ## Switch and Case Statement Alignment
@@ -9833,6 +10283,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `switch_case_alignment` | Enabled | No | style
 
 Case statements should vertically align with the enclosing switch statement.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -9926,6 +10381,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `switch_case_on_newline` | Disabled | No | style
 
 Cases inside a switch should always be on a newline
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -10128,6 +10588,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -10241,6 +10706,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 TODOs and FIXMEs should be avoided.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -10312,6 +10782,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Trailing closure syntax should be used whenever possible.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -10382,6 +10857,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `trailing_comma` | Enabled | Yes | style
 
 Trailing commas in arrays and dictionaries should be avoided/enforced.
+
+Key | Default value | Description 
+--- | --- | ---
+`mandatory_comma` | false | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -10485,6 +10966,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Files should have a single trailing newline.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -10520,6 +11006,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `trailing_semicolon` | Enabled | Yes | idiomatic
 
 Lines should not have trailing semicolons.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -10572,6 +11063,13 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `trailing_whitespace` | Enabled | Yes | style
 
 Lines should not have trailing whitespace.
+
+Key | Default value | Description 
+--- | --- | ---
+`ignores_empty_lines` | false | 
+`ignores_comments` | true | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -10628,6 +11126,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `type_body_length` | Enabled | No | metrics
 
 Type bodies should not span too many lines.
+
+Key | Default value | Description 
+--- | --- | ---
+`warning` | 200 | How serious
+`error` | 350 | How serious
+
 
 ### Examples
 
@@ -13755,6 +14259,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Type name should only contain alphanumeric characters, start with an uppercase character and span between 3 and 40 characters in length.
 
+Key | Default value | Description 
+--- | --- | ---
+`min_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 3, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(0), description: "How serious", _value: Optional(0))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 3, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(0), description: "How serious", _value: Optional(0))) | 
+`max_length` | SeverityLevelsConfiguration(parameters: [SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 40, description: "How serious", _value: nil), SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(1000), description: "How serious", _value: Optional(1000))], warningParameter: SwiftLintFramework.Parameter<Swift.Int>(key: "warning", default: 40, description: "How serious", _value: nil), errorParameter: SwiftLintFramework.OptionalParameter<Swift.Int>(key: "error", default: Optional(1000), description: "How serious", _value: Optional(1000))) | 
+`excluded` | [] | 
+`allowed_symbols` | [] | 
+`validates_start_with_lowercase` | true | 
+
+
 ### Examples
 
 <details>
@@ -13932,6 +14445,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Parentheses are not needed when declaring closure arguments.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -13985,6 +14503,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `unused_closure_parameter` | Enabled | Yes | lint
 
 Unused parameter in a closure should be replaced with _.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14132,6 +14655,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 When the index or the item is not used, `.enumerated()` can be removed.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -14217,6 +14745,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `unused_optional_binding` | Enabled | No | style
 
 Prefer `!= nil` over `let _ =`
+
+Key | Default value | Description 
+--- | --- | ---
+`ignore_optional_try` | false | 
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14327,6 +14861,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `valid_ibinspectable` | Enabled | No | lint
 
 @IBInspectable should be applied to variables only, have its type explicit and be of a supported type
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14461,6 +15000,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Function parameters should be aligned vertically if they're in multiple lines in a declaration.
 
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -14564,6 +15108,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `vertical_parameter_alignment_on_call` | Disabled | No | style
 
 Function parameters should be aligned vertically if they're in multiple lines in a method call.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14679,6 +15228,12 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 
 Limit vertical whitespace to a single empty line.
 
+Key | Default value | Description 
+--- | --- | ---
+`max_empty_lines` | 1 | How serious
+`severity` | warning | How serious
+
+
 ### Examples
 
 <details>
@@ -14746,6 +15301,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `void_return` | Enabled | Yes | style
 
 Prefer `-> Void` over `-> ()`.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14837,6 +15397,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `weak_delegate` | Enabled | No | lint
 
 Delegates should be weak to avoid reference cycles.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 
@@ -14938,6 +15503,11 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `xctfail_message` | Enabled | No | idiomatic
 
 An XCTFail call should include a description of the assertion.
+
+Key | Default value | Description 
+--- | --- | ---
+`severity` | warning | How serious
+
 
 ### Examples
 

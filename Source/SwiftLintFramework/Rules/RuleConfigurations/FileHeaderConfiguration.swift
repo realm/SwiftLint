@@ -9,19 +9,17 @@
 import Foundation
 
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var requiredStringParameter = OptionalParameter<String>(key: "required_string", default: nil,
+                                                                         description: "")
+    private(set) var requiredPatternParameter = OptionalParameter<String>(key: "required_pattern", default: nil,
+                                                                          description: "")
+    private(set) var forbiddenStringParameter = OptionalParameter<String>(key: "forbidden_string", default: nil,
+                                                                          description: "")
+    private(set) var forbiddenPatternParameter = OptionalParameter<String>(key: "forbidden_pattern", default: nil,
+                                                                           description: "")
 
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
-    private var requiredStringParameter = OptionalParameter<String>(key: "required_string", default: nil,
-                                                                    description: "")
-    private var requiredPatternParameter = OptionalParameter<String>(key: "required_pattern", default: nil,
-                                                                     description: "")
-    private var forbiddenStringParameter = OptionalParameter<String>(key: "forbidden_string", default: nil,
-                                                                     description: "")
-    private var forbiddenPatternParameter = OptionalParameter<String>(key: "forbidden_pattern", default: nil,
-                                                                      description: "")
-
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
@@ -66,12 +64,6 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     }
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
-
-    public init() {
-        parameters = [requiredStringParameter, requiredPatternParameter,
-                      forbiddenStringParameter, forbiddenPatternParameter,
-                      severityParameter]
-    }
 
     public static func == (lhs: FileHeaderConfiguration,
                            rhs: FileHeaderConfiguration) -> Bool {

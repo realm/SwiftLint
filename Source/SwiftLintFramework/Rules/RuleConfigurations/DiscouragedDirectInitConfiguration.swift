@@ -14,11 +14,10 @@ private func toExplicitInitMethod(typeName: String) -> String {
 }
 
 public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var typesParameter: ArrayParameter<String>
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var typesParameter: ArrayParameter<String>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
@@ -27,7 +26,6 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
     public init(types: [String] = ["Bundle", "UIDevice"]) {
         typesParameter = ArrayParameter(key: "types", default: types,
                                         description: "")
-        parameters = [typesParameter, severityParameter]
         discouragedInits = Set(types + types.map(toExplicitInitMethod))
     }
 

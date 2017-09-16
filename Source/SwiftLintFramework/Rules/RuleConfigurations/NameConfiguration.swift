@@ -9,38 +9,37 @@
 import Foundation
 
 public struct NameConfiguration: RuleConfiguration, Equatable {
-    private var minLengthParameter: Parameter<SeverityLevelsConfiguration>
-    private var maxLengthParameter: Parameter<SeverityLevelsConfiguration>
-    private var excludedParameter: ArrayParameter<String>
-    private var allowedSymbolsParameter: ArrayParameter<String>
-    private var validatesStartWithLowercaseParameter: Parameter<Bool>
-    public var parameters: [ParameterDefinition]
+    private(set) var minLengthParameter: Parameter<SeverityLevelsConfiguration>
+    private(set) var maxLengthParameter: Parameter<SeverityLevelsConfiguration>
+    private(set) var excludedParameter: ArrayParameter<String>
+    private(set) var allowedSymbolsParameter: ArrayParameter<String>
+    private(set) var validatesStartWithLowercaseParameter: Parameter<Bool>
 
-    var minLength: SeverityLevelsConfiguration {
+    public var minLength: SeverityLevelsConfiguration {
         return minLengthParameter.value
     }
 
-    var maxLength: SeverityLevelsConfiguration {
+    public var maxLength: SeverityLevelsConfiguration {
         return maxLengthParameter.value
     }
 
-    var excluded: Set<String> {
+    public var excluded: Set<String> {
         return Set(excludedParameter.value)
     }
 
-    var allowedSymbols: Set<String> {
+    public var allowedSymbols: Set<String> {
         return Set(allowedSymbolsParameter.value)
     }
 
-    var validatesStartWithLowercase: Bool {
+    public var validatesStartWithLowercase: Bool {
         return validatesStartWithLowercaseParameter.value
     }
 
-    var minLengthThreshold: Int {
+    public var minLengthThreshold: Int {
         return max(minLength.warning, minLength.error ?? minLength.warning)
     }
 
-    var maxLengthThreshold: Int {
+    public var maxLengthThreshold: Int {
         return min(maxLength.warning, maxLength.error ?? maxLength.warning)
     }
 
@@ -60,9 +59,6 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         allowedSymbolsParameter = ArrayParameter(key: "allowed_symbols", default: allowedSymbols, description: "")
         validatesStartWithLowercaseParameter = Parameter(key: "validates_start_with_lowercase",
                                                          default: validatesStartWithLowercase, description: "")
-
-        parameters = [minLengthParameter, maxLengthParameter, excludedParameter,
-                      allowedSymbolsParameter, validatesStartWithLowercaseParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

@@ -9,20 +9,19 @@
 import Foundation
 
 public struct ColonConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
-    private var flexibleRightSpacingParameter: Parameter<Bool>
-    private var applyToDictionariesParameter: Parameter<Bool>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var flexibleRightSpacingParameter: Parameter<Bool>
+    private(set) var applyToDictionariesParameter: Parameter<Bool>
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var flexibleRightSpacing: Bool {
+    public var flexibleRightSpacing: Bool {
         return flexibleRightSpacingParameter.value
     }
 
-    var applyToDictionaries: Bool {
+    public var applyToDictionaries: Bool {
         return applyToDictionariesParameter.value
     }
 
@@ -33,7 +32,6 @@ public struct ColonConfiguration: RuleConfiguration, Equatable {
         applyToDictionariesParameter = Parameter(key: "apply_to_dictionaries",
                                                  default: applyToDictionaries,
                                                  description: "How serious")
-        parameters = [severityParameter, flexibleRightSpacingParameter, applyToDictionariesParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

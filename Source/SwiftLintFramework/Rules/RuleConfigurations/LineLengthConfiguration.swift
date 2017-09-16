@@ -23,22 +23,21 @@ public struct LineLengthRuleOptions: OptionSet {
 }
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
-    public let parameters: [ParameterDefinition]
     private(set) var warningLengthParameter: Parameter<Int>
     private(set) var errorLengthParameter: OptionalParameter<Int>
-    private var ignoresURLsParameter: Parameter<Bool>
-    private var ignoresFunctionDeclarationsParameter: Parameter<Bool>
-    private var ignoresCommentsParameter: Parameter<Bool>
+    private(set) var ignoresURLsParameter: Parameter<Bool>
+    private(set) var ignoresFunctionDeclarationsParameter: Parameter<Bool>
+    private(set) var ignoresCommentsParameter: Parameter<Bool>
 
-    var ignoresURLs: Bool {
+    public var ignoresURLs: Bool {
         return ignoresURLsParameter.value
     }
 
-    var ignoresFunctionDeclarations: Bool {
+    public var ignoresFunctionDeclarations: Bool {
         return ignoresFunctionDeclarationsParameter.value
     }
 
-    var ignoresComments: Bool {
+    public var ignoresComments: Bool {
         return ignoresCommentsParameter.value
     }
 
@@ -56,9 +55,6 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         ignoresCommentsParameter = Parameter(key: "ignores_comments",
                                              default: options.contains(.ignoreComments),
                                              description: "")
-
-        parameters = [warningLengthParameter, errorLengthParameter, ignoresURLsParameter,
-                      ignoresFunctionDeclarationsParameter, ignoresCommentsParameter]
     }
 
     public mutating func apply(configuration: [String: Any]) throws {

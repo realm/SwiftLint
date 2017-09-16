@@ -42,22 +42,21 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         "tearDown()"
     ]
 
-    public let parameters: [ParameterDefinition]
-    private var severityParameter = SeverityConfiguration(.warning).severityParameter
-    private var excludedParameter: ArrayParameter<String>
-    private var includedParameter: ArrayParameter<String>
+    private(set) var severityParameter = SeverityConfiguration(.warning).severityParameter
+    private(set) var excludedParameter: ArrayParameter<String>
+    private(set) var includedParameter: ArrayParameter<String>
 
     public private(set) var resolvedMethodNames: [String]
 
-    var severity: ViolationSeverity {
+    public var severity: ViolationSeverity {
         return severityParameter.value
     }
 
-    var excluded: [String] {
+    public var excluded: [String] {
         return excludedParameter.value
     }
 
-    var included: [String] {
+    public var included: [String] {
         return includedParameter.value
     }
 
@@ -68,7 +67,7 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         includedParameter = ArrayParameter(key: "included",
                                            default: included,
                                            description: "How serious")
-        parameters = [excludedParameter, includedParameter, severityParameter]
+
         resolvedMethodNames = defaultIncluded
         resolvedMethodNames = calculateResolvedMethodNames()
     }

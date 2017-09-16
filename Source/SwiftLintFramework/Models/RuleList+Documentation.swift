@@ -31,6 +31,7 @@ extension RuleList {
         var content = h2(description.name)
         content += detailsSummary(rule.init())
         content += description.description + "\n"
+        content += parameters(rule.init()) ?? ""
 
         if !description.nonTriggeringExamples.isEmpty || !description.triggeringExamples.isEmpty {
             content += h3("Examples")
@@ -75,6 +76,23 @@ extension RuleList {
         let kind = type(of: rule).description.kind
         content += "`\(identifier)` | \(defaultStatus) | \(correctable) | \(kind)\n\n"
 
+        return content
+    }
+
+    private func parameters(_ rule: Rule) -> String? {
+        let parameters = rule.parameters
+        guard !parameters.isEmpty else {
+            return nil
+        }
+
+        var content = "\n"
+        content += "Key | Default value | Description \n"
+        content += "--- | --- | ---\n"
+        for param in parameters {
+            content += "`\(param.key)` | \(param.defaultValueDescription) | \(param.description)\n"
+        }
+
+        content += "\n"
         return content
     }
 

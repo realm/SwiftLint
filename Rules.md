@@ -1,6 +1,7 @@
 
 # Rules
 
+* [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
@@ -109,6 +110,110 @@
 * [Weak Delegate](#weak-delegate)
 * [XCTFail Message](#xctfail-message)
 --------
+
+## Array Init
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`array_init` | Disabled | No | lint
+
+Prefer using Array(seq) than seq.map { $0 } to convert a sequence into an Array.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+Array(foo)
+
+```
+
+```swift
+foo.map { $0.0 }
+
+```
+
+```swift
+foo.map { $1 }
+
+```
+
+```swift
+foo.map { $0() }
+
+```
+
+```swift
+foo.map { ((), $0) }
+
+```
+
+```swift
+foo.map { $0! }
+
+```
+
+```swift
+foo.map { $0! /* force unwrap */ }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓foo.map({ $0 })
+
+```
+
+```swift
+↓foo.map { $0 }
+
+```
+
+```swift
+↓foo.map { return $0 }
+
+```
+
+```swift
+↓foo.map { elem in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { elem in
+   return elem
+}
+
+```
+
+```swift
+↓foo.map { (elem: String) in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { elem -> String in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { $0 /* a comment */ }
+
+```
+
+</details>
+
+
 
 ## Attributes
 

@@ -203,6 +203,7 @@
 		D4DABFD91E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */; };
 		D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */; };
 		D4DB92251E628898005DE9C1 /* TodoRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB92241E628898005DE9C1 /* TodoRuleTests.swift */; };
+		D4E2BA851F6CD77B00E8E184 /* ArrayInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */; };
 		D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */; };
 		D4FD4C851F2A260A00DD8AA8 /* BlockBasedKVORule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */; };
 		D4FD58B21E12A0200019503C /* LinterCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD58B11E12A0200019503C /* LinterCache.swift */; };
@@ -544,6 +545,7 @@
 		D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCenterDetachmentRuleExamples.swift; sourceTree = "<group>"; };
 		D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NimbleOperatorRule.swift; sourceTree = "<group>"; };
 		D4DB92241E628898005DE9C1 /* TodoRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodoRuleTests.swift; sourceTree = "<group>"; };
+		D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayInitRule.swift; sourceTree = "<group>"; };
 		D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorUsageWhitespaceRule.swift; sourceTree = "<group>"; };
 		D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockBasedKVORule.swift; sourceTree = "<group>"; };
 		D4FD58B11E12A0200019503C /* LinterCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinterCache.swift; sourceTree = "<group>"; };
@@ -957,6 +959,7 @@
 		E88DEA7A1B098D7300A66CB0 /* Rules */ = {
 			isa = PBXGroup;
 			children = (
+				D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */,
 				D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */,
 				D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */,
 				D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */,
@@ -1433,6 +1436,7 @@
 				BB00B4E91F5216090079869F /* MultipleClosuresWithTrailingClosureRule.swift in Sources */,
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				D47F31151EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift in Sources */,
+				D4E2BA851F6CD77B00E8E184 /* ArrayInitRule.swift in Sources */,
 				92CCB2D71E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift in Sources */,
 				E847F0A91BFBBABD00EA9363 /* EmptyCountRule.swift in Sources */,
 				D46252541DF63FB200BE2CA1 /* NumberSeparatorRule.swift in Sources */,

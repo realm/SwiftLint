@@ -19,6 +19,11 @@
   statements are vertically aligned with their enclosing `switch` statement.  
   [Austin Lu](https://github.com/austinlu)
 
+* Add `array_init` opt-in rule to validate that `Array(foo)` should be preferred
+  over `foo.map({ $0 })`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1271](https://github.com/realm/SwiftLint/issues/1271)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

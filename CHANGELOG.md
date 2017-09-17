@@ -41,6 +41,10 @@
 * Add `catch` to the statements checked by the `control_statement` rule.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `sorted_imports` correctable.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't

@@ -60,7 +60,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
 
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,
@@ -69,18 +69,15 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             case let end = dictionary.bodyOffset ?? offset + length,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: start, length: end - start),
-            case let kinds = excludingKinds(),
-            file.match(pattern: "->", excludingSyntaxKinds: kinds, range: range).count == 1,
-            let match = file.match(pattern: pattern, excludingSyntaxKinds: kinds, range: range).first else {
+            file.match(pattern: "->", excludingSyntaxKinds: excludingKinds, range: range).count == 1,
+            let match = file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds, range: range).first else {
                 return []
         }
 
         return [match]
     }
 
-    private func excludingKinds() -> [SyntaxKind] {
-        return SyntaxKind.allKinds().filter { $0 != .typeidentifier }
-    }
+    private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in

@@ -17,22 +17,14 @@ extension SyntaxKind {
         self = kind
     }
 
-    static func commentKeywordStringAndTypeidentifierKinds() -> [SyntaxKind] {
-        return commentAndStringKinds() + [.keyword, .typeidentifier]
-    }
+    static let commentAndStringKinds: Set<SyntaxKind> = commentKinds.union([.string])
 
-    static func commentAndStringKinds() -> [SyntaxKind] {
-        return commentKinds() + [.string]
-    }
+    static let commentKinds: Set<SyntaxKind> = [.comment, .commentMark, .commentURL,
+                                                .docComment, .docCommentField]
 
-    static func commentKinds() -> [SyntaxKind] {
-        return [.comment, .commentMark, .commentURL, .docComment, .docCommentField]
-    }
-
-    static func allKinds() -> [SyntaxKind] {
-        return [.argument, .attributeBuiltin, .attributeID, .buildconfigID, .buildconfigKeyword,
-                .comment, .commentMark, .commentURL, .docComment, .docCommentField, .identifier,
-                .keyword, .number, .objectLiteral, .parameter, .placeholder, .string,
-                .stringInterpolationAnchor, .typeidentifier]
-    }
+    static let allKinds: Set<SyntaxKind> = [.argument, .attributeBuiltin, .attributeID, .buildconfigID,
+                                            .buildconfigKeyword, .comment, .commentMark, .commentURL,
+                                            .docComment, .docCommentField, .identifier, .keyword, .number,
+                                            .objectLiteral, .parameter, .placeholder, .string,
+                                            .stringInterpolationAnchor, .typeidentifier]
 }

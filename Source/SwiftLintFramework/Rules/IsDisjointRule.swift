@@ -32,7 +32,7 @@ public struct IsDisjointRule: ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\bintersection\\(\\S+\\)\\.isEmpty"
-        let excludingKinds = SyntaxKind.commentAndStringKinds()
+        let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,

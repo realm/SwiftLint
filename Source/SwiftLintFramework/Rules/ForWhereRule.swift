@@ -65,7 +65,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private static let commentKinds = Set(SyntaxKind.commentAndStringKinds())
+    private static let commentKinds = SyntaxKind.commentAndStringKinds
 
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {

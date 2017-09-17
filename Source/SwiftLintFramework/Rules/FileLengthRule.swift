@@ -29,7 +29,7 @@ public struct FileLengthRule: ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         func lineCountWithoutComments() -> Int {
-            let commentKinds = Set(SyntaxKind.commentKinds())
+            let commentKinds = SyntaxKind.commentKinds
             let lineCount = file.syntaxKindsByLines.filter { kinds in
                 return !Set(kinds).isSubset(of: commentKinds)
             }.count

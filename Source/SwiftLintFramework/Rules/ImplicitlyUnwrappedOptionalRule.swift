@@ -49,7 +49,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.variableKinds().contains(kind) else {
+        guard SwiftDeclarationKind.variableKinds.contains(kind) else {
             return []
         }
 

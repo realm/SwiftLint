@@ -98,7 +98,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
 
         return configurations.flatMap { configuration -> [StyleViolation] in
             let pattern = configuration.regex.pattern
-            let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtracting(configuration.matchKinds))
+            let excludingKinds = SyntaxKind.allKinds.subtracting(configuration.matchKinds)
             return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,

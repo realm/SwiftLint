@@ -43,7 +43,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
+            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
             let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
@@ -101,12 +101,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private let kinds: [SwiftDeclarationKind] = {
-        return SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds() + [.enumelement]
+    private let kinds: Set<SwiftDeclarationKind> = {
+        return SwiftDeclarationKind.variableKinds
+            .union(SwiftDeclarationKind.functionKinds)
+            .union([.enumelement])
     }()
 
     private func type(for kind: SwiftDeclarationKind) -> String {
-        if SwiftDeclarationKind.functionKinds().contains(kind) {
+        if SwiftDeclarationKind.functionKinds.contains(kind) {
             return "Function"
         } else if kind == .enumelement {
             return "Enum element"

@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private extension File {
     func violatingClosingBraceRanges() -> [NSRange] {
-        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
+        return match(pattern: "(\\}[ \\t]+\\))", excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }
 

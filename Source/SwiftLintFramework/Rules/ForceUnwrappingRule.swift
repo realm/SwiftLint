@@ -75,8 +75,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     private static let regularExpression = regex(pattern)
     private static let varDeclarationRegularExpression = regex(varDeclarationPattern)
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
+    private static let excludingSyntaxKindsForFirstCapture: Set<SyntaxKind> = {
+        return SyntaxKind.commentAndStringKinds.union([.keyword, .typeidentifier])
+    }()
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
@@ -154,7 +156,7 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
         guard let lastItem = kinds.last,
             let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
-            SwiftDeclarationKind.variableKinds().contains(lastKind) else {
+            SwiftDeclarationKind.variableKinds.contains(lastKind) else {
                 return false
         }
 

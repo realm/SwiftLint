@@ -100,7 +100,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
     private func variableDeclarations(forByteOffset byteOffset: Int,
                                       structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
-        let allowedKinds = Set(SwiftDeclarationKind.variableKinds()).subtracting([.varParameter])
+        let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
         func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
 

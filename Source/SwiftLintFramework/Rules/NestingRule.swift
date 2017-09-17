@@ -44,7 +44,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
     private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
                           level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
-        let typeKinds = SwiftDeclarationKind.typeKinds()
+        let typeKinds = SwiftDeclarationKind.typeKinds
         if let offset = dictionary.offset {
             let (targetName, targetLevel) = typeKinds.contains(kind)
                 ? ("Types", configuration.typeLevel) : ("Statements", configuration.statementLevel)

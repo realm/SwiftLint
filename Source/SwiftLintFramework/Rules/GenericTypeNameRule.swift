@@ -93,7 +93,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
                                      dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
-        guard SwiftDeclarationKind.typeKinds().contains(kind),
+        guard SwiftDeclarationKind.typeKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyOffset = dictionary.bodyOffset,
@@ -111,7 +111,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
                                          dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),

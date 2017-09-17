@@ -41,7 +41,7 @@ public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.typeKinds().contains(kind) else {
+        guard SwiftDeclarationKind.typeKinds.contains(kind) else {
             return []
         }
         if let offset = dictionary.offset,

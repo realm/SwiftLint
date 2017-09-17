@@ -12,7 +12,7 @@ import SourceKittenFramework
 private extension File {
     func violatingTrailingSemicolonRanges() -> [NSRange] {
         return match(pattern: "(;+([^\\S\\n]?)*)+;?$",
-                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds())
+                     excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
     }
 }
 

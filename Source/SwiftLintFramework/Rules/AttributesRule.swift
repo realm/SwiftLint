@@ -41,11 +41,11 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let attributeShouldBeOnSameLine: Bool?
-        if SwiftDeclarationKind.variableKinds().contains(kind) {
+        if SwiftDeclarationKind.variableKinds.contains(kind) {
             attributeShouldBeOnSameLine = true
-        } else if SwiftDeclarationKind.typeKinds().contains(kind) {
+        } else if SwiftDeclarationKind.typeKinds.contains(kind) {
             attributeShouldBeOnSameLine = false
-        } else if SwiftDeclarationKind.functionKinds().contains(kind) {
+        } else if SwiftDeclarationKind.functionKinds.contains(kind) {
             attributeShouldBeOnSameLine = false
         } else {
             attributeShouldBeOnSameLine = nil

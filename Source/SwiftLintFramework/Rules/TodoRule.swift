@@ -12,7 +12,7 @@ import SourceKittenFramework
 public extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
     var isCommentLike: Bool {
-        return SyntaxKind.commentKinds().contains(self)
+        return SyntaxKind.commentKinds.contains(self)
     }
 }
 

@@ -32,7 +32,7 @@ internal extension ColonRule {
 
     func typeColonViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         let nsstring = file.contents.bridge()
-        let commentAndStringKindsSet = Set(SyntaxKind.commentAndStringKinds())
+        let commentAndStringKindsSet = SyntaxKind.commentAndStringKinds
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
 

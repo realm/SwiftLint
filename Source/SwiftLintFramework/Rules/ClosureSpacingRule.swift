@@ -82,7 +82,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
         let nsstring = file.contents.bridge()
         let bracePattern = regex("\\{|\\}")
         let linesTokens = file.syntaxTokensByLines
-        let kindsToExclude = SyntaxKind.commentAndStringKinds().map { $0.rawValue }
+        let kindsToExclude = SyntaxKind.commentAndStringKinds.map { $0.rawValue }
 
         // find all lines and accurences of open { and closed } braces
         var linesWithBraces = [[NSRange]]()

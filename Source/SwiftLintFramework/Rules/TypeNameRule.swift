@@ -28,7 +28,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    private let typeKinds = SwiftDeclarationKind.typeKinds()
+    private let typeKinds = SwiftDeclarationKind.typeKinds
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +

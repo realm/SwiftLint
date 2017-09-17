@@ -197,7 +197,7 @@ extension File {
      file contents.
      */
     internal func match(pattern: String,
-                        excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
             .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
@@ -208,7 +208,7 @@ extension File {
 
     internal func match(pattern: String,
                         range: NSRange? = nil,
-                        excludingSyntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds: Set<SyntaxKind>,
                         excludingPattern: String,
                         exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
@@ -268,7 +268,7 @@ extension File {
     }
 
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = Set(SyntaxKind.commentKinds())
+        let commentKinds = SyntaxKind.commentKinds
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
             kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count

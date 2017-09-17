@@ -143,7 +143,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         return ranges.filter {
             let range = NSRange(location: $0.location + offset, length: $0.length)
             let kinds = file.syntaxMap.kinds(inByteRange: range)
-            return !kinds.contains(where: SyntaxKind.commentKinds().contains)
+            return SyntaxKind.commentKinds.isDisjoint(with: kinds)
         }.last.flatMap {
             nsstring.NSRangeToByteRange(start: $0.location, length: $0.length)
         }?.location

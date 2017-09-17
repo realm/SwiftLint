@@ -109,7 +109,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
-        let excludingKinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
+        let excludingKinds = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
                           excludingPattern: excludingPattern).flatMap { range in

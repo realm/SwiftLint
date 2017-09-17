@@ -3,7 +3,7 @@
 //  SwiftLint
 //
 //  Created by Samuel Susla on 17/09/17.
-//  Copyright © 2016 Realm. All rights reserved.
+//  Copyright © 2017 Realm. All rights reserved.
 //
 
 import Foundation
@@ -23,7 +23,6 @@ public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule 
             "let first = myList.first(where: { $0 % 2 == 0 })\n",
             "let first = myList.first { $0 % 2 == 0 }\n"
         ],
-
         triggeringExamples: [
             "↓myList.first { $0 % 2 == 0 } != nil\n",
             "↓myList.first(where: { $0 % 2 == 0 }) != nil\n",
@@ -39,24 +38,23 @@ public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule 
         let contents = file.contents.bridge()
         let structure = file.structure
 
-        let violatingLocations: [Int] = firstRanges.flatMap {
-            guard let bodyByteRange = contents.NSRangeToByteRange(start: $0.location,
-                                                                  length: $0.length),
-                case let firstLocation = $0.location + $0.length - 1,
-                let firstByteRange = contents.NSRangeToByteRange(start: firstLocation,
-                                                                 length: 1) else {
-                                                                    return nil
+        let violatingLocations: [Int] = firstRanges.flatMap { range in
+            guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
+                                                                  length: range.length),
+                case let firstLocation = range.location + range.length - 1,
+                let firstByteRange = contents.NSRangeToByteRange(start: firstLocation, length: 1)
+                else {
+                    return nil
             }
 
             return methodCall(forByteOffset: bodyByteRange.location - 1,
-                              excludingOffset: firstByteRange.location,
-                              dictionary: structure.dictionary,
+                              excludingOffset: firstByteRange.location, dictionary: structure.dictionary,
                               predicate: { dictionary in
-                                guard let name = dictionary.name else {
-                                    return false
-                                }
+                guard let name = dictionary.name else {
+                    return false
+                }
 
-                                return name.hasSuffix(".first")
+                return name.hasSuffix(".first")
             })
         }
 
@@ -67,20 +65,19 @@ public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule 
         }
     }
 
-    private func methodCall(forByteOffset byteOffset: Int,
-                            excludingOffset: Int,
+    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
                             dictionary: [String: SourceKitRepresentable],
                             predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
 
-        if let kindString = (dictionary.kind),
+        if let kindString = dictionary.kind,
             SwiftExpressionKind(rawValue: kindString) == .call,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
             let offset = dictionary.offset {
             let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
-            if NSLocationInRange(byteOffset, byteRange) &&
-                !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
+            if byteRange.contains(byteOffset) && !byteRange.contains(excludingOffset)
+                && predicate(dictionary) {
                 return offset
             }
         }

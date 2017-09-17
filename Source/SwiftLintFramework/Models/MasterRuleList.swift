@@ -21,6 +21,7 @@ public let masterRuleList = RuleList(rules: [
     CommaRule.self,
     CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewlineRule.self,
+    ContainsOverFirstNotNilRule.self,
     ControlStatementRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,

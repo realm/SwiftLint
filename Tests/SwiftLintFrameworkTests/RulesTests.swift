@@ -56,6 +56,10 @@ class RulesTests: XCTestCase {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
+    func testContainsOverFirstNotNilRule() {
+        verifyRule(ContainsOverFirstNotNilRule.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }

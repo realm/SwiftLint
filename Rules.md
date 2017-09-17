@@ -13,6 +13,7 @@
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
+* [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
@@ -1565,6 +1566,62 @@ if true { // return }
 
 ```swift
 ↓if true { return "YES" } else { return "NO" }
+```
+
+</details>
+
+
+
+## Contains over first not nil
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`contains_over_first_not_nil` | Disabled | No | performance
+
+Prefer `contains` over `first(where:) != nil`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let first = myList.first(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let first = myList.first { $0 % 2 == 0 }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.first { $0 % 2 == 0 } != nil
+
+```
+
+```swift
+↓myList.first(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.first(where: someFunction) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first { $0 % 2 == 0 } != nil
+
 ```
 
 </details>

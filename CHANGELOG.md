@@ -6,6 +6,11 @@
 
 ##### Enhancements
 
+* Add `contains_over_first_not_nil` rule to encourage using `contains` over
+  `first(where:) != nil`.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1514](https://github.com/realm/SwiftLint/issues/1514)
+
 * Add `fallthrough` rule that flags usage of `fallthrough`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1834](https://github.com/realm/SwiftLint/issues/1834)

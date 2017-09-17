@@ -356,6 +356,7 @@ extension RulesTests {
         ("testComma", testComma),
         ("testCompilerProtocolInit", testCompilerProtocolInit),
         ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
+        ("testContainsOverFirstNotNilRule", testContainsOverFirstNotNilRule),
         ("testControlStatement", testControlStatement),
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),

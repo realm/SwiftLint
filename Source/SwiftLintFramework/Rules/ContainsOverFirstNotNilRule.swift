@@ -76,8 +76,8 @@ public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule 
             let offset = dictionary.offset {
             let byteRange = NSRange(location: bodyOffset, length: bodyLength)
 
-            if byteRange.contains(byteOffset) && !byteRange.contains(excludingOffset)
-                && predicate(dictionary) {
+            if NSLocationInRange(byteOffset, byteRange) &&
+                !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
                 return offset
             }
         }

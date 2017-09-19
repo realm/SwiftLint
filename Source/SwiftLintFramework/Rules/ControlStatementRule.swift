@@ -58,21 +58,23 @@ public struct ControlStatementRule: ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let statements = ["if", "for", "guard", "switch", "while"]
-        return statements.flatMap { statementKind -> [StyleViolation] in
-            let pattern = statementKind == "guard"
-                ? "\(statementKind)\\s*\\([^,{]*\\)\\s*else\\s*\\{"
-                : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
-            return file.match(pattern: pattern).flatMap { match, syntaxKinds in
-                let matchString = file.contents.substring(from: match.location, length: match.length)
-                if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
-                    return nil
-                }
-                return StyleViolation(ruleDescription: type(of: self).description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, characterOffset: match.location))
-            }
+        let statementPatterns: [String] = statements.map { statement -> String in
+            let isGuard = statement == "guard"
+            let elsePattern = isGuard ? "else\\s*" : ""
+            return "\(statement)\\s*\\([^,{]*\\)\\s*\(elsePattern)\\{"
         }
-
+        return statementPatterns.flatMap { pattern -> [StyleViolation] in
+            return file.match(pattern: pattern)
+                .filter { match, syntaxKinds -> Bool in
+                    let matchString = file.contents.substring(from: match.location, length: match.length)
+                    return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)
+                }
+                .map { match, _ -> StyleViolation in
+                    return StyleViolation(ruleDescription: type(of: self).description,
+                                          severity: configuration.severity,
+                                          location: Location(file: file, characterOffset: match.location))
+                }
+        }
     }
 
     fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {

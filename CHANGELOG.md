@@ -29,6 +29,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1271](https://github.com/realm/SwiftLint/issues/1271)
 
+* Exclude files defined in the configuration also when using the
+  `--use-script-input-files` option.  
+  [Stefan Pühringer](https://github.com/b-ray)
+  [#591](https://github.com/realm/SwiftLint/issues/591)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

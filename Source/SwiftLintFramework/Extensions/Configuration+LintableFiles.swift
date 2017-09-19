@@ -14,6 +14,18 @@ extension Configuration {
         return lintablePaths(inPath: path).flatMap(File.init(path:))
     }
 
+    public func lintableFiles(ofFiles files: [File]) -> [File] {
+        let excludedPaths = excluded.flatMap {
+            FileManager.default.filesToLint(inPath: $0, rootDirectory: rootPath)
+        }
+        return files.filter {
+            guard let path = $0.path else {
+                return true
+            }
+            return !excludedPaths.contains(path)
+        }
+    }
+
     internal func lintablePaths(inPath path: String,
                                 fileManager: LintableFileManager = FileManager.default) -> [String] {
         // If path is a file, skip filtering with excluded/included paths

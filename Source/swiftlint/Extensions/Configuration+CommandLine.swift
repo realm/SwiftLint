@@ -67,6 +67,9 @@ extension Configuration {
                 let errorMessage = "No lintable files found at path '\(path)'"
                 return .failure(.usageError(description: errorMessage))
             }
+            if useScriptInputFiles {
+                return .success(lintableFiles(ofFiles: files))
+            }
             return .success(files)
         }.flatMap { files in
             let queue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")

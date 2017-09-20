@@ -1245,15 +1245,15 @@
 				TargetAttributes = {
 					D0D1216C19E87B05005E4BAA = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					D0D1217619E87B05005E4BAA = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					D0E7B63119E9C64500EDBA4D = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 				};
 			};

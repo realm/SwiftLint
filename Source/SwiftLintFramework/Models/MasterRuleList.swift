@@ -68,6 +68,7 @@ public let masterRuleList = RuleList(rules: [
     MultipleClosuresWithTrailingClosureRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
+    NoExplicitBooleanComparisonRule.self,
     NoExtensionAccessModifierRule.self,
     NoGroupingExtensionRule.self,
     NotificationCenterDetachmentRule.self,

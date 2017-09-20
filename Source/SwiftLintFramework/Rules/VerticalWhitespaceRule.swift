@@ -101,7 +101,8 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
 
         var previousIndex = 0
         for (index, line) in lines.enumerated() {
-            if lines[previousIndex].index + 1 == line.index {
+            let previousLine: Line = lines[previousIndex]
+            if previousLine.index + 1 == line.index {
                 lineSection.append(line)
             } else if !lineSection.isEmpty {
                 blankLinesSections.append(lineSection)

@@ -203,7 +203,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     private typealias RangeWithKind = (range: NSRange, kind: ColonKind)
 
     private func correctionRanges(in file: File) -> [RangeWithKind] {
-        let violations = typeColonViolationRanges(in: file, matching: pattern).map {
+        let violations: [RangeWithKind] = typeColonViolationRanges(in: file, matching: pattern).map {
             (range: $0, kind: ColonKind.type)
         }
         let dictionary = file.structure.dictionary

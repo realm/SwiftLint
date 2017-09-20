@@ -47,8 +47,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
             "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
             "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>\n"
-        ] + ["class", "struct", "enum"].flatMap { type in
-            [
+        ] + ["class", "struct", "enum"].flatMap { type -> [String] in
+            return [
                 "\(type) Foo<↓T_Foo> {}\n",
                 "\(type) Foo<T, ↓U_Foo> {}\n",
                 "\(type) Foo<↓T_Foo, ↓U_Foo> {}\n",

@@ -61,10 +61,12 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
         nonTriggeringExamples: [
             "import AAA\nimport BBB\nimport CCC\nimport DDD",
             "import Alamofire\nimport API",
-            "import labc\nimport Ldef"
+            "import labc\nimport Ldef",
+            "import BBB\n// comment\nimport AAA\nimport CCC"
         ],
         triggeringExamples: [
-            "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC"
+            "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC",
+            "import BBB\n// comment\nimport CCC\nimport ↓AAA"
         ],
         corrections: [
             "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC": "import AAA\nimport BBB\nimport CCC\nimport ZZZ",
@@ -75,35 +77,28 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let violatingOffsets = findViolationOffsets(file: file)
-
-        return violatingOffsets.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0))
+        let groups = self.importGroups(in: file)
+        return self.violatingOffsets(in: groups).map { index -> StyleViolation in
+            let location = Location(file: file, characterOffset: index)
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity,
+                                  location: location)
         }
     }
 
-    private static let importPattern = "import\\s+\\w+"
+    private func importGroups(in file: File) -> [[Line]] {
+        let importRanges = file.match(pattern: "import\\s+\\w+", with: [.keyword, .identifier])
+        let enabledImportRanges = file.ruleEnabled(violatingRanges: importRanges, for: self)
 
-    private func findViolationOffsets(file: File) -> [Int] {
-        let importRanges = file.match(pattern: type(of: self).importPattern,
-                                      with: [.keyword, .identifier])
         let contents = file.contents.bridge()
-        let importLength = 6
-        let modulesAndOffsets: [(String, Int)] = importRanges.map { range in
-            let moduleRange = NSRange(location: range.location + importLength,
-                                      length: range.length - importLength)
-            let moduleName = contents.substring(with: moduleRange)
-                .trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-            let offset = NSMaxRange(range) - moduleName.bridge().length
-            return (moduleName, offset)
+        let lines = contents.lines()
+        let importLines: [Line] = enabledImportRanges.flatMap { range in
+            guard let line = contents.lineAndCharacter(forCharacterOffset: range.location)?.line
+                else { return nil }
+            return lines[line - 1]
         }
 
-        let modulePairs = zip(modulesAndOffsets, modulesAndOffsets.dropFirst())
-        return modulePairs.flatMap { previous, current in
-            return current < previous ? current.1 : nil
-        }
+        return importLines.grouped()
     }
 
     private func violatingOffsets(in groups: [[Line]]) -> [Int] {
@@ -121,25 +116,11 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
     }
 
     public func correct(file: File) -> [Correction] {
-        let importRanges = file.match(pattern: type(of: self).importPattern, with: [.keyword, .identifier])
-        let enabledImportRanges = file.ruleEnabled(violatingRanges: importRanges, for: self)
-        guard enabledImportRanges.count > 1 else {
-            return []
-        }
+        var groups = self.importGroups(in: file)
 
-        let contents = file.contents.bridge()
-        let lines = contents.lines()
-        let importLines: [Line] = enabledImportRanges.flatMap { range in
-            guard let line = contents.lineAndCharacter(forCharacterOffset: range.location)?.line
-                else { return nil }
-            return lines[line - 1]
-        }
-
-        var groups = importLines.grouped()
-        let description = type(of: self).description
         let corrections = self.violatingOffsets(in: groups).map { index -> Correction in
             let location = Location(file: file, characterOffset: index)
-            return Correction(ruleDescription: description, location: location)
+            return Correction(ruleDescription: type(of: self).description, location: location)
         }
 
         groups.enumerated().forEach { index, group in

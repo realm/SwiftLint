@@ -10544,6 +10544,13 @@ import labc
 import Ldef
 ```
 
+```swift
+import BBB
+// comment
+import AAA
+import CCC
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -10553,6 +10560,13 @@ import AAA
 import ZZZ
 import ↓BBB
 import CCC
+```
+
+```swift
+import BBB
+// comment
+import CCC
+import ↓AAA
 ```
 
 </details>

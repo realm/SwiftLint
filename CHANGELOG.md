@@ -6,10 +6,20 @@
 
 ##### Enhancements
 
+* Add `no_explicit_boolean_comparison` rule to prevent people from writing
+  `if condition == true { … }` and encourage them to use short form
+  `if condition { … }`  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1514](https://github.com/realm/SwiftLint/issues/1502)
+
 * Add `contains_over_first_not_nil` rule to encourage using `contains` over
   `first(where:) != nil`.  
   [Samuel Susla](https://github.com/sammy-sc)
   [#1514](https://github.com/realm/SwiftLint/issues/1514)
+
+* Make `sorted_imports` correctable.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
 * Add `fallthrough` rule that flags usage of `fallthrough`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

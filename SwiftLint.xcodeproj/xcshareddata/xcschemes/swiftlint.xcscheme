@@ -39,6 +39,116 @@
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "AttributesRuleTests">
+               </Test>
+               <Test
+                  Identifier = "ColonRuleTests">
+               </Test>
+               <Test
+                  Identifier = "CommandTests">
+               </Test>
+               <Test
+                  Identifier = "ConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "CustomRulesTests">
+               </Test>
+               <Test
+                  Identifier = "CyclomaticComplexityConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "CyclomaticComplexityRuleTests">
+               </Test>
+               <Test
+                  Identifier = "DiscouragedDirectInitRuleTests">
+               </Test>
+               <Test
+                  Identifier = "DocumentationTests">
+               </Test>
+               <Test
+                  Identifier = "ExtendedNSStringTests">
+               </Test>
+               <Test
+                  Identifier = "FileHeaderRuleTests">
+               </Test>
+               <Test
+                  Identifier = "FileLengthRuleTests">
+               </Test>
+               <Test
+                  Identifier = "FunctionBodyLengthRuleTests">
+               </Test>
+               <Test
+                  Identifier = "GenericTypeNameRuleTests">
+               </Test>
+               <Test
+                  Identifier = "IdentifierNameRuleTests">
+               </Test>
+               <Test
+                  Identifier = "ImplicitlyUnwrappedOptionalConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "ImplicitlyUnwrappedOptionalRuleTests">
+               </Test>
+               <Test
+                  Identifier = "IntegrationTests">
+               </Test>
+               <Test
+                  Identifier = "LineLengthConfigurationTests">
+               </Test>
+               <Test
+                  Identifier = "LineLengthRuleTests">
+               </Test>
+               <Test
+                  Identifier = "LinterCacheTests">
+               </Test>
+               <Test
+                  Identifier = "NumberSeparatorRuleTests">
+               </Test>
+               <Test
+                  Identifier = "ObjectLiteralRuleTests">
+               </Test>
+               <Test
+                  Identifier = "PrivateOverFilePrivateRuleTests">
+               </Test>
+               <Test
+                  Identifier = "RegionTests">
+               </Test>
+               <Test
+                  Identifier = "ReporterTests">
+               </Test>
+               <Test
+                  Identifier = "RuleConfigurationsTests">
+               </Test>
+               <Test
+                  Identifier = "RuleTests">
+               </Test>
+               <Test
+                  Identifier = "SourceKitCrashTests">
+               </Test>
+               <Test
+                  Identifier = "TodoRuleTests">
+               </Test>
+               <Test
+                  Identifier = "TrailingCommaRuleTests">
+               </Test>
+               <Test
+                  Identifier = "TypeNameRuleTests">
+               </Test>
+               <Test
+                  Identifier = "UnusedOptionalBindingRuleTests">
+               </Test>
+               <Test
+                  Identifier = "VerticalWhitespaceRuleTests">
+               </Test>
+               <Test
+                  Identifier = "YamlParserTests">
+               </Test>
+               <Test
+                  Identifier = "YamlSwiftLintTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
       <MacroExpansion>

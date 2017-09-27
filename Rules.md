@@ -60,6 +60,7 @@
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
+* [No Explicit Boolean Comparision](#no-explicit-boolean-comparision)
 * [No Extension Access Modifier](#no-extension-access-modifier)
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
@@ -7223,6 +7224,112 @@ expect(10) > 2
 
 
 
+## No Explicit Boolean Comparision
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`no_explicit_boolean_comparison` | Disabled | No | idiomatic
+
+
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+if a {}
+```
+
+```swift
+if !a {}
+```
+
+```swift
+guard a { return }
+```
+
+```swift
+guard !a else { return }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+if b == 7 &&
+↓a == true {}
+```
+
+```swift
+if ↓a == true {}
+```
+
+```swift
+if ↓a == false {}
+```
+
+```swift
+if ↓a != true {}
+```
+
+```swift
+if ↓a != false {}
+```
+
+```swift
+if ↓true == a {}
+```
+
+```swift
+if ↓true != a {}
+```
+
+```swift
+if ↓false == a {}
+```
+
+```swift
+if ↓false != a {}
+```
+
+```swift
+guard ↓a == true else { return }
+```
+
+```swift
+guard ↓true == a else { return }
+```
+
+```swift
+guard ↓a != true else { return }
+```
+
+```swift
+guard ↓true != a else { return }
+```
+
+```swift
+guard ↓a == false else { return }
+```
+
+```swift
+guard ↓false == a else { return }
+```
+
+```swift
+guard ↓a != false else { return }
+```
+
+```swift
+guard ↓false != a else { return }
+```
+
+</details>
+
+
+
 ## No Extension Access Modifier
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -9785,7 +9892,7 @@ class TotoTests {  }
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`sorted_imports` | Disabled | No | style
+`sorted_imports` | Disabled | Yes | style
 
 Imports should be sorted.
 

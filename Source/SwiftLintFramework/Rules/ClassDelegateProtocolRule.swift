@@ -36,7 +36,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol"]
+    private let referenceTypeProtocols: Set = ["AnyObject", "NSObjectProtocol", "class"]
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -87,12 +87,7 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func isClassProtocol(file: File, range: NSRange) -> Bool {
-#if swift(>=4.0) && os(Linux)
-        let syntaxKind = SyntaxKind.typeidentifier
-#else
-        let syntaxKind = SyntaxKind.keyword
-#endif
-        return !file.match(pattern: "\\bclass\\b", with: [syntaxKind], range: range).isEmpty
+        return !file.match(pattern: "\\bclass\\b", with: [.keyword], range: range).isEmpty
     }
 
     private func isDelegateProtocol(_ name: String) -> Bool {

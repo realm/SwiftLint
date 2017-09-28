@@ -18,7 +18,8 @@
 * Improve `colon` rule to catch violations in dictionary types
   (e.g. `[String: Int]`), when using `Any` and on function calls.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1074](https://github.com/realm/SwiftLint/issues/1811)
+  [#1074](https://github.com/realm/SwiftLint/issues/1074)
+  [#1389](https://github.com/realm/SwiftLint/issues/1389)
 
 * Add `switch_case_alignment` rule to validate that `case` and `default`
   statements are vertically aligned with their enclosing `switch` statement.  

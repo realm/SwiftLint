@@ -1,7 +1,45 @@
-machine:
-  xcode:
-    version: "8.3.2"
+version: 2
+jobs:
 
-test:
-  override:
-    - bundle exec danger --verbose
+  xcode_83:
+    macos:
+      xcode: "8.3.3"
+    steps:
+      - checkout
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: set -o pipefail && script/cibuild | xcpretty
+      - run: pod lib lint SwiftLintFramework.podspec
+      - run: swift test
+
+  xcode_9:
+    macos:
+      xcode: "9.0"
+    steps:
+      - checkout
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: set -o pipefail && script/cibuild | xcpretty
+      - run: pod lib lint SwiftLintFramework.podspec
+      - run: swift test
+
+  test_swift_3:
+    docker:
+      - image: norionomura/sourcekit:311 
+    steps:
+      - checkout
+      - run: swift test
+
+  test_swift_4:
+    docker:
+      - image: norionomura/swift:4020170908a
+    steps:
+      - checkout
+      - run: swift test
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - xcode_83
+      - xcode_9
+      - test_swift_3
+      - test_swift_4

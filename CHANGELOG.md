@@ -51,6 +51,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1838](https://github.com/realm/SwiftLint/issues/1838)
 
+* Fix false positive in `class_delegate_protocol` rule when using Swift 4.0.1.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1856](https://github.com/realm/SwiftLint/issues/1856)
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking

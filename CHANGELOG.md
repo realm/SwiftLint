@@ -30,8 +30,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1271](https://github.com/realm/SwiftLint/issues/1271)
 
-* Truncate long configuration console descriptions to 80 characters when running
-  `swiftlint rules`.  
+* Truncate long configuration console descriptions to fit in the console window
+  when running `swiftlint rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
 

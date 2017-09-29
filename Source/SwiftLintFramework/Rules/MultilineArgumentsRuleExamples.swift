@@ -2,7 +2,7 @@
 //  MultilineArgumentsRuleExamples.swift
 //  SwiftLint
 //
-//  Created by Marcel Jackwerth on 29/09/17.
+//  Created by Marcel Jackwerth on 09/29/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 

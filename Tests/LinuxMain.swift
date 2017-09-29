@@ -251,6 +251,14 @@ extension LinterCacheTests {
     ]
 }
 
+extension MultilineArgumentsRuleTests {
+    static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
+        ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
+        ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
+        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
+    ]
+}
+
 extension NumberSeparatorRuleTests {
     static var allTests: [(String, (NumberSeparatorRuleTests) -> () throws -> Void)] = [
         ("testNumberSeparatorWithDefaultConfiguration", testNumberSeparatorWithDefaultConfiguration),
@@ -392,7 +400,6 @@ extension RulesTests {
         ("testLegacyConstructor", testLegacyConstructor),
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testMark", testMark),
-        ("testMultilineArguments", testMultilineArguments),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
@@ -531,6 +538,7 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(MultilineArgumentsRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),

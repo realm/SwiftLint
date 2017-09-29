@@ -2,7 +2,7 @@
 //  MultilineArgumentsRule.swift
 //  SwiftLint
 //
-//  Created by Marcel Jackwerth on 29/09/17.
+//  Created by Marcel Jackwerth on 09/29/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
@@ -10,7 +10,8 @@ import Foundation
 import SourceKittenFramework
 
 public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = MultilineArgumentsRuleConfiguration(firstArgumentLocation: .anyLine,
+                                                                   severity: SeverityConfiguration(.warning))
 
     public init() {}
 
@@ -30,12 +31,17 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
             kind == .call,
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,
-            case let contents = file.contents.bridge() else {
+            case let contents = file.contents.bridge(),
+            let nameOffset = dictionary.nameOffset,
+            let (nameLine, _) = contents.lineAndCharacter(forByteOffset: nameOffset) else {
                 return []
         }
 
         var visitedLines = Set<Int>()
-        var hasCollisions = false
+
+        if configuration.firstArgumentLocation == .sameLine {
+            visitedLines.insert(nameLine)
+        }
 
         let lastIndex = arguments.count - 1
         let violatingOffsets: [Int] = arguments.enumerated().flatMap { idx, argument in
@@ -47,27 +53,25 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
             let (firstVisit, _) = visitedLines.insert(line)
 
-            guard !firstVisit else {
+            if idx == lastIndex && isTrailingClosure(dictionary: dictionary, file: file) {
                 return nil
+            } else if idx == 0 {
+                switch configuration.firstArgumentLocation {
+                case .anyLine: return nil
+                case .nextLine: return line > nameLine ? nil : offset
+                case .sameLine: return line > nameLine ? offset : nil
+                }
+            } else {
+                return firstVisit ? nil : offset
             }
-
-            // never trigger on a trailing closure
-            if idx == lastIndex, isTrailingClosure(dictionary: dictionary, file: file) {
-                return nil
-            }
-
-            hasCollisions = hasCollisions || !firstVisit
-
-            return offset
         }
 
-        guard visitedLines.count > 1 && hasCollisions else {
-            return []
-        }
+        // only report violations if multiline
+        guard visitedLines.count > 1 else { return [] }
 
         return violatingOffsets.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severity.severity,
                            location: Location(file: file, byteOffset: $0))
         }
     }

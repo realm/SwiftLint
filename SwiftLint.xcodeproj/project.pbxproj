@@ -107,7 +107,7 @@
 		A1A6F3F21EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */; };
 		B25DCD0B1F7E9F9E0028A199 /* MultilineArgumentsRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */; };
 		B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */; };
-		B25DCD0E1F7EF2280028A199 /* MultilineArgumentsRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD0D1F7EF2280028A199 /* MultilineArgumentsRuleConfiguration.swift */; };
+		B25DCD0E1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */; };
 		B25DCD101F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */; };
 		B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */; };
 		B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */; };
@@ -434,7 +434,7 @@
 		A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralConfiguration.swift; sourceTree = "<group>"; };
 		B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRule.swift; sourceTree = "<group>"; };
 		B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRuleExamples.swift; sourceTree = "<group>"; };
-		B25DCD0D1F7EF2280028A199 /* MultilineArgumentsRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRuleConfiguration.swift; sourceTree = "<group>"; };
+		B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsConfiguration.swift; sourceTree = "<group>"; };
 		B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRuleTests.swift; sourceTree = "<group>"; };
 		B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestRule.swift; sourceTree = "<group>"; };
 		B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateUnitTestConfiguration.swift; sourceTree = "<group>"; };
@@ -1032,9 +1032,9 @@
 				C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */,
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				856651A61D6B395F005E6B29 /* MarkRule.swift */,
+				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */,
 				B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */,
 				B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */,
-				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsRuleConfiguration.swift */,
 				6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */,
 				621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */,
 				BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */,
@@ -1528,7 +1528,7 @@
 				E88DEA771B098D0C00A66CB0 /* Rule.swift in Sources */,
 				D47079AB1DFDCF7A00027086 /* SwiftExpressionKind.swift in Sources */,
 				00B8D9791E2D1223004E0EEC /* LegacyConstantRuleExamples.swift in Sources */,
-				B25DCD0E1F7EF2280028A199 /* MultilineArgumentsRuleConfiguration.swift in Sources */,
+				B25DCD0E1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift in Sources */,
 				24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */,
 				D4130D971E16183F00242361 /* IdentifierNameRuleExamples.swift in Sources */,
 				7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */,

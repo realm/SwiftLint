@@ -1,5 +1,5 @@
 //
-//  MultilineArgumentsRuleConfiguration.swift
+//  MultilineArgumentsConfiguration.swift
 //  SwiftLint
 //
 //  Created by Marcel Jackwerth on 9/29/17.
@@ -12,7 +12,7 @@ private enum ConfigurationKey: String {
     case firstArgumentLocation = "first_argument_location"
 }
 
-public struct MultilineArgumentsRuleConfiguration: RuleConfiguration, Equatable {
+public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
     public enum FirstArgumentLocation: String {
         case anyLine = "any_line"
         case sameLine = "same_line"
@@ -51,8 +51,8 @@ public struct MultilineArgumentsRuleConfiguration: RuleConfiguration, Equatable 
         }
     }
 
-    public static func == (lhs: MultilineArgumentsRuleConfiguration,
-                           rhs: MultilineArgumentsRuleConfiguration) -> Bool {
+    public static func == (lhs: MultilineArgumentsConfiguration,
+                           rhs: MultilineArgumentsConfiguration) -> Bool {
         return lhs.severityConfiguration == rhs.severityConfiguration &&
             lhs.firstArgumentLocation == rhs.firstArgumentLocation
     }

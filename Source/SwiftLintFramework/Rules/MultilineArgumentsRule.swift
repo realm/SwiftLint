@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = MultilineArgumentsRuleConfiguration()
+    public var configuration = MultilineArgumentsConfiguration()
 
     public init() {}
 

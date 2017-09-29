@@ -34,6 +34,10 @@
   when running `swiftlint rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
+* Add `multiline_arguments` opt-in rule that warns to either keep
+  all the arguments of a function call on the same line,
+  or one per line.  
+  [Marcel Jackwerth](https://github.com/sirlantis)
 
 ##### Bug Fixes
 

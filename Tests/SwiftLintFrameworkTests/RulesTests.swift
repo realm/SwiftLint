@@ -201,6 +201,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
+    func testMultilineArguments() {
+        verifyRule(MultilineArgumentsRule.description)
+    }
+
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
     }

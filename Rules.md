@@ -56,6 +56,7 @@
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
 * [Mark](#mark)
+* [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
@@ -6522,6 +6523,93 @@ struct MarkTest {}
 ↓// MARK:- Bad mark
 extension MarkTest {}
 
+```
+
+</details>
+
+
+
+## Multiline Arguments
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`multiline_arguments` | Disabled | No | style
+
+Arguments should be either on the same line, or one per line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo()
+```
+
+```swift
+foo(0)
+```
+
+```swift
+foo(0, 1)
+```
+
+```swift
+foo(0, 1) { }
+```
+
+```swift
+foo(0, param1: 1)
+```
+
+```swift
+foo(0, param1: 1) { }
+```
+
+```swift
+foo(param1: 1)
+```
+
+```swift
+foo(param1: 1) { }
+```
+
+```swift
+foo(param1: 1, param2: true) { }
+```
+
+```swift
+foo(param1: 1, param2: true, param3: [3]) { }
+```
+
+```swift
+foo(param1: 1, param2: true, param3: [3]) {
+    bar()}
+```
+
+```swift
+foo(param1: 1,
+    param2: true,
+    param3: [3])
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo(0,
+    param1: 1, ↓param2: true, ↓param3: [3])
+```
+
+```swift
+foo(0, ↓param1: 1,
+    param2: true, ↓param3: [3])
+```
+
+```swift
+foo(0, ↓param1: 1, ↓param2: true,
+    param3: [3])
 ```
 
 </details>

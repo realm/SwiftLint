@@ -6,6 +6,7 @@ jobs:
       xcode: "9.0"
     steps:
       - checkout
+      - run: bundle install
       - run: bundle exec danger --verbose
 
   swiftpm_3:
@@ -30,7 +31,7 @@ jobs:
       - checkout
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
       - run: set -o pipefail && script/cibuild | xcpretty
-      - run: pod lib lint SwiftLintFramework.podspec --version=3.1.1
+      - run: echo "3.1.1" > .swift-version; pod lib lint SwiftLintFramework.podspec
 
   xcode_9:
     macos:
@@ -39,7 +40,7 @@ jobs:
       - checkout
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
       - run: set -o pipefail && script/cibuild | xcpretty
-      - run: pod lib lint SwiftLintFramework.podspec --version=4.0
+      - run: echo "4.0" > .swift-version; pod lib lint SwiftLintFramework.podspec
 
   linux_swift_3:
     docker:

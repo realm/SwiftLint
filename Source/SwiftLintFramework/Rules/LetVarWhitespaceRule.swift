@@ -212,10 +212,12 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     // Collects all the line numbers containing attributes but not declarations
     // other than let/var
     private func attributeLineNumbers(file: File) -> Set<Int> {
-        let matches = file.match(pattern: "[@_a-z]+", with: [.attributeBuiltin])
-        let matchLines = matches.map { file.line(offset: $0.location) }
-
-        return Set<Int>(matchLines)
+        return Set(file.syntaxMap.tokens.flatMap({ token in
+            if token.type == SyntaxKind.attributeBuiltin.rawValue {
+                return file.line(byteOffset: token.offset)
+            }
+            return nil
+        }))
     }
 }
 

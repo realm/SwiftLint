@@ -11,6 +11,13 @@ import Foundation
 internal struct MultilineArgumentsRuleExamples {
     static let nonTriggeringExamples = [
         "foo()",
+        "foo(\n" +
+        "    \n" +
+        ")",
+        "foo { }",
+        "foo {\n" +
+        "    \n" +
+        "}",
         "foo(0)",
         "foo(0, 1)",
         "foo(0, 1) { }",

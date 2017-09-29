@@ -6547,6 +6547,22 @@ foo()
 ```
 
 ```swift
+foo(
+    
+)
+```
+
+```swift
+foo { }
+```
+
+```swift
+foo {
+    
+}
+```
+
+```swift
 foo(0)
 ```
 

@@ -46,6 +46,11 @@ Note that this will add the SwiftLint binaries, its dependencies' binaries and t
 library distribution to the `Pods/` directory, so checking in this directory to SCM such as
 git is discouraged.
 
+### Using [Mint](https://github.com/yonaskolb/mint):
+```
+$ mint run realm/SwiftLint
+```
+
 ### Using a pre-built package:
 
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the

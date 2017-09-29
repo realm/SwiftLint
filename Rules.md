@@ -6584,13 +6584,28 @@ foo(param1: 1, param2: true, param3: [3]) { }
 
 ```swift
 foo(param1: 1, param2: true, param3: [3]) {
-    bar()}
+    bar()
+}
 ```
 
 ```swift
 foo(param1: 1,
     param2: true,
     param3: [3])
+```
+
+```swift
+foo(
+    param1: 1, param2: true, param3: [3]
+)
+```
+
+```swift
+foo(
+    param1: 1,
+    param2: true,
+    param3: [3]
+)
 ```
 
 </details>
@@ -6610,6 +6625,13 @@ foo(0, ↓param1: 1,
 ```swift
 foo(0, ↓param1: 1, ↓param2: true,
     param3: [3])
+```
+
+```swift
+foo(
+    0, ↓param1: 1,
+    param2: true, ↓param3: [3]
+)
 ```
 
 </details>

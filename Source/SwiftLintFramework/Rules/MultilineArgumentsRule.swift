@@ -10,8 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = MultilineArgumentsRuleConfiguration(firstArgumentLocation: .anyLine,
-                                                                   severity: SeverityConfiguration(.warning))
+    public var configuration = MultilineArgumentsRuleConfiguration()
 
     public init() {}
 
@@ -71,7 +70,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
 
         return violatingOffsets.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: $0))
         }
     }

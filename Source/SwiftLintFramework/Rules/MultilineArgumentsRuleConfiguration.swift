@@ -8,6 +8,10 @@
 
 import Foundation
 
+private enum ConfigurationKey: String {
+    case firstArgumentLocation = "first_argument_location"
+}
+
 public struct MultilineArgumentsRuleConfiguration: RuleConfiguration, Equatable {
     public enum FirstArgumentLocation: String {
         case anyLine = "any_line"
@@ -25,17 +29,12 @@ public struct MultilineArgumentsRuleConfiguration: RuleConfiguration, Equatable 
         }
     }
 
-    private(set) var firstArgumentLocation: FirstArgumentLocation
-    private(set) var severity: SeverityConfiguration
-
-    init(firstArgumentLocation: FirstArgumentLocation, severity: SeverityConfiguration) {
-        self.firstArgumentLocation = firstArgumentLocation
-        self.severity = severity
-    }
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var firstArgumentLocation = FirstArgumentLocation.anyLine
 
     public var consoleDescription: String {
-        return severity.consoleDescription +
-        ", first_argument_location: \(firstArgumentLocation)"
+        return severityConfiguration.consoleDescription +
+            ", \(ConfigurationKey.firstArgumentLocation.rawValue): \(firstArgumentLocation.rawValue)"
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -43,18 +42,18 @@ public struct MultilineArgumentsRuleConfiguration: RuleConfiguration, Equatable 
             throw ConfigurationError.unknownConfiguration
         }
 
-        if let modeString = configuration["first_argument_location"] {
+        if let modeString = configuration[ConfigurationKey.firstArgumentLocation.rawValue] {
             try firstArgumentLocation = FirstArgumentLocation(value: modeString)
         }
 
         if let severityString = configuration["severity"] as? String {
-            try severity.apply(configuration: severityString)
+            try severityConfiguration.apply(configuration: severityString)
         }
     }
 
     public static func == (lhs: MultilineArgumentsRuleConfiguration,
                            rhs: MultilineArgumentsRuleConfiguration) -> Bool {
-        return lhs.severity == rhs.severity &&
+        return lhs.severityConfiguration == rhs.severityConfiguration &&
             lhs.firstArgumentLocation == rhs.firstArgumentLocation
     }
 }

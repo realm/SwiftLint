@@ -6,6 +6,7 @@
 //  Copyright © 2015 Realm. All rights reserved.
 //
 
+// swiftlint:disable sorted_imports
 import Commandant
 #if os(Linux)
 import Glibc

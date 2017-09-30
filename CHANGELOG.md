@@ -34,6 +34,10 @@
   when running `swiftlint rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
+  
+* Fix false negatives in `generic_type_name`, `identifier_name` and `type_name`
+  rules when using `allowed_symbols`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 

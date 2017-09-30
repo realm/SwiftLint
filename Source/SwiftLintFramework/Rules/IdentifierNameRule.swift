@@ -48,9 +48,8 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
             let type = self.type(for: kind)
             if !isFunction {
-                let containsAllowedSymbol = configuration.allowedSymbols.contains(where: name.contains)
-                if !containsAllowedSymbol &&
-                    !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+                let allowedSymbols = CharacterSet.alphanumerics.union(configuration.allowedSymbols)
+                if !allowedSymbols.isSuperset(ofCharactersIn: name) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,

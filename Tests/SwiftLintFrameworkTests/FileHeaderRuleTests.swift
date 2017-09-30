@@ -12,7 +12,7 @@ import XCTest
 class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithDefaultConfiguration() {
-        verifyRule(FileHeaderRule.description, skipCommentTests: true, skipDisableCommandTests: true)
+        verifyRule(FileHeaderRule.description, skipCommentTests: true)
     }
 
     func testFileHeaderWithRequiredString() {
@@ -33,7 +33,7 @@ class FileHeaderRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["required_string": "**Header"],
                    stringDoesntViolate: false, skipCommentTests: true,
-                   skipDisableCommandTests: true, testMultiByteOffsets: false, testShebang: false)
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testFileHeaderWithRequiredPattern() {
@@ -51,7 +51,7 @@ class FileHeaderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
-                   stringDoesntViolate: false, skipCommentTests: true, skipDisableCommandTests: true,
+                   stringDoesntViolate: false, skipCommentTests: true,
                    testMultiByteOffsets: false)
     }
 
@@ -68,7 +68,7 @@ class FileHeaderRuleTests: XCTestCase {
 
         let config = ["required_string": "/* Check this url: https://github.com/realm/SwiftLint */"]
         verifyRule(description, ruleConfiguration: config,
-                   stringDoesntViolate: false, skipCommentTests: true, skipDisableCommandTests: true,
+                   stringDoesntViolate: false, skipCommentTests: true,
                    testMultiByteOffsets: false)
     }
 
@@ -89,7 +89,7 @@ class FileHeaderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["forbidden_string": "**All rights reserved."],
-                   skipCommentTests: true, skipDisableCommandTests: true)
+                   skipCommentTests: true)
     }
 
     func testFileHeaderWithForbiddenPattern() {
@@ -109,23 +109,23 @@ class FileHeaderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["forbidden_pattern": "\\s\\w+\\.swift"],
-                   skipCommentTests: true, skipDisableCommandTests: true)
+                   skipCommentTests: true)
     }
 
     func testFileHeaderWithForbiddenPatternAndDocComment() {
         let nonTriggeringExamples = [
-            "/// This is great tool.\nclass GreatTool {}",
+            "/// This is great tool with tests.\nclass GreatTool {}",
             "class GreatTool {}"
         ]
         let triggeringExamples = [
-            "↓// FileHeaderRuleTests.swift",
-            "↓//\n// FileHeaderRuleTests.swift"
+            "// FileHeaderRule↓Tests.swift",
+            "//\n// FileHeaderRule↓Tests.swift"
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": ".?"],
-                   skipCommentTests: true, skipDisableCommandTests: true, testMultiByteOffsets: false)
+        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
+                   skipCommentTests: true, testMultiByteOffsets: false)
     }
 }

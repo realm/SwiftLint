@@ -10,7 +10,7 @@ import Foundation
 
 extension CharacterSet {
     func isSuperset(ofCharactersIn string: String) -> Bool {
-#if swift(>=4.0) || os(macOS)
+#if swift(>=4.0)
         return isSuperset(of: CharacterSet(charactersIn: string))
 #else
         // workaround for https://bugs.swift.org/browse/SR-3485

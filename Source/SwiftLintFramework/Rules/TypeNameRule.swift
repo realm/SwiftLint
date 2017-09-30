@@ -75,7 +75,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-        let allowedSymbols = CharacterSet.alphanumerics.union(configuration.allowedSymbols)
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
         if !allowedSymbols.isSuperset(ofCharactersIn: name) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: .error,

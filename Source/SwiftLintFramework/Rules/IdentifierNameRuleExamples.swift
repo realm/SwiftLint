@@ -21,7 +21,9 @@ internal struct IdentifierNameRuleExamples {
         "func isOperator(name: String) -> Bool",
         "func typeForKind(_ kind: SwiftDeclarationKind) -> String",
         "func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool",
-        "override func IsOperator(name: String) -> Bool"
+        "override func IsOperator(name: String) -> Bool",
+        "func • <T>(lhs: T, rhs: T) -> Bool",
+        "func __myFunctionThatIWantToDiscourageInSwift() {}"
     ]
 
     static let triggeringExamples = [

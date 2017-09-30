@@ -224,10 +224,10 @@ extension File {
 
     internal func append(_ string: String) {
         guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
-            fatalError("can't write to path '\(String(describing: self.path))'")
+            queuedFatalError("can't write to path '\(String(describing: self.path))'")
         }
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
@@ -241,10 +241,10 @@ extension File {
             return
         }
         guard let path = path else {
-            fatalError("file needs a path to call write(_:)")
+            queuedFatalError("file needs a path to call write(_:)")
         }
         guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
             try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)

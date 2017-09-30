@@ -131,7 +131,7 @@ extension File {
                 handler()
                 return Structure(sourceKitResponse: [:])
             }
-            fatalError("Never call this for file that sourcekitd fails.")
+            queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return structure
     }
@@ -142,7 +142,7 @@ extension File {
                 handler()
                 return SyntaxMap(data: [])
             }
-            fatalError("Never call this for file that sourcekitd fails.")
+            queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxMap
     }
@@ -153,7 +153,7 @@ extension File {
                 handler()
                 return []
             }
-            fatalError("Never call this for file that sourcekitd fails.")
+            queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxTokensByLines
     }
@@ -164,7 +164,7 @@ extension File {
                 handler()
                 return []
             }
-            fatalError("Never call this for file that sourcekitd fails.")
+            queuedFatalError("Never call this for file that sourcekitd fails.")
         }
         return syntaxKindsByLines
     }

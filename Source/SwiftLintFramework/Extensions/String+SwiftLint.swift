@@ -23,11 +23,11 @@ extension String {
     }
 
     internal func isUppercase() -> Bool {
-        return self == uppercased()
+        return CharacterSet.uppercaseLetters.isSuperset(ofCharactersIn: self)
     }
 
     internal func isLowercase() -> Bool {
-        return self == lowercased()
+        return CharacterSet.lowercaseLetters.isSuperset(ofCharactersIn: self)
     }
 
     internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) -> String {

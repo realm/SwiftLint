@@ -65,6 +65,11 @@
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
 
+* Only trigger a violation for not starting with a lowercase letter in
+  `identifier_name` rule if declaration starts with an uppercase letter.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1762](https://github.com/realm/SwiftLint/issues/1762)
+
 ## 0.22.0: Wrinkle-free
 
 ##### Breaking

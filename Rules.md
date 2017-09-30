@@ -4876,6 +4876,14 @@ func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool
 override func IsOperator(name: String) -> Bool
 ```
 
+```swift
+func • <T>(lhs: T, rhs: T) -> Bool
+```
+
+```swift
+func __myFunctionThatIWantToDiscourageInSwift() {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

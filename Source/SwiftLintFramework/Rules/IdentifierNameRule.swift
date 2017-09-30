@@ -74,8 +74,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
-            if requiresCaseCheck &&
-                kind != .varStatic && name.isViolatingCase && !name.isOperator {
+            if requiresCaseCheck && kind != .varStatic && name.isViolatingCase {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"
                 return [
                     StyleViolation(ruleDescription: description,
@@ -122,15 +121,11 @@ private extension String {
         guard firstCharacter.isUppercase() else {
             return false
         }
+
         guard characters.count > 1 else {
-            return true
+            return !firstCharacter.isLowercase()
         }
         let secondCharacter = String(self[characters.index(after: startIndex)])
         return secondCharacter.isLowercase()
-    }
-
-    var isOperator: Bool {
-        let operators = ["/", "=", "-", "+", "!", "*", "|", "^", "~", "?", ".", "%", "<", ">", "&"]
-        return !operators.filter(hasPrefix).isEmpty
     }
 }

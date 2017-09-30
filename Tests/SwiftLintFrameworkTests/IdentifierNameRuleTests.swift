@@ -31,7 +31,8 @@ class IdentifierNameRuleTests: XCTestCase {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [
             "↓let MyLet = 0",
-            "enum Foo { case ↓MyEnum }"
+            "enum Foo { case ↓MyEnum }",
+            "class Abc { ↓static let MyLet = 0 }"
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }

@@ -2,7 +2,9 @@
 
 ##### Breaking
 
-* None.
+* Validate that `static` variables also start with an uppercase letter
+  in `identifier_name` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

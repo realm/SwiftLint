@@ -13,7 +13,6 @@ internal struct IdentifierNameRuleExamples {
         "let myLet = 0",
         "var myVar = 0",
         "private let _myLet = 0",
-        "class Abc { static let MyLet = 0 }",
         "let URL: NSURL? = nil",
         "let XMLString: String? = nil",
         "override var i = 0",
@@ -35,6 +34,7 @@ internal struct IdentifierNameRuleExamples {
         "↓var id = 0",
         "private ↓let _i = 0",
         "↓func IsOperator(name: String) -> Bool",
-        "enum Foo { case ↓MyEnum }"
+        "enum Foo { case ↓MyEnum }",
+        "class Abc { ↓static let MyLet = 0 }"
     ]
 }

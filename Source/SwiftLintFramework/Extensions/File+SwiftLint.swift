@@ -249,7 +249,7 @@ extension File {
         do {
             try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
         } catch {
-            fatalError("can't write file to \(path)")
+            queuedFatalError("can't write file to \(path)")
         }
         contents = string
         invalidateCache()

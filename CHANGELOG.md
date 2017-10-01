@@ -34,10 +34,6 @@
   when running `swiftlint rules`.  
   [JP Simard](https://github.com/jpsim)
   [#1002](https://github.com/realm/SwiftLint/issues/1002)
-  
-* Fix false negatives in `generic_type_name`, `identifier_name` and `type_name`
-  rules when using `allowed_symbols`.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Bug Fixes
 
@@ -72,7 +68,11 @@
 * Ignore SwiftLint commands (`swiftlint:(disable|enable)`) in `file_header`
   rule, making it work better with `superfluous_disable_command` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1810](https://github.com/realm/SwiftLint/issues/1810)  
+  [#1810](https://github.com/realm/SwiftLint/issues/1810)
+
+* Fix false negatives in `generic_type_name`, `identifier_name` and `type_name`
+  rules when using `allowed_symbols`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.22.0: Wrinkle-free
 

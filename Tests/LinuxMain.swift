@@ -172,6 +172,7 @@ extension GenericTypeNameRuleTests {
     static var allTests: [(String, (GenericTypeNameRuleTests) -> () throws -> Void)] = [
         ("testGenericTypeName", testGenericTypeName),
         ("testGenericTypeNameWithAllowedSymbols", testGenericTypeNameWithAllowedSymbols),
+        ("testGenericTypeNameWithAllowedSymbolsAndViolation", testGenericTypeNameWithAllowedSymbolsAndViolation),
         ("testGenericTypeNameWithIgnoreStartWithLowercase", testGenericTypeNameWithIgnoreStartWithLowercase)
     ]
 }
@@ -180,6 +181,7 @@ extension IdentifierNameRuleTests {
     static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] = [
         ("testIdentifierName", testIdentifierName),
         ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
+        ("testIdentifierNameWithAllowedSymbolsAndViolation", testIdentifierNameWithAllowedSymbolsAndViolation),
         ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
     ]
 }
@@ -468,6 +470,7 @@ extension TypeNameRuleTests {
     static var allTests: [(String, (TypeNameRuleTests) -> () throws -> Void)] = [
         ("testTypeName", testTypeName),
         ("testTypeNameWithAllowedSymbols", testTypeNameWithAllowedSymbols),
+        ("testTypeNameWithAllowedSymbolsAndViolation", testTypeNameWithAllowedSymbolsAndViolation),
         ("testTypeNameWithIgnoreStartWithLowercase", testTypeNameWithIgnoreStartWithLowercase)
     ]
 }

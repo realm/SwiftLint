@@ -27,6 +27,16 @@ class IdentifierNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
+    func testIdentifierNameWithAllowedSymbolsAndViolation() {
+        let baseDescription = IdentifierNameRule.description
+        let triggeringExamples = [
+            "↓let my_Let$ = 0"
+        ]
+
+        let description = baseDescription.with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+    }
+
     func testIdentifierNameWithIgnoreStartWithLowercase() {
         let baseDescription = IdentifierNameRule.description
         let triggeringExamplesToRemove = [

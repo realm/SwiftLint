@@ -30,6 +30,16 @@ class GenericTypeNameRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
     }
 
+    func testGenericTypeNameWithAllowedSymbolsAndViolation() {
+        let baseDescription = GenericTypeNameRule.description
+        let triggeringExamples = [
+            "func foo<↓T_$>() {}\n"
+        ]
+
+        let description = baseDescription.with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+    }
+
     func testGenericTypeNameWithIgnoreStartWithLowercase() {
         let baseDescription = GenericTypeNameRule.description
         let triggeringExamplesToRemove = [

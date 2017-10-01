@@ -153,7 +153,7 @@ public struct Configuration: Equatable {
 
         let fail = { (msg: String) in
             queuedPrintError("\(fullPath):\(msg)")
-            fatalError("Could not read configuration file at path '\(fullPath)'")
+            queuedFatalError("Could not read configuration file at path '\(fullPath)'")
         }
         let rulesMode: RulesMode = enableAllRules ? .allEnabled : .default(disabled: [], optIn: [])
         if path.isEmpty || !FileManager.default.fileExists(atPath: fullPath) {

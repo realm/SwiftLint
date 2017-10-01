@@ -41,7 +41,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
           let jsonString = String(data: jsonData, encoding: .utf8) {
               return jsonString
         }
-        fatalError("Could not serialize regex configuration for cache")
+        queuedFatalError("Could not serialize regex configuration for cache")
     }
 
     public var description: RuleDescription {

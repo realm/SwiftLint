@@ -49,7 +49,7 @@ extension String {
         if let indexRange = nsrangeToIndexRange(nsrange) {
             return String(self[indexRange])
         }
-        fatalError("invalid range")
+        queuedFatalError("invalid range")
     }
 
     internal func substring(from: Int, length: Int? = nil) -> String {

@@ -44,7 +44,7 @@ extension Configuration {
             let jsonString = String(data: jsonData, encoding: .utf8) {
             return jsonString
         }
-        fatalError("Could not serialize configuration for cache")
+        queuedFatalError("Could not serialize configuration for cache")
     }
 
     internal var cacheURL: URL {

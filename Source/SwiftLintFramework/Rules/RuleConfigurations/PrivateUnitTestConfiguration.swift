@@ -37,7 +37,7 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheD
           let jsonString = String(data: jsonData, encoding: .utf8) {
               return jsonString
         }
-        fatalError("Could not serialize private unit test configuration for cache")
+        queuedFatalError("Could not serialize private unit test configuration for cache")
     }
 
     public init(identifier: String) {

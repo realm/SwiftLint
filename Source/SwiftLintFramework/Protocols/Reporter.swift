@@ -30,6 +30,6 @@ public func reporterFrom(identifier: String) -> Reporter.Type {
     case EmojiReporter.identifier:
         return EmojiReporter.self
     default:
-        fatalError("no reporter with identifier '\(identifier)' available.")
+        queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }
 }

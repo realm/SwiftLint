@@ -35,11 +35,13 @@ public struct CSVReporter: Reporter {
             "type",
             "reason",
             "rule_id"
-        ]
-        return (keys + violations.flatMap(array(for:))).joined(separator: ",")
+        ].joined(separator: ",")
+
+        let rows = [keys] + violations.flatMap(csvRow(for:))
+        return rows.joined(separator: "\n")
     }
 
-    fileprivate static func array(for violation: StyleViolation) -> [String] {
+    fileprivate static func csvRow(for violation: StyleViolation) -> String {
         return [
             violation.location.file?.escapedForCSV() ?? "",
             violation.location.line?.description ?? "",
@@ -48,6 +50,6 @@ public struct CSVReporter: Reporter {
             violation.ruleDescription.name.escapedForCSV(),
             violation.reason.escapedForCSV(),
             violation.ruleDescription.identifier
-        ]
+        ].joined(separator: ",")
     }
 }

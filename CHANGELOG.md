@@ -6,6 +6,9 @@
 
 ##### Enhancements
 
+* Fix csv reporter to output records with new lines.  
+  [atetlaw](https://github.com/atetlaw)
+
 * Add `contains_over_first_not_nil` rule to encourage using `contains` over
   `first(where:) != nil`.  
   [Samuel Susla](https://github.com/sammy-sc)

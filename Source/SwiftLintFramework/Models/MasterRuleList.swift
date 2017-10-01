@@ -108,6 +108,7 @@ public let masterRuleList = RuleList(rules: [
     TrailingWhitespaceRule.self,
     TypeBodyLengthRule.self,
     TypeNameRule.self,
+    UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,

@@ -100,6 +100,7 @@
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
 * [Type Name](#type-name)
+* [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
@@ -14207,6 +14208,94 @@ protocol Foo {
 protocol Foo {
  associatedtype ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  }
+```
+
+</details>
+
+
+
+## Unneeded Break in Switch
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`unneeded_break_in_switch` | Enabled | No | idiomatic
+
+Avoid using unneeded break statements.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    break
+}
+```
+
+```swift
+switch foo {
+default:
+    break
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    for i in [0, 1, 2] { break }
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    if true { break }
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    something()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    something()
+    ↓break
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    something()
+    ↓break // comment
+}
+```
+
+```swift
+switch foo {
+default:
+    something()
+    ↓break
+}
+```
+
+```swift
+switch foo {
+case .foo, .foo2 where condition:
+    something()
+    ↓break
+}
 ```
 
 </details>

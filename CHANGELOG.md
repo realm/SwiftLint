@@ -43,6 +43,11 @@
   or one per line.  
   [Marcel Jackwerth](https://github.com/sirlantis)
 
+* Add `unneeded_break_in_switch` rule to validate that no extra `break`s are
+  added in `switch` statements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1870](https://github.com/realm/SwiftLint/issues/1870)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

@@ -51,3 +51,11 @@ custom_rules:
     message: Rule IDs must be all lowercase, snake case and not end with `rule`
     regex: identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")
     severity: error
+  fatal_error:
+    name: Fatal Error
+    excluded: "Tests/*"
+    message: Prefer using `queuedFatalError` over `fatalError` to avoid leaking compiler host machine paths.
+    regex: \bfatalError\b
+    match_kinds:
+      - identifier
+    severity: error

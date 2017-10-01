@@ -23,9 +23,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         name: "Identifier Name",
         description: "Identifier names should only contain alphanumeric characters and " +
             "start with a lowercase character or should only contain capital letters. " +
-            "In an exception to the above, variable names may start with a capital letter " +
-            "when they are declared static and immutable. Variable names should not be too " +
-            "long or too short.",
+            "Variable names should not be too long or too short.",
         kind: .style,
         nonTriggeringExamples: IdentifierNameRuleExamples.nonTriggeringExamples,
         triggeringExamples: IdentifierNameRuleExamples.triggeringExamples,
@@ -73,8 +71,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             }
 
             let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
-            if requiresCaseCheck &&
-                kind != .varStatic && name.isViolatingCase && !name.isOperator {
+            if requiresCaseCheck && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"
                 return [
                     StyleViolation(ruleDescription: description,

@@ -4821,7 +4821,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `identifier_name` | Enabled | No | style
 
-Identifier names should only contain alphanumeric characters and start with a lowercase character or should only contain capital letters. In an exception to the above, variable names may start with a capital letter when they are declared static and immutable. Variable names should not be too long or too short.
+Identifier names should only contain alphanumeric characters and start with a lowercase character or should only contain capital letters. Variable names should not be too long or too short.
 
 ### Examples
 
@@ -4838,10 +4838,6 @@ var myVar = 0
 
 ```swift
 private let _myLet = 0
-```
-
-```swift
-class Abc { static let MyLet = 0 }
 ```
 
 ```swift
@@ -4922,6 +4918,10 @@ private ↓let _i = 0
 
 ```swift
 enum Foo { case ↓MyEnum }
+```
+
+```swift
+class Abc { ↓static let MyLet = 0 }
 ```
 
 </details>

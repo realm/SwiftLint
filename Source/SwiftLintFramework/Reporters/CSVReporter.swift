@@ -38,7 +38,7 @@ public struct CSVReporter: Reporter {
         ].joined(separator: ",")
 
         let rows = [keys] + violations.flatMap(csvRow(for:))
-        return rows.joined(separator: "\n") + "\n"
+        return rows.joined(separator: "\n")
     }
 
     fileprivate static func csvRow(for violation: StyleViolation) -> String {

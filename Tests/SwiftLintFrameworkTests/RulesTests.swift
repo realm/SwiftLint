@@ -213,6 +213,10 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
+    func testNoExplicitBooleanComparisonRule() {
+        verifyRule(NoExplicitBooleanComparisonRule.description)
+    }
+
     func testNoExtensionAccessModifierRule() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }

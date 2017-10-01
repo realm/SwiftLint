@@ -25,6 +25,7 @@
 		24B4DF0D1D6DFDE90097803B /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
 		24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
 		29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */; };
+		294692C51F6ECCDD006E20BC /* NoExplicitBooleanComparisonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294692C31F6ECC33006E20BC /* NoExplicitBooleanComparisonRule.swift */; };
 		29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */; };
 		29FFC37D1F157BDE007E4825 /* FileLengthRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */; };
 		2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */; };
@@ -350,6 +351,7 @@
 		24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantNilCoalescingRule.swift; sourceTree = "<group>"; };
 		24E17F701B1481FF008195BE /* File+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+Cache.swift"; sourceTree = "<group>"; };
 		29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainsOverFirstNotNilRule.swift; sourceTree = "<group>"; };
+		294692C31F6ECC33006E20BC /* NoExplicitBooleanComparisonRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoExplicitBooleanComparisonRule.swift; sourceTree = "<group>"; };
 		29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLengthRuleConfiguration.swift; sourceTree = "<group>"; };
 		29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLengthRuleTests.swift; sourceTree = "<group>"; };
 		2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CyclomaticComplexityRule.swift; sourceTree = "<group>"; };
@@ -1028,6 +1030,7 @@
 				BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */,
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 				D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */,
+				294692C31F6ECC33006E20BC /* NoExplicitBooleanComparisonRule.swift */,
 				1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */,
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
@@ -1437,6 +1440,7 @@
 				E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */,
 				623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */,
 				BB00B4E91F5216090079869F /* MultipleClosuresWithTrailingClosureRule.swift in Sources */,
+				294692C51F6ECCDD006E20BC /* NoExplicitBooleanComparisonRule.swift in Sources */,
 				E88198531BEA944400333A11 /* LineLengthRule.swift in Sources */,
 				D47F31151EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift in Sources */,
 				D4E2BA851F6CD77B00E8E184 /* ArrayInitRule.swift in Sources */,

@@ -160,6 +160,10 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitReturnRule.description)
     }
 
+    func testInlineComment() {
+        verifyRule(InlineCommentRule.description, skipCommentTests: true)
+    }
+
     func testIsDisjoint() {
         verifyRule(IsDisjointRule.description)
     }

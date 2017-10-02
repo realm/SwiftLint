@@ -55,6 +55,7 @@ public let masterRuleList = RuleList(rules: [
     ImplicitlyUnwrappedOptionalRule.self,
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
+    InlineCommentRule.self,
     LargeTupleRule.self,
     LeadingWhitespaceRule.self,
     LegacyCGGeometryFunctionsRule.self,

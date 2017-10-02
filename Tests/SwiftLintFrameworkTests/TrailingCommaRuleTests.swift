@@ -22,8 +22,8 @@ class TrailingCommaRuleTests: XCTestCase {
                 ruleDescription: TrailingCommaRule.description,
                 location: Location(file: nil, line: 3, character: 3),
                 reason: "Collection literals should not have trailing commas."
-            )]
-        )
+            )
+        ])
     }
 
     private static let triggeringExamples = [
@@ -80,8 +80,8 @@ class TrailingCommaRuleTests: XCTestCase {
                 ruleDescription: TrailingCommaRule.description,
                 location: Location(file: nil, line: 3, character: 3),
                 reason: "Multi-line collection literals should have trailing commas."
-            )]
-        )
+            )
+        ])
     }
 
     private func trailingCommaViolations(_ string: String, ruleConfiguration: Any? = nil) -> [StyleViolation] {

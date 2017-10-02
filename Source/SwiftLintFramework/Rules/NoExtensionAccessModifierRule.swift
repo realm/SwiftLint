@@ -22,7 +22,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         nonTriggeringExamples: [
             "extension String {}",
             "\n\n extension String {}"
-            ],
+        ],
         triggeringExamples: [
             "↓private extension String {}",
             "↓public \n extension String {}",

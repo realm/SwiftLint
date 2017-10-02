@@ -622,6 +622,11 @@
 * Fix non-root configurations logging configuration warnings more than once.  
   [JP Simard](https://github.com/jpsim)
   [#949](https://github.com/realm/SwiftLint/issues/949)
+  
+* Add `inline_comment` rule that validates inline comments.  
+  [Kim de Vos](https://github.com/kimdv)
+  [#1310](https://github.com/realm/SwiftLint/issues/1310)
+
 
 * Fix some overlapping `// swiftlint` commands not being applied.  
   [JP Simard](https://github.com/jpsim)

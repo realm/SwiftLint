@@ -27,6 +27,7 @@ opt_in_rules:
   - extension_access_modifier
   - pattern_matching_keywords
   - array_init
+  - literal_expression_end_indentation
 
 file_header:
   required_pattern: |

@@ -45,6 +45,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [InlineComment](#inlinecomment)
 * [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
@@ -5272,6 +5273,91 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## InlineComment
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`inline_comment` | Disabled | No | lint
+
+Inline comments should be in valid format. There should only be one space on both sides of '//'
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// Good
+func foo() {
+}
+```
+
+```swift
+func foo() { // Good
+}
+```
+
+```swift
+class Foo {var foo = Date() // Good
+}
+```
+
+```swift
+class Foo {var foo: Date? // Good
+}
+```
+
+```swift
+class Foo {var foo = [1, // Good
+2]
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func foo() { ↓//Wrong 1
+}
+```
+
+```swift
+func foo() { //   ↓ Wrong 2
+}
+```
+
+```swift
+func foo() {↓// Wrong 3
+}
+```
+
+```swift
+func foo() {   ↓// Wrong 4
+}
+```
+
+```swift
+class Foo {
+var foo: Date?  ↓// Wrong 5
+}
+```
+
+```swift
+class Foo {var foo = Date()↓// Wrong 6
+}
+```
+
+```swift
+class Foo {var foo = [1, ↓//Wrong 7
+2]
+}
 ```
 
 </details>

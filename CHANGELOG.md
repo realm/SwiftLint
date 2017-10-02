@@ -48,6 +48,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1870](https://github.com/realm/SwiftLint/issues/1870)
 
+* Add `inline_comment` rule that validates inline comments.  
+  Kim de Vos](https://github.com/kimdv)
+  [#1310](https://github.com/realm/SwiftLint/issues/1310)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

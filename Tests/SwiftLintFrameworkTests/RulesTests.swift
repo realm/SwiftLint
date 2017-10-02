@@ -197,6 +197,10 @@ class RulesTests: XCTestCase {
         verifyRule(LetVarWhitespaceRule.description)
     }
 
+    func testLiteralExpressionEndIdentation() {
+        verifyRule(LiteralExpressionEndIdentationRule.description)
+    }
+
     func testMark() {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }

@@ -401,6 +401,7 @@ extension RulesTests {
         ("testLegacyConstant", testLegacyConstant),
         ("testLegacyConstructor", testLegacyConstructor),
         ("testLetVarWhitespace", testLetVarWhitespace),
+        ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),

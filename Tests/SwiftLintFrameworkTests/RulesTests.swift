@@ -378,6 +378,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
+    func testUnneededBreakInSwitch() {
+        verifyRule(UnneededBreakInSwitchRule.description)
+    }
+
     func testUnneededParenthesesInClosureArgument() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }

@@ -63,6 +63,7 @@ public let masterRuleList = RuleList(rules: [
     LegacyNSGeometryFunctionsRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
+    LiteralExpressionEndIdentationRule.self,
     MarkRule.self,
     MultilineArgumentsRule.self,
     MultilineParametersRule.self,

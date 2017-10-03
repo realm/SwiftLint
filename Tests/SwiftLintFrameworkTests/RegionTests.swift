@@ -109,7 +109,7 @@ class RegionTests: XCTestCase {
             Region(start: Location(file: nil, line: 6, character: 22),
                    end: Location(file: nil, line: .max, character: .max),
                    disabledRuleIdentifiers: [])
-            ])
+        ])
     }
 
 }

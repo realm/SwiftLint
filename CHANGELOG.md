@@ -48,6 +48,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1870](https://github.com/realm/SwiftLint/issues/1870)
 
+* Add `literal_expression_end_indentation` opt-in rule to validate that
+  array and dictionary literals ends have the same indentation as the line
+  that started them.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1435](https://github.com/realm/SwiftLint/issues/1435)
+
 ##### Bug Fixes
 
 * Improve how `opening_brace` rule reports violations locations.  

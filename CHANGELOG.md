@@ -2,7 +2,8 @@
 
 ##### Breaking
 
-* None.
+* SwiftLint now requires Xcode 9 and Swift 3.2+ to build.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ##### Enhancements
 

@@ -60,7 +60,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 8.3 or later).
+`git submodule update --init --recursive; make install` (Xcode 9.0 or later).
 
 ## Usage
 

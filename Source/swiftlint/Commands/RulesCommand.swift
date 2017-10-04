@@ -135,11 +135,7 @@ extension TextTable {
                 limitedBy: stringWithNoNewlines.endIndex
             )
             if let truncatedEndIndex = truncatedEndIndex {
-#if swift(>=3.2)
                 return stringWithNoNewlines[..<truncatedEndIndex] + "..."
-#else
-                return stringWithNoNewlines.substring(to: truncatedEndIndex) + "..."
-#endif
             }
             return stringWithNoNewlines
         }

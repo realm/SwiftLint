@@ -66,7 +66,7 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
                 return false
             }
 
-            return !SyntaxKind.commentKinds().contains(kind)
+            return !SyntaxKind.commentKinds.contains(kind)
         }
 
         guard let firstToken = tokens.first,

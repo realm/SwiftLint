@@ -51,7 +51,7 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
         let types = ["Optional", "ImplicitlyUnwrappedOptional", "Array", "Dictionary"]
         let negativeLookBehind = "(?:(?<!\\.)|Swift\\.)"
         let pattern = negativeLookBehind + "\\b(" + types.joined(separator: "|") + ")\\s*<.*?>"
-        let excludingKinds = Set(SyntaxKind.commentAndStringKinds())
+        let excludingKinds = SyntaxKind.commentAndStringKinds
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 

@@ -76,7 +76,7 @@ public struct UnusedOptionalBindingRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func violations(in range: NSRange, of file: File, with kind: StatementKind) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds()
+        let kinds = SyntaxKind.commentAndStringKinds
 
         let underscorePattern = "(_\\s*[=,)]\\s*(try\\?)?)"
         let underscoreTuplePattern = "(\\((\\s*[_,]\\s*)+\\)\\s*=\\s*(try\\?)?)"

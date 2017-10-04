@@ -87,7 +87,7 @@ private extension Structure {
             }
 
             if let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-                SwiftDeclarationKind.functionKinds().contains(kind) {
+                SwiftDeclarationKind.functionKinds.contains(kind) {
                 results.append(dictionary)
             }
             dictionary.substructure.forEach(parse)

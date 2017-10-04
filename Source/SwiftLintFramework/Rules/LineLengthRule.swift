@@ -14,9 +14,9 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private let commentKinds = Set(SyntaxKind.commentKinds())
-    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(SyntaxKind.commentKinds())
-    private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
+    private let commentKinds = SyntaxKind.commentKinds
+    private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
+    private let functionKinds = SwiftDeclarationKind.functionKinds
 
     public static let description = RuleDescription(
         identifier: "line_length",

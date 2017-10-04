@@ -32,7 +32,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         let filteredLines = file.lines.filter {
             guard $0.content.hasTrailingWhitespace() else { return false }
 
-            let commentKinds = SyntaxKind.commentKinds()
+            let commentKinds = SyntaxKind.commentKinds
             if configuration.ignoresComments,
                 let lastSyntaxKind = file.syntaxKindsByLines[$0.index].last,
                 commentKinds.contains(lastSyntaxKind) {
@@ -61,7 +61,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
                 continue
             }
 
-            let commentKinds = SyntaxKind.commentKinds()
+            let commentKinds = SyntaxKind.commentKinds
             if configuration.ignoresComments,
                 let lastSyntaxKind = file.syntaxKindsByLines[line.index].last,
                 commentKinds.contains(lastSyntaxKind) {

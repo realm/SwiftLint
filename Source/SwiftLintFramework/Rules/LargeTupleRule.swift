@@ -83,7 +83,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     private func violationOffsetsForTypes(in file: File, dictionary: [String: SourceKitRepresentable],
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
-        let kinds = SwiftDeclarationKind.variableKinds().filter { $0 != .varLocal }
+        let kinds = SwiftDeclarationKind.variableKinds.subtracting([.varLocal])
         guard kinds.contains(kind),
             let type = dictionary.typeName,
             let offset = dictionary.offset else {
@@ -97,7 +97,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     private func violationOffsetsForFunctions(in file: File, dictionary: [String: SourceKitRepresentable],
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let contents = file.contents.bridge()
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let returnRange = returnRangeForFunction(dictionary: dictionary),
             let returnSubstring = contents.substringWithByteRange(start: returnRange.location,
                                                                   length: returnRange.length) else {

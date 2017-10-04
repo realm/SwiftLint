@@ -16,7 +16,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
-    public var matchKinds = Set(SyntaxKind.allKinds())
+    public var matchKinds = SyntaxKind.allKinds
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {

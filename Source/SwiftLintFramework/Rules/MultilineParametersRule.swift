@@ -27,7 +27,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
-            SwiftDeclarationKind.functionKinds().contains(kind),
+            SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength
             else {

@@ -13,7 +13,7 @@ matrix:
       env: JOB=SPM
       os: osx
       osx_image: xcode8.3
-    - script: swift test
+    - script: swift test --parallel
       env: JOB=SPM-Swift4
       os: osx
       osx_image: xcode9

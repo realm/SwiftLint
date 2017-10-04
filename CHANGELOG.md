@@ -10,7 +10,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positive in `array_init` rule when using a `map` that
+  doesn't take a closure.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1878](https://github.com/realm/SwiftLint/issues/1878)
 
 ## 0.23.0: Permanent Press Cycle
 

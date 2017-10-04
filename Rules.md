@@ -163,6 +163,11 @@ foo.map { $0! /* force unwrap */ }
 
 ```
 
+```swift
+foo.something { RouteMapper.map($0) }
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

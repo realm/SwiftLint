@@ -26,7 +26,8 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
             "foo.map { $0() }\n",
             "foo.map { ((), $0) }\n",
             "foo.map { $0! }\n",
-            "foo.map { $0! /* force unwrap */ }\n"
+            "foo.map { $0! /* force unwrap */ }\n",
+            "foo.something { RouteMapper.map($0) }\n"
         ],
         triggeringExamples: [
             "↓foo.map({ $0 })\n",
@@ -53,6 +54,8 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
         guard kind == .call, let name = dictionary.name, name.hasSuffix(".map"),
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
             let offset = dictionary.offset else {
                 return []
         }
@@ -66,7 +69,10 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
             return !SyntaxKind.commentKinds().contains(kind)
         }
 
-        guard isShortParameterStyleViolation(file: file, tokens: tokens) ||
+        guard let firstToken = tokens.first,
+            case let nameEndPosition = nameOffset + nameLength,
+            isClosureParameter(firstToken: firstToken, nameEndPosition: nameEndPosition, file: file),
+            isShortParameterStyleViolation(file: file, tokens: tokens) ||
             isParameterStyleViolation(file: file, dictionary: dictionary, tokens: tokens),
             let lastToken = tokens.last,
             case let bodyEndPosition = bodyOffset + bodyLength,
@@ -79,6 +85,20 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule {
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
+    }
+
+    private func isClosureParameter(firstToken: SyntaxToken,
+                                    nameEndPosition: Int,
+                                    file: File) -> Bool {
+        let length = firstToken.offset - nameEndPosition
+        guard length > 0,
+            case let contents = file.contents.bridge(),
+            let byteRange = contents.byteRangeToNSRange(start: nameEndPosition, length: length) else {
+                return false
+        }
+
+        let pattern = regex("\\A\\s*\\(?\\s*\\{")
+        return pattern.firstMatch(in: file.contents, options: .anchored, range: byteRange) != nil
     }
 
     private func containsTrailingContent(lastToken: SyntaxToken,

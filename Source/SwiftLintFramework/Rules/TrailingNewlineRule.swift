@@ -74,12 +74,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             file.append("\n")
         } else {
             let index = file.contents.characters.index(file.contents.endIndex, offsetBy: 1 - count)
-#if swift(>=4.0)
-            let contents = String(file.contents[..<index])
-#else
-            let contents = file.contents.substring(to: index)
-#endif
-            file.write(contents)
+            file.write(file.contents[..<index])
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]

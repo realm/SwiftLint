@@ -165,8 +165,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let allowedSymbols = configuration.allowedSymbols
-        if !allowedSymbols.isSuperset(ofCharactersIn: name, union: .alphanumerics) {
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,

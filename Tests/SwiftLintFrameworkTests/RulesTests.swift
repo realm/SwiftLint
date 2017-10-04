@@ -19,9 +19,7 @@ class RulesTests: XCTestCase {
     }
 
     func testBlockBasedKVO() {
-        #if swift(>=3.2)
-            verifyRule(BlockBasedKVORule.description)
-        #endif
+        verifyRule(BlockBasedKVORule.description)
     }
 
     func testClassDelegateProtocol() {

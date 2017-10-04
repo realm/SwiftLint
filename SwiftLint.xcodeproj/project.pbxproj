@@ -185,7 +185,6 @@
 		D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
 		D4B022981E102EE8007E5297 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
 		D4B022A41E105636007E5297 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
-		D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */; };
 		D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
 		D4B472411F66486300BD6EF1 /* FallthroughRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B472401F66486300BD6EF1 /* FallthroughRule.swift */; };
 		D4C0E46F1E3D973600C560F2 /* ForWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */; };
@@ -534,7 +533,6 @@
 		D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantOptionalInitializationRule.swift; sourceTree = "<group>"; };
 		D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRule.swift; sourceTree = "<group>"; };
 		D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericTypeNameRule.swift; sourceTree = "<group>"; };
-		D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+LinuxHack.swift"; sourceTree = "<group>"; };
 		D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantVoidReturnRule.swift; sourceTree = "<group>"; };
 		D4B472401F66486300BD6EF1 /* FallthroughRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FallthroughRule.swift; sourceTree = "<group>"; };
 		D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ForWhereRule.swift; sourceTree = "<group>"; };
@@ -1147,7 +1145,6 @@
 			isa = PBXGroup;
 			children = (
 				3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */,
-				D4B022AF1E109816007E5297 /* CharacterSet+LinuxHack.swift */,
 				E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */,
 				E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */,
 				E889D8C61F1D357B00058332 /* Configuration+Merging.swift */,
@@ -1450,7 +1447,6 @@
 				E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */,
 				37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */,
 				D47EF4801F69E3100012C4CA /* ColonRule+FunctionCall.swift in Sources */,
-				D4B022B01E109816007E5297 /* CharacterSet+LinuxHack.swift in Sources */,
 				E88198561BEA94D800333A11 /* FileLengthRule.swift in Sources */,
 				D47079A91DFDBED000027086 /* ClosureParameterPositionRule.swift in Sources */,
 				E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */,

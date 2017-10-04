@@ -75,9 +75,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
     private static let regularExpression = regex(pattern)
     private static let varDeclarationRegularExpression = regex(varDeclarationPattern)
-    private static let excludingSyntaxKindsForFirstCapture: Set<SyntaxKind> = {
-        return SyntaxKind.commentAndStringKinds.union([.keyword, .typeidentifier])
-    }()
+    private static let excludingSyntaxKindsForFirstCapture =
+        SyntaxKind.commentAndStringKinds.union([.keyword, .typeidentifier])
     private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds
 
     private func violationRanges(in file: File) -> [NSRange] {

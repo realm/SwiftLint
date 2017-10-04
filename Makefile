@@ -105,7 +105,7 @@ docker_test:
 
 docker_test_4:
 	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:4020170908a swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:40 swift test --parallel
 
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset

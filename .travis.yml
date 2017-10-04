@@ -3,12 +3,13 @@ matrix:
   include:
     - script:
         - set -o pipefail && script/cibuild | xcpretty
-        - pod lib lint SwiftLintFramework.podspec
+        - bundle exec pod lib lint SwiftLintFramework.podspec
       env: JOB=Xcode
       os: osx
       osx_image: xcode9
       before_install:
-        - pod repo update
+        - bundle install
+        - bundle exec pod repo update
     - script: swift test --parallel
       env: JOB=SPM
       os: osx

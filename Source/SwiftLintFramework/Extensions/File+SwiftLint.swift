@@ -236,14 +236,14 @@ extension File {
         lines = contents.bridge().lines()
     }
 
-    internal func write(_ string: String) {
+    internal func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
             return
         }
         guard let path = path else {
             queuedFatalError("file needs a path to call write(_:)")
         }
-        guard let stringData = string.data(using: .utf8) else {
+        guard let stringData = String(string).data(using: .utf8) else {
             queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
@@ -251,7 +251,7 @@ extension File {
         } catch {
             queuedFatalError("can't write file to \(path)")
         }
-        contents = string
+        contents = String(string)
         invalidateCache()
         lines = contents.bridge().lines()
     }

@@ -9,13 +9,11 @@
 import Foundation
 
 #if os(Linux)
-#if swift(>=4.0)
 private extension Scanner {
     func scanString(string: String) -> String? {
         return scanString(string)
     }
 }
-#endif
 #else
 private extension Scanner {
     func scanUpToString(_ string: String) -> String? {

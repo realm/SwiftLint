@@ -203,7 +203,7 @@ private func validateRuleIdentifiers(ruleIdentifiers: [String], validRuleIdentif
         for invalidRuleIdentifier in invalidRuleIdentifiers {
             queuedPrintError("configuration error: '\(invalidRuleIdentifier)' is not a valid rule identifier")
         }
-        let listOfValidRuleIdentifiers = validRuleIdentifiers.joined(separator: "\n")
+        let listOfValidRuleIdentifiers = validRuleIdentifiers.sorted().joined(separator: "\n")
         queuedPrintError("Valid rule identifiers:\n\(listOfValidRuleIdentifiers)")
     }
 

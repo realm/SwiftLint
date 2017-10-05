@@ -65,7 +65,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
         let contents = file.contents.bridge()
 
         let callsRanges = dictionary.substructure.flatMap { dict -> NSRange? in
-            guard dict.kind.flatMap(SwiftExpressionKind.init) == .call,
+            guard dict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
                 let offset = dict.offset,
                 let length = dict.length,
                 let range = contents.byteRangeToNSRange(start: offset, length: length) else {

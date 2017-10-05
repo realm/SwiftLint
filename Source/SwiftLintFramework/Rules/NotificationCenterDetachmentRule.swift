@@ -39,19 +39,14 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
     private func violationOffsets(file: File,
                                   dictionary: [String: SourceKitRepresentable]) -> [Int] {
         return dictionary.substructure.flatMap { subDict -> [Int] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else {
-                    return []
-            }
-
             // complete detachment is allowed on `deinit`
-            if kind == .other,
-                SwiftDeclarationKind(rawValue: kindString) == .functionMethodInstance,
+            if subDict.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance,
                 subDict.name == "deinit" {
                 return []
             }
 
-            if kind == .call, subDict.name == methodName,
+            if subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
+                subDict.name == methodName,
                 parameterIsSelf(dictionary: subDict, file: file),
                 let offset = subDict.offset {
                 return [offset]

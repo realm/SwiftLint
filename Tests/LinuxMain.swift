@@ -413,6 +413,7 @@ extension RulesTests {
         ("testOpeningBrace", testOpeningBrace),
         ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+        ("testOverrideInExtension", testOverrideInExtension),
         ("testPatternMatchingKeywords", testPatternMatchingKeywords),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),

@@ -10,7 +10,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `override_in_extension` rule that warns against overriding declarations
+  in a `extension`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1884](https://github.com/realm/SwiftLint/issues/1884)
 
 ##### Bug Fixes
 

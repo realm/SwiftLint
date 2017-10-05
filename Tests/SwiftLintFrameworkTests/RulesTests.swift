@@ -243,6 +243,10 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testOverrideInExtension() {
+        verifyRule(OverrideInExtensionRule.description)
+    }
+
     func testPatternMatchingKeywords() {
         verifyRule(PatternMatchingKeywordsRule.description)
     }

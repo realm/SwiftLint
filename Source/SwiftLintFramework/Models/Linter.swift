@@ -23,13 +23,17 @@ private extension Rule {
         guard !regions.isEmpty, let superfluousDisableCommandRule = superfluousDisableCommandRule else {
             return []
         }
-        let allIDs = description.allIdentifiers
+
         let regionsDisablingCurrentRule = regions.filter { region in
-            return !region.disabledRuleIdentifiers.isDisjoint(with: allIDs)
+            return region.isRuleDisabled(self.init())
+        }
+        let regionsDisablingSuperflousDisableRule = regions.filter { region in
+            return region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
         return regionsDisablingCurrentRule.flatMap { region -> StyleViolation? in
-            guard region.isRuleEnabled(superfluousDisableCommandRule) else {
+            let isSuperflousRuleDisabled = regionsDisablingSuperflousDisableRule.contains { $0.contains(region.start) }
+            guard !isSuperflousRuleDisabled else {
                 return nil
             }
 
@@ -44,7 +48,8 @@ private extension Rule {
                 ruleDescription: type(of: superfluousDisableCommandRule).description,
                 severity: superfluousDisableCommandRule.configuration.severity,
                 location: region.start,
-                reason: superfluousDisableCommandRule.reason(for: self))
+                reason: superfluousDisableCommandRule.reason(for: self)
+            )
         }
     }
 
@@ -73,8 +78,11 @@ private extension Rule {
             return region?.isRuleEnabled(self) ?? true
         }
 
+        let ruleIDs = Self.description.allIdentifiers +
+            (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? [])
+
         let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
-            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: [ruleID]) : regions,
+            regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIDs) : regions,
             superfluousDisableCommandRule: superfluousDisableCommandRule,
             allViolations: violations
         )

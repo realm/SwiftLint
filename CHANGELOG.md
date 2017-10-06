@@ -15,6 +15,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1878](https://github.com/realm/SwiftLint/issues/1878)
 
+* `superfluous_disable_command` rule can now be disabled as expected when
+  using `// swiftlint:disable superfluous_disable_command`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1890](https://github.com/realm/SwiftLint/issues/1890)
+
 ## 0.23.0: Permanent Press Cycle
 
 ##### Breaking

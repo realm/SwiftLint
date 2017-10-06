@@ -238,6 +238,12 @@ class CommandTests: XCTestCase {
             []
         )
         XCTAssertEqual(
+            violations("// swiftlint:disable superfluous_disable_command\n" +
+                       "// swiftlint:disable nesting\n" +
+                       "print(123)\n"),
+            []
+        )
+        XCTAssertEqual(
             violations("// swiftlint:disable:next superfluous_disable_command nesting\nprint(123)\n"),
             []
         )

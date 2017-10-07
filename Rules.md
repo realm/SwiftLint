@@ -8519,6 +8519,24 @@ class Employee: Person {
 
 ```
 
+```swift
+class Foo: NSObject {}
+extension Foo {
+    override var description: String { return "" }
+}
+
+```
+
+```swift
+struct Foo {
+    class Bar: NSObject {}
+}
+extension Foo.Bar {
+    override var description: String { return "" }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -181,6 +181,7 @@
 		D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE61DF191380006E05D /* AttributesRuleTests.swift */; };
 		D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */; };
 		D4A893351E15824100BF954D /* SwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A893341E15824100BF954D /* SwiftVersion.swift */; };
+		D4AB0EA21F8993DD00CEC380 /* NamespaceCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */; };
 		D4B0226F1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0226E1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift */; };
 		D4B0228E1E0CC608007E5297 /* ClassDelegateProtocolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */; };
 		D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
@@ -530,6 +531,7 @@
 		D4998DE61DF191380006E05D /* AttributesRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleTests.swift; sourceTree = "<group>"; };
 		D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRuleTests.swift; sourceTree = "<group>"; };
 		D4A893341E15824100BF954D /* SwiftVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftVersion.swift; sourceTree = "<group>"; };
+		D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamespaceCollector.swift; sourceTree = "<group>"; };
 		D4B0226E1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalParameterAlignmentRule.swift; sourceTree = "<group>"; };
 		D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassDelegateProtocolRule.swift; sourceTree = "<group>"; };
 		D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RedundantOptionalInitializationRule.swift; sourceTree = "<group>"; };
@@ -727,6 +729,7 @@
 			isa = PBXGroup;
 			children = (
 				4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */,
+				D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1512,6 +1515,7 @@
 				D4A893351E15824100BF954D /* SwiftVersion.swift in Sources */,
 				D4470D5D1EB8004B008A1B2E /* VerticalParameterAlignmentOnCallRule.swift in Sources */,
 				D4DABFD31E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */,
+				D4AB0EA21F8993DD00CEC380 /* NamespaceCollector.swift in Sources */,
 				D4B022B21E10B613007E5297 /* RedundantVoidReturnRule.swift in Sources */,
 				3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */,
 				D4C27BFE1E12D53F00DF713E /* Version.swift in Sources */,

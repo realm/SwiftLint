@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OverrideInExtensionRule: ASTRule, ConfigurationProviderRule {
+public struct OverrideInExtensionRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -22,7 +22,17 @@ public struct OverrideInExtensionRule: ASTRule, ConfigurationProviderRule {
         nonTriggeringExamples: [
             "extension Person {\n  var age: Int { return 42 }\n}\n",
             "extension Person {\n  func celebrateBirthday() {}\n}\n",
-            "class Employee: Person {\n  override func celebrateBirthday() {}\n}\n"
+            "class Employee: Person {\n  override func celebrateBirthday() {}\n}\n",
+            "class Foo: NSObject {}\n" +
+            "extension Foo {\n" +
+            "    override var description: String { return \"\" }\n" +
+            "}\n",
+            "struct Foo {\n" +
+            "    class Bar: NSObject {}\n" +
+            "}\n" +
+            "extension Foo.Bar {\n" +
+            "    override var description: String { return \"\" }\n" +
+            "}\n"
         ],
         triggeringExamples: [
             "extension Person {\n  override ↓var age: Int { return 42 }\n}\n",
@@ -30,26 +40,29 @@ public struct OverrideInExtensionRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .extension else {
-            return []
-        }
+    public func validate(file: File) -> [StyleViolation] {
+        let collector = NamespaceCollector(dictionary: file.structure.dictionary)
+        let elements = collector.findAllElements(of: [.class, .struct, .enum, .extension])
 
-        let violatingOffsets = dictionary.substructure.flatMap { element -> Int? in
-            guard element.kind.flatMap(SwiftDeclarationKind.init) != nil,
-                element.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
-                let offset = element.offset else {
-                    return nil
+        let susceptibleNames = Set(elements.flatMap { $0.kind == .class ? $0.name : nil })
+
+        return elements
+            .filter { $0.kind == .extension && !susceptibleNames.contains($0.name) }
+            .flatMap { element in
+                return element.dictionary.substructure.flatMap { element -> Int? in
+                    guard element.kind.flatMap(SwiftDeclarationKind.init) != nil,
+                        element.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
+                        let offset = element.offset else {
+                            return nil
+                    }
+
+                    return offset
+                }
             }
-
-            return offset
-        }
-
-        return violatingOffsets.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
+            .map {
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: $0))
+            }
     }
 }

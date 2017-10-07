@@ -72,6 +72,8 @@
 ##### Enhancements
 
 * None.
+* Make `vertical_parameter_alignment(_on_call)` expand tabs to 4 spaces.  
+  [Marcel Jackwerth](https://github.com/sirlantis)
 
 ##### Bug Fixes
 

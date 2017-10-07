@@ -9,6 +9,8 @@
 import Foundation
 import SourceKittenFramework
 
+private let tabWidth = 4
+
 public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -76,7 +78,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
 
         let paramLocations = params.flatMap { paramDict -> Location? in
             guard let byteOffset = paramDict.offset,
-                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset, expandingTabsToWidth: tabWidth) else {
                 return nil
             }
             return Location(file: file.path, line: lineAndChar.line, character: lineAndChar.character)

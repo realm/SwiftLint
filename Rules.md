@@ -15631,6 +15631,12 @@ foo(param1: 1, param2: bar
 ```
 
 ```swift
+foo(param1: 1, param2: bar
+	param3: false,
+    param4: true)
+```
+
+```swift
 foo(
    param1: 1
 ) { _ in }

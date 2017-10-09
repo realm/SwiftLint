@@ -71,6 +71,7 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
+* [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
@@ -8476,6 +8477,80 @@ class VC: UIViewController {
 class VC: UIViewController {
 	override func didReceiveMemoryWarning() {↓
 	}
+}
+
+```
+
+</details>
+
+
+
+## Override in Extension
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`override_in_extension` | Disabled | No | lint
+
+Extensions shouldn't override declarations.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+extension Person {
+  var age: Int { return 42 }
+}
+
+```
+
+```swift
+extension Person {
+  func celebrateBirthday() {}
+}
+
+```
+
+```swift
+class Employee: Person {
+  override func celebrateBirthday() {}
+}
+
+```
+
+```swift
+class Foo: NSObject {}
+extension Foo {
+    override var description: String { return "" }
+}
+
+```
+
+```swift
+struct Foo {
+    class Bar: NSObject {}
+}
+extension Foo.Bar {
+    override var description: String { return "" }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+extension Person {
+  override ↓var age: Int { return 42 }
+}
+
+```
+
+```swift
+extension Person {
+  override ↓func celebrateBirthday() {}
 }
 
 ```

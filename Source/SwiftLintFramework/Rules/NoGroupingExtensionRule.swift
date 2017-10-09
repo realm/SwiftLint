@@ -32,9 +32,8 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-
-        let elements = findAllElements(in: file.structure.dictionary,
-                                       of: [.class, .enum, .struct, .extension])
+        let collector = NamespaceCollector(dictionary: file.structure.dictionary)
+        let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 
         let susceptibleNames = Set(elements.flatMap { $0.kind != .extension ? $0.name : nil })
 
@@ -45,47 +44,5 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: $0.offset))
             }
-    }
-
-    private func findAllElements(in dictionary: [String: SourceKitRepresentable],
-                                 of types: Set<SwiftDeclarationKind>,
-                                 namespace: [String] = []) -> [Element] {
-
-        return dictionary.substructure.flatMap { subDict -> [Element] in
-
-            var elements: [Element] = []
-            guard let element = Element(dictionary: subDict, namespace: namespace) else {
-                return elements
-            }
-
-            if types.contains(element.kind) {
-                elements.append(element)
-            }
-
-            elements += findAllElements(in: subDict, of: types, namespace: [element.name])
-
-            return elements
-        }
-    }
-}
-
-private struct Element {
-
-    let name: String
-    let kind: SwiftDeclarationKind
-    let offset: Int
-
-    init?(dictionary: [String: SourceKitRepresentable], namespace: [String]) {
-
-        guard let name = dictionary.name,
-            let kind = dictionary.kind.flatMap(SwiftDeclarationKind.init),
-            let offset = dictionary.offset
-            else {
-                return nil
-        }
-
-        self.name = (namespace + [name]).joined(separator: ".")
-        self.kind = kind
-        self.offset = offset
     }
 }

@@ -14,7 +14,7 @@ jobs:
       xcode: "9.0"
     steps:
       - checkout
-      - run: swift test
+      - run: swift test --parallel
 
   xcode_9:
     macos:
@@ -37,7 +37,7 @@ jobs:
       - image: norionomura/swift:40
     steps:
       - checkout
-      - run: swift test
+      - run: swift test --parallel
 
 workflows:
   version: 2

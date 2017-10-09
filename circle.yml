@@ -21,10 +21,16 @@ jobs:
       xcode: "9.0"
     steps:
       - checkout
-      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
       - run: set -o pipefail && script/cibuild | xcpretty
-      - run: echo "4.0" > .swift-version; pod lib lint SwiftLintFramework.podspec
       - run: bash <(curl -s https://codecov.io/bash)
+
+  cocoapods:
+    macos:
+      xcode: "9.0"
+    steps:
+      - checkout
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: echo "4.0" > .swift-version; pod lib lint SwiftLintFramework.podspec
 
   linux_swift_4:
     docker:
@@ -40,4 +46,5 @@ workflows:
       - osscheck
       - swiftpm_4
       - xcode_9
+      - cocoapods
       - linux_swift_4

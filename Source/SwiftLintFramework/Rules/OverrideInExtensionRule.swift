@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OverrideInExtensionRule: ConfigurationProviderRule {
+public struct OverrideInExtensionRule: ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

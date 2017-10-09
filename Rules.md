@@ -8489,7 +8489,7 @@ class VC: UIViewController {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`override_in_extension` | Enabled | No | lint
+`override_in_extension` | Disabled | No | lint
 
 Extensions shouldn't override declarations.
 

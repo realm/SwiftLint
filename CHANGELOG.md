@@ -4,7 +4,7 @@
 
 * SwiftLint now requires Xcode 9 and Swift 3.2+ to build.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  
+
 * Remove `SwiftExpressionKind.other`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
@@ -14,6 +14,20 @@
   declarations in an `extension`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1884](https://github.com/realm/SwiftLint/issues/1884)
+
+##### Bug Fixes
+
+* None.
+
+## 0.23.1: Rewash: Forgotten Load Edition
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
 
 ##### Bug Fixes
 

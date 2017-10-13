@@ -322,4 +322,12 @@ extension File {
                                                                  length: token.length)
         return aclString.flatMap(AccessControlLevel.init(description:)) != nil
     }
+
+    internal var useTabs: Bool {
+        return true
+    }
+
+    internal var indentWidth: Int {
+        return 4
+    }
 }

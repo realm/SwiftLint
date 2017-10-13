@@ -9,8 +9,6 @@
 import Foundation
 import SourceKittenFramework
 
-private let tabWidth = 4
-
 public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -86,7 +84,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             let firstArgumentOffset = arguments.first?.offset,
             case let contents = file.contents.bridge(),
             var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset,
-                                                                  expandingTabsToWidth: tabWidth) else {
+                                                                  expandingTabsToWidth: file.indentWidth) else {
                 return []
         }
 
@@ -101,7 +99,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
 
             guard let offset = argument.offset,
                 let (line, character) = contents.lineAndCharacter(forByteOffset: offset,
-                                                                  expandingTabsToWidth: tabWidth),
+                                                                  expandingTabsToWidth: file.indentWidth),
                 line > firstArgumentPosition.line else {
                     return nil
             }
@@ -137,9 +135,8 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         guard let offset = argument.bodyOffset,
             let length = argument.bodyLength,
             case let contents = file.contents.bridge(),
-            let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset, expandingTabsToWidth: tabWidth),
-            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length,
-                                                         expandingTabsToWidth: tabWidth) else {
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length) else {
                 return false
         }
 

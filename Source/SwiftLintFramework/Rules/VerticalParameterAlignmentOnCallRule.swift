@@ -85,7 +85,8 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             arguments.count > 1,
             let firstArgumentOffset = arguments.first?.offset,
             case let contents = file.contents.bridge(),
-            var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset, expandingTabsToWidth: tabWidth) else {
+            var firstArgumentPosition = contents.lineAndCharacter(forByteOffset: firstArgumentOffset,
+                                                                  expandingTabsToWidth: tabWidth) else {
                 return []
         }
 
@@ -99,7 +100,8 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             }
 
             guard let offset = argument.offset,
-                let (line, character) = contents.lineAndCharacter(forByteOffset: offset, expandingTabsToWidth: tabWidth),
+                let (line, character) = contents.lineAndCharacter(forByteOffset: offset,
+                                                                  expandingTabsToWidth: tabWidth),
                 line > firstArgumentPosition.line else {
                     return nil
             }
@@ -136,7 +138,8 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
             let length = argument.bodyLength,
             case let contents = file.contents.bridge(),
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: offset, expandingTabsToWidth: tabWidth),
-            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length, expandingTabsToWidth: tabWidth) else {
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: offset + length,
+                                                         expandingTabsToWidth: tabWidth) else {
                 return false
         }
 

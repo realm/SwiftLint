@@ -78,7 +78,8 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
 
         let paramLocations = params.flatMap { paramDict -> Location? in
             guard let byteOffset = paramDict.offset,
-                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset, expandingTabsToWidth: tabWidth) else {
+                let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset,
+                                                            expandingTabsToWidth: tabWidth) else {
                 return nil
             }
             return Location(file: file.path, line: lineAndChar.line, character: lineAndChar.character)

@@ -35,9 +35,15 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "someReallyLongProperty.chainingWithAnotherProperty\n" +
             "   .foo { _ in }",
             "foo(abc, 123)\n" +
-            "{ _ in }\n"
+            "{ _ in }\n",
+            "\tmixedTabsAndSpaces(abc, 123) { _ in\n" +
+            "    }\n",
+            "    mixedSpacesAndTabs(abc, 123) { _ in\n" +
+            "\t}\n"
         ],
         triggeringExamples: [
+            "foo(abc, 123) { _ in\n" +
+            "    ↓}\n",
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +
             "       print(number)\n" +
@@ -69,7 +75,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             contents.substringWithByteRange(start: endOffset, length: 1) == "}",
             let startOffset = startOffset(forDictionary: dictionary, file: file),
             let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
-            let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
+            let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset,
+                                                                   expandingTabsToWidth: file.indentWidth),
             case let nameEndPosition = nameOffset + nameLength,
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
@@ -81,8 +88,12 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         let regex = ClosureEndIndentationRule.notWhitespace
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
-            case let expected = match.location - range.location,
-            expected != actual  else {
+            let startLineNonWhitespaceRange = contents.NSRangeToByteRange(start: match.location,
+                                                                          length: match.length),
+            let (_, startPosition) = contents.lineAndCharacter(forByteOffset: startLineNonWhitespaceRange.location,
+                                                               expandingTabsToWidth: file.indentWidth),
+            case let expected = startPosition - 1,
+            expected != actual else {
                 return []
         }
 

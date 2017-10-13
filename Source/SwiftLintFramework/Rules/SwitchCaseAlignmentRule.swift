@@ -51,7 +51,13 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
             "    print('One')\n" +
             "default:\n" +
             "    print('Some other number')\n" +
-            "}"
+            "}",
+            "\tswitch mixedTabsAndSpaces {\n" +
+            "\tcase 0:\n" +
+            "\t\tprint('Zero')\n" +
+            "    case 1:\n" +
+            "        print('Zero')\n" +
+            "    }"
         ],
         triggeringExamples: [
             "switch someBool {\n" +
@@ -84,7 +90,8 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         let contents = file.contents.bridge()
         guard kind == .switch,
             let offset = dictionary.offset,
-            let (_, switchCharacter) = contents.lineAndCharacter(forByteOffset: offset) else {
+            let (_, switchCharacter) = contents.lineAndCharacter(forByteOffset: offset,
+                                                                 expandingTabsToWidth: file.indentWidth) else {
                 return []
         }
 
@@ -99,7 +106,8 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
 
         let caseLocations = caseStatements.flatMap { caseDict -> Location? in
             guard let byteOffset = caseDict.offset,
-                let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset,
+                                                             expandingTabsToWidth: file.indentWidth) else {
                     return nil
             }
             return Location(file: file.path, line: line, character: char)

@@ -781,9 +781,27 @@ foo(abc, 123)
 
 ```
 
+```swift
+	mixedTabsAndSpaces(abc, 123) { _ in
+    }
+
+```
+
+```swift
+    mixedSpacesAndTabs(abc, 123) { _ in
+	}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
+
+```swift
+foo(abc, 123) { _ in
+    ↓}
+
+```
 
 ```swift
 SignalProducer(values: [1, 2, 3])
@@ -10835,6 +10853,15 @@ case 1:
 default:
     print('Some other number')
 }
+```
+
+```swift
+	switch mixedTabsAndSpaces {
+	case 0:
+		print('Zero')
+    case 1:
+        print('Zero')
+    }
 ```
 
 </details>

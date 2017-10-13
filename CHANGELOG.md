@@ -52,6 +52,10 @@
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
+* Make `vertical_parameter_alignment(_on_call)` expand tabs to 4 spaces
+  and add `indent-width` to `autocorrect` command.  
+  [Marcel Jackwerth](https://github.com/sirlantis)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't
@@ -72,8 +76,6 @@
 ##### Enhancements
 
 * None.
-* Make `vertical_parameter_alignment(_on_call)` expand tabs to 4 spaces.  
-  [Marcel Jackwerth](https://github.com/sirlantis)
 
 ##### Bug Fixes
 

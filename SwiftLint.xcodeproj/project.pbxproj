@@ -72,7 +72,9 @@
 		623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
 		62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
+		626C16E21F948EBC00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626C16E01F948E1C00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift */; };
 		626D02971F31CBCC0054788D /* XCTFailMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */; };
+		627BC48D1F9405160004A6C2 /* QuickDiscouragedFocusedTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */; };
 		629C60D91F43906700B4AF92 /* SingleTestClassRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */; };
 		62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */; };
 		62A6E7931F3317E3003A0479 /* JoinedDefaultRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */; };
@@ -405,11 +407,13 @@
 		623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRule.swift; sourceTree = "<group>"; };
 		623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRuleExamples.swift; sourceTree = "<group>"; };
 		62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRule.swift; sourceTree = "<group>"; };
+		626C16E01F948E1C00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedFocusedTestRuleExamples.swift; sourceTree = "<group>"; };
 		626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTFailMessageRule.swift; sourceTree = "<group>"; };
 		629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleTestClassRule.swift; sourceTree = "<group>"; };
 		62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitConfiguration.swift; sourceTree = "<group>"; };
 		62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinedDefaultRule.swift; sourceTree = "<group>"; };
 		62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRuleTests.swift; sourceTree = "<group>"; };
+		62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedFocusedTestRule.swift; sourceTree = "<group>"; };
 		65454F451B14D73800319A6C /* ControlStatementRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlStatementRule.swift; sourceTree = "<group>"; };
 		67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CyclomaticComplexityConfigurationTests.swift; sourceTree = "<group>"; };
 		67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CyclomaticComplexityConfiguration.swift; sourceTree = "<group>"; };
@@ -1020,7 +1024,6 @@
 				D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
 				2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */,
-				827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */,
 				D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */,
 				E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */,
 				D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */,
@@ -1049,6 +1052,7 @@
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 				D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */,
 				1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */,
+				827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */,
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
 				D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */,
@@ -1057,8 +1061,8 @@
 				692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */,
 				E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */,
 				D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */,
-				D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */,
 				78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */,
+				D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */,
 				D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */,
 				094385021D5D4F78009168CF /* PrivateOutletRule.swift */,
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
@@ -1067,12 +1071,15 @@
 				D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */,
 				623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */,
 				623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */,
+				62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */,
+				626C16E01F948E1C00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift */,
 				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */,
 				D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */,
 				D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */,
 				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
+				3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */,
 				D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */,
 				629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */,
 				D286EC001E02DA190003CF72 /* SortedImportsRule.swift */,
@@ -1103,7 +1110,6 @@
 				D47079AE1DFE520000027086 /* VoidReturnRule.swift */,
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
-				3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -1550,6 +1556,7 @@
 				E88198421BEA929F00333A11 /* NestingRule.swift in Sources */,
 				D46A317F1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift in Sources */,
 				D4470D591EB6B4D1008A1B2E /* EmptyEnumArgumentsRule.swift in Sources */,
+				627BC48D1F9405160004A6C2 /* QuickDiscouragedFocusedTestRule.swift in Sources */,
 				3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */,
 				E881985B1BEA974E00333A11 /* StatementPositionRule.swift in Sources */,
 				B58AEED61C492C7B00E901FD /* ForceUnwrappingRule.swift in Sources */,
@@ -1590,6 +1597,7 @@
 				3BA79C9B1C4767910057E705 /* NSRange+SwiftLint.swift in Sources */,
 				D4D5A5FF1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift in Sources */,
 				C3DE5DAC1E7DF9CA00761483 /* FatalErrorMessageRule.swift in Sources */,
+				626C16E21F948EBC00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift in Sources */,
 				D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */,
 				8FC9F5111F4B8E48006826C1 /* IsDisjointRule.swift in Sources */,
 				4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */,

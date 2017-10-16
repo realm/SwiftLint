@@ -79,6 +79,7 @@
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
 * [Quick Discouraged Call](#quick-discouraged-call)
+* [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -9263,6 +9264,114 @@ class TotoTests: QuickSpec {
        sharedExamples("foo") {
            ↓foo()
        }
+   }
+}
+
+```
+
+</details>
+
+
+
+## Quick Discouraged Focused Test
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_focused_test` | Disabled | No | lint
+
+Discouraged focused test. Other tests won't run while this one is focused.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           describe("bar") { } 
+           context("bar") {
+               it("bar") { }
+           }
+           it("bar") { }
+           itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fdescribe("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fcontext("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fit("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓fit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓fit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("bar") {
+               ↓fit("toto") { }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fitBehavesLike("foo")
    }
 }
 

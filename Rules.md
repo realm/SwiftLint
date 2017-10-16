@@ -9309,8 +9309,7 @@ class TotoTests: QuickSpec {
 ```swift
 class TotoTests: QuickSpec {
    override func spec() {
-       ↓fdescribe("foo") {
-       }
+       ↓fdescribe("foo") { }
    }
 }
 
@@ -9319,8 +9318,7 @@ class TotoTests: QuickSpec {
 ```swift
 class TotoTests: QuickSpec {
    override func spec() {
-       ↓fcontext("foo") {
-       }
+       ↓fcontext("foo") { }
    }
 }
 
@@ -9329,8 +9327,7 @@ class TotoTests: QuickSpec {
 ```swift
 class TotoTests: QuickSpec {
    override func spec() {
-       ↓fit("foo") {
-       }
+       ↓fit("foo") { }
    }
 }
 
@@ -9364,7 +9361,8 @@ class TotoTests: QuickSpec {
        describe("foo") {
            context("bar") {
                ↓fit("toto") { }
-        }
+           }
+       }
    }
 }
 
@@ -9373,7 +9371,7 @@ class TotoTests: QuickSpec {
 ```swift
 class TotoTests: QuickSpec {
    override func spec() {
-       fitBehavesLike("foo")
+       ↓fitBehavesLike("foo")
    }
 }
 

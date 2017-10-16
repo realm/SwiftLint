@@ -1,5 +1,5 @@
 //
-//  QuickDiscouragedCallRule.swift
+//  QuickDiscouragedFocusedTestRule.swift
 //  SwiftLint
 //
 //  Created by Ornithologist Coder on 10/15/17.
@@ -19,67 +19,8 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
         name: "Quick Discouraged Focused Test",
         description: "Discouraged focused test. Other tests won't run while this one is focused.",
         kind: .lint,
-        nonTriggeringExamples: [
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       describe(\"foo\") {\n" +
-            "           describe(\"bar\") { } \n" +
-            "           context(\"bar\") {\n" +
-            "               it(\"bar\") { }\n" +
-            "           }\n" +
-            "           it(\"bar\") { }\n" +
-            "           itBehavesLike(\"bar\")\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n"
-        ],
-        triggeringExamples: [
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       ↓fdescribe(\"foo\") {\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       ↓fcontext(\"foo\") {\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       ↓fit(\"foo\") {\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       describe(\"foo\") {\n" +
-            "           ↓fit(\"bar\") { }\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       context(\"foo\") {\n" +
-            "           ↓fit(\"bar\") { }\n" +
-            "       }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       describe(\"foo\") {\n" +
-            "           context(\"bar\") {\n" +
-            "               ↓fit(\"toto\") { }\n" +
-            "        }\n" +
-            "   }\n" +
-            "}\n",
-            "class TotoTests: QuickSpec {\n" +
-            "   override func spec() {\n" +
-            "       fitBehavesLike(\"foo\")\n" +
-            "   }\n" +
-            "}\n"
-        ]
+        nonTriggeringExamples: QuickDiscouragedFocusedTestRuleExamples.nonTriggeringExamples,
+        triggeringExamples: QuickDiscouragedFocusedTestRuleExamples.triggeringExamples
     )
 
     public func validate(file: File) -> [StyleViolation] {

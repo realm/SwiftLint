@@ -9208,6 +9208,24 @@ class TotoTests: QuickSpec {
 
 ```
 
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fitBehavesLike("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xitBehavesLike("foo")
+   }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

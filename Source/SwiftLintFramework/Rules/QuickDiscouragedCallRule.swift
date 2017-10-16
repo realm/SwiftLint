@@ -123,9 +123,11 @@ private enum QuickCallKind: String {
     case xdescribe
     case xcontext
     case xit
+    case xitBehavesLike
     case fdescribe
     case fcontext
     case fit
+    case fitBehavesLike
 
     static let restrictiveKinds: Set<QuickCallKind> = [
         .describe, .fdescribe, .xdescribe, .context, .fcontext, .xcontext, .sharedExamples

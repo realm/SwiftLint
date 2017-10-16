@@ -115,6 +115,16 @@ internal struct QuickDiscouragedCallRuleExamples {
         "           }\n" +
         "       }\n" +
         "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       fitBehavesLike(\"foo\")\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xitBehavesLike(\"foo\")\n" +
+        "   }\n" +
         "}\n"
     ]
 

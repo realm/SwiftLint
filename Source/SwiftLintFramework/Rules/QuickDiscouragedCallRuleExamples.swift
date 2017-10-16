@@ -8,6 +8,8 @@
 
 import Foundation
 
+// swiftlint:disable type_body_length
+
 internal struct QuickDiscouragedCallRuleExamples {
     static let nonTriggeringExamples: [String] = [
         "class TotoTests: QuickSpec {\n" +
@@ -64,6 +66,64 @@ internal struct QuickDiscouragedCallRuleExamples {
         "       context(\"foo\") {\n" +
         "           afterEach { toto.append(foo) }\n" +
         "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xcontext(\"foo\") {\n" +
+        "           afterEach { toto.append(foo) }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xdescribe(\"foo\") {\n" +
+        "           afterEach { toto.append(foo) }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       describe(\"foo\") {\n" +
+        "           xit(\"does something\") {\n" +
+        "               let foo = Foo()\n" +
+        "               foo.toto()\n" +
+        "           }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       fcontext(\"foo\") {\n" +
+        "           afterEach { toto.append(foo) }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       fdescribe(\"foo\") {\n" +
+        "           afterEach { toto.append(foo) }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       describe(\"foo\") {\n" +
+        "           fit(\"does something\") {\n" +
+        "               let foo = Foo()\n" +
+        "               foo.toto()\n" +
+        "           }\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       fitBehavesLike(\"foo\")\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xitBehavesLike(\"foo\")\n" +
         "   }\n" +
         "}\n"
     ]
@@ -158,6 +218,26 @@ internal struct QuickDiscouragedCallRuleExamples {
         "   override func spec() {\n" +
         "       sharedExamples(\"foo\") {\n" +
         "           ↓foo()\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xdescribe(\"foo\") {\n" +
+        "           let foo = ↓Foo()\n" +
+        "       }\n" +
+        "       fdescribe(\"foo\") {\n" +
+        "           let foo = ↓Foo()\n" +
+        "       }\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       xcontext(\"foo\") {\n" +
+        "           let foo = ↓Foo()\n" +
+        "       }\n" +
+        "       fcontext(\"foo\") {\n" +
+        "           let foo = ↓Foo()\n" +
         "       }\n" +
         "   }\n" +
         "}\n"

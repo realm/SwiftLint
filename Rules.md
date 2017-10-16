@@ -9137,6 +9137,96 @@ class TotoTests: QuickSpec {
 
 ```
 
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xcontext("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xdescribe("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           xit("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fcontext("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fdescribe("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           fit("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fitBehavesLike("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xitBehavesLike("foo")
+   }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9263,6 +9353,34 @@ class TotoTests: QuickSpec {
    override func spec() {
        sharedExamples("foo") {
            ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xdescribe("foo") {
+           let foo = ↓Foo()
+       }
+       fdescribe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xcontext("foo") {
+           let foo = ↓Foo()
+       }
+       fcontext("foo") {
+           let foo = ↓Foo()
        }
    }
 }

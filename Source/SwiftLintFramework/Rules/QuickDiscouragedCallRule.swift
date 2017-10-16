@@ -120,6 +120,16 @@ private enum QuickCallKind: String {
     case afterSuite
     case it // swiftlint:disable:this identifier_name
     case pending
+    case xdescribe
+    case xcontext
+    case xit
+    case xitBehavesLike
+    case fdescribe
+    case fcontext
+    case fit
+    case fitBehavesLike
 
-    static let restrictiveKinds: Set<QuickCallKind> = [.describe, .context, .sharedExamples]
+    static let restrictiveKinds: Set<QuickCallKind> = [
+        .describe, .fdescribe, .xdescribe, .context, .fcontext, .xcontext, .sharedExamples
+    ]
 }

@@ -20,6 +20,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1884](https://github.com/realm/SwiftLint/issues/1884)
 
+* Add `[f,x]{describe, context, itBehavesLike}` to `quick_discouraged_call` rule.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1903](https://github.com/realm/SwiftLint/issues/1903)
+
 ##### Bug Fixes
 
 * None.

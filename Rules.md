@@ -9295,6 +9295,7 @@ class TotoTests: QuickSpec {
                it("bar") { }
            }
            it("bar") { }
+           itBehavesLike("bar")
        }
    }
 }
@@ -9364,6 +9365,15 @@ class TotoTests: QuickSpec {
            context("bar") {
                ↓fit("toto") { }
         }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fitBehavesLike("foo")
    }
 }
 

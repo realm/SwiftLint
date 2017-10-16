@@ -28,6 +28,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
             "               it(\"bar\") { }\n" +
             "           }\n" +
             "           it(\"bar\") { }\n" +
+            "           itBehavesLike(\"bar\")\n" +
             "       }\n" +
             "   }\n" +
             "}\n"
@@ -71,6 +72,11 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
             "           context(\"bar\") {\n" +
             "               ↓fit(\"toto\") { }\n" +
             "        }\n" +
+            "   }\n" +
+            "}\n",
+            "class TotoTests: QuickSpec {\n" +
+            "   override func spec() {\n" +
+            "       fitBehavesLike(\"foo\")\n" +
             "   }\n" +
             "}\n"
         ]
@@ -127,4 +133,5 @@ private enum QuickFocusedCallKind: String {
     case fdescribe
     case fcontext
     case fit
+    case fitBehavesLike
 }

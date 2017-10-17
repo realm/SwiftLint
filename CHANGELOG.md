@@ -15,6 +15,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1905](https://github.com/realm/SwiftLint/issues/1905)
 
+* Add `quick_discouraged_pending_test` opt-in rule which warns against
+  pending tests in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1909](https://github.com/realm/SwiftLint/issues/1909)
+
 * Add `override_in_extension` opt-in rule that warns against overriding
   declarations in an `extension`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

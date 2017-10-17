@@ -286,6 +286,10 @@ class RulesTests: XCTestCase {
         verifyRule(QuickDiscouragedFocusedTestRule.description)
     }
 
+    func testQuickDiscouragedPendingTest() {
+        verifyRule(QuickDiscouragedPendingTestRule.description)
+    }
+
     func testRedundantDiscardableLet() {
         verifyRule(RedundantDiscardableLetRule.description)
     }

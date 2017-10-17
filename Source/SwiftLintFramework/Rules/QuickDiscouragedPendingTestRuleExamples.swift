@@ -18,6 +18,7 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
         "               it(\"bar\") { }\n" +
         "           }\n" +
         "           it(\"bar\") { }\n" +
+        "           itBehavesLike(\"bar\")\n" +
         "       }\n" +
         "   }\n" +
         "}\n"
@@ -65,6 +66,11 @@ internal struct QuickDiscouragedPendingTestRuleExamples {
         "class TotoTests: QuickSpec {\n" +
         "   override func spec() {\n" +
         "       ↓pending(\"foo\")\n" +
+        "   }\n" +
+        "}\n",
+        "class TotoTests: QuickSpec {\n" +
+        "   override func spec() {\n" +
+        "       ↓xitBehavesLike(\"foo\")\n" +
         "   }\n" +
         "}\n"
     ]

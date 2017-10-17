@@ -75,4 +75,5 @@ private enum QuickPendingCallKind: String {
     case xdescribe
     case xcontext
     case xit
+    case xitBehavesLike
 }

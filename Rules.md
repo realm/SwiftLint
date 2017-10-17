@@ -9522,6 +9522,7 @@ class TotoTests: QuickSpec {
                it("bar") { }
            }
            it("bar") { }
+           itBehavesLike("bar")
        }
    }
 }
@@ -9598,6 +9599,15 @@ class TotoTests: QuickSpec {
 class TotoTests: QuickSpec {
    override func spec() {
        ↓pending("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xitBehavesLike("foo")
    }
 }
 

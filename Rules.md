@@ -7027,6 +7027,38 @@ class Foo {
 }
 ```
 
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int) -> Void = { _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = nil) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = { _ in }) { }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

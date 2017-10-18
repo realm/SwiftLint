@@ -47,6 +47,11 @@
   account for `warningThreshold` or `cachePath`.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix false positive in `multiline_parameters` rule when parameter is a closure
+  with default value.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1912](https://github.com/realm/SwiftLint/issues/1912)
+
 ## 0.23.1: Rewash: Forgotten Load Edition
 
 ##### Breaking

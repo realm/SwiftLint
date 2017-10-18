@@ -92,6 +92,26 @@ internal struct MultilineParametersRuleExamples {
         "   class func foo(param1: Int,\n" +
         "                  param2: Bool,\n" +
         "                  param3: [String]) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int) -> Void = { _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping ((Int) -> Void)? = nil) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping ((Int) -> Void)? = { _ in }) { }\n" +
         "}"
     ]
 

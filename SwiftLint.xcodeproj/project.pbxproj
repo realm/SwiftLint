@@ -68,6 +68,8 @@
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
 		621061BF1ED57E640082D51E /* MultilineParametersRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */; };
 		62329C2B1F30B2310035737E /* DiscouragedDirectInitRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */; };
+		623675B01F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */; };
+		623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */; };
 		623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */; };
 		623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
@@ -403,6 +405,8 @@
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57ED82791CF65183002B3513 /* JUnitReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JUnitReporter.swift; sourceTree = "<group>"; };
 		621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRuleExamples.swift; sourceTree = "<group>"; };
+		623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedPendingTestRule.swift; sourceTree = "<group>"; };
+		623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedPendingTestRuleExamples.swift; sourceTree = "<group>"; };
 		6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRule.swift; sourceTree = "<group>"; };
 		623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRule.swift; sourceTree = "<group>"; };
 		623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRuleExamples.swift; sourceTree = "<group>"; };
@@ -1073,6 +1077,8 @@
 				623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */,
 				62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */,
 				626C16E01F948E1C00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift */,
+				623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */,
+				623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */,
 				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
 				24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */,
 				D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */,
@@ -1442,6 +1448,7 @@
 				2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */,
 				D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */,
 				D4C4A3521DEFBBB700E0E04C /* FileHeaderConfiguration.swift in Sources */,
+				623675B01F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift in Sources */,
 				D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */,
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,
@@ -1480,6 +1487,7 @@
 				D4EA77C81F817FD200C315FB /* UnneededBreakInSwitchRule.swift in Sources */,
 				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
+				623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */,
 				D403A4A31F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
 				D4DABFD51E2B350F009617B6 /* TrailingClosureRule.swift in Sources */,

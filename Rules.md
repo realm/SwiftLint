@@ -80,6 +80,7 @@
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
+* [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -9490,6 +9491,123 @@ class TotoTests: QuickSpec {
 class TotoTests: QuickSpec {
    override func spec() {
        ↓fitBehavesLike("foo")
+   }
+}
+
+```
+
+</details>
+
+
+
+## Quick Discouraged Pending Test
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_pending_test` | Disabled | No | lint
+
+Discouraged pending test. This test won't run while it's marked as pending.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           describe("bar") { } 
+           context("bar") {
+               it("bar") { }
+           }
+           it("bar") { }
+           itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xdescribe("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xcontext("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xit("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓xit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓xit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("bar") {
+               ↓xit("toto") { }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓pending("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xitBehavesLike("foo")
    }
 }
 

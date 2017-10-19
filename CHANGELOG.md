@@ -24,6 +24,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1903](https://github.com/realm/SwiftLint/issues/1903)
 
+* Add `quick_discouraged_pending_test` opt-in rule which warns against
+  pending tests in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1909](https://github.com/realm/SwiftLint/issues/1909)
+
 ##### Bug Fixes
 
 * None.

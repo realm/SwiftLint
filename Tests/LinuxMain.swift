@@ -420,6 +420,8 @@ extension RulesTests {
         ("testProhibitedSuper", testProhibitedSuper),
         ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
         ("testQuickDiscouragedCall", testQuickDiscouragedCall),
+        ("testQuickDiscouragedFocusedTest", testQuickDiscouragedFocusedTest),
+        ("testQuickDiscouragedPendingTest", testQuickDiscouragedPendingTest),
         ("testRedundantDiscardableLet", testRedundantDiscardableLet),
         ("testRedundantNilCoalescing", testRedundantNilCoalescing),
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),

@@ -38,6 +38,9 @@
 * Speed up reading cached results by about 200%.  
   [JP Simard](https://github.com/jpsim)
 
+* Add `catch` to the statements checked by the `control_statement` rule.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't

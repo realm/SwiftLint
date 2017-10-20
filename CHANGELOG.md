@@ -32,6 +32,9 @@
 * Speed up equality tests for `[Rule]` and `Configuration` values.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `Configuration` conform to `Hashable`.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't

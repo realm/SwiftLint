@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct Configuration: Equatable {
+public struct Configuration: Hashable {
     // Represents how a Configuration object can be configured with regards to rules.
     public enum RulesMode {
         case `default`(disabled: [String], optIn: [String])
@@ -28,6 +28,17 @@ public struct Configuration: Equatable {
     public private(set) var rootPath: String?          // the root path to search for nested configurations
     public private(set) var configurationPath: String? // if successfully loaded from a path
     public let cachePath: String?
+
+    public var hashValue: Int {
+        if let configurationPath = configurationPath {
+            return configurationPath.hashValue
+        } else if let rootPath = rootPath {
+            return rootPath.hashValue
+        } else if let cachePath = cachePath {
+            return cachePath.hashValue
+        }
+        return (included + excluded + [reporter]).reduce(0, { $0 ^ $1.hashValue })
+    }
 
     // MARK: Rules Properties
 

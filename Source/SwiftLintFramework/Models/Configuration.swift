@@ -185,11 +185,13 @@ public struct Configuration: Equatable {
     // MARK: Equatable
 
     public static func == (lhs: Configuration, rhs: Configuration) -> Bool {
-        return (lhs.excluded == rhs.excluded) &&
-            (lhs.included == rhs.included) &&
+        return (lhs.warningThreshold == rhs.warningThreshold) &&
             (lhs.reporter == rhs.reporter) &&
+            (lhs.rootPath == rhs.rootPath) &&
             (lhs.configurationPath == rhs.configurationPath) &&
-            (lhs.rootPath == lhs.rootPath) &&
+            (lhs.cachePath == lhs.cachePath) &&
+            (lhs.included == rhs.included) &&
+            (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules)
     }
 }

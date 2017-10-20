@@ -29,9 +29,14 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1909](https://github.com/realm/SwiftLint/issues/1909)
 
+* Speed up equality tests for `[Rule]` and `Configuration` values.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
-* None.
+* Correct equality tests for `Configuration` values. They previously didn't
+  account for `warningThreshold` or `cachePath`.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.23.1: Rewash: Forgotten Load Edition
 

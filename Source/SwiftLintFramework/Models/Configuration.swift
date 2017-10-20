@@ -40,6 +40,8 @@ public struct Configuration: Hashable {
         return (included + excluded + [reporter]).reduce(0, { $0 ^ $1.hashValue })
     }
 
+    internal var computedCacheDescription: String?
+
     // MARK: Rules Properties
 
     // All rules enabled in this configuration, derived from disabled, opt-in and whitelist rules

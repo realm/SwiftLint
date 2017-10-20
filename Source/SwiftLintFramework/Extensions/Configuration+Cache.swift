@@ -28,9 +28,19 @@ extension Configuration {
         return cachedConfigurationsByPath[path]
     }
 
+    public func withPrecomputedCacheDescription() -> Configuration {
+        var result = self
+        result.computedCacheDescription = result.cacheDescription
+        return result
+    }
+
     // MARK: SwiftLint Cache (On-Disk)
 
     internal var cacheDescription: String {
+        if let computedCacheDescription = computedCacheDescription {
+            return computedCacheDescription
+        }
+
         let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
             var accu = accu
             accu[type(of: element).description.identifier] = element.cacheDescription

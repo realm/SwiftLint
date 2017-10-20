@@ -17,7 +17,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",
-        description: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
+        description:
+            "if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.",
         kind: .style,
         nonTriggeringExamples: [
             "if condition {\n",
@@ -34,7 +35,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "while condition {\n",
             "} while condition {\n",
             "do { ; } while condition {\n",
-            "switch foo {\n"
+            "switch foo {\n",
+            "do {\n} catch let error as NSError {\n}"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
@@ -52,12 +54,13 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "} ↓while(condition) {\n",
             "do { ; } ↓while(condition) {\n",
             "do { ; } ↓while (condition) {\n",
-            "↓switch (foo) {\n"
+            "↓switch (foo) {\n",
+            "do {\n} ↓catch(let error as NSError) {\n}"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let statements = ["if", "for", "guard", "switch", "while"]
+        let statements = ["if", "for", "guard", "switch", "while", "catch"]
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"
             let elsePattern = isGuard ? "else\\s*" : ""

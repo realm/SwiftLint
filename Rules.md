@@ -1645,7 +1645,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `control_statement` | Enabled | No | style
 
-if,for,while,do statements shouldn't wrap their conditionals in parentheses.
+if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.
 
 ### Examples
 
@@ -1725,6 +1725,12 @@ do { ; } while condition {
 ```swift
 switch foo {
 
+```
+
+```swift
+do {
+} catch let error as NSError {
+}
 ```
 
 </details>
@@ -1809,6 +1815,12 @@ do { ; } ↓while (condition) {
 ```swift
 ↓switch (foo) {
 
+```
+
+```swift
+do {
+} ↓catch(let error as NSError) {
+}
 ```
 
 </details>

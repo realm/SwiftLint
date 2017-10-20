@@ -9,9 +9,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.12.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.1"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "0.3.6"),
-        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.5.0"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.2"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "0.3.7"),
+        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.7.0"),
     ],
     targets: [
         .target(

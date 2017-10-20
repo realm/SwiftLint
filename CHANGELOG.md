@@ -35,6 +35,9 @@
 * Make `Configuration` conform to `Hashable`.  
   [JP Simard](https://github.com/jpsim)
 
+* Speed up reading cached results by about 200%.  
+  [JP Simard](https://github.com/jpsim)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't

@@ -24,8 +24,17 @@
         "repositoryURL": "https://github.com/antitypical/Result.git",
         "state": {
           "branch": null,
-          "revision": "c8446185238659a2b27c0261f64ff1254291d07d",
-          "version": "3.2.3"
+          "revision": "7477584259bfce2560a19e06ad9f71db441fff11",
+          "version": "3.2.4"
+        }
+      },
+      {
+        "package": "SWXMLHash",
+        "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
+        "state": {
+          "branch": null,
+          "revision": "49dee5d3c448685ca3f511792f5b679423d36475",
+          "version": "4.2.3"
         }
       },
       {
@@ -42,8 +51,8 @@
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
           "branch": null,
-          "revision": "7c4c6d8194389493f841b75fafa8c29b274c7ea6",
-          "version": "0.18.1"
+          "revision": "18e391d9b1ed5032d401015740f3c19e7937e279",
+          "version": "0.18.2"
         }
       },
       {
@@ -51,17 +60,8 @@
         "repositoryURL": "https://github.com/scottrhoyt/SwiftyTextTable.git",
         "state": {
           "branch": null,
-          "revision": "13489587b932674addd93fdfca8e627a76e6a6db",
-          "version": "0.5.0"
-        }
-      },
-      {
-        "package": "SWXMLHash",
-        "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
-        "state": {
-          "branch": null,
-          "revision": "be482f040cc7124a8b500da38981ee4ab93f7533",
-          "version": "4.2.0"
+          "revision": "a8b8f754f610f2e40a22f59f74909ea4e01630af",
+          "version": "0.7.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
           "branch": null,
-          "revision": "5ac9248b378b5e12201c255ba74caf990d1e0f4b",
-          "version": "0.3.6"
+          "revision": "05921531200acff0d8d9caab5ec77b2bcf300b6b",
+          "version": "0.3.7"
         }
       }
     ]

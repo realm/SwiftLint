@@ -90,6 +90,10 @@
   [Samuel Susla](https://github.com/sammy-sc)
   [#1514](https://github.com/realm/SwiftLint/issues/1514)
 
+* Make `sorted_imports` correctable.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
 * Add `fallthrough` rule that flags usage of `fallthrough`.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1834](https://github.com/realm/SwiftLint/issues/1834)

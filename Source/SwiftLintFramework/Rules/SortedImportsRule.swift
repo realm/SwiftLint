@@ -68,17 +68,74 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
             "import AAA\nimport BBB\nimport CCC\nimport DDD",
             "import Alamofire\nimport API",
             "import labc\nimport Ldef",
-            "import BBB\n// comment\nimport AAA\nimport CCC"
+            "import BBB\n// comment\nimport AAA\nimport CCC",
+            "@testable import AAA\nimport   CCC",
+            "import AAA\n@testable import   CCC",
+            """
+            import EEE.A
+            import FFF.B
+            #if os(Linux)
+            import DDD.A
+            import EEE.B
+            #else
+            import CCC
+            import DDD.B
+            #endif
+            import AAA
+            import BBB
+            """
         ],
         triggeringExamples: [
             "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC",
-            "import BBB\n// comment\nimport CCC\nimport ↓AAA"
+            "import DDD\n// comment\nimport CCC\nimport ↓AAA",
+            "@testable import CCC\nimport   ↓AAA",
+            "import CCC\n@testable import   ↓AAA",
+            """
+            import FFF.B
+            import ↓EEE.A
+            #if os(Linux)
+            import DDD.A
+            import EEE.B
+            #else
+            import DDD.B
+            import ↓CCC
+            #endif
+            import AAA
+            import BBB
+            """
         ],
         corrections: [
             "import AAA\nimport ZZZ\nimport ↓BBB\nimport CCC": "import AAA\nimport BBB\nimport CCC\nimport ZZZ",
             "import BBB // comment\nimport ↓AAA": "import AAA\nimport BBB // comment",
             "import BBB\n// comment\nimport CCC\nimport ↓AAA": "import BBB\n// comment\nimport AAA\nimport CCC",
-            "@testable import CCC\nimport AAA": "import AAA\n@testable import CCC"
+            "@testable import CCC\nimport  ↓AAA": "import  AAA\n@testable import CCC",
+            "import CCC\n@testable import  ↓AAA": "@testable import  AAA\nimport CCC",
+            """
+            import FFF.B
+            import ↓EEE.A
+            #if os(Linux)
+            import DDD.A
+            import EEE.B
+            #else
+            import DDD.B
+            import ↓CCC
+            #endif
+            import AAA
+            import BBB
+            """:
+            """
+            import EEE.A
+            import FFF.B
+            #if os(Linux)
+            import DDD.A
+            import EEE.B
+            #else
+            import CCC
+            import DDD.B
+            #endif
+            import AAA
+            import BBB
+            """
         ]
     )
 

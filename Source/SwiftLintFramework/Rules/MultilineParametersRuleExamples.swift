@@ -8,6 +8,8 @@
 
 import Foundation
 
+// swiftlint:disable type_body_length
+
 internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples = [
         "func foo() { }",
@@ -92,6 +94,46 @@ internal struct MultilineParametersRuleExamples {
         "   class func foo(param1: Int,\n" +
         "                  param2: Bool,\n" +
         "                  param3: [String]) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int) -> Void = { _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping ((Int) -> Void)? = nil) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping ((Int) -> Void)? = { _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: @escaping ((Int) -> Void)? = { _ in },\n" +
+        "                  param3: Bool) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: @escaping ((Int) -> Void)? = { _ in },\n" +
+        "                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int) -> Void = { (x: Int) in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func foo(param1: Int,\n" +
+        "                  param2: Bool,\n" +
+        "                  param3: @escaping (Int, (Int) -> Void) -> Void = { (x: Int, f: (Int) -> Void) in }) { }\n" +
         "}"
     ]
 
@@ -171,6 +213,14 @@ internal struct MultilineParametersRuleExamples {
         "class Foo {\n" +
         "   class func ↓foo(param1: Int, param2: Bool,\n" +
         "                   param3: [String]) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func ↓foo(param1: Int,\n" +
+        "                  param2: Bool, param3: @escaping (Int, Int) -> Void = { _, _ in }) { }\n" +
+        "}",
+        "class Foo {\n" +
+        "   class func ↓foo(param1: Int,\n" +
+        "                  param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }\n" +
         "}"
     ]
 }

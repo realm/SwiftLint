@@ -7027,6 +7027,70 @@ class Foo {
 }
 ```
 
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int) -> Void = { _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = nil) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = { _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: @escaping ((Int) -> Void)? = { _ in },
+                  param3: Bool) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: @escaping ((Int) -> Void)? = { _ in },
+                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int, (Int) -> Void) -> Void = { (x: Int, f: (Int) -> Void) in }) { }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -7161,6 +7225,20 @@ class Foo {
 class Foo {
    class func ↓foo(param1: Int, param2: Bool,
                    param3: [String]) { }
+}
+```
+
+```swift
+class Foo {
+   class func ↓foo(param1: Int,
+                  param2: Bool, param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func ↓foo(param1: Int,
+                  param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
 }
 ```
 

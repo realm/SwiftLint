@@ -10518,7 +10518,7 @@ class TotoTests {  }
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`sorted_imports` | Disabled | No | style
+`sorted_imports` | Disabled | Yes | style
 
 Imports should be sorted.
 
@@ -10544,6 +10544,37 @@ import labc
 import Ldef
 ```
 
+```swift
+import BBB
+// comment
+import AAA
+import CCC
+```
+
+```swift
+@testable import AAA
+import   CCC
+```
+
+```swift
+import AAA
+@testable import   CCC
+```
+
+```swift
+import EEE.A
+import FFF.B
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import CCC
+import DDD.B
+#endif
+import AAA
+import BBB
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -10553,6 +10584,37 @@ import AAA
 import ZZZ
 import ↓BBB
 import CCC
+```
+
+```swift
+import DDD
+// comment
+import CCC
+import ↓AAA
+```
+
+```swift
+@testable import CCC
+import   ↓AAA
+```
+
+```swift
+import CCC
+@testable import   ↓AAA
+```
+
+```swift
+import FFF.B
+import ↓EEE.A
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import DDD.B
+import ↓CCC
+#endif
+import AAA
+import BBB
 ```
 
 </details>

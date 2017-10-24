@@ -41,6 +41,17 @@
 * Add `catch` to the statements checked by the `control_statement` rule.  
   [JP Simard](https://github.com/jpsim)
 
+* Make `sorted_imports` correctable.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [JP Simard](https://github.com/jpsim)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
+* Make `sorted_imports` only validate within import "groups" of imports on
+  directly adjacent lines.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [JP Simard](https://github.com/jpsim)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
 ##### Bug Fixes
 
 * Correct equality tests for `Configuration` values. They previously didn't

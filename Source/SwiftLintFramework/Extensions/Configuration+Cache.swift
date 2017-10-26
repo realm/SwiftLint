@@ -41,16 +41,18 @@ extension Configuration {
             return computedCacheDescription
         }
 
-        let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
-            var accu = accu
-            accu[type(of: element).description.identifier] = element.cacheDescription
-            return accu
-        }
-        let dict: [String: Any] = [
-            "root": rootPath ?? FileManager.default.currentDirectoryPath,
-            "rules": cacheRulesDescriptions
+        let cacheRulesDescriptions = rules
+            .map { rule in
+                return [type(of: rule).description.identifier, rule.cacheDescription]
+            }
+            .sorted { rule1, rule2 in
+                return rule1[0] < rule2[0]
+            }
+        let jsonObject: [Any] = [
+            rootPath ?? FileManager.default.currentDirectoryPath,
+            cacheRulesDescriptions
         ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
             let jsonString = String(data: jsonData, encoding: .utf8) {
             return jsonString
         }

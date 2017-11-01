@@ -20,7 +20,10 @@ private extension Region {
 public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public var consoleDescription: String { return "user-defined" }
     internal var cacheDescription: String {
-        return customRuleConfigurations.map({ $0.cacheDescription }).joined(separator: "\n")
+        return customRuleConfigurations
+            .sorted { $0.identifier < $1.identifier }
+            .map { $0.cacheDescription }
+            .joined(separator: "\n")
     }
     public var customRuleConfigurations = [RegexConfiguration]()
 

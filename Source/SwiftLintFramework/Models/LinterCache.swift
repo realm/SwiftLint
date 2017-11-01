@@ -91,14 +91,25 @@ public final class LinterCache {
 
         let configurationDescription = configuration.cacheDescription
 
+        func getCacheLastModification(dict: [String: Any]) -> TimeInterval? {
+            let value = dict[.lastModification]
+#if os(Linux)
+            if let cacheLastModificationInt = value as? Int {
+                return TimeInterval(cacheLastModificationInt)
+            }
+#endif
+            return value as? TimeInterval
+        }
+
         guard let filesCache = readCache[configurationDescription],
             let entry = filesCache[file],
-            let cacheLastModification = entry[.lastModification] as? TimeInterval,
+            let cacheLastModification = getCacheLastModification(dict: entry),
             cacheLastModification == lastModification.timeIntervalSinceReferenceDate,
             let swiftVersion = (entry[.swiftVersion] as? String).flatMap(SwiftVersion.init(rawValue:)),
             swiftVersion == self.swiftVersion,
-            let violations = entry[.violations] as? [[String: Any]] else {
-                return nil
+            let violations = entry[.violations] as? [[String: Any]]
+        else {
+            return nil
         }
 
         return violations.flatMap { StyleViolation.from(cache: $0, file: file) }

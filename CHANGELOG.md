@@ -63,6 +63,9 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1912](https://github.com/realm/SwiftLint/issues/1912)
 
+* Fix caching on Linux.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.23.1: Rewash: Forgotten Load Edition
 
 ##### Breaking

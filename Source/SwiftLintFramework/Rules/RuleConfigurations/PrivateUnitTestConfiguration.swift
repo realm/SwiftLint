@@ -26,14 +26,15 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheD
     }
 
     internal var cacheDescription: String {
-        var dict = [String: Any]()
-        dict["identifier"] = identifier
-        dict["name"] = name
-        dict["message"] = message
-        dict["regex"] = regex.pattern
-        dict["included"] = included?.pattern
-        dict["severity"] = severityConfiguration.consoleDescription
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+        let jsonObject: [String] = [
+            identifier,
+            name ?? "",
+            message,
+            regex.pattern,
+            included?.pattern ?? "",
+            severityConfiguration.consoleDescription
+        ]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {
               return jsonString
         }

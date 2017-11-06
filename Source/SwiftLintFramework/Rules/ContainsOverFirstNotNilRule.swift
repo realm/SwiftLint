@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule {
+public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -33,64 +33,11 @@ public struct ContainsOverFirstNotNilRule: OptInRule, ConfigurationProviderRule 
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*!=\\s*nil"
-        let firstRanges = file.match(pattern: pattern, with: [.keyword])
-        let contents = file.contents.bridge()
-        let structure = file.structure
-
-        let violatingLocations: [Int] = firstRanges.flatMap { range in
-            guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length),
-                case let firstLocation = range.location + range.length - 1,
-                let firstByteRange = contents.NSRangeToByteRange(start: firstLocation, length: 1)
-                else {
-                    return nil
-            }
-
-            return methodCall(forByteOffset: bodyByteRange.location - 1,
-                              excludingOffset: firstByteRange.location, dictionary: structure.dictionary,
-                              predicate: { dictionary in
-                guard let name = dictionary.name else {
-                    return false
-                }
-
-                return name.hasSuffix(".first")
-            })
-        }
-
-        return violatingLocations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
+        return validate(file: file,
+                        pattern: "[\\}\\)]\\s*!=\\s*nil",
+                        patternSyntaxKind: [.keyword],
+                        callNameSuffix: ".first",
+                        severity: configuration.severity)
     }
 
-    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
-                            dictionary: [String: SourceKitRepresentable],
-                            predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
-
-        if let kindString = dictionary.kind,
-            SwiftExpressionKind(rawValue: kindString) == .call,
-            let bodyOffset = dictionary.bodyOffset,
-            let bodyLength = dictionary.bodyLength,
-            let offset = dictionary.offset {
-            let byteRange = NSRange(location: bodyOffset, length: bodyLength)
-
-            if NSLocationInRange(byteOffset, byteRange) &&
-                !NSLocationInRange(excludingOffset, byteRange) && predicate(dictionary) {
-                return offset
-            }
-        }
-
-        for dictionary in dictionary.substructure {
-            if let offset = methodCall(forByteOffset: byteOffset,
-                                       excludingOffset: excludingOffset,
-                                       dictionary: dictionary,
-                                       predicate: predicate) {
-                return offset
-            }
-        }
-
-        return nil
-    }
 }

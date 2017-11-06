@@ -10617,6 +10617,11 @@ let min = myList.max(by: { $0 < $1 })
 
 ```
 
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last
+
+```
+
 </details>
 
 

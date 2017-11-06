@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SortedFirstLastRule: OptInRule, ConfigurationProviderRule {
+public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -38,71 +38,16 @@ public struct SortedFirstLastRule: OptInRule, ConfigurationProviderRule {
             "↓myList.sorted(by: { $0.description < $1.description }).last\n",
             "↓myList.map { $0 + 1 }.sorted().last\n",
             "↓myList.sorted(by: someFunction).last\n",
-            "↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last\n"
-
+            "↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last\n",
+            "↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "[\\}\\)]\\s*\\.(first|last)"
-        let firstRanges = file.match(pattern: pattern, with: [.identifier])
-        let contents = file.contents.bridge()
-        let structure = file.structure
-
-        let violatingLocations: [Int] = firstRanges.flatMap { range in
-            guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
-                                                                  length: range.length),
-                case let firstLocation = range.location + range.length - 1,
-                let firstByteRange = contents.NSRangeToByteRange(start: firstLocation, length: 1)
-                else {
-                    return nil
-            }
-
-            return methodCall(forByteOffset: bodyByteRange.location - 1,
-                              excludingOffset: firstByteRange.location, dictionary: structure.dictionary,
-                              predicate: { dictionary in
-                                guard let name = dictionary.name else {
-                                    return false
-                                }
-
-                                return name.hasSuffix(".sorted")
-            })
-        }
-
-        return violatingLocations.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: $0))
-        }
-    }
-
-    private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
-                            dictionary: [String: SourceKitRepresentable],
-                            predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
-
-        if let kindString = dictionary.kind,
-            SwiftExpressionKind(rawValue: kindString) == .call,
-            let bodyOffset = dictionary.offset,
-            let bodyLength = dictionary.length,
-            let offset = dictionary.offset {
-            let byteRange = NSRange(location: bodyOffset, length: bodyLength == 0 ? 1 : bodyLength)
-
-            if NSLocationInRange(byteOffset, byteRange),
-                !NSLocationInRange(excludingOffset, byteRange),
-                predicate(dictionary) {
-                return offset
-            }
-        }
-
-        for dictionary in dictionary.substructure {
-            if let offset = methodCall(forByteOffset: byteOffset,
-                                       excludingOffset: excludingOffset,
-                                       dictionary: dictionary,
-                                       predicate: predicate) {
-                return offset
-            }
-        }
-
-        return nil
+        return validate(file: file,
+                        pattern: "[\\}\\)]\\s*\\.(first|last)",
+                        patternSyntaxKind: [.identifier],
+                        callNameSuffix: ".sorted",
+                        severity: configuration.severity)
     }
 }

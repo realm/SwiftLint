@@ -430,6 +430,7 @@ extension RulesTests {
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),
         ("testShorthandOperator", testShorthandOperator),
         ("testSingleTestClass", testSingleTestClass),
+        ("testSortedFirstLastRule", testSortedFirstLastRule),
         ("testSortedImports", testSortedImports),
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),

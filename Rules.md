@@ -89,6 +89,7 @@
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
 * [Single Test Class](#single-test-class)
+* [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
@@ -10507,6 +10508,112 @@ class FooTests: XCTestCase {  }
 ↓class FooTests: QuickSpec {  }
 ↓class BarTests: XCTestCase {  }
 class TotoTests {  }
+
+```
+
+</details>
+
+
+
+## Min or Max over Sorted First or Last
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`sorted_first_last` | Disabled | No | performance
+
+Prefer using `min()` or `max()` over `sorted().first` or `sorted().last`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let min = myList.min()
+
+```
+
+```swift
+let min = myList.min(by: { $0 < $1 })
+
+```
+
+```swift
+let min = myList.min(by: >)
+
+```
+
+```swift
+let min = myList.max()
+
+```
+
+```swift
+let min = myList.max(by: { $0 < $1 })
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.sorted().first
+
+```
+
+```swift
+↓myList.sorted(by: { $0.description < $1.description }).first
+
+```
+
+```swift
+↓myList.sorted(by: >).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted().first
+
+```
+
+```swift
+↓myList.sorted(by: someFunction).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.first
+
+```
+
+```swift
+↓myList.sorted().last
+
+```
+
+```swift
+↓myList.sorted().last?.something()
+
+```
+
+```swift
+↓myList.sorted(by: { $0.description < $1.description }).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted().last
+
+```
+
+```swift
+↓myList.sorted(by: someFunction).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last
 
 ```
 

@@ -2,7 +2,7 @@
 //  SortedFirstLastRule.swift
 //  SwiftLint
 //
-//  Created by Tom Quist on 06.11.17.
+//  Created by Tom Quist on 11/06/17.
 //  Copyright © 2017 Realm. All rights reserved.
 //
 

@@ -73,6 +73,10 @@
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
+* Add `private_action` opt-in rule which warns agaist public @IBAction methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1931](https://github.com/realm/SwiftLint/issues/1931)
+
 ##### Bug Fixes
 
 * Extend `first_where` and `contains_over_first_not_nil` rules to also detect

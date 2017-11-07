@@ -6,7 +6,6 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
-import Foundation
 import SourceKittenFramework
 
 public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {
@@ -35,7 +34,7 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file,
                         pattern: "[\\}\\)]\\s*!=\\s*nil",
-                        patternSyntaxKind: [.keyword],
+                        patternSyntaxKinds: [.keyword],
                         callNameSuffix: ".first",
                         severity: configuration.severity)
     }

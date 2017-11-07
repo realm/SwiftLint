@@ -6,7 +6,6 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-import Foundation
 import SourceKittenFramework
 
 public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule {
@@ -37,7 +36,7 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file,
                         pattern: "[\\}\\)]\\s*\\.first",
-                        patternSyntaxKind: [.identifier],
+                        patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".filter",
                         severity: configuration.severity)
     }

@@ -6,7 +6,6 @@
 //  Copyright © 2017 Realm. All rights reserved.
 //
 
-import Foundation
 import SourceKittenFramework
 
 public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProviderRule {
@@ -46,7 +45,7 @@ public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProvide
     public func validate(file: File) -> [StyleViolation] {
         return validate(file: file,
                         pattern: "[\\}\\)]\\s*\\.(first|last)",
-                        patternSyntaxKind: [.identifier],
+                        patternSyntaxKinds: [.identifier],
                         callNameSuffix: ".sorted",
                         severity: configuration.severity)
     }

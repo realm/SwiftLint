@@ -59,9 +59,9 @@
 
 ##### Bug Fixes
 
-* Correct `first_where` and `contains_over_first_not_nil` rules to also detect
-cases where calls to `filter` and `first` are parenthesized.
-[Tom Quist](https://github.com/tomquist)
+* Extend `first_where` and `contains_over_first_not_nil` rules to also detect
+  cases where calls to `filter` and `first` are parenthesized.  
+  [Tom Quist](https://github.com/tomquist)
 
 * Correct equality tests for `Configuration` values. They previously didn't
   account for `warningThreshold` or `cachePath`.  

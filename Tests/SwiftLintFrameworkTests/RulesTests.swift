@@ -322,6 +322,10 @@ class RulesTests: XCTestCase {
         verifyRule(SingleTestClassRule.description)
     }
 
+    func testSortedFirstLastRule() {
+        verifyRule(SortedFirstLastRule.description)
+    }
+
     func testSortedImports() {
         verifyRule(SortedImportsRule.description)
     }

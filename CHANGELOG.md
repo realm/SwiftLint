@@ -10,6 +10,11 @@
 
 ##### Enhancements
 
+* Add `sorted_first_last` opt-in rule to encourage using `min()` or `max()`
+  over `sorted().first` or `sorted().last`.  
+  [Tom Quist](https://github.com/tomquist)
+  [#1932](https://github.com/realm/SwiftLint/issues/1932)
+
 * Add `quick_discouraged_focused_test` opt-in rule which warns against
   focused tests in Quick tests.  
   [Ornithologist Coder](https://github.com/ornithocoder)
@@ -53,6 +58,10 @@
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
 ##### Bug Fixes
+
+* Extend `first_where` and `contains_over_first_not_nil` rules to also detect
+  cases where calls to `filter` and `first` are parenthesized.  
+  [Tom Quist](https://github.com/tomquist)
 
 * Correct equality tests for `Configuration` values. They previously didn't
   account for `warningThreshold` or `cachePath`.  

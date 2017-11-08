@@ -97,6 +97,7 @@ public let masterRuleList = RuleList(rules: [
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,
     SingleTestClassRule.self,
+    SortedFirstLastRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
     StrictFilePrivateRule.self,

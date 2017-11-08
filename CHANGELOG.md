@@ -10,6 +10,10 @@
 
 ##### Enhancements
 
+* Make `first_where` and `contains_over_first_not_nil` rules also detect cases
+  where calls to `filter` and `first` are parenthesized.
+  [Tom Quist](https://github.com/tomquist)
+
 * Add `sorted_first_last` opt-in rule to encourage using `min()` or `max()`
   over `sorted().first` or `sorted().last`.  
   [Tom Quist](https://github.com/tomquist)

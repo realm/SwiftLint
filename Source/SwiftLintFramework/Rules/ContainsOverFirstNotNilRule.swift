@@ -27,7 +27,8 @@ public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, Configuratio
             "↓myList.first(where: { $0 % 2 == 0 }) != nil\n",
             "↓myList.map { $0 + 1 }.first(where: { $0 % 2 == 0 }) != nil\n",
             "↓myList.first(where: someFunction) != nil\n",
-            "↓myList.map { $0 + 1 }.first { $0 % 2 == 0 } != nil\n"
+            "↓myList.map { $0 + 1 }.first { $0 % 2 == 0 } != nil\n",
+            "(↓myList.first { $0 % 2 == 0 }) != nil\n"
         ]
     )
 

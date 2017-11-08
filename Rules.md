@@ -1636,6 +1636,11 @@ let first = myList.first { $0 % 2 == 0 }
 
 ```
 
+```swift
+(↓myList.first { $0 % 2 == 0 }) != nil
+
+```
+
 </details>
 
 
@@ -4225,6 +4230,11 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```
 
+```swift
+(myList.filter { $0 == 1 }.suffix(2)).first
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4257,6 +4267,11 @@ match(pattern: pattern).filter { $0.first == .identifier }
 ```swift
 ↓myList.filter({ $0 % 2 == 0 })
 .first
+
+```
+
+```swift
+(↓myList.filter { $0 == 1 }).first
 
 ```
 

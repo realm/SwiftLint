@@ -21,7 +21,8 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
         nonTriggeringExamples: [
             "kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier\n",
             "myList.first(where: { $0 % 2 == 0 })\n",
-            "match(pattern: pattern).filter { $0.first == .identifier }\n"
+            "match(pattern: pattern).filter { $0.first == .identifier }\n",
+            "(myList.filter { $0 == 1 }.suffix(2)).first\n"
         ],
         triggeringExamples: [
             "↓myList.filter { $0 % 2 == 0 }.first\n",
@@ -29,7 +30,8 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first\n",
             "↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()\n",
             "↓myList.filter(someFunction).first\n",
-            "↓myList.filter({ $0 % 2 == 0 })\n.first\n"
+            "↓myList.filter({ $0 % 2 == 0 })\n.first\n",
+            "(↓myList.filter { $0 == 1 }).first\n"
         ]
     )
 

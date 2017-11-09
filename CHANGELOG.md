@@ -25,7 +25,8 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1884](https://github.com/realm/SwiftLint/issues/1884)
 
-* Add `[f,x]{describe, context, itBehavesLike}` to `quick_discouraged_call` rule.  
+* Add `[f,x]{describe, context, itBehavesLike}` to `quick_discouraged_call`
+  rule.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1903](https://github.com/realm/SwiftLint/issues/1903)
 
@@ -51,8 +52,8 @@
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
-* Make `sorted_imports` only validate within import "groups" of imports on
-  directly adjacent lines.  
+* Make `sorted_imports` only validate within "groups" of imports on directly
+  adjacent lines.  
   [Samuel Susla](https://github.com/sammy-sc)
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)

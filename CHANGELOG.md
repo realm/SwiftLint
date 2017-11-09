@@ -75,6 +75,9 @@
 * Fix caching on Linux.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix crashes due to races.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.23.1: Rewash: Forgotten Load Edition
 
 ##### Breaking

@@ -33,6 +33,7 @@ private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine()
 internal typealias AssertHandler = () -> Void
 
 private var assertHandlers = [String: AssertHandler]()
+private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
 
 private struct RebuildQueue {
     private let lock = NSLock()
@@ -53,7 +54,7 @@ private struct RebuildQueue {
 
 private var queueForRebuild = RebuildQueue()
 
-private struct Cache<T> {
+private class Cache<T> {
     private var values = [String: T]()
     private let factory: (File) -> T
     private let lock = NSLock()
@@ -62,7 +63,7 @@ private struct Cache<T> {
         self.factory = factory
     }
 
-    fileprivate mutating func get(_ file: File) -> T {
+    fileprivate func get(_ file: File) -> T {
         let key = file.cacheKey
         lock.lock()
         defer { lock.unlock() }
@@ -74,19 +75,19 @@ private struct Cache<T> {
         return value
     }
 
-    fileprivate mutating func invalidate(_ file: File) {
+    fileprivate func invalidate(_ file: File) {
         doLocked { values.removeValue(forKey: file.cacheKey) }
     }
 
-    fileprivate mutating func clear() {
+    fileprivate func clear() {
         doLocked { values.removeAll(keepingCapacity: false) }
     }
 
-    fileprivate mutating func set(key: String, value: T) {
+    fileprivate func set(key: String, value: T) {
         doLocked { values[key] = value }
     }
 
-    fileprivate mutating func unset(key: String) {
+    fileprivate func unset(key: String) {
         doLocked { values.removeValue(forKey: key) }
     }
 
@@ -118,10 +119,10 @@ extension File {
 
     internal var assertHandler: AssertHandler? {
         get {
-            return assertHandlers[cacheKey]
+            return assertHandlerCache.get(self)
         }
         set {
-            assertHandlers[cacheKey] = newValue
+            assertHandlerCache.set(key: cacheKey, value: newValue)
         }
     }
 
@@ -171,7 +172,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
-        assertHandlers.removeValue(forKey: cacheKey)
+        assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
@@ -181,7 +182,7 @@ extension File {
     internal static func clearCaches() {
         queueForRebuild.clear()
         responseCache.clear()
-        assertHandlers.removeAll(keepingCapacity: false)
+        assertHandlerCache.clear()
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()

@@ -92,8 +92,13 @@ extension Configuration {
             var filesAndConfigurations = [(File, Configuration)]()
             filesAndConfigurations.reserveCapacity(fileCount)
             for (config, files) in filesPerConfiguration {
-                let config = config.withPrecomputedCacheDescription()
-                filesAndConfigurations += files.map { ($0, config) }
+                let newConfig: Configuration
+                if cache != nil {
+                    newConfig = config.withPrecomputedCacheDescription()
+                } else {
+                    newConfig = config
+                }
+                filesAndConfigurations += files.map { ($0, newConfig) }
             }
             if parallel {
                 DispatchQueue.concurrentPerform(iterations: fileCount) { index in

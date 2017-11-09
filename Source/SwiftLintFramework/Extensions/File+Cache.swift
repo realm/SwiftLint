@@ -33,6 +33,7 @@ private var syntaxTokensByLinesCache = Cache({ file in file.syntaxTokensByLine()
 internal typealias AssertHandler = () -> Void
 
 private var assertHandlers = [String: AssertHandler]()
+private var assertHandlerCache = Cache({ file in assertHandlers[file.cacheKey] })
 
 private struct RebuildQueue {
     private let lock = NSLock()
@@ -118,10 +119,10 @@ extension File {
 
     internal var assertHandler: AssertHandler? {
         get {
-            return assertHandlers[cacheKey]
+            return assertHandlerCache.get(self)
         }
         set {
-            assertHandlers[cacheKey] = newValue
+            assertHandlerCache.set(key: cacheKey, value: newValue)
         }
     }
 
@@ -171,7 +172,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
-        assertHandlers.removeValue(forKey: cacheKey)
+        assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
         syntaxTokensByLinesCache.invalidate(self)
@@ -181,7 +182,7 @@ extension File {
     internal static func clearCaches() {
         queueForRebuild.clear()
         responseCache.clear()
-        assertHandlers.removeAll(keepingCapacity: false)
+        assertHandlerCache.clear()
         structureCache.clear()
         syntaxMapCache.clear()
         syntaxTokensByLinesCache.clear()

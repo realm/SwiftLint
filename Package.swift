@@ -8,10 +8,10 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Carthage/Commandant.git", from: "0.12.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.2"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "0.3.7"),
-        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.7.0"),
+        .package(url: "https://github.com/Carthage/Commandant.git", .branch("master")),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.4"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "0.4.1"),
+        .package(url: "https://github.com/jpsim/SwiftyTextTable.git", .branch("characters")),
     ],
     targets: [
         .target(

@@ -79,6 +79,10 @@
 * Fix crashes due to races.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix `String.characters` deprecation warnings when compiling with Swift
+  4.0.2.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.23.1: Rewash: Forgotten Load Edition
 
 ##### Breaking

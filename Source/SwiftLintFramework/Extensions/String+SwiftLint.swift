@@ -33,7 +33,7 @@ extension String {
     internal func nameStrippingLeadingUnderscoreIfPrivate(_ dict: [String: SourceKitRepresentable]) -> String {
         if let aclString = dict.accessibility,
            let acl = AccessControlLevel(identifier: aclString),
-            acl.isPrivate && characters.first == "_" {
+            acl.isPrivate && first == "_" {
             return String(self[index(after: startIndex)...])
         }
         return self
@@ -52,13 +52,12 @@ extension String {
         if let length = length {
             return self[from..<from + length]
         }
-        let index = characters.index(startIndex, offsetBy: from, limitedBy: endIndex)!
-        return String(self[index...])
+        return String(self[index(startIndex, offsetBy: from, limitedBy: endIndex)!...])
     }
 
     internal func lastIndex(of search: String) -> Int? {
         if let range = range(of: search, options: [.literal, .backwards]) {
-            return characters.distance(from: startIndex, to: range.lowerBound)
+            return distance(from: startIndex, to: range.lowerBound)
         }
         return nil
     }

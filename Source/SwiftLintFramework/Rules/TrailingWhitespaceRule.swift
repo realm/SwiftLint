@@ -72,7 +72,7 @@ public struct TrailingWhitespaceRule: CorrectableRule, ConfigurationProviderRule
             let correctedLine = line.content.bridge()
                 .trimmingTrailingCharacters(in: whitespaceCharacterSet)
 
-            if configuration.ignoresEmptyLines && correctedLine.characters.isEmpty {
+            if configuration.ignoresEmptyLines && correctedLine.isEmpty {
                 correctedLines.append(line.content)
                 continue
             }

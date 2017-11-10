@@ -126,7 +126,7 @@ extension TextTable {
         let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
         func truncate(_ string: String) -> String {
             let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
-            let minWidth = "configuration".characters.count - "...".characters.count
+            let minWidth = "configuration".count - "...".count
             let configurationStartColumn = 112
             let truncatedEndIndex = stringWithNoNewlines.index(
                 stringWithNoNewlines.startIndex,

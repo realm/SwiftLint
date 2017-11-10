@@ -118,7 +118,7 @@ public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
         var correctString = " {"
 
         // "struct Command{" has violating string = "d{", so ignore first "d"
-        if capturedString.characters.count == 2 &&
+        if capturedString.count == 2 &&
             capturedString.rangeOfCharacter(from: whitespaceAndNewlineCharacterSet) == nil {
             adjustedRange = NSRange(
                 location: violatingRange.location + 1,

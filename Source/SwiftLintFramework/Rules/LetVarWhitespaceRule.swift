@@ -113,7 +113,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         let content = file.lines[line].content
         let startIndex = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted)?.lowerBound
                          ?? content.startIndex
-        let offset = content.characters.distance(from: content.startIndex, to: startIndex)
+        let offset = content.distance(from: content.startIndex, to: startIndex)
         let location = Location(file: file, characterOffset: offset + file.lines[line].range.location)
 
         violations.append(StyleViolation(ruleDescription: LetVarWhitespaceRule.description,

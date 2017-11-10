@@ -1,3 +1,17 @@
+## Master
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* None.
+
 ## 0.24.0: Timed Dry
 
 ##### Breaking

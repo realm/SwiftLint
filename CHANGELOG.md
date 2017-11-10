@@ -1,4 +1,4 @@
-## Master
+## 0.24.0: Timed Dry
 
 ##### Breaking
 

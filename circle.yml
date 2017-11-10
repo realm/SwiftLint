@@ -1,6 +1,16 @@
 version: 2
 jobs:
 
+  tsan:
+    macos:
+      xcode: "9.0"
+    steps:
+      - checkout
+      # Pre-cache
+      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+      # Post-cache
+      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+
   osscheck:
     macos:
       xcode: "9.0"
@@ -43,6 +53,7 @@ workflows:
   version: 2
   workflow:
     jobs:
+      - tsan
       - osscheck
       - swiftpm_4
       - xcode_9

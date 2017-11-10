@@ -91,7 +91,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
 
         var depth = 0
         var index = 0
-        for char in content.characters {
+        for char in content {
             if char == ")" {
                 if index != lastClosingParenthesePosition && depth == 1 {
                     return true

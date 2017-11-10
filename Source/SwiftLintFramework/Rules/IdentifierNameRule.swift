@@ -59,7 +59,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                     ]
                 }
 
-                if let severity = severity(forLength: name.characters.count) {
+                if let severity = severity(forLength: name.count) {
                     let reason = "\(type) name should be between " +
                         "\(configuration.minLengthThreshold) and " +
                         "\(configuration.maxLengthThreshold) characters long: '\(name)'"
@@ -123,10 +123,10 @@ private extension String {
         guard firstCharacter.isUppercase() else {
             return false
         }
-        guard characters.count > 1 else {
+        guard count > 1 else {
             return true
         }
-        let secondCharacter = String(self[characters.index(after: startIndex)])
+        let secondCharacter = String(self[index(after: startIndex)])
         return secondCharacter.isLowercase()
     }
 

@@ -73,7 +73,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         if count < 1 {
             file.append("\n")
         } else {
-            let index = file.contents.characters.index(file.contents.endIndex, offsetBy: 1 - count)
+            let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - count)
             file.write(file.contents[..<index])
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))

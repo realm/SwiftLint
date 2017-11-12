@@ -1,6 +1,7 @@
 
 # Rules
 
+* [Access Control Override Order](#access-control-override-order)
 * [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
@@ -118,6 +119,129 @@
 * [Weak Delegate](#weak-delegate)
 * [XCTFail Message](#xctfail-message)
 --------
+
+## Access Control Override Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`access_control_override_order` | Enabled | No | lint
+
+Access control property keywords should be followed by the override keyword.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+public override init()
+
+```
+
+```swift
+internal override init()
+
+```
+
+```swift
+private override init(){}
+
+```
+
+```swift
+open override var foo: String
+
+```
+
+```swift
+public override var foo: String
+
+```
+
+```swift
+internal override var foo: String
+
+```
+
+```swift
+private override var foo: String
+
+```
+
+```swift
+open override func foo() -> String
+```
+
+```swift
+public override func foo() -> String
+```
+
+```swift
+internal override func foo() -> String
+```
+
+```swift
+private override func foo() -> String
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓override public init()
+
+```
+
+```swift
+↓override internal init()
+
+```
+
+```swift
+↓override private init(){}
+
+```
+
+```swift
+↓override open var foo: String
+
+```
+
+```swift
+↓override public var foo: String
+
+```
+
+```swift
+↓override internal var foo: String
+
+```
+
+```swift
+↓override private var foo: String
+
+```
+
+```swift
+↓override open func foo() -> String
+```
+
+```swift
+↓override public func foo() -> String
+```
+
+```swift
+↓override internal func foo() -> String
+```
+
+```swift
+↓override private func foo() -> String
+```
+
+</details>
+
+
 
 ## Array Init
 

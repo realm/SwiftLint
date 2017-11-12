@@ -14,6 +14,10 @@ import XCTest
 
 class RulesTests: XCTestCase {
 
+    func testAccessControlOverrideOrderRule() {
+        verifyRule(AccessControlOverrideOrderRule.description)
+    }
+
     func testArrayInit() {
         verifyRule(ArrayInitRule.description)
     }

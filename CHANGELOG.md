@@ -8,6 +8,9 @@
 
 * Invalidate cache when Swift patch version changes.  
   [Norio Nomura](https://github.com/norio-nomura)
+* Add `access_control_override_order` rule which warns upon violating Xcode's
+  order of keywords for access control level and override  
+  [Daniel Metzing](https://github.com/dirtydanee)
 
 ##### Bug Fixes
 

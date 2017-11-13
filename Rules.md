@@ -6,6 +6,7 @@
 * [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
+* [Closure Body Length](#closure-body-length)
 * [Closure End Indentation](#closure-end-indentation)
 * [Closure Parameter Position](#closure-parameter-position)
 * [Closure Spacing](#closure-spacing)
@@ -724,6 +725,567 @@ Closing brace with closing parenthesis should not have any whitespaces in the mi
 
 ```swift
 [].map({ ↓}	)
+```
+
+</details>
+
+
+
+## Closure Body Length
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`closure_body_length` | Disabled | No | metrics
+
+Closure bodies should not span too many lines.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo.bar { $0 }
+```
+
+```swift
+foo.bar {
+}
+```
+
+```swift
+foo.bar {
+	let a = 0
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+```
+
+```swift
+foo.bar {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}
+```
+
+```swift
+foo.bar {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+```
+
+```swift
+foo.bar({
+})
+```
+
+```swift
+foo.bar({
+	let a = 0
+})
+```
+
+```swift
+foo.bar({
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}, anotherLabel: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}) {
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}
+```
+
+```swift
+let foo: Bar = {
+	let bar = Bar()
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	return bar
+}()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo.bar {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}
+```
+
+```swift
+foo.bar {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	// toto
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+```
+
+```swift
+foo.bar({↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}, anotherLabel: {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+})
+```
+
+```swift
+foo.bar(label: {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}) {↓
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+}
+```
+
+```swift
+let foo: Bar = {↓
+	let bar = Bar()
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	let a = 0
+	return bar
+}()
 ```
 
 </details>

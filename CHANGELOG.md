@@ -6,7 +6,10 @@
 
 ##### Enhancements
 
-* None.
+* Add `closure_body_length` rule to enforce the maximum number of lines
+  a closure should have.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#52](https://github.com/realm/SwiftLint/issues/52)
 
 ##### Bug Fixes
 

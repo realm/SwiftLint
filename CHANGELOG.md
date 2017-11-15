@@ -6,7 +6,8 @@
 
 ##### Enhancements
 
-* None.
+* Invalidate cache when Swift patch version changes.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
 

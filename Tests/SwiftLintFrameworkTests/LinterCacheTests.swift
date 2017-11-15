@@ -321,10 +321,33 @@ class LinterCacheTests: XCTestCase {
         cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
         let thisSwiftVersionCache = cache
 
-        let differentSwiftVersion: SwiftVersion = (SwiftVersion.current == .three) ? .four : .three
+        let differentSwiftVersion: SwiftVersion = (SwiftVersion.current >= .four) ? .three : .four
         cache = LinterCache(fileManager: fileManager, swiftVersion: differentSwiftVersion)
 
         XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))
         XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
+    }
+
+    func testDetectSwiftVersion() {
+        #if swift(>=4.1.0)
+            let version = "4.1.0"
+        #elseif swift(>=4.0.3)
+            let version = "4.0.3"
+        #elseif swift(>=4.0.2)
+            let version = "4.0.2"
+        #elseif swift(>=4.0.1)
+            let version = "4.0.1"
+        #elseif swift(>=4.0.0)
+            let version = "4.0.0"
+        #elseif swift(>=3.2.3)
+            let version = "4.0.3" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.3
+        #elseif swift(>=3.2.2)
+            let version = "4.0.2" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.2
+        #elseif swift(>=3.2.1)
+            let version = "4.0.1" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.1
+        #else // if swift(>=3.2.0)
+            let version = "4.0.0" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.0
+        #endif
+        XCTAssertEqual(SwiftVersion.current.rawValue, version)
     }
 }

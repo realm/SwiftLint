@@ -22,7 +22,7 @@ struct SwiftVersion: RawRepresentable {
 extension SwiftVersion: Comparable {
     // Comparable
     static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
-        return lhs.rawValue.compare(rhs.rawValue, options: .numeric) == .orderedAscending
+        return lhs.rawValue < rhs.rawValue
     }
 }
 

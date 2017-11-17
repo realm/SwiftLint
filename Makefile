@@ -53,7 +53,7 @@ clean:
 
 install:
 	swift package clean
-	swift build --configuration release --static-swift-stdlib
+	swift build --configuration release -Xswiftc -static-stdlib
 	install `swift build --configuration release --show-bin-path`/swiftlint
 
 uninstall:
@@ -62,7 +62,7 @@ uninstall:
 
 installables:
 	swift package clean
-	swift build --configuration release --static-swift-stdlib
+	swift build --configuration release -Xswiftc -static-stdlib
 	mkdir -p $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
 	install `swift build --configuration release --show-bin-path`/swiftlint $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
 

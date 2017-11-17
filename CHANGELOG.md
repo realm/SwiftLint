@@ -9,6 +9,11 @@
 * Invalidate cache when Swift patch version changes.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Add `private_action` opt-in rule which warns against public
+  @IBAction methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1931](https://github.com/realm/SwiftLint/issues/1931)
+
 ##### Bug Fixes
 
 * None.
@@ -106,10 +111,7 @@
 
 ##### Enhancements
 
-* Add `private_action` opt-in rule which warns agaist public
-  @IBAction methods.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1931](https://github.com/realm/SwiftLint/issues/1931)
+* None.
 
 ##### Bug Fixes
 

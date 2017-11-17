@@ -7,6 +7,8 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
+SWIFTLINT_EXECUTABLE=$(shell swift build --configuration release --show-bin-path)/swiftlint
+
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
 LICENSE_PATH="$(shell pwd)/LICENSE"
@@ -55,7 +57,7 @@ build_with_disable_sandbox:
 
 install: clean build
 	install -d "$(BINARIES_FOLDER)"
-	install `swift build --configuration release --show-bin-path`/swiftlint "$(BINARIES_FOLDER)"
+	install "$(SWIFTLINT_EXECUTABLE)" "$(BINARIES_FOLDER)"
 
 uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
@@ -63,11 +65,11 @@ uninstall:
 
 installables: clean build
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
-	install `swift build --configuration release --show-bin-path`/swiftlint "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
+	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
 prefix_install: clean build_with_disable_sandbox
 	install -d "$(PREFIX)/bin/"
-	install `swift build --configuration release --show-bin-path`/swiftlint "$(PREFIX)/bin/"
+	install "$(SWIFTLINT_EXECUTABLE)" "$(PREFIX)/bin/"
 
 portable_zip: installables
 	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)"

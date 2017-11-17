@@ -6,6 +6,10 @@
 
 ##### Enhancements
 
+* Add `--indent-width` option to `AutoCorrectOptions`.  
+  [RubenSandwich](https://github.com/RubenSandwich)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
+
 * Invalidate cache when Swift patch version changes.  
   [Norio Nomura](https://github.com/norio-nomura)
 

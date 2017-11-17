@@ -62,7 +62,7 @@ uninstall:
 
 installables:
 	swift package clean
-	swift build --configuration release -Xswiftc -static-stdlib
+	swift build --disable-sandbox --configuration release -Xswiftc -static-stdlib
 	mkdir -p $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
 	install `swift build --configuration release --show-bin-path`/swiftlint $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
 

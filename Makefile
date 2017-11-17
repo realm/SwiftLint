@@ -25,8 +25,7 @@ VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionSt
 
 .PHONY: all bootstrap clean install package test uninstall
 
-all: bootstrap
-	$(BUILD_TOOL) $(XCODEFLAGS) build
+all: build
 
 sourcery:
 	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery
@@ -41,19 +40,25 @@ sourcery:
 bootstrap:
 	script/bootstrap
 
-test: clean bootstrap
+test: clean_xcode bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) test
 
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"
-	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Debug clean
-	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
+	rm -f "./portable_swiftlint.zip"
+	swift package clean
+
+clean_xcode: clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-install:
-	swift package clean
+build:
 	swift build --configuration release -Xswiftc -static-stdlib
+
+build_with_disable_sandbox:
+	swift build --disable-sandbox --configuration release -Xswiftc -static-stdlib
+
+install: clean build
 	install -d "$(BINARIES_FOLDER)"
 	install `swift build --configuration release --show-bin-path`/swiftlint "$(BINARIES_FOLDER)"
 
@@ -61,19 +66,16 @@ uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
-installables:
-	swift package clean
-	swift build --disable-sandbox --configuration release -Xswiftc -static-stdlib
-	install -d $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
-	install `swift build --configuration release --show-bin-path`/swiftlint $(TEMPORARY_FOLDER)$(BINARIES_FOLDER)
+installables: clean build
+	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
+	install `swift build --configuration release --show-bin-path`/swiftlint "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
-prefix_install: installables
+prefix_install: clean build_with_disable_sandbox
 	install -d "$(PREFIX)/bin/"
-	install "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(PREFIX)/bin/"
+	install `swift build --configuration release --show-bin-path`/swiftlint "$(PREFIX)/bin/"
 
 portable_zip: installables
 	cp -f "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)/swiftlint" "$(TEMPORARY_FOLDER)"
-	rm -f "./portable_swiftlint.zip"
 	cp -f "$(LICENSE_PATH)" "$(TEMPORARY_FOLDER)"
 	(cd "$(TEMPORARY_FOLDER)"; zip -yr - "swiftlint" "LICENSE") > "./portable_swiftlint.zip"
 

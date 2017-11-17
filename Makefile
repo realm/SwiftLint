@@ -51,8 +51,10 @@ clean:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Release clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
-install: uninstall package
-	sudo installer -pkg SwiftLint.pkg -target /
+install:
+	swift package clean
+	swift build --configuration release --static-swift-stdlib
+	install `swift build --configuration release --show-bin-path`/swiftlint
 
 uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"

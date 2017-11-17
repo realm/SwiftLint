@@ -54,7 +54,7 @@ clean:
 install:
 	swift package clean
 	swift build --configuration release -Xswiftc -static-stdlib
-	install `swift build --configuration release --show-bin-path`/swiftlint
+	install `swift build --configuration release --show-bin-path`/swiftlint "$(BINARIES_FOLDER)"
 
 uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"

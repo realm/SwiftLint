@@ -51,7 +51,8 @@ class FileHeaderRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["required_pattern": "\\d{4} Realm"],
-                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
+                   stringDoesntViolate: false, skipCommentTests: true,
+                   testMultiByteOffsets: false)
     }
 
     func testFileHeaderWithRequiredStringAndURLComment() {
@@ -67,7 +68,8 @@ class FileHeaderRuleTests: XCTestCase {
 
         let config = ["required_string": "/* Check this url: https://github.com/realm/SwiftLint */"]
         verifyRule(description, ruleConfiguration: config,
-                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
+                   stringDoesntViolate: false, skipCommentTests: true,
+                   testMultiByteOffsets: false)
     }
 
     func testFileHeaderWithForbiddenString() {
@@ -112,18 +114,18 @@ class FileHeaderRuleTests: XCTestCase {
 
     func testFileHeaderWithForbiddenPatternAndDocComment() {
         let nonTriggeringExamples = [
-            "/// This is great tool.\nclass GreatTool {}",
+            "/// This is great tool with tests.\nclass GreatTool {}",
             "class GreatTool {}"
         ]
         let triggeringExamples = [
-            "↓// FileHeaderRuleTests.swift",
-            "↓//\n// FileHeaderRuleTests.swift"
+            "// FileHeaderRule↓Tests.swift",
+            "//\n// FileHeaderRule↓Tests.swift"
         ]
         let description = FileHeaderRule.description
             .with(nonTriggeringExamples: nonTriggeringExamples)
             .with(triggeringExamples: triggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["forbidden_pattern": ".?"],
-                   skipCommentTests: true, skipDisableCommandTests: true, testMultiByteOffsets: false)
+        verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
+                   skipCommentTests: true, testMultiByteOffsets: false)
     }
 }

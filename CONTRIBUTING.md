@@ -1,7 +1,8 @@
 ## Pull Requests
 
 All changes, no matter how trivial, must be done via pull request. Commits
-should never be made directly on the `master` branch.
+should never be made directly on the `master` branch. Prefer rebasing over
+merging `master` into your PR branch to update it and resolve conflicts.
 
 _If you have commit access to SwiftLint and believe your change to be trivial
 and not worth waiting for review, you may open a pull request and merge
@@ -26,7 +27,7 @@ machine. This will update source files to reflect these changes.
 ## Documentation
 
 If you're making changes to the `description` property of a rule or
-creating a new rule, make sure to run the `Generate docs` scheme
+creating a new rule, make sure to run the unit tests
 before pushing your changes. This will update the documentation
 ([Rules.md](Rules.md)) to reflect these changes.
 

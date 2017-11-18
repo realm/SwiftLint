@@ -20,10 +20,17 @@ internal func regex(_ pattern: String,
 }
 
 extension File {
-    internal func regions() -> [Region] {
+    internal func regions(restrictingRuleIdentifiers: [String]? = nil) -> [Region] {
         var regions = [Region]()
         var disabledRules = Set<String>()
-        let commands = self.commands()
+        let commands: [Command]
+        if let restrictingRuleIdentifiers = restrictingRuleIdentifiers {
+            commands = self.commands().filter { command in
+                return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
+            }
+        } else {
+            commands = self.commands()
+        }
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
@@ -46,26 +53,18 @@ extension File {
         return regions
     }
 
-    internal func commands() -> [Command] {
+    internal func commands(in range: NSRange? = nil) -> [Command] {
         if sourcekitdFailed {
             return []
         }
         let contents = self.contents.bridge()
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return skipShebangCommands() + match(pattern: pattern, with: [.comment]).flatMap { range in
+        return match(pattern: pattern, with: [.comment], range: range).flatMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
         }
-    }
-
-    private func skipShebangCommands() -> [Command] {
-        guard contents.hasPrefix("#!") else {
-            return []
-        }
-
-        return Command(action: .disable, ruleIdentifiers: masterRuleList.allValidIdentifiers(),
-                       line: 0, modifier: .next).expand()
     }
 
     fileprivate func endOf(next command: Command?) -> Location {
@@ -199,7 +198,7 @@ extension File {
      file contents.
      */
     internal func match(pattern: String,
-                        excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
             .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
@@ -210,7 +209,7 @@ extension File {
 
     internal func match(pattern: String,
                         range: NSRange? = nil,
-                        excludingSyntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds: Set<SyntaxKind>,
                         excludingPattern: String,
                         exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
@@ -225,10 +224,10 @@ extension File {
 
     internal func append(_ string: String) {
         guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
-            fatalError("can't write to path '\(String(describing: self.path))'")
+            queuedFatalError("can't write to path '\(String(describing: self.path))'")
         }
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
@@ -237,22 +236,22 @@ extension File {
         lines = contents.bridge().lines()
     }
 
-    internal func write(_ string: String) {
+    internal func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
             return
         }
         guard let path = path else {
-            fatalError("file needs a path to call write(_:)")
+            queuedFatalError("file needs a path to call write(_:)")
         }
-        guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+        guard let stringData = String(string).data(using: .utf8) else {
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
             try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
         } catch {
-            fatalError("can't write file to \(path)")
+            queuedFatalError("can't write file to \(path)")
         }
-        contents = string
+        contents = String(string)
         invalidateCache()
         lines = contents.bridge().lines()
     }
@@ -270,7 +269,7 @@ extension File {
     }
 
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = Set(SyntaxKind.commentKinds())
+        let commentKinds = SyntaxKind.commentKinds
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
             kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count

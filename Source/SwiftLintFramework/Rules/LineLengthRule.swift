@@ -14,9 +14,9 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private let commentKinds = Set(SyntaxKind.commentKinds())
-    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(SyntaxKind.commentKinds())
-    private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
+    private let commentKinds = SyntaxKind.commentKinds
+    private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
+    private let functionKinds = SwiftDeclarationKind.functionKinds
 
     public static let description = RuleDescription(
         identifier: "line_length",
@@ -41,9 +41,9 @@ public struct LineLengthRule: ConfigurationProviderRule {
         let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
 
         return file.lines.flatMap { line in
-            // `line.content.characters.count` <= `line.range.length` is true.
+            // `line.content.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
-            // for avoiding using heavy `line.content.characters.count`.
+            // for avoiding using heavy `line.content.count`.
             if line.range.length < minValue {
                 return nil
             }
@@ -74,7 +74,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
             strippedString = stripLiterals(fromSourceString: strippedString,
                                            withDelimiter: "#imageLiteral")
 
-            let length = strippedString.characters.count
+            let length = strippedString.count
 
             for param in configuration.params where length > param.value {
                 let reason = "Line should be \(configuration.length.warning) characters or less: " +
@@ -122,7 +122,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         if index >= kindsByLine.count {
             return false
         }
-        return !kinds.intersection(kindsByLine[index]).isEmpty
+        return !kinds.isDisjoint(with: kindsByLine[index])
     }
 
 }

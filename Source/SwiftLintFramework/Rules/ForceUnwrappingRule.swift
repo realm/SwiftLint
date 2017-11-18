@@ -35,7 +35,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "print(\"\\(xVar)!\")",
             "var test = (!bar)",
             "var a: [Int]!",
-            "private var myProperty: (Void -> Void)!"
+            "private var myProperty: (Void -> Void)!",
+            "func foo(_ options: [AnyHashable: Any]!) {"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -48,7 +49,11 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "let a = dict[\"abc\"]↓!.contains(\"B\")",
             "dict[\"abc\"]↓!.bar(\"B\")",
             "if dict[\"a\"]↓!!!! {",
-            "var foo: [Bool]! = dict[\"abc\"]↓!"
+            "var foo: [Bool]! = dict[\"abc\"]↓!",
+            "context(\"abc\") {\n" +
+            "  var foo: [Bool]! = dict[\"abc\"]↓!\n" +
+            "}",
+            "open var computed: String { return foo.bar↓! }"
         ]
     )
 
@@ -63,19 +68,36 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // capture previous of "!"
     // http://userguide.icu-project.org/strings/regexp
     private static let pattern = "([^\\s\\p{Ps}])(!+)"
+    // Match any variable declaration
+    // Has a small bug in @IBOutlet due suffix "let"
+    // But that does not compromise the filtering for var declarations
+    private static let varDeclarationPattern = "\\s?(?:let|var)\\s+[^=\\v{]*!"
 
-    private static let regularExpression = regex(pattern, options: [.dotMatchesLineSeparators])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentKeywordStringAndTypeidentifierKinds()
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds()
+    private static let regularExpression = regex(pattern)
+    private static let varDeclarationRegularExpression = regex(varDeclarationPattern)
+    private static let excludingSyntaxKindsForFirstCapture =
+        SyntaxKind.commentAndStringKinds.union([.keyword, .typeidentifier])
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentAndStringKinds
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents
         let nsstring = contents.bridge()
         let range = NSRange(location: 0, length: nsstring.length)
         let syntaxMap = file.syntaxMap
+
+        let varDeclarationRanges = ForceUnwrappingRule.varDeclarationRegularExpression
+            .matches(in: contents, options: [], range: range)
+            .flatMap { match -> NSRange? in
+                return match.range
+            }
+
         return ForceUnwrappingRule.regularExpression
             .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
+                if match.range.intersects(varDeclarationRanges) {
+                    return nil
+                }
+
                 return violationRange(match: match, nsstring: nsstring, syntaxMap: syntaxMap, file: file)
             }
     }
@@ -131,30 +153,22 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // check deepest kind matching range in structure is a typeAnnotation
     private func isTypeAnnotation(in file: File, contents: NSString, byteRange: NSRange) -> Bool {
         let kinds = file.structure.kinds(forByteOffset: byteRange.location)
-        guard let lastKind = kinds.last else {
+        guard let lastItem = kinds.last,
+            let lastKind = SwiftDeclarationKind(rawValue: lastItem.kind),
+            SwiftDeclarationKind.variableKinds.contains(lastKind) else {
+                return false
+        }
+
+        // range is in some "source.lang.swift.decl.var.*"
+        let byteOffset = lastItem.byteRange.location
+        let byteLength = byteRange.location - byteOffset
+        if let varDeclarationString = contents.substringWithByteRange(start: byteOffset, length: byteLength),
+            varDeclarationString.contains("=") {
+            // if declarations contains "=", range is not type annotation
             return false
         }
-        switch lastKind.kind {
-        // range is in some "source.lang.swift.decl.var.*"
-        case SwiftDeclarationKind.varClass.rawValue: fallthrough
-        case SwiftDeclarationKind.varGlobal.rawValue: fallthrough
-        case SwiftDeclarationKind.varInstance.rawValue: fallthrough
-        case SwiftDeclarationKind.varParameter.rawValue: fallthrough
-        case SwiftDeclarationKind.varLocal.rawValue: fallthrough
-        case SwiftDeclarationKind.varStatic.rawValue:
-            let byteOffset = lastKind.byteRange.location
-            let byteLength = byteRange.location - byteOffset
-            if let varDeclarationString = contents
-                .substringWithByteRange(start: byteOffset, length: byteLength),
-                varDeclarationString.contains("=") {
-                    // if declarations contains "=", range is not type annotation
-                    return false
-            }
-            // range is type annotation of declaration
-            return true
-        default:
-            break
-        }
-        return false
+
+        // range is type annotation of declaration
+        return true
     }
 }

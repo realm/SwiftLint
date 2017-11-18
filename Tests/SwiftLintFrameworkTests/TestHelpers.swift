@@ -13,9 +13,15 @@ import XCTest
 
 private let violationMarker = "↓"
 
+extension String {
+    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
+        return bridge().appendingPathComponent(pathComponent)
+    }
+}
+
 let allRuleIdentifiers = Array(masterRuleList.list.keys)
 
-func violations(_ string: String, config: Configuration = Configuration()) -> [StyleViolation] {
+func violations(_ string: String, config: Configuration = Configuration()!) -> [StyleViolation] {
     File.clearCaches()
     let stringStrippingMarkers = string.replacingOccurrences(of: violationMarker, with: "")
     let file = File(contents: stringStrippingMarkers)
@@ -112,14 +118,19 @@ private extension String {
     }
 }
 
-internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String) -> Configuration? {
+internal func makeConfig(_ ruleConfiguration: Any?, _ identifier: String,
+                         skipDisableCommandTests: Bool = false) -> Configuration? {
+    let superfluousDisableCommandRuleIdentifier = SuperfluousDisableCommandRule.description.identifier
+    let identifiers = skipDisableCommandTests ? [identifier] : [identifier, superfluousDisableCommandRuleIdentifier]
+
     if let ruleConfiguration = ruleConfiguration, let ruleType = masterRuleList.list[identifier] {
         // The caller has provided a custom configuration for the rule under test
         return (try? ruleType.init(configuration: ruleConfiguration)).flatMap { configuredRule in
-            return Configuration(whitelistRules: [identifier], configuredRules: [configuredRule])
+            let rules = skipDisableCommandTests ? [configuredRule] : [configuredRule, SuperfluousDisableCommandRule()]
+            return Configuration(rulesMode: .whitelisted(identifiers), configuredRules: rules)
         }
     }
-    return Configuration(whitelistRules: [identifier])
+    return Configuration(rulesMode: .whitelisted(identifiers))
 }
 
 private func testCorrection(_ correction: (String, String),
@@ -140,7 +151,6 @@ private func addShebang(_ string: String) -> String {
 }
 
 extension XCTestCase {
-    // swiftlint:disable:next function_body_length
     func verifyRule(_ ruleDescription: RuleDescription,
                     ruleConfiguration: Any? = nil,
                     commentDoesntViolate: Bool = true,
@@ -150,8 +160,10 @@ extension XCTestCase {
                     skipDisableCommandTests: Bool = false,
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true) {
-        guard let config = makeConfig(ruleConfiguration, ruleDescription.identifier) else {
-            XCTFail()
+        guard let config = makeConfig(ruleConfiguration,
+                                      ruleDescription.identifier,
+                                      skipDisableCommandTests: skipDisableCommandTests) else {
+            XCTFail("Failed to create configuration")
             return
         }
 

@@ -10,12 +10,16 @@ import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
+// swiftlint:disable type_body_length
+
 class RulesTests: XCTestCase {
 
+    func testArrayInit() {
+        verifyRule(ArrayInitRule.description)
+    }
+
     func testBlockBasedKVO() {
-        #if swift(>=3.2)
-            verifyRule(BlockBasedKVORule.description)
-        #endif
+        verifyRule(BlockBasedKVORule.description)
     }
 
     func testClassDelegateProtocol() {
@@ -50,6 +54,10 @@ class RulesTests: XCTestCase {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
+    func testContainsOverFirstNotNilRule() {
+        verifyRule(ContainsOverFirstNotNilRule.description)
+    }
+
     func testControlStatement() {
         verifyRule(ControlStatementRule.description)
     }
@@ -82,6 +90,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testExplicitEnumRawValue() {
+        verifyRule(ExplicitEnumRawValueRule.description)
+    }
+
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }
@@ -96,6 +108,10 @@ class RulesTests: XCTestCase {
 
     func testExtensionAccessModifier() {
         verifyRule(ExtensionAccessModifierRule.description)
+    }
+
+    func testFallthrough() {
+        verifyRule(FallthroughRule.description)
     }
 
     func testFatalErrorMessage() {
@@ -142,12 +158,21 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitReturnRule.description)
     }
 
+    func testIsDisjoint() {
+        verifyRule(IsDisjointRule.description)
+    }
+
+    func testJoinedDefaultParameter() {
+        verifyRule(JoinedDefaultParameterRule.description)
+    }
+
     func testLargeTuple() {
         verifyRule(LargeTupleRule.description)
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false, testShebang: false)
+        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testLegacyCGGeometryFunctions() {
@@ -170,6 +195,10 @@ class RulesTests: XCTestCase {
         verifyRule(LetVarWhitespaceRule.description)
     }
 
+    func testLiteralExpressionEndIdentation() {
+        verifyRule(LiteralExpressionEndIdentationRule.description)
+    }
+
     func testMark() {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
@@ -178,12 +207,20 @@ class RulesTests: XCTestCase {
         verifyRule(MultilineParametersRule.description)
     }
 
+    func testMultipleClosuresWithTrailingClosure() {
+        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
+    }
+
     func testNesting() {
         verifyRule(NestingRule.description)
     }
 
     func testNoExtensionAccessModifierRule() {
         verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
+    func testNoGroupingExtension() {
+        verifyRule(NoGroupingExtensionRule.description)
     }
 
     func testNotificationCenterDetachment() {
@@ -204,6 +241,14 @@ class RulesTests: XCTestCase {
 
     func testOperatorUsageWhitespace() {
         verifyRule(OperatorUsageWhitespaceRule.description)
+    }
+
+    func testOverrideInExtension() {
+        verifyRule(OverrideInExtensionRule.description)
+    }
+
+    func testPatternMatchingKeywords() {
+        verifyRule(PatternMatchingKeywordsRule.description)
     }
 
     func testPrivateOutlet() {
@@ -231,6 +276,18 @@ class RulesTests: XCTestCase {
 
     func testProtocolPropertyAccessorsOrder() {
         verifyRule(ProtocolPropertyAccessorsOrderRule.description)
+    }
+
+    func testQuickDiscouragedCall() {
+        verifyRule(QuickDiscouragedCallRule.description)
+    }
+
+    func testQuickDiscouragedFocusedTest() {
+        verifyRule(QuickDiscouragedFocusedTestRule.description)
+    }
+
+    func testQuickDiscouragedPendingTest() {
+        verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -261,6 +318,14 @@ class RulesTests: XCTestCase {
         verifyRule(ShorthandOperatorRule.description)
     }
 
+    func testSingleTestClass() {
+        verifyRule(SingleTestClassRule.description)
+    }
+
+    func testSortedFirstLastRule() {
+        verifyRule(SortedFirstLastRule.description)
+    }
+
     func testSortedImports() {
         verifyRule(SortedImportsRule.description)
     }
@@ -276,6 +341,10 @@ class RulesTests: XCTestCase {
 
     func testStrictFilePrivate() {
         verifyRule(StrictFilePrivateRule.description)
+    }
+
+    func testSwitchCaseAlignment() {
+        verifyRule(SwitchCaseAlignmentRule.description)
     }
 
     func testSwitchCaseOnNewline() {
@@ -327,6 +396,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
+    func testUnneededBreakInSwitch() {
+        verifyRule(UnneededBreakInSwitchRule.description)
+    }
+
     func testUnneededParenthesesInClosureArgument() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
@@ -361,5 +434,9 @@ class RulesTests: XCTestCase {
 
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
+    }
+
+    func testXCTFailMessage() {
+        verifyRule(XCTFailMessageRule.description)
     }
 }

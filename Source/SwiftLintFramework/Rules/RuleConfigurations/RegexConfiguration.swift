@@ -16,7 +16,7 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
     public var excluded: NSRegularExpression?
-    public var matchKinds = Set(SyntaxKind.allKinds())
+    public var matchKinds = SyntaxKind.allKinds
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
@@ -28,20 +28,21 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
     }
 
     internal var cacheDescription: String {
-        var dict = [String: Any]()
-        dict["identifier"] = identifier
-        dict["name"] = name
-        dict["message"] = message
-        dict["regex"] = regex.pattern
-        dict["included"] = included?.pattern
-        dict["excluded"] = excluded?.pattern
-        dict["match_kinds"] = matchKinds.map { $0.rawValue }
-        dict["severity"] = severityConfiguration.consoleDescription
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+        let jsonObject: [String] = [
+            identifier,
+            name ?? "",
+            message,
+            regex.pattern,
+            included?.pattern ?? "",
+            excluded?.pattern ?? "",
+            matchKinds.map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
+            severityConfiguration.consoleDescription
+        ]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
           let jsonString = String(data: jsonData, encoding: .utf8) {
               return jsonString
         }
-        fatalError("Could not serialize regex configuration for cache")
+        queuedFatalError("Could not serialize regex configuration for cache")
     }
 
     public var description: RuleDescription {

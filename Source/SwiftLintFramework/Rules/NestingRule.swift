@@ -21,15 +21,15 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
         identifier: "nesting",
         name: "Nesting",
         description: "Types should be nested at most 1 level deep, " +
-        "and statements should be nested at most 5 levels deep.",
+                     "and statements should be nested at most 5 levels deep.",
         kind: .metrics,
-        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind in
+        nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind -> [String] in
             ["\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\n}\n}\n}\n}\n}\n}\n"]
         } + ["enum Enum0 { enum Enum1 { case Case } }"],
-        triggeringExamples: ["class", "struct", "enum"].map { kind in
-            "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
+        triggeringExamples: ["class", "struct", "enum"].map { kind -> String in
+            return "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
         } + [
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
                 "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
@@ -44,7 +44,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
     private func validate(file: File, kind: SwiftDeclarationKind, dictionary: [String: SourceKitRepresentable],
                           level: Int) -> [StyleViolation] {
         var violations = [StyleViolation]()
-        let typeKinds = SwiftDeclarationKind.typeKinds()
+        let typeKinds = SwiftDeclarationKind.typeKinds
         if let offset = dictionary.offset {
             let (targetName, targetLevel) = typeKinds.contains(kind)
                 ? ("Types", configuration.typeLevel) : ("Statements", configuration.statementLevel)

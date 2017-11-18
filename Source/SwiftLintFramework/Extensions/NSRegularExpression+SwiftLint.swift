@@ -9,7 +9,9 @@
 import Foundation
 
 #if os(Linux)
+#if !swift(>=4.0)
 public typealias NSTextCheckingResult = TextCheckingResult
+#endif
 #else
 #if !swift(>=4.0)
 extension NSTextCheckingResult {

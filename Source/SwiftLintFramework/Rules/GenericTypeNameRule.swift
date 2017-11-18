@@ -47,8 +47,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
             "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
             "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>\n"
-        ] + ["class", "struct", "enum"].flatMap { type in
-            [
+        ] + ["class", "struct", "enum"].flatMap { type -> [String] in
+            return [
                 "\(type) Foo<↓T_Foo> {}\n",
                 "\(type) Foo<T, ↓U_Foo> {}\n",
                 "\(type) Foo<↓T_Foo, ↓U_Foo> {}\n",
@@ -93,7 +93,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func genericTypesForType(in file: File, kind: SwiftDeclarationKind,
                                      dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
-        guard SwiftDeclarationKind.typeKinds().contains(kind),
+        guard SwiftDeclarationKind.typeKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let bodyOffset = dictionary.bodyOffset,
@@ -111,7 +111,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
 
     private func genericTypesForFunction(in file: File, kind: SwiftDeclarationKind,
                                          dictionary: [String: SourceKitRepresentable]) -> [(String, Int)] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),
@@ -165,8 +165,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let containsAllowedSymbol = configuration.allowedSymbols.contains(where: name.contains)
-        if !containsAllowedSymbol && !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,
@@ -174,14 +174,14 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
                                reason: "Generic type name should only contain alphanumeric characters: '\(name)'")
             ]
         } else if configuration.validatesStartWithLowercase &&
-            !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+            !String(name[name.startIndex]).isUppercase() {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: .error,
                                location: Location(file: file, byteOffset: offset),
                                reason: "Generic type name should start with an uppercase character: '\(name)'")
             ]
-        } else if let severity = severity(forLength: name.characters.count) {
+        } else if let severity = severity(forLength: name.count) {
             return [
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: severity,

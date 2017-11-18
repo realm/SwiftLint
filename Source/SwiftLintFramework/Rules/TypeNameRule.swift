@@ -28,7 +28,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    private let typeKinds = SwiftDeclarationKind.typeKinds()
+    private let typeKinds = SwiftDeclarationKind.typeKinds
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
@@ -75,19 +75,19 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-        let containsAllowedSymbol = configuration.allowedSymbols.contains(where: name.contains)
-        if !containsAllowedSymbol && !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: .error,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should only contain alphanumeric characters: '\(name)'")]
         } else if configuration.validatesStartWithLowercase &&
-            !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+            !String(name[name.startIndex]).isUppercase() {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: .error,
                                    location: Location(file: file, byteOffset: offset),
                                    reason: "Type name should start with an uppercase character: '\(name)'")]
-        } else if let severity = severity(forLength: name.characters.count) {
+        } else if let severity = severity(forLength: name.count) {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: severity,
                                    location: Location(file: file, byteOffset: offset),

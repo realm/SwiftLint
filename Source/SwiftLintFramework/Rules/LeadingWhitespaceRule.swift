@@ -53,7 +53,7 @@ public struct LeadingWhitespaceRule: CorrectableRule, ConfigurationProviderRule,
             file.contents.startIndex,
             offsetBy: spaceCount,
             limitedBy: file.contents.endIndex) ?? file.contents.endIndex
-        file.write(file.contents.substring(from: indexEnd))
+        file.write(String(file.contents[indexEnd...]))
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]
     }

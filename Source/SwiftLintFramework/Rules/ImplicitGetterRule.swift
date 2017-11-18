@@ -70,7 +70,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
             let kinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
             guard let token = tokens.last,
                 SyntaxKind(rawValue: token.type) == .keyword,
-                attributesKinds.intersection(kinds).isEmpty else {
+                attributesKinds.isDisjoint(with: kinds) else {
                     return nil
             }
 
@@ -100,7 +100,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
     private func variableDeclarations(forByteOffset byteOffset: Int,
                                       structure: Structure) -> [[String: SourceKitRepresentable]] {
         var results = [[String: SourceKitRepresentable]]()
-        let allowedKinds = Set(SwiftDeclarationKind.variableKinds()).subtracting([.varParameter])
+        let allowedKinds = SwiftDeclarationKind.variableKinds.subtracting([.varParameter])
 
         func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
 

@@ -1,6 +1,7 @@
 
 # Rules
 
+* [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
@@ -12,6 +13,7 @@
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
+* [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
@@ -22,10 +24,12 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
 * [Extension Access Modifier](#extension-access-modifier)
+* [Fallthrough](#fallthrough)
 * [Fatal Error Message](#fatal-error-message)
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
@@ -41,6 +45,8 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Is Disjoint](#is-disjoint)
+* [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
 * [Leading Whitespace](#leading-whitespace)
 * [Legacy CGGeometry Functions](#legacy-cggeometry-functions)
@@ -49,11 +55,15 @@
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
+* [Literal Expression End Indentation](#literal-expression-end-indentation)
 * [Mark](#mark)
+* [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
+* [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
 * [No Extension Access Modifier](#no-extension-access-modifier)
+* [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
 * [Number Separator](#number-separator)
 * [Object Literal](#object-literal)
@@ -61,11 +71,16 @@
 * [Operator Usage Whitespace](#operator-usage-whitespace)
 * [Operator Function Whitespace](#operator-function-whitespace)
 * [Overridden methods call super](#overridden-methods-call-super)
+* [Override in Extension](#override-in-extension)
+* [Pattern Matching Keywords](#pattern-matching-keywords)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
+* [Quick Discouraged Call](#quick-discouraged-call)
+* [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
+* [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -73,9 +88,13 @@
 * [Redundant Void Return](#redundant-void-return)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
+* [Single Test Class](#single-test-class)
+* [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
+* [Superfluous Disable Command](#superfluous-disable-command)
+* [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
@@ -86,6 +105,7 @@
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
 * [Type Name](#type-name)
+* [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
@@ -96,7 +116,117 @@
 * [Vertical Whitespace](#vertical-whitespace)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
+* [XCTFail Message](#xctfail-message)
 --------
+
+## Array Init
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`array_init` | Disabled | No | lint
+
+Prefer using Array(seq) than seq.map { $0 } to convert a sequence into an Array.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+Array(foo)
+
+```
+
+```swift
+foo.map { $0.0 }
+
+```
+
+```swift
+foo.map { $1 }
+
+```
+
+```swift
+foo.map { $0() }
+
+```
+
+```swift
+foo.map { ((), $0) }
+
+```
+
+```swift
+foo.map { $0! }
+
+```
+
+```swift
+foo.map { $0! /* force unwrap */ }
+
+```
+
+```swift
+foo.something { RouteMapper.map($0) }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓foo.map({ $0 })
+
+```
+
+```swift
+↓foo.map { $0 }
+
+```
+
+```swift
+↓foo.map { return $0 }
+
+```
+
+```swift
+↓foo.map { elem in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { elem in
+   return elem
+}
+
+```
+
+```swift
+↓foo.map { (elem: String) in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { elem -> String in
+   elem
+}
+
+```
+
+```swift
+↓foo.map { $0 /* a comment */ }
+
+```
+
+</details>
+
+
 
 ## Attributes
 
@@ -968,6 +1098,69 @@ let abc = ["string:string": "string"]
 
 ```
 
+```swift
+let abc: [String: Int]
+
+```
+
+```swift
+func foo(bar: [String: Int]) {}
+
+```
+
+```swift
+func foo() -> [String: Int] { return [:] }
+
+```
+
+```swift
+let abc: Any
+
+```
+
+```swift
+let abc: [Any: Int]
+
+```
+
+```swift
+let abc: [String: Any]
+
+```
+
+```swift
+class Foo: Bar {}
+
+```
+
+```swift
+class Foo<T: Equatable> {}
+
+```
+
+```swift
+switch foo {
+case .bar:
+    _ = something()
+}
+
+```
+
+```swift
+object.method(x: 5, y: "string")
+
+```
+
+```swift
+object.method(x: 5, y:
+              "string")
+```
+
+```swift
+object.method(5, y: "string")
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1109,6 +1302,86 @@ let abc = [1: [3↓ : 2], 3: 4]
 
 ```swift
 let abc = [1: [3↓ : 2], 3↓:  4]
+
+```
+
+```swift
+let abc: [↓String : Int]
+
+```
+
+```swift
+let abc: [↓String:Int]
+
+```
+
+```swift
+func foo(bar: [↓String : Int]) {}
+
+```
+
+```swift
+func foo(bar: [↓String:Int]) {}
+
+```
+
+```swift
+func foo() -> [↓String : Int] { return [:] }
+
+```
+
+```swift
+func foo() -> [↓String:Int] { return [:] }
+
+```
+
+```swift
+let ↓abc : Any
+
+```
+
+```swift
+let abc: [↓Any : Int]
+
+```
+
+```swift
+let abc: [↓String : Any]
+
+```
+
+```swift
+class ↓Foo : Bar {}
+
+```
+
+```swift
+class ↓Foo:Bar {}
+
+```
+
+```swift
+class Foo<↓T:Equatable> {}
+
+```
+
+```swift
+class Foo<↓T : Equatable> {}
+
+```
+
+```swift
+object.method(x: 5, y↓ : "string")
+
+```
+
+```swift
+object.method(x↓:5, y: "string")
+
+```
+
+```swift
+object.method(x↓:  5, y: "string")
 
 ```
 
@@ -1311,13 +1584,74 @@ if true { // return }
 
 
 
+## Contains over first not nil
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`contains_over_first_not_nil` | Disabled | No | performance
+
+Prefer `contains` over `first(where:) != nil`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let first = myList.first(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+let first = myList.first { $0 % 2 == 0 }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.first { $0 % 2 == 0 } != nil
+
+```
+
+```swift
+↓myList.first(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first(where: { $0 % 2 == 0 }) != nil
+
+```
+
+```swift
+↓myList.first(where: someFunction) != nil
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.first { $0 % 2 == 0 } != nil
+
+```
+
+```swift
+(↓myList.first { $0 % 2 == 0 }) != nil
+
+```
+
+</details>
+
+
+
 ## Control Statement
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
 `control_statement` | Enabled | No | style
 
-if,for,while,do statements shouldn't wrap their conditionals in parentheses.
+if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.
 
 ### Examples
 
@@ -1397,6 +1731,12 @@ do { ; } while condition {
 ```swift
 switch foo {
 
+```
+
+```swift
+do {
+} catch let error as NSError {
+}
 ```
 
 </details>
@@ -1481,6 +1821,12 @@ do { ; } ↓while (condition) {
 ```swift
 ↓switch (foo) {
 
+```
+
+```swift
+do {
+} ↓catch(let error as NSError) {
+}
 ```
 
 </details>
@@ -2084,6 +2430,103 @@ UIView.animateWithDuration(0.3, animations: {
 
 
 
+## Explicit Enum Raw Value
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_enum_raw_value` | Disabled | No | idiomatic
+
+Enums should be explicitly assigned their raw values.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Numbers {
+ case int(Int)
+ case short(Int16)
+}
+
+```
+
+```swift
+enum Numbers: Int {
+ case one = 1
+ case two = 2
+}
+
+```
+
+```swift
+enum Numbers: Double {
+ case one = 1.1
+ case two = 2.2
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case one = "one"
+ case two = "two"
+}
+
+```
+
+```swift
+protocol Algebra {}
+enum Numbers: Algebra {
+ case one
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Numbers: Int {
+ case one = 10, ↓two, three = 30
+}
+
+```
+
+```swift
+enum Numbers: NSInteger {
+ case ↓one
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one
+ case ↓two
+}
+
+```
+
+```swift
+enum Numbers: String {
+ case ↓one, two = "two"
+}
+
+```
+
+```swift
+enum Numbers: Decimal {
+ case ↓one, ↓two
+}
+
+```
+
+</details>
+
+
+
 ## Explicit Init
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -2377,6 +2820,43 @@ extension Foo {
 public extension Foo {
    public ↓func bar() {}
    public ↓func baz() {}
+}
+```
+
+</details>
+
+
+
+## Fallthrough
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`fallthrough` | Enabled | No | idiomatic
+
+Fallthrough should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar, .bar2, .bar3:
+    something()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    ↓fallthrough
+case .bar2:
+    something()
 }
 ```
 
@@ -3750,6 +4230,11 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```
 
+```swift
+(myList.filter { $0 == 1 }.suffix(2)).first
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -3785,6 +4270,11 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```
 
+```swift
+(↓myList.filter { $0 == 1 }).first
+
+```
+
 </details>
 
 
@@ -3810,6 +4300,13 @@ for user in users where user.id == 1 { }
 ```swift
 for user in users {
    if let id = user.id { }
+}
+
+```
+
+```swift
+for user in users {
+   if var id = user.id { }
 }
 
 ```
@@ -4000,6 +4497,10 @@ var a: [Int]!
 private var myProperty: (Void -> Void)!
 ```
 
+```swift
+func foo(_ options: [AnyHashable: Any]!) {
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4046,6 +4547,16 @@ if dict["a"]↓!!!! {
 
 ```swift
 var foo: [Bool]! = dict["abc"]↓!
+```
+
+```swift
+context("abc") {
+  var foo: [Bool]! = dict["abc"]↓!
+}
+```
+
+```swift
+open var computed: String { return foo.bar↓! }
 ```
 
 </details>
@@ -4798,6 +5309,93 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## Is Disjoint
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`is_disjoint` | Enabled | No | idiomatic
+
+Prefer using `Set.isDisjoint(with:)` over `Set.intersection(_:).isEmpty`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
+```
+
+```swift
+let isObjc = !objcAttributes.isDisjoint(with: dictionary.enclosedSwiftAttributes)
+```
+
+```swift
+_ = Set(syntaxKinds).intersection(commentAndStringKindsSet)
+```
+
+```swift
+_ = !objcAttributes.intersection(dictionary.enclosedSwiftAttributes)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+_ = Set(syntaxKinds).↓intersection(commentAndStringKindsSet).isEmpty
+```
+
+```swift
+let isObjc = !objcAttributes.↓intersection(dictionary.enclosedSwiftAttributes).isEmpty
+```
+
+</details>
+
+
+
+## Joined Default Parameter
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`joined_default_parameter` | Disabled | Yes | idiomatic
+
+Discouraged explicit usage of the default separator.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let foo = bar.joined()
+```
+
+```swift
+let foo = bar.joined(separator: ",")
+```
+
+```swift
+let foo = bar.joined(separator: toto)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let foo = bar.joined(↓separator: "")
+```
+
+```swift
+let foo = bar.filter(toto)
+             .joined(↓separator: "")
 ```
 
 </details>
@@ -5708,6 +6306,43 @@ let a = 0
 
 ```
 
+```swift
+class C {
+	@objc
+	var s: String = ""
+}
+```
+
+```swift
+class C {
+	@objc
+	func a() {}
+}
+```
+
+```swift
+class C {
+	var x = 0
+	lazy
+	var y = 0
+}
+
+```
+
+```swift
+@available(OSX, introduced: 10.6)
+@available(*, deprecated)
+var x = 0
+
+```
+
+```swift
+// swiftlint:disable superfluous_disable_command
+// swiftlint:disable force_cast
+
+let x = bar as! Bar
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -5719,6 +6354,7 @@ var x = 1
 ```
 
 ```swift
+
 a = 5
 ↓var x = 1
 
@@ -5729,6 +6365,26 @@ struct X {
 	let a
 	↓func x() {}
 }
+
+```
+
+```swift
+var x = 0
+↓@objc func f() {}
+
+```
+
+```swift
+var x = 0
+↓@objc
+	func f() {}
+
+```
+
+```swift
+@objc func f() {
+}
+↓var x = 0
 
 ```
 
@@ -5781,6 +6437,95 @@ Lines should not span too many characters.
 ```swift
 #imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")#imageLiteral(resourceName: "image.jpg")
 
+```
+
+</details>
+
+
+
+## Literal Expression End Indentation
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`literal_expression_end_indentation` | Disabled | No | style
+
+Array and dictionary literal end should have the same indentation as the line that started it.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+[1, 2, 3]
+```
+
+```swift
+[1,
+ 2
+]
+```
+
+```swift
+[
+   1,
+   2
+]
+```
+
+```swift
+[
+   1,
+   2]
+
+```
+
+```swift
+   let x = [
+       1,
+       2
+   ]
+```
+
+```swift
+[key: 2, key2: 3]
+```
+
+```swift
+[key: 1,
+ key2: 2
+]
+```
+
+```swift
+[
+   key: 0,
+   key2: 20
+]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let x = [
+   1,
+   2
+   ↓]
+```
+
+```swift
+   let x = [
+       1,
+       2
+↓]
+```
+
+```swift
+let x = [
+   key: value
+   ↓]
 ```
 
 </details>
@@ -5906,6 +6651,131 @@ struct MarkTest {}
 ↓// MARK:- Bad mark
 extension MarkTest {}
 
+```
+
+</details>
+
+
+
+## Multiline Arguments
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`multiline_arguments` | Disabled | No | style
+
+Arguments should be either on the same line, or one per line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo()
+```
+
+```swift
+foo(
+    
+)
+```
+
+```swift
+foo { }
+```
+
+```swift
+foo {
+    
+}
+```
+
+```swift
+foo(0)
+```
+
+```swift
+foo(0, 1)
+```
+
+```swift
+foo(0, 1) { }
+```
+
+```swift
+foo(0, param1: 1)
+```
+
+```swift
+foo(0, param1: 1) { }
+```
+
+```swift
+foo(param1: 1)
+```
+
+```swift
+foo(param1: 1) { }
+```
+
+```swift
+foo(param1: 1, param2: true) { }
+```
+
+```swift
+foo(param1: 1, param2: true, param3: [3]) { }
+```
+
+```swift
+foo(param1: 1, param2: true, param3: [3]) {
+    bar()
+}
+```
+
+```swift
+foo(param1: 1,
+    param2: true,
+    param3: [3])
+```
+
+```swift
+foo(
+    param1: 1, param2: true, param3: [3]
+)
+```
+
+```swift
+foo(
+    param1: 1,
+    param2: true,
+    param3: [3]
+)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo(0,
+    param1: 1, ↓param2: true, ↓param3: [3])
+```
+
+```swift
+foo(0, ↓param1: 1,
+    param2: true, ↓param3: [3])
+```
+
+```swift
+foo(0, ↓param1: 1, ↓param2: true,
+    param3: [3])
+```
+
+```swift
+foo(
+    0, ↓param1: 1,
+    param2: true, ↓param3: [3]
+)
 ```
 
 </details>
@@ -6173,6 +7043,70 @@ class Foo {
 }
 ```
 
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int) -> Void = { _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = nil) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping ((Int) -> Void)? = { _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: @escaping ((Int) -> Void)? = { _ in },
+                  param3: Bool) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: @escaping ((Int) -> Void)? = { _ in },
+                  param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func foo(param1: Int,
+                  param2: Bool,
+                  param3: @escaping (Int, (Int) -> Void) -> Void = { (x: Int, f: (Int) -> Void) in }) { }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -6307,6 +7241,81 @@ class Foo {
 class Foo {
    class func ↓foo(param1: Int, param2: Bool,
                    param3: [String]) { }
+}
+```
+
+```swift
+class Foo {
+   class func ↓foo(param1: Int,
+                  param2: Bool, param3: @escaping (Int, Int) -> Void = { _, _ in }) { }
+}
+```
+
+```swift
+class Foo {
+   class func ↓foo(param1: Int,
+                  param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
+}
+```
+
+</details>
+
+
+
+## Multiple Closures with Trailing Closure
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`multiple_closures_with_trailing_closure` | Enabled | No | style
+
+Trailing closure syntax should not be used when passing more than one closure argument.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo.map { $0 + 1 }
+
+```
+
+```swift
+foo.reduce(0) { $0 + $1 }
+
+```
+
+```swift
+if let foo = bar.map({ $0 + 1 }) {
+
+}
+
+```
+
+```swift
+foo.something(param1: { $0 }, param2: { $0 + 1 })
+
+```
+
+```swift
+UIView.animate(withDuration: 1.0) {
+    someView.alpha = 0.0
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo.something(param1: { $0 }) ↓{ $0 + 1 }
+```
+
+```swift
+UIView.animate(withDuration: 1.0, animations: {
+    someView.alpha = 0.0
+}) ↓{ _ in
+    someView.removeFromSuperview()
 }
 ```
 
@@ -6592,6 +7601,63 @@ extension String {}
 
 ```swift
 ↓fileprivate extension String {}
+```
+
+</details>
+
+
+
+## No Grouping Extension
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`no_grouping_extension` | Disabled | No | idiomatic
+
+Extensions shouldn't be used to group code within the same source file.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+protocol Food {}
+extension Food {}
+
+```
+
+```swift
+class Apples {}
+extension Oranges {}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum Fruit {}
+↓extension Fruit {}
+
+```
+
+```swift
+↓extension Tea: Error {}
+struct Tea {}
+
+```
+
+```swift
+class Ham { class Spam {}}
+↓extension Ham.Spam {}
+
+```
+
+```swift
+extension External { struct Gotcha {}}
+↓extension External.Gotcha {}
+
 ```
 
 </details>
@@ -7086,59 +8152,103 @@ guard
 { }
 ```
 
+```swift
+struct Rule {}
+
+```
+
+```swift
+struct Parent {
+	struct Child {
+		let foo: Int
+	}
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-func abc(↓){
+func abc()↓{
 }
 ```
 
 ```swift
-func abc()↓
-	{ }
+func abc()
+	↓{ }
 ```
 
 ```swift
-[].map(↓){ $0 }
+[].map()↓{ $0 }
 ```
 
 ```swift
-[].map↓( { } )
+[].map( ↓{ } )
 ```
 
 ```swift
-if let a = b{ }
+if let a = b↓{ }
 ```
 
 ```swift
-while a == b{ }
+while a == b↓{ }
 ```
 
 ```swift
-guard let a = b else{ }
+guard let a = b else↓{ }
 ```
 
 ```swift
 if
 	let a = b,
 	let c = d
-	where a == c{ }
+	where a == c↓{ }
 ```
 
 ```swift
 while
 	let a = b,
 	let c = d
-	where a == c{ }
+	where a == c↓{ }
 ```
 
 ```swift
 guard
 	let a = b,
 	let c = d
-	where a == c else{ }
+	where a == c else↓{ }
+```
+
+```swift
+struct Rule↓{}
+
+```
+
+```swift
+struct Rule
+↓{
+}
+
+```
+
+```swift
+struct Rule
+
+	↓{
+}
+
+```
+
+```swift
+struct Parent {
+	struct Child
+	↓{
+		let foo: Int
+	}
+}
+
 ```
 
 </details>
@@ -7477,6 +8587,203 @@ class VC: UIViewController {
 	}
 }
 
+```
+
+</details>
+
+
+
+## Override in Extension
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`override_in_extension` | Disabled | No | lint
+
+Extensions shouldn't override declarations.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+extension Person {
+  var age: Int { return 42 }
+}
+
+```
+
+```swift
+extension Person {
+  func celebrateBirthday() {}
+}
+
+```
+
+```swift
+class Employee: Person {
+  override func celebrateBirthday() {}
+}
+
+```
+
+```swift
+class Foo: NSObject {}
+extension Foo {
+    override var description: String { return "" }
+}
+
+```
+
+```swift
+struct Foo {
+    class Bar: NSObject {}
+}
+extension Foo.Bar {
+    override var description: String { return "" }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+extension Person {
+  override ↓var age: Int { return 42 }
+}
+
+```
+
+```swift
+extension Person {
+  override ↓func celebrateBirthday() {}
+}
+
+```
+
+</details>
+
+
+
+## Pattern Matching Keywords
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`pattern_matching_keywords` | Disabled | No | idiomatic
+
+Combine multiple pattern matching bindings by moving keywords out of tuples.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+    default: break
+}
+```
+
+```swift
+switch foo {
+    case 1: break
+}
+```
+
+```swift
+switch foo {
+    case bar: break
+}
+```
+
+```swift
+switch foo {
+    case let (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x): break
+}
+```
+
+```swift
+switch foo {
+    case let .foo(x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x), .bar(let x): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(let x, var y): break
+}
+```
+
+```swift
+switch foo {
+    case var (x, y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(var x): break
+}
+```
+
+```swift
+switch foo {
+    case var .foo(x, y): break
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+    case (↓let x,  ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓let x, ↓let y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓let x), .yamlParsing(↓let y)): break
+}
+```
+
+```swift
+switch foo {
+    case (↓var x,  ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case .foo(↓var x, ↓var y): break
+}
+```
+
+```swift
+switch foo {
+    case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
+}
 ```
 
 </details>
@@ -7848,6 +9155,574 @@ protocol Foo {
 
 
 
+## Quick Discouraged Call
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_call` | Disabled | No | lint
+
+Discouraged call inside 'describe' and/or 'context' block.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           beforeEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           afterEach {
+               let foo = Foo()
+               foo.toto()
+           }
+           describe("bar") {
+           }
+           context("bar") {
+           }
+           it("bar") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+          itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           it("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xcontext("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xdescribe("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           xit("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fcontext("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fdescribe("foo") {
+           afterEach { toto.append(foo) }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           fit("does something") {
+               let foo = Foo()
+               foo.toto()
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       fitBehavesLike("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xitBehavesLike("foo")
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests {
+   override func spec() {
+       describe("foo") {
+           let foo = Foo()
+       }
+   }
+}
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               let foo = ↓Foo()
+           }
+           context("bar") {
+               let foo = ↓Foo()
+               ↓foo.bar()
+               it("does something") {
+                   let foo = Foo()
+                   foo.toto()
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("foo") {
+               context("foo") {
+                   beforeEach {
+                       let foo = Foo()
+                       foo.toto()
+                   }
+                   it("bar") {
+                   }
+                   context("foo") {
+                       let foo = ↓Foo()
+                   }
+               }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       sharedExamples("foo") {
+           ↓foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xdescribe("foo") {
+           let foo = ↓Foo()
+       }
+       fdescribe("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       xcontext("foo") {
+           let foo = ↓Foo()
+       }
+       fcontext("foo") {
+           let foo = ↓Foo()
+       }
+   }
+}
+
+```
+
+</details>
+
+
+
+## Quick Discouraged Focused Test
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_focused_test` | Disabled | No | lint
+
+Discouraged focused test. Other tests won't run while this one is focused.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           describe("bar") { } 
+           context("bar") {
+               it("bar") { }
+           }
+           it("bar") { }
+           itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fdescribe("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fcontext("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fit("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓fit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓fit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("bar") {
+               ↓fit("toto") { }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓fitBehavesLike("foo")
+   }
+}
+
+```
+
+</details>
+
+
+
+## Quick Discouraged Pending Test
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`quick_discouraged_pending_test` | Disabled | No | lint
+
+Discouraged pending test. This test won't run while it's marked as pending.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           describe("bar") { } 
+           context("bar") {
+               it("bar") { }
+           }
+           it("bar") { }
+           itBehavesLike("bar")
+       }
+   }
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xdescribe("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xcontext("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xit("foo") { }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           ↓xit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       context("foo") {
+           ↓xit("bar") { }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       describe("foo") {
+           context("bar") {
+               ↓xit("toto") { }
+           }
+       }
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓pending("foo")
+   }
+}
+
+```
+
+```swift
+class TotoTests: QuickSpec {
+   override func spec() {
+       ↓xitBehavesLike("foo")
+   }
+}
+
+```
+
+</details>
+
+
+
 ## Redundant Discardable Let
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -8162,6 +10037,26 @@ func foo() -> Int -> () {}
 
 ```swift
 let foo: Int -> ()
+
+```
+
+```swift
+func foo() -> ()?
+
+```
+
+```swift
+func foo() -> ()!
+
+```
+
+```swift
+func foo() -> Void?
+
+```
+
+```swift
+func foo() -> Void!
 
 ```
 
@@ -8560,11 +10455,197 @@ n = n - i / outputLength
 
 
 
+## Single Test Class
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`single_test_class` | Disabled | No | style
+
+Test files should contain a single QuickSpec or XCTestCase class.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class FooTests {  }
+
+```
+
+```swift
+class FooTests: QuickSpec {  }
+
+```
+
+```swift
+class FooTests: XCTestCase {  }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: QuickSpec {  }
+↓class TotoTests: QuickSpec {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: XCTestCase {  }
+↓class BarTests: XCTestCase {  }
+↓class TotoTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+
+```
+
+```swift
+↓class FooTests: QuickSpec {  }
+↓class BarTests: XCTestCase {  }
+class TotoTests {  }
+
+```
+
+</details>
+
+
+
+## Min or Max over Sorted First or Last
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`sorted_first_last` | Disabled | No | performance
+
+Prefer using `min()` or `max()` over `sorted().first` or `sorted().last`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let min = myList.min()
+
+```
+
+```swift
+let min = myList.min(by: { $0 < $1 })
+
+```
+
+```swift
+let min = myList.min(by: >)
+
+```
+
+```swift
+let min = myList.max()
+
+```
+
+```swift
+let min = myList.max(by: { $0 < $1 })
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.sorted().first
+
+```
+
+```swift
+↓myList.sorted(by: { $0.description < $1.description }).first
+
+```
+
+```swift
+↓myList.sorted(by: >).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted().first
+
+```
+
+```swift
+↓myList.sorted(by: someFunction).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.first
+
+```
+
+```swift
+↓myList.sorted().last
+
+```
+
+```swift
+↓myList.sorted().last?.something()
+
+```
+
+```swift
+↓myList.sorted(by: { $0.description < $1.description }).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted().last
+
+```
+
+```swift
+↓myList.sorted(by: someFunction).last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.description < $1.description }.last
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.sorted { $0.first < $1.first }.last
+
+```
+
+</details>
+
+
+
 ## Sorted Imports
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`sorted_imports` | Disabled | No | style
+`sorted_imports` | Disabled | Yes | style
 
 Imports should be sorted.
 
@@ -8590,6 +10671,37 @@ import labc
 import Ldef
 ```
 
+```swift
+import BBB
+// comment
+import AAA
+import CCC
+```
+
+```swift
+@testable import AAA
+import   CCC
+```
+
+```swift
+import AAA
+@testable import   CCC
+```
+
+```swift
+import EEE.A
+import FFF.B
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import CCC
+import DDD.B
+#endif
+import AAA
+import BBB
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -8599,6 +10711,37 @@ import AAA
 import ZZZ
 import ↓BBB
 import CCC
+```
+
+```swift
+import DDD
+// comment
+import CCC
+import ↓AAA
+```
+
+```swift
+@testable import CCC
+import   ↓AAA
+```
+
+```swift
+import CCC
+@testable import   ↓AAA
+```
+
+```swift
+import FFF.B
+import ↓EEE.A
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import DDD.B
+import ↓CCC
+#endif
+import AAA
+import BBB
 ```
 
 </details>
@@ -8750,6 +10893,109 @@ struct Outter {
 struct Inter {
 ↓fileprivate struct Inner {}
 }
+}
+```
+
+</details>
+
+
+
+## Superfluous Disable Command
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`superfluous_disable_command` | Enabled | No | lint
+
+SwiftLint 'disable' commands are superfluous when the disabled rule would not have triggered a violation in the disabled region.
+
+
+
+## Switch and Case Statement Alignment
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`switch_case_alignment` | Enabled | No | style
+
+Case statements should vertically align with the enclosing switch statement.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch someBool {
+case true: // case 1
+    print('red')
+case false:
+    /*
+    case 2
+    */
+    if case let .someEnum(val) = someFunc() {
+        print('blue')
+    }
+}
+enum SomeEnum {
+    case innocent
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+    case true:
+        print('red')
+    case false:
+        print('blue')
+    }
+}
+```
+
+```swift
+switch someInt {
+// comments ignored
+case 0:
+    // zero case
+    print('Zero')
+case 1:
+    print('One')
+default:
+    print('Some other number')
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch someBool {
+    ↓case true:
+         print('red')
+    ↓case false:
+         print('blue')
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+        ↓case true:
+            print('red')
+    case false:
+        print('blue')
+    }
+}
+```
+
+```swift
+switch someInt {
+    ↓case 0:
+    print('Zero')
+case 1:
+    print('One')
+    ↓default:
+    print('Some other number')
 }
 ```
 
@@ -8964,7 +11210,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `syntactic_sugar` | Enabled | No | idiomatic
 
-Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>
+Shorthand syntactic sugar should be used, i.e. [Int] instead of Array<Int>.
 
 ### Examples
 
@@ -12762,6 +15008,94 @@ protocol Foo {
 
 
 
+## Unneeded Break in Switch
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`unneeded_break_in_switch` | Enabled | No | idiomatic
+
+Avoid using unneeded break statements.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    break
+}
+```
+
+```swift
+switch foo {
+default:
+    break
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    for i in [0, 1, 2] { break }
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    if true { break }
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    something()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch foo {
+case .bar:
+    something()
+    ↓break
+}
+```
+
+```swift
+switch foo {
+case .bar:
+    something()
+    ↓break // comment
+}
+```
+
+```swift
+switch foo {
+default:
+    something()
+    ↓break
+}
+```
+
+```swift
+switch foo {
+case .foo, .foo2 where condition:
+    something()
+    ↓break
+}
+```
+
+</details>
+
+
+
 ## Unneeded Parentheses in Closure Argument
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -12802,6 +15136,14 @@ call(arg: { ↓(bar) in })
 ```swift
 let foo = { ↓(bar) -> Bool in return true }
 
+```
+
+```swift
+foo.map { ($0, $0) }.forEach { ↓(x, y) in }
+```
+
+```swift
+foo.bar { [weak self] ↓(x, y) in }
 ```
 
 </details>
@@ -13004,6 +15346,11 @@ for (idx, _) in bar.something() { }
 
 ```swift
 for idx in bar.indices { }
+
+```
+
+```swift
+for (section, (event, _)) in data.enumerated() {}
 
 ```
 
@@ -13750,6 +16097,51 @@ class Foo {
   ↓var scrollDelegate: ScrollDelegate?
 }
 
+```
+
+</details>
+
+
+
+## XCTFail Message
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`xctfail_message` | Enabled | No | idiomatic
+
+An XCTFail call should include a description of the assertion.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    XCTFail("bar")
+}
+```
+
+```swift
+func testFoo() {
+    XCTFail(bar)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func testFoo() {
+    ↓XCTFail()
+}
+```
+
+```swift
+func testFoo() {
+    ↓XCTFail("")
+}
 ```
 
 </details>

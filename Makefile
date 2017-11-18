@@ -101,7 +101,7 @@ release: package archive portable_zip
 
 docker_test:
 	if [ -d $(XCTEST_LOCATION) ]; then rm -rf $(XCTEST_LOCATION); fi
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/sourcekit:311 swift test
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:40 swift test --parallel
 
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
@@ -112,8 +112,8 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLintFramework.podspec
-	pod trunk push SwiftLint.podspec
+	pod trunk push SwiftLintFramework.podspec --swift-version=4.0
+	pod trunk push SwiftLint.podspec --swift-version=4.0
 
 get_version:
 	@echo $(VERSION_STRING)

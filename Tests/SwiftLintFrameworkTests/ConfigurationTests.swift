@@ -61,6 +61,11 @@ class ConfigurationTests: XCTestCase {
         FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
     }
 
+    func testEnableAllRulesConfiguration() {
+        let configuration = Configuration(dict: [:], ruleList: masterRuleList, enableAllRules: true, cachePath: nil)!
+        XCTAssertEqual(configuration.rules.count, masterRuleList.list.count)
+    }
+
     func testWhitelistRules() {
         let whitelist = ["nesting", "todo"]
         let config = Configuration(dict: ["whitelist_rules": whitelist])!
@@ -112,11 +117,6 @@ class ConfigurationTests: XCTestCase {
             type(of: $0).description.identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
-
-        // Duplicate
-        let duplicateConfig = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
-        XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
     }
 
     func testDisabledRulesWithUnknownRule() {
@@ -133,6 +133,20 @@ class ConfigurationTests: XCTestCase {
             type(of: $0).description.identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
+    }
+
+    func testDuplicatedRules() {
+        let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
+        XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig2 = Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
+        XCTAssertNil(duplicateConfig2, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig3 = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
+        XCTAssertNil(duplicateConfig3, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
     }
 
     private class TestFileManager: LintableFileManager {
@@ -164,26 +178,6 @@ class ConfigurationTests: XCTestCase {
 
     // MARK: - Testing Configuration Equality
 
-    fileprivate var projectMockConfig0: Configuration {
-        var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
-        configuration.rootPath = projectMockPathLevel0
-        return configuration
-    }
-
-    private var projectMockConfig0CustomPath: Configuration {
-        return Configuration(path: projectMockYAML0CustomPath, rootPath: projectMockPathLevel0,
-                             optional: false, quiet: true)
-    }
-
-    fileprivate var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
-    }
-
-    fileprivate var projectMockConfig3: Configuration {
-        return Configuration(path: Configuration.fileName, rootPath: projectMockPathLevel3,
-                             optional: false, quiet: true)
-    }
-
     func testIsEqualTo() {
         XCTAssertEqual(projectMockConfig0, projectMockConfig0)
     }
@@ -192,43 +186,28 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNotEqual(projectMockConfig0, projectMockConfig2)
     }
 
-    // MARK: - Testing Nested Configurations
-
-    func testMerge() {
-        XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig2), projectMockConfig2)
-    }
-
-    func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift0)!),
-                       projectMockConfig0)
-    }
-
-    func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift1)!),
-                       projectMockConfig0)
-    }
-
-    func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift2)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
-    }
-
-    func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(with: projectMockConfig3))
-    }
-
-    func testNestedConfigurationWithCustomRootPath() {
-        XCTAssertEqual(projectMockConfig3,
-                       projectMockConfig0.merge(with: projectMockConfig3))
-    }
-
     // MARK: - Testing Custom Configuration File
 
     func testCustomConfiguration() {
         let file = File(path: projectMockSwift0)!
         XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
                           projectMockConfig0CustomPath.configuration(for: file))
+    }
+
+    func testConfigurationWithSwiftFileAsRoot() {
+        let configuration = Configuration(path: projectMockYAML0,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
+    }
+
+    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+        let configuration = Configuration(path: projectMockYAML0CustomPath,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
     // MARK: - Testing Rules from config dictionary
@@ -282,69 +261,4 @@ class ConfigurationTests: XCTestCase {
         XCTAssert(configuration.rules.isEmpty)
     }
 
-}
-
-// MARK: - ProjectMock Paths
-
-private extension String {
-    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return bridge().appendingPathComponent(pathComponent)
-    }
-}
-
-extension XCTestCase {
-    var bundlePath: String {
-        #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
-        #else
-            return Bundle(for: type(of: self)).resourcePath!
-        #endif
-    }
-}
-
-private extension XCTestCase {
-
-    var projectMockPathLevel0: String {
-        return bundlePath.stringByAppendingPathComponent("ProjectMock")
-    }
-
-    var projectMockPathLevel1: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level1")
-    }
-
-    var projectMockPathLevel2: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level2")
-    }
-
-    var projectMockPathLevel3: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
-    }
-
-    var projectMockYAML0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockYAML0CustomPath: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("custom.yml")
-    }
-
-    var projectMockYAML2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockSwift0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level0.swift")
-    }
-
-    var projectMockSwift1: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level1.swift")
-    }
-
-    var projectMockSwift2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level2.swift")
-    }
-
-    var projectMockSwift3: String {
-        return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
-    }
 }

@@ -28,23 +28,35 @@ extension Configuration {
         return cachedConfigurationsByPath[path]
     }
 
+    public func withPrecomputedCacheDescription() -> Configuration {
+        var result = self
+        result.computedCacheDescription = result.cacheDescription
+        return result
+    }
+
     // MARK: SwiftLint Cache (On-Disk)
 
     internal var cacheDescription: String {
-        let cacheRulesDescriptions: [String: Any] = rules.reduce([:]) { accu, element in
-            var accu = accu
-            accu[type(of: element).description.identifier] = element.cacheDescription
-            return accu
+        if let computedCacheDescription = computedCacheDescription {
+            return computedCacheDescription
         }
-        let dict: [String: Any] = [
-            "root": rootPath ?? FileManager.default.currentDirectoryPath,
-            "rules": cacheRulesDescriptions
+
+        let cacheRulesDescriptions = rules
+            .map { rule in
+                return [type(of: rule).description.identifier, rule.cacheDescription]
+            }
+            .sorted { rule1, rule2 in
+                return rule1[0] < rule2[0]
+            }
+        let jsonObject: [Any] = [
+            rootPath ?? FileManager.default.currentDirectoryPath,
+            cacheRulesDescriptions
         ]
-        if let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
             let jsonString = String(data: jsonData, encoding: .utf8) {
             return jsonString
         }
-        fatalError("Could not serialize configuration for cache")
+        queuedFatalError("Could not serialize configuration for cache")
     }
 
     internal var cacheURL: URL {

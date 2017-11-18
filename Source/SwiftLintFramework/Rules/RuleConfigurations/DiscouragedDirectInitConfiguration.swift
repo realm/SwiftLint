@@ -17,7 +17,7 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", types: \(discouragedInits)"
+        return severityConfiguration.consoleDescription + ", types: \(discouragedInits.sorted(by: <))"
     }
 
     public var severity: ViolationSeverity {

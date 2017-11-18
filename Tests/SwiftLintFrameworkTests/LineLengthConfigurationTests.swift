@@ -119,7 +119,7 @@ class LineLengthConfigurationTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertEqual(configuration.length, length2)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration with array")
         }
     }
 
@@ -164,7 +164,7 @@ class LineLengthConfigurationTests: XCTestCase {
             XCTAssertFalse(configuration.ignoresFunctionDeclarations)
             XCTAssertFalse(configuration.ignoresComments)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration with dictionary")
         }
     }
 

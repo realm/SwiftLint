@@ -22,7 +22,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
         nonTriggeringExamples: [
             "extension String {}",
             "\n\n extension String {}"
-            ],
+        ],
         triggeringExamples: [
             "↓private extension String {}",
             "↓public \n extension String {}",
@@ -33,7 +33,7 @@ public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationPr
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
-                         dictionary: [String : SourceKitRepresentable]) -> [StyleViolation] {
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .extension, let offset = dictionary.offset else {
             return []
         }

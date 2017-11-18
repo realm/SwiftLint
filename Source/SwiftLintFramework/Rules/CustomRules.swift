@@ -20,7 +20,10 @@ private extension Region {
 public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public var consoleDescription: String { return "user-defined" }
     internal var cacheDescription: String {
-        return customRuleConfigurations.map({ $0.cacheDescription }).joined(separator: "\n")
+        return customRuleConfigurations
+            .sorted { $0.identifier < $1.identifier }
+            .map { $0.cacheDescription }
+            .joined(separator: "\n")
     }
     public var customRuleConfigurations = [RegexConfiguration]()
 
@@ -98,7 +101,7 @@ public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProv
 
         return configurations.flatMap { configuration -> [StyleViolation] in
             let pattern = configuration.regex.pattern
-            let excludingKinds = Array(Set(SyntaxKind.allKinds()).subtracting(configuration.matchKinds))
+            let excludingKinds = SyntaxKind.allKinds.subtracting(configuration.matchKinds)
             return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map({
                 StyleViolation(ruleDescription: configuration.description,
                                severity: configuration.severity,

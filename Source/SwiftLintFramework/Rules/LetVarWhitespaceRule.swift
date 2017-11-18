@@ -28,19 +28,30 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             "var x: Int {\n\treturn 0\n}\n",
             "var x: Int {\n\tlet a = 0\n\n\treturn a\n}\n",
             "#if os(macOS)\nlet a = 0\n#endif\n",
-            "@available(swift 4)\nlet a = 0\n"
+            "@available(swift 4)\nlet a = 0\n",
+            "class C {\n\t@objc\n\tvar s: String = \"\"\n}",
+            "class C {\n\t@objc\n\tfunc a() {}\n}",
+            "class C {\n\tvar x = 0\n\tlazy\n\tvar y = 0\n}\n",
+            "@available(OSX, introduced: 10.6)\n@available(*, deprecated)\nvar x = 0\n",
+            "// swiftlint:disable superfluous_disable_command\n// swiftlint:disable force_cast\n\nlet x = bar as! Bar"
         ],
         triggeringExamples: [
             "var x = 1\n↓x = 2\n",
-            "a = 5\n↓var x = 1\n",
+            "\na = 5\n↓var x = 1\n",
             // This case doesn't work because of an apparent limitation in SourceKit
             // "var x: Int {\n\tlet a = 0\n\t↓return a\n}\n",
-            "struct X {\n\tlet a\n\t↓func x() {}\n}\n"
+            "struct X {\n\tlet a\n\t↓func x() {}\n}\n",
+            "var x = 0\n↓@objc func f() {}\n",
+            "var x = 0\n↓@objc\n\tfunc f() {}\n",
+            "@objc func f() {\n}\n↓var x = 0\n"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let varLines = varLetLineNumbers(file: file, structure: file.structure.dictionary.substructure)
+        var attributeLines = attributeLineNumbers(file: file)
+        let varLines = varLetLineNumbers(file: file,
+                                         structure: file.structure.dictionary.substructure,
+                                         attributeLines: &attributeLines)
         let skippedLines = skippedLineNumbers(file: file)
         var violations = [StyleViolation]()
 
@@ -102,7 +113,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
         let content = file.lines[line].content
         let startIndex = content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted)?.lowerBound
                          ?? content.startIndex
-        let offset = content.characters.distance(from: content.startIndex, to: startIndex)
+        let offset = content.distance(from: content.startIndex, to: startIndex)
         let location = Location(file: file, characterOffset: offset + file.lines[line].range.location)
 
         violations.append(StyleViolation(ruleDescription: LetVarWhitespaceRule.description,
@@ -110,29 +121,50 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
                                          location: location))
     }
 
+    private func lineOffsets(file: File, statement: [String: SourceKitRepresentable]) -> (Int, Int)? {
+        guard let offset = statement.offset,
+              let length = statement.length else {
+            return nil
+        }
+        let startLine = file.line(byteOffset: offset, startFrom: 0)
+        let endLine = file.line(byteOffset: offset + length, startFrom: max(startLine, 0))
+
+        return (startLine, endLine)
+    }
+
     // Collects all the line numbers containing var or let declarations
-    private func varLetLineNumbers(file: File, structure: [[String: SourceKitRepresentable]]) -> Set<Int> {
+    private func varLetLineNumbers(file: File,
+                                   structure: [[String: SourceKitRepresentable]],
+                                   attributeLines: inout Set<Int>) -> Set<Int> {
         var result = Set<Int>()
 
         for statement in structure {
-            guard let kind = statement.kind else {
+            guard let kind = statement.kind,
+                  let (startLine, endLine) = lineOffsets(file: file, statement: statement) else {
                 continue
             }
 
-            if SwiftDeclarationKind.varKinds.contains(where: { $0.rawValue == kind }) {
-                guard let offset = statement.offset,
-                      let length = statement.length else {
-                    break
+            if SwiftDeclarationKind.nonVarAttributableKinds.contains(where: { $0.rawValue == kind }) {
+                if attributeLines.contains(startLine) {
+                    attributeLines.remove(startLine)
                 }
-                let startLine = file.line(for: offset, startFrom: 0)
-                let endLine = file.line(for: offset + length, startFrom: startLine)
-                var lines = Set(startLine...endLine)
+            }
+            if SwiftDeclarationKind.varKinds.contains(where: { $0.rawValue == kind }) {
+                var lines = Set(startLine...((endLine < 0) ? file.lines.count : endLine))
+                var previousLine = startLine - 1
+
+                // Include preceding attributes
+                while attributeLines.contains(previousLine) {
+                    lines.insert(previousLine)
+                    attributeLines.remove(previousLine)
+                    previousLine -= 1
+                }
 
                 // Exclude the body where the accessors are
                 if let bodyOffset = statement.bodyOffset,
                    let bodyLength = statement.bodyLength {
-                    let bodyStart = file.line(for: bodyOffset, startFrom: startLine) + 1
-                    let bodyEnd = file.line(for: bodyOffset + bodyLength, startFrom: bodyStart) - 1
+                    let bodyStart = file.line(byteOffset: bodyOffset, startFrom: startLine) + 1
+                    let bodyEnd = file.line(byteOffset: bodyOffset + bodyLength, startFrom: bodyStart) - 1
 
                     if bodyStart <= bodyEnd {
                         lines.subtract(Set(bodyStart...bodyEnd))
@@ -144,7 +176,9 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
             let substructure = statement.substructure
 
             if !substructure.isEmpty {
-                result.formUnion(varLetLineNumbers(file: file, structure: substructure))
+                result.formUnion(varLetLineNumbers(file: file,
+                                                   structure: substructure,
+                                                   attributeLines: &attributeLines))
             }
         }
         return result
@@ -157,31 +191,50 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
 
         for token in syntaxMap.tokens where token.type == SyntaxKind.comment.rawValue ||
                                             token.type == SyntaxKind.docComment.rawValue {
-            let startLine = file.line(for: token.offset, startFrom: 0)
-            let endLine = file.line(for: token.offset + token.length, startFrom: startLine)
+            let startLine = file.line(byteOffset: token.offset, startFrom: 0)
+            let endLine = file.line(byteOffset: token.offset + token.length, startFrom: startLine)
 
             if startLine <= endLine {
                 result.formUnion(Set(startLine...endLine))
             }
         }
 
-        let conditionals = ["#if", "#elseif", "#else", "#endif", "@available", "#!"]
-        let conditionalLines = file.lines.filter {
+        let directives = ["#if", "#elseif", "#else", "#endif", "#!"]
+        let directiveLines = file.lines.filter {
             let trimmed = $0.content.trimmingCharacters(in: .whitespaces)
-            return conditionals.contains(where: trimmed.hasPrefix)
+            return directives.contains(where: trimmed.hasPrefix)
         }
 
-        result.formUnion(conditionalLines.map { $0.index - 1 })
+        result.formUnion(directiveLines.map { $0.index - 1 })
         return result
+    }
+
+    // Collects all the line numbers containing attributes but not declarations
+    // other than let/var
+    private func attributeLineNumbers(file: File) -> Set<Int> {
+        return Set(file.syntaxMap.tokens.flatMap({ token in
+            if token.type == SyntaxKind.attributeBuiltin.rawValue {
+                return file.line(byteOffset: token.offset)
+            }
+            return nil
+        }))
     }
 }
 
 private extension SwiftDeclarationKind {
+    // The various kinds of let/var declarations
     static let varKinds: [SwiftDeclarationKind] = [.varGlobal, .varClass, .varLocal, .varStatic, .varInstance]
+    // Declarations other than let & var that can have attributes
+    static let nonVarAttributableKinds: [SwiftDeclarationKind] = [
+        .class, .struct,
+        .functionFree, .functionSubscript, .functionDestructor, .functionConstructor,
+        .functionMethodClass, .functionMethodStatic, .functionMethodInstance,
+        .functionOperator, .functionOperatorInfix, .functionOperatorPrefix, .functionOperatorPostfix ]
 }
 
 private extension File {
-    func line(for byteOffset: Int, startFrom: Int) -> Int {
+    // Zero-based line number for the given a byte offset
+    func line(byteOffset: Int, startFrom: Int = 0) -> Int {
         for index in startFrom..<lines.count {
             let line = lines[index]
 
@@ -189,6 +242,18 @@ private extension File {
                 return index
             }
         }
-        return 0
+        return -1
+    }
+
+    // Zero-based line number for the given a character offset
+    func line(offset: Int, startFrom: Int = 0) -> Int {
+        for index in startFrom..<lines.count {
+            let line = lines[index]
+
+            if line.range.location + line.range.length > offset {
+                return index
+            }
+        }
+        return -1
     }
 }

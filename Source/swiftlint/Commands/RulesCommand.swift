@@ -7,6 +7,11 @@
 //
 
 import Commandant
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
 import Result
 import SwiftLintFramework
 import SwiftyTextTable
@@ -119,6 +124,20 @@ extension TextTable {
         ]
         self.init(columns: columns)
         let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
+        func truncate(_ string: String) -> String {
+            let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
+            let minWidth = "configuration".count - "...".count
+            let configurationStartColumn = 112
+            let truncatedEndIndex = stringWithNoNewlines.index(
+                stringWithNoNewlines.startIndex,
+                offsetBy: max(minWidth, Terminal.currentWidth() - configurationStartColumn),
+                limitedBy: stringWithNoNewlines.endIndex
+            )
+            if let truncatedEndIndex = truncatedEndIndex {
+                return stringWithNoNewlines[..<truncatedEndIndex] + "..."
+            }
+            return stringWithNoNewlines
+        }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule = configuration.rules.first { rule in
@@ -130,8 +149,20 @@ extension TextTable {
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
-                (configuredRule ?? rule).configurationDescription
+                truncate((configuredRule ?? rule).configurationDescription)
             ])
         }
+    }
+}
+
+struct Terminal {
+    static func currentWidth() -> Int {
+        var size = winsize()
+#if os(Linux)
+        _ = ioctl(CInt(STDOUT_FILENO), UInt(TIOCGWINSZ), &size)
+#else
+        _ = ioctl(STDOUT_FILENO, TIOCGWINSZ, &size)
+#endif
+        return Int(size.ws_col)
     }
 }

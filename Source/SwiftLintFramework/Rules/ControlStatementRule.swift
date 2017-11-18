@@ -17,7 +17,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "control_statement",
         name: "Control Statement",
-        description: "if,for,while,do statements shouldn't wrap their conditionals in parentheses.",
+        description:
+            "if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.",
         kind: .style,
         nonTriggeringExamples: [
             "if condition {\n",
@@ -34,7 +35,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "while condition {\n",
             "} while condition {\n",
             "do { ; } while condition {\n",
-            "switch foo {\n"
+            "switch foo {\n",
+            "do {\n} catch let error as NSError {\n}"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
@@ -52,27 +54,30 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "} ↓while(condition) {\n",
             "do { ; } ↓while(condition) {\n",
             "do { ; } ↓while (condition) {\n",
-            "↓switch (foo) {\n"
+            "↓switch (foo) {\n",
+            "do {\n} ↓catch(let error as NSError) {\n}"
         ]
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let statements = ["if", "for", "guard", "switch", "while"]
-        return statements.flatMap { statementKind -> [StyleViolation] in
-            let pattern = statementKind == "guard"
-                ? "\(statementKind)\\s*\\([^,{]*\\)\\s*else\\s*\\{"
-                : "\(statementKind)\\s*\\([^,{]*\\)\\s*\\{"
-            return file.match(pattern: pattern).flatMap { match, syntaxKinds in
-                let matchString = file.contents.substring(from: match.location, length: match.length)
-                if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
-                    return nil
-                }
-                return StyleViolation(ruleDescription: type(of: self).description,
-                                      severity: configuration.severity,
-                                      location: Location(file: file, characterOffset: match.location))
-            }
+        let statements = ["if", "for", "guard", "switch", "while", "catch"]
+        let statementPatterns: [String] = statements.map { statement -> String in
+            let isGuard = statement == "guard"
+            let elsePattern = isGuard ? "else\\s*" : ""
+            return "\(statement)\\s*\\([^,{]*\\)\\s*\(elsePattern)\\{"
         }
-
+        return statementPatterns.flatMap { pattern -> [StyleViolation] in
+            return file.match(pattern: pattern)
+                .filter { match, syntaxKinds -> Bool in
+                    let matchString = file.contents.substring(from: match.location, length: match.length)
+                    return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)
+                }
+                .map { match, _ -> StyleViolation in
+                    return StyleViolation(ruleDescription: type(of: self).description,
+                                          severity: configuration.severity,
+                                          location: Location(file: file, characterOffset: match.location))
+                }
+        }
     }
 
     fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {
@@ -86,7 +91,7 @@ public struct ControlStatementRule: ConfigurationProviderRule {
 
         var depth = 0
         var index = 0
-        for char in content.characters {
+        for char in content {
             if char == ")" {
                 if index != lastClosingParenthesePosition && depth == 1 {
                     return true

@@ -56,7 +56,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let startOffset = dictionary.nameOffset,
             let length = dictionary.nameLength,
             case let endOffset = startOffset + length else {

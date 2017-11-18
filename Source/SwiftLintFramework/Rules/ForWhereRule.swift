@@ -25,6 +25,10 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
             "for user in users {\n" +
             "   if let id = user.id { }\n" +
             "}\n",
+            // if var
+            "for user in users {\n" +
+            "   if var id = user.id { }\n" +
+            "}\n",
             // if with else
             "for user in users {\n" +
             "   if user.id == 1 { } else { }\n" +
@@ -61,7 +65,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         ]
     )
 
-    private static let commentKinds = Set(SyntaxKind.commentAndStringKinds())
+    private static let commentKinds = SyntaxKind.commentAndStringKinds
 
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
@@ -85,7 +89,7 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
         ]
     }
 
-    private func forBody(dictionary: [String: SourceKitRepresentable]) -> [String : SourceKitRepresentable]? {
+    private func forBody(dictionary: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
         return dictionary.substructure.first(where: { subDict -> Bool in
             subDict.kind.flatMap(StatementKind.init) == .brace
         })
@@ -134,8 +138,8 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
                     return false
             }
 
-            let containsLet = !file.match(pattern: "\\blet\\b", with: [.keyword], range: range).isEmpty
-            if containsLet {
+            let containsLetOrVar = !file.match(pattern: "\\blet|var\\b", with: [.keyword], range: range).isEmpty
+            if containsLetOrVar {
                 return true
             }
 

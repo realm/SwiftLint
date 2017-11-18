@@ -88,7 +88,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
                 return false
             }
 
-            return !SyntaxKind.commentKinds().contains(kind)
+            return !SyntaxKind.commentKinds.contains(kind)
         }
     }
 }

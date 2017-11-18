@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Foundation
 import SourceKittenFramework
 
 public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRule, CorrectableRule, OptInRule {
@@ -27,12 +26,16 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         ],
         triggeringExamples: [
             "call(arg: { ↓(bar) in })\n",
-            "let foo = { ↓(bar) -> Bool in return true }\n"
+            "let foo = { ↓(bar) -> Bool in return true }\n",
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }",
+            "foo.bar { [weak self] ↓(x, y) in }"
         ],
         corrections: [
             "call(arg: { ↓(bar) in })\n": "call(arg: { bar in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n": "let foo = { bar -> Bool in return true }\n",
-            "method { ↓(foo, bar) in }\n": "method { foo, bar in }\n"
+            "method { ↓(foo, bar) in }\n": "method { foo, bar in }\n",
+            "foo.map { ($0, $0) }.forEach { ↓(x, y) in }": "foo.map { ($0, $0) }.forEach { x, y in }",
+            "foo.bar { [weak self] ↓(x, y) in }": "foo.bar { [weak self] x, y in }"
         ]
     )
 
@@ -45,7 +48,8 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let pattern = "\\{\\s*(\\([^:]+\\))\\s*(in|->)"
+        let capturesPattern = "(?:\\[[^\\]]+\\])?"
+        let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+\\))\\s*(in|->)"
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         return regex(pattern).matches(in: file.contents, options: [], range: range).flatMap { match -> NSRange? in
@@ -79,8 +83,9 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                                           length: violatingRange.length - 2)
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange),
                 let updatedRange = correctedContents.nsrangeToIndexRange(correctingRange) {
-                let updatedArguments = correctedContents.substring(with: updatedRange)
-                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: updatedArguments)
+                let updatedArguments = correctedContents[updatedRange]
+                correctedContents = correctedContents.replacingCharacters(in: indexRange,
+                                                                          with: String(updatedArguments))
                 adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }

@@ -46,7 +46,7 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule {
     private func violationOffsets(for dictionary: [String: SourceKitRepresentable], file: File) -> [Int] {
         var results = [Int]()
 
-        if dictionary.kind.flatMap(SwiftExpressionKind.init) == .call,
+        if dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
             shouldBeTrailingClosure(dictionary: dictionary, file: file),
             let offset = dictionary.offset {
 

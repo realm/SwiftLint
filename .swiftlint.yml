@@ -25,6 +25,9 @@ opt_in_rules:
   - let_var_whitespace
   - unneeded_parentheses_in_closure_argument
   - extension_access_modifier
+  - pattern_matching_keywords
+  - array_init
+  - literal_expression_end_indentation
 
 file_header:
   required_pattern: |
@@ -41,3 +44,19 @@ identifier_name:
 line_length: 120
 number_separator:
   minimum_length: 5
+
+custom_rules:
+  rule_id:
+    included: Source/SwiftLintFramework/Rules/\w+\.swift
+    name: Rule ID
+    message: Rule IDs must be all lowercase, snake case and not end with `rule`
+    regex: identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")
+    severity: error
+  fatal_error:
+    name: Fatal Error
+    excluded: "Tests/*"
+    message: Prefer using `queuedFatalError` over `fatalError` to avoid leaking compiler host machine paths.
+    regex: \bfatalError\b
+    match_kinds:
+      - identifier
+    severity: error

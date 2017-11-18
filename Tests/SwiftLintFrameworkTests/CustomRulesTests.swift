@@ -118,7 +118,7 @@ class CustomRulesTests: XCTestCase {
         XCTAssertEqual(violations.count, 0)
     }
 
-    private func getCustomRules(_ extraConfig: [String:String] = [:]) -> (RegexConfiguration, CustomRules) {
+    private func getCustomRules(_ extraConfig: [String: String] = [:]) -> (RegexConfiguration, CustomRules) {
         var config = ["regex": "pattern",
                       "match_kinds": "comment"]
         extraConfig.forEach { config[$0] = $1 }

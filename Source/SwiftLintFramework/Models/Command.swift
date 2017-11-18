@@ -8,7 +8,13 @@
 
 import Foundation
 
-#if !os(Linux)
+#if os(Linux)
+private extension Scanner {
+    func scanString(string: String) -> String? {
+        return scanString(string)
+    }
+}
+#else
 private extension Scanner {
     func scanUpToString(_ string: String) -> String? {
         var result: NSString? = nil

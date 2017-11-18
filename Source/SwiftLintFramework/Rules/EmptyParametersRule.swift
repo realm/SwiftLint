@@ -56,7 +56,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
 
         return file.match(pattern: pattern,
-                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
+                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
                           excludingPattern: excludingPattern).flatMap { range in
             let voidRegex = regex(voidPattern)
             return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range

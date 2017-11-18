@@ -37,8 +37,8 @@ private func scriptInputFiles() -> Result<[File], CommandantError<()>> {
         let inputFiles = (0..<count).flatMap { fileNumber -> File? in
             switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
             case let .success(path):
-                if let file = File(path: path), path.bridge().isSwiftFile() {
-                    return file
+                if path.bridge().isSwiftFile() {
+                    return File(pathDeferringReading: path)
                 }
                 return nil
             case let .failure(error):
@@ -62,17 +62,17 @@ extension Configuration {
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return getFiles(path: path, action: action, useSTDIN: useSTDIN, quiet: quiet,
                         useScriptInputFiles: useScriptInputFiles)
-        .flatMap { files -> Result<[File], CommandantError<()>> in
+        .flatMap { files -> Result<[Configuration: [File]], CommandantError<()>> in
             if files.isEmpty {
                 let errorMessage = "No lintable files found at path '\(path)'"
                 return .failure(.usageError(description: errorMessage))
             }
-            return .success(files)
-        }.flatMap { files in
+            return .success(Dictionary(grouping: files, by: configuration(for:)))
+        }.flatMap { filesPerConfiguration in
             let queue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
             var index = 0
-            let fileCount = files.count
-            let visit = { (file: File) -> Void in
+            let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
+            let visit = { (file: File, config: Configuration) -> Void in
                 if !quiet, let path = file.path {
                     let increment = {
                         index += 1
@@ -86,17 +86,29 @@ extension Configuration {
                     }
                 }
                 autoreleasepool {
-                    visitorBlock(Linter(file: file, configuration: self.configuration(for: file), cache: cache))
+                    visitorBlock(Linter(file: file, configuration: config, cache: cache))
                 }
+            }
+            var filesAndConfigurations = [(File, Configuration)]()
+            filesAndConfigurations.reserveCapacity(fileCount)
+            for (config, files) in filesPerConfiguration {
+                let newConfig: Configuration
+                if cache != nil {
+                    newConfig = config.withPrecomputedCacheDescription()
+                } else {
+                    newConfig = config
+                }
+                filesAndConfigurations += files.map { ($0, newConfig) }
             }
             if parallel {
-                DispatchQueue.concurrentPerform(iterations: files.count) { index in
-                    visit(files[index])
+                DispatchQueue.concurrentPerform(iterations: fileCount) { index in
+                    let (file, config) = filesAndConfigurations[index]
+                    visit(file, config)
                 }
             } else {
-                files.forEach(visit)
+                filesAndConfigurations.forEach(visit)
             }
-            return .success(files)
+            return .success(filesAndConfigurations.flatMap({ $0.0 }))
         }
     }
 

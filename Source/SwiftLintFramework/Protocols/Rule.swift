@@ -66,9 +66,6 @@ public extension ConfigurationProviderRule {
 // MARK: - == Implementations
 
 public func == (lhs: [Rule], rhs: [Rule]) -> Bool {
-    if lhs.count == rhs.count {
-        return zip(lhs, rhs).map { $0.isEqualTo($1) }.reduce(true) { $0 && $1 }
-    }
-
-    return false
+    if lhs.count != rhs.count { return false }
+    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
 }

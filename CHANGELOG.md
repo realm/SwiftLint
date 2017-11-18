@@ -6,11 +6,321 @@
 
 ##### Enhancements
 
-* None.
+* Invalidate cache when Swift patch version changes.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 ##### Bug Fixes
 
 * None.
+
+## 0.24.0: Timed Dry
+
+##### Breaking
+
+* SwiftLint now requires Xcode 9 and Swift 3.2+ to build.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Remove `SwiftExpressionKind.other`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+##### Enhancements
+
+* Add `sorted_first_last` opt-in rule to encourage using `min()` or `max()`
+  over `sorted().first` or `sorted().last`.  
+  [Tom Quist](https://github.com/tomquist)
+  [#1932](https://github.com/realm/SwiftLint/issues/1932)
+
+* Add `quick_discouraged_focused_test` opt-in rule which warns against
+  focused tests in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1905](https://github.com/realm/SwiftLint/issues/1905)
+
+* Add `override_in_extension` opt-in rule that warns against overriding
+  declarations in an `extension`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1884](https://github.com/realm/SwiftLint/issues/1884)
+
+* Add `[f,x]{describe, context, itBehavesLike}` to `quick_discouraged_call`
+  rule.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1903](https://github.com/realm/SwiftLint/issues/1903)
+
+* Add `quick_discouraged_pending_test` opt-in rule which warns against
+  pending tests in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1909](https://github.com/realm/SwiftLint/issues/1909)
+
+* Speed up equality tests for `[Rule]` and `Configuration` values.  
+  [JP Simard](https://github.com/jpsim)
+
+* Make `Configuration` conform to `Hashable`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Speed up reading cached results by about 200%.  
+  [JP Simard](https://github.com/jpsim)
+
+* Add `catch` to the statements checked by the `control_statement` rule.  
+  [JP Simard](https://github.com/jpsim)
+
+* Make `sorted_imports` correctable.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [JP Simard](https://github.com/jpsim)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
+* Make `sorted_imports` only validate within "groups" of imports on directly
+  adjacent lines.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [JP Simard](https://github.com/jpsim)
+  [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
+##### Bug Fixes
+
+* Extend `first_where` and `contains_over_first_not_nil` rules to also detect
+  cases where calls to `filter` and `first` are parenthesized.  
+  [Tom Quist](https://github.com/tomquist)
+
+* Correct equality tests for `Configuration` values. They previously didn't
+  account for `warningThreshold` or `cachePath`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positive in `multiline_parameters` rule when parameter is a closure
+  with default value.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1912](https://github.com/realm/SwiftLint/issues/1912)
+
+* Fix caching on Linux.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix crashes due to races.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix `String.characters` deprecation warnings when compiling with Swift
+  4.0.2.  
+  [JP Simard](https://github.com/jpsim)
+
+## 0.23.1: Rewash: Forgotten Load Edition
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* None.
+
+##### Bug Fixes
+
+* Fix false positive in `array_init` rule when using a `map` that
+  doesn't take a closure.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1878](https://github.com/realm/SwiftLint/issues/1878)
+
+* `superfluous_disable_command` rule can now be disabled as expected when
+  using `// swiftlint:disable superfluous_disable_command`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1890](https://github.com/realm/SwiftLint/issues/1890)
+
+## 0.23.0: Permanent Press Cycle
+
+##### Breaking
+
+* None.
+
+##### Enhancements
+
+* Fix csv reporter to output records with new lines.  
+  [atetlaw](https://github.com/atetlaw)
+
+* Add `contains_over_first_not_nil` rule to encourage using `contains` over
+  `first(where:) != nil`.  
+  [Samuel Susla](https://github.com/sammy-sc)
+  [#1514](https://github.com/realm/SwiftLint/issues/1514)
+
+* Add `fallthrough` rule that flags usage of `fallthrough`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1834](https://github.com/realm/SwiftLint/issues/1834)
+
+* Improve `colon` rule to catch violations in dictionary types
+  (e.g. `[String: Int]`), when using `Any` and on function calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1074](https://github.com/realm/SwiftLint/issues/1074)
+  [#1389](https://github.com/realm/SwiftLint/issues/1389)
+
+* Add `switch_case_alignment` rule to validate that `case` and `default`
+  statements are vertically aligned with their enclosing `switch` statement.  
+  [Austin Lu](https://github.com/austinlu)
+
+* Add `array_init` opt-in rule to validate that `Array(foo)` should be preferred
+  over `foo.map({ $0 })`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1271](https://github.com/realm/SwiftLint/issues/1271)
+
+* Truncate long configuration console descriptions to fit in the console window
+  when running `swiftlint rules`.  
+  [JP Simard](https://github.com/jpsim)
+  [#1002](https://github.com/realm/SwiftLint/issues/1002)
+
+* Add `multiline_arguments` opt-in rule that warns to either keep
+  all the arguments of a function call on the same line,
+  or one per line.  
+  [Marcel Jackwerth](https://github.com/sirlantis)
+
+* Add `unneeded_break_in_switch` rule to validate that no extra `break`s are
+  added in `switch` statements.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1870](https://github.com/realm/SwiftLint/issues/1870)
+
+* Add `literal_expression_end_indentation` opt-in rule to validate that
+  array and dictionary literals ends have the same indentation as the line
+  that started them.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1435](https://github.com/realm/SwiftLint/issues/1435)
+
+##### Bug Fixes
+
+* Improve how `opening_brace` rule reports violations locations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1811](https://github.com/realm/SwiftLint/issues/1811)
+
+* Fix false negatives in `unneeded_parentheses_in_closure_argument` rule
+  when using capture lists.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1817](https://github.com/realm/SwiftLint/issues/1817)
+
+* Fix handling of attributes (`lazy`, `objc`, etc.) for the `let_var_whitespace`
+  rule.  
+  [David Catmull](https://github.com/Uncommon)
+  [#1770](https://github.com/realm/SwiftLint/issues/1770)
+  [#1812](https://github.com/realm/SwiftLint/issues/1812)
+
+* Fix false positives in `for_where` rule when using `if var` inside `for`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1838](https://github.com/realm/SwiftLint/issues/1838)
+
+* Fix false positive in `class_delegate_protocol` rule when using Swift 4.0.1.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1856](https://github.com/realm/SwiftLint/issues/1856)
+
+* Print multi-line configuration values in a single line when running
+  `swiftlint rules` to avoid breaking the table format.  
+  [JP Simard](https://github.com/jpsim)
+  [#1002](https://github.com/realm/SwiftLint/issues/1002)
+
+* Ignore SwiftLint commands (`swiftlint:(disable|enable)`) in `file_header`
+  rule, making it work better with `superfluous_disable_command` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1810](https://github.com/realm/SwiftLint/issues/1810)
+
+* Fix false negatives in `generic_type_name`, `identifier_name` and `type_name`
+  rules when using `allowed_symbols`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+## 0.22.0: Wrinkle-free
+
+##### Breaking
+
+* Nested configurations will now be merged with parent configurations rather
+  than replace them outright.  
+  [Stéphane Copin](https://github.com/stephanecopin)
+  [JP Simard](https://github.com/jpsim)
+  [#676](https://github.com/realm/SwiftLint/issues/676)
+
+##### Enhancements
+
+* Add `is_disjoint` rule to encourage using `Set.isDisjoint(with:)` over
+  `Set.intersection(_:).isEmpty`.  
+  [JP Simard](https://github.com/jpsim)
+
+* Add `xctfail_message` rule to enforce XCTFail
+  calls to include a description of the assertion.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1370](https://github.com/realm/SwiftLint/issues/1370)
+
+* Add `joined_default_parameter` correctable opt-in rule to discourage
+  explicit usage of the default separator.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1093](https://github.com/realm/SwiftLint/issues/1093)
+  [#1757](https://github.com/realm/SwiftLint/issues/1757)
+
+* Files with extensions other than `.swift` can now be used as arguments
+  to `--file` when linting or autocorrecting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1721](https://github.com/realm/SwiftLint/issues/1721)
+
+* Allow `()?`, `Void?`, `()!`, and `Void!` as return types in
+  `redundant_void_return` rule.  
+  [Ryan Booker](https://github.com/ryanbooker)
+  [#1761](https://github.com/realm/SwiftLint/issues/1761)
+
+* Add `single_test_class` opt-in rule to validate that test files
+  only contain a single `QuickSpec` or `XCTestCase` subclass.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1779](https://github.com/realm/SwiftLint/issues/1779)
+
+* Produce an error when a `// swiftlint:disable` command does not silence
+  any violations.  
+  [JP Simard](https://github.com/jpsim)
+  [#1102](https://github.com/realm/SwiftLint/issues/1102)
+
+* Add `quick_discouraged_call` opt-in rule to discourage calls and object
+  initialization inside 'describe' and 'context' block in Quick tests.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1781](https://github.com/realm/SwiftLint/issues/1781)
+
+* Invalidate cache when Swift version changes.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Add `pattern_matching_keywords` opt-in rule to enforce moving `let` and `var`
+  keywords outside tuples in a `switch`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#202](https://github.com/realm/SwiftLint/issues/202)
+
+* Add `explicit_enum_raw_value` opt-in rule to allow refactoring the
+  Swift API without breaking the API contract.  
+  [Mazyod](https://github.com/mazyod)
+  [#1778](https://github.com/realm/SwiftLint/issues/1778)
+
+* Add `no_grouping_extension` opt-in rule to disallow the use of extensions
+  for code grouping purposes within the same file.  
+  [Mazyod](https://github.com/mazyod)
+  [#1767](https://github.com/realm/SwiftLint/issues/1767)
+
+* Improve `syntactic_sugar` violation message to be type-specific.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1803](https://github.com/realm/SwiftLint/issues/1803)
+
+* Add `multiple_closures_with_trailing_closure` rule that disallows trailing
+  closure syntax when passing more than one closure argument to a function.  
+  [Erik Strottmann](https://github.com/erikstrottmann)
+  [#1801](https://github.com/realm/SwiftLint/issues/1801)
+
+##### Bug Fixes
+
+* Fix false positive on `force_unwrapping` rule when declaring
+  local variable with implicity unwrapped type.  
+  [Otávio Lima](https://github.com/otaviolima)
+  [#1710](https://github.com/realm/SwiftLint/issues/1710)
+
+* Fix the warning message and autocorrection of `vertical_whitespace` rule to
+  display the maximum empty lines allowed if `max_empty_lines` is greater
+  than 1.  
+  [Hossam Ghareeb](https://github.com/hossamghareeb)
+  [#1763](https://github.com/realm/SwiftLint/issues/1763)
+
+* Fix for the wrong configuration being used when using `--path` and a
+  configuration exists in a parent directory.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1744](https://github.com/realm/SwiftLint/issues/1744)
+
+* Fix false positive on `unused_enumerated` rule with complex variable
+  bindings.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1787](https://github.com/realm/SwiftLint/issues/1787)
+
+* Fix incorrect violations and autocorrections on 
+  `unneeded_parentheses_in_closure_argument` rule that were generated in some
+  cases (mainly when using chained method calls with closures).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.21.0: Vintage Washboard
 

@@ -17,7 +17,7 @@ internal enum YamlParserError: Error, Equatable {
 
 internal func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
     switch (lhs, rhs) {
-    case (.yamlParsing(let x), .yamlParsing(let y)):
+    case let (.yamlParsing(x), .yamlParsing(y)):
         return x == y
     }
 }

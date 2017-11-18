@@ -58,7 +58,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let kinds = SyntaxKind.commentAndStringKinds()
+        let kinds = SyntaxKind.commentAndStringKinds
         let parensPattern = "\\(\\s*(?:Void)?\\s*\\)"
         let pattern = "->\\s*\(parensPattern)\\s*(?!->)"
         let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"

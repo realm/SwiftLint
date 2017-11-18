@@ -17,6 +17,8 @@ This project adheres to the [Contributor Covenant Code of Conduct](https://realm
 By participating, you are expected to uphold this code. Please report
 unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
+> Language Switch: [中文](https://github.com/realm/SwiftLint/blob/master/README_CN.md), [한국어](https://github.com/realm/SwiftLint/blob/master/README_KR.md).
+
 ## Installation
 
 ### Using [Homebrew](http://brew.sh/):
@@ -44,6 +46,11 @@ Note that this will add the SwiftLint binaries, its dependencies' binaries and t
 library distribution to the `Pods/` directory, so checking in this directory to SCM such as
 git is discouraged.
 
+### Using [Mint](https://github.com/yonaskolb/mint):
+```
+$ mint run realm/SwiftLint
+```
+
 ### Using a pre-built package:
 
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the
@@ -53,7 +60,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 8.3 or later).
+`git submodule update --init --recursive; make install` (Xcode 9.0 or later).
 
 ## Usage
 
@@ -62,7 +69,7 @@ You can also build from source by cloning this project and running
 To get a high-level overview of recommended ways to integrate SwiftLint into your project,
 we encourage you to watch this presentation or read the transcript:
 
-[![Presentation](assets/presentation.jpg)](https://realm.io/news/slug-jp-simard-swiftlint)
+[![Presentation](assets/presentation.jpg)](https://academy.realm.io/posts/slug-jp-simard-swiftlint/)
 
 ### Xcode
 
@@ -105,6 +112,22 @@ The `autocorrect` action is available via `⌥⏎`.
 To integrate SwiftLint with [Atom](https://atom.io/), install the
 [`linter-swiftlint`](https://atom.io/packages/linter-swiftlint) package from
 APM.
+
+### fastlane
+
+You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/#swiftlint) to run SwiftLint as part of your fastlane process.
+
+```ruby
+swiftlint(
+  mode: :lint,                            # SwiftLint mode: :lint (default) or :autocorrect
+  executable: "Pods/SwiftLint/swiftlint", # The SwiftLint binary path (optional). Important if you've installed it via CocoaPods
+  output_file: "swiftlint.result.json",   # The path of the output file (optional)
+  reporter: "json",                       # The custom reporter to use (optional)
+  config_file: ".swiftlint-ci.yml",       # The path of the configuration file (optional)
+  ignore_exit_status: true                # Allow fastlane to continue even if SwiftLint returns a non-zero exit status
+)
+```
+
 
 ### Command Line
 
@@ -188,16 +211,18 @@ Over 75 rules are included in SwiftLint and the Swift community (that's you!)
 continues to contribute more over time.
 [Pull requests](CONTRIBUTING.md) are encouraged.
 
-You can find an updated list of rules and more information about them 
+You can find an updated list of rules and more information about them
 in [Rules.md](Rules.md).
 
 You can also check [Source/SwiftLintFramework/Rules](Source/SwiftLintFramework/Rules)
 directory to see their implementation.
 
+### Opt-In Rules
+
 `opt_in_rules` are disabled by default (i.e., you have to explicitly enable them
 in your configuration file).
 
-Guidelines on when to implement a rule as opt-in:
+Guidelines on when to mark a rule as opt-in:
 
 * A rule that can have many false positives (e.g. `empty_count`)
 * A rule that is too slow

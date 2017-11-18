@@ -68,7 +68,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard SwiftDeclarationKind.variableKinds().contains(kind),
+        guard SwiftDeclarationKind.variableKinds.contains(kind),
             dictionary.setterAccessibility != nil,
             let type = dictionary.typeName,
             typeIsOptional(type),

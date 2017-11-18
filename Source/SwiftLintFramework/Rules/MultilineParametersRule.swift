@@ -12,6 +12,8 @@ import SourceKittenFramework
 public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
+    private typealias ParameterRange = (offset: Int, length: Int)
+
     public init() {}
 
     public static let description = RuleDescription(
@@ -27,22 +29,33 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
-            SwiftDeclarationKind.functionKinds().contains(kind),
+            SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.nameOffset,
             let length = dictionary.nameLength
             else {
                 return []
         }
 
+        let parameterRanges = dictionary.substructure.flatMap { subStructure -> ParameterRange? in
+            guard
+                let offset = subStructure.offset,
+                let length = subStructure.length,
+                let kind = subStructure.kind, SwiftDeclarationKind(rawValue: kind) == .varParameter
+                else {
+                    return nil
+            }
+
+            return (offset, length)
+        }
+
         var numberOfParameters = 0
         var linesWithParameters = Set<Int>()
 
-        for structure in dictionary.substructure {
+        for range in parameterRanges {
             guard
-                let structureOffset = structure.offset,
-                let structureKind = structure.kind, SwiftDeclarationKind(rawValue: structureKind) == .varParameter,
-                let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: structureOffset),
-                offset..<(offset + length) ~= structureOffset
+                let (line, _) = file.contents.bridge().lineAndCharacter(forByteOffset: range.offset),
+                offset..<(offset + length) ~= range.offset,
+                isRange(range, withinRanges: parameterRanges)
                 else {
                     continue
             }
@@ -61,5 +74,11 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
         return [StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severity,
                                location: Location(file: file, byteOffset: offset))]
+    }
+
+    // MARK: - Private
+
+    private func isRange(_ range: ParameterRange, withinRanges ranges: [ParameterRange]) -> Bool {
+        return ranges.filter { $0 != range && ($0.offset..<($0.offset + $0.length)).contains(range.offset) }.isEmpty
     }
 }

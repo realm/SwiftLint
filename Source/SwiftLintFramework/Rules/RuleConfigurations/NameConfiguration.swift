@@ -13,14 +13,14 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         return "(min_length) \(minLength.shortConsoleDescription), " +
             "(max_length) \(maxLength.shortConsoleDescription), " +
             "excluded: \(excluded.sorted()), " +
-            "allowed_symbols: \(allowedSymbols.sorted()), " +
+            "allowed_symbols: \(allowedSymbolsSet.sorted()), " +
             "validates_start_with_lowercase: \(validatesStartWithLowercase)"
     }
 
     var minLength: SeverityLevelsConfiguration
     var maxLength: SeverityLevelsConfiguration
     var excluded: Set<String>
-    var allowedSymbols: Set<String>
+    private var allowedSymbolsSet: Set<String>
     var validatesStartWithLowercase: Bool
 
     var minLengthThreshold: Int {
@@ -29,6 +29,10 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
 
     var maxLengthThreshold: Int {
         return min(maxLength.warning, maxLength.error ?? maxLength.warning)
+    }
+
+    var allowedSymbols: CharacterSet {
+        return CharacterSet(charactersIn: allowedSymbolsSet.joined())
     }
 
     public init(minLengthWarning: Int,
@@ -41,7 +45,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
         minLength = SeverityLevelsConfiguration(warning: minLengthWarning, error: minLengthError)
         maxLength = SeverityLevelsConfiguration(warning: maxLengthWarning, error: maxLengthError)
         self.excluded = Set(excluded)
-        self.allowedSymbols = Set(allowedSymbols)
+        self.allowedSymbolsSet = Set(allowedSymbols)
         self.validatesStartWithLowercase = validatesStartWithLowercase
     }
 
@@ -60,7 +64,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
             self.excluded = Set(excluded)
         }
         if let allowedSymbols = [String].array(of: configurationDict["allowed_symbols"]) {
-            self.allowedSymbols = Set(allowedSymbols)
+            self.allowedSymbolsSet = Set(allowedSymbols)
         }
 
         if let validatesStartWithLowercase = configurationDict["validates_start_with_lowercase"] as? Bool {
@@ -71,14 +75,14 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
                 "\"validates_start_with_lowercase\" and will be removed in a future release.")
         }
     }
-}
 
-public func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
-    return lhs.minLength == rhs.minLength &&
-           lhs.maxLength == rhs.maxLength &&
-           zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) } &&
-           zip(lhs.allowedSymbols, rhs.allowedSymbols).reduce(true) { $0 && ($1.0 == $1.1) } &&
-           lhs.validatesStartWithLowercase == rhs.validatesStartWithLowercase
+    public static func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
+        return lhs.minLength == rhs.minLength &&
+            lhs.maxLength == rhs.maxLength &&
+            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) } &&
+            zip(lhs.allowedSymbolsSet, rhs.allowedSymbolsSet).reduce(true) { $0 && ($1.0 == $1.1) } &&
+            lhs.validatesStartWithLowercase == rhs.validatesStartWithLowercase
+    }
 }
 
 // MARK: - ConfigurationProviderRule extensions

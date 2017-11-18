@@ -12,13 +12,7 @@ import SourceKittenFramework
 public extension SyntaxKind {
     /// Returns if the syntax kind is comment-like.
     var isCommentLike: Bool {
-        return [
-            SyntaxKind.comment,
-            .commentMark,
-            .commentURL,
-            .docComment,
-            .docCommentField
-        ].contains(self)
+        return SyntaxKind.commentKinds.contains(self)
     }
 }
 
@@ -74,7 +68,7 @@ public struct TodoRule: ConfigurationProviderRule {
             let index = message.index(message.startIndex,
                                       offsetBy: maxLengthOfMessage,
                                       limitedBy: message.endIndex) ?? message.endIndex
-            message = message.substring(to: index) + "..."
+            message = message[..<index] + "..."
         }
 
         if message.isEmpty {

@@ -9,7 +9,7 @@
 import Foundation
 
 extension Configuration {
-    internal enum Key: String {
+    private enum Key: String {
         case cachePath = "cache_path"
         case disabledRules = "disabled_rules"
         case enabledRules = "enabled_rules" // deprecated in favor of optInRules
@@ -90,6 +90,45 @@ extension Configuration {
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String)
     }
 
+    private init?(disabledRules: [String],
+                  optInRules: [String],
+                  enableAllRules: Bool,
+                  whitelistRules: [String],
+                  included: [String],
+                  excluded: [String],
+                  warningThreshold: Int?,
+                  reporter: String = XcodeReporter.identifier,
+                  ruleList: RuleList = masterRuleList,
+                  configuredRules: [Rule]?,
+                  swiftlintVersion: String?,
+                  cachePath: String?) {
+
+        let rulesMode: RulesMode
+        if enableAllRules {
+            rulesMode = .allEnabled
+        } else if !whitelistRules.isEmpty {
+            if !disabledRules.isEmpty || !optInRules.isEmpty {
+                queuedPrintError("'\(Key.disabledRules.rawValue)' or " +
+                    "'\(Key.optInRules.rawValue)' cannot be used in combination " +
+                    "with '\(Key.whitelistRules.rawValue)'")
+                return nil
+            }
+            rulesMode = .whitelisted(whitelistRules)
+        } else {
+            rulesMode = .default(disabled: disabledRules, optIn: optInRules)
+        }
+
+        self.init(rulesMode: rulesMode,
+                  included: included,
+                  excluded: excluded,
+                  warningThreshold: warningThreshold,
+                  reporter: reporter,
+                  ruleList: ruleList,
+                  configuredRules: configuredRules,
+                  swiftlintVersion: swiftlintVersion,
+                  cachePath: cachePath)
+    }
+
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],
                                               disabledRules: [String] = [],
                                               optInRules: [String] = [],
@@ -111,7 +150,7 @@ extension Configuration {
         }
 
         // Deprecation warning for rules
-        let deprecatedRulesIdentifiers = ruleList.list.flatMap { (identifier, rule) -> [(String, String)] in
+        let deprecatedRulesIdentifiers = ruleList.list.flatMap { identifier, rule -> [(String, String)] in
             return rule.description.deprecatedAliases.map { ($0, identifier) }
         }
 

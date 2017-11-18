@@ -90,8 +90,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
     private static let regularExpression = regex(pattern, options: [])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds()
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds()
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents

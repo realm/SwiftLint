@@ -43,14 +43,13 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
+            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
             let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
             if !isFunction {
-                let containsAllowedSymbol = configuration.allowedSymbols.contains(where: name.contains)
-                if !containsAllowedSymbol &&
-                    !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
@@ -60,7 +59,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                     ]
                 }
 
-                if let severity = severity(forLength: name.characters.count) {
+                if let severity = severity(forLength: name.count) {
                     let reason = "\(type) name should be between " +
                         "\(configuration.minLengthThreshold) and " +
                         "\(configuration.maxLengthThreshold) characters long: '\(name)'"
@@ -101,12 +100,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private let kinds: [SwiftDeclarationKind] = {
-        return SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds() + [.enumelement]
+    private let kinds: Set<SwiftDeclarationKind> = {
+        return SwiftDeclarationKind.variableKinds
+            .union(SwiftDeclarationKind.functionKinds)
+            .union([.enumelement])
     }()
 
     private func type(for kind: SwiftDeclarationKind) -> String {
-        if SwiftDeclarationKind.functionKinds().contains(kind) {
+        if SwiftDeclarationKind.functionKinds.contains(kind) {
             return "Function"
         } else if kind == .enumelement {
             return "Enum element"
@@ -118,16 +119,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
 private extension String {
     var isViolatingCase: Bool {
-        let secondIndex = characters.index(after: startIndex)
-        let firstCharacter = substring(to: secondIndex)
+        let firstCharacter = String(self[startIndex])
         guard firstCharacter.isUppercase() else {
             return false
         }
-        guard characters.count > 1 else {
+        guard count > 1 else {
             return true
         }
-        let range = secondIndex..<characters.index(after: secondIndex)
-        let secondCharacter = substring(with: range)
+        let secondCharacter = String(self[index(after: startIndex)])
         return secondCharacter.isLowercase()
     }
 

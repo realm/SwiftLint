@@ -266,7 +266,7 @@ class LinterCacheTests: XCTestCase {
 
         // Change
         validateNewConfigDoesntHitCache(dict: ["opt_in_rules": ["empty_count"]], initialConfig: initialConfig)
-        // Aules addition
+        // Rules addition
         validateNewConfigDoesntHitCache(dict: ["opt_in_rules": ["attributes", "empty_count"]],
                                         initialConfig: initialConfig)
         // Removal
@@ -309,5 +309,45 @@ class LinterCacheTests: XCTestCase {
                                         initialConfig: initialConfig)
         // Removal
         validateNewConfigDoesntHitCache(dict: [:], initialConfig: initialConfig)
+    }
+
+    func testSwiftVersionChangedRemovedCausesAllFilesToBeReLinted() {
+        let fileManager = TestFileManager()
+        cache = LinterCache(fileManager: fileManager)
+        let helper = makeCacheTestHelper(dict: [:])
+        let file = "foo.swift"
+        let violations = helper.makeViolations(file: file)
+
+        cacheAndValidate(violations: violations, forFile: file, configuration: helper.configuration)
+        let thisSwiftVersionCache = cache
+
+        let differentSwiftVersion: SwiftVersion = (SwiftVersion.current >= .four) ? .three : .four
+        cache = LinterCache(fileManager: fileManager, swiftVersion: differentSwiftVersion)
+
+        XCTAssertNotNil(thisSwiftVersionCache.violations(forFile: file, configuration: helper.configuration))
+        XCTAssertNil(cache.violations(forFile: file, configuration: helper.configuration))
+    }
+
+    func testDetectSwiftVersion() {
+        #if swift(>=4.1.0)
+            let version = "4.1.0"
+        #elseif swift(>=4.0.3)
+            let version = "4.0.3"
+        #elseif swift(>=4.0.2)
+            let version = "4.0.2"
+        #elseif swift(>=4.0.1)
+            let version = "4.0.1"
+        #elseif swift(>=4.0.0)
+            let version = "4.0.0"
+        #elseif swift(>=3.2.3)
+            let version = "4.0.3" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.3
+        #elseif swift(>=3.2.2)
+            let version = "4.0.2" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.2
+        #elseif swift(>=3.2.1)
+            let version = "4.0.1" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.1
+        #else // if swift(>=3.2.0)
+            let version = "4.0.0" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.0.0
+        #endif
+        XCTAssertEqual(SwiftVersion.current.rawValue, version)
     }
 }

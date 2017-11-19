@@ -7,7 +7,13 @@ XCODEFLAGS=-workspace 'SwiftLint.xcworkspace' \
 	DSTROOT=$(TEMPORARY_FOLDER) \
 	OTHER_LDFLAGS=-Wl,-headerpad_max_install_names
 
-SWIFTLINT_EXECUTABLE=$(shell swift build --configuration release --show-bin-path)/swiftlint
+SWIFT_BUILD_FLAGS=--configuration release
+UNAME=$(shell uname)
+ifeq ($(UNAME), Darwin)
+SWIFT_BUILD_FLAGS+= -Xswiftc -static-stdlib
+endif
+
+SWIFTLINT_EXECUTABLE=$(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/swiftlint
 
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
@@ -50,10 +56,10 @@ clean_xcode: clean
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
 build:
-	swift build --configuration release -Xswiftc -static-stdlib
+	swift build $(SWIFT_BUILD_FLAGS)
 
 build_with_disable_sandbox:
-	swift build --disable-sandbox --configuration release -Xswiftc -static-stdlib
+	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
 
 install: clean build
 	install -d "$(BINARIES_FOLDER)"

@@ -32,13 +32,13 @@ all: build
 
 sourcery: Tests/LinuxMain.swift Source/SwiftLintFramework/Models/MasterRuleList.swift
 
-Tests/LinuxMain.swift: Tests/*/*.swift
+Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
 	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery
 	sed -e 4,11d .sourcery/LinuxMain.generated.swift > .sourcery/LinuxMain.swift
 	sed -n 4,10p .sourcery/LinuxMain.generated.swift | cat - .sourcery/LinuxMain.swift > Tests/LinuxMain.swift
 	rm .sourcery/LinuxMain.swift .sourcery/LinuxMain.generated.swift
 
-Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/*.swift
+Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/*.swift .sourcery/MasterRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
 	sed -e 4,11d .sourcery/MasterRuleList.generated.swift > .sourcery/MasterRuleList.swift
 	sed -n 4,10p .sourcery/MasterRuleList.generated.swift | cat - .sourcery/MasterRuleList.swift > Source/SwiftLintFramework/Models/MasterRuleList.swift

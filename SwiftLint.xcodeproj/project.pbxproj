@@ -1218,6 +1218,7 @@
 			buildConfigurationList = D0D1218419E87B05005E4BAA /* Build configuration list for PBXNativeTarget "SwiftLintFramework" */;
 			buildPhases = (
 				6CF24C411FC9953E008CB0B1 /* Update Source/SwiftLintFramework/Models/MasterRuleList.swift */,
+				6CF24C421FC99616008CB0B1 /* Update Tests/LinuxMain.swift */,
 				D0D1216819E87B05005E4BAA /* Sources */,
 				D0D1216919E87B05005E4BAA /* Frameworks */,
 				D0D1216A19E87B05005E4BAA /* Headers */,
@@ -1235,7 +1236,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0D1218519E87B05005E4BAA /* Build configuration list for PBXNativeTarget "SwiftLintFrameworkTests" */;
 			buildPhases = (
-				6CF24C421FC99616008CB0B1 /* Update Tests/LinuxMain.swift */,
 				D0D1217319E87B05005E4BAA /* Sources */,
 				D0D1217419E87B05005E4BAA /* Frameworks */,
 				3B12C9C01C3209C4000B423F /* Resources */,

@@ -1217,6 +1217,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0D1218419E87B05005E4BAA /* Build configuration list for PBXNativeTarget "SwiftLintFramework" */;
 			buildPhases = (
+				6CF24C411FC9953E008CB0B1 /* Update Source/SwiftLintFramework/Models/MasterRuleList.swift */,
+				6CF24C421FC99616008CB0B1 /* Update Tests/LinuxMain.swift */,
 				D0D1216819E87B05005E4BAA /* Sources */,
 				D0D1216919E87B05005E4BAA /* Frameworks */,
 				D0D1216A19E87B05005E4BAA /* Headers */,
@@ -1260,7 +1262,6 @@
 				6CCFCF291CFEF6D3003239EB /* Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */,
 				E819854B1B09A3CB00CEB0D9 /* Run SwiftLint */,
-				E86C76171EE0CC1B0081860F /* Run Sourcery */,
 			);
 			buildRules = (
 			);
@@ -1353,6 +1354,40 @@
 			shellScript = "cd \"$TARGET_BUILD_DIR\"\nSWIFTLINTFRAMEWORK_BUNDLE=\"$FRAMEWORKS_FOLDER_PATH/SwiftLintFramework.framework\"\n\nxcrun swift-stdlib-tool --copy --verbose --Xcodesign --timestamp=none \\\n--scan-executable \"$EXECUTABLE_PATH\" \\\n--scan-folder \"$FRAMEWORKS_FOLDER_PATH\" \\\n--platform macosx --destination \"$SWIFTLINTFRAMEWORK_BUNDLE/Versions/Current/Frameworks\" \\\n--strip-bitcode\n";
 			showEnvVarsInLog = 0;
 		};
+		6CF24C411FC9953E008CB0B1 /* Update Source/SwiftLintFramework/Models/MasterRuleList.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Source/SwiftLintFramework/Rules/*.swift",
+			);
+			name = "Update Source/SwiftLintFramework/Models/MasterRuleList.swift";
+			outputPaths = (
+				"$(SRCROOT)/Source/SwiftLintFramework/Models/MasterRuleList.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sourcery >/dev/null; then\n  make Source/SwiftLintFramework/Models/MasterRuleList.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			showEnvVarsInLog = 0;
+		};
+		6CF24C421FC99616008CB0B1 /* Update Tests/LinuxMain.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Tests/*/*.swift",
+			);
+			name = "Update Tests/LinuxMain.swift";
+			outputPaths = (
+				"$(SRCROOT)/Tests/LinuxMain.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sourcery >/dev/null; then\n  make Tests/LinuxMain.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			showEnvVarsInLog = 0;
+		};
 		C2265FAB1A4B86AC00158358 /* Check Xcode Version */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1396,20 +1431,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi";
-		};
-		E86C76171EE0CC1B0081860F /* Run Sourcery */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Sourcery";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which sourcery >/dev/null; then\n  make sourcery\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

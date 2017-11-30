@@ -138,11 +138,7 @@ private extension String {
 
         var correctedString: String?
 
-        for (pattern, operatorString) in [toPattern, toNotPattern] {
-            guard let operatorString = operatorString else {
-                continue
-            }
-
+        for case let (pattern, operatorString?) in [toPattern, toNotPattern] {
             let expression = regex(pattern)
             if !expression.matches(in: self, options: [], range: range).isEmpty {
                 correctedString = expression.stringByReplacingMatches(in: self,

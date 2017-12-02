@@ -73,6 +73,10 @@
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
 
+* Added `explicit_acl` which enforces explicit access control levels.
+  [Josep Rodriguez](https://github.com/joseprl89)
+  [#1822](https://github.com/realm/SwiftLint/issues/1649)
+
 ##### Bug Fixes
 
 * Extend `first_where` and `contains_over_first_not_nil` rules to also detect

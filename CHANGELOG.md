@@ -11,7 +11,9 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix directories with a `.swift` suffix being treated as files.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1948](https://github.com/realm/SwiftLint/issues/1948)
 
 ## 0.24.0: Timed Dry
 

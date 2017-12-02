@@ -13,6 +13,9 @@
   @IBAction methods.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1931](https://github.com/realm/SwiftLint/issues/1931)
+* Add `yoda_condition` opt-in rule which warns to avoid Yoda conditions.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#1924](https://github.com/realm/SwiftLint/issues/1924)
 
 ##### Bug Fixes
 

@@ -125,5 +125,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self,
-    XCTFailMessageRule.self
+    XCTFailMessageRule.self,
+    YodaConditionRule.self
 ])

@@ -318,6 +318,11 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantVoidReturnRule.description)
     }
 
+    func testRequiredEnumCase() {
+        let configuration = ["NetworkResponsable": ["notConnected": "error"]]
+        verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }

@@ -5,7 +5,7 @@
 //  Created by JP Simard on 12/11/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.8.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -311,6 +311,23 @@ extension ReporterTests {
     ]
 }
 
+extension RequiredEnumCaseRuleTestCase {
+    static var allTests: [(String, (RequiredEnumCaseRuleTestCase) -> () throws -> Void)] = [
+        ("testRequiredCaseHashValue", testRequiredCaseHashValue),
+        ("testRequiredCaseEquatableReturnsTrue", testRequiredCaseEquatableReturnsTrue),
+        ("testRequiredCaseEquatableReturnsFalseBecauseOfDifferentName", testRequiredCaseEquatableReturnsFalseBecauseOfDifferentName),
+        ("testConsoleDescriptionReturnsAllConfiguredProtocols", testConsoleDescriptionReturnsAllConfiguredProtocols),
+        ("testConsoleDescriptionReturnsNoConfiguredProtocols", testConsoleDescriptionReturnsNoConfiguredProtocols),
+        ("testRegisterProtocolCasesRegistersCasesWithSpecifiedSeverity", testRegisterProtocolCasesRegistersCasesWithSpecifiedSeverity),
+        ("testRegisterProtocols", testRegisterProtocols),
+        ("testApplyThrowsErrorBecausePassedConfigurationCantBeCast", testApplyThrowsErrorBecausePassedConfigurationCantBeCast),
+        ("testApplyRegistersProtocols", testApplyRegistersProtocols),
+        ("testEqualsReturnsTrue", testEqualsReturnsTrue),
+        ("testEqualsReturnsFalseBecauseProtocolsArentEqual", testEqualsReturnsFalseBecauseProtocolsArentEqual),
+        ("testEqualsReturnsFalseBecauseSeverityIsntEqual", testEqualsReturnsFalseBecauseSeverityIsntEqual)
+    ]
+}
+
 extension RuleConfigurationsTests {
     static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
@@ -429,6 +446,7 @@ extension RulesTests {
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
         ("testRedundantStringEnumValue", testRedundantStringEnumValue),
         ("testRedundantVoidReturn", testRedundantVoidReturn),
+        ("testRequiredEnumCase", testRequiredEnumCase),
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),
         ("testShorthandOperator", testShorthandOperator),
         ("testSingleTestClass", testSingleTestClass),
@@ -555,6 +573,7 @@ XCTMain([
     testCase(PrivateOverFilePrivateRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
+    testCase(RequiredEnumCaseRuleTestCase.allTests),
     testCase(RuleConfigurationsTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),

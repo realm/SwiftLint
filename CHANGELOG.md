@@ -20,6 +20,11 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1924](https://github.com/realm/SwiftLint/issues/1924)
 
+* Add `required_enum_case` opt-in rule which allows enums that
+  conform to protocols to require one or more cases.  Useful for
+  result enums.  
+  [Donald Ritter](https://github.com/donald-m-ritter)
+
 ##### Bug Fixes
 
 * Fix false positives in `control_statement` rule when methods with keyword

@@ -1740,6 +1740,10 @@ do {
 }
 ```
 
+```swift
+foo().catch(all: true) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

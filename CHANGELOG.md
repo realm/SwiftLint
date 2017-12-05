@@ -16,7 +16,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix false positives in `control_statement` rule when methods with keyword
+  names are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1946](https://github.com/realm/SwiftLint/issues/1946)
 
 ## 0.24.0: Timed Dry
 

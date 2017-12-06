@@ -8,8 +8,6 @@
 
 import Foundation
 
-// swiftlint:disable type_body_length
-
 internal struct MultilineParametersRuleExamples {
     static let nonTriggeringExamples = [
         "func foo() { }",

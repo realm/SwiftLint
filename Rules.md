@@ -12061,7 +12061,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 ```swift
@@ -12268,7 +12267,6 @@ class Abc {
 
 
 }
-
 ```
 
 ```swift
@@ -12475,7 +12473,6 @@ class Abc {
 // this is a comment
 // this is a comment
 }
-
 ```
 
 ```swift
@@ -12684,7 +12681,6 @@ let abc = 0
 a multiline comment
 */
 }
-
 ```
 
 ```swift
@@ -12889,7 +12885,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 ```swift
@@ -13096,7 +13091,6 @@ struct Abc {
 
 
 }
-
 ```
 
 ```swift
@@ -13303,7 +13297,6 @@ struct Abc {
 // this is a comment
 // this is a comment
 }
-
 ```
 
 ```swift
@@ -13512,7 +13505,6 @@ let abc = 0
 a multiline comment
 */
 }
-
 ```
 
 ```swift
@@ -13717,7 +13709,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 ```swift
@@ -13924,7 +13915,6 @@ enum Abc {
 
 
 }
-
 ```
 
 ```swift
@@ -14131,7 +14121,6 @@ enum Abc {
 // this is a comment
 // this is a comment
 }
-
 ```
 
 ```swift
@@ -14340,7 +14329,6 @@ let abc = 0
 a multiline comment
 */
 }
-
 ```
 
 </details>
@@ -14551,7 +14539,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 ```swift
@@ -14758,7 +14745,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 ```swift
@@ -14965,7 +14951,6 @@ let abc = 0
 let abc = 0
 let abc = 0
 }
-
 ```
 
 </details>

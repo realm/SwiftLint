@@ -73,6 +73,24 @@ class FunctionBodyLengthRuleTests: XCTestCase {
             "whitespace: currently spans 41 lines")])
     }
 
+    func testFunctionBodyLengthsWithIfs() {
+        let longFunctionBodyWithIfs = funcWithBody(
+            repeatElement("if true {\n\tx = 0\n}\n\n", count: 13).joined() +
+            "// comment only line should be ignored.\n"
+        )
+        XCTAssertEqual(violations(longFunctionBodyWithIfs), [])
+
+        let longerFunctionBodyWithIfs = violatingFuncWithBody(
+            repeatElement("if true {\n\tx = 0\n}\n\n", count: 14).joined() +
+            "// comment only line should be ignored.\n"
+        )
+        XCTAssertEqual(violations(longerFunctionBodyWithIfs), [StyleViolation(
+            ruleDescription: FunctionBodyLengthRule.description,
+            location: Location(file: nil, line: 1, character: 1),
+            reason: "Function body should span 40 lines or less excluding comments and " +
+            "whitespace: currently spans 43 lines")])
+    }
+
     private func violations(_ string: String) -> [StyleViolation] {
         let config = makeConfig(nil, FunctionBodyLengthRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)

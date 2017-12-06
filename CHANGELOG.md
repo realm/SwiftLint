@@ -16,7 +16,10 @@
 
 ##### Bug Fixes
 
-* None.
+* Fix number of lines reported by `function_body_length` and
+  `type_body_length`.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1750](https://github.com/realm/SwiftLint/issues/1750)
 
 ## 0.24.0: Timed Dry
 

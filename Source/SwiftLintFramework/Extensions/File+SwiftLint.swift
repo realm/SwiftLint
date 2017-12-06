@@ -269,19 +269,24 @@ extension File {
     }
 
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = SyntaxKind.commentKinds
-        return syntaxKindsByLines[startLine...endLine].filter { kinds in
-            kinds.filter { !commentKinds.contains($0) }.isEmpty
+        return (startLine...endLine).filter { lineNumber in
+            let line = lines[lineNumber - 1]
+            let isLineEmpty = line.content.rangeOfCharacter(from: CharacterSet.whitespaces.inverted) == nil
+            if isLineEmpty { return true }
+
+            return syntaxKindsByLines[lineNumber].contains(where: SyntaxKind.commentKinds.contains)
         }.count
     }
 
     internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
-                                                                 _ limit: Int) -> (Bool, Int) {
-        guard end - start > limit else {
-            return (false, end - start)
+                                                                 _ limit: Int, inclusive: Bool = true) -> (Bool, Int) {
+        let totalNumberOfLines = (start...end).count - (inclusive ? 0 : 2)
+
+        guard totalNumberOfLines > limit else {
+            return (false, totalNumberOfLines)
         }
 
-        let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
+        let count = totalNumberOfLines - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
         return (count > limit, count)
     }
 

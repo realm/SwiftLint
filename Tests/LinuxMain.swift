@@ -164,7 +164,8 @@ extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
         ("testFunctionBodyLengthsWithComments", testFunctionBodyLengthsWithComments),
-        ("testFunctionBodyLengthsWithMultilineComments", testFunctionBodyLengthsWithMultilineComments)
+        ("testFunctionBodyLengthsWithMultilineComments", testFunctionBodyLengthsWithMultilineComments),
+        ("testFunctionBodyLengthsWithIfs", testFunctionBodyLengthsWithIfs)
     ]
 }
 

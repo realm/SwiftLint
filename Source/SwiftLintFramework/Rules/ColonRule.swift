@@ -38,7 +38,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "let abc: Enum=Enum.Value\n",
             "func abc(def: Void) {}\n",
             "func abc(def: Void, ghi: Void) {}\n",
-            "// 周斌佳年周斌佳\nlet abc: String = \"abc:\"",
+            "let abc: String = \"abc:\"\n",
             "let abc = [Void: Void]()\n",
             "let abc = [1: [3: 2], 3: 4]\n",
             "let abc = [\"string\": \"string\"]\n",

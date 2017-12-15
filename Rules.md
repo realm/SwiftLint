@@ -1075,8 +1075,8 @@ func abc(def: Void, ghi: Void) {}
 ```
 
 ```swift
-// 周斌佳年周斌佳
 let abc: String = "abc:"
+
 ```
 
 ```swift

@@ -14,6 +14,12 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1931](https://github.com/realm/SwiftLint/issues/1931)
 
+* Add `yoda_condition` opt-in rule which warns when Yoda conditions are used.
+  That is, when the constant portion of the expression is on the left side of a
+  conditional statement.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#1924](https://github.com/realm/SwiftLint/issues/1924)
+
 ##### Bug Fixes
 
 * Fix false positives in `control_statement` rule when methods with keyword

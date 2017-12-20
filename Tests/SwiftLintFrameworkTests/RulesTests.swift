@@ -443,4 +443,8 @@ class RulesTests: XCTestCase {
     func testXCTFailMessage() {
         verifyRule(XCTFailMessageRule.description)
     }
+
+    func testYodaConditionRule() {
+        verifyRule(YodaConditionRule.description)
+    }
 }

@@ -21,6 +21,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1946](https://github.com/realm/SwiftLint/issues/1946)
 
+* Fix false positives in `for_where` rule when pattern matching (`if case`)
+  is used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1968](https://github.com/realm/SwiftLint/issues/1968)
+
 ## 0.24.0: Timed Dry
 
 ##### Breaking

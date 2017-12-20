@@ -4362,6 +4362,15 @@ for user in users {
 
 ```
 
+```swift
+for (index, value) in array.enumerated() {
+   if case .valueB(_) = value {
+       return index
+   }
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

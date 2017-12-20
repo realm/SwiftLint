@@ -15,30 +15,31 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     public init() {}
 
-    private static let pattern = "(?<!" +                      // Starting negative lookbehind
-                                 "(" +                         // First capturing group
-                                 "\\+|-|\\*|\\/|%|\\?" +       // One of the operators
-                                 ")" +                         // Ending negative lookbehind
-                                 ")" +                         // End first capturing group
-                                 "\\s+" +                      // Starting with whitespace
-                                 "(" +                         // Second capturing group
-                                 "(?:\\\"[\\\"\\w\\ ]+\")" +   // Multiple words between quotes
-                                 "|" +                         // OR
-                                 "(?:\\d+" +                   // Number of digits
-                                 "(?:\\.\\d*)?)" +             // Optionally followed by a dot and any number digits
-                                 "|" +                         // OR
-                                 "(nil)" +                     // `nil` value
-                                 ")" +                         // End second capturing group
-                                 "\\s+" +                      // Followed by whitespace
-                                 "(" +                         // Third capturing group
-                                 "==|!=|>|<|>=|<=" +           // One of comparison operators
-                                 ")" +                         // End third capturing group
-                                 "\\s+" +                      // Followed by whitespace
-                                 "(" +                         // Fourth capturing group
-                                 "\\w+" +                      // Number of words
-                                 ")"                           // End fourth capturing group
-    private static let regularExpression = regex(pattern)
-    private let observedStatements: Set <StatementKind> = [.if, .guard, .while]
+    private static let regularExpression = regex(
+        "(?<!" +                      // Starting negative lookbehind
+        "(" +                         // First capturing group
+        "\\+|-|\\*|\\/|%|\\?" +       // One of the operators
+        ")" +                         // Ending negative lookbehind
+        ")" +                         // End first capturing group
+        "\\s+" +                      // Starting with whitespace
+        "(" +                         // Second capturing group
+        "(?:\\\"[\\\"\\w\\ ]+\")" +   // Multiple words between quotes
+        "|" +                         // OR
+        "(?:\\d+" +                   // Number of digits
+        "(?:\\.\\d*)?)" +             // Optionally followed by a dot and any number digits
+        "|" +                         // OR
+        "(nil)" +                     // `nil` value
+        ")" +                         // End second capturing group
+        "\\s+" +                      // Followed by whitespace
+        "(" +                         // Third capturing group
+        "==|!=|>|<|>=|<=" +           // One of comparison operators
+        ")" +                         // End third capturing group
+        "\\s+" +                      // Followed by whitespace
+        "(" +                         // Fourth capturing group
+        "\\w+" +                      // Number of words
+        ")"                           // End fourth capturing group
+    )
+    private let observedStatements: Set<StatementKind> = [.if, .guard, .while]
 
     public static let description = RuleDescription(
         identifier: "yoda_condition",

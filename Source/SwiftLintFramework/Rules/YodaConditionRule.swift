@@ -74,35 +74,26 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard observedStatements.contains(kind),
               let offset = dictionary.offset,
               let length = dictionary.length
-              else {
+          else {
                 return []
         }
 
-        var matches = [NSTextCheckingResult]()
-        for line in file.lines where line.byteRange.contains(offset) {
-            matches = YodaConditionRule.regularExpression.matches(in: line.content,
-                                                                  options: NSRegularExpression.MatchingOptions(),
-                                                                  range: NSRange(location: 0,
-                                                                                 length: line.content.utf16.count))
+        let matches = file.lines.filter({ $0.byteRange.contains(offset) }).reduce([]) { matches, line in
+            let range = NSRange(location: 0, length: line.content.bridge().count)
+            let lineMatches = YodaConditionRule.regularExpression.matches(in: line.content, options: [], range: range)
+            return matches + lineMatches
         }
 
         return matches.map { _ -> StyleViolation in
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: .warning,
-                                  location: Location(file: file,
-                                                     characterOffset: startOffset(of: offset,
-                                                                                  with: length,
-                                                                                  in: file)),
-                                  reason: configuration.consoleDescription)
+            let characterOffset = startOffset(of: offset, with: length, in: file)
+            let location = Location(file: file, characterOffset: characterOffset)
+            return StyleViolation(ruleDescription: type(of: self).description, severity: .warning,
+                                  location: location, reason: configuration.consoleDescription)
         }
     }
 
     private func startOffset(of offset: Int, with length: Int, in file: File) -> Int {
         let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
-        guard let startOffset = range?.location else {
-            return offset
-        }
-
-        return startOffset
+        return range?.location ?? offset
     }
 }

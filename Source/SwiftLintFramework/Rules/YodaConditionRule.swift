@@ -39,7 +39,7 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
         "\\w+" +                      // Number of words
         ")"                           // End fourth capturing group
     )
-    private let observedStatements: Set<StatementKind> = [.if, .guard, .while]
+    private let observedStatements: Set<StatementKind> = [.if, .guard, .repeatWhile, .while]
 
     public static let description = RuleDescription(
         identifier: "yoda_condition",

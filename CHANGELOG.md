@@ -32,6 +32,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1968](https://github.com/realm/SwiftLint/issues/1968)
 
+* Fix false positives in `unused_closure_parameter` rule when closure is wrapped
+  in parentheses.  
+  [JP Simard](https://github.com/jpsim)
+  [#1979](https://github.com/realm/SwiftLint/issues/1979)
+
 ## 0.24.0: Timed Dry
 
 ##### Breaking

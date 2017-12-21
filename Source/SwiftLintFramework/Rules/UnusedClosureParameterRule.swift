@@ -41,7 +41,12 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "}(UILabel())\n",
             "hoge(arg: num) { num in\n" +
             "  return num\n" +
-            "}\n"
+            "}\n",
+            """
+            ({ (manager: FileManager) in
+              print(manager)
+            })(FileManager.default)
+            """
         ],
         triggeringExamples: [
             "[1, 2].map { ↓number in\n return 3\n}\n",
@@ -151,7 +156,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         return dictionary.name.flatMap { name -> Bool in
             let length = name.bridge().length
             let range = NSRange(location: 0, length: length)
-            return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
+            return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
     }
 

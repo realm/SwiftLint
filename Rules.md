@@ -15391,6 +15391,12 @@ hoge(arg: num) { num in
 
 ```
 
+```swift
+({ (manager: FileManager) in
+  print(manager)
+})(FileManager.default)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

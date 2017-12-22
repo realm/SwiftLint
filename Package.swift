@@ -11,7 +11,7 @@ let package = Package(
         .package(url: "https://github.com/Carthage/Commandant.git", .branch("master")),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.4"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "0.4.1"),
-        .package(url: "https://github.com/jpsim/SwiftyTextTable.git", .branch("characters")),
+        .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.0"),
     ],
     targets: [
         .target(

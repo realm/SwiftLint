@@ -24,6 +24,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
@@ -2429,6 +2430,105 @@ UIView.animateWithDuration(0.3, animations: {
 [1, 2].map↓(  ) { number in
  number + 1 
 }
+
+```
+
+</details>
+
+
+
+## Explicit ACL
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_acl` | Disabled | No | idiomatic
+
+All declarations should specify Access Control Level keywords explicitly.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+internal enum A {}
+
+```
+
+```swift
+public final class B {}
+
+```
+
+```swift
+private struct C {}
+
+```
+
+```swift
+internal enum A {
+ internal enum B {}
+}
+```
+
+```swift
+internal final class Foo {}
+```
+
+```swift
+internal
+class Foo {  private let bar = 5 }
+```
+
+```swift
+internal func a() { let a =  }
+
+```
+
+```swift
+private func a() { func innerFunction() { } }
+```
+
+```swift
+private enum Foo { enum Bar { } }
+```
+
+```swift
+private struct C { let d = 5 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum A {}
+
+```
+
+```swift
+final class B {}
+
+```
+
+```swift
+internal struct C { let d = 5 }
+
+```
+
+```swift
+public struct C { let d = 5 }
+
+```
+
+```swift
+func a() {}
+
+```
+
+```swift
+internal let a = 0
+func b() {}
 
 ```
 

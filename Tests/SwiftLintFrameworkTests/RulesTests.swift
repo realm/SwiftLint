@@ -90,6 +90,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testExplicitACL() {
+        verifyRule(ExplicitACLRule.description)
+    }
+
     func testExplicitEnumRawValue() {
         verifyRule(ExplicitEnumRawValueRule.description)
     }

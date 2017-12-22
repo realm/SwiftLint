@@ -12,6 +12,7 @@ let package = Package(
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.18.4"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "0.4.1"),
         .package(url: "https://github.com/jpsim/SwiftyTextTable.git", .branch("characters")),
+        .package(url: "https://github.com/xzeror/Glob", majorVersion: 1, minor: 0),
     ],
     targets: [
         .target(

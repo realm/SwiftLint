@@ -5,6 +5,9 @@
       location = "group:SwiftLint.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Carthage/Checkouts/Glob/Glob.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Carthage/Checkouts/SourceKitten/sourcekitten.xcodeproj">
    </FileRef>
    <FileRef

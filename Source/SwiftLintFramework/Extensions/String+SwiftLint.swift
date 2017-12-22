@@ -91,4 +91,8 @@ extension String {
         }
         return false
     }
+
+    internal var containsWildcards: Bool {
+        return range(of: "(?<!\\\\)[*?]|(?<!\\\\)\\[[A-Za-z\\-]+\\]", options: .regularExpression) != nil
+    }
 }

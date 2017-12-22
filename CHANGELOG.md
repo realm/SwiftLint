@@ -459,6 +459,10 @@
   initialization of certain types.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1306](https://github.com/realm/SwiftLint/issues/1306)
+  
+* Add support for excluding files using globs (e.g. /**/*Test*.swift) 
+  [Andrey Ostanin](https://github.com/xzeror)
+  [#1220](https://github.com/realm/SwiftLint/issues/1220)
 
 ##### Bug Fixes
 

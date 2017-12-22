@@ -1,2 +1,4 @@
 github "jpsim/SourceKitten" ~> 0.18.4
 github "jpsim/SwiftyTextTable" "characters"
+github "xzeror/Glob" ~> 1.0
+

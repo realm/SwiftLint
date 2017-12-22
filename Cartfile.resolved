@@ -1,4 +1,4 @@
-github "Carthage/Commandant" "3ff9019f7afd189c43a349f819684988031053a0"
+github "Carthage/Commandant" "ab5f20d3e845dc3845eb4c79a4bd8d5ac8af5e1c"
 github "antitypical/Result" "3.2.4"
 github "drmohundro/SWXMLHash" "4.2.5"
 github "jpsim/SourceKitten" "0.18.4"

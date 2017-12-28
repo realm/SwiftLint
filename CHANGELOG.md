@@ -19,6 +19,9 @@
   conditional statement.  
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1924](https://github.com/realm/SwiftLint/issues/1924)
+  
+* Add `--indent-width` option to `AutoCorrectOptions`  
+  [Noah McCann](https://github.com/nmccann)
 
 ##### Bug Fixes
 

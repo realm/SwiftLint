@@ -28,7 +28,7 @@ public struct Configuration: Hashable {
         public static func == (lhs: Indentation, rhs: Indentation) -> Bool {
             switch (lhs, rhs) {
             case (.tabs, .tabs): return true
-            case (.spaces(let lhs), .spaces(let rhs)): return lhs == rhs
+            case let (.spaces(lhs), .spaces(rhs)): return lhs == rhs
             case (_, _): return false
             }
         }

@@ -17,6 +17,17 @@ struct AutoCorrectCommand: CommandProtocol {
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         let configuration = Configuration(options: options)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
+        let indentWidth: Int
+        let useTabs: Bool
+
+        switch configuration.indentationMode {
+        case .tabs:
+            indentWidth = 4
+            useTabs = true
+        case .spaces(let count):
+            indentWidth = count
+            useTabs = false
+        }
 
         return configuration.visitLintableFiles(path: options.path, action: "Correcting",
                                                 quiet: options.quiet,
@@ -29,7 +40,8 @@ struct AutoCorrectCommand: CommandProtocol {
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                                                           useTabs: options.useTabs, indentWidth: 4)
+                                                           useTabs: useTabs,
+                                                           indentWidth: indentWidth)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }

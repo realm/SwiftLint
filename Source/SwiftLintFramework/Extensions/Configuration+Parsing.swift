@@ -21,6 +21,7 @@ extension Configuration {
         case useNestedConfigs = "use_nested_configs" // deprecated
         case warningThreshold = "warning_threshold"
         case whitelistRules = "whitelist_rules"
+        case indentation = "indentation"
     }
 
     private static func validKeys(ruleList: RuleList) -> [String] {
@@ -35,7 +36,8 @@ extension Configuration {
             .swiftlintVersion,
             .useNestedConfigs,
             .warningThreshold,
-            .whitelistRules
+            .whitelistRules,
+            .indentation
         ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
     }
 
@@ -43,6 +45,16 @@ extension Configuration {
                  cachePath: String? = nil) {
         func defaultStringArray(_ object: Any?) -> [String] {
             return [String].array(of: object) ?? []
+        }
+
+        func defaultIndentationMode(_ object: Any?) -> IndentationMode {
+            switch object {
+            case let value as Int: return .spaces(count: value)
+            case let value as String where value == "tabs": return .tabs
+            default:
+                queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
+                return .spaces(count: 4)
+            }
         }
 
         // Use either new 'opt_in_rules' or deprecated 'enabled_rules' for now.
@@ -60,6 +72,7 @@ extension Configuration {
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
+        let indentationMode = defaultIndentationMode(dict[Key.indentation.rawValue])
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
@@ -87,7 +100,8 @@ extension Configuration {
                   ruleList: ruleList,
                   configuredRules: configuredRules,
                   swiftlintVersion: dict[Key.swiftlintVersion.rawValue] as? String,
-                  cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String)
+                  cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
+                  indentationMode: indentationMode)
     }
 
     private init?(disabledRules: [String],
@@ -101,7 +115,8 @@ extension Configuration {
                   ruleList: RuleList = masterRuleList,
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
-                  cachePath: String?) {
+                  cachePath: String?,
+                  indentationMode: IndentationMode) {
 
         let rulesMode: RulesMode
         if enableAllRules {
@@ -126,7 +141,8 @@ extension Configuration {
                   ruleList: ruleList,
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
-                  cachePath: cachePath)
+                  cachePath: cachePath,
+                  indentationMode: indentationMode)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

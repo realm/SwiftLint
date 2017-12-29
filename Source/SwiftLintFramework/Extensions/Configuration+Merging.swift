@@ -130,7 +130,7 @@ extension Configuration {
             rules: mergingRules(with: configuration),
             cachePath: cachePath, // Always use the parent cache path
             rootPath: configuration.rootPath,
-            indentationMode: configuration.indentationMode
+            indentation: configuration.indentation
         )
     }
 }

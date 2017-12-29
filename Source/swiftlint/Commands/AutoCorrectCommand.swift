@@ -20,7 +20,7 @@ struct AutoCorrectCommand: CommandProtocol {
         let indentWidth: Int
         let useTabs: Bool
 
-        switch configuration.indentationMode {
+        switch configuration.indentation {
         case .tabs:
             indentWidth = 4
             useTabs = true

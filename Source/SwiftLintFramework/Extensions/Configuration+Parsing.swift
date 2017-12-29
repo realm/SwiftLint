@@ -47,13 +47,13 @@ extension Configuration {
             return [String].array(of: object) ?? []
         }
 
-        func defaultIndentationMode(_ object: Any?) -> IndentationMode {
+        func defaultIndentation(_ object: Any?) -> Indentation {
             switch object {
             case let value as Int: return .spaces(count: value)
             case let value as String where value == "tabs": return .tabs
             default:
                 queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
-                return .spaces(count: 4)
+                return .default
             }
         }
 
@@ -72,7 +72,7 @@ extension Configuration {
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
-        let indentationMode = defaultIndentationMode(dict[Key.indentation.rawValue])
+        let indentation = defaultIndentation(dict[Key.indentation.rawValue])
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)
@@ -101,7 +101,7 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: dict[Key.swiftlintVersion.rawValue] as? String,
                   cachePath: cachePath ?? dict[Key.cachePath.rawValue] as? String,
-                  indentationMode: indentationMode)
+                  indentation: indentation)
     }
 
     private init?(disabledRules: [String],
@@ -116,7 +116,7 @@ extension Configuration {
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
-                  indentationMode: IndentationMode) {
+                  indentation: Indentation) {
 
         let rulesMode: RulesMode
         if enableAllRules {
@@ -142,7 +142,7 @@ extension Configuration {
                   configuredRules: configuredRules,
                   swiftlintVersion: swiftlintVersion,
                   cachePath: cachePath,
-                  indentationMode: indentationMode)
+                  indentation: indentation)
     }
 
     private static func warnAboutDeprecations(configurationDictionary dict: [String: Any],

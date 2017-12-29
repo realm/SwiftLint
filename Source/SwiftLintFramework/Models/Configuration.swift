@@ -17,13 +17,15 @@ public struct Configuration: Hashable {
         case allEnabled
     }
 
-    public enum IndentationMode: Equatable {
+    public enum Indentation: Equatable {
         case tabs
         case spaces(count: Int)
 
+        public static var `default` = spaces(count: 4)
+
         // MARK: Equatable
 
-        public static func == (lhs: IndentationMode, rhs: IndentationMode) -> Bool {
+        public static func == (lhs: Indentation, rhs: Indentation) -> Bool {
             switch (lhs, rhs) {
             case (.tabs, .tabs): return true
             case (.spaces(let lhs), .spaces(let rhs)): return lhs == rhs
@@ -36,7 +38,7 @@ public struct Configuration: Hashable {
 
     public static let fileName = ".swiftlint.yml"
 
-    public let indentationMode: IndentationMode        // mode to use when indenting
+    public let indentation: Indentation            // mode to use when indenting
     public let included: [String]                      // included
     public let excluded: [String]                      // excluded
     public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
@@ -76,7 +78,7 @@ public struct Configuration: Hashable {
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
-                 indentationMode: IndentationMode = .spaces(count: 4)) {
+                 indentation: Indentation = .default) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
@@ -132,7 +134,7 @@ public struct Configuration: Hashable {
                   reporter: reporter,
                   rules: rules,
                   cachePath: cachePath,
-                  indentationMode: indentationMode)
+                  indentation: indentation)
     }
 
     internal init(rulesMode: RulesMode,
@@ -143,7 +145,7 @@ public struct Configuration: Hashable {
                   rules: [Rule],
                   cachePath: String?,
                   rootPath: String? = nil,
-                  indentationMode: IndentationMode) {
+                  indentation: Indentation) {
 
         self.rulesMode = rulesMode
         self.included = included
@@ -152,7 +154,7 @@ public struct Configuration: Hashable {
         self.cachePath = cachePath
         self.rules = rules
         self.rootPath = rootPath
-        self.indentationMode = indentationMode
+        self.indentation = indentation
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
@@ -167,7 +169,7 @@ public struct Configuration: Hashable {
         rules = configuration.rules
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
-        indentationMode = configuration.indentationMode
+        indentation = configuration.indentation
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -227,7 +229,7 @@ public struct Configuration: Hashable {
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules) &&
-            (lhs.indentationMode == rhs.indentationMode)
+            (lhs.indentation == rhs.indentation)
     }
 }
 

@@ -18,7 +18,7 @@ struct AutoCorrectCommand: CommandProtocol {
         let configuration = Configuration(options: options)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let indentWidth: Int
-        let useTabs: Bool
+        var useTabs: Bool
 
         switch configuration.indentation {
         case .tabs:
@@ -27,6 +27,12 @@ struct AutoCorrectCommand: CommandProtocol {
         case .spaces(let count):
             indentWidth = count
             useTabs = false
+        }
+
+        if options.useTabs {
+            queuedPrintError("'use-tabs' is deprecated and will be completely removed" +
+                " in a future release. 'indentation' can now be defined in a configuration file.")
+            useTabs = options.useTabs
         }
 
         return configuration.visitLintableFiles(path: options.path, action: "Correcting",
@@ -87,6 +93,6 @@ struct AutoCorrectOptions: OptionsProtocol {
                                usage: "ignore cache when correcting")
             <*> mode <| Option(key: "use-tabs",
                                defaultValue: false,
-                               usage: "should use tabs over spaces when reformatting")
+                               usage: "should use tabs over spaces when reformatting. Deprecated.")
     }
 }

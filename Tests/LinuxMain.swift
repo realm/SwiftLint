@@ -376,6 +376,7 @@ extension RulesTests {
         ("testEmptyEnumArguments", testEmptyEnumArguments),
         ("testEmptyParameters", testEmptyParameters),
         ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
+        ("testExplicitACL", testExplicitACL),
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
         ("testExplicitTopLevelACL", testExplicitTopLevelACL),
@@ -455,7 +456,8 @@ extension RulesTests {
         ("testVoidReturn", testVoidReturn),
         ("testSuperCall", testSuperCall),
         ("testWeakDelegate", testWeakDelegate),
-        ("testXCTFailMessage", testXCTFailMessage)
+        ("testXCTFailMessage", testXCTFailMessage),
+        ("testYodaConditionRule", testYodaConditionRule)
     ]
 }
 

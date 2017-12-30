@@ -31,7 +31,9 @@ jobs:
       xcode: "9.0"
     steps:
       - checkout
-      - run: set -o pipefail && script/cibuild | xcpretty
+      - run: set -o pipefail && script/cibuild | xcpretty -r junit
+      - store_test_results:
+          path: build/reports/
       - run: bash <(curl -s https://codecov.io/bash)
 
   cocoapods:

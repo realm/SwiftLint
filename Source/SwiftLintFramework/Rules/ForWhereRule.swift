@@ -56,6 +56,12 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
             // condition with multiple clauses
             "for user in users {\n" +
             "   if user.id == 1 && user.age > 18 { }\n" +
+            "}\n",
+            // if case
+            "for (index, value) in array.enumerated() {\n" +
+            "   if case .valueB(_) = value {\n" +
+            "       return index\n" +
+            "   }\n" +
             "}\n"
         ],
         triggeringExamples: [
@@ -138,8 +144,8 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
                     return false
             }
 
-            let containsLetOrVar = !file.match(pattern: "\\blet|var\\b", with: [.keyword], range: range).isEmpty
-            if containsLetOrVar {
+            let containsKeyword = !file.match(pattern: "\\blet|var|case\\b", with: [.keyword], range: range).isEmpty
+            if containsKeyword {
                 return true
             }
 

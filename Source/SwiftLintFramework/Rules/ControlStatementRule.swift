@@ -36,7 +36,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "} while condition {\n",
             "do { ; } while condition {\n",
             "switch foo {\n",
-            "do {\n} catch let error as NSError {\n}"
+            "do {\n} catch let error as NSError {\n}",
+            "foo().catch(all: true) {}"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
@@ -71,6 +72,15 @@ public struct ControlStatementRule: ConfigurationProviderRule {
                 .filter { match, syntaxKinds -> Bool in
                     let matchString = file.contents.substring(from: match.location, length: match.length)
                     return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)
+                }
+                .filter { match, _ -> Bool in
+                    let contents = file.contents.bridge()
+                    guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
+                        let outerKind = file.structure.kinds(forByteOffset: byteOffset).last else {
+                            return true
+                    }
+
+                    return SwiftExpressionKind(rawValue: outerKind.kind) != .call
                 }
                 .map { match, _ -> StyleViolation in
                     return StyleViolation(ruleDescription: type(of: self).description,

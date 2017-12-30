@@ -337,7 +337,7 @@ by using `${SOME_VARIABLE}` in a string.
 
 #### Defining Custom Rules
 
-You can define custom regex-based rules in you configuration file using the
+You can define custom regex-based rules in your configuration file using the
 following syntax:
 
 ```yaml
@@ -384,6 +384,8 @@ are all the possible syntax kinds:
 * string
 * string_interpolation_anchor
 * typeidentifier
+
+If using custom rules alongside a whitelist, make sure to add `custom_rules` as an item under `whitelist_rules`.
 
 #### Nested Configurations
 

@@ -416,6 +416,7 @@ extension RulesTests {
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
         ("testOverrideInExtension", testOverrideInExtension),
         ("testPatternMatchingKeywords", testPatternMatchingKeywords),
+        ("testPrivateAction", testPrivateAction),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),
         ("testProhibitedSuper", testProhibitedSuper),

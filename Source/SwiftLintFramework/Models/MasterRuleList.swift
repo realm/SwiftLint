@@ -32,6 +32,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyEnumArgumentsRule.self,
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
+    ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
     ExplicitTopLevelACLRule.self,
@@ -81,6 +82,7 @@ public let masterRuleList = RuleList(rules: [
     OverriddenSuperCallRule.self,
     OverrideInExtensionRule.self,
     PatternMatchingKeywordsRule.self,
+    PrivateActionRule.self,
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
     PrivateUnitTestRule.self,
@@ -124,5 +126,6 @@ public let masterRuleList = RuleList(rules: [
     VerticalWhitespaceRule.self,
     VoidReturnRule.self,
     WeakDelegateRule.self,
-    XCTFailMessageRule.self
+    XCTFailMessageRule.self,
+    YodaConditionRule.self
 ])

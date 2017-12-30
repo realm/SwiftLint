@@ -24,6 +24,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
@@ -73,6 +74,7 @@
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
+* [Private Actions](#private-actions)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
@@ -117,6 +119,7 @@
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
 * [XCTFail Message](#xctfail-message)
+* [Yoda condition rule](#yoda-condition-rule)
 --------
 
 ## Array Init
@@ -1739,6 +1742,10 @@ do {
 }
 ```
 
+```swift
+foo().catch(all: true) {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -2423,6 +2430,105 @@ UIView.animateWithDuration(0.3, animations: {
 [1, 2].map↓(  ) { number in
  number + 1 
 }
+
+```
+
+</details>
+
+
+
+## Explicit ACL
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_acl` | Disabled | No | idiomatic
+
+All declarations should specify Access Control Level keywords explicitly.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+internal enum A {}
+
+```
+
+```swift
+public final class B {}
+
+```
+
+```swift
+private struct C {}
+
+```
+
+```swift
+internal enum A {
+ internal enum B {}
+}
+```
+
+```swift
+internal final class Foo {}
+```
+
+```swift
+internal
+class Foo {  private let bar = 5 }
+```
+
+```swift
+internal func a() { let a =  }
+
+```
+
+```swift
+private func a() { func innerFunction() { } }
+```
+
+```swift
+private enum Foo { enum Bar { } }
+```
+
+```swift
+private struct C { let d = 5 }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum A {}
+
+```
+
+```swift
+final class B {}
+
+```
+
+```swift
+internal struct C { let d = 5 }
+
+```
+
+```swift
+public struct C { let d = 5 }
+
+```
+
+```swift
+func a() {}
+
+```
+
+```swift
+internal let a = 0
+func b() {}
 
 ```
 
@@ -4353,6 +4459,15 @@ for user in users {
 ```swift
 for user in users {
    if user.id == 1 && user.age > 18 { }
+}
+
+```
+
+```swift
+for (index, value) in array.enumerated() {
+   if case .valueB(_) = value {
+       return index
+   }
 }
 
 ```
@@ -8784,6 +8899,146 @@ switch foo {
 switch foo {
     case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
 }
+```
+
+</details>
+
+
+
+## Private Actions
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`private_action` | Disabled | No | lint
+
+IBActions should be private.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Foo {
+	@IBAction private func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+struct Foo {
+	@IBAction private func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+class Foo {
+	@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+struct Foo {
+	@IBAction fileprivate func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+private extension Foo {
+	@IBAction func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+fileprivate extension Foo {
+	@IBAction func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo {
+	@IBAction ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+struct Foo {
+	@IBAction ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+class Foo {
+	@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+struct Foo {
+	@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+class Foo {
+	@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+struct Foo {
+	@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+extension Foo {
+	@IBAction ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+extension Foo {
+	@IBAction public ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+extension Foo {
+	@IBAction internal ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+public extension Foo {
+	@IBAction ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
+```
+
+```swift
+internal extension Foo {
+	@IBAction ↓func barButtonTapped(_ sender: UIButton) {}
+}
+
 ```
 
 </details>
@@ -15236,6 +15491,12 @@ hoge(arg: num) { num in
 
 ```
 
+```swift
+({ (manager: FileManager) in
+  print(manager)
+})(FileManager.default)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -16142,6 +16403,99 @@ func testFoo() {
 func testFoo() {
     ↓XCTFail("")
 }
+```
+
+</details>
+
+
+
+## Yoda condition rule
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`yoda_condition` | Disabled | No | lint
+
+The variable should be placed on the left, the constant on the right of a comparison operator.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+if foo == 42 {}
+
+```
+
+```swift
+if foo <= 42.42 {}
+
+```
+
+```swift
+guard foo >= 42 else { return }
+
+```
+
+```swift
+guard foo != "str str" else { return }
+```
+
+```swift
+while foo < 10 { }
+
+```
+
+```swift
+while foo > 1 { }
+
+```
+
+```swift
+while foo + 1 == 2
+```
+
+```swift
+if optionalValue?.property ?? 0 == 2
+```
+
+```swift
+if foo == nil
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓if 42 == foo {}
+
+```
+
+```swift
+↓if 42.42 >= foo {}
+
+```
+
+```swift
+↓guard 42 <= foo else { return }
+
+```
+
+```swift
+↓guard "str str" != foo else { return }
+```
+
+```swift
+↓while 10 > foo { }
+```
+
+```swift
+↓while 1 < foo { }
+```
+
+```swift
+↓if nil == foo
 ```
 
 </details>

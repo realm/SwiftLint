@@ -90,6 +90,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testExplicitACL() {
+        verifyRule(ExplicitACLRule.description)
+    }
+
     func testExplicitEnumRawValue() {
         verifyRule(ExplicitEnumRawValueRule.description)
     }
@@ -249,6 +253,10 @@ class RulesTests: XCTestCase {
 
     func testPatternMatchingKeywords() {
         verifyRule(PatternMatchingKeywordsRule.description)
+    }
+
+    func testPrivateAction() {
+        verifyRule(PrivateActionRule.description)
     }
 
     func testPrivateOutlet() {
@@ -438,5 +446,9 @@ class RulesTests: XCTestCase {
 
     func testXCTFailMessage() {
         verifyRule(XCTFailMessageRule.description)
+    }
+
+    func testYodaConditionRule() {
+        verifyRule(YodaConditionRule.description)
     }
 }

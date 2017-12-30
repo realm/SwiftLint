@@ -9,7 +9,33 @@
 * Invalidate cache when Swift patch version changes.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Add `private_action` opt-in rule which warns against public
+  @IBAction methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1931](https://github.com/realm/SwiftLint/issues/1931)
+
+* Add `yoda_condition` opt-in rule which warns when Yoda conditions are used.
+  That is, when the constant portion of the expression is on the left side of a
+  conditional statement.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#1924](https://github.com/realm/SwiftLint/issues/1924)
+
 ##### Bug Fixes
+
+* Fix false positives in `control_statement` rule when methods with keyword
+  names are used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1946](https://github.com/realm/SwiftLint/issues/1946)
+
+* Fix false positives in `for_where` rule when pattern matching (`if case`)
+  is used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1968](https://github.com/realm/SwiftLint/issues/1968)
+
+* Fix false positives in `unused_closure_parameter` rule when closure is wrapped
+  in parentheses.  
+  [JP Simard](https://github.com/jpsim)
+  [#1979](https://github.com/realm/SwiftLint/issues/1979)
 
 * Fix directories with a `.swift` suffix being treated as files.  
   [Jamie Edge](https://github.com/JamieEdge)
@@ -74,6 +100,10 @@
   [Samuel Susla](https://github.com/sammy-sc)
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
+
+* Added `explicit_acl` which enforces explicit access control levels.
+  [Josep Rodriguez](https://github.com/joseprl89)
+  [#1822](https://github.com/realm/SwiftLint/issues/1649)
 
 ##### Bug Fixes
 

@@ -20,8 +20,10 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1924](https://github.com/realm/SwiftLint/issues/1924)
   
-* Add `--indent-width` option to `AutoCorrectOptions`  
+* Indentation can now be specified via a configuration file
   [Noah McCann](https://github.com/nmccann)
+  [RubenSandwich](https://github.com/RubenSandwich)
+  [#319](https://github.com/realm/SwiftLint/issues/319)
 
 * Add `required_enum_case` opt-in rule which allows enums that
   conform to protocols to require one or more cases.  Useful for

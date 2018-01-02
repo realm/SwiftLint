@@ -20,7 +20,7 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1924](https://github.com/realm/SwiftLint/issues/1924)
   
-* Indentation can now be specified via a configuration file
+* Indentation can now be specified via a configuration file.  
   [Noah McCann](https://github.com/nmccann)
   [RubenSandwich](https://github.com/RubenSandwich)
   [#319](https://github.com/realm/SwiftLint/issues/319)

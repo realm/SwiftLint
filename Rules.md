@@ -19,6 +19,7 @@
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
+* [Discouraged Object Literal](#discouraged-object-literal)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -2061,6 +2062,59 @@ let foo = ↓Bundle.init()
 
 ```swift
 let foo = bar(bundle: ↓Bundle.init(), device: ↓UIDevice.init())
+```
+
+</details>
+
+
+
+## Discouraged Object Literal
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_object_literal` | Disabled | No | idiomatic
+
+Prefer initializers over object literals.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let image = UIImage(named: aVariable)
+```
+
+```swift
+let image = UIImage(named: "interpolated \(variable)")
+```
+
+```swift
+let color = UIColor(red: value, green: value, blue: value, alpha: 1)
+```
+
+```swift
+let image = NSImage(named: aVariable)
+```
+
+```swift
+let image = NSImage(named: "interpolated \(variable)")
+```
+
+```swift
+let color = NSColor(red: value, green: value, blue: value, alpha: 1)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let image = ↓#imageLiteral(resourceName: "image.jpg")
+```
+
+```swift
+let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)
 ```
 
 </details>

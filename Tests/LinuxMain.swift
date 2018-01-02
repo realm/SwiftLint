@@ -388,6 +388,7 @@ extension RulesTests {
         ("testControlStatement", testControlStatement),
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
+        ("testDiscouragedObjectLiteralRule", testDiscouragedObjectLiteralRule),
         ("testDynamicInline", testDynamicInline),
         ("testEmptyCount", testEmptyCount),
         ("testEmptyEnumArguments", testEmptyEnumArguments),

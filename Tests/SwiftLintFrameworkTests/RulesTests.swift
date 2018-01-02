@@ -70,6 +70,10 @@ class RulesTests: XCTestCase {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 
+    func testDiscouragedObjectLiteralRule() {
+        verifyRule(DiscouragedObjectLiteralRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }

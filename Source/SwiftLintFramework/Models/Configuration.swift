@@ -91,42 +91,12 @@ public struct Configuration: Hashable {
 
         let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
 
-        let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
-
-        let rules: [Rule]
-        switch rulesMode {
-        case .allEnabled:
-            rules = configuredRules
-        case .whitelisted(let whitelistedRuleIdentifiers):
-            let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: whitelistedRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            // Validate that rule identifiers aren't listed multiple times
-            if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
-                return nil
-            }
-            rules = configuredRules.filter { rule in
-                return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
-            }
-        case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
-            let validDisabledRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            let validOptInRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: optInRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            // Same here
-            if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
-                || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
-
-                return nil
-            }
-            rules = configuredRules.filter { rule in
-                let id = type(of: rule).description.identifier
-                if validDisabledRuleIdentifiers.contains(id) { return false }
-                return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
-            }
+        guard let rules = enabledRules(from: configuredRules,
+                                       with: rulesMode,
+                                       aliasResolver: handleAliasWithRuleList) else {
+            return nil
         }
+
         self.init(rulesMode: rulesMode,
                   included: included,
                   excluded: excluded,
@@ -265,6 +235,46 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
         "configuration error: '\(rule.0)' is listed \(rule.1) times"
     }.joined(separator: "\n"))
     return true
+}
+
+private func enabledRules(from configuredRules: [Rule],
+                          with mode: Configuration.RulesMode,
+                          aliasResolver: (String) -> String) -> [Rule]? {
+    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+
+    switch mode {
+    case .allEnabled:
+        return configuredRules
+    case .whitelisted(let whitelistedRuleIdentifiers):
+        let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: whitelistedRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        // Validate that rule identifiers aren't listed multiple times
+        if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
+            return nil
+        }
+        return configuredRules.filter { rule in
+            return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
+        }
+    case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
+        let validDisabledRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: disabledRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        let validOptInRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: optInRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        // Same here
+        if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
+            || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
+
+            return nil
+        }
+        return configuredRules.filter { rule in
+            let id = type(of: rule).description.identifier
+            if validDisabledRuleIdentifiers.contains(id) { return false }
+            return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
+        }
+    }
 }
 
 private extension String {

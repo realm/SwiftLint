@@ -212,6 +212,23 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
+    // MARK: - Testing custom indentation
+
+    func testIndentationTabs() {
+        let configuration = Configuration(dict: ["indentation": "tabs"])!
+        XCTAssertEqual(configuration.indentation, .tabs)
+    }
+
+    func testIndentationSpaces() {
+        let configuration = Configuration(dict: ["indentation": 2])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 2))
+    }
+
+    func testIndentationFallback() {
+        let configuration = Configuration(dict: ["indentation": "invalid"])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 4))
+    }
+
     // MARK: - Testing Rules from config dictionary
 
     let testRuleList = RuleList(rules: RuleWithLevelsMock.self)

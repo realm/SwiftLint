@@ -17,28 +17,11 @@ public struct Configuration: Hashable {
         case allEnabled
     }
 
-    public enum Indentation: Equatable {
-        case tabs
-        case spaces(count: Int)
-
-        public static var `default` = spaces(count: 4)
-
-        // MARK: Equatable
-
-        public static func == (lhs: Indentation, rhs: Indentation) -> Bool {
-            switch (lhs, rhs) {
-            case (.tabs, .tabs): return true
-            case let (.spaces(lhs), .spaces(rhs)): return lhs == rhs
-            case (_, _): return false
-            }
-        }
-    }
-
     // MARK: Properties
 
     public static let fileName = ".swiftlint.yml"
 
-    public let indentation: Indentation                // mode to use when indenting
+    public let indentation: IndentationStyle           // style to use when indenting
     public let included: [String]                      // included
     public let excluded: [String]                      // excluded
     public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
@@ -78,7 +61,7 @@ public struct Configuration: Hashable {
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
-                 indentation: Indentation = .default) {
+                 indentation: IndentationStyle = .default) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
@@ -115,7 +98,7 @@ public struct Configuration: Hashable {
                   rules: [Rule],
                   cachePath: String?,
                   rootPath: String? = nil,
-                  indentation: Indentation) {
+                  indentation: IndentationStyle) {
 
         self.rulesMode = rulesMode
         self.included = included

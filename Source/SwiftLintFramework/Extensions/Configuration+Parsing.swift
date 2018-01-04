@@ -41,7 +41,7 @@ extension Configuration {
         ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
     }
 
-    private static func defaultIndentation(_ object: Any?) -> Indentation {
+    private static func defaultIndentation(_ object: Any?) -> IndentationStyle {
         switch object {
         case let value as Int: return .spaces(count: value)
         case let value as String where value == "tabs": return .tabs
@@ -116,7 +116,7 @@ extension Configuration {
                   configuredRules: [Rule]?,
                   swiftlintVersion: String?,
                   cachePath: String?,
-                  indentation: Indentation) {
+                  indentation: IndentationStyle) {
 
         let rulesMode: RulesMode
         if enableAllRules {

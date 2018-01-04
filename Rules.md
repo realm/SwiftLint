@@ -88,6 +88,7 @@
 * [Redundant Optional Initialization](#redundant-optional-initialization)
 * [Redundant String Enum Value](#redundant-string-enum-value)
 * [Redundant Void Return](#redundant-void-return)
+* [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
 * [Single Test Class](#single-test-class)
@@ -10341,6 +10342,81 @@ protocol Foo {
  func foo()↓ -> ()
 }
 
+```
+
+</details>
+
+
+
+## Required Enum Case
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`required_enum_case` | Disabled | No | lint
+
+Enums conforming to a specified protocol must implement a specific case(s).
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success, error, notConnected 
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success, error, notConnected(error: Error) 
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success
+    case error
+    case notConnected
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success
+    case error
+    case notConnected(error: Error)
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success, error 
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success, error 
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success
+    case error
+}
+```
+
+```swift
+enum MyNetworkResponse: String, NetworkResponsable {
+    case success
+    case error
+}
 ```
 
 </details>

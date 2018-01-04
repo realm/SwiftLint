@@ -38,7 +38,7 @@ public struct Configuration: Hashable {
 
     public static let fileName = ".swiftlint.yml"
 
-    public let indentation: Indentation            // mode to use when indenting
+    public let indentation: Indentation                // mode to use when indenting
     public let included: [String]                      // included
     public let excluded: [String]                      // excluded
     public let reporter: String                        // reporter (xcode, json, csv, checkstyle)

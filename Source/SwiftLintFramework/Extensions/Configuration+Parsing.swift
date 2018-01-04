@@ -41,16 +41,6 @@ extension Configuration {
         ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
     }
 
-    private static func defaultIndentation(_ object: Any?) -> IndentationStyle {
-        switch object {
-        case let value as Int: return .spaces(count: value)
-        case let value as String where value == "tabs": return .tabs
-        default:
-            queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
-            return .default
-        }
-    }
-
     public init?(dict: [String: Any], ruleList: RuleList = masterRuleList, enableAllRules: Bool = false,
                  cachePath: String? = nil) {
         func defaultStringArray(_ object: Any?) -> [String] {
@@ -72,7 +62,10 @@ extension Configuration {
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
-        let indentation = Configuration.defaultIndentation(dict[Key.indentation.rawValue])
+        let indentation = Configuration.IndentationStyle(dict[Key.indentation.rawValue]) ?? {
+            queuedPrintError("Invalid configuration for '\(Key.indentation)'. Falling back to default.")
+            return .default
+        }()
 
         Configuration.warnAboutDeprecations(configurationDictionary: dict, disabledRules: disabledRules,
                                             optInRules: optInRules, whitelistRules: whitelistRules, ruleList: ruleList)

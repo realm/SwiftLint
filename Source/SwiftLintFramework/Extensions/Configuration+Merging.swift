@@ -129,7 +129,8 @@ extension Configuration {
             reporter: reporter, // Always use the parent reporter
             rules: mergingRules(with: configuration),
             cachePath: cachePath, // Always use the parent cache path
-            rootPath: configuration.rootPath
+            rootPath: configuration.rootPath,
+            indentation: configuration.indentation
         )
     }
 }

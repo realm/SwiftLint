@@ -17,10 +17,28 @@ public struct Configuration: Hashable {
         case allEnabled
     }
 
+    public enum Indentation: Equatable {
+        case tabs
+        case spaces(count: Int)
+
+        public static var `default` = spaces(count: 4)
+
+        // MARK: Equatable
+
+        public static func == (lhs: Indentation, rhs: Indentation) -> Bool {
+            switch (lhs, rhs) {
+            case (.tabs, .tabs): return true
+            case let (.spaces(lhs), .spaces(rhs)): return lhs == rhs
+            case (_, _): return false
+            }
+        }
+    }
+
     // MARK: Properties
 
     public static let fileName = ".swiftlint.yml"
 
+    public let indentation: Indentation            // mode to use when indenting
     public let included: [String]                      // included
     public let excluded: [String]                      // excluded
     public let reporter: String                        // reporter (xcode, json, csv, checkstyle)
@@ -59,7 +77,8 @@ public struct Configuration: Hashable {
                  ruleList: RuleList = masterRuleList,
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
-                 cachePath: String? = nil) {
+                 cachePath: String? = nil,
+                 indentation: Indentation = .default) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
@@ -72,49 +91,20 @@ public struct Configuration: Hashable {
 
         let handleAliasWithRuleList: (String) -> String = { ruleList.identifier(for: $0) ?? $0 }
 
-        let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
-
-        let rules: [Rule]
-        switch rulesMode {
-        case .allEnabled:
-            rules = configuredRules
-        case .whitelisted(let whitelistedRuleIdentifiers):
-            let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: whitelistedRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            // Validate that rule identifiers aren't listed multiple times
-            if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
-                return nil
-            }
-            rules = configuredRules.filter { rule in
-                return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
-            }
-        case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
-            let validDisabledRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: disabledRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            let validOptInRuleIdentifiers = validateRuleIdentifiers(
-                ruleIdentifiers: optInRuleIdentifiers.map(handleAliasWithRuleList),
-                validRuleIdentifiers: validRuleIdentifiers)
-            // Same here
-            if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
-                || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
-
-                return nil
-            }
-            rules = configuredRules.filter { rule in
-                let id = type(of: rule).description.identifier
-                if validDisabledRuleIdentifiers.contains(id) { return false }
-                return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
-            }
+        guard let rules = enabledRules(from: configuredRules,
+                                       with: rulesMode,
+                                       aliasResolver: handleAliasWithRuleList) else {
+            return nil
         }
+
         self.init(rulesMode: rulesMode,
                   included: included,
                   excluded: excluded,
                   warningThreshold: warningThreshold,
                   reporter: reporter,
                   rules: rules,
-                  cachePath: cachePath)
+                  cachePath: cachePath,
+                  indentation: indentation)
     }
 
     internal init(rulesMode: RulesMode,
@@ -124,7 +114,8 @@ public struct Configuration: Hashable {
                   reporter: String,
                   rules: [Rule],
                   cachePath: String?,
-                  rootPath: String? = nil) {
+                  rootPath: String? = nil,
+                  indentation: Indentation) {
 
         self.rulesMode = rulesMode
         self.included = included
@@ -133,6 +124,7 @@ public struct Configuration: Hashable {
         self.cachePath = cachePath
         self.rules = rules
         self.rootPath = rootPath
+        self.indentation = indentation
 
         // set the config threshold to the threshold provided in the config file
         self.warningThreshold = warningThreshold
@@ -147,6 +139,7 @@ public struct Configuration: Hashable {
         rules = configuration.rules
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
+        indentation = configuration.indentation
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
@@ -205,7 +198,8 @@ public struct Configuration: Hashable {
             (lhs.cachePath == lhs.cachePath) &&
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
-            (lhs.rules == rhs.rules)
+            (lhs.rules == rhs.rules) &&
+            (lhs.indentation == rhs.indentation)
     }
 }
 
@@ -241,6 +235,46 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
         "configuration error: '\(rule.0)' is listed \(rule.1) times"
     }.joined(separator: "\n"))
     return true
+}
+
+private func enabledRules(from configuredRules: [Rule],
+                          with mode: Configuration.RulesMode,
+                          aliasResolver: (String) -> String) -> [Rule]? {
+    let validRuleIdentifiers = configuredRules.map { type(of: $0).description.identifier }
+
+    switch mode {
+    case .allEnabled:
+        return configuredRules
+    case .whitelisted(let whitelistedRuleIdentifiers):
+        let validWhitelistedRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: whitelistedRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        // Validate that rule identifiers aren't listed multiple times
+        if containsDuplicateIdentifiers(validWhitelistedRuleIdentifiers) {
+            return nil
+        }
+        return configuredRules.filter { rule in
+            return validWhitelistedRuleIdentifiers.contains(type(of: rule).description.identifier)
+        }
+    case let .default(disabledRuleIdentifiers, optInRuleIdentifiers):
+        let validDisabledRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: disabledRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        let validOptInRuleIdentifiers = validateRuleIdentifiers(
+            ruleIdentifiers: optInRuleIdentifiers.map(aliasResolver),
+            validRuleIdentifiers: validRuleIdentifiers)
+        // Same here
+        if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
+            || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
+
+            return nil
+        }
+        return configuredRules.filter { rule in
+            let id = type(of: rule).description.identifier
+            if validDisabledRuleIdentifiers.contains(id) { return false }
+            return validOptInRuleIdentifiers.contains(id) || !(rule is OptInRule)
+        }
+    }
 }
 
 private extension String {

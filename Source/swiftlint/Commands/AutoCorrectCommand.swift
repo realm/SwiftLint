@@ -17,6 +17,23 @@ struct AutoCorrectCommand: CommandProtocol {
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         let configuration = Configuration(options: options)
         let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
+        let indentWidth: Int
+        var useTabs: Bool
+
+        switch configuration.indentation {
+        case .tabs:
+            indentWidth = 4
+            useTabs = true
+        case .spaces(let count):
+            indentWidth = count
+            useTabs = false
+        }
+
+        if options.useTabs {
+            queuedPrintError("'use-tabs' is deprecated and will be completely removed" +
+                " in a future release. 'indentation' can now be defined in a configuration file.")
+            useTabs = options.useTabs
+        }
 
         return configuration.visitLintableFiles(path: options.path, action: "Correcting",
                                                 quiet: options.quiet,
@@ -29,7 +46,8 @@ struct AutoCorrectCommand: CommandProtocol {
             }
             if options.format {
                 let formattedContents = linter.file.format(trimmingTrailingWhitespace: true,
-                                                           useTabs: options.useTabs, indentWidth: 4)
+                                                           useTabs: useTabs,
+                                                           indentWidth: indentWidth)
                 _ = try? formattedContents
                     .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
             }
@@ -75,6 +93,6 @@ struct AutoCorrectOptions: OptionsProtocol {
                                usage: "ignore cache when correcting")
             <*> mode <| Option(key: "use-tabs",
                                defaultValue: false,
-                               usage: "should use tabs over spaces when reformatting")
+                               usage: "should use tabs over spaces when reformatting. Deprecated.")
     }
 }

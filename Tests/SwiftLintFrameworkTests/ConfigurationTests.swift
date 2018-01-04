@@ -40,6 +40,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.disabledRules, [])
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
+        XCTAssertEqual(config.indentation, .spaces(count: 4))
         XCTAssertEqual(config.reporter, "xcode")
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
     }
@@ -56,6 +57,7 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.disabledRules, expectedConfig.disabledRules)
         XCTAssertEqual(config.included, expectedConfig.included)
         XCTAssertEqual(config.excluded, expectedConfig.excluded)
+        XCTAssertEqual(config.indentation, expectedConfig.indentation)
         XCTAssertEqual(config.reporter, expectedConfig.reporter)
 
         FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
@@ -208,6 +210,23 @@ class ConfigurationTests: XCTestCase {
                                           optional: false, quiet: true)
         let file = File(path: projectMockSwift0)!
         XCTAssertEqual(configuration.configuration(for: file), configuration)
+    }
+
+    // MARK: - Testing custom indentation
+
+    func testIndentationTabs() {
+        let configuration = Configuration(dict: ["indentation": "tabs"])!
+        XCTAssertEqual(configuration.indentation, .tabs)
+    }
+
+    func testIndentationSpaces() {
+        let configuration = Configuration(dict: ["indentation": 2])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 2))
+    }
+
+    func testIndentationFallback() {
+        let configuration = Configuration(dict: ["indentation": "invalid"])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 4))
     }
 
     // MARK: - Testing Rules from config dictionary

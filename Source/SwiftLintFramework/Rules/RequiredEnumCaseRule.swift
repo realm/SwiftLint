@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 /// Allows for Enums that conform to a protocol to require that a specific case be present.
 ///
-/// This is primarily for result enums where a specific case is common but cannot be inherited due cases not being
+/// This is primarily for result enums where a specific case is common but cannot be inherited due to cases not being
 /// inheritable.
 ///
 /// For example: A result enum is used to define all of the responses a client must handle from a specific service call

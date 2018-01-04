@@ -25,6 +25,11 @@
   result enums.  
   [Donald Ritter](https://github.com/donald-m-ritter)
 
+* Add `discouraged_object_literal` opt-in rule which encourages initializers
+  over object literals.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1987](https://github.com/realm/SwiftLint/issues/1987)
+
 ##### Bug Fixes
 
 * Fix false positives in `control_statement` rule when methods with keyword

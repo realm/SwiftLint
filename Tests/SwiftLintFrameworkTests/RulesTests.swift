@@ -259,6 +259,10 @@ class RulesTests: XCTestCase {
         verifyRule(PatternMatchingKeywordsRule.description)
     }
 
+    func testPrefixedTopLevelConstant() {
+        verifyRule(PrefixedTopLevelConstantRule.description)
+    }
+
     func testPrivateAction() {
         verifyRule(PrivateActionRule.description)
     }

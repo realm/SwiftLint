@@ -9022,7 +9022,19 @@ var foo = true, let kFoo = true
 
 ```swift
 let
-    kFoo = true
+   kFoo = true
+```
+
+```swift
+var foo: Int {
+   return a + b
+}
+```
+
+```swift
+let kFoo = {
+   return a + b
+}()
 ```
 
 </details>
@@ -9056,6 +9068,12 @@ var foo = true, let ↓Foo = true
 ```swift
 let
     ↓foo = true
+```
+
+```swift
+let ↓foo = {
+   return a + b
+}()
 ```
 
 </details>

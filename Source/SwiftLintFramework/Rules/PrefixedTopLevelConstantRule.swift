@@ -36,7 +36,13 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             "var foo = true, bar = true",
             "var foo = true, let kFoo = true",
             "let\n" +
-            "    kFoo = true"
+            "   kFoo = true",
+            "var foo: Int {\n" +
+            "   return a + b\n" +
+            "}",
+            "let kFoo = {\n" +
+            "   return a + b\n" +
+            "}()"
         ],
         triggeringExamples: [
             "private let ↓Foo = 20.0",
@@ -46,7 +52,10 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             "let ↓foo = 2, ↓bar = true",
             "var foo = true, let ↓Foo = true",
             "let\n" +
-            "    ↓foo = true"
+            "    ↓foo = true",
+            "let ↓foo = {\n" +
+            "   return a + b\n" +
+            "}()"
         ]
     )
 
@@ -56,6 +65,7 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
         guard
             kind == .varGlobal,
             dictionary.setterAccessibility == nil,
+            dictionary.bodyLength == nil,
             dictionary.name?.hasPrefix(topLevelPrefix) == false,
             let nameOffset = dictionary.nameOffset
             else {

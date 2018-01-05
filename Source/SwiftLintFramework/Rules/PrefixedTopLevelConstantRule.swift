@@ -55,17 +55,11 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard
             kind == .varGlobal,
-            let offset = dictionary.offset,
-            let nameOffset = dictionary.nameOffset,
-            let name = dictionary.name
+            dictionary.setterAccessibility == nil,
+            dictionary.name?.hasPrefix(topLevelPrefix) == false,
+            let nameOffset = dictionary.nameOffset
             else {
                 return []
-        }
-
-        let range = NSRange(location: offset, length: nameOffset - offset)
-
-        guard isDeclaredAsConstant(in: range, on: file) && !name.hasPrefix(topLevelPrefix) else {
-            return []
         }
 
         return [
@@ -73,23 +67,5 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: nameOffset))
         ]
-    }
-
-    private func isDeclaredAsConstant(in range: NSRange, on file: File) -> Bool {
-        let tokens = file.syntaxMap.tokens(inByteRange: range)
-        let contents = file.contents.bridge()
-
-        let letKeywords = tokens.filter { token in
-            guard
-                SyntaxKind(rawValue: token.type) == .keyword,
-                let keyword = contents.substringWithByteRange(start: token.offset, length: token.length)
-                else {
-                    return false
-            }
-
-            return keyword == "let"
-        }
-
-        return !letKeywords.isEmpty
     }
 }

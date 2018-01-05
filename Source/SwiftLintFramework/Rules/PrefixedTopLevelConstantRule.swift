@@ -1,5 +1,5 @@
 //
-//  PrefixedConstantRule.swift
+//  PrefixedTopLevelConstantRule.swift
 //  SwiftLint
 //
 //  Created by Ornithologist Coder on 1/5/18.

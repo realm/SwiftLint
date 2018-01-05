@@ -12,6 +12,8 @@ import SourceKittenFramework
 public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
+    private let topLevelPrefix = "k"
+
     public init() {}
 
     public static let description = RuleDescription(
@@ -30,14 +32,21 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             "private var foo = 20.0",
             "public var foo = false",
             "internal var foo = \"Foo\"",
-            "var foo = true"
+            "var foo = true",
+            "var foo = true, bar = true",
+            "var foo = true, let kFoo = true",
+            "let\n" +
+            "    kFoo = true"
         ],
         triggeringExamples: [
             "private let ↓Foo = 20.0",
             "public let ↓Foo = false",
             "internal let ↓Foo = \"Foo\"",
             "let ↓Foo = true",
-            "let ↓foo = 2, ↓bar = true"
+            "let ↓foo = 2, ↓bar = true",
+            "var foo = true, let ↓Foo = true",
+            "let\n" +
+            "    ↓foo = true"
         ]
     )
 
@@ -48,15 +57,39 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
             kind == .varGlobal,
             let offset = dictionary.offset,
             let nameOffset = dictionary.nameOffset,
-            let name = dictionary.name,
-            let content = file.contents.bridge().substringWithByteRange(start: offset, length: nameOffset - offset),
-            content.hasPrefix("let") && !name.hasPrefix("k")
+            let name = dictionary.name
             else {
                 return []
         }
 
-        return [StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
-                               location: Location(file: file, byteOffset: nameOffset))]
+        let range = NSRange(location: offset, length: nameOffset - offset)
+
+        guard isDeclaredAsConstant(in: range, on: file) && !name.hasPrefix(topLevelPrefix) else {
+            return []
+        }
+
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: nameOffset))
+        ]
+    }
+
+    private func isDeclaredAsConstant(in range: NSRange, on file: File) -> Bool {
+        let tokens = file.syntaxMap.tokens(inByteRange: range)
+        let contents = file.contents.bridge()
+
+        let letKeywords = tokens.filter { token in
+            guard
+                SyntaxKind(rawValue: token.type) == .keyword,
+                let keyword = contents.substringWithByteRange(start: token.offset, length: token.length)
+                else {
+                    return false
+            }
+
+            return keyword == "let"
+        }
+
+        return !letKeywords.isEmpty
     }
 }

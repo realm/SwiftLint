@@ -9012,6 +9012,19 @@ internal var foo = "Foo"
 var foo = true
 ```
 
+```swift
+var foo = true, bar = true
+```
+
+```swift
+var foo = true, let kFoo = true
+```
+
+```swift
+let
+    kFoo = true
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9034,6 +9047,15 @@ let ↓Foo = true
 
 ```swift
 let ↓foo = 2, ↓bar = true
+```
+
+```swift
+var foo = true, let ↓Foo = true
+```
+
+```swift
+let
+    ↓foo = true
 ```
 
 </details>

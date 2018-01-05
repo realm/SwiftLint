@@ -35,6 +35,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1987](https://github.com/realm/SwiftLint/issues/1987)
 
+* Adds `prefixed_toplevel_constant` opt-in rule which encourages top-level
+  constants to be prefixed by `k`.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1907](https://github.com/realm/SwiftLint/issues/1907)
+
 ##### Bug Fixes
 
 * Fix false positives in `control_statement` rule when methods with keyword

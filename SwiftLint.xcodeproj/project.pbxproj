@@ -83,6 +83,7 @@
 		629C60D91F43906700B4AF92 /* SingleTestClassRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */; };
 		62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */; };
 		62A6E7931F3317E3003A0479 /* JoinedDefaultRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */; };
+		62DADC481FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */; };
 		62DEA1661FB21A9E00BCCCC6 /* PrivateActionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DEA1651FB21A9E00BCCCC6 /* PrivateActionRule.swift */; };
 		67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67932E2C1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift */; };
 		67EB4DFA1E4CC111004E9ACD /* CyclomaticComplexityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */; };
@@ -430,6 +431,7 @@
 		62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitConfiguration.swift; sourceTree = "<group>"; };
 		62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinedDefaultRule.swift; sourceTree = "<group>"; };
 		62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRuleTests.swift; sourceTree = "<group>"; };
+		62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefixedTopLevelConstantRule.swift; sourceTree = "<group>"; };
 		62DEA1651FB21A9E00BCCCC6 /* PrivateActionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateActionRule.swift; sourceTree = "<group>"; };
 		62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedFocusedTestRule.swift; sourceTree = "<group>"; };
 		65454F451B14D73800319A6C /* ControlStatementRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlStatementRule.swift; sourceTree = "<group>"; };
@@ -1092,6 +1094,7 @@
 				78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */,
 				D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */,
 				D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */,
+				62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */,
 				62DEA1651FB21A9E00BCCCC6 /* PrivateActionRule.swift */,
 				094385021D5D4F78009168CF /* PrivateOutletRule.swift */,
 				1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */,
@@ -1557,6 +1560,7 @@
 				57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */,
 				D43B04691E072291004016AF /* ColonConfiguration.swift in Sources */,
 				E82367E01ED3BD1E0040A88E /* Configuration+Cache.swift in Sources */,
+				62DADC481FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift in Sources */,
 				D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
 				47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */,

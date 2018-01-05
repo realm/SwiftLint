@@ -438,6 +438,7 @@ extension RulesTests {
         ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
         ("testOverrideInExtension", testOverrideInExtension),
         ("testPatternMatchingKeywords", testPatternMatchingKeywords),
+        ("testPrefixedTopLevelConstant", testPrefixedTopLevelConstant),
         ("testPrivateAction", testPrivateAction),
         ("testPrivateOutlet", testPrivateOutlet),
         ("testPrivateUnitTest", testPrivateUnitTest),

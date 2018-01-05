@@ -75,6 +75,7 @@
 * [Overridden methods call super](#overridden-methods-call-super)
 * [Override in Extension](#override-in-extension)
 * [Pattern Matching Keywords](#pattern-matching-keywords)
+* [Prefixed Top-Level Constant](#prefixed-top-level-constant)
 * [Private Actions](#private-actions)
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
@@ -8954,6 +8955,125 @@ switch foo {
 switch foo {
     case (.yamlParsing(↓var x), .yamlParsing(↓var y)): break
 }
+```
+
+</details>
+
+
+
+## Prefixed Top-Level Constant
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`prefixed_toplevel_constant` | Disabled | No | style
+
+Top-level constants should be prefixed by `k`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+private let kFoo = 20.0
+```
+
+```swift
+public let kFoo = false
+```
+
+```swift
+internal let kFoo = "Foo"
+```
+
+```swift
+let kFoo = true
+```
+
+```swift
+struct Foo {
+   let bar = 20.0
+}
+```
+
+```swift
+private var foo = 20.0
+```
+
+```swift
+public var foo = false
+```
+
+```swift
+internal var foo = "Foo"
+```
+
+```swift
+var foo = true
+```
+
+```swift
+var foo = true, bar = true
+```
+
+```swift
+var foo = true, let kFoo = true
+```
+
+```swift
+let
+   kFoo = true
+```
+
+```swift
+var foo: Int {
+   return a + b
+}
+```
+
+```swift
+let kFoo = {
+   return a + b
+}()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+private let ↓Foo = 20.0
+```
+
+```swift
+public let ↓Foo = false
+```
+
+```swift
+internal let ↓Foo = "Foo"
+```
+
+```swift
+let ↓Foo = true
+```
+
+```swift
+let ↓foo = 2, ↓bar = true
+```
+
+```swift
+var foo = true, let ↓Foo = true
+```
+
+```swift
+let
+    ↓foo = true
+```
+
+```swift
+let ↓foo = {
+   return a + b
+}()
 ```
 
 </details>

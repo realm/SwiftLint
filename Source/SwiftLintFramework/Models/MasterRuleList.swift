@@ -150,5 +150,6 @@ public let masterRuleList = RuleList(rules: [
     VoidReturnRule.self,
     WeakDelegateRule.self,
     XCTFailMessageRule.self,
+    XCTSpecificMatcherRule.self,
     YodaConditionRule.self
 ])

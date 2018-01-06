@@ -157,6 +157,7 @@
 * [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
+* [XCTest Specific Matcher](#xctest-specific-matcher)
 * [XCTFail Message](#xctfail-message)
 * [Yoda condition rule](#yoda-condition-rule)
 --------
@@ -22759,6 +22760,155 @@ class Foo {
   ↓var scrollDelegate: ScrollDelegate?
 }
 
+```
+
+</details>
+
+
+
+## XCTest Specific Matcher
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`xct_specific_matcher` | Disabled | Yes | idiomatic
+
+Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+XCTAssertFalse(foo)
+```
+
+```swift
+XCTAssertTrue(foo)
+```
+
+```swift
+XCTAssertNil(foo)
+```
+
+```swift
+XCTAssertNotNil(foo)
+```
+
+```swift
+XCTAssertEqual(foo, 2)
+```
+
+```swift
+XCTAssertNotEqual(foo, "false")
+```
+
+```swift
+// XCTAssertEqual(foo, true)
+```
+
+```swift
+/* XCTAssertEqual(foo, true) */
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓XCTAssertEqual(foo, true)
+```
+
+```swift
+↓XCTAssertEqual(foo, false)
+```
+
+```swift
+↓XCTAssertEqual(foo, nil)
+```
+
+```swift
+↓XCTAssertNotEqual(foo, true)
+```
+
+```swift
+↓XCTAssertNotEqual(foo, false)
+```
+
+```swift
+↓XCTAssertNotEqual(foo, nil)
+```
+
+```swift
+↓XCTAssertEqual(true, foo)
+```
+
+```swift
+↓XCTAssertEqual(false, foo)
+```
+
+```swift
+↓XCTAssertEqual(nil, foo)
+```
+
+```swift
+↓XCTAssertNotEqual(true, foo)
+```
+
+```swift
+↓XCTAssertNotEqual(false, foo)
+```
+
+```swift
+↓XCTAssertNotEqual(nil, foo)
+```
+
+```swift
+↓XCTAssertEqual(foo, true, "toto")
+```
+
+```swift
+↓XCTAssertEqual(foo, false, "toto")
+```
+
+```swift
+↓XCTAssertEqual(foo, nil, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, true, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, false, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, nil, "toto")
+```
+
+```swift
+↓XCTAssertEqual(true, foo, "toto")
+```
+
+```swift
+↓XCTAssertEqual(false, foo, "toto")
+```
+
+```swift
+↓XCTAssertEqual(nil, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(true, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(false, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(nil, foo, "toto")
 ```
 
 </details>

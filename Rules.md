@@ -22844,6 +22844,14 @@ XCTAssertEqual([true, nil, true, nil], foo)
 ```
 
 ```swift
+XCTAssertEqual(2, foo)
+```
+
+```swift
+XCTAssertNotEqual("false", foo)
+```
+
+```swift
 XCTAssertFalse(  foo  )
 ```
 

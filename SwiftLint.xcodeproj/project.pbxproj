@@ -92,6 +92,7 @@
 		623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
 		62426A032118BA6E007E6340 /* ClosureBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */; };
 		62426A062118F995007E6340 /* ClosureBodyLengthRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */; };
+		6248E7392002429600A32C52 /* XCTSpecificMatcherRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6248E7372002429000A32C52 /* XCTSpecificMatcherRuleExamples.swift */; };
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
 		6258783B1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */; };
 		62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
@@ -526,6 +527,7 @@
 		623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRuleExamples.swift; sourceTree = "<group>"; };
 		62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureBodyLengthRule.swift; sourceTree = "<group>"; };
 		62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureBodyLengthRuleExamples.swift; sourceTree = "<group>"; };
+		6248E7372002429000A32C52 /* XCTSpecificMatcherRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTSpecificMatcherRuleExamples.swift; sourceTree = "<group>"; };
 		6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedObjectLiteralRule.swift; sourceTree = "<group>"; };
 		62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRule.swift; sourceTree = "<group>"; };
 		62640150201552E0005B9C4A /* DiscouragedOptionalBooleanRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedOptionalBooleanRule.swift; sourceTree = "<group>"; };
@@ -1917,6 +1919,7 @@
 				E80E018F1B92C1350078EB70 /* Region.swift in Sources */,
 				E88198581BEA956C00333A11 /* FunctionBodyLengthRule.swift in Sources */,
 				E88DEA751B09852000A66CB0 /* File+SwiftLint.swift in Sources */,
+				6248E7392002429600A32C52 /* XCTSpecificMatcherRuleExamples.swift in Sources */,
 				D47EF4841F69E3D60012C4CA /* ColonRule+Type.swift in Sources */,
 				3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfiguration.swift in Sources */,
 				D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */,

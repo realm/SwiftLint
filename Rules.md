@@ -22811,6 +22811,62 @@ XCTAssertNotEqual(foo, "false")
 /* XCTAssertEqual(foo, true) */
 ```
 
+```swift
+XCTAssertEqual(foo, [1, 2, 3, true])
+```
+
+```swift
+XCTAssertEqual(foo, [1, 2, 3, false])
+```
+
+```swift
+XCTAssertEqual(foo, [1, 2, 3, nil])
+```
+
+```swift
+XCTAssertEqual(foo, [true, nil, true, nil])
+```
+
+```swift
+XCTAssertEqual([1, 2, 3, true], foo)
+```
+
+```swift
+XCTAssertEqual([1, 2, 3, false], foo)
+```
+
+```swift
+XCTAssertEqual([1, 2, 3, nil], foo)
+```
+
+```swift
+XCTAssertEqual([true, nil, true, nil], foo)
+```
+
+```swift
+XCTAssertFalse(  foo  )
+```
+
+```swift
+XCTAssertTrue(  foo  )
+```
+
+```swift
+XCTAssertNil(  foo  )
+```
+
+```swift
+XCTAssertNotNil(  foo  )
+```
+
+```swift
+XCTAssertEqual(  foo  , 2  )
+```
+
+```swift
+XCTAssertNotEqual(  foo, "false")
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22909,6 +22965,18 @@ XCTAssertNotEqual(foo, "false")
 
 ```swift
 ↓XCTAssertNotEqual(nil, foo, "toto")
+```
+
+```swift
+↓XCTAssertEqual(foo,true)
+```
+
+```swift
+↓XCTAssertEqual( foo , false )
+```
+
+```swift
+↓XCTAssertEqual(  foo  ,  nil  )
 ```
 
 </details>

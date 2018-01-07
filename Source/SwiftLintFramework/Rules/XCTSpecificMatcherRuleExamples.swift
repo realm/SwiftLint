@@ -37,6 +37,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         "XCTAssertEqual([1, 2, 3, nil], foo)",
         "XCTAssertEqual([true, nil, true, nil], foo)",
 
+        // Inverted logic
+        "XCTAssertEqual(2, foo)",
+        "XCTAssertNotEqual(\"false\", foo)",
+
         // Blank spaces
         "XCTAssertFalse(  foo  )",
         "XCTAssertTrue(  foo  )",

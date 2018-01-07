@@ -22875,6 +22875,30 @@ XCTAssertEqual(  foo  , 2  )
 XCTAssertNotEqual(  foo, "false")
 ```
 
+```swift
+XCTAssertFalse(foo?.bar)
+```
+
+```swift
+XCTAssertTrue(foo!.bar)
+```
+
+```swift
+XCTAssertNil(foo?.bar)
+```
+
+```swift
+XCTAssertNotNil(foo!.bar)
+```
+
+```swift
+XCTAssertEqual(foo?.bar, 2)
+```
+
+```swift
+XCTAssertNotEqual(foo?.bar, "false")
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22928,54 +22952,6 @@ XCTAssertNotEqual(  foo, "false")
 ```
 
 ```swift
-↓XCTAssertEqual(foo, true, "toto")
-```
-
-```swift
-↓XCTAssertEqual(foo, false, "toto")
-```
-
-```swift
-↓XCTAssertEqual(foo, nil, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(foo, true, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(foo, false, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(foo, nil, "toto")
-```
-
-```swift
-↓XCTAssertEqual(true, foo, "toto")
-```
-
-```swift
-↓XCTAssertEqual(false, foo, "toto")
-```
-
-```swift
-↓XCTAssertEqual(nil, foo, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(true, foo, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(false, foo, "toto")
-```
-
-```swift
-↓XCTAssertNotEqual(nil, foo, "toto")
-```
-
-```swift
 ↓XCTAssertEqual(foo,true)
 ```
 
@@ -22985,6 +22961,30 @@ XCTAssertNotEqual(  foo, "false")
 
 ```swift
 ↓XCTAssertEqual(  foo  ,  nil  )
+```
+
+```swift
+↓XCTAssertEqual(true, [1, 2, 3, true].hasNumbers())
+```
+
+```swift
+↓XCTAssertEqual([1, 2, 3, true].hasNumbers(), true)
+```
+
+```swift
+↓XCTAssertEqual(foo?.bar, false)
+```
+
+```swift
+↓XCTAssertEqual(foo!.bar, true)
+```
+
+```swift
+↓XCTAssertEqual(foo?.bar, nil)
+```
+
+```swift
+↓XCTAssertNotEqual(foo!.bar, nil)
 ```
 
 </details>

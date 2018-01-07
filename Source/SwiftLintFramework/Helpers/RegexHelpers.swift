@@ -16,13 +16,4 @@ struct RegexHelpers {
 
     // Two 'variable or number'
     static let twoVariableOrNumber = "\(variableOrNumber),\(variableOrNumber)"
-
-    // true variable
-    static let trueVariable = "\\s*true\\s*"
-
-    // false variable
-    static let falseVariable = "\\s*false\\s*"
-
-    // nil variable
-    static let nilVariable = "\\s*nil\\s*"
 }

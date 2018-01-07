@@ -53,30 +53,30 @@ public struct XCTSpecificMatcherRule: OptInRule, ConfigurationProviderRule, Corr
     }
 
     private func methodsMapping() -> [String: String] {
-        let varName = RegexHelpers.varNameGroup
-        let trueVar = RegexHelpers.trueVariable
-        let falseVar = RegexHelpers.falseVariable
-        let nilVar = RegexHelpers.nilVariable
+        let varName = "\\s*(.*?)\\s*"
+        let trueParam = "\\s*true\\s*"
+        let falseParam = "\\s*false\\s*"
+        let nilParam = "\\s*nil\\s*"
 
         return [
             // Equal true
-            "XCTAssertEqual\\(\(varName),\(trueVar)": "XCTAssertTrue($1",
-            "XCTAssertEqual\\(\(trueVar),\(varName)": "XCTAssertTrue($1",
+            "XCTAssertEqual\\(\(varName),\(trueParam)\\)": "XCTAssertTrue($1)",
+            "XCTAssertEqual\\(\(trueParam),\(varName)\\)": "XCTAssertTrue($1)",
             // Equal false
-            "XCTAssertEqual\\(\(varName),\(falseVar)": "XCTAssertFalse($1",
-            "XCTAssertEqual\\(\(falseVar),\(varName)": "XCTAssertFalse($1",
+            "XCTAssertEqual\\(\(varName),\(falseParam)\\)": "XCTAssertFalse($1)",
+            "XCTAssertEqual\\(\(falseParam),\(varName)\\)": "XCTAssertFalse($1)",
             // Equal nil
-            "XCTAssertEqual\\(\(varName),\(nilVar)": "XCTAssertNil($1",
-            "XCTAssertEqual\\(\(nilVar),\(varName)": "XCTAssertNil($1",
+            "XCTAssertEqual\\(\(varName),\(nilParam)\\)": "XCTAssertNil($1)",
+            "XCTAssertEqual\\(\(nilParam),\(varName)\\)": "XCTAssertNil($1)",
             // Not equal true
-            "XCTAssertNotEqual\\(\(varName),\(trueVar)": "XCTAssertFalse($1",
-            "XCTAssertNotEqual\\(\(trueVar),\(varName)": "XCTAssertFalse($1",
+            "XCTAssertNotEqual\\(\(varName),\(trueParam)\\)": "XCTAssertFalse($1)",
+            "XCTAssertNotEqual\\(\(trueParam),\(varName)\\)": "XCTAssertFalse($1)",
             // Not equal false
-            "XCTAssertNotEqual\\(\(varName),\(falseVar)": "XCTAssertTrue($1",
-            "XCTAssertNotEqual\\(\(falseVar),\(varName)": "XCTAssertTrue($1",
+            "XCTAssertNotEqual\\(\(varName),\(falseParam)\\)": "XCTAssertTrue($1)",
+            "XCTAssertNotEqual\\(\(falseParam),\(varName)\\)": "XCTAssertTrue($1)",
             // Not equal Nil
-            "XCTAssertNotEqual\\(\(varName),\(nilVar)": "XCTAssertNotNil($1",
-            "XCTAssertNotEqual\\(\(nilVar),\(varName)": "XCTAssertNotNil($1"
+            "XCTAssertNotEqual\\(\(varName),\(nilParam)\\)": "XCTAssertNotNil($1)",
+            "XCTAssertNotEqual\\(\(nilParam),\(varName)\\)": "XCTAssertNotNil($1)"
         ]
     }
 }

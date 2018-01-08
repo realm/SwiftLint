@@ -19,7 +19,7 @@
   conditional statement.  
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1924](https://github.com/realm/SwiftLint/issues/1924)
-  
+
 * Indentation can now be specified via a configuration file.  
   [Noah McCann](https://github.com/nmccann)
   [RubenSandwich](https://github.com/RubenSandwich)
@@ -39,6 +39,10 @@
   constants to be prefixed by `k`.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1907](https://github.com/realm/SwiftLint/issues/1907)
+
+* Added `explicit_acl` opt-in rule to enforce explicit access control levels.  
+  [Josep Rodriguez](https://github.com/joseprl89)
+  [#1822](https://github.com/realm/SwiftLint/issues/1649)
 
 ##### Bug Fixes
 
@@ -116,10 +120,6 @@
   [Samuel Susla](https://github.com/sammy-sc)
   [JP Simard](https://github.com/jpsim)
   [#1822](https://github.com/realm/SwiftLint/issues/1822)
-
-* Added `explicit_acl` which enforces explicit access control levels.
-  [Josep Rodriguez](https://github.com/joseprl89)
-  [#1822](https://github.com/realm/SwiftLint/issues/1649)
 
 ##### Bug Fixes
 

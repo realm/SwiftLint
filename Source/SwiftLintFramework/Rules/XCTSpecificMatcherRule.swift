@@ -56,13 +56,13 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
         // If the call has "protected" words, provides suggestion based on the first one.
         guard
             let parameter = parameters.first,
-            let reason = matcher.suggestion(for: parameter) else { return [] }
+            let suggestedMatcher = matcher.suggestion(for: parameter) else { return [] }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, byteOffset: offset),
-                           reason: "Prefer the specific matcher '\(reason)' instead.")
+                           reason: "Prefer the specific matcher '\(suggestedMatcher)' instead.")
         ]
     }
 

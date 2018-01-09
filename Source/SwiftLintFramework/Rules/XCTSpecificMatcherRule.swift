@@ -47,10 +47,10 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 guard
                     let paramOffset = parameter.bodyOffset,
                     let paramLength = parameter.bodyLength,
-                    let body = file.contents.bridge().substringWithByteRange(start: paramOffset, length: paramLength)
-                    else { return nil }
+                    let body = file.contents.bridge().substringWithByteRange(start: paramOffset, length: paramLength),
+                    protectedArguments.contains(body) else { return nil }
 
-                return protectedArguments.contains(body) ? body : nil
+                return body
             }
 
         // If the call has "protected" words, provides suggestion based on the first one.

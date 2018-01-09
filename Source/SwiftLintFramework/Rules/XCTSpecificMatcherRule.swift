@@ -50,7 +50,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                     let body = file.contents.bridge().substringWithByteRange(start: paramOffset, length: paramLength)
                     else { return nil }
 
-                return ["false", "true", "nil"].contains(body) ? body : nil
+                return protectedArguments.contains(body) ? body : nil
             }
 
         // If the call has "protected" words, provides suggestion based on the first one.
@@ -65,6 +65,10 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                            reason: "Prefer the specific matcher '\(reason)' instead.")
         ]
     }
+
+    private let protectedArguments: Set<String> = [
+        "false", "true", "nil"
+    ]
 }
 
 private enum XCTestMatcher: String {

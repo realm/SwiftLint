@@ -1333,6 +1333,20 @@ extension WeakDelegateRuleTests {
 extension XCTFailMessageRuleTests {
     static var allTests: [(String, (XCTFailMessageRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+}
+
+extension XCTSpecificMatcherRuleTests {
+    static var allTests: [(String, (XCTSpecificMatcherRuleTests) -> () throws -> Void)] = [
+        ("testRule", testRule),
+        ("testEqualTrue", testEqualTrue),
+        ("testEqualFalse", testEqualFalse),
+        ("testEqualNil", testEqualNil),
+        ("testNotEqualTrue", testNotEqualTrue),
+        ("testNotEqualFalse", testNotEqualFalse),
+        ("testNotEqualNil", testNotEqualNil),
+        ("testEqualNilNil", testEqualNilNil),
+        ("testEqualTrueTrue", testEqualTrueTrue),
+        ("testEqualFalseFalse", testEqualFalseFalse)
     ]
 }
 

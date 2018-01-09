@@ -108,6 +108,15 @@ internal struct XCTSpecificMatcherRuleExamples {
         "↓XCTAssertEqual(foo?.bar, false)",
         "↓XCTAssertEqual(foo!.bar, true)",
         "↓XCTAssertEqual(foo?.bar, nil)",
-        "↓XCTAssertNotEqual(foo!.bar, nil)"
+        "↓XCTAssertNotEqual(foo!.bar, nil)",
+
+        // Weird cases
+        "↓XCTAssertEqual(nil, true)",
+        "↓XCTAssertEqual(nil, false)",
+        "↓XCTAssertEqual(true, nil)",
+        "↓XCTAssertEqual(false, nil)",
+        "↓XCTAssertEqual(nil, nil)",
+        "↓XCTAssertEqual(true, true)",
+        "↓XCTAssertEqual(false, false)"
     ]
 }

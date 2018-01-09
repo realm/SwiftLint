@@ -30,15 +30,16 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             kind == .call,
             let offset = dictionary.offset,
             let name = dictionary.name,
-            let matcher = XCTestMatcher(rawValue: name)
-            else {
-                return []
-        }
+            let matcher = XCTestMatcher(rawValue: name) else { return [] }
 
+        // Checks the first two arguments looking for 'true', 'false', and 'nil'.
         let parameters = dictionary.substructure
             .filter { $0.offset != nil }
             .sorted { param1, param2 -> Bool in
-                guard let firstOffset = param1.offset, let secondOffset = param2.offset else { return false }
+                guard
+                    let firstOffset = param1.offset,
+                    let secondOffset = param2.offset else { return false }
+
                 return firstOffset < secondOffset
             }
             .prefix(2)
@@ -52,10 +53,10 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 return ["false", "true", "nil"].contains(body) ? body : nil
             }
 
+        // If the call has a "protected" word, provides suggestion based on the first one.
         guard
             let parameter = parameters.first,
-            let reason = matcher.suggestion(for: parameter)
-            else { return [] }
+            let reason = matcher.suggestion(for: parameter) else { return [] }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,

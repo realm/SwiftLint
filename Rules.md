@@ -23051,6 +23051,34 @@ XCTAssertEqual(.toto(.zoo), foo?.bar)
 ↓XCTAssertNotEqual(foo!.bar, nil)
 ```
 
+```swift
+↓XCTAssertEqual(nil, true)
+```
+
+```swift
+↓XCTAssertEqual(nil, false)
+```
+
+```swift
+↓XCTAssertEqual(true, nil)
+```
+
+```swift
+↓XCTAssertEqual(false, nil)
+```
+
+```swift
+↓XCTAssertEqual(nil, nil)
+```
+
+```swift
+↓XCTAssertEqual(true, true)
+```
+
+```swift
+↓XCTAssertEqual(false, false)
+```
+
 </details>
 
 

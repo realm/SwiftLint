@@ -53,7 +53,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 return ["false", "true", "nil"].contains(body) ? body : nil
             }
 
-        // If the call has a "protected" word, provides suggestion based on the first one.
+        // If the call has "protected" words, provides suggestion based on the first one.
         guard
             let parameter = parameters.first,
             let reason = matcher.suggestion(for: parameter) else { return [] }

@@ -9,8 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct XCTSpecificMatcherRule: OptInRule, ConfigurationProviderRule, CorrectableRule {
-
+public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -21,62 +20,65 @@ public struct XCTSpecificMatcherRule: OptInRule, ConfigurationProviderRule, Corr
         description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
         kind: .idiomatic,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
-        triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples,
-        corrections: XCTSpecificMatcherRuleExamples.corrections
+        triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let matches = violationMatchesRanges(in: file)
-
-        return matches.map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+    public func validate(file: File,
+                         kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard
+            kind == .call,
+            let offset = dictionary.offset,
+            let name = dictionary.name,
+            let matcher = XCTestMatcher(rawValue: name)
+            else {
+                return []
         }
-    }
 
-    public func correct(file: File) -> [Correction] {
-        return file.correct(legacyRule: self, patterns: methodsMapping())
-    }
+        let parameters = dictionary.substructure
+            .filter { $0.offset != nil }
+            .sorted { param1, param2 -> Bool in
+                guard let firstOffset = param1.offset, let secondOffset = param2.offset else { return false }
+                return firstOffset < secondOffset
+            }
+            .prefix(2)
+            .flatMap { parameter -> String? in
+                guard
+                    let paramOffset = parameter.bodyOffset,
+                    let paramLength = parameter.bodyLength,
+                    let body = file.contents.bridge().substringWithByteRange(start: paramOffset, length: paramLength)
+                    else { return nil }
 
-    // MARK: - Private
+                return ["false", "true", "nil"].contains(body) ? body : nil
+            }
 
-    private func violationMatchesRanges(in file: File) -> [NSRange] {
-        let methodsMappingKeys = methodsMapping().keys
-        let methodNamesPattern = "(" + methodsMappingKeys.joined(separator: "|") + ")"
-        let excludingKinds = SyntaxKind.commentKinds
-
-        return file
-            .match(pattern: methodNamesPattern)
-            .filter { $1.filter(excludingKinds.contains).isEmpty && $1.first == .identifier }
-            .map { $0.0 }
-    }
-
-    private func methodsMapping() -> [String: String] {
-        let varName = "\\s*(.*?)\\s*"
-        let trueParam = "\\s*true\\s*"
-        let falseParam = "\\s*false\\s*"
-        let nilParam = "\\s*nil\\s*"
+        guard
+            let parameter = parameters.first,
+            let reason = matcher.suggestion(for: parameter)
+            else { return [] }
 
         return [
-            // Equal true
-            "XCTAssertEqual\\(\(varName),\(trueParam)\\)": "XCTAssertTrue($1)",
-            "XCTAssertEqual\\(\(trueParam),\(varName)\\)": "XCTAssertTrue($1)",
-            // Equal false
-            "XCTAssertEqual\\(\(varName),\(falseParam)\\)": "XCTAssertFalse($1)",
-            "XCTAssertEqual\\(\(falseParam),\(varName)\\)": "XCTAssertFalse($1)",
-            // Equal nil
-            "XCTAssertEqual\\(\(varName),\(nilParam)\\)": "XCTAssertNil($1)",
-            "XCTAssertEqual\\(\(nilParam),\(varName)\\)": "XCTAssertNil($1)",
-            // Not equal true
-            "XCTAssertNotEqual\\(\(varName),\(trueParam)\\)": "XCTAssertFalse($1)",
-            "XCTAssertNotEqual\\(\(trueParam),\(varName)\\)": "XCTAssertFalse($1)",
-            // Not equal false
-            "XCTAssertNotEqual\\(\(varName),\(falseParam)\\)": "XCTAssertTrue($1)",
-            "XCTAssertNotEqual\\(\(falseParam),\(varName)\\)": "XCTAssertTrue($1)",
-            // Not equal Nil
-            "XCTAssertNotEqual\\(\(varName),\(nilParam)\\)": "XCTAssertNotNil($1)",
-            "XCTAssertNotEqual\\(\(nilParam),\(varName)\\)": "XCTAssertNotNil($1)"
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: offset),
+                           reason: "Prefer the specific matcher '\(reason)' instead.")
         ]
+    }
+}
+
+private enum XCTestMatcher: String {
+    case equal = "XCTAssertEqual"
+    case notEqual = "XCTAssertNotEqual"
+
+    func suggestion(for argument: String) -> String? {
+        switch (self, argument) {
+        case (.equal, "true"): return "XCTAssertTrue"
+        case (.equal, "false"): return "XCTAssertFalse"
+        case (.equal, "nil"): return "XCTAssertNil"
+        case (.notEqual, "true"): return "XCTAssertFalse"
+        case (.notEqual, "false"): return "XCTAssertTrue"
+        case (.notEqual, "nil"): return "XCTAssertNotNil"
+        default: return nil
+        }
     }
 }

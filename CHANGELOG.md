@@ -798,6 +798,15 @@ The next release will require Swift 4.0 or higher to build.
   [JP Simard](https://github.com/jpsim)
   [#1998](https://github.com/realm/SwiftLint/issues/1998)
 
+#### Enhancements
+
+* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
+  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1874](https://github.com/realm/SwiftLint/issues/1874)
+
+#### Bug Fixes
+
 ## 0.24.1: Dented Tumbler
 
 ##### Breaking
@@ -843,10 +852,6 @@ The next release will require Swift 4.0 or higher to build.
 * Added `explicit_acl` opt-in rule to enforce explicit access control levels.  
   [Josep Rodriguez](https://github.com/joseprl89)
   [#1822](https://github.com/realm/SwiftLint/issues/1649)
-* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
-  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1874](https://github.com/realm/SwiftLint/issues/1874)
 
 ##### Bug Fixes
 

@@ -22770,7 +22770,7 @@ class Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`xct_specific_matcher` | Disabled | Yes | idiomatic
+`xct_specific_matcher` | Disabled | No | idiomatic
 
 Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`
 
@@ -22899,6 +22899,22 @@ XCTAssertEqual(foo?.bar, 2)
 XCTAssertNotEqual(foo?.bar, "false")
 ```
 
+```swift
+XCTAssertEqual(foo?.bar, toto())
+```
+
+```swift
+XCTAssertEqual(foo?.bar, .toto(.zoo))
+```
+
+```swift
+XCTAssertEqual(toto(), foo?.bar)
+```
+
+```swift
+XCTAssertEqual(.toto(.zoo), foo?.bar)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -22949,6 +22965,54 @@ XCTAssertNotEqual(foo?.bar, "false")
 
 ```swift
 ↓XCTAssertNotEqual(nil, foo)
+```
+
+```swift
+↓XCTAssertEqual(foo, true, "toto")
+```
+
+```swift
+↓XCTAssertEqual(foo, false, "toto")
+```
+
+```swift
+↓XCTAssertEqual(foo, nil, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, true, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, false, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(foo, nil, "toto")
+```
+
+```swift
+↓XCTAssertEqual(true, foo, "toto")
+```
+
+```swift
+↓XCTAssertEqual(false, foo, "toto")
+```
+
+```swift
+↓XCTAssertEqual(nil, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(true, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(false, foo, "toto")
+```
+
+```swift
+↓XCTAssertNotEqual(nil, foo, "toto")
 ```
 
 ```swift

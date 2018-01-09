@@ -55,7 +55,13 @@ internal struct XCTSpecificMatcherRuleExamples {
         "XCTAssertNil(foo?.bar)",
         "XCTAssertNotNil(foo!.bar)",
         "XCTAssertEqual(foo?.bar, 2)",
-        "XCTAssertNotEqual(foo?.bar, \"false\")"
+        "XCTAssertNotEqual(foo?.bar, \"false\")",
+
+        // Function calls and enums
+        "XCTAssertEqual(foo?.bar, toto())",
+        "XCTAssertEqual(foo?.bar, .toto(.zoo))",
+        "XCTAssertEqual(toto(), foo?.bar)",
+        "XCTAssertEqual(.toto(.zoo), foo?.bar)"
     ]
 
     static let triggeringExamples = [
@@ -75,6 +81,20 @@ internal struct XCTSpecificMatcherRuleExamples {
         "↓XCTAssertNotEqual(false, foo)",
         "↓XCTAssertNotEqual(nil, foo)",
 
+        // With message
+        "↓XCTAssertEqual(foo, true, \"toto\")",
+        "↓XCTAssertEqual(foo, false, \"toto\")",
+        "↓XCTAssertEqual(foo, nil, \"toto\")",
+        "↓XCTAssertNotEqual(foo, true, \"toto\")",
+        "↓XCTAssertNotEqual(foo, false, \"toto\")",
+        "↓XCTAssertNotEqual(foo, nil, \"toto\")",
+        "↓XCTAssertEqual(true, foo, \"toto\")",
+        "↓XCTAssertEqual(false, foo, \"toto\")",
+        "↓XCTAssertEqual(nil, foo, \"toto\")",
+        "↓XCTAssertNotEqual(true, foo, \"toto\")",
+        "↓XCTAssertNotEqual(false, foo, \"toto\")",
+        "↓XCTAssertNotEqual(nil, foo, \"toto\")",
+
         // Blank spaces
         "↓XCTAssertEqual(foo,true)",
         "↓XCTAssertEqual( foo , false )",
@@ -89,35 +109,5 @@ internal struct XCTSpecificMatcherRuleExamples {
         "↓XCTAssertEqual(foo!.bar, true)",
         "↓XCTAssertEqual(foo?.bar, nil)",
         "↓XCTAssertNotEqual(foo!.bar, nil)"
-    ]
-
-    static let corrections = [
-        // Without message
-        "↓XCTAssertEqual(foo, true)": "XCTAssertTrue(foo)",
-        "↓XCTAssertEqual(true, foo)": "XCTAssertTrue(foo)",
-        "↓XCTAssertEqual(foo, false)": "XCTAssertFalse(foo)",
-        "↓XCTAssertNotEqual(foo, true)": "XCTAssertFalse(foo)",
-        "↓XCTAssertNotEqual(foo, false)": "XCTAssertTrue(foo)",
-        "↓XCTAssertEqual(foo, nil)": "XCTAssertNil(foo)",
-        "↓XCTAssertNotEqual(foo, nil)": "XCTAssertNotNil(foo)",
-
-        // Blank spaces
-        "↓XCTAssertEqual(foo,true)": "XCTAssertTrue(foo)",
-        "↓XCTAssertEqual( true , foo )": "XCTAssertTrue(foo)",
-        "↓XCTAssertEqual(  foo  ,  false  )": "XCTAssertFalse(foo)",
-
-        // Commented out code
-        "// XCTAssertNotEqual(foo, nil)": "// XCTAssertNotEqual(foo, nil)",
-        "/* XCTAssertNotEqual(foo, nil) */": "/* XCTAssertNotEqual(foo, nil) */",
-
-        // Arrays
-        "↓XCTAssertEqual(true, [1, 2, 3, true].hasNumbers())": "XCTAssertTrue([1, 2, 3, true].hasNumbers())",
-        "↓XCTAssertEqual([1, 2, 3, true].hasNumbers(), true)": "XCTAssertTrue([1, 2, 3, true].hasNumbers())",
-
-        // Optionals
-        "↓XCTAssertEqual(foo?.bar, false)": "XCTAssertFalse(foo?.bar)",
-        "↓XCTAssertEqual(foo!.bar, true)": "XCTAssertTrue(foo!.bar)",
-        "↓XCTAssertEqual(foo?.bar, nil)": "XCTAssertNil(foo?.bar)",
-        "↓XCTAssertNotEqual(foo!.bar, nil)": "XCTAssertNotNil(foo!.bar)"
     ]
 }

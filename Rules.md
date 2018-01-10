@@ -2867,8 +2867,13 @@ func foo(input: ↓[
 ```
 
 ```swift
-var: [String: String] = [:]
-var foo: ↓[String: Int]?
+var foo: Set<String>
+var bar: ↓Set<String>?
+```
+
+```swift
+var foo: [String: String] = [:]
+var bar: ↓[String: Int]?
 ```
 
 </details>

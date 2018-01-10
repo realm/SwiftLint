@@ -38,7 +38,8 @@ public struct DiscouragedOptionalCollectionRule: OptInRule, ConfigurationProvide
             "func foo(input: ↓[\n" +
             "                  String: String\n" +
             "                 ]?) {}",
-            "var: [String: String] = [:]\nvar foo: ↓[String: Int]?"
+            "var foo: Set<String>\nvar bar: ↓Set<String>?",
+            "var foo: [String: String] = [:]\nvar bar: ↓[String: Int]?"
         ]
     )
 

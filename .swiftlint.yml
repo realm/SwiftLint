@@ -60,3 +60,9 @@ custom_rules:
     match_kinds:
       - identifier
     severity: error
+  rule_test_function:
+    included: Tests/SwiftLintFrameworkTests/RulesTests.swift
+    name: Rule Test Function
+    message: Rule Test Function mustn't end with `rule`
+    regex: func\s*test\w+(r|R)ule\(\)
+    severity: error

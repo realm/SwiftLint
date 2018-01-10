@@ -387,11 +387,11 @@ extension RulesTests {
         ("testComma", testComma),
         ("testCompilerProtocolInit", testCompilerProtocolInit),
         ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-        ("testContainsOverFirstNotNilRule", testContainsOverFirstNotNilRule),
+        ("testContainsOverFirstNotNil", testContainsOverFirstNotNil),
         ("testControlStatement", testControlStatement),
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
-        ("testDiscouragedObjectLiteralRule", testDiscouragedObjectLiteralRule),
+        ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),
         ("testDynamicInline", testDynamicInline),
         ("testEmptyCount", testEmptyCount),
         ("testEmptyEnumArguments", testEmptyEnumArguments),
@@ -429,7 +429,7 @@ extension RulesTests {
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
-        ("testNoExtensionAccessModifierRule", testNoExtensionAccessModifierRule),
+        ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
         ("testNoGroupingExtension", testNoGroupingExtension),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),
@@ -456,7 +456,7 @@ extension RulesTests {
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),
         ("testShorthandOperator", testShorthandOperator),
         ("testSingleTestClass", testSingleTestClass),
-        ("testSortedFirstLastRule", testSortedFirstLastRule),
+        ("testSortedFirstLast", testSortedFirstLast),
         ("testSortedImports", testSortedImports),
         ("testStatementPosition", testStatementPosition),
         ("testStatementPositionUncuddled", testStatementPositionUncuddled),
@@ -480,7 +480,7 @@ extension RulesTests {
         ("testSuperCall", testSuperCall),
         ("testWeakDelegate", testWeakDelegate),
         ("testXCTFailMessage", testXCTFailMessage),
-        ("testYodaConditionRule", testYodaConditionRule)
+        ("testYodaCondition", testYodaCondition)
     ]
 }
 

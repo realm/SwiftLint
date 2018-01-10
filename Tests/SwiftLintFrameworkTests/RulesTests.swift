@@ -54,7 +54,7 @@ class RulesTests: XCTestCase {
         verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 
-    func testContainsOverFirstNotNilRule() {
+    func testContainsOverFirstNotNil() {
         verifyRule(ContainsOverFirstNotNilRule.description)
     }
 
@@ -70,7 +70,7 @@ class RulesTests: XCTestCase {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 
-    func testDiscouragedObjectLiteralRule() {
+    func testDiscouragedObjectLiteral() {
         verifyRule(DiscouragedObjectLiteralRule.description)
     }
 
@@ -223,7 +223,7 @@ class RulesTests: XCTestCase {
         verifyRule(NestingRule.description)
     }
 
-    func testNoExtensionAccessModifierRule() {
+    func testNoExtensionAccessModifier() {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 
@@ -343,7 +343,7 @@ class RulesTests: XCTestCase {
         verifyRule(SingleTestClassRule.description)
     }
 
-    func testSortedFirstLastRule() {
+    func testSortedFirstLast() {
         verifyRule(SortedFirstLastRule.description)
     }
 
@@ -461,7 +461,7 @@ class RulesTests: XCTestCase {
         verifyRule(XCTFailMessageRule.description)
     }
 
-    func testYodaConditionRule() {
+    func testYodaCondition() {
         verifyRule(YodaConditionRule.description)
     }
 }

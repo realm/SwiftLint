@@ -790,22 +790,16 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* None.
-
-#### Bug Fixes
-
-* No longer log if the `indentation` key isn't set in the configuration file.  
-  [JP Simard](https://github.com/jpsim)
-  [#1998](https://github.com/realm/SwiftLint/issues/1998)
-
-#### Enhancements
-
 * Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
   over `XCTAssertEqual` and `XCTAssertNotEqual`.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1874](https://github.com/realm/SwiftLint/issues/1874)
 
 #### Bug Fixes
+
+* No longer log if the `indentation` key isn't set in the configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#1998](https://github.com/realm/SwiftLint/issues/1998)
 
 ## 0.24.1: Dented Tumbler
 

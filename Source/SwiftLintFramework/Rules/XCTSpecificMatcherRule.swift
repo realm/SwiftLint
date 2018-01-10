@@ -33,30 +33,30 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             let matcher = XCTestMatcher(rawValue: name) else { return [] }
 
         // Checks the first two arguments looking for 'true', 'false', and 'nil'.
-        let parameters = dictionary.substructure
+        let arguments = dictionary.substructure
             .filter { $0.offset != nil }
-            .sorted { param1, param2 -> Bool in
+            .sorted { arg1, arg2 -> Bool in
                 guard
-                    let firstOffset = param1.offset,
-                    let secondOffset = param2.offset else { return false }
+                    let firstOffset = arg1.offset,
+                    let secondOffset = arg2.offset else { return false }
 
                 return firstOffset < secondOffset
             }
             .prefix(2)
-            .flatMap { parameter -> String? in
+            .flatMap { argument -> String? in
                 guard
-                    let paramOffset = parameter.bodyOffset,
-                    let paramLength = parameter.bodyLength,
-                    let body = file.contents.bridge().substringWithByteRange(start: paramOffset, length: paramLength),
+                    let argOffset = argument.bodyOffset,
+                    let argBodyLength = argument.bodyLength,
+                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argBodyLength),
                     protectedArguments.contains(body) else { return nil }
 
                 return body
             }
 
-        // If the call has "protected" words, provides suggestion based on the first one.
+        // If the call has "protected" arguments, provides suggestion based on the first one.
         guard
-            let parameter = parameters.first,
-            let suggestedMatcher = matcher.suggestion(for: parameter) else { return [] }
+            let argument = arguments.first,
+            let suggestedMatcher = matcher.suggestion(for: argument) else { return [] }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,

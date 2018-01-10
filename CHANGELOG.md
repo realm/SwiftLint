@@ -10,7 +10,9 @@
 
 #### Bug Fixes
 
-* None.
+* No longer log if the `indentation` key isn't set in the configuration file.  
+  [JP Simard](https://github.com/jpsim)
+  [#1998](https://github.com/realm/SwiftLint/issues/1998)
 
 ## 0.24.1: Dented Tumbler
 

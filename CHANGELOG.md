@@ -132,7 +132,10 @@
 
 #### Enhancements
 
-* None.
+* Adds `discouraged_optional_collection` opt-in rule to encourages the return
+  of empty collections instead of optional collections.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1885](https://github.com/realm/SwiftLint/issues/1885)
 
 #### Bug Fixes
 

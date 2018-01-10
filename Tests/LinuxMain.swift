@@ -432,6 +432,7 @@ extension RulesTests {
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
         ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),
         ("testDiscouragedOptionalBoolean", testDiscouragedOptionalBoolean),
+        ("testDiscouragedOptionalCollection", testDiscouragedOptionalCollection),
         ("testDynamicInline", testDynamicInline),
         ("testEmptyCount", testEmptyCount),
         ("testEmptyEnumArguments", testEmptyEnumArguments),

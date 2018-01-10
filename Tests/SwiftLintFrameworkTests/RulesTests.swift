@@ -78,6 +78,10 @@ class RulesTests: XCTestCase {
         verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 
+    func testDiscouragedOptionalCollection() {
+        verifyRule(DiscouragedOptionalCollectionRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }

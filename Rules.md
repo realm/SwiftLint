@@ -21,6 +21,7 @@
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
 * [Discouraged Optional Boolean](#discouraged-optional-boolean)
+* [Discouraged Optional Collection](#discouraged-optional-collection)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -2784,6 +2785,85 @@ enum Foo {
 enum Foo {
 	static func foo(input: [↓Bool?]) {}
 }
+```
+
+</details>
+
+
+
+## Discouraged Optional Collection
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_optional_collection` | Disabled | No | idiomatic
+
+Prefer empty collection over optional collection.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var foo: [Int] = []
+```
+
+```swift
+var foo: [String: Int] = [:]
+```
+
+```swift
+var foo: Set<String> = []
+```
+
+```swift
+func foo() -> [] {}
+```
+
+```swift
+func foo() -> [String: String] {}
+```
+
+```swift
+func foo(input: [String: String] = [:]) {}
+```
+
+```swift
+var foo: [String: [String: Int]] = [:]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var foo: ↓[Int]?
+```
+
+```swift
+var foo: ↓[String: Int]?
+```
+
+```swift
+var foo: ↓Set<String>?
+```
+
+```swift
+func foo() -> ↓[]? {}
+```
+
+```swift
+func foo() -> ↓[String: String]? {}
+```
+
+```swift
+func foo(input: ↓[String: String]?) {}
+```
+
+```swift
+func foo(input: ↓[
+                  String: String
+                 ]?) {}
 ```
 
 </details>

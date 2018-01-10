@@ -2866,6 +2866,11 @@ func foo(input: ↓[
                  ]?) {}
 ```
 
+```swift
+var: [String: String] = [:]
+var foo: ↓[String: Int]?
+```
+
 </details>
 
 

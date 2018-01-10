@@ -37,7 +37,8 @@ public struct DiscouragedOptionalCollectionRule: OptInRule, ConfigurationProvide
             "func foo(input: ↓[String: String]?) {}",
             "func foo(input: ↓[\n" +
             "                  String: String\n" +
-            "                 ]?) {}"
+            "                 ]?) {}",
+            "var: [String: String] = [:]\nvar foo: ↓[String: Int]?"
         ]
     )
 
@@ -52,8 +53,8 @@ public struct DiscouragedOptionalCollectionRule: OptInRule, ConfigurationProvide
     }
 
     private func violationMatchesLocations(in file: File) -> [Int] {
-        let bracketPattern = "\\[(.*[^\\]])?\\]\\?"
-        let setPattern = "Set<(.*[^>])?>\\?"
+        let bracketPattern = "\\[(?:[^\\]\\[])*]\\?"
+        let setPattern = "Set<(?:[^<^>])*>\\?"
         let pattern = [bracketPattern, setPattern].joined(separator: "|")
         let excludingKinds = SyntaxKind.commentAndStringKinds
 

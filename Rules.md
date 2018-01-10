@@ -21667,14 +21667,6 @@ XCTAssertNotEqual(foo, "false")
 ```
 
 ```swift
-// XCTAssertEqual(foo, true)
-```
-
-```swift
-/* XCTAssertEqual(foo, true) */
-```
-
-```swift
 XCTAssertEqual(foo, [1, 2, 3, true])
 ```
 

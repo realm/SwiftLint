@@ -23,10 +23,6 @@ internal struct XCTSpecificMatcherRuleExamples {
         "XCTAssertEqual(foo, 2)",
         "XCTAssertNotEqual(foo, \"false\")",
 
-        // There's no need to touch commented out code
-        "// XCTAssertEqual(foo, true)",
-        "/* XCTAssertEqual(foo, true) */",
-
         // Arrays with key words
         "XCTAssertEqual(foo, [1, 2, 3, true])",
         "XCTAssertEqual(foo, [1, 2, 3, false])",

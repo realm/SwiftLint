@@ -2832,48 +2832,76 @@ func foo(input: [String: String] = [:]) {}
 var foo: [String: [String: Int]] = [:]
 ```
 
+```swift
+let foo = self[bar]?.toto
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
 
 ```swift
-var foo: ↓[Int]?
+↓var foo: [Int]?
 ```
 
 ```swift
-var foo: ↓[String: Int]?
+↓var foo: [String: Int]?
 ```
 
 ```swift
-var foo: ↓Set<String>?
+↓var foo: Set<String>?
 ```
 
 ```swift
-func foo() -> ↓[]? {}
+func ↓foo() -> [T]? {}
 ```
 
 ```swift
-func foo() -> ↓[String: String]? {}
+func ↓foo() -> [String: String]? {}
 ```
 
 ```swift
-func foo(input: ↓[String: String]?) {}
+func ↓foo() -> [String: [String: String]]? {}
 ```
 
 ```swift
-func foo(input: ↓[
-                  String: String
-                 ]?) {}
+func ↓foo() -> [String: [String: String]?] {}
+```
+
+```swift
+func foo(↓input: [String: String]?) {}
+```
+
+```swift
+func foo(↓input: [String: [String: String]]?) {}
+```
+
+```swift
+func foo(↓input: [String: [String: String]?]) {}
+```
+
+```swift
+func foo(↓↓input: [String: [String: String]?]?) {}
+```
+
+```swift
+func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
 ```
 
 ```swift
 var foo: Set<String>
-var bar: ↓Set<String>?
+↓var bar: Set<String>?
 ```
 
 ```swift
 var foo: [String: String] = [:]
-var bar: ↓[String: Int]?
+↓var bar: [String: Int]? = nil
+```
+
+```swift
+func foo(↓input: [
+                  String: String
+                 ]?) {}
 ```
 
 </details>

@@ -19,43 +19,8 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
         name: "Discouraged Optional Collection",
         description: "Prefer empty collection over optional collection.",
         kind: .idiomatic,
-        nonTriggeringExamples: [
-            "var foo: [Int] = []",
-            "var foo: [String: Int] = [:]",
-            "var foo: Set<String> = []",
-            "func foo() -> [] {}",
-            "func foo() -> [String: String] {}",
-            "func foo(input: [String: String] = [:]) {}",
-            "var foo: [String: [String: Int]] = [:]",
-            "let foo = self[bar]?.toto"
-        ],
-        triggeringExamples: [
-            "↓var foo: [Int]?",
-            "↓var foo: [String: Int]?",
-            "↓var foo: Set<String>?",
-            "func ↓foo() -> [T]? {}",
-            "func ↓foo() -> [String: String]? {}",
-            "func ↓foo() -> [String: [String: String]]? {}",
-            "func ↓foo() -> [String: [String: String]?] {}",
-            "func foo(↓input: [String: String]?) {}",
-            "func foo(↓input: [String: [String: String]]?) {}",
-            "func foo(↓input: [String: [String: String]?]) {}",
-            "func foo(↓↓input: [String: [String: String]?]?) {}",
-            "func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]",
-            """
-            var foo: Set<String>
-            ↓var bar: Set<String>?
-            """,
-            """
-            var foo: [String: String] = [:]
-            ↓var bar: [String: Int]? = nil
-            """,
-            """
-            func foo(↓input: [
-                              String: String
-                             ]?) {}
-            """
-        ]
+        nonTriggeringExamples: DiscouragedOptionalCollectionExamples.nonTriggeringExamples,
+        triggeringExamples: DiscouragedOptionalCollectionExamples.triggeringExamples
     )
 
     public func validate(file: File,
@@ -108,7 +73,7 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
 }
 
-extension String {
+private extension String {
     /// Ranges of optional collections within the bounds of the string.
     ///
     /// - Returns: An array of ranges.

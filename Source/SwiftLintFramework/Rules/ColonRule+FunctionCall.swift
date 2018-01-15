@@ -14,12 +14,13 @@ extension ColonRule {
     internal func functionCallColonViolationRanges(in file: File,
                                                    dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = KindType(rawValue: kindString) else {
-                    return []
+            var ranges: [NSRange] = []
+            if let kindString = subDict.kind,
+                let kind = KindType(rawValue: kindString) {
+                    ranges += functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return functionCallColonViolationRanges(in: file, dictionary: subDict) +
-                functionCallColonViolationRanges(in: file, kind: kind, dictionary: subDict)
+            ranges += functionCallColonViolationRanges(in: file, dictionary: subDict)
+            return ranges
         }
     }
 

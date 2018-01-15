@@ -79,15 +79,27 @@ private extension String {
     /// - Returns: An array of ranges.
     func optionalCollectionRanges() -> [Range<String.Index>] {
         let squareBrackets = balancedRanges(between: "[", and: "]").flatMap { range -> Range<String.Index>? in
-            guard range.upperBound < endIndex else { return nil }
-            return self[range.upperBound] == "?" ? range : nil
+            guard
+                range.upperBound < endIndex,
+                let nextIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex)
+                else { return nil }
+
+            let isOptional = self[range.upperBound] == "?"
+
+            return isOptional ? Range(range.lowerBound..<nextIndex) : nil
         }
 
         let angleBrackets = balancedRanges(between: "<", and: ">").flatMap { range -> Range<String.Index>? in
             guard
+                range.upperBound < endIndex,
                 let initialIndex = index(range.lowerBound, offsetBy: -3, limitedBy: startIndex),
-                range.upperBound < endIndex else { return nil }
-            return self[initialIndex..<range.lowerBound] == "Set" && self[range.upperBound] == "?" ? range : nil
+                let nextIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex)
+                else { return nil }
+
+            let isSet = self[initialIndex..<range.lowerBound] == "Set"
+            let isOptional = self[range.upperBound] == "?"
+
+            return isSet && isOptional ? Range(initialIndex..<nextIndex) : nil
         }
 
         return squareBrackets + angleBrackets

@@ -2853,6 +2853,10 @@ func foo() -> Set<Int> {}
 ```
 
 ```swift
+func foo() -> ([Int]) -> String {}
+```
+
+```swift
 func foo(input: [String] = []) {}
 ```
 
@@ -2883,6 +2887,12 @@ class Foo {
 ```
 
 ```swift
+class Foo {
+	func foo() -> ([Int]) -> String {}
+}
+```
+
+```swift
 struct Foo {
 	func foo() -> [Int] {}
 }
@@ -2901,6 +2911,12 @@ struct Foo {
 ```
 
 ```swift
+struct Foo {
+	func foo() -> ([Int]) -> String {}
+}
+```
+
+```swift
 enum Foo {
 	func foo() -> [Int] {}
 }
@@ -2915,6 +2931,12 @@ enum Foo {
 ```swift
 enum Foo {
 	func foo() -> Set<Int> {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> ([Int]) -> String {}
 }
 ```
 
@@ -3046,6 +3068,14 @@ static func ↓foo() -> [String: [String: String]?] {}
 
 ```swift
 static func ↓foo() -> Set<Int>? {}
+```
+
+```swift
+func ↓foo() -> ([Int]?) -> String {}
+```
+
+```swift
+func ↓foo() -> ([Int]) -> [String]? {}
 ```
 
 ```swift
@@ -3301,6 +3331,18 @@ class Foo {
 ```
 
 ```swift
+class Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
+}
+```
+
+```swift
 struct Foo {
 	func ↓foo() -> [T]? {}
 }
@@ -3361,6 +3403,18 @@ struct Foo {
 ```
 
 ```swift
+struct Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
+}
+```
+
+```swift
 enum Foo {
 	func ↓foo() -> [T]? {}
 }
@@ -3417,6 +3471,18 @@ enum Foo {
 ```swift
 enum Foo {
 	static func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
 }
 ```
 

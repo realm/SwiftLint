@@ -29,6 +29,7 @@ internal struct DiscouragedOptionalCollectionExamples {
         "func foo() -> [Int] {}",
         "func foo() -> [String: String] {}",
         "func foo() -> Set<Int> {}",
+        "func foo() -> ([Int]) -> String {}",
 
         // Free function parameter
         "func foo(input: [String] = []) {}",
@@ -39,14 +40,17 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("class", "func foo() -> [Int] {}"),
         wrapExample("class", "func foo() -> [String: String] {}"),
         wrapExample("class", "func foo() -> Set<Int> {}"),
+        wrapExample("class", "func foo() -> ([Int]) -> String {}"),
 
         wrapExample("struct", "func foo() -> [Int] {}"),
         wrapExample("struct", "func foo() -> [String: String] {}"),
         wrapExample("struct", "func foo() -> Set<Int> {}"),
+        wrapExample("struct", "func foo() -> ([Int]) -> String {}"),
 
         wrapExample("enum", "func foo() -> [Int] {}"),
         wrapExample("enum", "func foo() -> [String: String] {}"),
         wrapExample("enum", "func foo() -> Set<Int> {}"),
+        wrapExample("enum", "func foo() -> ([Int]) -> String {}"),
 
         // Method parameter
         wrapExample("class", "func foo(input: [String] = []) {}"),
@@ -87,6 +91,8 @@ internal struct DiscouragedOptionalCollectionExamples {
         "static func ↓foo() -> [String: [String: String]]? {}",
         "static func ↓foo() -> [String: [String: String]?] {}",
         "static func ↓foo() -> Set<Int>? {}",
+        "func ↓foo() -> ([Int]?) -> String {}",
+        "func ↓foo() -> ([Int]) -> [String]? {}",
 
         // Free function parameter
         "func foo(↓input: [String: String]?) {}",
@@ -144,6 +150,8 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("class", "static func ↓foo() -> [String: [String: String]]? {}"),
         wrapExample("class", "static func ↓foo() -> [String: [String: String]?] {}"),
         wrapExample("class", "static func ↓foo() -> Set<Int>? {}"),
+        wrapExample("class", "func ↓foo() -> ([Int]?) -> String {}"),
+        wrapExample("class", "func ↓foo() -> ([Int]) -> [String]? {}"),
 
         wrapExample("struct", "func ↓foo() -> [T]? {}"),
         wrapExample("struct", "func ↓foo() -> [String: String]? {}"),
@@ -155,6 +163,8 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("struct", "static func ↓foo() -> [String: [String: String]]? {}"),
         wrapExample("struct", "static func ↓foo() -> [String: [String: String]?] {}"),
         wrapExample("struct", "static func ↓foo() -> Set<Int>? {}"),
+        wrapExample("struct", "func ↓foo() -> ([Int]?) -> String {}"),
+        wrapExample("struct", "func ↓foo() -> ([Int]) -> [String]? {}"),
 
         wrapExample("enum", "func ↓foo() -> [T]? {}"),
         wrapExample("enum", "func ↓foo() -> [String: String]? {}"),
@@ -166,6 +176,8 @@ internal struct DiscouragedOptionalCollectionExamples {
         wrapExample("enum", "static func ↓foo() -> [String: [String: String]]? {}"),
         wrapExample("enum", "static func ↓foo() -> [String: [String: String]?] {}"),
         wrapExample("enum", "static func ↓foo() -> Set<Int>? {}"),
+        wrapExample("enum", "func ↓foo() -> ([Int]?) -> String {}"),
+        wrapExample("enum", "func ↓foo() -> ([Int]) -> [String]? {}"),
 
         // Method parameter
         wrapExample("class", "func foo(↓input: [String: String]?) {}"),

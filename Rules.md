@@ -1167,6 +1167,18 @@ object.method(5, y: "string")
 
 ```
 
+```swift
+func abc() { def(ghi: jkl) }
+```
+
+```swift
+func abc(def: Void) { ghi(jkl: mno) }
+```
+
+```swift
+class ABC { let def = ghi(jkl: mno) } }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1389,6 +1401,18 @@ object.method(x↓:5, y: "string")
 ```swift
 object.method(x↓:  5, y: "string")
 
+```
+
+```swift
+func abc() { def(ghi↓:jkl) }
+```
+
+```swift
+func abc(def: Void) { ghi(jkl↓:mno) }
+```
+
+```swift
+class ABC { let def = ghi(jkl↓:mno) } }
 ```
 
 </details>

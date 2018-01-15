@@ -58,7 +58,10 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "object.method(x: 5, y: \"string\")\n",
             "object.method(x: 5, y:\n" +
             "              \"string\")",
-            "object.method(5, y: \"string\")\n"
+            "object.method(5, y: \"string\")\n",
+            "func abc() { def(ghi: jkl) }",
+            "func abc(def: Void) { ghi(jkl: mno) }",
+            "class ABC { let def = ghi(jkl: mno) } }"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -104,7 +107,10 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "class Foo<↓T : Equatable> {}\n",
             "object.method(x: 5, y↓ : \"string\")\n",
             "object.method(x↓:5, y: \"string\")\n",
-            "object.method(x↓:  5, y: \"string\")\n"
+            "object.method(x↓:  5, y: \"string\")\n",
+            "func abc() { def(ghi↓:jkl) }",
+            "func abc(def: Void) { ghi(jkl↓:mno) }",
+            "class ABC { let def = ghi(jkl↓:mno) } }"
         ],
         corrections: [
             "let ↓abc:Void\n": "let abc: Void\n",
@@ -150,7 +156,10 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "class Foo<↓T : Equatable> {}\n": "class Foo<T: Equatable> {}\n",
             "object.method(x: 5, y↓ : \"string\")\n": "object.method(x: 5, y: \"string\")\n",
             "object.method(x↓:5, y: \"string\")\n": "object.method(x: 5, y: \"string\")\n",
-            "object.method(x↓:  5, y: \"string\")\n": "object.method(x: 5, y: \"string\")\n"
+            "object.method(x↓:  5, y: \"string\")\n": "object.method(x: 5, y: \"string\")\n",
+            "func abc() { def(ghi↓:jkl) }": "func abc() { def(ghi: jkl) }",
+            "func abc(def: Void) { ghi(jkl↓:mno) }": "func abc(def: Void) { ghi(jkl: mno) }",
+            "class ABC { let def = ghi(jkl↓:mno) } }": "class ABC { let def = ghi(jkl: mno) } }"
         ]
     )
 

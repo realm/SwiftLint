@@ -80,25 +80,21 @@ private extension String {
         let squareBrackets = balancedRanges(between: "[", and: "]").flatMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
-                let nextIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex)
-                else { return nil }
+                let finalIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex),
+                self[range.upperBound] == "?" else { return nil }
 
-            let isOptional = self[range.upperBound] == "?"
-
-            return isOptional ? Range(range.lowerBound..<nextIndex) : nil
+            return Range(range.lowerBound..<finalIndex)
         }
 
         let angleBrackets = balancedRanges(between: "<", and: ">").flatMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
                 let initialIndex = index(range.lowerBound, offsetBy: -3, limitedBy: startIndex),
-                let nextIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex)
-                else { return nil }
+                let finalIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex),
+                self[initialIndex..<range.lowerBound] == "Set",
+                self[range.upperBound] == "?" else { return nil }
 
-            let isSet = self[initialIndex..<range.lowerBound] == "Set"
-            let isOptional = self[range.upperBound] == "?"
-
-            return isSet && isOptional ? Range(initialIndex..<nextIndex) : nil
+            return Range(initialIndex..<finalIndex)
         }
 
         return squareBrackets + angleBrackets

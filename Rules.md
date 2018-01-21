@@ -20,6 +20,7 @@
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
+* [Discouraged Optional Boolean](#discouraged-optional-boolean)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
@@ -2116,6 +2117,619 @@ let image = ↓#imageLiteral(resourceName: "image.jpg")
 
 ```swift
 let color = ↓#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)
+```
+
+</details>
+
+
+
+## Discouraged Optional Boolean
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_optional_boolean` | Disabled | No | idiomatic
+
+Prefer boolean over optional boolean.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var foo: Bool
+```
+
+```swift
+var foo: [String: Bool]
+```
+
+```swift
+var foo: [Bool]
+```
+
+```swift
+let foo: [Bool] = []
+```
+
+```swift
+let foo: [String: Bool] = [:]
+```
+
+```swift
+let foo: [String: Bool] = [:]
+```
+
+```swift
+var foo: Bool { return true }
+```
+
+```swift
+func foo() -> Bool {}
+```
+
+```swift
+func foo() -> [String: Bool] {}
+```
+
+```swift
+func foo() -> ([Bool]) -> String {}
+```
+
+```swift
+func foo(input: Bool = true) {}
+```
+
+```swift
+func foo(input: [String: Bool] = [:]) {}
+```
+
+```swift
+func foo(input: [Bool] = []) {}
+```
+
+```swift
+class Foo {
+	func foo() -> Bool {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> [String: Bool] {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> ([Bool]) -> String {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> Bool {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> [String: Bool] {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> ([Bool]) -> String {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> Bool {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> [String: Bool] {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> ([Bool]) -> String {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: Bool = true) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [String: Bool] = [:]) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [Bool] = []) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: Bool = true) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [String: Bool] = [:]) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [Bool] = []) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: Bool = true) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [String: Bool] = [:]) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [Bool] = []) {}
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+var foo: ↓Bool?
+```
+
+```swift
+var foo: [String: ↓Bool?]
+```
+
+```swift
+let foo: ↓Bool? = nil
+```
+
+```swift
+let foo: [String: ↓Bool?] = [:]
+```
+
+```swift
+let foo: [↓Bool?] = []
+```
+
+```swift
+var foo: ↓Bool? { return nil }
+```
+
+```swift
+let foo: ↓Bool? { return nil }()
+```
+
+```swift
+func foo() -> ↓Bool? {}
+```
+
+```swift
+func foo() -> [String: ↓Bool?] {}
+```
+
+```swift
+func foo() -> [↓Bool?] {}
+```
+
+```swift
+static func foo() -> ↓Bool? {}
+```
+
+```swift
+static func foo() -> [String: ↓Bool?] {}
+```
+
+```swift
+static func foo() -> [↓Bool?] {}
+```
+
+```swift
+func foo() -> (↓Bool?) -> String {}
+```
+
+```swift
+func foo() -> ([Int]) -> ↓Bool? {}
+```
+
+```swift
+func foo(input: ↓Bool?) {}
+```
+
+```swift
+func foo(input: [String: ↓Bool?]) {}
+```
+
+```swift
+func foo(input: [↓Bool?]) {}
+```
+
+```swift
+static func foo(input: ↓Bool?) {}
+```
+
+```swift
+static func foo(input: [String: ↓Bool?]) {}
+```
+
+```swift
+static func foo(input: [↓Bool?]) {}
+```
+
+```swift
+class Foo {
+	var foo: ↓Bool?
+}
+```
+
+```swift
+class Foo {
+	var foo: [String: ↓Bool?]
+}
+```
+
+```swift
+class Foo {
+	let foo: ↓Bool? = nil
+}
+```
+
+```swift
+class Foo {
+	let foo: [String: ↓Bool?] = [:]
+}
+```
+
+```swift
+class Foo {
+	let foo: [↓Bool?] = []
+}
+```
+
+```swift
+struct Foo {
+	var foo: ↓Bool?
+}
+```
+
+```swift
+struct Foo {
+	var foo: [String: ↓Bool?]
+}
+```
+
+```swift
+struct Foo {
+	let foo: ↓Bool? = nil
+}
+```
+
+```swift
+struct Foo {
+	let foo: [String: ↓Bool?] = [:]
+}
+```
+
+```swift
+struct Foo {
+	let foo: [↓Bool?] = []
+}
+```
+
+```swift
+class Foo {
+	var foo: ↓Bool? { return nil }
+}
+```
+
+```swift
+class Foo {
+	let foo: ↓Bool? { return nil }()
+}
+```
+
+```swift
+struct Foo {
+	var foo: ↓Bool? { return nil }
+}
+```
+
+```swift
+struct Foo {
+	let foo: ↓Bool? { return nil }()
+}
+```
+
+```swift
+enum Foo {
+	var foo: ↓Bool? { return nil }
+}
+```
+
+```swift
+enum Foo {
+	let foo: ↓Bool? { return nil }()
+}
+```
+
+```swift
+class Foo {
+	func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+class Foo {
+	static func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+class Foo {
+	static func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+class Foo {
+	static func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> (↓Bool?) -> String {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> ([Int]) -> ↓Bool? {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> (↓Bool?) -> String {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> ([Int]) -> ↓Bool? {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo() -> ↓Bool? {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo() -> [String: ↓Bool?] {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo() -> [↓Bool?] {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> (↓Bool?) -> String {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> ([Int]) -> ↓Bool? {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [↓Bool?]) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(input: [↓Bool?]) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [↓Bool?]) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(input: [↓Bool?]) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [↓Bool?]) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(input: ↓Bool?) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(input: [String: ↓Bool?]) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(input: [↓Bool?]) {}
+}
 ```
 
 </details>

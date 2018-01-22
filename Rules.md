@@ -2129,7 +2129,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `discouraged_optional_boolean` | Disabled | No | idiomatic
 
-Prefer boolean over optional boolean.
+Prefer non-optional booleans over optional booleans.
 
 ### Examples
 
@@ -2318,6 +2318,14 @@ let foo: [String: ↓Bool?] = [:]
 
 ```swift
 let foo: [↓Bool?] = []
+```
+
+```swift
+let foo = ↓Optional.some(false)
+```
+
+```swift
+let foo = ↓Optional.some(true)
 ```
 
 ```swift

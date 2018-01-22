@@ -68,6 +68,8 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         "let foo: ↓Bool? = nil",
         "let foo: [String: ↓Bool?] = [:]",
         "let foo: [↓Bool?] = []",
+        "let foo = ↓Optional.some(false)",
+        "let foo = ↓Optional.some(true)",
 
         // Computed Get Variable
         "var foo: ↓Bool? { return nil }",

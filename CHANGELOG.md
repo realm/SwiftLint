@@ -10,7 +10,8 @@
 
 #### Bug Fixes
 
-* None.
+* Fix some autocorrects of `colon` doesn't work.  
+  [Manabu Nakazawa](https://github.com/mshibanami)
 
 ## 0.24.2: Dented Tumbler
 

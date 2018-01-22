@@ -12,6 +12,11 @@
 
 * Fix some cases where `colon` rule wouldn't be autocorrected.  
   [Manabu Nakazawa](https://github.com/mshibanami)
+  
+* Fix false positives in `explicit_acl` rule when declaring functions and
+  properties in protocols or implementing `deinit`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2014](https://github.com/realm/SwiftLint/issues/2014)
 
 ## 0.24.2: Dented Tumbler
 

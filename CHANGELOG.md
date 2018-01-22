@@ -10,7 +10,7 @@
 
 #### Bug Fixes
 
-* Fix some autocorrects of `colon` doesn't work.  
+* Fix some cases where `colon` rule wouldn't be autocorrected.  
   [Manabu Nakazawa](https://github.com/mshibanami)
 
 ## 0.24.2: Dented Tumbler

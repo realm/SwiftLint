@@ -11,6 +11,7 @@
 * [Closure Spacing](#closure-spacing)
 * [Colon](#colon)
 * [Comma Spacing](#comma-spacing)
+* [Comment Space](#comment-space)
 * [Compiler Protocol Init](#compiler-protocol-init)
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
 * [Contains over first not nil](#contains-over-first-not-nil)
@@ -1488,6 +1489,93 @@ let result = plus(
     second: 4
 )
 
+```
+
+</details>
+
+
+
+## Comment Space
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`comment_space` | Disabled | Yes | style
+
+There should be a space around the contents of comments.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func abc() // foo
+```
+
+```swift
+// I am a comment.
+func abc()
+```
+
+```swift
+/// This function is interesting.
+func abc()
+```
+
+```swift
+/* I am a
+multiline comment. */
+```
+
+```swift
+/*
+I am also a
+multiline comment.
+*/
+```
+
+```swift
+/**
+ Does something.
+ - parameter bar: A number.
+*/
+func foo(bar: Int) {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func abc() //↓foo
+```
+
+```swift
+//↓I am a comment.
+func abc()
+```
+
+```swift
+///↓This function is interesting.
+func abc()
+```
+
+```swift
+/*↓I am a
+multiline comment.↓*/
+```
+
+```swift
+/*
+I am also a
+multiline comment.↓*/
+```
+
+```swift
+/**↓Does something.
+ - parameter bar: A number.
+*/
+func foo(bar: Int) {}
 ```
 
 </details>

@@ -16,6 +16,7 @@
 		02FD8AEF1BFC18D60014BFFB /* ExtendedNSStringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */; };
 		094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094384FF1D5D2382009168CF /* WeakDelegateRule.swift */; };
 		094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
+		1662BFA420167C21007EC610 /* CommentSpaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1662BFA320167C21007EC610 /* CommentSpaceRule.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
 		1E3C2D711EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */; };
@@ -363,6 +364,7 @@
 		02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtendedNSStringTests.swift; sourceTree = "<group>"; };
 		094384FF1D5D2382009168CF /* WeakDelegateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakDelegateRule.swift; sourceTree = "<group>"; };
 		094385021D5D4F78009168CF /* PrivateOutletRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOutletRule.swift; sourceTree = "<group>"; };
+		1662BFA320167C21007EC610 /* CommentSpaceRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentSpaceRule.swift; sourceTree = "<group>"; };
 		1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YodaConditionRule.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRule.swift; sourceTree = "<group>"; };
@@ -1023,6 +1025,7 @@
 				D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */,
 				D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */,
 				695BE9CE1BDFD92B0071E985 /* CommaRule.swift */,
+				1662BFA320167C21007EC610 /* CommentSpaceRule.swift */,
 				D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */,
 				93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */,
 				29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */,
@@ -1312,15 +1315,15 @@
 				TargetAttributes = {
 					D0D1216C19E87B05005E4BAA = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 0920;
 					};
 					D0D1217619E87B05005E4BAA = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 0920;
 					};
 					D0E7B63119E9C64500EDBA4D = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 0920;
 					};
 				};
 			};
@@ -1578,6 +1581,7 @@
 				E889D8C51F1D11A200058332 /* Configuration+LintableFiles.swift in Sources */,
 				094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */,
 				3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */,
+				1662BFA420167C21007EC610 /* CommentSpaceRule.swift in Sources */,
 				2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */,
 				E86396C91BADB2B9002C9E88 /* JSONReporter.swift in Sources */,
 				E881985A1BEA96EA00333A11 /* OperatorFunctionWhitespaceRule.swift in Sources */,

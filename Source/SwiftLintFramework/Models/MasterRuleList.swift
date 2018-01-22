@@ -5,7 +5,7 @@
 //  Created by Scott Hoyt on 12/28/15.
 //  Copyright © 2015 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.9.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -19,6 +19,7 @@ public let masterRuleList = RuleList(rules: [
     ClosureSpacingRule.self,
     ColonRule.self,
     CommaRule.self,
+    CommentSpaceRule.self,
     CompilerProtocolInitRule.self,
     ConditionalReturnsOnNewlineRule.self,
     ContainsOverFirstNotNilRule.self,

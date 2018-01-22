@@ -6,7 +6,11 @@
 
 #### Enhancements
 
-* None.
+* Add `comment_space` opt-in rule which warns against comments that
+  don't begin with spaces.  
+  [Coder-256](https://github.com/Coder-256)
+  [#1310 (partial fix)](https://github.com/realm/SwiftLint/issues/1310)
+
 
 #### Bug Fixes
 

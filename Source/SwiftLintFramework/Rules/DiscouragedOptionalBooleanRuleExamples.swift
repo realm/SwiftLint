@@ -16,12 +16,14 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         "var foo: Bool",
         "var foo: [String: Bool]",
         "var foo: [Bool]",
+        "let foo: Bool = true",
+        "let foo: Bool = false",
+        "let foo: [String: Bool] = [:]",
         "let foo: [Bool] = []",
-        "let foo: [String: Bool] = [:]",
-        "let foo: [String: Bool] = [:]",
 
         // Computed get variable
         "var foo: Bool { return true }",
+        "let foo: Bool { return false }()",
 
         // Free function return
         "func foo() -> Bool {}",
@@ -65,6 +67,7 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
         // Global variable
         "var foo: ↓Bool?",
         "var foo: [String: ↓Bool?]",
+        "var foo: [↓Bool?]",
         "let foo: ↓Bool? = nil",
         "let foo: [String: ↓Bool?] = [:]",
         "let foo: [↓Bool?] = []",

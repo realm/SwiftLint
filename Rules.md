@@ -2149,19 +2149,27 @@ var foo: [Bool]
 ```
 
 ```swift
+let foo: Bool = true
+```
+
+```swift
+let foo: Bool = false
+```
+
+```swift
+let foo: [String: Bool] = [:]
+```
+
+```swift
 let foo: [Bool] = []
 ```
 
 ```swift
-let foo: [String: Bool] = [:]
-```
-
-```swift
-let foo: [String: Bool] = [:]
-```
-
-```swift
 var foo: Bool { return true }
+```
+
+```swift
+let foo: Bool { return false }()
 ```
 
 ```swift
@@ -2306,6 +2314,10 @@ var foo: ↓Bool?
 
 ```swift
 var foo: [String: ↓Bool?]
+```
+
+```swift
+var foo: [↓Bool?]
 ```
 
 ```swift

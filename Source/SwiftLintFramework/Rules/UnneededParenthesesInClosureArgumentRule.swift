@@ -21,17 +21,20 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         kind: .style,
         nonTriggeringExamples: [
             "let foo = { (bar: Int) in }\n",
+            "let foo = { bar, _  in }\n",
             "let foo = { bar in }\n",
             "let foo = { bar -> Bool in return true }\n"
         ],
         triggeringExamples: [
             "call(arg: { ↓(bar) in })\n",
+            "call(arg: { ↓(bar, _) in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n",
             "foo.map { ($0, $0) }.forEach { ↓(x, y) in }",
             "foo.bar { [weak self] ↓(x, y) in }"
         ],
         corrections: [
             "call(arg: { ↓(bar) in })\n": "call(arg: { bar in })\n",
+            "call(arg: { ↓(bar, _) in })\n": "call(arg: { bar, _ in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n": "let foo = { bar -> Bool in return true }\n",
             "method { ↓(foo, bar) in }\n": "method { foo, bar in }\n",
             "foo.map { ($0, $0) }.forEach { ↓(x, y) in }": "foo.map { ($0, $0) }.forEach { x, y in }",
@@ -62,9 +65,23 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                     return nil
             }
 
-            let parametersKinds = Set(file.syntaxMap.kinds(inByteRange: parametersByteRange))
+            let parametersTokens = file.syntaxMap.tokens(inByteRange: parametersByteRange)
+            let parametersAreValid = parametersTokens.reduce(true) { isValid, token in
+                guard isValid else {
+                    return false
+                }
+
+                let kind = SyntaxKind(rawValue: token.type)
+                if kind == .identifier {
+                    return true
+                }
+
+                return kind == .keyword &&
+                    file.contents.bridge().substringWithByteRange(start: token.offset, length: token.length) == "_"
+            }
+
             let inKinds = Set(file.syntaxMap.kinds(inByteRange: inByteRange))
-            guard parametersKinds == [.identifier],
+            guard parametersAreValid,
                 inKinds.isEmpty || inKinds == [.keyword] else {
                     return nil
             }

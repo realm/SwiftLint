@@ -15644,6 +15644,11 @@ let foo = { (bar: Int) in }
 ```
 
 ```swift
+let foo = { bar, _  in }
+
+```
+
+```swift
 let foo = { bar in }
 
 ```
@@ -15659,6 +15664,11 @@ let foo = { bar -> Bool in return true }
 
 ```swift
 call(arg: { ↓(bar) in })
+
+```
+
+```swift
+call(arg: { ↓(bar, _) in })
 
 ```
 

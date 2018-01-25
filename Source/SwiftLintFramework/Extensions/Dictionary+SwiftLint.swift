@@ -74,7 +74,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
     var enclosedSwiftAttributes: [String] {
         let array = self["key.attributes"] as? [SourceKitRepresentable] ?? []
-        return array.flatMap { ($0 as? [String: String])?["key.attribute"] }
+        let dictionaries = array.flatMap { ($0 as? [String: SourceKitRepresentable]) }
+        return dictionaries.flatMap { $0["key.attribute"] as? String }
     }
 
     var substructure: [[String: SourceKitRepresentable]] {

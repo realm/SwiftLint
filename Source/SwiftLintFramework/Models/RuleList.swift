@@ -67,7 +67,7 @@ public struct RuleList {
     }
 
     internal func allValidIdentifiers() -> [String] {
-        return list.flatMap { (_, rule) -> [String] in
+        return list.flatMap { _, rule -> [String] in
             rule.description.allIdentifiers
         }
     }

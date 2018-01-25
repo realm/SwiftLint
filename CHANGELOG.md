@@ -13,6 +13,11 @@
 * Fix some cases where `colon` rule wouldn't be autocorrected.  
   [Manabu Nakazawa](https://github.com/mshibanami)
 
+* Fix false negatives in `unneeded_parentheses_in_closure_argument` rule
+  when using `_` as one of the closure arguments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2017](https://github.com/realm/SwiftLint/issues/2017)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking

@@ -23,6 +23,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2017](https://github.com/realm/SwiftLint/issues/2017)
 
+* Fix several rules that use attributes when linting with Swift 4.1 toolchain.
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2019](https://github.com/realm/SwiftLint/issues/2019)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking

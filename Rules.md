@@ -2577,6 +2577,22 @@ private enum Foo { enum Bar { } }
 private struct C { let d = 5 }
 ```
 
+```swift
+internal protocol A {
+    func b()
+}
+```
+
+```swift
+internal protocol A {
+    var b: Int
+}
+```
+
+```swift
+internal class A { deinit {} }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

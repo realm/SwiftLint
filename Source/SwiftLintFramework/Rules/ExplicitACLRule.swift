@@ -32,7 +32,10 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
             "internal func a() { let a =  }\n",
             "private func a() { func innerFunction() { } }",
             "private enum Foo { enum Bar { } }",
-            "private struct C { let d = 5 }"
+            "private struct C { let d = 5 }",
+            "internal protocol A {\n    func b()\n}",
+            "internal protocol A {\n    var b: Int\n}",
+            "internal class A { deinit {} }"
         ],
         triggeringExamples: [
             "enum A {}\n",
@@ -59,9 +62,8 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
             }
 
             // find the last "internal" token before the type
-            guard let previousInternalByteRange = lastInternalByteRange(before: typeOffset,
-                                                                        in: ranges) else {
-                                                                            return typeOffset
+            guard let previousInternalByteRange = lastInternalByteRange(before: typeOffset, in: ranges) else {
+                return typeOffset
             }
 
             // the "internal" token correspond to the type if there're only
@@ -100,7 +102,12 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
 
     private func internalTypeElements(in element: SourceKittenElement) -> [SourceKittenElement] {
         return element.substructure.flatMap { element -> [SourceKittenElement] in
-            guard let elementKind = SwiftDeclarationKind(rawValue: element.kind ?? "") else {
+            guard let elementKind = element.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) else {
+                return []
+            }
+
+            let isDeinit = elementKind == .functionMethodInstance && element.name == "deinit"
+            guard !isDeinit else {
                 return []
             }
 
@@ -127,10 +134,10 @@ private extension SwiftDeclarationKind {
              .varGlobal, .varInstance, .varStatic, .`typealias`, .functionConstructor, .functionDestructor,
              .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
              .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript:
+             .functionSubscript, .`protocol`:
             return true
         case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
-             .extensionProtocol, .extensionStruct, .`protocol`, .`struct`:
+             .extensionProtocol, .extensionStruct, .`struct`:
             return false
         }
     }
@@ -139,11 +146,11 @@ private extension SwiftDeclarationKind {
         switch self {
         case .`associatedtype`, .enumcase, .enumelement, .functionAccessorAddress,
              .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
-             .functionAccessorSetter, .functionAccessorWillset, .genericTypeParam, .module,
+             .functionAccessorSetter, .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module,
              .precedenceGroup, .varLocal, .varParameter:
             return false
         case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
-             .extensionProtocol, .extensionStruct, .functionConstructor, .functionDestructor,
+             .extensionProtocol, .extensionStruct, .functionConstructor,
              .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
              .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
              .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass,

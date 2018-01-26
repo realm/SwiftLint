@@ -4677,7 +4677,7 @@ public extension Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`fallthrough` | Enabled | No | idiomatic | 3.0.0 
+`fallthrough` | Disabled | No | idiomatic | 3.0.0 
 
 Fallthrough should be avoided.
 

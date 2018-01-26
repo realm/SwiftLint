@@ -23,9 +23,14 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2017](https://github.com/realm/SwiftLint/issues/2017)
 
-* Fix several rules that use attributes when linting with Swift 4.1 toolchain.
+* Fix several rules that use attributes when linting with a Swift 4.1 toolchain.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2019](https://github.com/realm/SwiftLint/issues/2019)
+
+* Don't trigger violations in `let_var_whitespace` rule when using local
+  variables when linting with a Swift 4.1 toolchain.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2021](https://github.com/realm/SwiftLint/issues/2021)
 
 ## 0.24.2: Dented Tumbler
 

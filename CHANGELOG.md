@@ -2,7 +2,9 @@
 
 #### Breaking
 
-* None.
+* `fallthrough` rule is now opt-in.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1892](https://github.com/realm/SwiftLint/issues/1892)
 
 #### Enhancements
 

@@ -733,6 +733,19 @@ Closing brace with closing parenthesis should not have any whitespaces in the mi
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+[].map({ ↓} )
+
+// After correction
+[].map({ })
+
+```
+
+</details>
 
 
 
@@ -1010,6 +1023,52 @@ extension UITableViewCell: ReusableView {}
 
 ```swift
 filter ↓{ sorted ↓{ $0 < $1}}
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+({ each in return result.contains(where: ↓{e in return 0}) }).count
+// After correction
+({ each in return result.contains(where: { e in return 0 }) }).count
+```
+
+```swift
+// Before correction
+filter ↓{sorted { $0 < $1}}
+// After correction
+filter { sorted { $0 < $1} }
+```
+
+```swift
+// Before correction
+[].filter(↓{$0.contains(location)})
+// After correction
+[].filter({ $0.contains(location) })
+```
+
+```swift
+// Before correction
+[].map(↓{$0})
+// After correction
+[].map({ $0 })
+```
+
+```swift
+// Before correction
+filter { sorted ↓{ $0 < $1} }
+// After correction
+filter { sorted { $0 < $1 } }
+```
+
+```swift
+// Before correction
+(↓{each in return result.contains(where: {e in return 0})}).count
+// After correction
+({ each in return result.contains(where: {e in return 0}) }).count
 ```
 
 </details>
@@ -1416,6 +1475,406 @@ class ABC { let def = ghi(jkl↓:mno) } }
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+func foo(bar: [↓String : Int]) {}
+
+// After correction
+func foo(bar: [String: Int]) {}
+
+```
+
+```swift
+// Before correction
+let ↓abc:  Void
+
+// After correction
+let abc: Void
+
+```
+
+```swift
+// Before correction
+let ↓abc:Int=0
+
+// After correction
+let abc: Int=0
+
+```
+
+```swift
+// Before correction
+let ↓abc:Void
+
+// After correction
+let abc: Void
+
+```
+
+```swift
+// Before correction
+let ↓abc:  ([Void], String, Int)
+
+// After correction
+let abc: ([Void], String, Int)
+
+```
+
+```swift
+// Before correction
+func abc(↓def:  Void) {}
+
+// After correction
+func abc(def: Void) {}
+
+```
+
+```swift
+// Before correction
+class Foo<↓T:Equatable> {}
+
+// After correction
+class Foo<T: Equatable> {}
+
+```
+
+```swift
+// Before correction
+func abc(↓def:Void) {}
+
+// After correction
+func abc(def: Void) {}
+
+```
+
+```swift
+// Before correction
+let abc = [1: [3↓ : 2], 3↓:  4]
+
+// After correction
+let abc = [1: [3: 2], 3: 4]
+
+```
+
+```swift
+// Before correction
+let abc: [↓String : Int]
+
+// After correction
+let abc: [String: Int]
+
+```
+
+```swift
+// Before correction
+func foo() -> [↓String : Int] { return [:] }
+
+// After correction
+func foo() -> [String: Int] { return [:] }
+
+```
+
+```swift
+// Before correction
+let ↓abc : Void
+
+// After correction
+let abc: Void
+
+```
+
+```swift
+// Before correction
+let ↓abc :Int = 0
+
+// After correction
+let abc: Int = 0
+
+```
+
+```swift
+// Before correction
+let ↓abc : ([Void], String, Int)
+
+// After correction
+let abc: ([Void], String, Int)
+
+```
+
+```swift
+// Before correction
+let abc = [Void↓ : Void]()
+
+// After correction
+let abc = [Void: Void]()
+
+```
+
+```swift
+// Before correction
+class ↓Foo : Bar {}
+
+// After correction
+class Foo: Bar {}
+
+```
+
+```swift
+// Before correction
+func foo(bar: [↓String:Int]) {}
+
+// After correction
+func foo(bar: [String: Int]) {}
+
+```
+
+```swift
+// Before correction
+let ↓abc : [Void: Void]
+
+// After correction
+let abc: [Void: Void]
+
+```
+
+```swift
+// Before correction
+let ↓abc :String="def"
+
+// After correction
+let abc: String="def"
+
+```
+
+```swift
+// Before correction
+let abc: [↓String:Int]
+
+// After correction
+let abc: [String: Int]
+
+```
+
+```swift
+// Before correction
+let abc = [Void↓:  Void]()
+
+// After correction
+let abc = [Void: Void]()
+
+```
+
+```swift
+// Before correction
+let ↓abc:  (Void, String, Int)
+
+// After correction
+let abc: (Void, String, Int)
+
+```
+
+```swift
+// Before correction
+func foo() -> [↓String:Int] { return [:] }
+
+// After correction
+func foo() -> [String: Int] { return [:] }
+
+```
+
+```swift
+// Before correction
+let abc: [↓String : Any]
+
+// After correction
+let abc: [String: Any]
+
+```
+
+```swift
+// Before correction
+let ↓abc :Void
+
+// After correction
+let abc: Void
+
+```
+
+```swift
+// Before correction
+let ↓abc : (Void, String, Int)
+
+// After correction
+let abc: (Void, String, Int)
+
+```
+
+```swift
+// Before correction
+let ↓abc :Int=0
+
+// After correction
+let abc: Int=0
+
+```
+
+```swift
+// Before correction
+object.method(x↓:  5, y: "string")
+
+// After correction
+object.method(x: 5, y: "string")
+
+```
+
+```swift
+// Before correction
+func abc(def: Void, ↓ghi :Void) {}
+
+// After correction
+func abc(def: Void, ghi: Void) {}
+
+```
+
+```swift
+// Before correction
+let ↓abc : Any
+
+// After correction
+let abc: Any
+
+```
+
+```swift
+// Before correction
+let ↓abc:Int = 0
+
+// After correction
+let abc: Int = 0
+
+```
+
+```swift
+// Before correction
+func abc(↓def :Void) {}
+
+// After correction
+func abc(def: Void) {}
+
+```
+
+```swift
+// Before correction
+class ↓Foo:Bar {}
+
+// After correction
+class Foo: Bar {}
+
+```
+
+```swift
+// Before correction
+object.method(x: 5, y↓ : "string")
+
+// After correction
+object.method(x: 5, y: "string")
+
+```
+
+```swift
+// Before correction
+let ↓abc:  [([Void], String, Int)]
+
+// After correction
+let abc: [([Void], String, Int)]
+
+```
+
+```swift
+// Before correction
+let abc = [Void↓:Void]()
+
+// After correction
+let abc = [Void: Void]()
+
+```
+
+```swift
+// Before correction
+let abc = [1: [3↓ : 2], 3: 4]
+
+// After correction
+let abc = [1: [3: 2], 3: 4]
+
+```
+
+```swift
+// Before correction
+let ↓abc : [([Void], String, Int)]
+
+// After correction
+let abc: [([Void], String, Int)]
+
+```
+
+```swift
+// Before correction
+class Foo<↓T : Equatable> {}
+
+// After correction
+class Foo<T: Equatable> {}
+
+```
+
+```swift
+// Before correction
+let ↓abc:Enum=Enum.Value
+
+// After correction
+let abc: Enum=Enum.Value
+
+```
+
+```swift
+// Before correction
+func abc(↓def : Void) {}
+
+// After correction
+func abc(def: Void) {}
+
+```
+
+```swift
+// Before correction
+object.method(x↓:5, y: "string")
+
+// After correction
+object.method(x: 5, y: "string")
+
+```
+
+```swift
+// Before correction
+let abc: [↓Any : Int]
+
+// After correction
+let abc: [Any: Int]
+
+```
+
+```swift
+// Before correction
+let abc = [Void↓ :  Void]()
+
+// After correction
+let abc = [Void: Void]()
+
+```
+
+</details>
 
 
 
@@ -1487,6 +1946,68 @@ let result = plus(
     first: 3↓ , // #683
     second: 4
 )
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+abc(a: "string"↓,b: "string"
+
+// After correction
+abc(a: "string", b: "string"
+
+```
+
+```swift
+// Before correction
+abc(a: "string"↓  ,  b: "string"
+
+// After correction
+abc(a: "string", b: "string"
+
+```
+
+```swift
+// Before correction
+enum a { case a↓  ,b }
+
+// After correction
+enum a { case a, b }
+
+```
+
+```swift
+// Before correction
+let a = [1↓,1]
+let b = 1
+f(1, b)
+
+// After correction
+let a = [1, 1]
+let b = 1
+f(1, b)
+
+```
+
+```swift
+// Before correction
+let a = [1↓,1↓,1↓,1]
+
+// After correction
+let a = [1, 1, 1, 1]
+
+```
+
+```swift
+// Before correction
+func abc(a: String↓,b: String) {}
+
+// After correction
+func abc(a: String, b: String) {}
 
 ```
 
@@ -2364,6 +2885,54 @@ switch foo {
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+switch foo {
+    case .bar↓() where method() > 2: break
+}
+// After correction
+switch foo {
+    case .bar where method() > 2: break
+}
+```
+
+```swift
+// Before correction
+switch foo {
+    case .bar↓(_): break
+}
+// After correction
+switch foo {
+    case .bar: break
+}
+```
+
+```swift
+// Before correction
+switch foo {
+    case .bar↓(_), .bar2↓(_): break
+}
+// After correction
+switch foo {
+    case .bar, .bar2: break
+}
+```
+
+```swift
+// Before correction
+switch foo {
+    case .bar↓(): break
+}
+// After correction
+switch foo {
+    case .bar: break
+}
+```
+
+</details>
 
 
 
@@ -2431,6 +3000,46 @@ func foo(completion: ↓(Void) throws -> Void)
 
 ```swift
 let foo: ↓(Void) -> () throws -> Void)
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let foo: ↓(Void) -> () throws -> Void)
+
+// After correction
+let foo: () -> () throws -> Void)
+
+```
+
+```swift
+// Before correction
+func foo(completion: ↓(Void) -> Void)
+
+// After correction
+func foo(completion: () -> Void)
+
+```
+
+```swift
+// Before correction
+let abc: ↓(Void) -> Void = {}
+
+// After correction
+let abc: () -> Void = {}
+
+```
+
+```swift
+// Before correction
+func foo(completion: ↓(Void) throws -> Void)
+
+// After correction
+func foo(completion: () throws -> Void)
 
 ```
 
@@ -2508,6 +3117,54 @@ UIView.animateWithDuration(0.3, animations: {
 
 ```swift
 [1, 2].map↓(  ) { number in
+ number + 1 
+}
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+[1, 2].map↓() { $0 + 1 }
+
+// After correction
+[1, 2].map { $0 + 1 }
+
+```
+
+```swift
+// Before correction
+[1, 2].map↓() { number in
+ number + 1 
+}
+
+// After correction
+[1, 2].map { number in
+ number + 1 
+}
+
+```
+
+```swift
+// Before correction
+[1, 2].map↓( ) { $0 + 1 }
+
+// After correction
+[1, 2].map { $0 + 1 }
+
+```
+
+```swift
+// Before correction
+[1, 2].map↓(  ) { number in
+ number + 1 
+}
+
+// After correction
+[1, 2].map { number in
  number + 1 
 }
 
@@ -2772,6 +3429,17 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 
 ```swift
 [String.self].map { Type in Type↓.init(1) }
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+[1].flatMap{String↓.init($0)}
+// After correction
+[1].flatMap{String($0)}
 ```
 
 </details>
@@ -5434,6 +6102,32 @@ foo.map {
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+foo.map { value in
+  ↓return value + 1
+}
+// After correction
+foo.map { value in
+  value + 1
+}
+```
+
+```swift
+// Before correction
+foo.map {
+  ↓return $0 + 1
+}
+// After correction
+foo.map {
+  $0 + 1
+}
+```
+
+</details>
 
 
 
@@ -5607,6 +6301,26 @@ let foo = bar.joined(↓separator: "")
 ```swift
 let foo = bar.filter(toto)
              .joined(↓separator: "")
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let foo = bar.joined(↓separator: "")
+// After correction
+let foo = bar.joined()
+```
+
+```swift
+// Before correction
+let foo = bar.filter(toto)
+.joined(↓separator: "")
+// After correction
+let foo = bar.filter(toto)
+.joined()
 ```
 
 </details>
@@ -5807,6 +6521,18 @@ Files should not contain leading whitespace.
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+
+ //
+// After correction
+//
+```
+
+</details>
 
 
 
@@ -5988,6 +6714,201 @@ rect1.intersects(rect2)
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓CGRectGetMaxX( rect)
+
+// After correction
+rect.maxX
+
+```
+
+```swift
+// Before correction
+↓CGRectGetMaxY( rect     )
+
+// After correction
+rect.maxY
+
+```
+
+```swift
+// Before correction
+↓CGRectIsNull(  rect    )
+
+// After correction
+rect.isNull
+
+```
+
+```swift
+// Before correction
+↓CGRectIntegral(rect )
+
+// After correction
+rect.integral
+
+```
+
+```swift
+// Before correction
+↓CGRectOffset(rect, -2, 8.3)
+
+// After correction
+rect.offsetBy(dx: -2, dy: 8.3)
+
+```
+
+```swift
+// Before correction
+↓CGRectInset(rect, 5.0, -7.0)
+
+// After correction
+rect.insetBy(dx: 5.0, dy: -7.0)
+
+```
+
+```swift
+// Before correction
+↓CGRectContainsPoint(rect  ,point)
+
+// After correction
+rect.contains(point)
+
+```
+
+```swift
+// Before correction
+↓CGRectContainsRect( rect1,rect2     )
+
+// After correction
+rect1.contains(rect2)
+
+```
+
+```swift
+// Before correction
+↓CGRectUnion(rect1, rect2)
+
+// After correction
+rect1.union(rect2)
+
+```
+
+```swift
+// Before correction
+↓CGRectGetMidX(  rect)
+
+// After correction
+rect.midX
+
+```
+
+```swift
+// Before correction
+↓CGRectIntersectsRect(rect1, rect2 )
+↓CGRectGetWidth(rect  )
+
+// After correction
+rect1.intersects(rect2)
+rect.width
+
+```
+
+```swift
+// Before correction
+↓CGRectGetHeight(rect )
+
+// After correction
+rect.height
+
+```
+
+```swift
+// Before correction
+↓CGRectIntersectsRect(  rect1,rect2 )
+
+// After correction
+rect1.intersects(rect2)
+
+```
+
+```swift
+// Before correction
+↓CGRectStandardize( rect)
+
+// After correction
+rect.standardized
+
+```
+
+```swift
+// Before correction
+↓CGRectIsEmpty( rect )
+
+// After correction
+rect.isEmpty
+
+```
+
+```swift
+// Before correction
+↓CGRectGetMidY(rect )
+
+// After correction
+rect.midY
+
+```
+
+```swift
+// Before correction
+↓CGRectIsInfinite( rect )
+
+// After correction
+rect.isInfinite
+
+```
+
+```swift
+// Before correction
+↓CGRectIntersection( rect1 ,rect2)
+
+// After correction
+rect1.intersect(rect2)
+
+```
+
+```swift
+// Before correction
+↓CGRectGetWidth( rect  )
+
+// After correction
+rect.width
+
+```
+
+```swift
+// Before correction
+↓CGRectGetMinX( rect)
+
+// After correction
+rect.minX
+
+```
+
+```swift
+// Before correction
+↓CGRectGetMinY(rect   )
+
+// After correction
+rect.minY
+
+```
+
+</details>
 
 
 
@@ -6086,6 +7007,102 @@ Float.pi
 
 ```swift
 ↓Float(M_PI)
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓NSZeroSize
+// After correction
+NSSize.zero
+```
+
+```swift
+// Before correction
+↓CGRectInfinite
+// After correction
+CGRect.infinite
+```
+
+```swift
+// Before correction
+↓Float(M_PI)
+// After correction
+Float.pi
+```
+
+```swift
+// Before correction
+↓CGRectInfinite
+↓CGRectNull
+
+// After correction
+CGRect.infinite
+CGRect.null
+
+```
+
+```swift
+// Before correction
+↓CGSizeZero
+// After correction
+CGSize.zero
+```
+
+```swift
+// Before correction
+↓CGFloat(M_PI)
+↓Float(M_PI)
+
+// After correction
+CGFloat.pi
+Float.pi
+
+```
+
+```swift
+// Before correction
+↓CGRectZero
+// After correction
+CGRect.zero
+```
+
+```swift
+// Before correction
+↓NSZeroPoint
+// After correction
+NSPoint.zero
+```
+
+```swift
+// Before correction
+↓CGPointZero
+// After correction
+CGPoint.zero
+```
+
+```swift
+// Before correction
+↓CGFloat(M_PI)
+// After correction
+CGFloat.pi
+```
+
+```swift
+// Before correction
+↓NSZeroRect
+// After correction
+NSRect.zero
+```
+
+```swift
+// Before correction
+↓CGRectNull
+// After correction
+CGRect.null
 ```
 
 </details>
@@ -6270,6 +7287,212 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓NSMakeRange(10, 1)
+
+// After correction
+NSRange(location: 10, length: 1)
+
+```
+
+```swift
+// Before correction
+↓CGVectorMake(10, 10)
+↓NSMakeRange(10, 1)
+
+// After correction
+CGVector(dx: 10, dy: 10)
+NSRange(location: 10, length: 1)
+
+```
+
+```swift
+// Before correction
+↓NSMakeSize(10, 10)
+
+// After correction
+NSSize(width: 10, height: 10)
+
+```
+
+```swift
+// Before correction
+↓NSEdgeInsetsMake(top, left, bottom, right)
+
+// After correction
+NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+
+```
+
+```swift
+// Before correction
+↓NSMakeRect(0, 0, 10, 10)
+
+// After correction
+NSRect(x: 0, y: 0, width: 10, height: 10)
+
+```
+
+```swift
+// Before correction
+↓CGVectorMake(deltaX, deltaY)
+
+// After correction
+CGVector(dx: deltaX, dy: deltaY)
+
+```
+
+```swift
+// Before correction
+↓CGSizeMake(10, 10)
+
+// After correction
+CGSize(width: 10, height: 10)
+
+```
+
+```swift
+// Before correction
+↓NSEdgeInsetsMake(0, 0, 10, 10)
+
+// After correction
+NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
+
+```
+
+```swift
+// Before correction
+↓CGPointMake(10,  10   )
+
+// After correction
+CGPoint(x: 10, y: 10)
+
+```
+
+```swift
+// Before correction
+↓CGVectorMake(10, 10)
+
+// After correction
+CGVector(dx: 10, dy: 10)
+
+```
+
+```swift
+// Before correction
+↓NSMakePoint(10,  10   )
+
+// After correction
+NSPoint(x: 10, y: 10)
+
+```
+
+```swift
+// Before correction
+↓CGRectMake(0, 0, 10, 10)
+
+// After correction
+CGRect(x: 0, y: 0, width: 10, height: 10)
+
+```
+
+```swift
+// Before correction
+↓NSMakePoint(xPos,  yPos   )
+
+// After correction
+NSPoint(x: xPos, y: yPos)
+
+```
+
+```swift
+// Before correction
+↓UIEdgeInsetsMake(top, left, bottom, right)
+
+// After correction
+UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
+
+```
+
+```swift
+// Before correction
+↓NSMakeSize( aWidth, aHeight )
+
+// After correction
+NSSize(width: aWidth, height: aHeight)
+
+```
+
+```swift
+// Before correction
+↓NSMakeRect(xPos, yPos , width, height)
+
+// After correction
+NSRect(x: xPos, y: yPos, width: width, height: height)
+
+```
+
+```swift
+// Before correction
+↓CGPointMake(xPos,  yPos   )
+
+// After correction
+CGPoint(x: xPos, y: yPos)
+
+```
+
+```swift
+// Before correction
+↓NSMakeRange(loc, len)
+
+// After correction
+NSRange(location: loc, length: len)
+
+```
+
+```swift
+// Before correction
+↓CGVectorMake(dx, dy)
+↓NSMakeRange(loc, len)
+
+// After correction
+CGVector(dx: dx, dy: dy)
+NSRange(location: loc, length: len)
+
+```
+
+```swift
+// Before correction
+↓UIEdgeInsetsMake(0, 0, 10, 10)
+
+// After correction
+UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
+
+```
+
+```swift
+// Before correction
+↓CGRectMake(xPos, yPos , width, height)
+
+// After correction
+CGRect(x: xPos, y: yPos, width: width, height: height)
+
+```
+
+```swift
+// Before correction
+↓CGSizeMake( aWidth, aHeight )
+
+// After correction
+CGSize(width: aWidth, height: aHeight)
+
+```
+
+</details>
 
 
 
@@ -6440,6 +7663,210 @@ rect1.intersects(rect2)
 
 ```swift
 ↓NSIntersectsRect(rect1, rect2)
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓NSPointInRect(point  ,rect)
+
+// After correction
+rect.contains(point)
+
+```
+
+```swift
+// Before correction
+↓NSIntersectsRect(  rect1,rect2 )
+
+// After correction
+rect1.intersects(rect2)
+
+```
+
+```swift
+// Before correction
+↓NSMinY(rect   )
+
+// After correction
+rect.minY
+
+```
+
+```swift
+// Before correction
+↓NSIntersectionRect( rect1 ,rect2)
+
+// After correction
+rect1.intersect(rect2)
+
+```
+
+```swift
+// Before correction
+↓NSWidth( rect  )
+
+// After correction
+rect.width
+
+```
+
+```swift
+// Before correction
+↓NSMinX( rect)
+
+// After correction
+rect.minX
+
+```
+
+```swift
+// Before correction
+↓NSMidX(  rect)
+
+// After correction
+rect.midX
+
+```
+
+```swift
+// Before correction
+↓NSMaxX( rect)
+
+// After correction
+rect.maxX
+
+```
+
+```swift
+// Before correction
+↓NSInsetRect(rect, 5.0, -7.0)
+
+// After correction
+rect.insetBy(dx: 5.0, dy: -7.0)
+
+```
+
+```swift
+// Before correction
+↓NSOffsetRect(rect, -2, 8.3)
+
+// After correction
+rect.offsetBy(dx: -2, dy: 8.3)
+
+```
+
+```swift
+// Before correction
+↓NSHeight(rect )
+
+// After correction
+rect.height
+
+```
+
+```swift
+// Before correction
+↓NSIntegralRect(rect )
+
+// After correction
+rect.integral
+
+```
+
+```swift
+// Before correction
+↓NSUnionRect(rect1, rect2)
+
+// After correction
+rect1.union(rect2)
+
+```
+
+```swift
+// Before correction
+↓NSContainsRect( rect1,rect2     )
+
+// After correction
+rect1.contains(rect2)
+
+```
+
+```swift
+// Before correction
+↓NSEqualRects(  rect1,  rect2)
+
+// After correction
+rect1 == rect2
+
+```
+
+```swift
+// Before correction
+↓NSMaxY( rect     )
+
+// After correction
+rect.maxY
+
+```
+
+```swift
+// Before correction
+↓NSMidY(rect )
+
+// After correction
+rect.midY
+
+```
+
+```swift
+// Before correction
+↓NSEqualSizes(size1,size2   )
+
+// After correction
+size1 == size2
+
+```
+
+```swift
+// Before correction
+↓NSIntersectsRect(rect1, rect2 )
+↓NSWidth(rect  )
+
+// After correction
+rect1.intersects(rect2)
+rect.width
+
+```
+
+```swift
+// Before correction
+↓NSIsEmptyRect( rect )
+
+// After correction
+rect.isEmpty
+
+```
+
+```swift
+// Before correction
+↓NSEqualPoints( point1 , point2)
+
+// After correction
+point1 == point2
+
+```
+
+```swift
+// Before correction
+↓NSEdgeInsetsEqual(insets1, insets2)
+
+// After correction
+insets1 == insets2
+
 ```
 
 </details>
@@ -6870,6 +8297,76 @@ struct MarkTest {}
 ↓// MARK:- Bad mark
 extension MarkTest {}
 
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓// MARK:comment
+// After correction
+// MARK: comment
+```
+
+```swift
+// Before correction
+↓//MARK: - comment
+// After correction
+// MARK: - comment
+```
+
+```swift
+// Before correction
+↓//  MARK: comment
+// After correction
+// MARK: comment
+```
+
+```swift
+// Before correction
+↓//MARK: comment
+// After correction
+// MARK: comment
+```
+
+```swift
+// Before correction
+↓// MARK:- comment
+// After correction
+// MARK: - comment
+```
+
+```swift
+// Before correction
+↓// MARK: -comment
+// After correction
+// MARK: - comment
+```
+
+```swift
+// Before correction
+↓//MARK:- Top-Level bad mark
+↓//MARK:- Another bad mark
+struct MarkTest {}
+↓// MARK:- Bad mark
+extension MarkTest {}
+
+// After correction
+// MARK: - Top-Level bad mark
+// MARK: - Another bad mark
+struct MarkTest {}
+// MARK: - Bad mark
+extension MarkTest {}
+
+```
+
+```swift
+// Before correction
+↓// MARK:  comment
+// After correction
+// MARK: comment
 ```
 
 </details>
@@ -7771,6 +9268,120 @@ expect(10) > 2
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓expect(   value1  ).to(equal(  value2.foo))
+
+// After correction
+expect(value1) == value2.foo
+
+```
+
+```swift
+// Before correction
+↓expect(10).to(beGreaterThan(8))
+
+// After correction
+expect(10) > 8
+
+```
+
+```swift
+// Before correction
+↓expect(10).to(beGreaterThanOrEqualTo(10))
+
+// After correction
+expect(10) >= 10
+
+```
+
+```swift
+// Before correction
+↓expect(10).to(beLessThan(11))
+
+// After correction
+expect(10) < 11
+
+```
+
+```swift
+// Before correction
+↓expect(seagull.squawk).toNot(equal("Hi"))
+
+// After correction
+expect(seagull.squawk) != "Hi"
+
+```
+
+```swift
+// Before correction
+↓expect(12).toNot(equal(10))
+
+// After correction
+expect(12) != 10
+
+```
+
+```swift
+// Before correction
+↓expect(value1).to(equal(value2))
+
+// After correction
+expect(value1) == value2
+
+```
+
+```swift
+// Before correction
+↓expect(x).to(beIdenticalTo(x))
+
+// After correction
+expect(x) === x
+
+```
+
+```swift
+// Before correction
+expect(10) > 2
+ ↓expect(10).to(beGreaterThan(2))
+
+// After correction
+expect(10) > 2
+ expect(10) > 2
+
+```
+
+```swift
+// Before correction
+↓expect("Hi!").to(equal("Hi!"))
+
+// After correction
+expect("Hi!") == "Hi!"
+
+```
+
+```swift
+// Before correction
+↓expect(value1).to(equal(10))
+
+// After correction
+expect(value1) == 10
+
+```
+
+```swift
+// Before correction
+↓expect(10).to(beLessThanOrEqualTo(10))
+
+// After correction
+expect(10) <= 10
+
+```
+
+</details>
 
 
 
@@ -8189,6 +9800,178 @@ let foo = ↓1000000.000000_1
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let foo = ↓1000
+// After correction
+let foo = 1_000
+```
+
+```swift
+// Before correction
+let foo = +↓1.0001
+// After correction
+let foo = +1.000_1
+```
+
+```swift
+// Before correction
+let foo = ↓-1000E2
+// After correction
+let foo = -1_000E2
+```
+
+```swift
+// Before correction
+let foo = ↓1000E2
+// After correction
+let foo = 1_000E2
+```
+
+```swift
+// Before correction
+let foo = ↓-1000e2
+// After correction
+let foo = -1_000e2
+```
+
+```swift
+// Before correction
+let foo = +↓1__000
+// After correction
+let foo = +1_000
+```
+
+```swift
+// Before correction
+let foo = ↓1000e2
+// After correction
+let foo = 1_000e2
+```
+
+```swift
+// Before correction
+let foo = +↓1000
+// After correction
+let foo = +1_000
+```
+
+```swift
+// Before correction
+let foo = ↓1000000.000000_1
+// After correction
+let foo = 1_000_000.000_000_1
+```
+
+```swift
+// Before correction
+let foo = +↓10_0
+// After correction
+let foo = +100
+```
+
+```swift
+// Before correction
+let foo = +↓1_000_000.000000_1
+// After correction
+let foo = +1_000_000.000_000_1
+```
+
+```swift
+// Before correction
+let foo = ↓1__000
+// After correction
+let foo = 1_000
+```
+
+```swift
+// Before correction
+let foo = ↓-1__000
+// After correction
+let foo = -1_000
+```
+
+```swift
+// Before correction
+let foo = ↓1.0001
+// After correction
+let foo = 1.000_1
+```
+
+```swift
+// Before correction
+let foo = ↓1_000_000.000000_1
+// After correction
+let foo = 1_000_000.000_000_1
+```
+
+```swift
+// Before correction
+let foo = ↓10_0
+// After correction
+let foo = 100
+```
+
+```swift
+// Before correction
+let foo = ↓-1000000.000000_1
+// After correction
+let foo = -1_000_000.000_000_1
+```
+
+```swift
+// Before correction
+let foo = ↓-10_0
+// After correction
+let foo = -100
+```
+
+```swift
+// Before correction
+let foo = ↓-1_000_000.000000_1
+// After correction
+let foo = -1_000_000.000_000_1
+```
+
+```swift
+// Before correction
+let foo = ↓-1000
+// After correction
+let foo = -1_000
+```
+
+```swift
+// Before correction
+let foo = +↓1000e2
+// After correction
+let foo = +1_000e2
+```
+
+```swift
+// Before correction
+let foo = +↓1000E2
+// After correction
+let foo = +1_000E2
+```
+
+```swift
+// Before correction
+let foo = ↓-1.0001
+// After correction
+let foo = -1.000_1
+```
+
+```swift
+// Before correction
+let foo = +↓1000000.000000_1
+// After correction
+let foo = +1_000_000.000_000_1
+```
+
+</details>
 
 
 
@@ -8471,6 +10254,102 @@ struct Parent {
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+[].map( ↓{ })
+
+// After correction
+[].map({ })
+
+```
+
+```swift
+// Before correction
+struct Rule
+↓{
+}
+
+// After correction
+struct Rule {
+}
+
+```
+
+```swift
+// Before correction
+struct Rule↓{}
+
+// After correction
+struct Rule {}
+
+```
+
+```swift
+// Before correction
+if a == b↓{ }
+
+// After correction
+if a == b { }
+
+```
+
+```swift
+// Before correction
+if
+	let a = b,
+	let c = d↓{ }
+
+// After correction
+if
+	let a = b,
+	let c = d { }
+
+```
+
+```swift
+// Before correction
+struct Parent {
+	struct Child
+	↓{
+		let foo: Int
+	}
+}
+
+// After correction
+struct Parent {
+	struct Child {
+		let foo: Int
+	}
+}
+
+```
+
+```swift
+// Before correction
+struct Rule
+
+	↓{
+}
+
+// After correction
+struct Rule {
+}
+
+```
+
+```swift
+// Before correction
+[].map()↓{ $0 }
+
+// After correction
+[].map() { $0 }
+
+```
+
+</details>
 
 
 
@@ -8642,6 +10521,147 @@ let v8 = 1↓ <<  (6)
 ```swift
 let v8 = 1↓ <<  (6)
  let foo = 1 > 2
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let foo↓=bar
+
+// After correction
+let foo = bar
+
+```
+
+```swift
+// Before correction
+let foo = 1↓ +    2
+
+// After correction
+let foo = 1 + 2
+
+```
+
+```swift
+// Before correction
+let range = 1↓ ..<  3
+
+// After correction
+let range = 1..<3
+
+```
+
+```swift
+// Before correction
+let foo = bar↓ !==  bar2
+
+// After correction
+let foo = bar !== bar2
+
+```
+
+```swift
+// Before correction
+let v8 = 1↓ <<  (6)
+
+// After correction
+let v8 = 1 << (6)
+
+```
+
+```swift
+// Before correction
+let v8 = 1↓ <<  (6)
+ let foo = 1 > 2
+
+// After correction
+let v8 = 1 << (6)
+ let foo = 1 > 2
+
+```
+
+```swift
+// Before correction
+let foo = 1↓   + 2
+
+// After correction
+let foo = 1 + 2
+
+```
+
+```swift
+// Before correction
+let foo = bar↓??0
+
+// After correction
+let foo = bar ?? 0
+
+```
+
+```swift
+// Before correction
+let v8 = Int8(1)↓  << 6
+
+// After correction
+let v8 = Int8(1) << 6
+
+```
+
+```swift
+// Before correction
+let foo = 1↓+2
+
+// After correction
+let foo = 1 + 2
+
+```
+
+```swift
+// Before correction
+let foo↓=1↓+2
+
+// After correction
+let foo = 1 + 2
+
+```
+
+```swift
+// Before correction
+let foo↓=1 + 2
+
+// After correction
+let foo = 1 + 2
+
+```
+
+```swift
+// Before correction
+let foo = bar↓ !=  0
+
+// After correction
+let foo = bar != 0
+
+```
+
+```swift
+// Before correction
+let foo = bar↓   ?? 0
+
+// After correction
+let foo = bar ?? 0
+
+```
+
+```swift
+// Before correction
+let foo = 1↓   +    2
+
+// After correction
+let foo = 1 + 2
 
 ```
 
@@ -9414,6 +11434,28 @@ fileprivate(set) var myInt = 4
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓fileprivate enum MyEnum {}
+// After correction
+private enum MyEnum {}
+```
+
+```swift
+// Before correction
+↓fileprivate class MyClass {
+fileprivate(set) var myInt = 4
+}
+// After correction
+private class MyClass {
+fileprivate(set) var myInt = 4
+}
+```
+
+</details>
 
 
 
@@ -9626,6 +11668,21 @@ protocol Foo {
 ```swift
 protocol Foo {
  var bar: String { ↓set get }
+ }
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+protocol Foo {
+ var bar: String { ↓set get }
+ }
+// After correction
+protocol Foo {
+ var bar: String { get set }
  }
 ```
 
@@ -10253,6 +12310,28 @@ if _ = foo() { ↓let _ = bar() }
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓let _ = foo()
+
+// After correction
+_ = foo()
+
+```
+
+```swift
+// Before correction
+if _ = foo() { ↓let _ = bar() }
+
+// After correction
+if _ = foo() { _ = bar() }
+
+```
+
+</details>
 
 
 
@@ -10285,6 +12364,28 @@ var myVar: Int? = nil; myVar↓ ?? nil
 
 ```swift
 var myVar: Int? = nil; myVar↓??nil
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+var myVar: Int? = nil; let foo = myVar↓??nil
+
+// After correction
+var myVar: Int? = nil; let foo = myVar
+
+```
+
+```swift
+// Before correction
+var myVar: Int? = nil; let foo = myVar↓ ?? nil
+
+// After correction
+var myVar: Int? = nil; let foo = myVar
 
 ```
 
@@ -10381,6 +12482,46 @@ var myVar: Int?↓=nil
 
 ```swift
 var myVar: Optional<Int>↓=nil
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+var myVar: Int?↓=nil
+
+// After correction
+var myVar: Int?
+
+```
+
+```swift
+// Before correction
+var myVar: Optional<Int>↓ = nil
+
+// After correction
+var myVar: Optional<Int>
+
+```
+
+```swift
+// Before correction
+var myVar: Optional<Int>↓=nil
+
+// After correction
+var myVar: Optional<Int>
+
+```
+
+```swift
+// Before correction
+var myVar: Int?↓ = nil
+
+// After correction
+var myVar: Int?
 
 ```
 
@@ -10567,6 +12708,54 @@ protocol Foo {
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+func foo()↓ -> Void {}
+
+// After correction
+func foo() {}
+
+```
+
+```swift
+// Before correction
+protocol Foo {
+ func foo()↓ -> ()
+}
+
+// After correction
+protocol Foo {
+ func foo()
+}
+
+```
+
+```swift
+// Before correction
+protocol Foo {
+ func foo()↓ -> Void
+}
+
+// After correction
+protocol Foo {
+ func foo()
+}
+
+```
+
+```swift
+// Before correction
+func foo()↓ -> () {}
+
+// After correction
+func foo() {}
+
+```
+
+</details>
 
 
 
@@ -10731,6 +12920,90 @@ var abc = {(param: Int)↓ ->Bool in }
 
 ```swift
 var abc = {(param: Int)↓->Bool in }
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+func abc()↓
+->  Int {}
+
+// After correction
+func abc()
+-> Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓ ->Int {}
+
+// After correction
+func abc() -> Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓-> Int {}
+
+// After correction
+func abc() -> Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓  ->
+Int {}
+
+// After correction
+func abc() ->
+Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓  ->  Int {}
+
+// After correction
+func abc() -> Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓
+  ->  Int {}
+
+// After correction
+func abc()
+  -> Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓  ->
+  Int {}
+
+// After correction
+func abc() ->
+  Int {}
+
+```
+
+```swift
+// Before correction
+func abc()↓->Int {}
+
+// After correction
+func abc() -> Int {}
 
 ```
 
@@ -11298,6 +13571,90 @@ import BBB
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+import AAA
+import ZZZ
+import ↓BBB
+import CCC
+// After correction
+import AAA
+import BBB
+import CCC
+import ZZZ
+```
+
+```swift
+// Before correction
+@testable import CCC
+import  ↓AAA
+// After correction
+import  AAA
+@testable import CCC
+```
+
+```swift
+// Before correction
+import CCC
+@testable import  ↓AAA
+// After correction
+@testable import  AAA
+import CCC
+```
+
+```swift
+// Before correction
+import FFF.B
+import ↓EEE.A
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import DDD.B
+import ↓CCC
+#endif
+import AAA
+import BBB
+// After correction
+import EEE.A
+import FFF.B
+#if os(Linux)
+import DDD.A
+import EEE.B
+#else
+import CCC
+import DDD.B
+#endif
+import AAA
+import BBB
+```
+
+```swift
+// Before correction
+import BBB // comment
+import ↓AAA
+// After correction
+import AAA
+import BBB // comment
+```
+
+```swift
+// Before correction
+import BBB
+// comment
+import CCC
+import ↓AAA
+// After correction
+import BBB
+// comment
+import AAA
+import CCC
+```
+
+</details>
 
 
 
@@ -11364,6 +13721,40 @@ catch {
 ```swift
 ↓}
 	  catch {
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+↓}
+ else {
+
+// After correction
+} else {
+
+```
+
+```swift
+// Before correction
+↓}
+   else if {
+
+// After correction
+} else if {
+
+```
+
+```swift
+// Before correction
+↓}
+ catch {
+
+// After correction
+} catch {
+
 ```
 
 </details>
@@ -12111,6 +14502,90 @@ let foo = ["אבג", "αβγ", "🇺🇸"↓,]
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let example = [ 1,
+2↓,
+ // 3,
+]
+// After correction
+let example = [ 1,
+2
+ // 3,
+]
+```
+
+```swift
+// Before correction
+struct Bar {
+ let foo = [1: 2, 2: 3↓, ]
+}
+
+// After correction
+struct Bar {
+ let foo = [1: 2, 2: 3 ]
+}
+
+```
+
+```swift
+// Before correction
+let foo = [1, 2, 3↓,] + [4, 5, 6↓,]
+
+// After correction
+let foo = [1, 2, 3] + [4, 5, 6]
+
+```
+
+```swift
+// Before correction
+let foo = [1, 2, 3↓, ]
+
+// After correction
+let foo = [1, 2, 3 ]
+
+```
+
+```swift
+// Before correction
+let foo = [1, 2, 3   ↓,]
+
+// After correction
+let foo = [1, 2, 3   ]
+
+```
+
+```swift
+// Before correction
+let foo = [1: 2, 2: 3↓, ]
+
+// After correction
+let foo = [1: 2, 2: 3 ]
+
+```
+
+```swift
+// Before correction
+let foo = [1, 2, 3↓,]
+
+// After correction
+let foo = [1, 2, 3]
+
+```
+
+```swift
+// Before correction
+let foo = ["אבג", "αβγ", "🇺🇸"↓,]
+
+// After correction
+let foo = ["אבג", "αβγ", "🇺🇸"]
+
+```
+
+</details>
 
 
 
@@ -12143,6 +14618,40 @@ let a = 0
 ```swift
 let a = 0
 
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let a = 0
+// After correction
+let a = 0
+
+```
+
+```swift
+// Before correction
+let b = 0
+
+
+// After correction
+let b = 0
+
+```
+
+```swift
+// Before correction
+let c = 0
+
+
+
+
+// After correction
+let c = 0
 
 ```
 
@@ -12199,6 +14708,57 @@ let a = 0↓; ; ;
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let a = 0↓;
+
+// After correction
+let a = 0
+
+```
+
+```swift
+// Before correction
+let a = 0↓;    ;;
+
+// After correction
+let a = 0
+
+```
+
+```swift
+// Before correction
+let a = 0↓;
+let b = 1
+
+// After correction
+let a = 0
+let b = 1
+
+```
+
+```swift
+// Before correction
+let a = 0↓;;
+
+// After correction
+let a = 0
+
+```
+
+```swift
+// Before correction
+let a = 0↓; ; ;
+
+// After correction
+let a = 0
+
+```
+
+</details>
 
 
 
@@ -12251,6 +14811,28 @@ let name: String
 
 ```swift
 /* */ let name: String 
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+let name: String 
+
+// After correction
+let name: String
+
+```
+
+```swift
+// Before correction
+/* */ let name: String 
+
+// After correction
+/* */ let name: String
 
 ```
 
@@ -15710,6 +18292,51 @@ foo.bar { [weak self] ↓(x, y) in }
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+foo.map { ($0, $0) }.forEach { ↓(x, y) in }
+// After correction
+foo.map { ($0, $0) }.forEach { x, y in }
+```
+
+```swift
+// Before correction
+foo.bar { [weak self] ↓(x, y) in }
+// After correction
+foo.bar { [weak self] x, y in }
+```
+
+```swift
+// Before correction
+let foo = { ↓(bar) -> Bool in return true }
+
+// After correction
+let foo = { bar -> Bool in return true }
+
+```
+
+```swift
+// Before correction
+method { ↓(foo, bar) in }
+
+// After correction
+method { foo, bar in }
+
+```
+
+```swift
+// Before correction
+call(arg: { ↓(bar) in })
+
+// After correction
+call(arg: { bar in })
+
+```
+
+</details>
 
 
 
@@ -15859,6 +18486,143 @@ hoge(arg: num) { ↓num in
 ```swift
 fooFunc { ↓아 in
  }
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+[1, 2].something { number, ↓idx in
+ return number
+}
+
+// After correction
+[1, 2].something { number, _ in
+ return number
+}
+
+```
+
+```swift
+// Before correction
+[1, 2].map { ↓number in
+ return numberWithSuffix
+}
+
+// After correction
+[1, 2].map { _ in
+ return numberWithSuffix
+}
+
+```
+
+```swift
+// Before correction
+[1, 2].map { ↓number in
+ return 3 // number
+}
+
+// After correction
+[1, 2].map { _ in
+ return 3 // number
+}
+
+```
+
+```swift
+// Before correction
+genericsFunc { (↓a: Type, ↓b: Type) -> Void in
+}
+
+// After correction
+genericsFunc { (_: Type, _: Type) -> Void in
+}
+
+```
+
+```swift
+// Before correction
+genericsFunc { (↓a, ↓b: Type) -> Void in
+}
+
+// After correction
+genericsFunc { (_, _: Type) -> Void in
+}
+
+```
+
+```swift
+// Before correction
+[1, 2].map { ↓number in
+ return 3
+}
+
+// After correction
+[1, 2].map { _ in
+ return 3
+}
+
+```
+
+```swift
+// Before correction
+genericsFunc { (a: Type, ↓b) -> Void in
+return a
+}
+
+// After correction
+genericsFunc { (a: Type, _) -> Void in
+return a
+}
+
+```
+
+```swift
+// Before correction
+genericsFunc(closure: { (↓int: Int) -> Void in // do something
+}
+
+// After correction
+genericsFunc(closure: { (_: Int) -> Void in // do something
+}
+
+```
+
+```swift
+// Before correction
+[1, 2].map { ↓number in
+ return 3 "number"
+}
+
+// After correction
+[1, 2].map { _ in
+ return 3 "number"
+}
+
+```
+
+```swift
+// Before correction
+genericsFunc { (↓a: Type, ↓b) -> Void in
+}
+
+// After correction
+genericsFunc { (_: Type, _) -> Void in
+}
+
+```
+
+```swift
+// Before correction
+hoge(arg: num) { ↓num in
+}
+
+// After correction
+hoge(arg: num) { _ in
+}
+
 ```
 
 </details>
@@ -16477,6 +19241,50 @@ class BBBB {}
 ```
 
 </details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+// bca 
+
+
+
+// After correction
+// bca 
+
+
+```
+
+```swift
+// Before correction
+let c = 0
+
+
+let num = 1
+
+// After correction
+let c = 0
+
+let num = 1
+
+```
+
+```swift
+// Before correction
+let b = 0
+
+
+class AAA {}
+
+// After correction
+let b = 0
+
+class AAA {}
+
+```
+
+</details>
 
 
 
@@ -16564,6 +19372,73 @@ func foo(completion: () -> ↓(Void))
 
 ```swift
 let foo: (ConfigurationTests) -> () throws -> ↓())
+
+```
+
+</details>
+<details>
+<summary>Correction Examples</summary>
+
+```swift
+// Before correction
+func foo(completion: () -> ↓(Void))
+
+// After correction
+func foo(completion: () -> Void)
+
+```
+
+```swift
+// Before correction
+let abc: () -> ↓(Void) = {}
+
+// After correction
+let abc: () -> Void = {}
+
+```
+
+```swift
+// Before correction
+let foo: (ConfigurationTests) -> () throws -> ↓())
+
+// After correction
+let foo: (ConfigurationTests) -> () throws -> Void)
+
+```
+
+```swift
+// Before correction
+let abc: () -> ↓(   Void ) = {}
+
+// After correction
+let abc: () -> Void = {}
+
+```
+
+```swift
+// Before correction
+func foo(completion: () -> ↓(   ))
+
+// After correction
+func foo(completion: () -> Void)
+
+```
+
+```swift
+// Before correction
+let abc: () -> ↓() = {}
+
+// After correction
+let abc: () -> Void = {}
+
+```
+
+```swift
+// Before correction
+func foo(completion: () -> ↓())
+
+// After correction
+func foo(completion: () -> Void)
 
 ```
 

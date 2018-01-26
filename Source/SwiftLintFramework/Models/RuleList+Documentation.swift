@@ -32,7 +32,9 @@ extension RuleList {
         content += detailsSummary(rule.init())
         content += description.description + "\n"
 
-        if !description.nonTriggeringExamples.isEmpty || !description.triggeringExamples.isEmpty {
+        if !description.nonTriggeringExamples.isEmpty
+            || !description.triggeringExamples.isEmpty
+            || !description.corrections.isEmpty {
             content += h3("Examples")
         }
 
@@ -44,6 +46,11 @@ extension RuleList {
         if !description.triggeringExamples.isEmpty {
             let examples = description.triggeringExamples.map(formattedCode).joined(separator: "\n")
             content += details(summary: "Triggering Examples", details: examples)
+        }
+
+        if !description.corrections.isEmpty {
+            let examples = description.corrections.map(combinedCode).map(formattedCode).joined(separator: "\n")
+            content += details(summary: "Correction Examples", details: examples)
         }
 
         return content
@@ -62,6 +69,15 @@ extension RuleList {
         var content = "```swift\n"
         content += code
         content += "\n```\n"
+
+        return content
+    }
+
+    private func combinedCode(_ originalCode: String, correctedCode: String) -> String {
+        var content = "// Before correction\n"
+        content += originalCode
+        content += "\n// After correction\n"
+        content += correctedCode
 
         return content
     }

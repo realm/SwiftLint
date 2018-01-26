@@ -29,6 +29,7 @@ extension SwiftVersion: Comparable {
 extension SwiftVersion {
     static let three = SwiftVersion(rawValue: "3.0.0")
     static let four = SwiftVersion(rawValue: "4.0.0")
+    static let fourDotOne = SwiftVersion(rawValue: "4.1.0")
 
     static let current: SwiftVersion = {
         // Allow forcing the Swift version, useful in cases where SourceKit isn't available

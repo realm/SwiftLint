@@ -6554,6 +6554,14 @@ var x = 0
 let x = bar as! Bar
 ```
 
+```swift
+var x: Int {
+	let a = 0
+	return a
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

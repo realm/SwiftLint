@@ -33,11 +33,11 @@ internal struct TypeNameRuleExamples {
     static let triggeringExamples: [String] = {
         let typeExamples: [String] = types.flatMap { (type: String) -> [String] in
             [
-                "↓\(type) myType {}",
-                "↓\(type) _MyType {}",
-                "private ↓\(type) MyType_ {}",
-                "↓\(type) My {}",
-                "↓\(type) \(repeatElement("A", count: 41).joined()) {}"
+                "\(type) ↓myType {}",
+                "\(type) ↓_MyType {}",
+                "private \(type) ↓MyType_ {}",
+                "\(type) ↓My {}",
+                "\(type) ↓\(repeatElement("A", count: 41).joined()) {}"
             ]
         }
         let typeAliasAndAssociatedTypeExamples: [String] = [

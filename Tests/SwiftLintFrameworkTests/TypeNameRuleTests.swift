@@ -32,7 +32,7 @@ class TypeNameRuleTests: XCTestCase {
     func testTypeNameWithAllowedSymbolsAndViolation() {
         let baseDescription = TypeNameRule.description
         let triggeringExamples = [
-            "class My_Type$ {}"
+            "class ↓My_Type$ {}"
         ]
 
         let description = baseDescription.with(triggeringExamples: triggeringExamples)
@@ -43,9 +43,9 @@ class TypeNameRuleTests: XCTestCase {
         let baseDescription = TypeNameRule.description
         let triggeringExamplesToRemove = [
             "private typealias ↓foo = Void",
-            "↓class myType {}",
-            "↓struct myType {}",
-            "↓enum myType {}"
+            "class ↓myType {}",
+            "struct ↓myType {}",
+            "enum ↓myType {}"
         ]
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples +
             triggeringExamplesToRemove.map { $0.replacingOccurrences(of: "↓", with: "") }

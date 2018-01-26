@@ -10,9 +10,9 @@
 
 #### Bug Fixes
 
-* Fix some cases where `colon` rule wouldn't be autocorrected.  
+* Fix some cases where `colon` rule wouldn't be autocorrected.  
   [Manabu Nakazawa](https://github.com/mshibanami)
-  
+
 * Fix false positives in `explicit_acl` rule when declaring functions and
   properties in protocols or implementing `deinit`.  
   [Marcelo Fabri](https://github.com/marcelofabri)

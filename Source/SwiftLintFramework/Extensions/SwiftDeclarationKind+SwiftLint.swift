@@ -39,6 +39,7 @@ extension SwiftDeclarationKind {
         .`class`,
         .`struct`,
         .`typealias`,
+        .`associatedtype`,
         .`enum`
     ]
 

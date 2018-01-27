@@ -40,7 +40,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
         guard typeKinds.contains(kind),
             let name = dictionary.name,
-            let offset = dictionary.offset else {
+            let offset = dictionary.nameOffset else {
                 return []
         }
 

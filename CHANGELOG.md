@@ -32,6 +32,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2021](https://github.com/realm/SwiftLint/issues/2021)
 
+* Improve `type_name` rule violations to be positioned on the type name.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2021](https://github.com/realm/SwiftLint/issues/2021)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking

@@ -15464,63 +15464,63 @@ case value
 <summary>Triggering Examples</summary>
 
 ```swift
-↓class myType {}
+class ↓myType {}
 ```
 
 ```swift
-↓class _MyType {}
+class ↓_MyType {}
 ```
 
 ```swift
-private ↓class MyType_ {}
+private class ↓MyType_ {}
 ```
 
 ```swift
-↓class My {}
+class ↓My {}
 ```
 
 ```swift
-↓class AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
+class ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
-↓struct myType {}
+struct ↓myType {}
 ```
 
 ```swift
-↓struct _MyType {}
+struct ↓_MyType {}
 ```
 
 ```swift
-private ↓struct MyType_ {}
+private struct ↓MyType_ {}
 ```
 
 ```swift
-↓struct My {}
+struct ↓My {}
 ```
 
 ```swift
-↓struct AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
+struct ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift
-↓enum myType {}
+enum ↓myType {}
 ```
 
 ```swift
-↓enum _MyType {}
+enum ↓_MyType {}
 ```
 
 ```swift
-private ↓enum MyType_ {}
+private enum ↓MyType_ {}
 ```
 
 ```swift
-↓enum My {}
+enum ↓My {}
 ```
 
 ```swift
-↓enum AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
+enum ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA {}
 ```
 
 ```swift

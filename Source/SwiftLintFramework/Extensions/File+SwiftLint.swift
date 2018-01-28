@@ -139,7 +139,7 @@ extension File {
                 results[line.index].append(swiftDeclarationKind)
             }
             let lineEnd = NSMaxRange(line.byteRange)
-            if structure.byteRange.location > lineEnd {
+            if structure.byteRange.location >= lineEnd {
                 maybeLine = lineIterator.next()
             } else {
                 maybeStructure = structureIterator.next()

@@ -36,6 +36,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2021](https://github.com/realm/SwiftLint/issues/2021)
 
+* Use SourceKit to validate `associatedtype` and `typealias` in `type_name` rule
+  when linting with Swift 4.1.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2021](https://github.com/realm/SwiftLint/issues/2021)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking

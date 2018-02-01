@@ -14,9 +14,9 @@
         "package": "Commandant",
         "repositoryURL": "https://github.com/Carthage/Commandant.git",
         "state": {
-          "branch": "master",
-          "revision": "3ff9019f7afd189c43a349f819684988031053a0",
-          "version": null
+          "branch": null,
+          "revision": "7f29606ec3a2054a601f0e72f562a104dbc1a11a",
+          "version": "0.13.0"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "38c9ab0846a3fbec308eb2aa9ef68b10a7434eb4",
-          "version": "7.0.2"
+          "revision": "22800b0954c89344bb8c87f8ab93378076716fb7",
+          "version": "7.0.3"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
         "state": {
           "branch": null,
-          "revision": "12496b370363034ccc919e1d72a99b9970b4941e",
-          "version": "4.2.5"
+          "revision": "4e7f5af6331735d39fc357b2c71c3bb15af97c8f",
+          "version": "4.3.6"
         }
       },
       {
@@ -69,17 +69,17 @@
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
           "branch": null,
-          "revision": "71e8297e5d95118588f8aa8e1de892762346dc9d",
-          "version": "0.18.4"
+          "revision": "e06eb730499439ae32c5fbb6f72809ebec2371fd",
+          "version": "0.19.1"
         }
       },
       {
         "package": "SwiftyTextTable",
-        "repositoryURL": "https://github.com/jpsim/SwiftyTextTable.git",
+        "repositoryURL": "https://github.com/scottrhoyt/SwiftyTextTable.git",
         "state": {
-          "branch": "characters",
-          "revision": "fb31390e74392773d0f587a3b1481ee65056e075",
-          "version": null
+          "branch": null,
+          "revision": "89728970c0a244c43f29c4155a1b1dc20b3c4633",
+          "version": "0.8.0"
         }
       },
       {
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
           "branch": null,
-          "revision": "90a76f3cdb552b8e6aea5dabdd6c3578b8a7ad45",
-          "version": "0.4.1"
+          "revision": "95f45caf07472ec78223ebada45255086a85b01a",
+          "version": "0.5.0"
         }
       }
     ]

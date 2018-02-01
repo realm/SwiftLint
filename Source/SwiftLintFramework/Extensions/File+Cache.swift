@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.editorOpen(file: file).failableSend()
+        return try Request.editorOpen(file: file).send()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil

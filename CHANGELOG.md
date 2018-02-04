@@ -6,7 +6,7 @@
 
 #### Enhancements
 
-* Adds `discouraged_optional_boolean` opt-in rules to discourage
+* Adds `discouraged_optional_boolean` opt-in rule to discourage
   the use of optional booleans.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2011](https://github.com/realm/SwiftLint/issues/2011)
@@ -44,8 +44,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2021](https://github.com/realm/SwiftLint/issues/2021)
 
-* Fix ignores_function_declarations of line_length doesn't work in some cases.  
-  [Manabu Nakazawa](https://github.com/mshibanami)
+* Fix some cases where violations would still be triggered when using the
+  `ignores_function_declarations` configuration of `line_length` rule.  
+  [Manabu Nakazawa](https://github.com/mshibanami)
 
 ## 0.24.2: Dented Tumbler
 

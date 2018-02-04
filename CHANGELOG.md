@@ -266,6 +266,10 @@
   setter ACLs on variable declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1869](https://github.com/realm/SwiftLint/issues/1869)
+* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
+  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1874](https://github.com/realm/SwiftLint/issues/1874)
 
 * Add a new `ignores_interpolated_strings` config parameter to the `line_length`
   rule to ignore lines that include interpolated strings from this rule.  
@@ -537,10 +541,7 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* Adds `xct_specific_matcher` opt-in rule to enforce specific matchers
-  over `XCTAssertEqual` and `XCTAssertNotEqual`.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1874](https://github.com/realm/SwiftLint/issues/1874)
+* None.
 
 #### Bug Fixes
 

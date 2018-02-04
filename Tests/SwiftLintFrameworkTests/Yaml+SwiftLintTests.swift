@@ -35,14 +35,14 @@ class YamlSwiftLintTests: XCTestCase {
             XCTAssertTrue(array1[2] as? Double == 1.0 && array2[2] as? Double == 1.0)
             XCTAssertTrue(array1[3] as? String == "string" && array2[3] as? String == "string")
 
-            let dict1_1 = (array1[4] as? [Swift.String: Any])!
-            let dict2_2 = (array2[4] as? [Swift.String: Any])!
-            XCTAssertTrue(dict1_1["bool"] as? Bool == true && dict2_2["bool"] as? Bool == true)
-            XCTAssertTrue(dict1_1["int"] as? Int == 1 && dict2_2["int"] as? Int == 1)
-            XCTAssertTrue(dict1_1["double"] as? Double == 1.0 &&
-                          dict2_2["double"] as? Double == 1.0)
-            XCTAssertTrue(dict1_1["string"] as? String == "string" &&
-                          dict2_2["string"] as? String == "string")
+            let dictFromArray1 = (array1[4] as? [Swift.String: Any])!
+            let dictFromArray2 = (array2[4] as? [Swift.String: Any])!
+            XCTAssertTrue(dictFromArray1["bool"] as? Bool == true && dictFromArray2["bool"] as? Bool == true)
+            XCTAssertTrue(dictFromArray1["int"] as? Int == 1 && dictFromArray2["int"] as? Int == 1)
+            XCTAssertTrue(dictFromArray1["double"] as? Double == 1.0 &&
+                          dictFromArray2["double"] as? Double == 1.0)
+            XCTAssertTrue(dictFromArray1["string"] as? String == "string" &&
+                          dictFromArray2["string"] as? String == "string")
         } catch {
             XCTFail(error.localizedDescription)
         }

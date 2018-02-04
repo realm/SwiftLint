@@ -70,10 +70,13 @@ extension String {
                                  limitedBy: utf16.endIndex) ?? utf16.endIndex
         let to16 = utf16.index(from16, offsetBy: nsrange.length,
                                limitedBy: utf16.endIndex) ?? utf16.endIndex
-        if let from = Index(from16, within: self), let to = Index(to16, within: self) {
-            return from..<to
+
+        guard let fromIndex = Index(from16, within: self),
+            let toIndex = Index(to16, within: self) else {
+                return nil
         }
-        return nil
+
+        return fromIndex..<toIndex
     }
 
     public func absolutePathStandardized() -> String {

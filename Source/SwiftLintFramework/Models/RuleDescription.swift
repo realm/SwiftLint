@@ -15,6 +15,7 @@ public struct RuleDescription: Equatable {
     public let triggeringExamples: [String]
     public let corrections: [String: String]
     public let deprecatedAliases: Set<String>
+    public let minSwiftVersion: SwiftVersion
 
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
@@ -23,6 +24,7 @@ public struct RuleDescription: Equatable {
     }
 
     public init(identifier: String, name: String, description: String, kind: RuleKind,
+                minSwiftVersion: SwiftVersion = .three,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
                 deprecatedAliases: Set<String> = []) {
@@ -34,6 +36,7 @@ public struct RuleDescription: Equatable {
         self.triggeringExamples = triggeringExamples
         self.corrections = corrections
         self.deprecatedAliases = deprecatedAliases
+        self.minSwiftVersion = minSwiftVersion
     }
 }
 

@@ -167,6 +167,10 @@ extension XCTestCase {
             return
         }
 
+        guard SwiftVersion.current >= ruleDescription.minSwiftVersion else {
+            return
+        }
+
         let triggers = ruleDescription.triggeringExamples
         let nonTriggers = ruleDescription.nonTriggeringExamples
         verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)

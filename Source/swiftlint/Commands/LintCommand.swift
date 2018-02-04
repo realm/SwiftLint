@@ -29,8 +29,8 @@ struct LintCommand: CommandProtocol {
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
-                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = LintCommand.applyLeniency(options: options, violations: _currentViolations)
+                let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                currentViolations = LintCommand.applyLeniency(options: options, violations: violationsBeforeLeniency)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }

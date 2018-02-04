@@ -285,8 +285,9 @@ extension File {
         return (count > limit, count)
     }
 
+    private typealias RangePatternTemplate = (NSRange, String, String)
+
     internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
-        typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
         matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
             return match(pattern: pattern).filter { range, kinds in

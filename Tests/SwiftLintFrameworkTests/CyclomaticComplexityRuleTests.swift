@@ -14,8 +14,8 @@ class CyclomaticComplexityRuleTests: XCTestCase {
     private lazy var complexSwitchExample: String = {
         var example = "func switcheroo() {\n"
         example += "    switch foo {\n"
-        for i in (0...30) {
-            example += "  case \(i):   print(\"\(i)\")\n"
+        for index in (0...30) {
+            example += "  case \(index):   print(\"\(index)\")\n"
         }
         example += "    }\n"
         example += "}\n"
@@ -25,14 +25,14 @@ class CyclomaticComplexityRuleTests: XCTestCase {
     private lazy var complexIfExample: String = {
         let nest = 22
         var example = "func nestThoseIfs() {\n"
-        for i in (0...nest) {
-            let indent = String(repeating: "    ", count: i + 1)
+        for index in (0...nest) {
+            let indent = String(repeating: "    ", count: index + 1)
             example += indent + "if false != true {\n"
             example += indent + "   print \"\\(i)\"\n"
         }
 
-        for i in (0...nest).reversed() {
-            let indent = String(repeating: "    ", count: i + 1)
+        for index in (0...nest).reversed() {
+            let indent = String(repeating: "    ", count: index + 1)
             example += indent + "}\n"
         }
         example += "}\n"

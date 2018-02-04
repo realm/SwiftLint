@@ -98,7 +98,9 @@ class ConfigurationTests: XCTestCase {
             "whitelist_rules": whitelist
         ]
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {
-            var d = $0; d[$1.0] = $1.1; return d
+            var dict = $0
+            dict[$1.0] = $1.1
+            return dict
         }
         var configuration = Configuration(dict: enabledRulesConfigDict)
         XCTAssertNil(configuration)

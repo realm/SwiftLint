@@ -100,6 +100,7 @@ public let masterRuleList = RuleList(rules: [
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,
+    RedundantSetAccessControlRule.self,
     RedundantStringEnumValueRule.self,
     RedundantVoidReturnRule.self,
     RequiredEnumCaseRule.self,

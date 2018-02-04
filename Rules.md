@@ -92,6 +92,7 @@
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
+* [Redundant Set Access Control Rule](#redundant-set-access-control-rule)
 * [Redundant String Enum Value](#redundant-string-enum-value)
 * [Redundant Void Return](#redundant-void-return)
 * [Required Enum Case](#required-enum-case)
@@ -12150,6 +12151,65 @@ var myVar: Int?↓=nil
 ```swift
 var myVar: Optional<Int>↓=nil
 
+```
+
+</details>
+
+
+
+## Redundant Set Access Control Rule
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`redundant_set_access_control` | Enabled | No | idiomatic | 4.1.0 
+
+Property setter access level shouldn't be explicit if it's the same as the variable access level.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+private(set) public var foo: Int
+```
+
+```swift
+public let foo: Int
+```
+
+```swift
+public var foo: Int
+```
+
+```swift
+var foo: Int
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓private(set) private var foo: Int
+```
+
+```swift
+↓fileprivate(set) fileprivate var foo: Int
+```
+
+```swift
+↓internal(set) internal var foo: Int
+```
+
+```swift
+↓public(set) public var foo: Int
+```
+
+```swift
+open class Foo {
+    ↓open(set) open var bar: Int
+}
 ```
 
 </details>

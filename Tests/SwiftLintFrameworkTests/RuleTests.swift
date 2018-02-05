@@ -19,6 +19,12 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
                                              kind: .style,
                                              deprecatedAliases: ["mock"])
 
+    init() {}
+    init(configuration: Any) throws {
+        self.init()
+        try self.configuration.apply(configuration: configuration)
+    }
+
     func validate(file: File) -> [StyleViolation] { return [] }
 }
 
@@ -55,6 +61,12 @@ class RuleTests: XCTestCase {
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",
                                                  description: "", kind: .style)
+
+        init() {}
+        init(configuration: Any) throws {
+            self.init()
+            try self.configuration.apply(configuration: configuration)
+        }
 
         func validate(file: File) -> [StyleViolation] { return [] }
     }

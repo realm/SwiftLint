@@ -53,6 +53,8 @@ extension SwiftVersion {
                 let version = "4.0.1"
             #elseif swift(>=4.0.0)
                 let version = "4.0.0"
+            #elseif swift(>=3.3.0)
+                let version = "3.3.0"
             #elseif swift(>=3.2.3)
                 let version = "3.2.3"
             #elseif swift(>=3.2.2)

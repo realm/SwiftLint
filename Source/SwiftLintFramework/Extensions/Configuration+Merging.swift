@@ -54,7 +54,7 @@ extension Configuration {
         }
 
         let isDirectory: Bool
-        #if os(Linux)
+        #if os(Linux) && (!swift(>=4.1) || (!swift(>=4.0) && swift(>=3.3)))
             isDirectory = isDirectoryObjC
         #else
             isDirectory = isDirectoryObjC.boolValue

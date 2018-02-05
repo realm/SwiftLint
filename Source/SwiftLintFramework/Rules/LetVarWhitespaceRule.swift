@@ -211,7 +211,7 @@ public struct LetVarWhitespaceRule: ConfigurationProviderRule, OptInRule {
     // Collects all the line numbers containing attributes but not declarations
     // other than let/var
     private func attributeLineNumbers(file: File) -> Set<Int> {
-        return Set(file.syntaxMap.tokens.flatMap({ token in
+        return Set(file.syntaxMap.tokens.compactMap({ token in
             if token.type == SyntaxKind.attributeBuiltin.rawValue {
                 return file.line(byteOffset: token.offset)
             }

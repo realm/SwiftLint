@@ -35,6 +35,6 @@ extension SyntaxMap {
     }
 
     internal func kinds(inByteRange byteRange: NSRange) -> [SyntaxKind] {
-        return tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
+        return tokens(inByteRange: byteRange).compactMap { SyntaxKind(rawValue: $0.type) }
     }
 }

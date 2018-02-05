@@ -155,7 +155,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
-        }.flatMap { range, syntaxTokens in
+        }.compactMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }

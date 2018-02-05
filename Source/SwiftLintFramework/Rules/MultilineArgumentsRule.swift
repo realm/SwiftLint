@@ -43,7 +43,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
         }
 
         let lastIndex = arguments.count - 1
-        let violatingOffsets: [Int] = arguments.enumerated().flatMap { idx, argument in
+        let violatingOffsets: [Int] = arguments.enumerated().compactMap { idx, argument in
             guard
                 let offset = argument.offset,
                 let (line, _) = contents.lineAndCharacter(forByteOffset: offset) else {

@@ -68,7 +68,7 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
         var corrections = [Correction]()
         var contents = file.contents
 
-        let results = matches.reversed().flatMap { range in
+        let results = matches.reversed().compactMap { range in
             return regularExpression.firstMatch(in: contents, options: [], range: range)
         }
 

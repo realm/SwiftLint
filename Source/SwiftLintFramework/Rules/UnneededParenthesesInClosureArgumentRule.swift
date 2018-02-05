@@ -55,7 +55,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
         let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+\\))\\s*(in|->)"
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
-        return regex(pattern).matches(in: file.contents, options: [], range: range).flatMap { match -> NSRange? in
+        return regex(pattern).matches(in: file.contents, options: [], range: range).compactMap { match -> NSRange? in
             let parametersRange = match.range(at: 1)
             let inRange = match.range(at: 2)
             guard let parametersByteRange = contents.NSRangeToByteRange(start: parametersRange.location,

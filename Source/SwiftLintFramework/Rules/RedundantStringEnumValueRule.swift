@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private func children(of dict: [String: SourceKitRepresentable],
                       matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
-    return dict.substructure.flatMap { subDict in
+    return dict.substructure.compactMap { subDict in
         if let kindString = subDict.kind,
             SwiftDeclarationKind(rawValue: kindString) == kind {
             return subDict
@@ -98,7 +98,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
                                                 file: File) -> [Int] {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
-        return enumInits.flatMap { dictionary -> Int? in
+        return enumInits.compactMap { dictionary -> Int? in
             guard let offset = dictionary.offset,
                 let length = dictionary.length else {
                     return nil

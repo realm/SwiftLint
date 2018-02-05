@@ -74,7 +74,7 @@ public struct VerticalParameterAlignmentRule: ASTRule, ConfigurationProviderRule
 
         let contents = file.contents.bridge()
 
-        let paramLocations = params.flatMap { paramDict -> Location? in
+        let paramLocations = params.compactMap { paramDict -> Location? in
             guard let byteOffset = paramDict.offset,
                 let lineAndChar = contents.lineAndCharacter(forByteOffset: byteOffset) else {
                 return nil

@@ -117,7 +117,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         let parameters = dictionary.enclosedVarParameters
         let contents = file.contents.bridge()
 
-        return parameters.flatMap { param -> (NSRange, String)? in
+        return parameters.compactMap { param -> (NSRange, String)? in
             guard let paramOffset = param.offset,
                 let name = param.name,
                 name != "_",

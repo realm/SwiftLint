@@ -34,7 +34,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
-        return numberTokens.flatMap { (token: SyntaxToken) -> (NSRange, String)? in
+        return numberTokens.compactMap { (token: SyntaxToken) -> (NSRange, String)? in
             guard let content = contentFrom(file: file, token: token),
                 isDecimal(number: content) else {
                     return nil

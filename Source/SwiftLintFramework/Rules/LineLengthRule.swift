@@ -40,7 +40,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
         let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
 
-        return file.lines.flatMap { line in
+        return file.lines.compactMap { line in
             // `line.content.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
             // for avoiding using heavy `line.content.count`.

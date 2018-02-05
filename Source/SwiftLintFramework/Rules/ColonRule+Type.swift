@@ -34,7 +34,7 @@ internal extension ColonRule {
         let nsstring = file.contents.bridge()
         let commentAndStringKindsSet = SyntaxKind.commentAndStringKinds
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
-            let syntaxKinds = syntaxTokens.flatMap { SyntaxKind(rawValue: $0.type) }
+            let syntaxKinds = syntaxTokens.compactMap { SyntaxKind(rawValue: $0.type) }
 
             guard syntaxKinds.count == 2 else {
                 return false
@@ -59,7 +59,7 @@ internal extension ColonRule {
             }
 
             return Set(syntaxKinds).isDisjoint(with: commentAndStringKindsSet)
-        }.flatMap { range, syntaxTokens in
+        }.compactMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }

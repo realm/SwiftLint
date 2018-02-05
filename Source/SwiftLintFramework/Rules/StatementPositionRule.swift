@@ -101,7 +101,7 @@ private extension StatementPositionRule {
     static let defaultPattern = "\\}(?:[\\s\\n\\r]{2,}|[\\n\\t\\r]+)?\\b(else|catch)\\b"
 
     func defaultValidate(file: File) -> [StyleViolation] {
-        return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).flatMap { range in
+        return defaultViolationRanges(in: file, matching: type(of: self).defaultPattern).compactMap { range in
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: range.location))
@@ -111,7 +111,7 @@ private extension StatementPositionRule {
     func defaultViolationRanges(in file: File, matching pattern: String) -> [NSRange] {
         return file.match(pattern: pattern).filter { _, syntaxKinds in
             return syntaxKinds.starts(with: [.keyword])
-        }.flatMap { $0.0 }
+        }.compactMap { $0.0 }
     }
 
     func defaultCorrect(file: File) -> [Correction] {
@@ -136,7 +136,7 @@ private extension StatementPositionRule {
 // Uncuddled Behaviors
 private extension StatementPositionRule {
     func uncuddledValidate(file: File) -> [StyleViolation] {
-        return uncuddledViolationRanges(in: file).flatMap { range in
+        return uncuddledViolationRanges(in: file).compactMap { range in
             StyleViolation(ruleDescription: type(of: self).uncuddledDescription,
                            severity: configuration.severity.severity,
                            location: Location(file: file, characterOffset: range.location))
@@ -189,7 +189,7 @@ private extension StatementPositionRule {
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
         let filterMatches = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
-        let validMatches = matches.flatMap(validator).filter(filterMatches).map({ $0.range })
+        let validMatches = matches.compactMap(validator).filter(filterMatches).map({ $0.range })
 
         return validMatches
     }
@@ -202,7 +202,7 @@ private extension StatementPositionRule {
         let validator = type(of: self).uncuddledMatchValidator(contents: contents)
         let filterRanges = type(of: self).uncuddledMatchFilter(contents: contents, syntaxMap: syntaxMap)
 
-        let validMatches = matches.flatMap(validator).filter(filterRanges)
+        let validMatches = matches.compactMap(validator).filter(filterRanges)
                   .filter { !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty }
         if validMatches.isEmpty { return [] }
         let description = type(of: self).uncuddledDescription

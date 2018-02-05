@@ -95,7 +95,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
                                               range: nsrange).map { $0.range }
             // filter out braces in comments and strings
             let tokens = linesTokens[eachLine.index].filter { kindsToExclude.contains($0.type) }
-            let tokenRanges = tokens.flatMap {
+            let tokenRanges = tokens.compactMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0.offset, length: $0.length)
             }
             linesWithBraces.append(braces.filter({ !$0.intersects(tokenRanges) }))
@@ -143,7 +143,7 @@ public struct ClosureSpacingRule: CorrectableRule, ConfigurationProviderRule, Op
     }
 
     public func validate(file: File) -> [StyleViolation] {
-        return findViolations(file: file).flatMap {
+        return findViolations(file: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))

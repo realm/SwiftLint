@@ -157,7 +157,7 @@ public struct SortedImportsRule: CorrectableRule, ConfigurationProviderRule, Opt
 
         let contents = file.contents.bridge()
         let lines = contents.lines()
-        let importLines: [Line] = importRanges.flatMap { range in
+        let importLines: [Line] = importRanges.compactMap { range in
             guard let line = contents.lineAndCharacter(forCharacterOffset: range.location)?.line
                 else { return nil }
             return lines[line - 1]

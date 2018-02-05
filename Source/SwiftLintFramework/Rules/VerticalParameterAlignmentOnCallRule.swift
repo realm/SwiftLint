@@ -88,7 +88,7 @@ public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProvid
         var previousArgumentWasMultiline = false
 
         let lastIndex = arguments.count - 1
-        let violatingOffsets: [Int] = arguments.enumerated().flatMap { idx, argument in
+        let violatingOffsets: [Int] = arguments.enumerated().compactMap { idx, argument in
             defer {
                 previousArgumentWasMultiline = isMultiline(argument: argument, file: file)
             }

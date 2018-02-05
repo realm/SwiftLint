@@ -66,8 +66,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\{[^\\{]*?\\s+get\\b"
         let attributesKinds: Set<SyntaxKind> = [.attributeBuiltin, .attributeID]
-        let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).flatMap { _, tokens in
-            let kinds = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
+        let getTokens: [SyntaxToken] = file.rangesAndTokens(matching: pattern).compactMap { _, tokens in
+            let kinds = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
             guard let token = tokens.last,
                 SyntaxKind(rawValue: token.type) == .keyword,
                 attributesKinds.isDisjoint(with: kinds) else {

@@ -57,7 +57,7 @@ extension ColonRule {
         }
 
         let expectedKind = "source.lang.swift.structure.elem.expr"
-        let ranges: [NSRange] = elements.flatMap { subDict in
+        let ranges: [NSRange] = elements.compactMap { subDict in
             guard subDict.kind == expectedKind,
                 let offset = subDict.offset,
                 let length = subDict.length else {
@@ -67,8 +67,8 @@ extension ColonRule {
             return NSRange(location: offset, length: length)
         }
 
-        let even = ranges.enumerated().flatMap { $0 % 2 == 0 ? $1 : nil }
-        let odd = ranges.enumerated().flatMap { $0 % 2 != 0 ? $1 : nil }
+        let even = ranges.enumerated().compactMap { $0 % 2 == 0 ? $1 : nil }
+        let odd = ranges.enumerated().compactMap { $0 % 2 != 0 ? $1 : nil }
 
         return zip(even, odd).map { evenRange, oddRange -> NSRange in
             let location = NSMaxRange(evenRange)

@@ -42,7 +42,7 @@ extension CallPairRule {
         let contents = file.contents.bridge()
         let structure = file.structure
 
-        let violatingLocations: [Int] = firstRanges.flatMap { range in
+        let violatingLocations: [Int] = firstRanges.compactMap { range in
             guard let bodyByteRange = contents.NSRangeToByteRange(start: range.location,
                                                                   length: range.length),
                 case let firstLocation = range.location + range.length - 1,

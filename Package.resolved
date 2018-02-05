@@ -68,9 +68,9 @@
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
-          "branch": null,
-          "revision": "e06eb730499439ae32c5fbb6f72809ebec2371fd",
-          "version": "0.19.1"
+          "branch": "nn-swift-4.1",
+          "revision": "622a278d1e3dd9397b95b5846da6b9b13aeb786e",
+          "version": null
         }
       },
       {
@@ -86,9 +86,9 @@
         "package": "Yams",
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
-          "branch": null,
-          "revision": "95f45caf07472ec78223ebada45255086a85b01a",
-          "version": "0.5.0"
+          "branch": "master",
+          "revision": "3f2db2c0017030119b1495e9754889d9c3748028",
+          "version": null
         }
       }
     ]

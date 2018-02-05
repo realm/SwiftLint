@@ -35,7 +35,7 @@ public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
         let collector = NamespaceCollector(dictionary: file.structure.dictionary)
         let elements = collector.findAllElements(of: [.class, .enum, .struct, .extension])
 
-        let susceptibleNames = Set(elements.flatMap { $0.kind != .extension ? $0.name : nil })
+        let susceptibleNames = Set(elements.compactMap { $0.kind != .extension ? $0.name : nil })
 
         return elements
             .filter { $0.kind == .extension && susceptibleNames.contains($0.name) }

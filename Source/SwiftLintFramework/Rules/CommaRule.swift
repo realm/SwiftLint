@@ -100,7 +100,7 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
         let syntaxMap = file.syntaxMap
         return CommaRule.regularExpression
             .matches(in: contents, options: [], range: range)
-            .flatMap { match -> NSRange? in
+            .compactMap { match -> NSRange? in
                 if match.numberOfRanges != 5 { return nil } // Number of Groups in regexp
 
                 var indexStartRange = 1

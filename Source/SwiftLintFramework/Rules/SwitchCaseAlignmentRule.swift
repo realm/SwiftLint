@@ -97,7 +97,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let caseLocations = caseStatements.flatMap { caseDict -> Location? in
+        let caseLocations = caseStatements.compactMap { caseDict -> Location? in
             guard let byteOffset = caseDict.offset,
                 let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
                     return nil

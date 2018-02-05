@@ -39,7 +39,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         // find all top-level types marked as internal (either explictly or implictly)
-        let internalTypesOffsets = file.structure.dictionary.substructure.flatMap { element -> Int? in
+        let internalTypesOffsets = file.structure.dictionary.substructure.compactMap { element -> Int? in
             if element.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .internal {
                 return element.offset
             }
@@ -53,7 +53,7 @@ public struct ExplicitTopLevelACLRule: OptInRule, ConfigurationProviderRule {
 
         // find all "internal" tokens
         let contents = file.contents.bridge()
-        let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin]).flatMap {
+        let allInternalRanges = file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }
 

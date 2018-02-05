@@ -58,7 +58,7 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule {
                     reason: "\(targetName) should be nested at most \(threshold) level\(pluralSuffix) deep"))
             }
         }
-        violations.append(contentsOf: dictionary.substructure.flatMap { subDict in
+        violations.append(contentsOf: dictionary.substructure.compactMap { subDict in
             if let kind = (subDict.kind).flatMap(SwiftDeclarationKind.init) {
                 return (kind, subDict)
             }

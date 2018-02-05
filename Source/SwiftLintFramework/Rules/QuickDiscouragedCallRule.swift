@@ -93,7 +93,7 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
 
         guard SwiftExpressionKind(rawValue: kind) != .call else { return [] }
 
-        return dictionary.substructure.flatMap(toViolationOffset)
+        return dictionary.substructure.compactMap(toViolationOffset)
     }
 
     private func toViolationOffset(dictionary: [String: SourceKitRepresentable]) -> Int? {

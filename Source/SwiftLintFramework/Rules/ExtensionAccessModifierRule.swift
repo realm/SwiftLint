@@ -71,7 +71,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
                 return []
         }
 
-        let declarations = dictionary.substructure.flatMap { entry -> (acl: AccessControlLevel, offset: Int)? in
+        let declarations = dictionary.substructure.compactMap { entry -> (acl: AccessControlLevel, offset: Int)? in
             guard entry.kind.flatMap(SwiftDeclarationKind.init) != nil,
                 let acl = entry.accessibility.flatMap(AccessControlLevel.init(identifier:)),
                 let offset = entry.offset else {
@@ -113,7 +113,7 @@ public struct ExtensionAccessModifierRule: ASTRule, ConfigurationProviderRule, O
         }
 
         // find all ACL tokens
-        let allACLRanges = file.match(pattern: acl.description, with: [.attributeBuiltin], range: range).flatMap {
+        let allACLRanges = file.match(pattern: acl.description, with: [.attributeBuiltin], range: range).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }
 

@@ -53,7 +53,7 @@ public struct PrivateOverFilePrivateRule: Rule, ConfigurationProviderRule, Corre
         let syntaxTokens = file.syntaxMap.tokens
         let contents = file.contents.bridge()
 
-        return file.structure.dictionary.substructure.flatMap { dictionary -> NSRange? in
+        return file.structure.dictionary.substructure.compactMap { dictionary -> NSRange? in
             guard let offset = dictionary.offset else {
                 return nil
             }

@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 extension Configuration {
     public func lintableFiles(inPath path: String) -> [File] {
-        return lintablePaths(inPath: path).flatMap(File.init(pathDeferringReading:))
+        return lintablePaths(inPath: path).compactMap(File.init(pathDeferringReading:))
     }
 
     internal func lintablePaths(inPath path: String,

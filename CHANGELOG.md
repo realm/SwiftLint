@@ -48,6 +48,10 @@
   `ignores_function_declarations` configuration of `line_length` rule.  
   [Manabu Nakazawa](https://github.com/mshibanami)
 
+* Fix false positive in `empty_enum_arguments` rule when using closures.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2041](https://github.com/realm/SwiftLint/issues/2041)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking

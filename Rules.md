@@ -2969,6 +2969,18 @@ switch (foo, bar) {
 }
 ```
 
+```swift
+switch foo {
+    case (let f as () -> String)?: break
+}
+```
+
+```swift
+switch foo {
+    default: break
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

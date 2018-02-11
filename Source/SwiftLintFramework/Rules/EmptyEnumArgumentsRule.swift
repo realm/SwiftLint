@@ -31,7 +31,9 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             wrapInSwitch("case let .bar(x)"),
             wrapInSwitch(variable: "(foo, bar)", "case (_, _)"),
             wrapInSwitch("case \"bar\".uppercased()"),
-            wrapInSwitch(variable: "(foo, bar)", "case (_, _) where !something")
+            wrapInSwitch(variable: "(foo, bar)", "case (_, _) where !something"),
+            wrapInSwitch("case (let f as () -> String)?"),
+            wrapInSwitch("default")
         ],
         triggeringExamples: [
             wrapInSwitch("case .bar↓(_)"),
@@ -83,16 +85,13 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                     return []
             }
 
-            return file.match(pattern: "\\([,\\s_]*\\)", range: caseRange).flatMap { range, kinds in
-                guard Set(kinds).isSubset(of: [.keyword]),
-                    case let byteRange = NSRange(location: offset, length: length),
-                    Set(file.syntaxMap.kinds(inByteRange: byteRange)) != [.keyword] else {
-                        return nil
-                }
+            let emptyArgumentRegex = regex("\\.\\S+\\s*(\\([,\\s_]*\\))")
+            return emptyArgumentRegex.matches(in: file.contents, options: [], range: caseRange).flatMap { match in
+                let parenthesesRange = match.range(at: 1)
 
                 // avoid matches after `where` keyworkd
                 if let whereRange = file.match(pattern: "where", with: [.keyword], range: caseRange).first {
-                    if whereRange.location < range.location {
+                    if whereRange.location < parenthesesRange.location {
                         return nil
                     }
 
@@ -106,11 +105,11 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
                     }
                 }
 
-                if callsRanges.contains(where: range.intersects) {
+                if callsRanges.contains(where: parenthesesRange.intersects) {
                     return nil
                 }
 
-                return range
+                return parenthesesRange
             }
         }
     }

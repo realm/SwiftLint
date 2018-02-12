@@ -58,6 +58,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2042](https://github.com/realm/SwiftLint/issues/2042)
 
+* Fix directories with a `.swift` suffix being treated as files.  
+  [Jamie Edge](https://github.com/JamieEdge)
+  [#1948](https://github.com/realm/SwiftLint/issues/1948)
+
 ## 0.24.2: Dented Tumbler
 
 #### Breaking
@@ -136,9 +140,6 @@
   in parentheses.  
   [JP Simard](https://github.com/jpsim)
   [#1979](https://github.com/realm/SwiftLint/issues/1979)
-* Fix directories with a `.swift` suffix being treated as files.  
-  [Jamie Edge](https://github.com/JamieEdge)
-  [#1948](https://github.com/realm/SwiftLint/issues/1948)
 
 ## 0.24.0: Timed Dry
 

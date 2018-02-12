@@ -9,5 +9,5 @@
 public struct Version {
     public let value: String
 
-    public static let current = Version(value: "0.24.2")
+    public static let current = Version(value: "0.25.0")
 }

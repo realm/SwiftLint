@@ -36,7 +36,10 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
             "var test = (!bar)",
             "var a: [Int]!",
             "private var myProperty: (Void -> Void)!",
-            "func foo(_ options: [AnyHashable: Any]!) {"
+            "func foo(_ options: [AnyHashable: Any]!) {",
+            "func foo() -> [Int]!",
+            "func foo() -> [AnyHashable: Any]!",
+            "func foo() -> [Int]! { return [] }"
         ],
         triggeringExamples: [
             "let url = NSURL(string: query)↓!",
@@ -73,6 +76,8 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
     // But that does not compromise the filtering for var declarations
     private static let varDeclarationPattern = "\\s?(?:let|var)\\s+[^=\\v{]*!"
 
+    private static let functionReturnPattern = "\\)\\s*->\\s*[^\\n\\{=]*!"
+
     private static let regularExpression = regex(pattern)
     private static let varDeclarationRegularExpression = regex(varDeclarationPattern)
     private static let excludingSyntaxKindsForFirstCapture =
@@ -91,10 +96,16 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
                 return match.range
             }
 
+        let functionDeclarationRanges = regex(ForceUnwrappingRule.functionReturnPattern)
+            .matches(in: contents, options: [], range: range)
+            .flatMap { match -> NSRange? in
+                return match.range
+            }
+
         return ForceUnwrappingRule.regularExpression
             .matches(in: contents, options: [], range: range)
             .flatMap { match -> NSRange? in
-                if match.range.intersects(varDeclarationRanges) {
+                if match.range.intersects(varDeclarationRanges) || match.range.intersects(functionDeclarationRanges) {
                     return nil
                 }
 

@@ -5358,6 +5358,18 @@ private var myProperty: (Void -> Void)!
 func foo(_ options: [AnyHashable: Any]!) {
 ```
 
+```swift
+func foo() -> [Int]!
+```
+
+```swift
+func foo() -> [AnyHashable: Any]!
+```
+
+```swift
+func foo() -> [Int]! { return [] }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

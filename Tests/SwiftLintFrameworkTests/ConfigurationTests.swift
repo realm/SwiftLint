@@ -180,6 +180,20 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
+    func testLintablePaths() {
+        let paths = Configuration().lintablePaths(inPath: projectMockPathLevel0)
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = [
+            "DirectoryLevel1.swift",
+            "Level0.swift",
+            "Level1.swift",
+            "Level2.swift",
+            "Level3.swift"
+        ]
+
+        XCTAssertEqual(expectedFilenames, filenames)
+    }
+
     // MARK: - Testing Configuration Equality
 
     func testIsEqualTo() {

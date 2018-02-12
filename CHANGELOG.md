@@ -51,6 +51,12 @@
 * Fix false positive in `empty_enum_arguments` rule when using closures.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2041](https://github.com/realm/SwiftLint/issues/2041)
+  
+* Fix false positives in `force_unwrapping` rule when declaring functions that
+  return implicitly unwrapped collections (for example `[Int]!` or
+  `[AnyHashable: Any]!`).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2042](https://github.com/realm/SwiftLint/issues/2042)
 
 ## 0.24.2: Dented Tumbler
 

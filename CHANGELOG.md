@@ -1,3 +1,17 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

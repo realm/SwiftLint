@@ -20,43 +20,49 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
     func testEqualTrue() {
         let string = "XCTAssertEqual(a, true)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
     func testEqualFalse() {
         let string = "XCTAssertEqual(a, false)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
     func testEqualNil() {
         let string = "XCTAssertEqual(a, nil)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
     }
 
     func testNotEqualTrue() {
         let string = "XCTAssertNotEqual(a, true)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
     func testNotEqualFalse() {
         let string = "XCTAssertNotEqual(a, false)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
     func testNotEqualNil() {
         let string = "XCTAssertNotEqual(a, nil)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
     }
 
     // MARK: - Additional Tests
@@ -64,43 +70,49 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
     func testEqualNilNil() {
         let string = "XCTAssertEqual(nil, nil)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNil' instead.")
     }
 
     func testEqualTrueTrue() {
         let string = "XCTAssertEqual(true, true)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
     func testEqualFalseFalse() {
         let string = "XCTAssertEqual(false, false)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
     func testNotEqualNilNil() {
         let string = "XCTAssertNotEqual(nil, nil)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertNotNil' instead.")
     }
 
     func testNotEqualTrueTrue() {
         let string = "XCTAssertNotEqual(true, true)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
     func testNotEqualFalseFalse() {
         let string = "XCTAssertNotEqual(false, false)"
         let violations = self.violations(string)
+
         XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first!.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
+        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
     }
 
     private func violations(_ string: String) -> [StyleViolation] {

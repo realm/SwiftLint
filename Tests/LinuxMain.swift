@@ -1346,7 +1346,10 @@ extension XCTSpecificMatcherRuleTests {
         ("testNotEqualNil", testNotEqualNil),
         ("testEqualNilNil", testEqualNilNil),
         ("testEqualTrueTrue", testEqualTrueTrue),
-        ("testEqualFalseFalse", testEqualFalseFalse)
+        ("testEqualFalseFalse", testEqualFalseFalse),
+        ("testNotEqualNilNil", testNotEqualNilNil),
+        ("testNotEqualTrueTrue", testNotEqualTrueTrue),
+        ("testNotEqualFalseFalse", testNotEqualFalseFalse)
     ]
 }
 

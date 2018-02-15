@@ -61,7 +61,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "object.method(5, y: \"string\")\n",
             "func abc() { def(ghi: jkl) }",
             "func abc(def: Void) { ghi(jkl: mno) }",
-            "class ABC { let def = ghi(jkl: mno) } }"
+            "class ABC { let def = ghi(jkl: mno) } }",
+            "func foo() { let dict = [1: 1] }"
         ],
         triggeringExamples: [
             "let ↓abc:Void\n",
@@ -110,7 +111,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "object.method(x↓:  5, y: \"string\")\n",
             "func abc() { def(ghi↓:jkl) }",
             "func abc(def: Void) { ghi(jkl↓:mno) }",
-            "class ABC { let def = ghi(jkl↓:mno) } }"
+            "class ABC { let def = ghi(jkl↓:mno) } }",
+            "func foo() { let dict = [1↓ : 1] }"
         ],
         corrections: [
             "let ↓abc:Void\n": "let abc: Void\n",
@@ -159,7 +161,8 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "object.method(x↓:  5, y: \"string\")\n": "object.method(x: 5, y: \"string\")\n",
             "func abc() { def(ghi↓:jkl) }": "func abc() { def(ghi: jkl) }",
             "func abc(def: Void) { ghi(jkl↓:mno) }": "func abc(def: Void) { ghi(jkl: mno) }",
-            "class ABC { let def = ghi(jkl↓:mno) } }": "class ABC { let def = ghi(jkl: mno) } }"
+            "class ABC { let def = ghi(jkl↓:mno) } }": "class ABC { let def = ghi(jkl: mno) } }",
+            "func foo() { let dict = [1↓ : 1] }": "func foo() { let dict = [1: 1] }"
         ]
     )
 

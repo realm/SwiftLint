@@ -10,7 +10,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix some cases where `colon` rule wouldn't autocorrect dictionary literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2050](https://github.com/realm/SwiftLint/issues/2050)
 
 ## 0.25.0: Cleaning the Lint Filter
 

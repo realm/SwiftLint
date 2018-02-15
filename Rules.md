@@ -1180,6 +1180,10 @@ func abc(def: Void) { ghi(jkl: mno) }
 class ABC { let def = ghi(jkl: mno) } }
 ```
 
+```swift
+func foo() { let dict = [1: 1] }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1414,6 +1418,10 @@ func abc(def: Void) { ghi(jkl↓:mno) }
 
 ```swift
 class ABC { let def = ghi(jkl↓:mno) } }
+```
+
+```swift
+func foo() { let dict = [1↓ : 1] }
 ```
 
 </details>

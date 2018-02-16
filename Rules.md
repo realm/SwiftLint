@@ -22844,6 +22844,14 @@ XCTAssertNotEqual("false", foo)
 ```
 
 ```swift
+XCTAssertEqual(false, foo?.bar)
+```
+
+```swift
+XCTAssertEqual(true, foo?.bar)
+```
+
+```swift
 XCTAssertFalse(  foo  )
 ```
 
@@ -22868,11 +22876,11 @@ XCTAssertNotEqual(  foo, "false")
 ```
 
 ```swift
-XCTAssertFalse(foo?.bar)
+XCTAssertEqual(foo?.bar, false)
 ```
 
 ```swift
-XCTAssertTrue(foo!.bar)
+XCTAssertEqual(foo?.bar, true)
 ```
 
 ```swift
@@ -22880,7 +22888,7 @@ XCTAssertNil(foo?.bar)
 ```
 
 ```swift
-XCTAssertNotNil(foo!.bar)
+XCTAssertNotNil(foo?.bar)
 ```
 
 ```swift
@@ -23028,19 +23036,11 @@ XCTAssertEqual(.toto(.zoo), foo?.bar)
 ```
 
 ```swift
-↓XCTAssertEqual(foo?.bar, false)
-```
-
-```swift
-↓XCTAssertEqual(foo!.bar, true)
-```
-
-```swift
 ↓XCTAssertEqual(foo?.bar, nil)
 ```
 
 ```swift
-↓XCTAssertNotEqual(foo!.bar, nil)
+↓XCTAssertNotEqual(foo?.bar, nil)
 ```
 
 ```swift

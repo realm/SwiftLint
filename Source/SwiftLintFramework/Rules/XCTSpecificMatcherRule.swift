@@ -32,7 +32,10 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             let name = dictionary.name,
             let matcher = XCTestMatcher(rawValue: name) else { return [] }
 
-        // Checks the first two arguments looking for 'true', 'false', and 'nil'.
+        /*
+         *  - Get the first two arguments and creates an array where the protected
+         *  word is the first one (if any).
+         */
         let arguments = dictionary.substructure
             .filter { $0.offset != nil }
             .sorted { arg1, arg2 -> Bool in
@@ -47,16 +50,26 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 guard
                     let argOffset = argument.bodyOffset,
                     let argBodyLength = argument.bodyLength,
-                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argBodyLength),
-                    protectedArguments.contains(body) else { return nil }
+                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argBodyLength)
+                    else { return nil }
 
                 return body
             }
+            .sorted { arg1, _ -> Bool in
+                return protectedArguments.contains(arg1)
+            }
 
-        // If the call has "protected" arguments, provides suggestion based on the first one.
+        /*
+         *  - Check if the first one is a protected word, otherwise there's not need to continue.
+         *  - Retrieve the suggestion for the protected word, making sure that optional arguments are considered.
+         *
+         *  Note that optional arguments don't show on dictionary.substructure, therefore arguments.count == 1 implies
+         *  it contains an optional argument.
+         */
         guard
-            let argument = arguments.first,
-            let suggestedMatcher = matcher.suggestion(for: argument) else { return [] }
+            let argument = arguments.first, protectedArguments.contains(argument),
+            let suggestedMatcher = matcher.suggestion(for: argument, containsOptionalArgument: arguments.count == 1)
+            else { return [] }
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
@@ -75,14 +88,14 @@ private enum XCTestMatcher: String {
     case equal = "XCTAssertEqual"
     case notEqual = "XCTAssertNotEqual"
 
-    func suggestion(for argument: String) -> String? {
-        switch (self, argument) {
-        case (.equal, "true"): return "XCTAssertTrue"
-        case (.equal, "false"): return "XCTAssertFalse"
-        case (.equal, "nil"): return "XCTAssertNil"
-        case (.notEqual, "true"): return "XCTAssertFalse"
-        case (.notEqual, "false"): return "XCTAssertTrue"
-        case (.notEqual, "nil"): return "XCTAssertNotNil"
+    func suggestion(for protectedArgument: String, containsOptionalArgument: Bool) -> String? {
+        switch (self, protectedArgument, containsOptionalArgument) {
+        case (.equal, "true", false): return "XCTAssertTrue"
+        case (.equal, "false", false): return "XCTAssertFalse"
+        case (.equal, "nil", _): return "XCTAssertNil"
+        case (.notEqual, "true", false): return "XCTAssertFalse"
+        case (.notEqual, "false", false): return "XCTAssertTrue"
+        case (.notEqual, "nil", _): return "XCTAssertNotNil"
         default: return nil
         }
     }

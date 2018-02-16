@@ -132,7 +132,6 @@
 
 #### Enhancements
 
-* Adds `discouraged_optional_collection` opt-in rule to encourages the return
 * Adds `discouraged_optional_collection` opt-in rule to encourage the use
   of empty collections instead of optional collections.  
   [Ornithologist Coder](https://github.com/ornithocoder)

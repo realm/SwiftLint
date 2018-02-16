@@ -36,6 +36,8 @@ internal struct XCTSpecificMatcherRuleExamples {
         // Inverted logic
         "XCTAssertEqual(2, foo)",
         "XCTAssertNotEqual(\"false\", foo)",
+        "XCTAssertEqual(false, foo?.bar)",
+        "XCTAssertEqual(true, foo?.bar)",
 
         // Blank spaces
         "XCTAssertFalse(  foo  )",
@@ -46,10 +48,10 @@ internal struct XCTSpecificMatcherRuleExamples {
         "XCTAssertNotEqual(  foo, \"false\")",
 
         // Optionals
-        "XCTAssertFalse(foo?.bar)",
-        "XCTAssertTrue(foo!.bar)",
+        "XCTAssertEqual(foo?.bar, false)",
+        "XCTAssertEqual(foo?.bar, true)",
         "XCTAssertNil(foo?.bar)",
-        "XCTAssertNotNil(foo!.bar)",
+        "XCTAssertNotNil(foo?.bar)",
         "XCTAssertEqual(foo?.bar, 2)",
         "XCTAssertNotEqual(foo?.bar, \"false\")",
 
@@ -101,10 +103,8 @@ internal struct XCTSpecificMatcherRuleExamples {
         "↓XCTAssertEqual([1, 2, 3, true].hasNumbers(), true)",
 
         // Optionals
-        "↓XCTAssertEqual(foo?.bar, false)",
-        "↓XCTAssertEqual(foo!.bar, true)",
         "↓XCTAssertEqual(foo?.bar, nil)",
-        "↓XCTAssertNotEqual(foo!.bar, nil)",
+        "↓XCTAssertNotEqual(foo?.bar, nil)",
 
         // Weird cases
         "↓XCTAssertEqual(nil, true)",

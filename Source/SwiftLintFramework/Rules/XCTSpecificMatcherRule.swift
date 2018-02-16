@@ -48,9 +48,9 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             .prefix(2)
             .flatMap { argument -> String? in
                 guard
-                    let argOffset = argument.bodyOffset,
-                    let argBodyLength = argument.bodyLength,
-                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argBodyLength)
+                    let argOffset = argument.offset,
+                    let argLength = argument.length,
+                    let body = file.contents.bridge().substringWithByteRange(start: argOffset, length: argLength)
                     else { return nil }
 
                 return body

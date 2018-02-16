@@ -34,7 +34,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
 
         /*
          *  - Get the first two arguments and creates an array where the protected
-         *  word is the first one (if any).
+         *    word is the first one (if any).
          */
         let arguments = dictionary.substructure
             .filter { $0.offset != nil }
@@ -60,15 +60,16 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             }
 
         /*
-         *  - Check if the first one is a protected word, otherwise there's not need to continue.
-         *  - Retrieve the suggestion for the protected word, making sure that optional arguments are considered.
-         *
-         *  Note that optional arguments don't show on dictionary.substructure, therefore arguments.count == 1 implies
-         *  it contains an optional argument.
+         *  - Check if the number of arguments is two (otherwise there's no need to continue)
+         *  - Check if the first argument is a protected word (otherwise there's no need to continue)
+         *  - Get the suggestion for the given protected word (taking in consideration the presence of
+         *    optionals
          */
         guard
+            arguments.count == 2,
             let argument = arguments.first, protectedArguments.contains(argument),
-            let suggestedMatcher = matcher.suggestion(for: argument, containsOptionalArgument: arguments.count == 1)
+            let hasOptional = arguments.last?.contains("?"),
+            let suggestedMatcher = matcher.suggestion(for: argument, hasOptional: hasOptional)
             else { return [] }
 
         return [
@@ -88,8 +89,8 @@ private enum XCTestMatcher: String {
     case equal = "XCTAssertEqual"
     case notEqual = "XCTAssertNotEqual"
 
-    func suggestion(for protectedArgument: String, containsOptionalArgument: Bool) -> String? {
-        switch (self, protectedArgument, containsOptionalArgument) {
+    func suggestion(for protectedArgument: String, hasOptional: Bool) -> String? {
+        switch (self, protectedArgument, hasOptional) {
         case (.equal, "true", false): return "XCTAssertTrue"
         case (.equal, "false", false): return "XCTAssertFalse"
         case (.equal, "nil", _): return "XCTAssertNil"

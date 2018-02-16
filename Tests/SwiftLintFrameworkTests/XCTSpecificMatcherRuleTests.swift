@@ -82,14 +82,6 @@ class XCTSpecificMatcherRuleTests: XCTestCase {
         XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertFalse' instead.")
     }
 
-    func testEqualUnwrappedOptionalTrue() {
-        let string = "XCTAssertEqual((a?.b)!, true)"
-        let violations = self.violations(string)
-
-        XCTAssertEqual(violations.count, 1)
-        XCTAssertEqual(violations.first?.reason, "Prefer the specific matcher 'XCTAssertTrue' instead.")
-    }
-
     func testEqualNilNil() {
         let string = "XCTAssertEqual(nil, nil)"
         let violations = self.violations(string)

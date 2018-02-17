@@ -112,6 +112,7 @@ extension Configuration {
         }
     }
 
+    // swiftlint:disable function_parameter_count
     fileprivate func getFiles(path: String, action: String, useSTDIN: Bool, quiet: Bool, forceExclude: Bool,
                               useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
@@ -129,6 +130,7 @@ extension Configuration {
         }
         return .success(lintableFiles(inPath: path, forceExclude: forceExclude))
     }
+    // swiftlint:enable function_parameter_count
 
     // MARK: Lint Command
 

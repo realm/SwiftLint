@@ -82,7 +82,7 @@ private extension String {
     ///                                    ^              ^
     /// = [[9, 14]]
     ///
-    /// Example: [String: [Int]?]
+    /// Example: [String: [Int]?]?
     ///
     ///         [  S  t  r  i  n  g  :     [  I  n  t  ]  ?  ]  ?
     ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16

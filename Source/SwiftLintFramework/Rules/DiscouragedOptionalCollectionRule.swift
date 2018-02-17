@@ -93,15 +93,15 @@ private extension String {
     ///
     /// Example: var x = Set<Int>?
     ///
-    ///         v  a  r     x  =     S  e  t  <  I  n  t  >  ?
-    ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
-    ///                              ^                       ^
-    /// = [7, 15]
-    /// = [7, 16), mathematical interval, w/ lower and upper bounds.
+    ///         v  a  r     x     =     S  e  t  <  I  n  t  >  ?
+    ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
+    ///                                 ^                       ^
+    /// = [8, 16]
+    /// = [8, 17), mathematical interval, w/ lower and upper bounds.
     ///
     /// - Returns: An array of ranges.
     func optionalCollectionRanges() -> [Range<String.Index>] {
-        let squareBrackets = balancedRanges(between: "[", and: "]").flatMap { range -> Range<String.Index>? in
+        let squareBrackets = balancedRanges(from: "[", to: "]").flatMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
                 let finalIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex),
@@ -110,7 +110,7 @@ private extension String {
             return Range(range.lowerBound..<finalIndex)
         }
 
-        let angleBrackets = balancedRanges(between: "<", and: ">").flatMap { range -> Range<String.Index>? in
+        let angleBrackets = balancedRanges(from: "<", to: ">").flatMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
                 let initialIndex = index(range.lowerBound, offsetBy: -3, limitedBy: startIndex),
@@ -152,7 +152,7 @@ private extension String {
     ///   - prefix: The prefix to look for.
     ///   - suffix: The suffix to look for.
     /// - Returns: Array of ranges of balanced substrings
-    private func balancedRanges(between prefix: Character, and suffix: Character) -> [Range<String.Index>] {
+    private func balancedRanges(from prefix: Character, to suffix: Character) -> [Range<String.Index>] {
         return indices(of: prefix).flatMap { prefixIndex in
             var pairCount = 0
             var currentIndex = prefixIndex

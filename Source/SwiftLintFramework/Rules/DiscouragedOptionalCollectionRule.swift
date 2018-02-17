@@ -75,6 +75,27 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 private extension String {
     /// Ranges of optional collections within the bounds of the string.
     ///
+    /// Example: [String: [Int]?]
+    ///
+    ///         [  S  t  r  i  n  g  :     [  I  n  t  ]  ?  ]
+    ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+    ///                                    ^              ^
+    /// = [[9, 14]]
+    ///
+    /// Example: [String: [Int]?]
+    ///
+    ///         [  S  t  r  i  n  g  :     [  I  n  t  ]  ?  ]  ?
+    ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16
+    ///         ^                          ^              ^     ^
+    /// = [[0, 16], [9, 14]]
+    ///
+    /// Example: var x = Set<Int>?
+    ///
+    ///         v  a  r     x  =     S  e  t  <  I  n  t  >  ?
+    ///         0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+    ///                              ^                       ^
+    /// = [[7, 15]]
+    ///
     /// - Returns: An array of ranges.
     func optionalCollectionRanges() -> [Range<String.Index>] {
         let squareBrackets = balancedRanges(between: "[", and: "]").flatMap { range -> Range<String.Index>? in
@@ -102,6 +123,12 @@ private extension String {
 
     /// Indices of character within the bounds of the string.
     ///
+    /// Example:
+    ///         a m a n h a
+    ///         0 1 2 3 4 5
+    ///         ^   ^     ^
+    /// = [0, 2, 5]
+    ///
     /// - Parameter character: The character to look for.
     /// - Returns: Array of indices.
     private func indices(of character: Character) -> [String.Index] {
@@ -109,6 +136,13 @@ private extension String {
     }
 
     /// Ranges of balanced substrings.
+    ///
+    /// Example: ((1+2)*(3+4))
+    ///
+    ///         (  (  1  +  2  )  *  (  3  +  4  )  )
+    ///         0  1  2  3  4  5  6  7  8  9  10 11 12
+    ///         ^  ^           ^     ^           ^  ^
+    /// = [[0, 12], [1, 5], [7, 11]]
     ///
     /// - Parameters:
     ///   - prefix: The prefix to look for.

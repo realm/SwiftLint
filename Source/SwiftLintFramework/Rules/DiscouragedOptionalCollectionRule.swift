@@ -26,15 +26,9 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        var offsets: [Int] = []
 
-        if SwiftDeclarationKind.variableKinds.contains(kind) {
-            offsets.append(contentsOf: variableViolations(file: file, dictionary: dictionary))
-        }
-
-        if SwiftDeclarationKind.functionKinds.contains(kind) {
-            offsets.append(contentsOf: functionViolations(file: file, dictionary: dictionary))
-        }
+        let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
+            functionViolations(file: file, kind: kind, dictionary: dictionary)
 
         return offsets.map {
             StyleViolation(ruleDescription: type(of: self).description,
@@ -45,16 +39,22 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
 
     // MARK: - Private
 
-    private func variableViolations(file: File, dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func variableViolations(file: File,
+                                    kind: SwiftDeclarationKind,
+                                    dictionary: [String: SourceKitRepresentable]) -> [Int] {
         guard
+            SwiftDeclarationKind.variableKinds.contains(kind),
             let offset = dictionary.offset,
             let typeName = dictionary.typeName else { return [] }
 
         return typeName.optionalCollectionRanges().map { _ in offset }
     }
 
-    private func functionViolations(file: File, dictionary: [String: SourceKitRepresentable]) -> [Int] {
+    private func functionViolations(file: File,
+                                    kind: SwiftDeclarationKind,
+                                    dictionary: [String: SourceKitRepresentable]) -> [Int] {
         guard
+            SwiftDeclarationKind.functionKinds.contains(kind),
             let nameOffset = dictionary.nameOffset,
             let nameLength = dictionary.nameLength,
             let length = dictionary.length,

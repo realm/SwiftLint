@@ -180,11 +180,32 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
-    func testForceExcludes() {
+    func testForceExcludesFile() {
         let configuration = Configuration(excluded: ["directory/ExcludedFile.swift"])!
         let paths = configuration.lintablePaths(inPath: "directory/ExcludedFile.swift", forceExclude: true,
                                                 fileManager: TestFileManager())
         XCTAssertEqual([], paths)
+    }
+
+    func testForceExcludesFileNotPresentInExcluded() {
+        let configuration = Configuration(included: ["directory"],
+                                          excluded: ["directory/ExcludedFile.swift", "directory/excluded"])!
+        let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
+
+    func testForceExcludesDirectory() {
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
+                                                fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
+
+    func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
+                                                fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
     func testLintablePaths() {

@@ -99,10 +99,16 @@ extension Configuration {
         case let .default(disabled, optIn):
             // Same here
             var intermediateRules: [Rule] = []
+
+            intermediateRules = configuration.rules
+                // Enable rules that are opt-in by the nested configuration
+                .filter { rule in
+                    return optIn.contains(type(of: rule).description.identifier)
+                }
+
             for rule in self.rules {
-                let isOptedIn = optIn.contains(type(of: rule).description.identifier)
                 let isDisabled = disabled.contains(type(of: rule).description.identifier)
-                if isOptedIn || !isDisabled {
+                if !isDisabled {
                     // find rule in nested configuration
                     if let nestedRule = configuration.rules.first(where: {
                         // only check on RuleConfiguration's identifier

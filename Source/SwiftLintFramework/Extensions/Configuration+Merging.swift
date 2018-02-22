@@ -98,21 +98,23 @@ extension Configuration {
                 }
         case let .default(disabled, optIn):
             // Same here
-            return Set(
-                configuration.rules
-                    // Enable rules that are opt-in by the nested configuration
-                    .filter { rule in
-                        return optIn.contains(type(of: rule).description.identifier)
+            var intermediateRules: [Rule] = []
+            for rule in self.rules {
+                let isOptedIn = optIn.contains(type(of: rule).description.identifier)
+                let isDisabled = disabled.contains(type(of: rule).description.identifier)
+                if isOptedIn || !isDisabled {
+                    // find rule in nested configuration
+                    if let nestedRule = configuration.rules.first(where: {
+                        // only check on RuleConfiguration's identifier
+                        type(of: $0).description.identifier == type(of: rule).description.identifier
+                    }) {
+                        intermediateRules.append(rule.overrideConfiguration(withRule: nestedRule))
+                    } else {
+                        print("could not find nested configuration for \(rule)")
                     }
-                    .map(HashableRule.init)
-                )
-                // And disable rules that are disabled by the nested configuration
-                .union(
-                    rules.filter { rule in
-                        return !disabled.contains(type(of: rule).description.identifier)
-                    }.map(HashableRule.init)
-                )
-                .map { $0.rule }
+                }
+            }
+            return intermediateRules
         }
     }
 

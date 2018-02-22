@@ -33,6 +33,7 @@
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
 		31F1B6CC1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */; };
 		37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */; };
+		3A234E9C203ED16600F22F83 /* Rule+Merging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A234E9A203ED11700F22F83 /* Rule+Merging.swift */; };
 		3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */; };
 		3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */; };
 		3B12C9C11C3209CB000B423F /* test.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B12C9BF1C3209AC000B423F /* test.yml */; };
@@ -382,6 +383,7 @@
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
 		31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRule.swift; sourceTree = "<group>"; };
 		37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+SwiftLint.swift"; sourceTree = "<group>"; };
+		3A234E9A203ED11700F22F83 /* Rule+Merging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Rule+Merging.swift"; sourceTree = "<group>"; };
 		3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineLengthConfiguration.swift; sourceTree = "<group>"; };
 		3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityConfiguration.swift; sourceTree = "<group>"; };
 		3B12C9BF1C3209AC000B423F /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.yml; sourceTree = "<group>"; };
@@ -1213,6 +1215,7 @@
 				3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */,
 				3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */,
 				E81619521BFC162C00946723 /* QueuedPrint.swift */,
+				3A234E9A203ED11700F22F83 /* Rule+Merging.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				B39353F28BCCA39247B316BD /* String+XML.swift */,
 				6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */,
@@ -1691,6 +1694,7 @@
 				3B828E531C546468000D180E /* RuleConfiguration.swift in Sources */,
 				A73469421FB121BA009B57C7 /* CallPairRule.swift in Sources */,
 				D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */,
+				3A234E9C203ED16600F22F83 /* Rule+Merging.swift in Sources */,
 				B3935EE74B1E8E14FBD65E7F /* String+XML.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -54,13 +54,22 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         self.ignoresCaseStatements = ignoresCaseStatements
     }
 
+    private var initialConfiguration: [AnyHashable: Any] = [:]
+
     public mutating func apply(configuration: Any) throws {
+        // is it a configuration override?
+        if let configStruct = configuration as? CyclomaticComplexityConfiguration {
+            return try apply(configuration: configStruct)
+        }
+
+        // it is an initial configuration (by parsing .yml)
         if let configurationArray = [Int].array(of: configuration),
             !configurationArray.isEmpty {
             let warning = configurationArray[0]
             let error = (configurationArray.count > 1) ? configurationArray[1] : nil
             length = SeverityLevelsConfiguration(warning: warning, error: error)
         } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
+            initialConfiguration = configDict
             for (string, value) in configDict {
                 guard let key = ConfigurationKey(rawValue: string) else {
                     throw ConfigurationError.unknownConfiguration
@@ -81,6 +90,25 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         }
     }
 
+    /// This method applies the parameter's configuration on top of self's configuration
+    /// Only the explicitly set values during initialization are applied,
+    /// i.e. no default values are taken over.
+    /// @see https://github.com/realm/SwiftLint/issues/2058#issue-298979003 for reasoning
+    ///
+    /// - Parameter configuration: The nested configuration which serves as source
+    /// - Throws: Can not happen. Is just here due to function overloading mechanics.
+    public mutating func apply(configuration: CyclomaticComplexityConfiguration) throws {
+        guard !configuration.initialConfiguration.isEmpty else {
+            // nothing to do here, since no values have been configured explicitly
+            // and we don't want to apply default values
+            return
+        }
+        do {
+            try apply(configuration: configuration.initialConfiguration)
+        } catch let error {
+            queuedFatalError("Applying the explicitly set values of nested configuration on self failed: \(error)")
+        }
+    }
 }
 
 public func == (lhs: CyclomaticComplexityConfiguration, rhs: CyclomaticComplexityConfiguration) -> Bool {

@@ -1,6 +1,6 @@
 //
 //  ExplicitTypeInterfaceConfiguration.swift
-//  SwiftLintFramework
+//  SwiftLint
 //
 //  Created by Rounak Jain on 2/18/18.
 //  Copyright © 2018 Realm. All rights reserved.
@@ -37,7 +37,7 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severityConfiguration.consoleDescription + ", allowed kinds: \(allowedKinds)"
     }
-    
+
     public mutating func apply(configuration: Any) throws {
         guard let configuration = configuration as? [String: Any] else {
             throw ConfigurationError.unknownConfiguration
@@ -50,10 +50,9 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             allowedKinds.subtract(excludedTypes)
         }
     }
-    
+
     public static func == (lhs: ExplicitTypeInterfaceConfiguration, rhs: ExplicitTypeInterfaceConfiguration) -> Bool {
         return lhs.allowedKinds == rhs.allowedKinds && lhs.severityConfiguration == rhs.severityConfiguration
     }
-    
 
 }

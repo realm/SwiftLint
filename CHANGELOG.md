@@ -6,7 +6,9 @@
 
 #### Enhancements
 
-* None.
+* Adds merging of individual rule's configurations
+  [gretzki](https://github.com/gretzki)
+  [#2058](https://github.com/realm/SwiftLint/issues/2058)
 
 #### Bug Fixes
 

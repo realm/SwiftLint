@@ -94,4 +94,25 @@ extension ConfigurationTests {
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceCastRule.self))
         XCTAssertTrue(mergedConfiguration2.contains(rule: ForceTryRule.self))
     }
+
+    func testMergingOfIndividualRulesConfiguration() {
+        let baseRuleIdentifier = CyclomaticComplexityRule.description.identifier
+        let baseRuleConfig = [baseRuleIdentifier: ["warning": 13, "error": 14, "ignores_case_statements": true]]
+        let baseConfiguration = Configuration(dict: baseRuleConfig)!
+
+        let nestedRuleConfig = [baseRuleIdentifier: ["warning": 5]]
+        let nestedConfiguration = Configuration(dict: nestedRuleConfig)!
+        let mergedConfiguration = baseConfiguration.merge(with: nestedConfiguration)
+        let mergedRule = mergedConfiguration.rules.first(where: {
+            type(of: $0).description.identifier == baseRuleIdentifier
+        })
+        XCTAssertNotNil(mergedRule)
+        if let mergedRuleConfiguration = mergedRule!.getConfiguration(of: mergedRule!) as? CyclomaticComplexityConfiguration {
+            XCTAssertEqual(mergedRuleConfiguration.length.warning, 5)
+            XCTAssertEqual(mergedRuleConfiguration.length.error, 14)
+            XCTAssertEqual(mergedRuleConfiguration.ignoresCaseStatements, true)
+        } else {
+            XCTFail("Could not retrieve rule's individual configuration")
+        }
+    }
 }

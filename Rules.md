@@ -3178,7 +3178,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `empty_string` | Disabled | No | performance
 
-Prefer checking `isEmpty` over comparing `string` to "".
+Prefer checking `isEmpty` over comparing `string` to an empty string literal.
 
 ### Examples
 

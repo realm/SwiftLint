@@ -30,8 +30,7 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\b\\s*(==|!=)\\s*\"\""
-        let excludingKinds = SyntaxKind.commentKinds
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
+        return file.match(pattern: pattern, with: [.string]).map {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))

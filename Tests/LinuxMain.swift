@@ -139,6 +139,13 @@ extension DocumentationTests {
     ]
 }
 
+extension EmptyStringTests {
+    static var allTests: [(String, (EmptyStringTests) -> () throws -> Void)] = [
+        ("testEqualToEmptyString", testEqualToEmptyString),
+        ("testDisequalToEmptyString", testDisequalToEmptyString)
+    ]
+}
+
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
@@ -564,6 +571,7 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DocumentationTests.allTests),
+    testCase(EmptyStringTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),

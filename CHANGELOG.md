@@ -22,7 +22,7 @@
 
 #### Enhancements
 
-* Adds `empty_string` opt-in rule.
+* Adds `empty_string` opt-in rule.  
 [Davide Sibilio](https://github.com/idevid)
 
 * Adds `discouraged_optional_boolean` opt-in rule to discourage

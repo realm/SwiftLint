@@ -16,15 +16,15 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "empty_string",
         name: "Empty String",
-        description: "Prefer checking `isEmpty` over comparing `string` to \"\".",
+        description: "Prefer checking `isEmpty` over comparing `string` to an empty string literal.",
         kind: .performance,
         nonTriggeringExamples: [
             "myString.isEmpty",
             "!myString.isEmpy"
         ],
         triggeringExamples: [
-            "myString ↓== \"\"",
-            "myString ↓!= \"\""
+            "myString↓ == \"\"",
+            "myString↓ != \"\""
         ]
     )
 

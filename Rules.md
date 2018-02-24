@@ -3198,11 +3198,11 @@ myString.isEmpty
 <summary>Triggering Examples</summary>
 
 ```swift
-myString ↓== ""
+myString↓ == ""
 ```
 
 ```swift
-myString ↓!= ""
+myString↓ != ""
 ```
 
 </details>

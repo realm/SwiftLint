@@ -7,7 +7,7 @@
 #### Enhancements
 
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
-  to exempt certain types of variables from the rule. 
+  to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
 

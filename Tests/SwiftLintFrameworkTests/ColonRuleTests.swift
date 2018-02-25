@@ -92,7 +92,8 @@ class ColonRuleTests: XCTestCase {
             "let abc = [Void:  Void]()\n",
             "let abc = [Void :  Void]()\n",
             "let abc = [1: [3 : 2], 3: 4]\n",
-            "let abc = [1: [3 : 2], 3:  4]\n"
+            "let abc = [1: [3 : 2], 3:  4]\n",
+            "let abc: [String : Any]\n"
         ]
         let triggeringExamples = [
             "let ↓abc:Void\n",

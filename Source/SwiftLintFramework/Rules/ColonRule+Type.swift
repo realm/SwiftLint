@@ -40,6 +40,32 @@ internal extension ColonRule {
                 return false
             }
 
+            if !configuration.applyToDictionaries {
+                let (leftColonSideToken, rightColonSideToken) = (syntaxTokens[0], syntaxTokens[1])
+                let bothTokensAreTypeIdentifiers: Bool
+                switch (syntaxKinds[0], syntaxKinds[1]) {
+                case (.typeidentifier, .typeidentifier):
+                    bothTokensAreTypeIdentifiers = true
+                case (.typeidentifier, .keyword):
+                    bothTokensAreTypeIdentifiers = file.isTypeLike(token: rightColonSideToken)
+                default:
+                    bothTokensAreTypeIdentifiers = false
+                }
+                
+                if bothTokensAreTypeIdentifiers {
+                    let openBracketCandidate = nsstring.firstNonWhitespaceCharacter(beforeCharacterAt: leftColonSideToken.offset)
+                    let closingBracketCandidate = nsstring.firstNonWhitespaceCharacter(afterCharacterAt: rightColonSideToken.offset + rightColonSideToken.length - 1)
+                    switch (openBracketCandidate, closingBracketCandidate) {
+                    case (.some("["), .some("]")):
+                        // Matching pattern is a dictionary type declaration which should be ignored because
+                        // apply_to_dictionaries configurable flag is disabled
+                        return false
+                    default:
+                        break
+                    }
+                }
+            }
+            
             let validKinds: Bool
             switch (syntaxKinds[0], syntaxKinds[1]) {
             case (.identifier, .typeidentifier),
@@ -65,6 +91,7 @@ internal extension ColonRule {
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }
+    
 }
 
 private extension File {
@@ -77,4 +104,33 @@ private extension File {
 
         return CharacterSet.uppercaseLetters.contains(firstLetter)
     }
+}
+
+
+private extension NSString {
+    
+    func firstNonWhitespaceCharacter(beforeCharacterAt index: Int) -> Unicode.Scalar? {
+        var _index = index - 1
+        let whitespace: Unicode.Scalar = " "
+        while index > 0 && index < self.length {
+            if let character = Unicode.Scalar(self.character(at: _index)), character != whitespace {
+                return character
+            }
+            _index -= 1
+        }
+        return .none
+    }
+    
+    func firstNonWhitespaceCharacter(afterCharacterAt index: Int) -> Unicode.Scalar? {
+        var _index = index + 1
+        let whitespace: Unicode.Scalar = " "
+        while index < self.length {
+            if let character = Unicode.Scalar(self.character(at: _index)), character != whitespace {
+                return character
+            }
+            _index += 1
+        }
+        return .none
+    }
+    
 }

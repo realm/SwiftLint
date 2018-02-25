@@ -15,8 +15,8 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
 
     public static let description = RuleDescription(
             identifier: "function_body_whitespace_comment",
-            name: "Function Body Empty Lines",
-            description: "Functions bodies should not have whitespace and comment lines.",
+            name: "Function Body Whitespace Comment",
+            description: "Function bodies should not have whitespace and comment lines.",
             kind: .style
     )
 
@@ -33,26 +33,26 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
             return []
         }
 
-        return configuration.params.flatMap {
-            (parameter: RuleParameter<Int>) -> [StyleViolation] in
+        return configuration.params.flatMap { (parameter: RuleParameter<Int>) -> [StyleViolation] in
             let (exceeds, lineCount) = file.exceedsCommentAndWhitespaceLines(
                     startLine, endLine, parameter.value
             )
-            var violations: Array = Array<StyleViolation>()
-            if (exceeds) {
+            var violations: [StyleViolation] = [StyleViolation]()
+            if exceeds {
                 violations.append(
                         StyleViolation(
                                 ruleDescription: type(of: self).description,
                                 severity: parameter.severity,
                                 location: Location(file: file, byteOffset: offset),
-                                reason: "Function body should span \(configuration.warning) comment and whitespace lines or less " +
+                                reason: "Function body should span \(configuration.warning)" +
+                                        " comment and whitespace lines or less " +
                                         ": currently spans \(lineCount) " +
                                         "lines"
                         )
                 )
             }
-            return violations;
+            return violations
         }
     }
-    
+
 }

@@ -191,6 +191,17 @@ extension FunctionBodyLengthRuleTests {
     ]
 }
 
+extension FunctionBodyWhitespaceCommentRuleTests {
+    static var allTests: [(String, (FunctionBodyWhitespaceCommentRuleTests) -> () throws -> Void)] = [
+        ("testFunctionBodyWhitespaceCommentLinesWithComment",
+                testFunctionBodyWhitespaceCommentLinesWithComment),
+        ("testFunctionBodyWhitespaceCommentLinesWithMultiLineComment",
+                testFunctionBodyWhitespaceCommentLinesWithMultiLineComment),
+        ("testFunctionBodyWhitespaceCommentLinesValid",
+                testFunctionBodyWhitespaceCommentLinesValid)
+    ]
+}
+
 extension GenericTypeNameRuleTests {
     static var allTests: [(String, (GenericTypeNameRuleTests) -> () throws -> Void)] = [
         ("testGenericTypeName", testGenericTypeName),

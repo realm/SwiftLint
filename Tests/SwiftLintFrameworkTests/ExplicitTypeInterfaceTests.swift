@@ -19,7 +19,9 @@ class ExplicitTypeInterfaceTests: XCTestCase {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
             "func foo() {\nlet intVal = 1\n}"
         ]
-        let description = ExplicitTypeInterfaceRule.description.with(triggeringExamples: ExplicitTypeInterfaceRule.description.triggeringExamples)
+        let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
@@ -35,7 +37,8 @@ class ExplicitTypeInterfaceTests: XCTestCase {
             "class Foo {\n  ↓let mylet = 0\n\n}\n",
             "class Foo {\n  ↓class var myClassVar = 0\n}\n"
         ]
-        let description = ExplicitTypeInterfaceRule.description.with(triggeringExamples: triggeringExamples)
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["excluded": ["static"]])

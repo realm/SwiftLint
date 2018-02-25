@@ -50,6 +50,7 @@ public let masterRuleList = RuleList(rules: [
     ForceTryRule.self,
     ForceUnwrappingRule.self,
     FunctionBodyLengthRule.self,
+    FunctionBodyWhitespaceCommentLinesRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
     IdentifierNameRule.self,

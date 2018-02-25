@@ -42,6 +42,7 @@
 * [Force Try](#force-try)
 * [Force Unwrapping](#force-unwrapping)
 * [Function Body Length](#function-body-length)
+* [Function Body Whitespace and Comment lines](#function-body-whitespace-and-comment-lines)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
 * [Identifier Name](#identifier-name)
@@ -5447,6 +5448,16 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 `function_body_length` | Enabled | No | metrics
 
 Functions bodies should not span too many lines.
+
+
+## Function Body whitespace and comment lines
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`function_body_whitespace_comment_lines` | Disabled | No | metrics
+
+Function bodies should not have empty lines and comments.
+
 
 
 

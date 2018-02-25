@@ -285,6 +285,16 @@ extension File {
         return (count > limit, count)
     }
 
+    internal func exceedsCommentAndWhitespaceLines(_ start: Int, _ end: Int,
+                                                   _ limit: Int) -> (Bool, Int) {
+        guard end - start > limit else {
+            return (false, end - start)
+        }
+
+        let count = numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
+        return (count > limit, count)
+    }
+
     private typealias RangePatternTemplate = (NSRange, String, String)
 
     internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {

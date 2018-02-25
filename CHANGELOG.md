@@ -25,10 +25,9 @@
 
 #### Enhancements
 
-* Adds `discouraged_optional_boolean` opt-in rule to discourage
-  the use of optional booleans.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#2011](https://github.com/realm/SwiftLint/issues/2011)
+* Adds `function_body_whitespace_comment_lines` opt-in rule to prohibit empty and comment lines in function bodies.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2065](https://github.com/realm/SwiftLint/issues/2065)
 
 #### Bug Fixes
 

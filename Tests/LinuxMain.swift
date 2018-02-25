@@ -139,6 +139,23 @@ extension DocumentationTests {
     ]
 }
 
+extension ExplicitTypeInterfaceConfigurationTests {
+    static var allTests: [(String, (ExplicitTypeInterfaceConfigurationTests) -> () throws -> Void)] = [
+        ("testDefaultConfiguration", testDefaultConfiguration),
+        ("testApplyingCustomConfiguration", testApplyingCustomConfiguration),
+        ("testInvalidKeyInCustomConfiguration", testInvalidKeyInCustomConfiguration),
+        ("testInvalidTypeOfCustomConfiguration", testInvalidTypeOfCustomConfiguration),
+        ("testInvalidTypeOfValueInCustomConfiguration", testInvalidTypeOfValueInCustomConfiguration)
+    ]
+}
+
+extension ExplicitTypeInterfaceTests {
+    static var allTests: [(String, (ExplicitTypeInterfaceTests) -> () throws -> Void)] = [
+        ("testExplicitTypeInterface", testExplicitTypeInterface),
+        ("testExcludeLocalVars", testExcludeLocalVars)
+    ]
+}
+
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
@@ -403,7 +420,6 @@ extension RulesTests {
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
         ("testExplicitTopLevelACL", testExplicitTopLevelACL),
-        ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExtensionAccessModifier", testExtensionAccessModifier),
         ("testFallthrough", testFallthrough),
         ("testFatalErrorMessage", testFatalErrorMessage),
@@ -564,6 +580,8 @@ XCTMain([
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DocumentationTests.allTests),
+    testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
+    testCase(ExplicitTypeInterfaceTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),

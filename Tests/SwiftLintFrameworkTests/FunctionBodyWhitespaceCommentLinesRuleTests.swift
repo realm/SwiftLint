@@ -14,15 +14,12 @@ private func funcWithBody(_ body: String, violates: Bool = false) -> String {
     return "func \(marker)abc() {\nvar x = 0\n\(body)}\n"
 }
 
-private func violatingFuncWithBody(_ body: String) -> String {
-    return funcWithBody(body, violates: true)
-}
 
 class FunctionBodyWhitespaceCommentLinesRuleTests: XCTestCase {
 
     func testFunctionBodyWhitespaceCommentLinesWithComment() {
         let longFunctionBodyWithComments = funcWithBody(
-                repeatElement("x = 0 \n // comment only is a violation \n", count: 1).joined()
+                repeatElement("x = 0 \n // comment is a violation \n", count: 1).joined()
         )
         XCTAssertNotEqual(violations(longFunctionBodyWithComments), [])
     }
@@ -36,7 +33,7 @@ class FunctionBodyWhitespaceCommentLinesRuleTests: XCTestCase {
 
     func testFunctionBodyWhitespaceCommentLinesValid() {
         let longFunctionBodyWithComments = funcWithBody(
-                repeatElement("x = 0 \n x = 0 \n x = 0", count: 1).joined()
+                repeatElement("x = 0 \n x = 0", count: 1).joined()
         )
         XCTAssertEqual(violations(longFunctionBodyWithComments), [])
     }

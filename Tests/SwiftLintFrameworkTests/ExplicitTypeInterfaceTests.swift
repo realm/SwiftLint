@@ -17,12 +17,28 @@ class ExplicitTypeInterfaceTests: XCTestCase {
 
     func testExcludeLocalVars() {
         let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
-            "func foo() {\nlet intVal = 1\n}",
+            "func foo() {\nlet intVal = 1\n}"
         ]
         let description = ExplicitTypeInterfaceRule.description.with(triggeringExamples: ExplicitTypeInterfaceRule.description.triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["excluded": ["local"]])
+    }
+
+    func testExcludeClassVars() {
+        let nonTriggeringExamples = ExplicitTypeInterfaceRule.description.nonTriggeringExamples + [
+            "class Foo {\n  static var myStaticVar = 0\n}\n",
+            "class Foo {\n  static let myStaticLet = 0\n}\n"
+        ]
+        let triggeringExamples = [
+            "class Foo {\n  ↓var myVar = 0\n\n}\n",
+            "class Foo {\n  ↓let mylet = 0\n\n}\n",
+            "class Foo {\n  ↓class var myClassVar = 0\n}\n"
+        ]
+        let description = ExplicitTypeInterfaceRule.description.with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
     }
 
 }

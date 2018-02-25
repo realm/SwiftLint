@@ -9,17 +9,37 @@
 import Foundation
 import SourceKittenFramework
 
+private enum VariableKind: String {
+    case instance
+    case local
+    case `static`
+    case `class`
+}
+
 private extension SwiftDeclarationKind {
-    init?(excludedVar: String) {
-        switch excludedVar {
-        case "instance":
+    init(variableKind: VariableKind) {
+        switch variableKind {
+        case .instance:
             self = .varInstance
-        case "local":
+        case .local:
             self = .varLocal
-        case "static":
+        case .static:
             self = .varStatic
-        case "class":
+        case .class:
             self = .varClass
+        }
+    }
+
+    var variableKind: VariableKind? {
+        switch self {
+        case .varInstance:
+            return .instance
+        case .varLocal:
+            return .local
+        case .varStatic:
+            return .static
+        case .varClass:
+            return .class
         default:
             return nil
         }
@@ -38,8 +58,9 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
     public var allowedKinds = ExplicitTypeInterfaceConfiguration.variableKinds
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription +
-        ", excluded: [\(ExplicitTypeInterfaceConfiguration.variableKinds.subtracting(allowedKinds))]"
+        let excludedKinds = ExplicitTypeInterfaceConfiguration.variableKinds.subtracting(allowedKinds)
+        let simplifiedExcludedKinds = excludedKinds.flatMap { $0.variableKind?.rawValue }.sorted()
+        return severityConfiguration.consoleDescription + ", excluded: \(simplifiedExcludedKinds)"
     }
 
     public init() {}
@@ -52,9 +73,9 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             switch (key, value) {
             case ("severity", let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
-            case ("excluded", let excluded as [String]):
-                let excludedTypes = excluded.flatMap(SwiftDeclarationKind.init(excludedVar:))
-                allowedKinds.subtract(excludedTypes)
+            case ("excluded", let excludedStrings as [String]):
+                let excludedKinds = excludedStrings.flatMap(VariableKind.init(rawValue:))
+                allowedKinds.subtract(excludedKinds.map(SwiftDeclarationKind.init(variableKind:)))
             default:
                 throw ConfigurationError.unknownConfiguration
             }

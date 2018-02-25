@@ -46,4 +46,9 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
         }
     }
 
+    func testConsoleDescription() throws {
+        var config = ExplicitTypeInterfaceConfiguration()
+        try config.apply(configuration: ["excluded": ["class", "instance"]])
+        XCTAssertEqual(config.consoleDescription, "warning, excluded: [\"class\", \"instance\"]")
+    }
 }

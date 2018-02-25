@@ -14,8 +14,7 @@ private func funcWithBody(_ body: String, violates: Bool = false) -> String {
     return "func \(marker)abc() {\nvar x = 0\n\(body)}\n"
 }
 
-
-class FunctionBodyWhitespaceCommentLinesRuleTests: XCTestCase {
+class FunctionBodyWhitespaceCommentRuleTests: XCTestCase {
 
     func testFunctionBodyWhitespaceCommentLinesWithComment() {
         let longFunctionBodyWithComments = funcWithBody(
@@ -39,7 +38,7 @@ class FunctionBodyWhitespaceCommentLinesRuleTests: XCTestCase {
     }
 
     private func violations(_ string: String) -> [StyleViolation] {
-        let config = makeConfig(nil, FunctionBodyWhitespaceCommentLinesRule.description.identifier)!
+        let config = makeConfig(nil, FunctionBodyWhitespaceCommentRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
     }
 }

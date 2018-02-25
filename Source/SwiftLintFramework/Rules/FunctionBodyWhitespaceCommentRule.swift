@@ -8,13 +8,13 @@
 
 import SourceKittenFramework
 
-public struct FunctionBodyWhitespaceCommentLinesRule: ASTRule, OptInRule, ConfigurationProviderRule  {
+public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 0, error: 0)
 
     public init() {}
 
     public static let description = RuleDescription(
-            identifier: "function_body_whitespace_comment_lines",
+            identifier: "function_body_whitespace_comment",
             name: "Function Body Empty Lines",
             description: "Functions bodies should not have whitespace and comment lines.",
             kind: .metrics
@@ -37,7 +37,8 @@ public struct FunctionBodyWhitespaceCommentLinesRule: ASTRule, OptInRule, Config
                     startLine, endLine, parameter.value
             )
             guard exceeds else { continue }
-            return [StyleViolation(ruleDescription: type(of: self).description,
+            return [StyleViolation(
+                    ruleDescription: type(of: self).description,
                     severity: parameter.severity,
                     location: Location(file: file, byteOffset: offset),
                     reason: "Function body should span \(configuration.warning) comment and whitespace lines or less " +

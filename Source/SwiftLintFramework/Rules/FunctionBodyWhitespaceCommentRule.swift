@@ -17,7 +17,7 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
             identifier: "function_body_whitespace_comment",
             name: "Function Body Empty Lines",
             description: "Functions bodies should not have whitespace and comment lines.",
-            kind: .metrics
+            kind: .style
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
@@ -32,19 +32,27 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
                 else {
             return []
         }
-        for parameter in configuration.params {
+
+        return configuration.params.flatMap {
+            (parameter: RuleParameter<Int>) -> [StyleViolation] in
             let (exceeds, lineCount) = file.exceedsCommentAndWhitespaceLines(
                     startLine, endLine, parameter.value
             )
-            guard exceeds else { continue }
-            return [StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: parameter.severity,
-                    location: Location(file: file, byteOffset: offset),
-                    reason: "Function body should span \(configuration.warning) comment and whitespace lines or less " +
-                            ": currently spans \(lineCount) " +
-                            "lines")]
+            var violations: Array = Array<StyleViolation>()
+            if (exceeds) {
+                violations.append(
+                        StyleViolation(
+                                ruleDescription: type(of: self).description,
+                                severity: parameter.severity,
+                                location: Location(file: file, byteOffset: offset),
+                                reason: "Function body should span \(configuration.warning) comment and whitespace lines or less " +
+                                        ": currently spans \(lineCount) " +
+                                        "lines"
+                        )
+                )
+            }
+            return violations;
         }
-        return []
     }
+    
 }

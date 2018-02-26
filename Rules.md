@@ -15072,7 +15072,7 @@ var myVar: Int? = nil; myVar↓??nil
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`redundant_objc_attribute` | Enabled | No | idiomatic | No | 3.0.0 
+`redundant_objc_attribute` | Enabled | No | idiomatic | No | 4.1.0 
 
 Objective-C attribute (@objc) is redundant in declaration.
 
@@ -15157,6 +15157,16 @@ extension Foo {
 }
 ```
 
+```swift
+@objcMembers
+class Foo: NSObject {
+  @objc
+  private var bar: Int {
+    return 0
+  }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -15232,6 +15242,16 @@ extension Foo {
 extension Foo {
   @objc
   ↓var bar: Int {
+    return 0
+  }
+}
+```
+
+```swift
+@objc
+extension Foo {
+  @objc
+  private ↓var bar: Int {
     return 0
   }
 }

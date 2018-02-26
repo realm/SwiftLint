@@ -10,6 +10,9 @@
 
 #### Enhancements
 
+* Fix warnings for non accessible declarations under `@objcMembers`.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+
 * Add new opt-in rule `vertical_whitespace_opening_braces` to warn against empty lines
   after opening braces.  
   [Cihat Gündüz](https://github.com/Dschee)

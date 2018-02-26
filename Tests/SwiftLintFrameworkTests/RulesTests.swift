@@ -425,6 +425,10 @@ class RulesTests: XCTestCase {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
     }
 
+    func testUntypedErrorInCatch() {
+        verifyRule(UntypedErrorInCatchRule.description)
+    }
+
     func testUnusedClosureParameter() {
         verifyRule(UnusedClosureParameterRule.description)
     }

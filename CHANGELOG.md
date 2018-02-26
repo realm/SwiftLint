@@ -27,6 +27,12 @@
   [fredpi](https://github.com/fredpi)
   [#2071](https://github.com/realm/SwiftLint/issues/2071)
 
+* Adds `--force-exclude` option to `lint` and `autocorrect` commands, which will
+  force SwiftLint to exclude files specified in the config `excluded` even if
+  they are explicitly specified with `--path`.  
+  [Ash Furrow](https://github.com/ashfurrow)
+  [#2051](https://github.com/realm/SwiftLint/issues/2051)
+
 #### Bug Fixes
 
 * Fix TODOs lint message to state that TODOs should be resolved instead of

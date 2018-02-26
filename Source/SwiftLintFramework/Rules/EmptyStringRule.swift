@@ -27,7 +27,8 @@ public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {
             "myString↓ != \"\""
         ]
     )
-
+    
+    
     public func validate(file: File) -> [StyleViolation] {
         let pattern = "\\b\\s*(==|!=)\\s*\"\""
         return file.match(pattern: pattern, with: [.string]).map {

@@ -10,6 +10,11 @@
 
 #### Bug Fixes
 
+* Fix TODOs lint message to state that TODOs should be resolved instead of
+  avoided.  
+  [Adonis Peralta](https://github.com/donileo)
+  [#150](https://github.com/realm/SwiftLint/issues/150)
+
 * Fix some cases where `colon` rule wouldn't autocorrect dictionary literals.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2050](https://github.com/realm/SwiftLint/issues/2050)

@@ -12542,7 +12542,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `todo` | Enabled | No | lint
 
-TODOs and FIXMEs should be avoided.
+TODOs and FIXMEs should be resolved.
 
 ### Examples
 

@@ -480,6 +480,12 @@ class RedundantNilCoalescingRuleTests: XCTestCase {
     }
 }
 
+class RedundantObjcAttributeRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantObjcAttributeRule.description)
+    }
+}
+
 class RedundantOptionalInitializationRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantOptionalInitializationRule.description)

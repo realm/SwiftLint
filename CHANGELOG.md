@@ -41,6 +41,10 @@
   `homebrew-core/Formula/swiftlint.rb` within sandbox.  
   [Norio Nomura](https://github.com/norio-nomura)
 
+* Add `redundant_objc_attribute` to warn against already implied objc attribute.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2193](https://github.com/realm/SwiftLint/issues/2193)
+
 #### Bug Fixes
 
 * Fix compiler warnings when building with Swift 4.2 introduced in the last

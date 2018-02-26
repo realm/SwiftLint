@@ -145,14 +145,16 @@ extension ExplicitTypeInterfaceConfigurationTests {
         ("testApplyingCustomConfiguration", testApplyingCustomConfiguration),
         ("testInvalidKeyInCustomConfiguration", testInvalidKeyInCustomConfiguration),
         ("testInvalidTypeOfCustomConfiguration", testInvalidTypeOfCustomConfiguration),
-        ("testInvalidTypeOfValueInCustomConfiguration", testInvalidTypeOfValueInCustomConfiguration)
+        ("testInvalidTypeOfValueInCustomConfiguration", testInvalidTypeOfValueInCustomConfiguration),
+        ("testConsoleDescription", testConsoleDescription)
     ]
 }
 
-extension ExplicitTypeInterfaceTests {
-    static var allTests: [(String, (ExplicitTypeInterfaceTests) -> () throws -> Void)] = [
+extension ExplicitTypeInterfaceRuleTests {
+    static var allTests: [(String, (ExplicitTypeInterfaceRuleTests) -> () throws -> Void)] = [
         ("testExplicitTypeInterface", testExplicitTypeInterface),
-        ("testExcludeLocalVars", testExcludeLocalVars)
+        ("testExcludeLocalVars", testExcludeLocalVars),
+        ("testExcludeClassVars", testExcludeClassVars)
     ]
 }
 
@@ -581,7 +583,7 @@ XCTMain([
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DocumentationTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
-    testCase(ExplicitTypeInterfaceTests.allTests),
+    testCase(ExplicitTypeInterfaceRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),

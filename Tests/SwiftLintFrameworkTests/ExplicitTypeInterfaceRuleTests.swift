@@ -1,5 +1,5 @@
 //
-//  ExplicitTypeInterfaceTests.swift
+//  ExplicitTypeInterfaceRuleTests.swift
 //  SwiftLint
 //
 //  Created by Rounak Jain on 2/24/18.
@@ -9,7 +9,7 @@
 import SwiftLintFramework
 import XCTest
 
-class ExplicitTypeInterfaceTests: XCTestCase {
+class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)

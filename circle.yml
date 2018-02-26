@@ -3,7 +3,7 @@ jobs:
 
   tsan:
     macos:
-      xcode: "9.0"
+      xcode: "9.2.0"
     steps:
       - checkout
       # Pre-cache
@@ -13,22 +13,23 @@ jobs:
 
   osscheck:
     macos:
-      xcode: "9.0"
+      xcode: "9.2.0"
     steps:
       - checkout
+      - run: brew install ruby
       - run: bundle install
       - run: bundle exec danger --verbose
 
   swiftpm_4:
     macos:
-      xcode: "9.0"
+      xcode: "9.2.0"
     steps:
       - checkout
       - run: swift test --parallel
 
   xcode_9:
     macos:
-      xcode: "9.0"
+      xcode: "9.2.0"
     steps:
       - checkout
       - run: set -o pipefail && script/cibuild | xcpretty -r junit
@@ -38,11 +39,13 @@ jobs:
 
   cocoapods:
     macos:
-      xcode: "9.0"
+      xcode: "9.2.0"
     steps:
       - checkout
+      - run: brew install ruby
+      - run: bundle install
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
-      - run: echo "4.0" > .swift-version; pod lib lint SwiftLintFramework.podspec
+      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
 
   linux_swift_4:
     docker:

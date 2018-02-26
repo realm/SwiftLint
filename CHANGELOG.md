@@ -11,6 +11,10 @@
   they are explicitly specified with `--path`.
   [Ash Furrow](https://github.com/ashfurrow)
   [#2051](https://github.com/realm/SwiftLint/issues/2051)
+* Add a new `excluded` config parameter to the `explicit_type_interface` rule
+  to exempt certain types of variables from the rule.  
+  [Rounak Jain](https://github.com/rounak)
+  [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
 #### Bug Fixes
 

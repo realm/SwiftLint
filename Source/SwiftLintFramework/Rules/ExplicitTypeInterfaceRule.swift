@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ExplicitTypeInterfaceConfiguration()
 
     public init() {}
 
@@ -33,13 +33,10 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     )
 
-    private static let allowedKinds: Set<SwiftDeclarationKind> = [.varInstance, .varLocal,
-                                                                  .varStatic, .varClass]
-
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard ExplicitTypeInterfaceRule.allowedKinds.contains(kind),
+        guard configuration.allowedKinds.contains(kind),
             !containsType(dictionary: dictionary),
             let offset = dictionary.offset else {
                 return []
@@ -47,7 +44,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }

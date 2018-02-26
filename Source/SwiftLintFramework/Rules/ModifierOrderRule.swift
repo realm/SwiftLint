@@ -1,5 +1,8 @@
 import SourceKittenFramework
 
+private typealias ModifierKeyword = String
+private typealias ModifierDescription = (ModifierKeyword, SwiftDeclarationAttributeKind.ModifierGroup)
+
 public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = ModifierOrderConfiguration(preferredModifierOrder: [.override, .acl])
 
@@ -178,14 +181,21 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
             return []
         }
 
-        let preferredOrderOfModifiers = [.atPrefixed] + configuration.preferredModifierOrder
-        let modifierGroupsInDeclaration = dictionary.modifierGroups
-        let filteredPreferedOrderOfModifiers = preferredOrderOfModifiers.filter(modifierGroupsInDeclaration.contains)
-        for (index, preferredGroup) in filteredPreferedOrderOfModifiers.enumerated()
-            where preferredGroup != modifierGroupsInDeclaration[index] {
+        let preferredOrder = [.atPrefixed] + configuration.preferredModifierOrder
+        let declaredDescriptions = dictionary.modifierDescriptions
+        let preferredDescriptions = preferredOrder.reduce(into: [ModifierDescription]()) { descriptions, group in
+            if let description = declaredDescriptions.first(where: { $0.1 == group }) {
+                descriptions.append(description)
+            }
+        }
+
+        for (index, preferredDescription) in preferredDescriptions.enumerated()
+            where preferredDescription.1 != declaredDescriptions[index].1 {
+                let reason = "\(preferredDescription.0) modifier should be before \(declaredDescriptions[index].0)."
                 return [StyleViolation(ruleDescription: type(of: self).description,
                                        severity: configuration.severityConfiguration.severity,
-                                       location: Location(file: file, byteOffset: offset))]
+                                       location: Location(file: file, byteOffset: offset),
+                                       reason: reason)]
         }
 
         return []
@@ -193,7 +203,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
-    var modifierGroups: [SwiftDeclarationAttributeKind.ModifierGroup] {
+    var modifierDescriptions: [ModifierDescription] {
         let staticKinds = [SwiftDeclarationKind.functionMethodClass, .functionMethodStatic, .varClass, .varStatic]
         let staticKindsAndOffsets = kindsAndOffsets(in: staticKinds).map { [$0] } ?? []
         return (swiftAttributes + staticKindsAndOffsets)
@@ -204,10 +214,11 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
                 return rhsOffset < lhsOffset
             }
             .compactMap {
-                if let attribute = $0.attribute {
-                    return SwiftDeclarationAttributeKind.ModifierGroup(rawAttribute: attribute)
-                } else if $0.kind != nil {
-                    return .typeMethods
+                if let attribute = $0.attribute,
+                   let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawAttribute: attribute) {
+                    return ModifierDescription(attribute.lastComponentAfter("."), modifierGroup)
+                } else if let kind = $0.kind {
+                    return ModifierDescription(kind.lastComponentAfter("."), .typeMethods)
                 }
                 return nil
             }
@@ -221,5 +232,11 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
         }
 
         return ["key.kind": kind, "key.offset": Int64(offset)]
+    }
+}
+
+private extension String {
+    func lastComponentAfter(_ charachter: String) -> String {
+        return components(separatedBy: charachter).last ?? ""
     }
 }

@@ -23,6 +23,13 @@
 
 * None.
 
+### Enhancements
+
+* Adds `discouraged_optional_boolean` opt-in rule to discourage
+  the use of optional booleans.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#2011](https://github.com/realm/SwiftLint/issues/2011)
+
 #### Bug Fixes
 
 * Fix some cases where `colon` rule wouldn't be autocorrected.  

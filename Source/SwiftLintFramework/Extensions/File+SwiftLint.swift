@@ -291,7 +291,7 @@ extension File {
             return (false, end - start)
         }
 
-        let count = numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
+        let count = end - start - 1 - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
         return (count > limit, count)
     }
 

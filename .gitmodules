@@ -19,3 +19,6 @@
 [submodule "Carthage/Checkouts/Yams"]
 	path = Carthage/Checkouts/Yams
 	url = https://github.com/jpsim/Yams.git
+[submodule "Carthage/Checkouts/Reflection"]
+	path = Carthage/Checkouts/Reflection
+	url = https://github.com/Zewo/Reflection.git

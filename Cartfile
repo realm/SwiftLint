@@ -1,2 +1,3 @@
 github "jpsim/SourceKitten" ~> 0.19.1
 github "scottrhoyt/SwiftyTextTable" ~> 0.8.0
+github "Zewo/Reflection" ~> 0.15.0

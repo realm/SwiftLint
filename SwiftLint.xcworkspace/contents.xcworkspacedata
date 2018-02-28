@@ -20,6 +20,9 @@
       location = "group:Carthage/Checkouts/SwiftyTextTable/SwiftyTextTable.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:Carthage/Checkouts/Reflection/Reflection.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Carthage/Checkouts/Yams/Yams.xcodeproj">
    </FileRef>
 </Workspace>

@@ -38,6 +38,15 @@
         }
       },
       {
+        "package": "Reflection",
+        "repositoryURL": "https://github.com/Zewo/Reflection.git",
+        "state": {
+          "branch": null,
+          "revision": "8a90b157455d13b7cde036403a406b72a86f3ea9",
+          "version": "0.15.0"
+        }
+      },
+      {
         "package": "Result",
         "repositoryURL": "https://github.com/antitypical/Result.git",
         "state": {

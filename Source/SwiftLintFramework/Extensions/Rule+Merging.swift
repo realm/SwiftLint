@@ -14,8 +14,8 @@ public extension Rule {
         guard let secondRule = secondRule as? Self else {
             queuedFatalError("Call overrideConfiguration only on rule's of same type")
         }
-        let parentRuleConfiguration = getConfiguration(of: self)
-        let nestedRuleConfiguration = getConfiguration(of: secondRule)
+        let parentRuleConfiguration = getConfiguration()
+        let nestedRuleConfiguration = secondRule.getConfiguration()
         // check if rule's configuration exists
         if var mergedRuleConfig = parentRuleConfiguration, nestedRuleConfiguration != nil {
             // override rule's configuration with nested rule's configuration
@@ -37,19 +37,14 @@ public extension Rule {
         }
     }
 
-    /// This method is an ugly hack to check if rule: Rule also conforms to swift 
-    /// This workaround checks for a configuration property
+    /// This method is a workaround to retrieve the `configuration` property of a ConfigurationProviderRule
+    /// Since Swift4 does not allow for checking conformance with protocols using associated types
+    /// this workaround uses reflection
     ///
     /// - Parameter rule: Anything conforming to Rule
     /// - Returns: RuleConfiguration if given rule conforms to ConfigurationProviderRule
-    func getConfiguration(of rule: Rule) -> RuleConfiguration? {
-        var ruleConfig: RuleConfiguration?
-        let mirror = Mirror(reflecting: rule)
-        if let b = AnyBidirectionalCollection(mirror.children) {
-            ruleConfig = b.first(where: { (label: String?, _: Any) -> Bool in
-                label == "configuration"
-            }).map({ $0.value }) as? RuleConfiguration
-        }
+    func getConfiguration() -> RuleConfiguration? {
+        let ruleConfig: RuleConfiguration? = try? get("configuration", from: self)
         return ruleConfig
     }
 }

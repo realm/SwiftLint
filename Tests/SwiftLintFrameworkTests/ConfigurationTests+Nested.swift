@@ -107,7 +107,7 @@ extension ConfigurationTests {
             type(of: $0).description.identifier == baseRuleIdentifier
         })
         XCTAssertNotNil(mergedRule)
-        if let mergedRuleConfig = mergedRule!.getConfiguration(of: mergedRule!) as? CyclomaticComplexityConfiguration {
+        if let mergedRuleConfig = mergedRule!.getConfiguration() as? CyclomaticComplexityConfiguration {
             XCTAssertEqual(mergedRuleConfig.length.warning, 5)
             XCTAssertEqual(mergedRuleConfig.length.error, 14)
             XCTAssertEqual(mergedRuleConfig.ignoresCaseStatements, true)

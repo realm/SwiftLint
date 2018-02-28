@@ -11,4 +11,5 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { 'APPLICATION_EXTENSION_API_ONLY' => 'YES' }
   s.dependency            'SourceKittenFramework', '~> 0.18'
   s.dependency            'Yams', '~> 0.4'
+  s.dependency            'Reflection', '~> 0.15'
 end

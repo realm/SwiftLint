@@ -107,10 +107,10 @@ extension ConfigurationTests {
             type(of: $0).description.identifier == baseRuleIdentifier
         })
         XCTAssertNotNil(mergedRule)
-        if let mergedRuleConfiguration = mergedRule!.getConfiguration(of: mergedRule!) as? CyclomaticComplexityConfiguration {
-            XCTAssertEqual(mergedRuleConfiguration.length.warning, 5)
-            XCTAssertEqual(mergedRuleConfiguration.length.error, 14)
-            XCTAssertEqual(mergedRuleConfiguration.ignoresCaseStatements, true)
+        if let mergedRuleConfig = mergedRule!.getConfiguration(of: mergedRule!) as? CyclomaticComplexityConfiguration {
+            XCTAssertEqual(mergedRuleConfig.length.warning, 5)
+            XCTAssertEqual(mergedRuleConfig.length.error, 14)
+            XCTAssertEqual(mergedRuleConfig.ignoresCaseStatements, true)
         } else {
             XCTFail("Could not retrieve rule's individual configuration")
         }

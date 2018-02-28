@@ -106,7 +106,7 @@ extension Configuration {
                     return optIn.contains(type(of: rule).description.identifier)
                 }
 
-            for rule in self.rules {
+            for var rule in self.rules {
                 let isDisabled = disabled.contains(type(of: rule).description.identifier)
                 if !isDisabled {
                     // find rule in nested configuration

@@ -42,7 +42,7 @@ class FunctionBodyWhitespaceLinesRuleTests: XCTestCase {
     }
 
     private func violations(_ string: String) -> [StyleViolation] {
-        let config = makeConfig(nil, FunctionBodyWhitespaceCommentRule.description.identifier)!
+        let config = makeConfig(nil, FunctionBodyWhitespaceLinesRule.description.identifier)!
         return SwiftLintFrameworkTests.violations(string, config: config)
     }
 }

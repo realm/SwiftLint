@@ -8,15 +8,15 @@
 
 import SourceKittenFramework
 
-public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct FunctionBodyWhitespaceLinesRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityLevelsConfiguration(warning: 0, error: 0)
 
     public init() {}
 
     public static let description = RuleDescription(
-            identifier: "function_body_whitespace_comment",
-            name: "Function Body Whitespace Comment",
-            description: "Function bodies should not have whitespace and comment lines.",
+            identifier: "function_body_whitespace_lines",
+            name: "Function Body Whitespace Lines",
+            description: "Function bodies should not have whitespace lines.",
             kind: .style
     )
 
@@ -26,19 +26,25 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
               let offset = dictionary.offset,
               let bodyOffset = dictionary.bodyOffset,
               let bodyLength = dictionary.bodyLength,
-              case let contentsNSString = file.contents.bridge(),
-              let startLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset)?.line,
-              let endLine = contentsNSString.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line
+              let string: NSString = file.contents.bridge(),
+              let body: NSString = string.substringWithByteRange(
+                      start: bodyOffset,
+                      length: bodyLength
+              )
                 else {
             return []
         }
-
+        var count = 0
+        let lines: [String] = body.components(separatedBy: .newlines)
+        for line in lines {
+            if (line.trimmingCharacters(in: .whitespaces).isEmpty) {
+                count += 1
+            }
+        }
+        count -= 2 // first and last components are always empty
         return configuration.params.flatMap { (parameter: RuleParameter<Int>) -> [StyleViolation] in
-            let (exceeds, lineCount) = file.exceedsCommentAndWhitespaceLines(
-                    startLine, endLine, parameter.value
-            )
             var violations: [StyleViolation] = [StyleViolation]()
-            if exceeds {
+            if count > 0 {
                 violations.append(
                         StyleViolation(
                                 ruleDescription: type(of: self).description,
@@ -46,7 +52,7 @@ public struct FunctionBodyWhitespaceCommentRule: ASTRule, OptInRule, Configurati
                                 location: Location(file: file, byteOffset: offset),
                                 reason: "Function body should span \(configuration.warning)" +
                                         " comment and whitespace lines or less " +
-                                        ": currently spans \(lineCount) " +
+                                        ": currently spans \(count) " +
                                         "lines"
                         )
                 )

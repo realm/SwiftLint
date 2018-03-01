@@ -5451,13 +5451,13 @@ Functions bodies should not span too many lines.
 
 
 
-## Function Body Whitespace Comment
+## Function Body Whitespace Lines
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`function_body_whitespace_comment` | Disabled | No | style
+`function_body_whitespace` | Disabled | No | style
 
-Function bodies should not have whitespace and comment lines.
+Function bodies should not have whitespace lines.
 
 
 

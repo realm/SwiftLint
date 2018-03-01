@@ -191,8 +191,8 @@ extension FunctionBodyLengthRuleTests {
     ]
 }
 
-extension FunctionBodyWhitespaceCommentRuleTests {
-    static var allTests: [(String, (FunctionBodyWhitespaceCommentRuleTests) -> () throws -> Void)] = [
+extension FunctionBodyWhitespaceLinesRuleTests {
+    static var allTests: [(String, (FunctionBodyWhitespaceLinesRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyWhitespaceCommentLinesWithComment",
                 testFunctionBodyWhitespaceCommentLinesWithComment),
         ("testFunctionBodyWhitespaceCommentLinesWithMultiLineComment",

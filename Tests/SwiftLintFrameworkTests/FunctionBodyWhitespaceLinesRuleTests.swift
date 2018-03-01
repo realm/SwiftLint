@@ -18,7 +18,7 @@ private func violatingFuncWithBody(_ body: String) -> String {
     return funcWithBody(body, violates: true)
 }
 
-class FunctionBodyWhitespaceCommentRuleTests: XCTestCase {
+class FunctionBodyWhitespaceLinesRuleTests: XCTestCase {
 
     func testFunctionBodyWhitespaceCommentLinesWithComment() {
         let longFunctionBodyWithComments = violatingFuncWithBody(

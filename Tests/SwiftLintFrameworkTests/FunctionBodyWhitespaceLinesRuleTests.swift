@@ -22,16 +22,16 @@ class FunctionBodyWhitespaceLinesRuleTests: XCTestCase {
 
     func testFunctionBodyWhitespaceCommentLinesWithComment() {
         let longFunctionBodyWithComments = violatingFuncWithBody(
-                repeatElement("x = 0 \n // comment is a  violation \n", count: 1).joined()
+                repeatElement("x = 0 \n \n", count: 1).joined()
         )
         XCTAssertNotEqual(violations(longFunctionBodyWithComments), [])
     }
 
     func testFunctionBodyWhitespaceCommentLinesWithMultiLineComment() {
         let longFunctionBodyWithComments = violatingFuncWithBody(
-                repeatElement("x = 0 \n /* multi line comment is a violation \n */ \n", count: 1).joined()
+                repeatElement("x = 0 \n", count: 1).joined()
         )
-        XCTAssertNotEqual(violations(longFunctionBodyWithComments), [])
+        XCTAssertEqual(violations(longFunctionBodyWithComments), [])
     }
 
     func testFunctionBodyWhitespaceCommentLinesValid() {

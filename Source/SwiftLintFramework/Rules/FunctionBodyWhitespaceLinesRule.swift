@@ -26,8 +26,7 @@ public struct FunctionBodyWhitespaceLinesRule: ASTRule, OptInRule, Configuration
               let offset = dictionary.offset,
               let bodyOffset = dictionary.bodyOffset,
               let bodyLength = dictionary.bodyLength,
-              let string: NSString = file.contents.bridge(),
-              let body: NSString = string.substringWithByteRange(
+              let body: String = file.contents.bridge().substringWithByteRange(
                       start: bodyOffset,
                       length: bodyLength
               )
@@ -37,13 +36,14 @@ public struct FunctionBodyWhitespaceLinesRule: ASTRule, OptInRule, Configuration
         var count = 0
         let lines: [String] = body.components(separatedBy: .newlines)
         for line in lines {
-            if (line.trimmingCharacters(in: .whitespaces).isEmpty) {
+            if line.trimmingCharacters(in: .whitespaces).isEmpty {
                 count += 1
             }
         }
         count -= 2 // first and last components are always empty
         return configuration.params.flatMap { (parameter: RuleParameter<Int>) -> [StyleViolation] in
             var violations: [StyleViolation] = [StyleViolation]()
+            // swiftlint:disable empty_count
             if count > 0 {
                 violations.append(
                         StyleViolation(

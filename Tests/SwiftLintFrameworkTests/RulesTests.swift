@@ -151,7 +151,7 @@ class RulesTests: XCTestCase {
     }
 
     func testFunctionBodyWhitespaceComment() {
-        verifyRule(FunctionBodyWhitespaceCommentRule.description)
+        verifyRule(FunctionBodyWhitespaceLinesRule.description)
     }
 
     func testFunctionParameterCount() {

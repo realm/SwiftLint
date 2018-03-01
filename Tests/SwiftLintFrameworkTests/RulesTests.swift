@@ -150,6 +150,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
+    func testFunctionBodyWhitespaceComment() {
+        verifyRule(FunctionBodyWhitespaceLinesRule.description)
+    }
+
     func testFunctionParameterCount() {
         verifyRule(FunctionParameterCountRule.description)
     }

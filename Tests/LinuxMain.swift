@@ -183,7 +183,7 @@ extension FileLengthRuleTests {
     ]
 }
 
-extension FunctionBodyLengthRuleTests {
+extension FunctionBodyCommentsRuleTests {
     static var allTests: [(String, (FunctionBodyCommentsRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyCommentsValid", testFunctionBodyCommentsValid),
         ("testFunctionBodyCommentsInLine", testFunctionBodyCommentsInLine),

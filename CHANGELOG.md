@@ -6,6 +6,11 @@
 
 #### Enhancements
 
+* Adds `function_body_comments` opt-in rule to prohibit
+  the use of comments in function bodies.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2077](https://github.com/realm/SwiftLint/issues/2077)
+
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)
@@ -24,11 +29,6 @@
 * None.
 
 #### Enhancements
-
-* Adds `function_body_comments` opt-in rule to prohibit
-  the use of comments in function bodies.  
-  [Mikhail Yakushin](https://github.com/driver733)
-  [#2077](https://github.com/realm/SwiftLint/issues/2077)
 
 * Adds `discouraged_optional_boolean` opt-in rule to discourage
   the use of optional booleans.  

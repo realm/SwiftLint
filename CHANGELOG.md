@@ -25,6 +25,11 @@
 
 #### Enhancements
 
+* Adds `function_body_comments` opt-in rule to prohibit
+  the use of comments in function bodies.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2077](https://github.com/realm/SwiftLint/issues/2077)
+
 * Adds `discouraged_optional_boolean` opt-in rule to discourage
   the use of optional booleans.  
   [Ornithologist Coder](https://github.com/ornithocoder)

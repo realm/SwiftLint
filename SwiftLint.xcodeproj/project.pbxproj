@@ -142,6 +142,8 @@
 		B89F3BCF1FD5EE1400931E59 /* RequiredEnumCaseRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89F3BC71FD5ED7D00931E59 /* RequiredEnumCaseRuleConfiguration.swift */; };
 		BB00B4E91F5216090079869F /* MultipleClosuresWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */; };
 		BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */; };
+		C2E099B1FFD283BEA0EBC5B0 /* FunctionBodyCommentsRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E09082757235CF0E6120EA /* FunctionBodyCommentsRuleTests.swift */; };
+		C2E09BF91C6D1C09AFF557F4 /* FunctionBodyCommentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E099E6FF20FE33D0EC8488 /* FunctionBodyCommentsRule.swift */; };
 		C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */; };
 		C3DE5DAC1E7DF9CA00761483 /* FatalErrorMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */; };
 		C946FECB1EAE67EE007DD778 /* LetVarWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */; };
@@ -492,6 +494,8 @@
 		B89F3BCB1FD5EDA900931E59 /* RequiredEnumCaseRuleTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequiredEnumCaseRuleTestCase.swift; sourceTree = "<group>"; };
 		BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleClosuresWithTrailingClosureRule.swift; sourceTree = "<group>"; };
 		BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingWhitespaceConfiguration.swift; sourceTree = "<group>"; };
+		C2E09082757235CF0E6120EA /* FunctionBodyCommentsRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionBodyCommentsRuleTests.swift; sourceTree = "<group>"; };
+		C2E099E6FF20FE33D0EC8488 /* FunctionBodyCommentsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionBodyCommentsRule.swift; sourceTree = "<group>"; };
 		C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceRule.swift; sourceTree = "<group>"; };
 		C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FatalErrorMessageRule.swift; sourceTree = "<group>"; };
 		C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LetVarWhitespaceRule.swift; sourceTree = "<group>"; };
@@ -971,6 +975,7 @@
 				D0D1212219E878CC005E4BAA /* Configuration */,
 				3B12C9BE1C3209AC000B423F /* Resources */,
 				D0D1217C19E87B05005E4BAA /* Supporting Files */,
+				C2E09082757235CF0E6120EA /* FunctionBodyCommentsRuleTests.swift */,
 			);
 			name = SwiftLintFrameworkTests;
 			path = Tests/SwiftLintFrameworkTests;
@@ -1162,6 +1167,7 @@
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */,
+				C2E099E6FF20FE33D0EC8488 /* FunctionBodyCommentsRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -1702,6 +1708,7 @@
 				A73469421FB121BA009B57C7 /* CallPairRule.swift in Sources */,
 				D47079AF1DFE520000027086 /* VoidReturnRule.swift in Sources */,
 				B3935EE74B1E8E14FBD65E7F /* String+XML.swift in Sources */,
+				C2E09BF91C6D1C09AFF557F4 /* FunctionBodyCommentsRule.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1755,6 +1762,7 @@
 				3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
+				C2E099B1FFD283BEA0EBC5B0 /* FunctionBodyCommentsRuleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -275,6 +275,18 @@ extension File {
         }.count
     }
 
+    fileprivate func numberOfCommentLines(startLine: Int, endLine: Int) -> Int {
+        let commentKinds = SyntaxKind.commentKinds
+        var count = 0
+        for arr: [SyntaxKind] in syntaxKindsByLines[startLine...endLine] {
+            let set: Set<SyntaxKind> = Set(arr)
+            if !set.isDisjoint(with: commentKinds) {
+                count += 1
+            }
+        }
+        return count
+    }
+
     internal func exceedsLineCountExcludingCommentsAndWhitespace(_ start: Int, _ end: Int,
                                                                  _ limit: Int) -> (Bool, Int) {
         guard end - start > limit else {
@@ -282,6 +294,15 @@ extension File {
         }
 
         let count = end - start - numberOfCommentAndWhitespaceOnlyLines(startLine: start, endLine: end)
+        return (count > limit, count)
+    }
+
+    internal func exceedsCommentLines(_ start: Int, _ end: Int,
+                                      _ limit: Int) -> (Bool, Int) {
+        guard end - start > limit else {
+            return (false, end - start)
+        }
+        let count = numberOfCommentLines(startLine: start, endLine: end)
         return (count > limit, count)
     }
 

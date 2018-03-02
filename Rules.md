@@ -41,6 +41,7 @@
 * [Force Cast](#force-cast)
 * [Force Try](#force-try)
 * [Force Unwrapping](#force-unwrapping)
+* [Function Body Comments](#function-body-comments)
 * [Function Body Length](#function-body-length)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
@@ -5437,6 +5438,16 @@ open var computed: String { return foo.bar↓! }
 ```
 
 </details>
+
+
+
+## Function Body Comments
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`function_body_comments` | Disabled | No | style
+
+Functions bodies should not have comments.
 
 
 

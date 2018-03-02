@@ -10,11 +10,16 @@
   the use of comments in function bodies.  
   [Mikhail Yakushin](https://github.com/driver733)
   [#2077](https://github.com/realm/SwiftLint/issues/2077)
+* Adds `function_body_whitespace_lines` opt-in rule
+  to prohibit whitespace lines in function bodies.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2065](https://github.com/realm/SwiftLint/issues/2065)
 
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
+
 
 #### Bug Fixes
 
@@ -28,7 +33,7 @@
 
 * None.
 
-#### Enhancements
+### Enhancements
 
 * Adds `discouraged_optional_boolean` opt-in rule to discourage
   the use of optional booleans.  
@@ -92,9 +97,6 @@
 
 * None.
 
-#### Enhancements
-
-* None.
 
 #### Bug Fixes
 

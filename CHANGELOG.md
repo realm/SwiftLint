@@ -10,6 +10,7 @@
   the use of comments in function bodies.  
   [Mikhail Yakushin](https://github.com/driver733)
   [#2077](https://github.com/realm/SwiftLint/issues/2077)
+  
 * Adds `function_body_whitespace_lines` opt-in rule
   to prohibit whitespace lines in function bodies.  
   [Mikhail Yakushin](https://github.com/driver733)

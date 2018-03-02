@@ -6,6 +6,11 @@
 
 #### Enhancements
 
+* Adds `subclass` opt-in rule to prohibit
+  subclassing.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2079](https://github.com/realm/SwiftLint/issues/2079)
+
 * Adds `function_body_comments` opt-in rule to prohibit
   the use of comments in function bodies.  
   [Mikhail Yakushin](https://github.com/driver733)
@@ -20,7 +25,6 @@
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
-
 
 #### Bug Fixes
 

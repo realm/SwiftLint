@@ -531,6 +531,14 @@ extension SourceKitCrashTests {
     ]
 }
 
+extension SubClassRuleTests {
+    static var allTests: [(String, (SubClassRuleTests) -> () throws -> Void)] = [
+        ("testSubClassRuleSuperDot", testSubClassRuleSuperDot),
+        ("testSubClassRuleSuper", testSubClassRuleSuper),
+        ("testSubClassRuleTestsValid", testSubClassRuleTestsValid)
+    ]
+}
+
 extension TodoRuleTests {
     static var allTests: [(String, (TodoRuleTests) -> () throws -> Void)] = [
         ("testTodo", testTodo),

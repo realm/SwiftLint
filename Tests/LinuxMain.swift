@@ -504,6 +504,14 @@ extension RulesTests {
     ]
 }
 
+extension SubClassRuleTests {
+    static var allTests: [(String, (SubClassRuleTests) -> () throws -> Void)] = [
+        ("testSubClassRuleSuperDot", testSubClassRuleSuperDot),
+        ("testSubClassRuleSuper", testSubClassRuleSuper),
+        ("testSubClassRuleTestsValid", testSubClassRuleTestsValid)
+    ]
+}
+
 extension SourceKitCrashTests {
     static var allTests: [(String, (SourceKitCrashTests) -> () throws -> Void)] = [
         ("testAssertHandlerIsNotCalledOnNormalFile", testAssertHandlerIsNotCalledOnNormalFile),

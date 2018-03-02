@@ -6,6 +6,11 @@
 
 #### Enhancements
 
+* Adds `subclass` opt-in rule to prohibit
+  subclassing.  
+  [Mikhail Yakushin](https://github.com/driver733)
+  [#2079](https://github.com/realm/SwiftLint/issues/2079)
+
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)

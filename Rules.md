@@ -99,6 +99,7 @@
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
 * [Strict fileprivate](#strict-fileprivate)
+* [Subclass](#subclass)
 * [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
 * [Switch Case on Newline](#switch-case-on-newline)
@@ -12116,6 +12117,16 @@ struct Inter {
 ```
 
 </details>
+
+
+
+## Subclass
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`subclass` | Disabled | No | style
+
+Subclassing is prohibited.
 
 
 

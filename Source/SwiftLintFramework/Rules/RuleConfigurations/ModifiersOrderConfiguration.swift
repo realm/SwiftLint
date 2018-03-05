@@ -39,7 +39,7 @@ public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
         }
 
         // Make sure no entries are in both sets
-        if !Set(afterACL).intersection(beforeACL).isEmpty {
+        if !Set(afterACL).isDisjoint(with: beforeACL) {
             throw ConfigurationError.unknownConfiguration
         }
 

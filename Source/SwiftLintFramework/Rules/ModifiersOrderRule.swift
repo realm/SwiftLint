@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private extension Array where Element == String {
     func sorted(byComparingTo reference: [String]) -> [String] {
-        return self.sorted(by: { (lhs, rhs) -> Bool in
+        return self.sorted(by: { lhs, rhs -> Bool in
             guard let left = reference.index(of: lhs), let right = reference.index(of: rhs)
                 else { return false }
             return left < right
@@ -21,11 +21,13 @@ private extension Array where Element == String {
 
 public struct ModifiersOrderRule: OptInRule, ConfigurationProviderRule {
     public init() { }
+
     public var configuration = ModifiersOrderConfiguration(beforeACL: ["override"], afterACL: [])
     public static let description = RuleDescription(
         identifier: "modifiers_order",
         name: "Modifiers Order",
-        description: "Modifiers order should be consistent.", kind: RuleKind.style,
+        description: "Modifiers order should be consistent.",
+        kind: RuleKind.style,
         nonTriggeringExamples: [
             "@objc \npublic final class MyClass: NSObject {\n" +
             "private final func myFinal() {}\n" +

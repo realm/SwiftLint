@@ -60,8 +60,8 @@
 * [Line Length](#line-length)
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
 * [Mark](#mark)
-* [Multiline Arguments](#multiline-arguments)
 * [Modifiers Order](#modifiers-order)
+* [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
@@ -7535,6 +7535,68 @@ extension MarkTest {}
 
 
 
+## Modifiers Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`modifiers_order` | Disabled | No | style
+
+Modifiers order should be consistent.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+private final func myFinal() {}
+weak var myWeak: NSString? = nil
+public static let nnumber = 3 
+ }
+```
+
+```swift
+public final class MyClass {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+final private func myFinal() {}
+}
+```
+
+```swift
+@objc 
+final public class MyClass: NSObject {}
+
+```
+
+```swift
+final public class MyClass {}
+
+```
+
+```swift
+class MyClass {weak internal var myWeak: NSString? = nil
+}
+```
+
+```swift
+class MyClass {static public let nnumber = 3 
+ }
+```
+
+</details>
+
+
+
 ## Multiline Arguments
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -8845,68 +8907,6 @@ let foo = ↓1_000_000.000000_1
 
 ```swift
 let foo = ↓1000000.000000_1
-```
-
-</details>
-
-
-
-## Modifiers Order
-
-Identifier | Enabled by default | Supports autocorrection | Kind 
---- | --- | --- | ---
-`modifiers_order` | Disabled | No | style
-
-Modifiers order should be consistent.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-@objc 
-public final class MyClass: NSObject {
-private final func myFinal() {}
-weak var myWeak: NSString? = nil
-public static let nnumber = 3 
- }
-```
-
-```swift
-public final class MyClass {}
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-@objc 
-public final class MyClass: NSObject {
-final private func myFinal() {}
-}
-```
-
-```swift
-@objc 
-final public class MyClass: NSObject {}
-
-```
-
-```swift
-final public class MyClass {}
-
-```
-
-```swift
-class MyClass {weak internal var myWeak: NSString? = nil
-}
-```
-
-```swift
-class MyClass {static public let nnumber = 3 
- }
 ```
 
 </details>

@@ -242,7 +242,6 @@ extension File {
         fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string
-        lines = contents.bridge().lines()
     }
 
     internal func write<S: StringProtocol>(_ string: S) {
@@ -262,7 +261,6 @@ extension File {
         }
         contents = String(string)
         invalidateCache()
-        lines = contents.bridge().lines()
     }
 
     internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {

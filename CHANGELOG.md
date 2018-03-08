@@ -6,11 +6,16 @@
 
 #### Enhancements
 
-* None.
+* Add a new `excluded` config parameter to the `explicit_type_interface` rule
+  to exempt certain types of variables from the rule.  
+  [Rounak Jain](https://github.com/rounak)
+  [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
 #### Bug Fixes
 
-* None.
+* Fix some cases where `colon` rule wouldn't autocorrect dictionary literals.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2050](https://github.com/realm/SwiftLint/issues/2050)
 
 ## 0.25.0: Cleaning the Lint Filter
 

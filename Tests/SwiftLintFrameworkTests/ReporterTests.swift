@@ -81,7 +81,7 @@ class ReporterTests: XCTestCase {
             } else if let array = (result as? [Any])?.bridge() {
                 return array
             }
-            fatalError("Unexpected value in JSON: \(result)")
+            queuedFatalError("Unexpected value in JSON: \(result)")
         }
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }

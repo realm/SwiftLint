@@ -114,10 +114,6 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitTopLevelACLRule.description)
     }
 
-    func testExplicitTypeInterface() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
-    }
-
     func testExtensionAccessModifier() {
         verifyRule(ExtensionAccessModifierRule.description)
     }

@@ -59,18 +59,16 @@ extension Array {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 
-    func parallelMap<T>(transform: @escaping ((Element) -> T)) -> [T] {
-        var result = [(Int, T)]()
-        result.reserveCapacity(count)
-
-        let queueLabelPrefix = "io.realm.SwiftLintFramework.map.\(NSUUID().uuidString)"
-        let resultAccumulatorQueue = DispatchQueue(label: "\(queueLabelPrefix).resultAccumulator")
-        DispatchQueue.concurrentPerform(iterations: count) { index in
-            let jobIndexAndResults = (index, transform(self[index]))
+    func parallelMap<T>(transform: (Element) -> T) -> [T] {
+        var result = [T?](repeating: nil, count: count)
+        let resultAccumulatorQueue = DispatchQueue(label: "io.realm.SwiftLintFramework.map.resultAccumulator")
+        DispatchQueue.concurrentPerform(iterations: count) { idx in
+            let element = self[idx]
+            let transformed = transform(element)
             resultAccumulatorQueue.sync {
-                result.append(jobIndexAndResults)
+                result[idx] = transformed
             }
         }
-        return result.sorted { $0.0 < $1.0 }.map { $0.1 }
+        return result.map { $0! }
     }
 }

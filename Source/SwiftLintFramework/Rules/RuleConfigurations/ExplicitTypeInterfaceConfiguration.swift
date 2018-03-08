@@ -59,7 +59,7 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
 
     public var consoleDescription: String {
         let excludedKinds = ExplicitTypeInterfaceConfiguration.variableKinds.subtracting(allowedKinds)
-        let simplifiedExcludedKinds = excludedKinds.flatMap { $0.variableKind?.rawValue }.sorted()
+        let simplifiedExcludedKinds = excludedKinds.compactMap { $0.variableKind?.rawValue }.sorted()
         return severityConfiguration.consoleDescription + ", excluded: \(simplifiedExcludedKinds)"
     }
 
@@ -74,7 +74,7 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             case ("severity", let severityString as String):
                 try severityConfiguration.apply(configuration: severityString)
             case ("excluded", let excludedStrings as [String]):
-                let excludedKinds = excludedStrings.flatMap(VariableKind.init(rawValue:))
+                let excludedKinds = excludedStrings.compactMap(VariableKind.init(rawValue:))
                 allowedKinds.subtract(excludedKinds.map(SwiftDeclarationKind.init(variableKind:)))
             default:
                 throw ConfigurationError.unknownConfiguration

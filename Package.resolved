@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
         "state": {
           "branch": null,
-          "revision": "4e7f5af6331735d39fc357b2c71c3bb15af97c8f",
-          "version": "4.3.6"
+          "revision": "1b8d10f33b92be746c74346f4e713216cb1cb480",
+          "version": "4.5.0"
         }
       },
       {
@@ -68,8 +68,8 @@
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
-          "branch": "nn-swift-4.1",
-          "revision": "622a278d1e3dd9397b95b5846da6b9b13aeb786e",
+          "branch": "master",
+          "revision": "b7f5264f0ab1da4e1b5caae6bbc524625e4e8b8b",
           "version": null
         }
       },
@@ -86,9 +86,9 @@
         "package": "Yams",
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
-          "branch": "master",
-          "revision": "3f2db2c0017030119b1495e9754889d9c3748028",
-          "version": null
+          "branch": null,
+          "revision": "de06b2c819bb12e95bcdf75075b3336a8890e67c",
+          "version": "0.6.0"
         }
       }
     ]

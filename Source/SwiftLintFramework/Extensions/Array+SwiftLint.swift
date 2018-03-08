@@ -60,15 +60,12 @@ extension Array {
     }
 
     func parallelMap<T>(transform: (Element) -> T) -> [T] {
-        var result = [T?](repeating: nil, count: count)
-        let resultAccumulatorQueue = DispatchQueue(label: "io.realm.SwiftLintFramework.map.resultAccumulator")
-        DispatchQueue.concurrentPerform(iterations: count) { idx in
-            let element = self[idx]
-            let transformed = transform(element)
-            resultAccumulatorQueue.sync {
-                result[idx] = transformed
+        var result = ContiguousArray<T?>(repeating: nil, count: count)
+        return result.withUnsafeMutableBufferPointer { buffer in
+            DispatchQueue.concurrentPerform(iterations: buffer.count) { idx in
+                buffer[idx] = transform(self[idx])
             }
+            return buffer.map { $0! }
         }
-        return result.map { $0! }
     }
 }

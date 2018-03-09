@@ -15,6 +15,11 @@ endif
 
 SWIFTLINT_EXECUTABLE=$(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/swiftlint
 
+TSAN_LIB=$(subst bin/swift,lib/swift/clang/lib/darwin/libclang_rt.tsan_osx_dynamic.dylib,$(shell xcrun --find swift))
+TSAN_SWIFT_BUILD_FLAGS=-Xswiftc -sanitize=thread
+TSAN_TEST_BUNDLE=$(shell swift build $(TSAN_SWIFT_BUILD_FLAGS) --show-bin-path)/SwiftLintPackageTests.xctest
+TSAN_XCTEST=$(shell xcrun --find xctest)
+
 FRAMEWORKS_FOLDER=/Library/Frameworks
 BINARIES_FOLDER=/usr/local/bin
 LICENSE_PATH="$(shell pwd)/LICENSE"
@@ -49,6 +54,10 @@ bootstrap:
 
 test: clean_xcode bootstrap
 	$(BUILD_TOOL) $(XCODEFLAGS) test
+
+test_tsan:
+	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
+	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"

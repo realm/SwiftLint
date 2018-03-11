@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private extension Region {
     func isRuleDisabled(customRuleIdentifier: String) -> Bool {
-        return disabledRuleIdentifiers.contains(customRuleIdentifier)
+        return disabledRuleIdentifiers.contains(RuleIdentifier(customRuleIdentifier))
     }
 }
 

@@ -115,7 +115,7 @@ APM.
 
 ### fastlane
 
-You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/#swiftlint) to run SwiftLint as part of your fastlane process.
+You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/swiftlint) to run SwiftLint as part of your fastlane process.
 
 ```ruby
 swiftlint(

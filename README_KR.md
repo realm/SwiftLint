@@ -90,7 +90,7 @@ AppCode에서 SwiftLint를 사용하려면 [이 플러그인](https://plugins.je
 
 ### fastlane
 
-fastlane 과정에서 SwiftLint를 사용하려면 [공식적인 fastlane 액션](https://docs.fastlane.tools/actions/#swiftlint)를 사용할 수 있습니다.
+fastlane 과정에서 SwiftLint를 사용하려면 [공식적인 fastlane 액션](https://docs.fastlane.tools/actions/swiftlint)를 사용할 수 있습니다.
 
 ```ruby
 swiftlint(

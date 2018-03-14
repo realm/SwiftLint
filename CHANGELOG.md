@@ -14,13 +14,13 @@
 * Add `empty_string` opt-in rule to validate against comparing strings to `""`
   instead of using `.isEmpty`.  
   [Davide Sibilio](https://github.com/idevid)
-  
+
 * Add `untyped_error_in_catch` opt-in rule to warn against declaring errors
   without an explicit type in catch statements instead of using the implicit
   `error` variable.  
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2045](https://github.com/realm/SwiftLint/issues/2045)
-  
+
 * Add `all` keyword for use in disable / enable statement:
   `// swiftlint:disable all`.
   It allows disabling SwiftLint entirely, in-code, for a particular section.  
@@ -32,6 +32,11 @@
   they are explicitly specified with `--path`.  
   [Ash Furrow](https://github.com/ashfurrow)
   [#2051](https://github.com/realm/SwiftLint/issues/2051)
+
+* Adds `discouraged_optional_collection` opt-in rule to encourage the use of
+  empty collections instead of optional collections.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#1885](https://github.com/realm/SwiftLint/issues/1885)
 
 #### Bug Fixes
 
@@ -132,10 +137,7 @@
 
 #### Enhancements
 
-* Adds `discouraged_optional_collection` opt-in rule to encourage the use
-  of empty collections instead of optional collections.  
-  [Ornithologist Coder](https://github.com/ornithocoder)
-  [#1885](https://github.com/realm/SwiftLint/issues/1885)
+* None.
 
 #### Bug Fixes
 

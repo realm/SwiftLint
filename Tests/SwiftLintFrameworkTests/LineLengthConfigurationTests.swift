@@ -61,6 +61,18 @@ class LineLengthConfigurationTests: XCTestCase {
         XCTAssertFalse(configuration2.ignoresComments)
     }
 
+    func testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings() {
+        let configuration1 = LineLengthConfiguration(warning: 100,
+                                                     error: 150,
+                                                     options: [.ignoreInterpolatedStrings])
+
+        XCTAssertTrue(configuration1.ignoresInterpolatedStrings)
+
+        let configuration2 = LineLengthConfiguration(warning: 100,
+                                                     error: 150)
+        XCTAssertFalse(configuration2.ignoresInterpolatedStrings)
+    }
+
     func testLineLengthConfigurationParams() {
         let warning = 13
         let error = 10

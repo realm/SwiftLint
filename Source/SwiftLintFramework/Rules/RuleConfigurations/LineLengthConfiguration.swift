@@ -18,8 +18,12 @@ public struct LineLengthRuleOptions: OptionSet {
     public static let ignoreURLs = LineLengthRuleOptions(rawValue: 1 << 0)
     public static let ignoreFunctionDeclarations = LineLengthRuleOptions(rawValue: 1 << 1)
     public static let ignoreComments = LineLengthRuleOptions(rawValue: 1 << 2)
+    public static let ignoreInterpolatedStrings = LineLengthRuleOptions(rawValue: 1 << 3)
 
-    public static let all: LineLengthRuleOptions = [.ignoreURLs, .ignoreFunctionDeclarations, .ignoreComments]
+    public static let all: LineLengthRuleOptions = [.ignoreURLs,
+                                                    .ignoreFunctionDeclarations,
+                                                    .ignoreComments,
+                                                    .ignoreInterpolatedStrings]
 }
 
 private enum ConfigurationKey: String {
@@ -28,6 +32,7 @@ private enum ConfigurationKey: String {
     case ignoresURLs = "ignores_urls"
     case ignoresFunctionDeclarations = "ignores_function_declarations"
     case ignoresComments = "ignores_comments"
+    case ignoresInterpolatedStrings = "ignores_interpolated_strings"
 }
 
 public struct LineLengthConfiguration: RuleConfiguration, Equatable {
@@ -35,13 +40,15 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         return length.consoleDescription +
                ", ignores urls: \(ignoresURLs)" +
                ", ignores function declarations: \(ignoresFunctionDeclarations)" +
-               ", ignores comments: \(ignoresComments)"
+               ", ignores comments: \(ignoresComments)" +
+               ", ignores interpolated strings: \(ignoresInterpolatedStrings)"
     }
 
     var length: SeverityLevelsConfiguration
     var ignoresURLs: Bool
     var ignoresFunctionDeclarations: Bool
     var ignoresComments: Bool
+    var ignoresInterpolatedStrings: Bool
 
     var params: [RuleParameter<Int>] {
         return length.params
@@ -52,8 +59,10 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         self.ignoresURLs = options.contains(.ignoreURLs)
         self.ignoresFunctionDeclarations = options.contains(.ignoreFunctionDeclarations)
         self.ignoresComments = options.contains(.ignoreComments)
+        self.ignoresInterpolatedStrings = options.contains(.ignoreInterpolatedStrings)
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     public mutating func apply(configuration: Any) throws {
         if let configurationArray = [Int].array(of: configuration),
             !configurationArray.isEmpty {
@@ -76,6 +85,8 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
                     ignoresComments = boolValue
                 case (.ignoresURLs, let boolValue as Bool):
                     ignoresURLs = boolValue
+                case (.ignoresInterpolatedStrings, let boolValue as Bool):
+                    ignoresInterpolatedStrings = boolValue
                 default:
                     throw ConfigurationError.unknownConfiguration
                 }
@@ -91,5 +102,6 @@ public func == (lhs: LineLengthConfiguration, rhs: LineLengthConfiguration) -> B
     return lhs.length == rhs.length &&
         lhs.ignoresURLs == rhs.ignoresURLs &&
         lhs.ignoresComments == rhs.ignoresComments &&
-        lhs.ignoresFunctionDeclarations == rhs.ignoresFunctionDeclarations
+        lhs.ignoresFunctionDeclarations == rhs.ignoresFunctionDeclarations &&
+        lhs.ignoresInterpolatedStrings == rhs.ignoresInterpolatedStrings
 }

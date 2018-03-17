@@ -114,6 +114,7 @@
 * [Type Name](#type-name)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
+* [Untyped error in catch rule](#untyped-error-in-catch-rule)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -16411,6 +16412,96 @@ foo.map { ($0, $0) }.forEach { ↓(x, y) in }
 
 ```swift
 foo.bar { [weak self] ↓(x, y) in }
+```
+
+</details>
+
+
+
+## Untyped error in catch rule
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`untyped_error_in_catch` | Disabled | No | idiomatic
+
+Catch statements should not declare error variables without type casting.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+do {
+    try foo() 
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch Error.invalidOperation {
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch let error as MyError {
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch var error as MyError {
+} catch {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+do {
+    try foo() 
+} ↓catch var error {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let error {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let someError {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch var someError {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let e {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch(let error) {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch (let error) {}
 ```
 
 </details>

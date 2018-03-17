@@ -32,6 +32,9 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2050](https://github.com/realm/SwiftLint/issues/2050)
 
+* Fix linux crash on sources with surrogate pair emojis as variable names.  
+  [Cyril Lashkevich](https://github.com/notorca)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

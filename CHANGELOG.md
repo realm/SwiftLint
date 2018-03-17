@@ -12,7 +12,8 @@
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
 
-  * Adds `empty_string` opt-in rule.  
+* Add `empty_string` opt-in rule to validate against comparing strings to `""`
+  instead of using `.isEmpty`.  
   [Davide Sibilio](https://github.com/idevid)
 
 #### Bug Fixes

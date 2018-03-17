@@ -25,7 +25,7 @@ public struct TodoRule: ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "todo",
         name: "Todo",
-        description: "TODOs and FIXMEs should be avoided.",
+        description: "TODOs and FIXMEs should be resolved.",
         kind: .lint,
         nonTriggeringExamples: [
             "// notaTODO:\n",
@@ -72,9 +72,9 @@ public struct TodoRule: ConfigurationProviderRule {
         }
 
         if message.isEmpty {
-            reason = "\(kind) should be avoided."
+            reason = "\(kind) should be resolved."
         } else {
-            reason = "\(kind) should be avoided (\(message))."
+            reason = "\(kind) should be resolved (\(message))."
         }
 
         return reason

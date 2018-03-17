@@ -98,6 +98,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testEmptyString() {
+        verifyRule(EmptyStringRule.description)
+    }
+
     func testExplicitACL() {
         verifyRule(ExplicitACLRule.description)
     }

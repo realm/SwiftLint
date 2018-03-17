@@ -11,6 +11,10 @@
   [Rounak Jain](https://github.com/rounak)
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
+
+  * Adds `empty_string` opt-in rule.  
+  [Davide Sibilio](https://github.com/idevid)
+
 #### Bug Fixes
 
 * Fix some cases where `colon` rule wouldn't autocorrect dictionary literals.  

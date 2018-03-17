@@ -26,6 +26,7 @@
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Empty String](#empty-string)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -3165,6 +3166,43 @@ UIView.animateWithDuration(0.3, animations: {
  number + 1 
 }
 
+```
+
+</details>
+
+
+
+## Empty String
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`empty_string` | Disabled | No | performance
+
+Prefer checking `isEmpty` over comparing `string` to an empty string literal.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+myString.isEmpty
+```
+
+```swift
+!myString.isEmpy
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+myString↓ == ""
+```
+
+```swift
+myString↓ != ""
 ```
 
 </details>

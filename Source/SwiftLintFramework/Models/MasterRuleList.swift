@@ -122,6 +122,7 @@ public let masterRuleList = RuleList(rules: [
     TypeNameRule.self,
     UnneededBreakInSwitchRule.self,
     UnneededParenthesesInClosureArgumentRule.self,
+    UntypedErrorInCatchRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
     UnusedOptionalBindingRule.self,

@@ -492,6 +492,7 @@ extension RulesTests {
         ("testTypeBodyLength", testTypeBodyLength),
         ("testUnneededBreakInSwitch", testUnneededBreakInSwitch),
         ("testUnneededParenthesesInClosureArgument", testUnneededParenthesesInClosureArgument),
+        ("testUntypedErrorInCatch", testUntypedErrorInCatch),
         ("testUnusedClosureParameter", testUnusedClosureParameter),
         ("testUnusedEnumerated", testUnusedEnumerated),
         ("testValidIBInspectable", testValidIBInspectable),

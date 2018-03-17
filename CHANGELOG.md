@@ -11,10 +11,15 @@
   [Rounak Jain](https://github.com/rounak)
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
-
 * Add `empty_string` opt-in rule to validate against comparing strings to `""`
   instead of using `.isEmpty`.  
   [Davide Sibilio](https://github.com/idevid)
+  
+* Add `untyped_error_in_catch` opt-in rule to warn against declaring errors
+  without an explicit type in catch statements instead of using the implicit
+  `error` variable.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2045](https://github.com/realm/SwiftLint/issues/2045)
 
 #### Bug Fixes
 

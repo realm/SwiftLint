@@ -15,7 +15,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
 
     public init() {}
 
-    private static let regularExpression = regex(
+    private static let regularExpression =
         "catch" + // The catch keyword
         "(?:"   + // Start of the first non-capturing group
         "\\s*"  + // Zero or multiple whitespace character
@@ -37,7 +37,6 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
         "\\s*"  + // Zero or unlimited any whitespace character
         ")"     + // End of the second non-capturing group
         "\\{"     // Start scope character
-    )
 
     public static let description = RuleDescription(
         identifier: "untyped_error_in_catch",
@@ -61,17 +60,13 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
         ])
 
     public func validate(file: File) -> [StyleViolation] {
-        let matchesAndSyntaxKinds = file.matchesAndSyntaxKinds(matching: type(of: self).regularExpression.pattern)
-        return matchesAndSyntaxKinds.flatMap { match, syntaxKinds in
-            guard syntaxKinds.contains(.keyword) else {
-                return nil
-            }
+        let matches = file.match(pattern: type(of: self).regularExpression,
+                                 with: [.keyword, .keyword, .identifier])
 
-            let location = Location(file: file,
-                                    characterOffset: match.range.lowerBound)
+        return matches.map {
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,
-                                  location: location,
+                                  location: Location(file: file, characterOffset: $0.location),
                                   reason: configuration.consoleDescription)
         }
     }

@@ -40,7 +40,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
 
     public static let description = RuleDescription(
         identifier: "untyped_error_in_catch",
-        name: "Untyped error in catch rule",
+        name: "Untyped Error in Catch",
         description: "Catch statements should not declare error variables without type casting.",
         kind: .idiomatic,
         nonTriggeringExamples: [

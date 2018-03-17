@@ -114,7 +114,7 @@
 * [Type Name](#type-name)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
-* [Untyped error in catch rule](#untyped-error-in-catch-rule)
+* [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -16418,7 +16418,7 @@ foo.bar { [weak self] ↓(x, y) in }
 
 
 
-## Untyped error in catch rule
+## Untyped Error in Catch
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---

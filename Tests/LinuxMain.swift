@@ -129,7 +129,13 @@ extension DisableAllTests {
     static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
         ("testViolatingPhrase", testViolatingPhrase),
         ("testDisableAll", testDisableAll),
-        ("testEnableAll", testEnableAll)
+        ("testEnableAll", testEnableAll),
+        ("testDisableAllPrevious", testDisableAllPrevious),
+        ("testEnableAllPrevious", testEnableAllPrevious),
+        ("testDisableAllNext", testDisableAllNext),
+        ("testEnableAllNext", testEnableAllNext),
+        ("testDisableAllThis", testDisableAllThis),
+        ("testEnableAllThis", testEnableAllThis)
     ]
 }
 

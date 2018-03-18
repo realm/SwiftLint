@@ -78,9 +78,9 @@ private extension Rule {
             return region?.isRuleEnabled(self) ?? true
         }
 
-        let ruleIds = Self.description.allIdentifiers +
+        let ruleIDs = Self.description.allIdentifiers +
             (superfluousDisableCommandRule.map({ type(of: $0) })?.description.allIdentifiers ?? [])
-        let ruleIdentifiers = Set(ruleIds.map { RuleIdentifier($0) })
+        let ruleIdentifiers = Set(ruleIDs.map { RuleIdentifier($0) })
 
         let superfluousDisableCommandViolations = Self.superfluousDisableCommandViolations(
             regions: regions.count > 1 ? file.regions(restrictingRuleIdentifiers: ruleIdentifiers) : regions,

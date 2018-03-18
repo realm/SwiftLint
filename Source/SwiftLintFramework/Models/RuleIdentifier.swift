@@ -15,13 +15,7 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     private static let allStringRepresentation = "all"
 
     public var hashValue: Int {
-        switch self {
-        case .all:
-            return -1
-
-        case .some(let identifier):
-            return identifier.hashValue
-        }
+        return stringRepresentation.hashValue
     }
 
     public var stringRepresentation: String {
@@ -43,6 +37,6 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     }
 
     public static func == (lhs: RuleIdentifier, rhs: RuleIdentifier) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+        return lhs.stringRepresentation == rhs.stringRepresentation
     }
 }

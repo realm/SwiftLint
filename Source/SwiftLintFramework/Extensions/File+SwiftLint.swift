@@ -49,13 +49,13 @@ extension File {
                 regions[index] = Region(
                     start: start,
                     end: end,
-                    disabledRules: disabledRules.union(region.disabledRuleIdentifiers)
+                    disabledRuleIdentifiers: disabledRules.union(region.disabledRuleIdentifiers)
                 )
                 didSetRegion = true
             }
             if !didSetRegion {
                 regions.append(
-                    Region(start: start, end: end, disabledRules: disabledRules)
+                    Region(start: start, end: end, disabledRuleIdentifiers: disabledRules)
                 )
             }
         }

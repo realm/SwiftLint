@@ -14,10 +14,10 @@ public struct Region: Equatable {
     public let end: Location
     public let disabledRuleIdentifiers: Set<RuleIdentifier>
 
-    public init(start: Location, end: Location, disabledRules: Set<RuleIdentifier>) {
+    public init(start: Location, end: Location, disabledRuleIdentifiers: Set<RuleIdentifier>) {
         self.start = start
         self.end = end
-        self.disabledRuleIdentifiers = disabledRules
+        self.disabledRuleIdentifiers = disabledRuleIdentifiers
     }
 
     public func contains(_ location: Location) -> Bool {
@@ -29,9 +29,13 @@ public struct Region: Equatable {
     }
 
     public func isRuleDisabled(_ rule: Rule) -> Bool {
-        let identifiers = type(of: rule).description.allIdentifiers
-        return disabledRuleIdentifiers.contains(.all) ||
-            identifiers.reduce(false) { $0 || disabledRuleIdentifiers.contains(RuleIdentifier($1)) }
+        guard !disabledRuleIdentifiers.contains(.all) else {
+            return true
+        }
+
+        let identifiersToCheck = type(of: rule).description.allIdentifiers
+        let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
+        return regionIdentifiers.isDisjoint(with: identifiersToCheck)
     }
 
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {

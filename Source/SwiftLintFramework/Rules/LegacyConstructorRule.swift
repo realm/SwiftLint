@@ -9,7 +9,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule {
+public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProviderRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -45,6 +45,7 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
         triggeringExamples: [
             "↓CGPointMake(10, 10)",
             "↓CGPointMake(xVal, yVal)",
+            "↓CGPointMake(calculateX(), 10)\n",
             "↓CGSizeMake(10, 10)",
             "↓CGSizeMake(aWidth, aHeight)",
             "↓CGRectMake(0, 0, 10, 10)",
@@ -62,7 +63,8 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓UIEdgeInsetsMake(0, 0, 10, 10)",
             "↓UIEdgeInsetsMake(top, left, bottom, right)",
             "↓NSEdgeInsetsMake(0, 0, 10, 10)",
-            "↓NSEdgeInsetsMake(top, left, bottom, right)"
+            "↓NSEdgeInsetsMake(top, left, bottom, right)",
+            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)"
         ],
         corrections: [
             "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
@@ -94,42 +96,134 @@ public struct LegacyConstructorRule: CorrectableRule, ConfigurationProviderRule 
             "↓NSEdgeInsetsMake(0, 0, 10, 10)\n":
             "NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)\n",
             "↓NSEdgeInsetsMake(top, left, bottom, right)\n":
-            "NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)\n"
+            "NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)\n",
+            "↓NSMakeRange(0, attributedString.length)\n":
+            "NSRange(location: 0, length: attributedString.length)\n",
+            "↓CGPointMake(calculateX(), 10)\n": "CGPoint(x: calculateX(), y: 10)\n"
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let constructors = ["CGRectMake", "CGPointMake", "CGSizeMake", "CGVectorMake",
-                            "NSMakePoint", "NSMakeSize", "NSMakeRect", "NSMakeRange",
-                            "UIEdgeInsetsMake", "NSEdgeInsetsMake"]
+    private static let constructorsToArguments = ["CGRectMake": ["x", "y", "width", "height"],
+                                                  "CGPointMake": ["x", "y"],
+                                                  "CGSizeMake": ["width", "height"],
+                                                  "CGVectorMake": ["dx", "dy"],
+                                                  "NSMakePoint": ["x", "y"],
+                                                  "NSMakeSize": ["width", "height"],
+                                                  "NSMakeRect": ["x", "y", "width", "height"],
+                                                  "NSMakeRange": ["location", "length"],
+                                                  "UIEdgeInsetsMake": ["top", "left", "bottom", "right"],
+                                                  "NSEdgeInsetsMake": ["top", "left", "bottom", "right"]]
 
-        let pattern = "\\b(" + constructors.joined(separator: "|") + ")\\b"
+    private static let constructorsToCorrectedNames = ["CGRectMake": "CGRect",
+                                                       "CGPointMake": "CGPoint",
+                                                       "CGSizeMake": "CGSize",
+                                                       "CGVectorMake": "CGVector",
+                                                       "NSMakePoint": "NSPoint",
+                                                       "NSMakeSize": "NSSize",
+                                                       "NSMakeRect": "NSRect",
+                                                       "NSMakeRange": "NSRange",
+                                                       "UIEdgeInsetsMake": "UIEdgeInsets",
+                                                       "NSEdgeInsetsMake": "NSEdgeInsets"]
 
-        return file.match(pattern: pattern, with: [.identifier]).map {
+    public func validate(file: File, kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard containsViolation(kind: kind, dictionary: dictionary),
+            let offset = dictionary.offset else {
+                return []
+        }
+
+        return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+                           location: Location(file: file, byteOffset: offset))
+        ]
+    }
+
+    private func violations(in file: File, kind: SwiftExpressionKind,
+                            dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+        guard containsViolation(kind: kind, dictionary: dictionary) else {
+            return []
+        }
+
+        return [dictionary]
+    }
+
+    private func containsViolation(kind: SwiftExpressionKind,
+                                   dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard kind == .call,
+            let name = dictionary.name,
+            dictionary.offset != nil,
+            let expectedArguments = type(of: self).constructorsToArguments[name],
+            dictionary.enclosedArguments.count == expectedArguments.count else {
+                return false
+        }
+
+        return true
+    }
+
+    private func violations(in file: File,
+                            dictionary: [String: SourceKitRepresentable]) -> [[String: SourceKitRepresentable]] {
+        return dictionary.substructure.flatMap { subDict -> [[String: SourceKitRepresentable]] in
+            var dictionaries = violations(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                dictionaries += violations(in: file, kind: kind, dictionary: subDict)
+            }
+
+            return dictionaries
+        }
+    }
+
+    private func violations(in file: File) -> [[String: SourceKitRepresentable]] {
+        return violations(in: file, dictionary: file.structure.dictionary).sorted { lhs, rhs in
+            (lhs.offset ?? 0) < (rhs.offset ?? 0)
         }
     }
 
     public func correct(file: File) -> [Correction] {
-        let twoVarsOrNum = RegexHelpers.twoVariableOrNumber
-        let patterns = [
-            "CGPointMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGPoint(x: $1, y: $2)",
-            "CGSizeMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGSize(width: $1, height: $2)",
-            "CGRectMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
-            "CGRect(x: $1, y: $2, width: $3, height: $4)",
-            "CGVectorMake\\(\\s*\(twoVarsOrNum)\\s*\\)": "CGVector(dx: $1, dy: $2)",
-            "NSMakePoint\\(\\s*\(twoVarsOrNum)\\s*\\)": "NSPoint(x: $1, y: $2)",
-            "NSMakeSize\\(\\s*\(twoVarsOrNum)\\s*\\)": "NSSize(width: $1, height: $2)",
-            "NSMakeRect\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
-            "NSRect(x: $1, y: $2, width: $3, height: $4)",
-            "NSMakeRange\\(\\s*\(twoVarsOrNum)\\s*\\)": "NSRange(location: $1, length: $2)",
-            "UIEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
-            "UIEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)",
-            "NSEdgeInsetsMake\\(\\s*\(twoVarsOrNum)\\s*,\\s*\(twoVarsOrNum)\\s*\\)":
-            "NSEdgeInsets(top: $1, left: $2, bottom: $3, right: $4)"
-        ]
-        return file.correct(legacyRule: self, patterns: patterns)
+        let violatingDictionaries = violations(in: file)
+        var correctedContents = file.contents
+        var adjustedLocations = [Int]()
+
+        for dictionary in violatingDictionaries.reversed() {
+            guard let offset = dictionary.offset, let length = dictionary.length,
+                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                let name = dictionary.name,
+                let correctedName = type(of: self).constructorsToCorrectedNames[name],
+                file.ruleEnabled(violatingRanges: [range], for: self) == [range],
+                case let arguments = argumentsContents(file: file, arguments: dictionary.enclosedArguments),
+                let expectedArguments = type(of: self).constructorsToArguments[name],
+                arguments.count == expectedArguments.count else {
+                    continue
+            }
+
+            if let indexRange = correctedContents.nsrangeToIndexRange(range) {
+                let joinedArguments = zip(expectedArguments, arguments).map { "\($0): \($1)" }.joined(separator: ", ")
+                let replacement = correctedName + "(" + joinedArguments + ")"
+                correctedContents = correctedContents.replacingCharacters(in: indexRange, with: replacement)
+                adjustedLocations.insert(range.location, at: 0)
+            }
+        }
+
+        let corrections = adjustedLocations.map {
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
+        }
+
+        file.write(correctedContents)
+
+        return corrections
+    }
+
+    private func argumentsContents(file: File, arguments: [[String: SourceKitRepresentable]]) -> [String] {
+        let contents = file.contents.bridge()
+        return arguments.flatMap { argument -> String? in
+            guard argument.name == nil,
+                let offset = argument.offset,
+                let length = argument.length else {
+                    return nil
+            }
+
+            return contents.substringWithByteRange(start: offset, length: length)
+        }
     }
 }

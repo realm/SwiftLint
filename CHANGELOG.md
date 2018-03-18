@@ -35,6 +35,10 @@
 * Fix linux crash on sources with surrogate pair emojis as variable names.  
   [Cyril Lashkevich](https://github.com/notorca)
 
+* Make `legacy_constructor` rule more reliable, especially for autocorrecting.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2098](https://github.com/realm/SwiftLint/issues/2098)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

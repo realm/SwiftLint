@@ -39,6 +39,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2098](https://github.com/realm/SwiftLint/issues/2098)
 
+* Fix `colon` rule autocorrect when preprocessor macros are present.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2099](https://github.com/realm/SwiftLint/issues/2099)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

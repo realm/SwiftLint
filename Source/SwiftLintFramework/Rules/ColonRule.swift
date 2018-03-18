@@ -162,7 +162,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
             "func abc() { def(ghi↓:jkl) }": "func abc() { def(ghi: jkl) }",
             "func abc(def: Void) { ghi(jkl↓:mno) }": "func abc(def: Void) { ghi(jkl: mno) }",
             "class ABC { let def = ghi(jkl↓:mno) } }": "class ABC { let def = ghi(jkl: mno) } }",
-            "func foo() { let dict = [1↓ : 1] }": "func foo() { let dict = [1: 1] }"
+            "func foo() { let dict = [1↓ : 1] }": "func foo() { let dict = [1: 1] }",
+            "class Foo {\n    #if false\n    #else\n        let bar = [\"key\"↓   : \"value\"]\n    #endif\n}":
+            "class Foo {\n    #if false\n    #else\n        let bar = [\"key\": \"value\"]\n    #endif\n}"
         ]
     )
 

@@ -6903,6 +6903,11 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 ```
 
 ```swift
+↓CGPointMake(calculateX(), 10)
+
+```
+
+```swift
 ↓CGSizeMake(10, 10)
 ```
 
@@ -6972,6 +6977,11 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 
 ```swift
 ↓NSEdgeInsetsMake(top, left, bottom, right)
+```
+
+```swift
+↓CGVectorMake(10, 10)
+↓NSMakeRange(10, 1)
 ```
 
 </details>

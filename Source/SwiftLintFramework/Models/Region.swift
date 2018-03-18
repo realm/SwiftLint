@@ -35,7 +35,7 @@ public struct Region: Equatable {
 
         let identifiersToCheck = type(of: rule).description.allIdentifiers
         let regionIdentifiers = Set(disabledRuleIdentifiers.map { $0.stringRepresentation })
-        return regionIdentifiers.isDisjoint(with: identifiersToCheck)
+        return !regionIdentifiers.isDisjoint(with: identifiersToCheck)
     }
 
     public func deprecatedAliasesDisabling(rule: Rule) -> Set<String> {

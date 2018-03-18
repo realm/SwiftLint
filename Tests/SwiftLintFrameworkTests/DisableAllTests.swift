@@ -43,9 +43,6 @@ class DisableAllTests: XCTestCase {
                 violatingPhrase +
                 "// swiftlint:enable all\n" +
                 violatingPhrase
-            if violations(unprotectedPhrase).count == 0 {
-                print(unprotectedPhrase)
-            }
             XCTAssertEqual(violations(unprotectedPhrase).count, 1)
         }
     }
@@ -96,7 +93,8 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:disable:this all protects properly
     func testDisableAllThis() {
         for violatingPhrase in violatingPhrases {
-            let protectedPhrase = violatingPhrase.replacingOccurrences(of: "\n", with: "") + "// swiftlint:disable:this all\n"
+            let rawViolatingPhrase = violatingPhrase.replacingOccurrences(of: "\n", with: "")
+            let protectedPhrase = rawViolatingPhrase + "// swiftlint:disable:this all\n"
             XCTAssertEqual(violations(protectedPhrase).count, 0)
         }
     }
@@ -104,10 +102,11 @@ class DisableAllTests: XCTestCase {
     /// Tests whether swiftlint:enable:next all unprotects properly
     func testEnableAllThis() {
         for violatingPhrase in violatingPhrases {
+            let rawViolatingPhrase = violatingPhrase.replacingOccurrences(of: "\n", with: "")
             let unprotectedPhrase =
                 "// swiftlint:disable all\n" +
                 violatingPhrase +
-                violatingPhrase.replacingOccurrences(of: "\n", with: "") +
+                rawViolatingPhrase +
                 "// swiftlint:enable:this all\n"
             XCTAssertEqual(violations(unprotectedPhrase).count, 1)
         }

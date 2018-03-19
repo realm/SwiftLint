@@ -90,7 +90,7 @@ public struct Command: Equatable {
         let ruleTexts = scanner.string.bridge().substring(
             from: scanner.scanLocation + 1
         ).components(separatedBy: .whitespaces)
-        ruleIdentifiers = Set(ruleTexts.map { RuleIdentifier($0) })
+        ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier
         let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil

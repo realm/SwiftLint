@@ -24,7 +24,7 @@
 * Add `all` keyword for use in disable / enable statement:  `//swiftlint:disable all`. It allows disabling SwiftLint entirely for a particular section.`
 * Add `all` keyword for use in disable / enable statement:
   `// swiftlint:disable all`.
-  It allows disabling SwiftLint entirely for a particular section.
+  It allows disabling SwiftLint entirely for a particular section.  
   [fredpi](https://github.com/fredpi)
   [#2071](https://github.com/realm/SwiftLint/issues/2071)
 

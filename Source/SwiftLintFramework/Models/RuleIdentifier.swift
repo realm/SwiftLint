@@ -10,7 +10,7 @@ import Foundation
 
 public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     case all
-    case some(identifier: String)
+    case explicit(identifier: String)
 
     private static let allStringRepresentation = "all"
 
@@ -23,13 +23,13 @@ public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
         case .all:
             return RuleIdentifier.allStringRepresentation
 
-        case .some(let identifier):
+        case .explicit(let identifier):
             return identifier
         }
     }
 
     public init(_ value: String) {
-        self = value == RuleIdentifier.allStringRepresentation ? .all : .some(identifier: value)
+        self = value == RuleIdentifier.allStringRepresentation ? .all : .explicit(identifier: value)
     }
 
     public init(stringLiteral value: String) {

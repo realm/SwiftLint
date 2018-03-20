@@ -252,8 +252,8 @@ let hasWarning :String = "" // Warning generated about colons immediately after 
 
 Including the `all` keyword will disable all rules until the linter sees a matching enable comment:
 
-`// swiftlint:disable all [<rule1> <rule2>...]`
-`// swiftlint:enable all [<rule1> <rule2>...]`
+`// swiftlint:disable all`
+`// swiftlint:enable all`
 
 For example:
 

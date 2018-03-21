@@ -250,6 +250,22 @@ let noWarning :String = "" // No warning about colons immediately after variable
 let hasWarning :String = "" // Warning generated about colons immediately after variable names
 ```
 
+Including the `all` keyword will disable all rules until the linter sees a matching enable comment:
+
+`// swiftlint:disable all`
+`// swiftlint:enable all`
+
+For example:
+
+```swift
+// swiftlint:disable all
+let noWarning :String = "" // No warning about colons immediately after variable names!
+let i = "" // Also no warning about short identifier names
+// swiftlint:enable all
+let hasWarning :String = "" // Warning generated about colons immediately after variable names
+let y = "" // Warning generated about short identifier names
+```
+
 It's also possible to modify a `disable` or `enable` command by appending
 `:previous`, `:this` or `:next` for only applying the command to the previous,
 this (current) or next line respectively.

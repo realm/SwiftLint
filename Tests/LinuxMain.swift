@@ -125,6 +125,20 @@ extension CyclomaticComplexityRuleTests {
     ]
 }
 
+extension DisableAllTests {
+    static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
+        ("testViolatingPhrase", testViolatingPhrase),
+        ("testDisableAll", testDisableAll),
+        ("testEnableAll", testEnableAll),
+        ("testDisableAllPrevious", testDisableAllPrevious),
+        ("testEnableAllPrevious", testEnableAllPrevious),
+        ("testDisableAllNext", testDisableAllNext),
+        ("testEnableAllNext", testEnableAllNext),
+        ("testDisableAllThis", testDisableAllThis),
+        ("testEnableAllThis", testEnableAllThis)
+    ]
+}
+
 extension DiscouragedDirectInitRuleTests {
     static var allTests: [(String, (DiscouragedDirectInitRuleTests) -> () throws -> Void)] = [
         ("testDiscouragedDirectInitWithDefaultConfiguration", testDiscouragedDirectInitWithDefaultConfiguration),
@@ -583,6 +597,7 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DisableAllTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DocumentationTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),

@@ -127,11 +127,7 @@
 
 #### Enhancements
 
-* Adds `--force-exclude` option to `lint` and `autocorrect` commands, which will
-  force SwiftLint to exclude files specified in the config `excluded` even if
-  they are explicitly specified with `--path`.
-  [Ash Furrow](https://github.com/ashfurrow)
-  [#2051](https://github.com/realm/SwiftLint/issues/2051)
+* None.
 
 #### Bug Fixes
 

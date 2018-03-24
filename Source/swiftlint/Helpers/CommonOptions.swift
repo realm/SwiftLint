@@ -7,7 +7,9 @@
 //
 
 import Commandant
-import SwiftLintFramework
+#if !SWIFT_LINT_KIT
+    import SwiftLintFramework
+#endif
 
 func pathOption(action: String) -> Option<String> {
     return Option(key: "path",

@@ -350,4 +350,18 @@ class LinterCacheTests: XCTestCase {
         #endif
         XCTAssertEqual(SwiftVersion.current.rawValue, version)
     }
+
+    // MARK: JSON output
+
+    func testCacheToJSONDoesntCrash() {
+        // swiftlint:disable line_length
+        let k1 = "[\"/SwiftLint/source\",[[\"block_based_kvo\",\"warning\"],[\"class_delegate_protocol\",\"warning\"],[\"closing_brace\",\"warning\"],[\"closure_parameter_position\",\"warning\"],[\"colon\",\"warning, flexible_right_spacing: false, apply_to_dictionaries: true\"],[\"comma\",\"warning\"],[\"compiler_protocol_init\",\"warning\"],[\"control_statement\",\"warning\"],[\"custom_rules\",\"\"],[\"cyclomatic_complexity\",\"warning: 10, error: 20, ignores_case_statements: false\"],[\"discarded_notification_center_observer\",\"warning\"],[\"discouraged_direct_init\",\"warning, types: [\"Bundle\", \"Bundle.init\", \"UIDevice\", \"UIDevice.init\"]\"],[\"dynamic_inline\",\"error\"],[\"empty_enum_arguments\",\"warning\"],[\"empty_parameters\",\"warning\"]]]"
+
+        let k2 = "[\"/SwiftLint/Source\",[[\"block_based_kvo\",\"warning\"],[\"class_delegate_protocol\",\"warning\"],[\"closing_brace\",\"warning\"],[\"closure_parameter_position\",\"warning\"],[\"colon\",\"warning, flexible_right_spacing: false, apply_to_dictionaries: true\"],[\"comma\",\"warning\"],[\"compiler_protocol_init\",\"warning\"],[\"control_statement\",\"warning\"],[\"custom_rules\",\"\"],[\"cyclomatic_complexity\",\"warning: 10, error: 20, ignores_case_statements: false\"],[\"discarded_notification_center_observer\",\"warning\"],[\"discouraged_direct_init\",\"warning, types: [\"Bundle\", \"Bundle.init\", \"UIDevice\", \"UIDevice.init\"]\"],[\"dynamic_inline\",\"error\"],[\"empty_enum_arguments\",\"warning\"],[\"empty_parameters\",\"warning\"]]]"
+        // swiftlint:enable line_length
+
+        let dict = [k1: "test", k2: "test2"]
+
+        XCTAssertNoThrow(try dict.toJSON())
+    }
 }

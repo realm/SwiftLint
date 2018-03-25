@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SourceKittenFramework
 
 internal enum LinterCacheError: Error {
     case invalidFormat
@@ -124,7 +123,7 @@ public final class LinterCache {
         }
 
         let cache = mergeCaches()
-        let json = toJSON(cache)
+        let json = try cache.toJSON()
         try json.write(to: url, atomically: true, encoding: .utf8)
     }
 
@@ -200,5 +199,17 @@ private extension StyleViolation {
                               severity: severity,
                               location: Location(file: file, line: line, character: character),
                               reason: reason)
+    }
+}
+
+internal extension Dictionary where Key == String {
+    func toJSON() throws -> String {
+        // not using .sortedKeys to avoid crash
+        let prettyJSONData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+        if let jsonString = String(data: prettyJSONData, encoding: .utf8) {
+            return jsonString
+        } else {
+            throw LinterCacheError.invalidFormat
+        }
     }
 }

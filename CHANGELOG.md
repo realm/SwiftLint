@@ -55,6 +55,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2099](https://github.com/realm/SwiftLint/issues/2099)
 
+* Fix crash when saving cache if there're entries referring to the same path
+  but with different capitalization.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2032](https://github.com/realm/SwiftLint/issues/2032)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

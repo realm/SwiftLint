@@ -4,8 +4,9 @@ import PackageDescription
 let package = Package(
     name: "SwiftLint",
     products: [
-        .executable(name: "swiftlint", targets: ["swiftlint"]),
-        .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
+//        .executable(name: "swiftlint", targets: ["swiftlint"]),
+        .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"]),
+        .library(name: "SwiftLintKit", targets: ["SwiftLintKit"]),
     ],
     dependencies: [
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.13.0"),
@@ -14,20 +15,29 @@ let package = Package(
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.0"),
     ],
     targets: [
-        .target(
-            name: "swiftlint",
-            dependencies: [
-                "Commandant",
-                "SwiftLintFramework",
-                "SwiftyTextTable",
-            ]
-        ),
+//        .target(
+//            name: "swiftlint",
+//            dependencies: [
+//                "Commandant",
+//                "SwiftLintFramework",
+//                "SwiftyTextTable",
+//            ]
+//        ),
         .target(
             name: "SwiftLintFramework",
             dependencies: [
                 "SourceKittenFramework",
                 "Yams",
             ]
+        ),
+        .target(
+            name: "SwiftLintKit",
+            dependencies: [
+                "Commandant",
+                "SwiftLintFramework",
+                "SwiftyTextTable",
+                ],
+            path: "Source/swiftlint"
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",

@@ -24,242 +24,14 @@
 		14513F8120648CE900AA63B6 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */; };
 		14513F8620648D8B00AA63B6 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */; };
 		14513F8820648E7E00AA63B6 /* Yams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8720648E7E00AA63B6 /* Yams.framework */; };
-		14513FA82064917C00AA63B6 /* EmptyStringRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */; };
-		14513FA92064917C00AA63B6 /* LegacyCGGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */; };
-		14513FAA2064917C00AA63B6 /* SyntaxMap+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */; };
-		14513FAB2064917C00AA63B6 /* NoGroupingExtensionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */; };
-		14513FAC2064917C00AA63B6 /* ExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41B57771ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift */; };
-		14513FAD2064917C00AA63B6 /* TrailingNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA871B09924C00A66CB0 /* TrailingNewlineRule.swift */; };
-		14513FAE2064917C00AA63B6 /* OverridenSuperCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032471D7D614300BE709A /* OverridenSuperCallConfiguration.swift */; };
-		14513FAF2064917C00AA63B6 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */; };
-		14513FB02064917C00AA63B6 /* TypeBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8D1B0999CD00A66CB0 /* TypeBodyLengthRule.swift */; };
-		14513FB12064917C00AA63B6 /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
-		14513FB22064917C00AA63B6 /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
-		14513FB32064917C00AA63B6 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80E018C1B92C0F60078EB70 /* Command.swift */; };
-		14513FB42064917C00AA63B6 /* ForceCastRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */; };
-		14513FB52064917C00AA63B6 /* LegacyConstructorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44AD2741C0AA3730048F7B0 /* LegacyConstructorRule.swift */; };
-		14513FB62064917C00AA63B6 /* SortedImportsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D286EC001E02DA190003CF72 /* SortedImportsRule.swift */; };
-		14513FB72064917C00AA63B6 /* SuperfluousDisableCommandRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40E041B1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift */; };
-		14513FB82064917C00AA63B6 /* Configuration+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */; };
-		14513FB92064917C00AA63B6 /* ConfigurationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */; };
-		14513FBA2064917C00AA63B6 /* FileHeaderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */; };
-		14513FBB2064917C00AA63B6 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
-		14513FBC2064917C00AA63B6 /* ProhibitedSuperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09291DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift */; };
-		14513FBD2064917C00AA63B6 /* UntypedErrorInCatchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */; };
-		14513FBE2064917C00AA63B6 /* ImplicitlyUnwrappedOptionalRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */; };
-		14513FBF2064917C00AA63B6 /* QuickDiscouragedCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */; };
-		14513FC02064917C00AA63B6 /* TrailingWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */; };
-		14513FC12064917C00AA63B6 /* LineLengthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */; };
-		14513FC22064917C00AA63B6 /* MultilineArgumentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */; };
-		14513FC32064917C00AA63B6 /* DiscouragedObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */; };
-		14513FC42064917C00AA63B6 /* AttributesConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */; };
-		14513FC52064917C00AA63B6 /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
-		14513FC62064917C00AA63B6 /* ImplicitReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */; };
-		14513FC72064917C00AA63B6 /* MasterRuleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B12C9C41C322032000B423F /* MasterRuleList.swift */; };
-		14513FC82064917C00AA63B6 /* Linter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E812249B1B04FADC001783D2 /* Linter.swift */; };
-		14513FC92064917C00AA63B6 /* ClosingBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */; };
-		14513FCA2064917C00AA63B6 /* PrivateOutletRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD3BE491D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift */; };
-		14513FCB2064917C00AA63B6 /* RedundantOptionalInitializationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */; };
-		14513FCC2064917C00AA63B6 /* CyclomaticComplexityRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */; };
-		14513FCD2064917C00AA63B6 /* OperatorUsageWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */; };
-		14513FCE2064917C00AA63B6 /* FileHeaderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C4A3511DEFBBB700E0E04C /* FileHeaderConfiguration.swift */; };
-		14513FCF2064917C00AA63B6 /* QuickDiscouragedPendingTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */; };
-		14513FD02064917C00AA63B6 /* EmptyParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AC1DFE2FA700027086 /* EmptyParametersRule.swift */; };
-		14513FD12064917C00AA63B6 /* SyntaxKind+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */; };
-		14513FD22064917C00AA63B6 /* SeverityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */; };
-		14513FD32064917C00AA63B6 /* ControlStatementRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65454F451B14D73800319A6C /* ControlStatementRule.swift */; };
-		14513FD42064917C00AA63B6 /* ReturnArrowWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */; };
-		14513FD52064917C00AA63B6 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4246D6C1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift */; };
-		14513FD62064917C00AA63B6 /* ForceTryRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E816194D1BFBFEAB00946723 /* ForceTryRule.swift */; };
-		14513FD72064917C00AA63B6 /* CommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695BE9CE1BDFD92B0071E985 /* CommaRule.swift */; };
-		14513FD82064917C00AA63B6 /* NumberSeparatorConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */; };
-		14513FD92064917C00AA63B6 /* IdentifierNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */; };
-		14513FDA2064917C00AA63B6 /* RuleParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA781B098D4400A66CB0 /* RuleParameter.swift */; };
-		14513FDB2064917C00AA63B6 /* XCTFailMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */; };
-		14513FDC2064917C00AA63B6 /* LargeTupleRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF91E18D6200037413D /* LargeTupleRule.swift */; };
-		14513FDD2064917C00AA63B6 /* GenericTypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */; };
-		14513FDE2064917C00AA63B6 /* CSVReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396CA1BADB519002C9E88 /* CSVReporter.swift */; };
-		14513FDF2064917C00AA63B6 /* Dictionary+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */; };
-		14513FE02064917C00AA63B6 /* ColonRule+FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF47F1F69E3100012C4CA /* ColonRule+FunctionCall.swift */; };
-		14513FE12064917C00AA63B6 /* FileLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */; };
-		14513FE22064917C00AA63B6 /* ClosureParameterPositionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */; };
-		14513FE32064917C00AA63B6 /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
-		14513FE42064917C00AA63B6 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
-		14513FE52064917C00AA63B6 /* MultipleClosuresWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */; };
-		14513FE62064917C00AA63B6 /* LineLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */; };
-		14513FE72064917C00AA63B6 /* ProtocolPropertyAccessorsOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */; };
-		14513FE82064917C00AA63B6 /* ArrayInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */; };
-		14513FE92064917C00AA63B6 /* UnusedOptionalBindingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */; };
-		14513FEA2064917C00AA63B6 /* EmptyCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */; };
-		14513FEB2064917C00AA63B6 /* NumberSeparatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46252531DF63FB200BE2CA1 /* NumberSeparatorRule.swift */; };
-		14513FEC2064917C00AA63B6 /* DynamicInlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E315B83B1DFA4BC500621B44 /* DynamicInlineRule.swift */; };
-		14513FED2064917C00AA63B6 /* ExplicitTypeInterfaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125AAC77203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift */; };
-		14513FEE2064917C00AA63B6 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
-		14513FEF2064917C00AA63B6 /* FirstWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */; };
-		14513FF02064917C00AA63B6 /* VerticalParameterAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0226E1E0C75F9007E5297 /* VerticalParameterAlignmentRule.swift */; };
-		14513FF12064917C00AA63B6 /* RuleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */; };
-		14513FF22064917C00AA63B6 /* Configuration+Merging.swift in Sources */ = {isa = PBXBuildFile; fileRef = E889D8C61F1D357B00058332 /* Configuration+Merging.swift */; };
-		14513FF32064917C00AA63B6 /* SyntacticSugarRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */; };
-		14513FF42064917C00AA63B6 /* UnneededBreakInSwitchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4EA77C71F817FD200C315FB /* UnneededBreakInSwitchRule.swift */; };
-		14513FF52064917C00AA63B6 /* VerticalWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */; };
-		14513FF62064917C00AA63B6 /* ColonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA831B0990F500A66CB0 /* ColonRule.swift */; };
-		14513FF72064917C00AA63B6 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */; };
-		14513FF82064917C00AA63B6 /* PatternMatchingKeywordsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D403A4A21F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift */; };
-		14513FF92064917C00AA63B6 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E809EDA01B8A71DF00399043 /* Configuration.swift */; };
-		14513FFA2064917C00AA63B6 /* TrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD41E2B350F009617B6 /* TrailingClosureRule.swift */; };
-		14513FFB2064917C00AA63B6 /* ObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022971E102EE8007E5297 /* ObjectLiteralRule.swift */; };
-		14513FFC2064917C00AA63B6 /* EmojiReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */; };
-		14513FFD2064917C00AA63B6 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
-		14513FFE2064917C00AA63B6 /* LegacyConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006ECFC31C44E99E00EF6364 /* LegacyConstantRule.swift */; };
-		14513FFF2064917C00AA63B6 /* SortedFirstLastRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429644B41FB0A99E00D75128 /* SortedFirstLastRule.swift */; };
-		145140002064917C00AA63B6 /* SwitchCaseAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */; };
-		145140012064917C00AA63B6 /* String+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */; };
-		145140022064917C00AA63B6 /* LeadingWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */; };
-		145140032064917C00AA63B6 /* StrictFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42B45D81F0AF5E30086B683 /* StrictFilePrivateRule.swift */; };
-		145140042064917C00AA63B6 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
-		145140052064917C00AA63B6 /* CyclomaticComplexityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */; };
-		145140062064917C00AA63B6 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
-		145140072064917C00AA63B6 /* ColonConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B04671E07228D004016AF /* ColonConfiguration.swift */; };
-		145140082064917C00AA63B6 /* Configuration+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */; };
-		145140092064917C00AA63B6 /* PrefixedTopLevelConstantRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */; };
-		1451400A2064917C00AA63B6 /* TypeNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */; };
-		1451400B2064917C00AA63B6 /* File+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24E17F701B1481FF008195BE /* File+Cache.swift */; };
-		1451400C2064917C00AA63B6 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */; };
-		1451400D2064917C00AA63B6 /* ProhibitedSuperRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009E09271DFEE4C200B588A7 /* ProhibitedSuperRule.swift */; };
-		1451400E2064917C00AA63B6 /* Region.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80E018E1B92C1350078EB70 /* Region.swift */; };
-		1451400F2064917C00AA63B6 /* FunctionBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */; };
-		145140102064917C00AA63B6 /* File+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA741B09852000A66CB0 /* File+SwiftLint.swift */; };
-		145140112064917C00AA63B6 /* ColonRule+Type.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF4831F69E3D60012C4CA /* ColonRule+Type.swift */; };
-		145140122064917C00AA63B6 /* SeverityLevelsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */; };
-		145140132064917C00AA63B6 /* NimbleOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */; };
-		145140142064917C00AA63B6 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
-		145140152064917C00AA63B6 /* ForWhereRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */; };
-		145140162064917C00AA63B6 /* LiteralExpressionEndIdentationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4EA77C91F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift */; };
-		145140172064917C00AA63B6 /* XcodeReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C41BADAC15002C9E88 /* XcodeReporter.swift */; };
-		145140182064917C00AA63B6 /* Configuration+LintableFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */; };
-		145140192064917C00AA63B6 /* WeakDelegateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094384FF1D5D2382009168CF /* WeakDelegateRule.swift */; };
-		1451401A2064917C00AA63B6 /* CustomRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1DF0111C5148140011BCED /* CustomRules.swift */; };
-		1451401B2064917C00AA63B6 /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
-		1451401C2064917C00AA63B6 /* JSONReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C81BADB2B9002C9E88 /* JSONReporter.swift */; };
-		1451401D2064917C00AA63B6 /* OperatorFunctionWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A167C81B25A0B000CF2D03 /* OperatorFunctionWhitespaceRule.swift */; };
-		1451401E2064917C00AA63B6 /* ValidIBInspectableRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D442541E1DB87C3D00492EA4 /* ValidIBInspectableRule.swift */; };
-		1451401F2064917C00AA63B6 /* DiscouragedOptionalBooleanRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62640150201552E0005B9C4A /* DiscouragedOptionalBooleanRule.swift */; };
-		145140202064917C00AA63B6 /* MarkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856651A61D6B395F005E6B29 /* MarkRule.swift */; };
-		145140212064917C00AA63B6 /* SwiftVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A893341E15824100BF954D /* SwiftVersion.swift */; };
-		145140222064917C00AA63B6 /* VerticalParameterAlignmentOnCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D5C1EB8004B008A1B2E /* VerticalParameterAlignmentOnCallRule.swift */; };
-		145140232064917C00AA63B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */; };
-		145140242064917C00AA63B6 /* NamespaceCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AB0EA11F8993DD00CEC380 /* NamespaceCollector.swift */; };
-		145140252064917C00AA63B6 /* RedundantVoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */; };
-		145140262064917C00AA63B6 /* NameConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */; };
-		145140272064917C00AA63B6 /* Version.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C27BFD1E12D53F00DF713E /* Version.swift */; };
-		145140282064917C00AA63B6 /* PrivateUnitTestConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0D1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift */; };
-		145140292064917C00AA63B6 /* SwitchCaseOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510D1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift */; };
-		1451402A2064917C00AA63B6 /* NumberSeparatorRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D462021E1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift */; };
-		1451402B2064917C00AA63B6 /* CompilerProtocolInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */; };
-		1451402C2064917C00AA63B6 /* SingleTestClassRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */; };
-		1451402D2064917C00AA63B6 /* MultilineParametersRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */; };
-		1451402E2064917C00AA63B6 /* AttributesRulesExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRulesExamples.swift */; };
-		1451402F2064917C00AA63B6 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6E1B09843F00A66CB0 /* Location.swift */; };
-		145140302064917C00AA63B6 /* ClosureEndIndentationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */; };
-		145140312064917C00AA63B6 /* ColonRule+Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47EF4811F69E34D0012C4CA /* ColonRule+Dictionary.swift */; };
-		145140322064917C00AA63B6 /* NestingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D93DA3CF1E699E4E00809827 /* NestingConfiguration.swift */; };
-		145140332064917C00AA63B6 /* RuleIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC26ED05204DE86E0013BBBC /* RuleIdentifier.swift */; };
-		145140342064917C00AA63B6 /* ExplicitTypeInterfaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */; };
-		145140352064917C00AA63B6 /* ConditionalReturnsOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */; };
-		145140362064917C00AA63B6 /* ImplicitGetterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */; };
-		145140372064917C00AA63B6 /* JoinedDefaultRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A6E7911F3317E3003A0479 /* JoinedDefaultRule.swift */; };
-		145140382064917C00AA63B6 /* BlockBasedKVORule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */; };
-		145140392064917C00AA63B6 /* ExplicitInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */; };
-		1451403A2064917C00AA63B6 /* Rule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA761B098D0C00A66CB0 /* Rule.swift */; };
-		1451403B2064917C00AA63B6 /* SwiftExpressionKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AA1DFDCF7A00027086 /* SwiftExpressionKind.swift */; };
-		1451403C2064917C00AA63B6 /* LegacyConstantRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B8D9771E2D0FBD004E0EEC /* LegacyConstantRuleExamples.swift */; };
-		1451403D2064917C00AA63B6 /* MultilineArgumentsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */; };
-		1451403E2064917C00AA63B6 /* RedundantNilCoalescingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24B4DF0B1D6DFA370097803B /* RedundantNilCoalescingRule.swift */; };
-		1451403F2064917C00AA63B6 /* IdentifierNameRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */; };
-		145140402064917C00AA63B6 /* StatementPositionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementPositionConfiguration.swift */; };
-		145140412064917C00AA63B6 /* QueuedPrint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81619521BFC162C00946723 /* QueuedPrint.swift */; };
-		145140422064917C00AA63B6 /* TrailingSemicolonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */; };
-		145140432064917C00AA63B6 /* FallthroughRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B472401F66486300BD6EF1 /* FallthroughRule.swift */; };
-		145140442064917C00AA63B6 /* MultilineArgumentsRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */; };
-		145140452064917C00AA63B6 /* NestingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA951B099CF200A66CB0 /* NestingRule.swift */; };
-		145140462064917C00AA63B6 /* UnneededParenthesesInClosureArgumentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46A317E1F1CEDCD00AF914A /* UnneededParenthesesInClosureArgumentRule.swift */; };
-		145140472064917C00AA63B6 /* EmptyEnumArgumentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4470D581EB6B4D1008A1B2E /* EmptyEnumArgumentsRule.swift */; };
-		145140482064917C00AA63B6 /* QuickDiscouragedFocusedTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62E54FED1F93AD57005B367B /* QuickDiscouragedFocusedTestRule.swift */; };
-		145140492064917C00AA63B6 /* NSRegularExpression+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */; };
-		1451404A2064917C00AA63B6 /* StatementPositionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B60AB1BD8F2E700C7AA22 /* StatementPositionRule.swift */; };
-		1451404B2064917C00AA63B6 /* ForceUnwrappingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58AEED51C492C7B00E901FD /* ForceUnwrappingRule.swift */; };
-		1451404C2064917C00AA63B6 /* ExplicitTopLevelACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */; };
-		1451404D2064917C00AA63B6 /* OverrideInExtensionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40FE89C1F867BFF006433E2 /* OverrideInExtensionRule.swift */; };
-		1451404E2064917C00AA63B6 /* RedundantStringEnumValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */; };
-		1451404F2064917C00AA63B6 /* ViolationSeverity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA701B09847500A66CB0 /* ViolationSeverity.swift */; };
-		145140502064917C00AA63B6 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
-		145140512064917C00AA63B6 /* PrivateOverFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */; };
-		145140522064917C00AA63B6 /* ExplicitACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */; };
-		145140532064917C00AA63B6 /* PrivateUnitTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2902A0B1D66815600BFCCF7 /* PrivateUnitTestRule.swift */; };
-		145140542064917C00AA63B6 /* AttributesRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */; };
-		145140552064917C00AA63B6 /* UnusedOptionalBindingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */; };
-		145140562064917C00AA63B6 /* PrivateActionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62DEA1651FB21A9E00BCCCC6 /* PrivateActionRule.swift */; };
-		145140572064917C00AA63B6 /* LinterCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD58B11E12A0200019503C /* LinterCache.swift */; };
-		145140582064917C00AA63B6 /* YamlParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD9CD3C1C37175B009A5D25 /* YamlParser.swift */; };
-		145140592064917C00AA63B6 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
-		1451405A2064917C00AA63B6 /* ASTRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA8B1B0999A000A66CB0 /* ASTRule.swift */; };
-		1451405B2064917C00AA63B6 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
-		1451405C2064917C00AA63B6 /* CacheDescriptionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E80746F51ECB722F00548D31 /* CacheDescriptionProvider.swift */; };
-		1451405D2064917C00AA63B6 /* PrivateOutletRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094385021D5D4F78009168CF /* PrivateOutletRule.swift */; };
-		1451405E2064917C00AA63B6 /* DiscouragedOptionalBooleanRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6264015320155533005B9C4A /* DiscouragedOptionalBooleanRuleExamples.swift */; };
-		1451405F2064917C00AA63B6 /* Configuration+IndentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */; };
-		145140602064917C00AA63B6 /* StyleViolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA6A1B0983FE00A66CB0 /* StyleViolation.swift */; };
-		145140612064917C00AA63B6 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
-		145140622064917C00AA63B6 /* RequiredEnumCaseRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89F3BC91FD5ED9000931E59 /* RequiredEnumCaseRule.swift */; };
-		145140632064917C00AA63B6 /* RegexConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D821C514E8100AE6A10 /* RegexConfiguration.swift */; };
-		145140642064917C00AA63B6 /* RuleKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = D401D9251ED85EF0005DA5D4 /* RuleKind.swift */; };
-		145140652064917C00AA63B6 /* RedundantDiscardableLetRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */; };
-		145140662064917C00AA63B6 /* AccessControlLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1B9B91EAC2C870028BE6A /* AccessControlLevel.swift */; };
-		145140672064917C00AA63B6 /* HTMLReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */; };
-		145140682064917C00AA63B6 /* TrailingCommaConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40F83871DE9179200524C62 /* TrailingCommaConfiguration.swift */; };
-		145140692064917C00AA63B6 /* ExplicitEnumRawValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827169B21F488181003FB9AF /* ExplicitEnumRawValueRule.swift */; };
-		1451406A2064917C00AA63B6 /* FileLengthRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */; };
-		1451406B2064917C00AA63B6 /* Array+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5B9FE01C444DA20009AD27 /* Array+SwiftLint.swift */; };
-		1451406C2064917C00AA63B6 /* CharacterSet+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD216CB205584AF008ED13F /* CharacterSet+SwiftLint.swift */; };
-		1451406D2064917C00AA63B6 /* UnusedEnumeratedRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43B04631E0620AB004016AF /* UnusedEnumeratedRule.swift */; };
-		1451406E2064917C00AA63B6 /* DiscouragedDirectInitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A498551F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift */; };
-		1451406F2064917C00AA63B6 /* ContainsOverFirstNotNilRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AD4C641F6EA16C009B66E1 /* ContainsOverFirstNotNilRule.swift */; };
-		145140702064917C00AA63B6 /* LetVarWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */; };
-		145140712064917C00AA63B6 /* TrailingWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA851B0991BF00A66CB0 /* TrailingWhitespaceRule.swift */; };
-		145140722064917C00AA63B6 /* NSFileManager+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */; };
-		145140732064917C00AA63B6 /* SwiftDeclarationKind+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E816194B1BFBF35D00946723 /* SwiftDeclarationKind+SwiftLint.swift */; };
-		145140742064917C00AA63B6 /* NotificationCenterDetachmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */; };
-		145140752064917C00AA63B6 /* NSRange+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */; };
-		145140762064917C00AA63B6 /* ShorthandOperatorRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */; };
-		145140772064917C00AA63B6 /* FatalErrorMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */; };
-		145140782064917C00AA63B6 /* QuickDiscouragedFocusedTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626C16E01F948E1C00BB7475 /* QuickDiscouragedFocusedTestRuleExamples.swift */; };
-		145140792064917C00AA63B6 /* RequiredEnumCaseRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89F3BC71FD5ED7D00931E59 /* RequiredEnumCaseRuleConfiguration.swift */; };
-		1451407A2064917C00AA63B6 /* RuleList+Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */; };
-		1451407B2064917C00AA63B6 /* IsDisjointRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */; };
-		1451407C2064917C00AA63B6 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
-		1451407D2064917C00AA63B6 /* Reporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396C11BADAAE5002C9E88 /* Reporter.swift */; };
-		1451407E2064917C00AA63B6 /* ObjectLiteralConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */; };
-		1451407F2064917C00AA63B6 /* ClassDelegateProtocolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */; };
-		145140802064917C00AA63B6 /* TypeNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */; };
-		145140812064917C00AA63B6 /* UnusedClosureParameterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D40AD0891E032F9700F48C30 /* UnusedClosureParameterRule.swift */; };
-		145140822064917C00AA63B6 /* TrailingCommaRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46E041C1DE3712C00728374 /* TrailingCommaRule.swift */; };
-		145140832064917C00AA63B6 /* NotificationCenterDetachmentRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */; };
-		145140842064917C00AA63B6 /* TodoRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA811B0990A700A66CB0 /* TodoRule.swift */; };
-		145140852064917C00AA63B6 /* RuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B828E521C546468000D180E /* RuleConfiguration.swift */; };
-		145140862064917C00AA63B6 /* CallPairRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73469401FB12149009B57C7 /* CallPairRule.swift */; };
-		145140872064917C00AA63B6 /* VoidReturnRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D47079AE1DFE520000027086 /* VoidReturnRule.swift */; };
-		145140882064917C00AA63B6 /* String+XML.swift in Sources */ = {isa = PBXBuildFile; fileRef = B39353F28BCCA39247B316BD /* String+XML.swift */; };
-		1451408B2064917C00AA63B6 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14188BEE206489AD004D6146 /* SourceKittenFramework.framework */; };
-		1451408C2064917C00AA63B6 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14188BEC2064898D004D6146 /* SWXMLHash.framework */; };
 		1451408D2064917C00AA63B6 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */; };
 		145140962064921300AA63B6 /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802ECFF1C56A56000A35AE1 /* Benchmark.swift */; };
 		145140972064921300AA63B6 /* CommonOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FB3E31C6D507B00DC988F /* CommonOptions.swift */; };
 		145140982064921300AA63B6 /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
 		145140992064921300AA63B6 /* Reporter+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86E2B2D1E17443B001E823C /* Reporter+CommandLine.swift */; };
-		1451409B2064921300AA63B6 /* LintCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* LintCommand.swift */; };
-		145140A22064948D00AA63B6 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145140A12064948D00AA63B6 /* Result.framework */; };
 		145140A4206494B300AA63B6 /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 145140A3206494B200AA63B6 /* Commandant.framework */; };
-		1451FDF720661CBE00A050ED /* Yams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8720648E7E00AA63B6 /* Yams.framework */; };
+		14689164206735DF00CFB56C /* LintCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* LintCommand.swift */; };
+		14698A2320671E4200A3545D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
@@ -547,6 +319,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		14698A2120671E2F00A3545D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0D1216C19E87B05005E4BAA;
+			remoteInfo = SwiftLintFramework;
+		};
 		D0AAAB5119FB0960007B24B3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -924,11 +703,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1451FDF720661CBE00A050ED /* Yams.framework in Frameworks */,
+				14698A2320671E4200A3545D /* SwiftLintFramework.framework in Frameworks */,
 				145140A4206494B300AA63B6 /* Commandant.framework in Frameworks */,
-				1451408B2064917C00AA63B6 /* SourceKittenFramework.framework in Frameworks */,
-				145140A22064948D00AA63B6 /* Result.framework in Frameworks */,
-				1451408C2064917C00AA63B6 /* SWXMLHash.framework in Frameworks */,
 				1451408D2064917C00AA63B6 /* SwiftyTextTable.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1085,11 +861,11 @@
 		D0D1211A19E87861005E4BAA /* swiftlint */ = {
 			isa = PBXGroup;
 			children = (
+				E85FF9921C13E35400714267 /* Commands */,
+				5499CA981A2394BD00783309 /* Supporting Files */,
 				E802ECFE1C56A54600A35AE1 /* Helpers */,
 				E8B0677F1C13E48100E9E13F /* Extensions */,
-				E85FF9921C13E35400714267 /* Commands */,
 				D0D1211B19E87861005E4BAA /* main.swift */,
-				5499CA981A2394BD00783309 /* Supporting Files */,
 			);
 			name = swiftlint;
 			path = Source/swiftlint;
@@ -1547,6 +1323,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				14698A2220671E2F00A3545D /* PBXTargetDependency */,
 			);
 			name = SwiftLintKit;
 			productName = SourceKittenFramework;
@@ -1814,236 +1591,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14689164206735DF00CFB56C /* LintCommand.swift in Sources */,
 				145140962064921300AA63B6 /* Benchmark.swift in Sources */,
 				145140972064921300AA63B6 /* CommonOptions.swift in Sources */,
 				145140982064921300AA63B6 /* Configuration+CommandLine.swift in Sources */,
 				145140992064921300AA63B6 /* Reporter+CommandLine.swift in Sources */,
-				1451409B2064921300AA63B6 /* LintCommand.swift in Sources */,
-				14513FA82064917C00AA63B6 /* EmptyStringRule.swift in Sources */,
-				14513FA92064917C00AA63B6 /* LegacyCGGeometryFunctionsRule.swift in Sources */,
-				14513FAA2064917C00AA63B6 /* SyntaxMap+SwiftLint.swift in Sources */,
-				14513FAB2064917C00AA63B6 /* NoGroupingExtensionRule.swift in Sources */,
-				14513FAC2064917C00AA63B6 /* ExtensionAccessModifierRule.swift in Sources */,
-				14513FAD2064917C00AA63B6 /* TrailingNewlineRule.swift in Sources */,
-				14513FAE2064917C00AA63B6 /* OverridenSuperCallConfiguration.swift in Sources */,
-				14513FAF2064917C00AA63B6 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */,
-				14513FB02064917C00AA63B6 /* TypeBodyLengthRule.swift in Sources */,
-				14513FB12064917C00AA63B6 /* OpeningBraceRule.swift in Sources */,
-				14513FB22064917C00AA63B6 /* OverriddenSuperCallRule.swift in Sources */,
-				14513FB32064917C00AA63B6 /* Command.swift in Sources */,
-				14513FB42064917C00AA63B6 /* ForceCastRule.swift in Sources */,
-				14513FB52064917C00AA63B6 /* LegacyConstructorRule.swift in Sources */,
-				14513FB62064917C00AA63B6 /* SortedImportsRule.swift in Sources */,
-				14513FB72064917C00AA63B6 /* SuperfluousDisableCommandRule.swift in Sources */,
-				14513FB82064917C00AA63B6 /* Configuration+Parsing.swift in Sources */,
-				14513FB92064917C00AA63B6 /* ConfigurationError.swift in Sources */,
-				14513FBA2064917C00AA63B6 /* FileHeaderRule.swift in Sources */,
-				14513FBB2064917C00AA63B6 /* MultilineParametersRule.swift in Sources */,
-				14513FBC2064917C00AA63B6 /* ProhibitedSuperConfiguration.swift in Sources */,
-				14513FBD2064917C00AA63B6 /* UntypedErrorInCatchRule.swift in Sources */,
-				14513FBE2064917C00AA63B6 /* ImplicitlyUnwrappedOptionalRule.swift in Sources */,
-				14513FBF2064917C00AA63B6 /* QuickDiscouragedCallRule.swift in Sources */,
-				14513FC02064917C00AA63B6 /* TrailingWhitespaceConfiguration.swift in Sources */,
-				14513FC12064917C00AA63B6 /* LineLengthConfiguration.swift in Sources */,
-				14513FC22064917C00AA63B6 /* MultilineArgumentsRule.swift in Sources */,
-				14513FC32064917C00AA63B6 /* DiscouragedObjectLiteralRule.swift in Sources */,
-				14513FC42064917C00AA63B6 /* AttributesConfiguration.swift in Sources */,
-				14513FC52064917C00AA63B6 /* RuleDescription.swift in Sources */,
-				14513FC62064917C00AA63B6 /* ImplicitReturnRule.swift in Sources */,
-				14513FC72064917C00AA63B6 /* MasterRuleList.swift in Sources */,
-				14513FC82064917C00AA63B6 /* Linter.swift in Sources */,
-				14513FC92064917C00AA63B6 /* ClosingBraceRule.swift in Sources */,
-				14513FCA2064917C00AA63B6 /* PrivateOutletRuleConfiguration.swift in Sources */,
-				14513FCB2064917C00AA63B6 /* RedundantOptionalInitializationRule.swift in Sources */,
-				14513FCC2064917C00AA63B6 /* CyclomaticComplexityRule.swift in Sources */,
-				14513FCD2064917C00AA63B6 /* OperatorUsageWhitespaceRule.swift in Sources */,
-				14513FCE2064917C00AA63B6 /* FileHeaderConfiguration.swift in Sources */,
-				14513FCF2064917C00AA63B6 /* QuickDiscouragedPendingTestRule.swift in Sources */,
-				14513FD02064917C00AA63B6 /* EmptyParametersRule.swift in Sources */,
-				14513FD12064917C00AA63B6 /* SyntaxKind+SwiftLint.swift in Sources */,
-				14513FD22064917C00AA63B6 /* SeverityConfiguration.swift in Sources */,
-				14513FD32064917C00AA63B6 /* ControlStatementRule.swift in Sources */,
-				14513FD42064917C00AA63B6 /* ReturnArrowWhitespaceRule.swift in Sources */,
-				14513FD52064917C00AA63B6 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */,
-				14513FD62064917C00AA63B6 /* ForceTryRule.swift in Sources */,
-				14513FD72064917C00AA63B6 /* CommaRule.swift in Sources */,
-				14513FD82064917C00AA63B6 /* NumberSeparatorConfiguration.swift in Sources */,
-				14513FD92064917C00AA63B6 /* IdentifierNameRule.swift in Sources */,
-				14513FDA2064917C00AA63B6 /* RuleParameter.swift in Sources */,
-				14513FDB2064917C00AA63B6 /* XCTFailMessageRule.swift in Sources */,
-				14513FDC2064917C00AA63B6 /* LargeTupleRule.swift in Sources */,
-				14513FDD2064917C00AA63B6 /* GenericTypeNameRule.swift in Sources */,
-				14513FDE2064917C00AA63B6 /* CSVReporter.swift in Sources */,
-				14513FDF2064917C00AA63B6 /* Dictionary+SwiftLint.swift in Sources */,
-				14513FE02064917C00AA63B6 /* ColonRule+FunctionCall.swift in Sources */,
-				14513FE12064917C00AA63B6 /* FileLengthRule.swift in Sources */,
-				14513FE22064917C00AA63B6 /* ClosureParameterPositionRule.swift in Sources */,
-				14513FE32064917C00AA63B6 /* Correction.swift in Sources */,
-				14513FE42064917C00AA63B6 /* QuickDiscouragedCallRuleExamples.swift in Sources */,
-				14513FE52064917C00AA63B6 /* MultipleClosuresWithTrailingClosureRule.swift in Sources */,
-				14513FE62064917C00AA63B6 /* LineLengthRule.swift in Sources */,
-				14513FE72064917C00AA63B6 /* ProtocolPropertyAccessorsOrderRule.swift in Sources */,
-				14513FE82064917C00AA63B6 /* ArrayInitRule.swift in Sources */,
-				14513FE92064917C00AA63B6 /* UnusedOptionalBindingRule.swift in Sources */,
-				14513FEA2064917C00AA63B6 /* EmptyCountRule.swift in Sources */,
-				14513FEB2064917C00AA63B6 /* NumberSeparatorRule.swift in Sources */,
-				14513FEC2064917C00AA63B6 /* DynamicInlineRule.swift in Sources */,
-				14513FED2064917C00AA63B6 /* ExplicitTypeInterfaceConfiguration.swift in Sources */,
-				14513FEE2064917C00AA63B6 /* NoExtensionAccessModifierRule.swift in Sources */,
-				14513FEF2064917C00AA63B6 /* FirstWhereRule.swift in Sources */,
-				14513FF02064917C00AA63B6 /* VerticalParameterAlignmentRule.swift in Sources */,
-				14513FF12064917C00AA63B6 /* RuleList.swift in Sources */,
-				14513FF22064917C00AA63B6 /* Configuration+Merging.swift in Sources */,
-				14513FF32064917C00AA63B6 /* SyntacticSugarRule.swift in Sources */,
-				14513FF42064917C00AA63B6 /* UnneededBreakInSwitchRule.swift in Sources */,
-				14513FF52064917C00AA63B6 /* VerticalWhitespaceConfiguration.swift in Sources */,
-				14513FF62064917C00AA63B6 /* ColonRule.swift in Sources */,
-				14513FF72064917C00AA63B6 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */,
-				14513FF82064917C00AA63B6 /* PatternMatchingKeywordsRule.swift in Sources */,
-				14513FF92064917C00AA63B6 /* Configuration.swift in Sources */,
-				14513FFA2064917C00AA63B6 /* TrailingClosureRule.swift in Sources */,
-				14513FFB2064917C00AA63B6 /* ObjectLiteralRule.swift in Sources */,
-				14513FFC2064917C00AA63B6 /* EmojiReporter.swift in Sources */,
-				14513FFD2064917C00AA63B6 /* CheckstyleReporter.swift in Sources */,
-				14513FFE2064917C00AA63B6 /* LegacyConstantRule.swift in Sources */,
-				14513FFF2064917C00AA63B6 /* SortedFirstLastRule.swift in Sources */,
-				145140002064917C00AA63B6 /* SwitchCaseAlignmentRule.swift in Sources */,
-				145140012064917C00AA63B6 /* String+SwiftLint.swift in Sources */,
-				145140022064917C00AA63B6 /* LeadingWhitespaceRule.swift in Sources */,
-				145140032064917C00AA63B6 /* StrictFilePrivateRule.swift in Sources */,
-				145140042064917C00AA63B6 /* VerticalWhitespaceRule.swift in Sources */,
-				145140052064917C00AA63B6 /* CyclomaticComplexityConfiguration.swift in Sources */,
-				145140062064917C00AA63B6 /* JUnitReporter.swift in Sources */,
-				145140072064917C00AA63B6 /* ColonConfiguration.swift in Sources */,
-				145140082064917C00AA63B6 /* Configuration+Cache.swift in Sources */,
-				145140092064917C00AA63B6 /* PrefixedTopLevelConstantRule.swift in Sources */,
-				1451400A2064917C00AA63B6 /* TypeNameRuleExamples.swift in Sources */,
-				1451400B2064917C00AA63B6 /* File+Cache.swift in Sources */,
-				1451400C2064917C00AA63B6 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */,
-				1451400D2064917C00AA63B6 /* ProhibitedSuperRule.swift in Sources */,
-				1451400E2064917C00AA63B6 /* Region.swift in Sources */,
-				1451400F2064917C00AA63B6 /* FunctionBodyLengthRule.swift in Sources */,
-				145140102064917C00AA63B6 /* File+SwiftLint.swift in Sources */,
-				145140112064917C00AA63B6 /* ColonRule+Type.swift in Sources */,
-				145140122064917C00AA63B6 /* SeverityLevelsConfiguration.swift in Sources */,
-				145140132064917C00AA63B6 /* NimbleOperatorRule.swift in Sources */,
-				145140142064917C00AA63B6 /* Structure+SwiftLint.swift in Sources */,
-				145140152064917C00AA63B6 /* ForWhereRule.swift in Sources */,
-				145140162064917C00AA63B6 /* LiteralExpressionEndIdentationRule.swift in Sources */,
-				145140172064917C00AA63B6 /* XcodeReporter.swift in Sources */,
-				145140182064917C00AA63B6 /* Configuration+LintableFiles.swift in Sources */,
-				145140192064917C00AA63B6 /* WeakDelegateRule.swift in Sources */,
-				1451401A2064917C00AA63B6 /* CustomRules.swift in Sources */,
-				1451401B2064917C00AA63B6 /* FunctionParameterCountRule.swift in Sources */,
-				1451401C2064917C00AA63B6 /* JSONReporter.swift in Sources */,
-				1451401D2064917C00AA63B6 /* OperatorFunctionWhitespaceRule.swift in Sources */,
-				1451401E2064917C00AA63B6 /* ValidIBInspectableRule.swift in Sources */,
-				1451401F2064917C00AA63B6 /* DiscouragedOptionalBooleanRule.swift in Sources */,
-				145140202064917C00AA63B6 /* MarkRule.swift in Sources */,
-				145140212064917C00AA63B6 /* SwiftVersion.swift in Sources */,
-				145140222064917C00AA63B6 /* VerticalParameterAlignmentOnCallRule.swift in Sources */,
-				145140232064917C00AA63B6 /* DiscardedNotificationCenterObserverRule.swift in Sources */,
-				145140242064917C00AA63B6 /* NamespaceCollector.swift in Sources */,
-				145140252064917C00AA63B6 /* RedundantVoidReturnRule.swift in Sources */,
-				145140262064917C00AA63B6 /* NameConfiguration.swift in Sources */,
-				145140272064917C00AA63B6 /* Version.swift in Sources */,
-				145140282064917C00AA63B6 /* PrivateUnitTestConfiguration.swift in Sources */,
-				145140292064917C00AA63B6 /* SwitchCaseOnNewlineRule.swift in Sources */,
-				1451402A2064917C00AA63B6 /* NumberSeparatorRuleExamples.swift in Sources */,
-				1451402B2064917C00AA63B6 /* CompilerProtocolInitRule.swift in Sources */,
-				1451402C2064917C00AA63B6 /* SingleTestClassRule.swift in Sources */,
-				1451402D2064917C00AA63B6 /* MultilineParametersRuleExamples.swift in Sources */,
-				1451402E2064917C00AA63B6 /* AttributesRulesExamples.swift in Sources */,
-				1451402F2064917C00AA63B6 /* Location.swift in Sources */,
-				145140302064917C00AA63B6 /* ClosureEndIndentationRule.swift in Sources */,
-				145140312064917C00AA63B6 /* ColonRule+Dictionary.swift in Sources */,
-				145140322064917C00AA63B6 /* NestingConfiguration.swift in Sources */,
-				145140332064917C00AA63B6 /* RuleIdentifier.swift in Sources */,
-				145140342064917C00AA63B6 /* ExplicitTypeInterfaceRule.swift in Sources */,
-				145140352064917C00AA63B6 /* ConditionalReturnsOnNewlineRule.swift in Sources */,
-				145140362064917C00AA63B6 /* ImplicitGetterRule.swift in Sources */,
-				145140372064917C00AA63B6 /* JoinedDefaultRule.swift in Sources */,
-				145140382064917C00AA63B6 /* BlockBasedKVORule.swift in Sources */,
-				145140392064917C00AA63B6 /* ExplicitInitRule.swift in Sources */,
-				1451403A2064917C00AA63B6 /* Rule.swift in Sources */,
-				1451403B2064917C00AA63B6 /* SwiftExpressionKind.swift in Sources */,
-				1451403C2064917C00AA63B6 /* LegacyConstantRuleExamples.swift in Sources */,
-				1451403D2064917C00AA63B6 /* MultilineArgumentsConfiguration.swift in Sources */,
-				1451403E2064917C00AA63B6 /* RedundantNilCoalescingRule.swift in Sources */,
-				1451403F2064917C00AA63B6 /* IdentifierNameRuleExamples.swift in Sources */,
-				145140402064917C00AA63B6 /* StatementPositionConfiguration.swift in Sources */,
-				145140412064917C00AA63B6 /* QueuedPrint.swift in Sources */,
-				145140422064917C00AA63B6 /* TrailingSemicolonRule.swift in Sources */,
-				145140432064917C00AA63B6 /* FallthroughRule.swift in Sources */,
-				145140442064917C00AA63B6 /* MultilineArgumentsRuleExamples.swift in Sources */,
-				145140452064917C00AA63B6 /* NestingRule.swift in Sources */,
-				145140462064917C00AA63B6 /* UnneededParenthesesInClosureArgumentRule.swift in Sources */,
-				145140472064917C00AA63B6 /* EmptyEnumArgumentsRule.swift in Sources */,
-				145140482064917C00AA63B6 /* QuickDiscouragedFocusedTestRule.swift in Sources */,
-				145140492064917C00AA63B6 /* NSRegularExpression+SwiftLint.swift in Sources */,
-				1451404A2064917C00AA63B6 /* StatementPositionRule.swift in Sources */,
-				1451404B2064917C00AA63B6 /* ForceUnwrappingRule.swift in Sources */,
-				1451404C2064917C00AA63B6 /* ExplicitTopLevelACLRule.swift in Sources */,
-				1451404D2064917C00AA63B6 /* OverrideInExtensionRule.swift in Sources */,
-				1451404E2064917C00AA63B6 /* RedundantStringEnumValueRule.swift in Sources */,
-				1451404F2064917C00AA63B6 /* ViolationSeverity.swift in Sources */,
-				145140502064917C00AA63B6 /* YodaConditionRule.swift in Sources */,
-				145140512064917C00AA63B6 /* PrivateOverFilePrivateRule.swift in Sources */,
-				145140522064917C00AA63B6 /* ExplicitACLRule.swift in Sources */,
-				145140532064917C00AA63B6 /* PrivateUnitTestRule.swift in Sources */,
-				145140542064917C00AA63B6 /* AttributesRule.swift in Sources */,
-				145140552064917C00AA63B6 /* UnusedOptionalBindingConfiguration.swift in Sources */,
-				145140562064917C00AA63B6 /* PrivateActionRule.swift in Sources */,
-				145140572064917C00AA63B6 /* LinterCache.swift in Sources */,
-				145140582064917C00AA63B6 /* YamlParser.swift in Sources */,
-				145140592064917C00AA63B6 /* LegacyNSGeometryFunctionsRule.swift in Sources */,
-				1451405A2064917C00AA63B6 /* ASTRule.swift in Sources */,
-				1451405B2064917C00AA63B6 /* ClosureSpacingRule.swift in Sources */,
-				1451405C2064917C00AA63B6 /* CacheDescriptionProvider.swift in Sources */,
-				1451405D2064917C00AA63B6 /* PrivateOutletRule.swift in Sources */,
-				1451405E2064917C00AA63B6 /* DiscouragedOptionalBooleanRuleExamples.swift in Sources */,
-				1451405F2064917C00AA63B6 /* Configuration+IndentationStyle.swift in Sources */,
-				145140602064917C00AA63B6 /* StyleViolation.swift in Sources */,
-				145140612064917C00AA63B6 /* DiscouragedDirectInitRule.swift in Sources */,
-				145140622064917C00AA63B6 /* RequiredEnumCaseRule.swift in Sources */,
-				145140632064917C00AA63B6 /* RegexConfiguration.swift in Sources */,
-				145140642064917C00AA63B6 /* RuleKind.swift in Sources */,
-				145140652064917C00AA63B6 /* RedundantDiscardableLetRule.swift in Sources */,
-				145140662064917C00AA63B6 /* AccessControlLevel.swift in Sources */,
-				145140672064917C00AA63B6 /* HTMLReporter.swift in Sources */,
-				145140682064917C00AA63B6 /* TrailingCommaConfiguration.swift in Sources */,
-				145140692064917C00AA63B6 /* ExplicitEnumRawValueRule.swift in Sources */,
-				1451406A2064917C00AA63B6 /* FileLengthRuleConfiguration.swift in Sources */,
-				1451406B2064917C00AA63B6 /* Array+SwiftLint.swift in Sources */,
-				1451406C2064917C00AA63B6 /* CharacterSet+SwiftLint.swift in Sources */,
-				1451406D2064917C00AA63B6 /* UnusedEnumeratedRule.swift in Sources */,
-				1451406E2064917C00AA63B6 /* DiscouragedDirectInitConfiguration.swift in Sources */,
-				1451406F2064917C00AA63B6 /* ContainsOverFirstNotNilRule.swift in Sources */,
-				145140702064917C00AA63B6 /* LetVarWhitespaceRule.swift in Sources */,
-				145140712064917C00AA63B6 /* TrailingWhitespaceRule.swift in Sources */,
-				145140722064917C00AA63B6 /* NSFileManager+SwiftLint.swift in Sources */,
-				145140732064917C00AA63B6 /* SwiftDeclarationKind+SwiftLint.swift in Sources */,
-				145140742064917C00AA63B6 /* NotificationCenterDetachmentRule.swift in Sources */,
-				145140752064917C00AA63B6 /* NSRange+SwiftLint.swift in Sources */,
-				145140762064917C00AA63B6 /* ShorthandOperatorRule.swift in Sources */,
-				145140772064917C00AA63B6 /* FatalErrorMessageRule.swift in Sources */,
-				145140782064917C00AA63B6 /* QuickDiscouragedFocusedTestRuleExamples.swift in Sources */,
-				145140792064917C00AA63B6 /* RequiredEnumCaseRuleConfiguration.swift in Sources */,
-				1451407A2064917C00AA63B6 /* RuleList+Documentation.swift in Sources */,
-				1451407B2064917C00AA63B6 /* IsDisjointRule.swift in Sources */,
-				1451407C2064917C00AA63B6 /* RegexHelpers.swift in Sources */,
-				1451407D2064917C00AA63B6 /* Reporter.swift in Sources */,
-				1451407E2064917C00AA63B6 /* ObjectLiteralConfiguration.swift in Sources */,
-				1451407F2064917C00AA63B6 /* ClassDelegateProtocolRule.swift in Sources */,
-				145140802064917C00AA63B6 /* TypeNameRule.swift in Sources */,
-				145140812064917C00AA63B6 /* UnusedClosureParameterRule.swift in Sources */,
-				145140822064917C00AA63B6 /* TrailingCommaRule.swift in Sources */,
-				145140832064917C00AA63B6 /* NotificationCenterDetachmentRuleExamples.swift in Sources */,
-				145140842064917C00AA63B6 /* TodoRule.swift in Sources */,
-				145140852064917C00AA63B6 /* RuleConfiguration.swift in Sources */,
-				145140862064917C00AA63B6 /* CallPairRule.swift in Sources */,
-				145140872064917C00AA63B6 /* VoidReturnRule.swift in Sources */,
-				145140882064917C00AA63B6 /* String+XML.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2353,6 +1905,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		14698A2220671E2F00A3545D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
+			targetProxy = 14698A2120671E2F00A3545D /* PBXContainerItemProxy */;
+		};
 		D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
@@ -2374,10 +1931,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2408,10 +1961,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2442,10 +1991,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"NDEBUG=1",
@@ -2476,10 +2021,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				FRAMEWORK_VERSION = A;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"NDEBUG=1",
@@ -2545,10 +2086,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2601,10 +2138,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = SwiftLintKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
@@ -2905,10 +2438,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2921,10 +2450,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2937,10 +2462,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2953,10 +2474,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Frameworks",
-				);
 				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";

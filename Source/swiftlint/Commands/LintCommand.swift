@@ -11,9 +11,7 @@ import Dispatch
 import Foundation
 import Result
 import SourceKittenFramework
-#if !SWIFT_LINT_KIT
-    import SwiftLintFramework
-#endif
+import SwiftLintFramework
 
 public struct LintCommand: CommandProtocol {
     public let verb = "lint"

@@ -11,9 +11,7 @@ import Dispatch
 import Foundation
 import Result
 import SourceKittenFramework
-#if !SWIFT_LINT_KIT
-    import SwiftLintFramework
-#endif
+import SwiftLintFramework
 
 private func scriptInputFiles() -> Result<[File], CommandantError<()>> {
     func getEnvironmentVariable(_ variable: String) -> Result<String, CommandantError<()>> {

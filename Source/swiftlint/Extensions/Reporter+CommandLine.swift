@@ -6,9 +6,7 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-#if !SWIFT_LINT_KIT
-    import SwiftLintFramework
-#endif
+import SwiftLintFramework
 
 extension Reporter {
     static func report(violations: [StyleViolation], realtimeCondition: Bool) {

@@ -28,6 +28,16 @@ opt_in_rules:
   - pattern_matching_keywords
   - array_init
   - literal_expression_end_indentation
+  - joined_default_parameter
+  - contains_over_first_not_nil
+  - override_in_extension
+  - private_action
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - single_test_class
+  - sorted_first_last
+  - yoda_condition
 
 file_header:
   required_pattern: |

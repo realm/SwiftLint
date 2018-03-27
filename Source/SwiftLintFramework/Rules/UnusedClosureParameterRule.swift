@@ -57,7 +57,8 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
             "hoge(arg: num) { ↓num in\n" +
             "}\n",
-            "fooFunc { ↓아 in\n }"
+            "fooFunc { ↓아 in\n }",
+            "func foo () {\n bar { ↓number in\n return 3\n}\n"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -81,7 +82,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
                 "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
             "hoge(arg: num) { ↓num in\n}\n":
-                "hoge(arg: num) { _ in\n}\n"
+                "hoge(arg: num) { _ in\n}\n",
+            "func foo () {\n bar { ↓number in\n return 3\n}\n":
+                "func foo () {\n bar { _ in\n return 3\n}\n"
         ]
     )
 
@@ -163,12 +166,12 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, dictionary: subDict, kind: kind).map { $0.0 }
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, dictionary: subDict, kind: kind).map({ $0.0 })
+
+            return ranges
         }
     }
 

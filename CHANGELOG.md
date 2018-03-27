@@ -60,8 +60,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2032](https://github.com/realm/SwiftLint/issues/2032)
 
-* Fix `empty_enum_arguments` rule autocorrection inside functions or other
-  declarations.
+* Fix several rules (`empty_enum_arguments`, `explicit_init`
+  `empty_parentheses_with_trailing_closure`, `joined_default_parameter`,
+  `redundant_optional_initialization`, `redundant_void_return` and
+  `unused_closure_parameter`) rules autocorrection inside functions or other
+  declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 ## 0.25.0: Cleaning the Lint Filter

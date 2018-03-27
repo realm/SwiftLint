@@ -3178,6 +3178,13 @@ UIView.animateWithDuration(0.3, animations: {
 
 ```
 
+```swift
+func foo() -> [Int] {
+    return [1, 2].map↓() { $0 + 1 }
+}
+
+```
+
 </details>
 
 
@@ -3474,6 +3481,12 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 
 ```swift
 [String.self].map { Type in Type↓.init(1) }
+```
+
+```swift
+func foo() -> [String] {
+    return [1].flatMap { String↓.init($0) }
+}
 ```
 
 </details>
@@ -6321,6 +6334,12 @@ let foo = bar.joined(↓separator: "")
 ```swift
 let foo = bar.filter(toto)
              .joined(↓separator: "")
+```
+
+```swift
+func foo() -> String {
+   return ["1", "2"].joined(↓separator: "")
+}
 ```
 
 </details>
@@ -16673,6 +16692,14 @@ hoge(arg: num) { ↓num in
 ```swift
 fooFunc { ↓아 in
  }
+```
+
+```swift
+func foo () {
+ bar { ↓number in
+ return 3
+}
+
 ```
 
 </details>

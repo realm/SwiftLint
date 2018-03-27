@@ -27,11 +27,14 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
         triggeringExamples: [
             "let foo = bar.joined(↓separator: \"\")",
             "let foo = bar.filter(toto)\n" +
-            "             .joined(↓separator: \"\")"
+            "             .joined(↓separator: \"\")",
+            "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}"
         ],
         corrections: [
             "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",
-            "let foo = bar.filter(toto)\n.joined(↓separator: \"\")": "let foo = bar.filter(toto)\n.joined()"
+            "let foo = bar.filter(toto)\n.joined(↓separator: \"\")": "let foo = bar.filter(toto)\n.joined()",
+            "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}":
+            "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}"
         ]
     )
 
@@ -77,12 +80,12 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard
-                let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else { return [] }
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
+            }
 
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
+            return ranges
         }
     }
 

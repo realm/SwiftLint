@@ -3019,6 +3019,15 @@ switch foo {
 }
 ```
 
+```swift
+func example(foo: Foo) {
+    switch foo {
+    case case .bar↓(_):
+        break
+    }
+}
+```
+
 </details>
 
 

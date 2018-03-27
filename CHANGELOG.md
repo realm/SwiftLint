@@ -60,6 +60,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2032](https://github.com/realm/SwiftLint/issues/2032)
 
+* Fix `empty_enum_arguments` rule autocorrection inside functions or other
+  declarations.
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

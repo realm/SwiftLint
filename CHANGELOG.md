@@ -75,6 +75,9 @@
 * Fix `redundant_void_return` rule autocorrect when preprocessor macros are present.  
   [John Szumski](https://github.com/jszumski)
   [#2115](https://github.com/realm/SwiftLint/issues/2115)
+  
+* Fix issue where the autocorrect done message used the plural form of "files" even if only 1 file changed.  
+  [John Szumski](https://github.com/jszumski)
 
 ## 0.25.0: Cleaning the Lint Filter
 

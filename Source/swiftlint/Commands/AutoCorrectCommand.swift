@@ -54,7 +54,10 @@ struct AutoCorrectCommand: CommandProtocol {
             }
         }.flatMap { files in
             if !options.quiet {
-                queuedPrintError("Done correcting \(files.count) files!")
+                let pluralSuffix = { (collection: [Any]) -> String in
+                    return collection.count != 1 ? "s" : ""
+                }
+                queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
             }
             return .success(())
         }

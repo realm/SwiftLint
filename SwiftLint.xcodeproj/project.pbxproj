@@ -19,6 +19,20 @@
 		125AAC78203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125AAC77203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift */; };
 		125CE52F20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125CE52E20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift */; };
 		12E3D4DC2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */; };
+		14188BEB2064898D004D6146 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14188BEC2064898D004D6146 /* SWXMLHash.framework */; };
+		14188BED206489AD004D6146 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14188BEE206489AD004D6146 /* SourceKittenFramework.framework */; };
+		14513F8120648CE900AA63B6 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */; };
+		14513F8820648E7E00AA63B6 /* Yams.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14513F8720648E7E00AA63B6 /* Yams.framework */; };
+		145140962064921300AA63B6 /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = E802ECFF1C56A56000A35AE1 /* Benchmark.swift */; };
+		145140972064921300AA63B6 /* CommonOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E81FB3E31C6D507B00DC988F /* CommonOptions.swift */; };
+		145140982064921300AA63B6 /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
+		145140992064921300AA63B6 /* Reporter+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86E2B2D1E17443B001E823C /* Reporter+CommandLine.swift */; };
+		14689164206735DF00CFB56C /* LintCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E861519A1B0573B900C54AC0 /* LintCommand.swift */; };
+		146891DE20683FE400CFB56C /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146891DF20683FE400CFB56C /* SwiftyTextTable.framework */; };
+		146891E020683FEE00CFB56C /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146891E120683FEE00CFB56C /* SwiftyTextTable.framework */; };
+		1468921D2068404D00CFB56C /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1468921E2068404D00CFB56C /* Commandant.framework */; };
+		1468921F2068405C00CFB56C /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146892202068405C00CFB56C /* Commandant.framework */; };
+		14698A2320671E4200A3545D /* SwiftLintFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */; };
 		181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
@@ -56,7 +70,6 @@
 		3BB47D831C514E8100AE6A10 /* RegexConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D821C514E8100AE6A10 /* RegexConfiguration.swift */; };
 		3BB47D851C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */; };
 		3BB47D871C51DE6E00AE6A10 /* CustomRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */; };
-		3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; };
 		3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */; };
 		3BCC04D11C4F56D3006073C3 /* SeverityLevelsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */; };
 		3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */; };
@@ -99,15 +112,8 @@
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
-		6CB8A80C1D11A7E10052816E /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
-		6CB8A80D1D11A7E10052816E /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; };
 		6CC4259B1C77046200AEA885 /* SyntaxMap+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */; };
 		6CC898A71EA0E1F7003DC0E2 /* CannedEmojiReporterOutputNonObjC.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6CC898A61EA0E1EF003DC0E2 /* CannedEmojiReporterOutputNonObjC.txt */; };
-		6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BA7E121B07A3F3003E02D0 /* Result.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7250948A1D0859260039B353 /* StatementPositionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementPositionConfiguration.swift */; };
 		72EA17B61FD31F10009D5CE6 /* ExplicitACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */; };
 		740DF1B1203F62BB0081F694 /* EmptyStringRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */; };
@@ -274,7 +280,6 @@
 		E86396CB1BADB519002C9E88 /* CSVReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86396CA1BADB519002C9E88 /* CSVReporter.swift */; };
 		E86623671F1D377900AAA3A2 /* Configuration+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */; };
 		E86E2B2E1E17443B001E823C /* Reporter+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E86E2B2D1E17443B001E823C /* Reporter+CommandLine.swift */; };
-		E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */; };
 		E87E4A051BFB927C00FCFE46 /* TrailingSemicolonRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */; };
 		E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */; };
 		E88198421BEA929F00333A11 /* NestingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E88DEA951B099CF200A66CB0 /* NestingRule.swift */; };
@@ -308,8 +313,6 @@
 		E8B067811C13E49600E9E13F /* Configuration+CommandLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */; };
 		E8B67C3E1C095E6300FDED8E /* Correction.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B67C3D1C095E6300FDED8E /* Correction.swift */; };
 		E8BDE3FF1EDF91B6002EC12F /* RuleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */; };
-		E8BE1FCC1E07687400F781C7 /* Yams.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BE1FCB1E07687400F781C7 /* Yams.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
@@ -319,6 +322,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		14698A2120671E2F00A3545D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0D1216C19E87B05005E4BAA;
+			remoteInfo = SwiftLintFramework;
+		};
 		D0AAAB5119FB0960007B24B3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D0D1211019E87861005E4BAA /* Project object */;
@@ -342,12 +352,6 @@
 			dstPath = SwiftLintFramework.framework/Versions/Current/Frameworks;
 			dstSubfolderSpec = 10;
 			files = (
-				6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */,
-				6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */,
-				6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */,
-				6CCFCF2E1CFEF73A003239EB /* SWXMLHash.framework in Embed Frameworks into SwiftLintFramework.framework */,
-				6CCFCF2F1CFEF73E003239EB /* SwiftyTextTable.framework in Embed Frameworks into SwiftLintFramework.framework */,
-				E8BE1FCC1E07687400F781C7 /* Yams.framework in Embed Frameworks into SwiftLintFramework.framework */,
 			);
 			name = "Embed Frameworks into SwiftLintFramework.framework";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -378,6 +382,19 @@
 		125AAC77203AA82D0004BCE0 /* ExplicitTypeInterfaceConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceConfiguration.swift; sourceTree = "<group>"; };
 		125CE52E20425EFD001635E5 /* ExplicitTypeInterfaceConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceConfigurationTests.swift; sourceTree = "<group>"; };
 		12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceRuleTests.swift; sourceTree = "<group>"; };
+		14188BEC2064898D004D6146 /* SWXMLHash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SWXMLHash.framework; path = ../Debug/SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14188BEE206489AD004D6146 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = SourceKittenFramework.framework; path = ../Debug/SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftyTextTable.framework; path = ../Debug/SwiftyTextTable.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14513F8720648E7E00AA63B6 /* Yams.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Yams.framework; path = ../Debug/Yams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14513F9C2064916300AA63B6 /* SwiftLintKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftLintKit.h; sourceTree = "<group>"; };
+		14513F9D2064916300AA63B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		145140942064917D00AA63B6 /* SwiftLintKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftLintKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		145140A12064948D00AA63B6 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = ../Debug/Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		145140A3206494B200AA63B6 /* Commandant.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Commandant.framework; path = ../Debug/Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		146891DF20683FE400CFB56C /* SwiftyTextTable.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftyTextTable.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		146891E120683FEE00CFB56C /* SwiftyTextTable.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SwiftyTextTable.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1468921E2068404D00CFB56C /* Commandant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		146892202068405C00CFB56C /* Commandant.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntypedErrorInCatchRule.swift; sourceTree = "<group>"; };
 		1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YodaConditionRule.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
@@ -415,7 +432,6 @@
 		3BB47D821C514E8100AE6A10 /* RegexConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexConfiguration.swift; sourceTree = "<group>"; };
 		3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+SwiftLint.swift"; sourceTree = "<group>"; };
 		3BB47D861C51DE6E00AE6A10 /* CustomRulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomRulesTests.swift; sourceTree = "<group>"; };
-		3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SwiftyTextTable.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BCC04CC1C4F5694006073C3 /* ConfigurationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationError.swift; sourceTree = "<group>"; };
 		3BCC04CF1C4F56D3006073C3 /* SeverityLevelsConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityLevelsConfiguration.swift; sourceTree = "<group>"; };
 		3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameConfiguration.swift; sourceTree = "<group>"; };
@@ -653,7 +669,6 @@
 		E86623661F1D377900AAA3A2 /* Configuration+Parsing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+Parsing.swift"; sourceTree = "<group>"; };
 		E868473B1A587C6E0043DC65 /* sourcekitd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = sourcekitd.framework; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/sourcekitd.framework; sourceTree = DEVELOPER_DIR; };
 		E86E2B2D1E17443B001E823C /* Reporter+CommandLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Reporter+CommandLine.swift"; sourceTree = "<group>"; };
-		E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SourceKittenFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingSemicolonRule.swift; sourceTree = "<group>"; };
 		E87E4A081BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxKind+SwiftLint.swift"; sourceTree = "<group>"; };
 		E889D8C41F1D11A200058332 /* Configuration+LintableFiles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+LintableFiles.swift"; sourceTree = "<group>"; };
@@ -679,16 +694,11 @@
 		E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypeNameRule.swift; sourceTree = "<group>"; };
 		E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdentifierNameRule.swift; sourceTree = "<group>"; };
 		E88DEA951B099CF200A66CB0 /* NestingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestingRule.swift; sourceTree = "<group>"; };
-		E89376AC1B8A701E0025708E /* Yaml.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Yaml.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8AB1A2D1A649F2100452012 /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libclang.dylib; path = Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib; sourceTree = DEVELOPER_DIR; };
 		E8B067801C13E49600E9E13F /* Configuration+CommandLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+CommandLine.swift"; sourceTree = "<group>"; };
 		E8B67C3D1C095E6300FDED8E /* Correction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Correction.swift; sourceTree = "<group>"; };
-		E8BA7E101B07A3EC003E02D0 /* Commandant.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Commandant.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E8BA7E121B07A3F3003E02D0 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8BB8F9B1B17DE3B00199606 /* RulesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesTests.swift; sourceTree = "<group>"; };
 		E8BDE3FE1EDF91B6002EC12F /* RuleList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleList.swift; sourceTree = "<group>"; };
-		E8BE1FCB1E07687400F781C7 /* Yams.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
@@ -698,13 +708,24 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		145140892064917C00AA63B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1468921D2068404D00CFB56C /* Commandant.framework in Frameworks */,
+				146891E020683FEE00CFB56C /* SwiftyTextTable.framework in Frameworks */,
+				14698A2320671E4200A3545D /* SwiftLintFramework.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0D1216919E87B05005E4BAA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */,
-				E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */,
-				3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */,
+				146891DE20683FE400CFB56C /* SwiftyTextTable.framework in Frameworks */,
+				14513F8820648E7E00AA63B6 /* Yams.framework in Frameworks */,
+				14188BED206489AD004D6146 /* SourceKittenFramework.framework in Frameworks */,
+				14188BEB2064898D004D6146 /* SWXMLHash.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -720,8 +741,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6CB8A80C1D11A7E10052816E /* Commandant.framework in Frameworks */,
-				6CB8A80D1D11A7E10052816E /* Result.framework in Frameworks */,
+				1468921F2068405C00CFB56C /* Commandant.framework in Frameworks */,
+				14513F8120648CE900AA63B6 /* SwiftyTextTable.framework in Frameworks */,
 				D0E7B65319E9C6AD00EDBA4D /* SwiftLintFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -729,6 +750,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		14188BEA2064898D004D6146 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				146892202068405C00CFB56C /* Commandant.framework */,
+				1468921E2068404D00CFB56C /* Commandant.framework */,
+				146891E120683FEE00CFB56C /* SwiftyTextTable.framework */,
+				146891DF20683FE400CFB56C /* SwiftyTextTable.framework */,
+				145140A3206494B200AA63B6 /* Commandant.framework */,
+				145140A12064948D00AA63B6 /* Result.framework */,
+				14513F8720648E7E00AA63B6 /* Yams.framework */,
+				14513F8020648CE900AA63B6 /* SwiftyTextTable.framework */,
+				14188BEE206489AD004D6146 /* SourceKittenFramework.framework */,
+				14188BEC2064898D004D6146 /* SWXMLHash.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		14513F9B2064916300AA63B6 /* SwiftLintKit */ = {
+			isa = PBXGroup;
+			children = (
+				14513F9C2064916300AA63B6 /* SwiftLintKit.h */,
+				14513F9D2064916300AA63B6 /* Info.plist */,
+			);
+			path = SwiftLintKit;
+			sourceTree = "<group>";
+		};
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -793,8 +840,6 @@
 		5499CA981A2394BD00783309 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E8BA7E101B07A3EC003E02D0 /* Commandant.framework */,
-				E8BA7E121B07A3F3003E02D0 /* Result.framework */,
 				5499CA961A2394B700783309 /* Components.plist */,
 				5499CA971A2394B700783309 /* Info.plist */,
 			);
@@ -804,10 +849,12 @@
 		D0D1210F19E87861005E4BAA = {
 			isa = PBXGroup;
 			children = (
+				14513F9B2064916300AA63B6 /* SwiftLintKit */,
 				D0D1211919E87861005E4BAA /* Products */,
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
+				14188BEA2064898D004D6146 /* Frameworks */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -820,6 +867,7 @@
 				D0D1216D19E87B05005E4BAA /* SwiftLintFramework.framework */,
 				D0D1217719E87B05005E4BAA /* SwiftLintFrameworkTests.xctest */,
 				D0E7B63219E9C64500EDBA4D /* swiftlint.app */,
+				145140942064917D00AA63B6 /* SwiftLintKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -827,11 +875,11 @@
 		D0D1211A19E87861005E4BAA /* swiftlint */ = {
 			isa = PBXGroup;
 			children = (
+				E85FF9921C13E35400714267 /* Commands */,
+				5499CA981A2394BD00783309 /* Supporting Files */,
 				E802ECFE1C56A54600A35AE1 /* Helpers */,
 				E8B0677F1C13E48100E9E13F /* Extensions */,
-				E85FF9921C13E35400714267 /* Commands */,
 				D0D1211B19E87861005E4BAA /* main.swift */,
-				5499CA981A2394BD00783309 /* Supporting Files */,
 			);
 			name = swiftlint;
 			path = Source/swiftlint;
@@ -924,11 +972,6 @@
 				D0D1217019E87B05005E4BAA /* Info.plist */,
 				E8AB1A2D1A649F2100452012 /* libclang.dylib */,
 				E868473B1A587C6E0043DC65 /* sourcekitd.framework */,
-				E876BFBD1B07828500114ED5 /* SourceKittenFramework.framework */,
-				3BBF2F9C1C640A0F006CD775 /* SwiftyTextTable.framework */,
-				E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */,
-				E89376AC1B8A701E0025708E /* Yaml.framework */,
-				E8BE1FCB1E07687400F781C7 /* Yams.framework */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -1266,6 +1309,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		1451408E2064917C00AA63B6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0D1216A19E87B05005E4BAA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1276,6 +1326,26 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		14513FA42064917C00AA63B6 /* SwiftLintKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1451408F2064917C00AA63B6 /* Build configuration list for PBXNativeTarget "SwiftLintKit" */;
+			buildPhases = (
+				14513FA52064917C00AA63B6 /* Update Source/SwiftLintFramework/Models/MasterRuleList.swift */,
+				14513FA62064917C00AA63B6 /* Update Tests/LinuxMain.swift */,
+				14513FA72064917C00AA63B6 /* Sources */,
+				145140892064917C00AA63B6 /* Frameworks */,
+				1451408E2064917C00AA63B6 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				14698A2220671E2F00A3545D /* PBXTargetDependency */,
+			);
+			name = SwiftLintKit;
+			productName = SourceKittenFramework;
+			productReference = 145140942064917D00AA63B6 /* SwiftLintKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		D0D1216C19E87B05005E4BAA /* SwiftLintFramework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0D1218419E87B05005E4BAA /* Build configuration list for PBXNativeTarget "SwiftLintFramework" */;
@@ -1343,7 +1413,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = Realm;
 				TargetAttributes = {
 					D0D1216C19E87B05005E4BAA = {
@@ -1376,6 +1446,7 @@
 				D0E7B63119E9C64500EDBA4D /* swiftlint */,
 				D0D1216C19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217619E87B05005E4BAA /* SwiftLintFrameworkTests */,
+				14513FA42064917C00AA63B6 /* SwiftLintKit */,
 			);
 		};
 /* End PBXProject section */
@@ -1402,6 +1473,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		14513FA52064917C00AA63B6 /* Update Source/SwiftLintFramework/Models/MasterRuleList.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Source/SwiftLintFramework/Rules/*.swift",
+			);
+			name = "Update Source/SwiftLintFramework/Models/MasterRuleList.swift";
+			outputPaths = (
+				"$(SRCROOT)/Source/SwiftLintFramework/Models/MasterRuleList.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sourcery >/dev/null; then\n  make Source/SwiftLintFramework/Models/MasterRuleList.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			showEnvVarsInLog = 0;
+		};
+		14513FA62064917C00AA63B6 /* Update Tests/LinuxMain.swift */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Tests/*/*.swift",
+			);
+			name = "Update Tests/LinuxMain.swift";
+			outputPaths = (
+				"$(SRCROOT)/Tests/LinuxMain.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sourcery >/dev/null; then\n  make Tests/LinuxMain.swift\nelse\n  echo \"Sourcery not found, install with 'brew install sourcery'\"\nfi";
+			showEnvVarsInLog = 0;
+		};
 		6CCFCF321CFEF768003239EB /* Embed Swift libraries into SwiftLintFramework.framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1498,6 +1603,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		14513FA72064917C00AA63B6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				14689164206735DF00CFB56C /* LintCommand.swift in Sources */,
+				145140962064921300AA63B6 /* Benchmark.swift in Sources */,
+				145140972064921300AA63B6 /* CommonOptions.swift in Sources */,
+				145140982064921300AA63B6 /* Configuration+CommandLine.swift in Sources */,
+				145140992064921300AA63B6 /* Reporter+CommandLine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D0D1216819E87B05005E4BAA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1806,6 +1923,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		14698A2220671E2F00A3545D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
+			targetProxy = 14698A2120671E2F00A3545D /* PBXContainerItemProxy */;
+		};
 		D0AAAB5219FB0960007B24B3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0D1216C19E87B05005E4BAA /* SwiftLintFramework */;
@@ -1819,13 +1941,267 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		145140902064917C00AA63B6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"SWIFT_LINT_KIT=1",
+				);
+				INFOPLIST_FILE = SwiftLintKit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SWIFT_LINT_KIT";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = Debug;
+		};
+		145140912064917C00AA63B6 /* Test */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"SWIFT_LINT_KIT=1",
+				);
+				INFOPLIST_FILE = SwiftLintKit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG SWIFT_LINT_KIT";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = Test;
+		};
+		145140922064917C00AA63B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"SWIFT_LINT_KIT=1",
+				);
+				INFOPLIST_FILE = SwiftLintKit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_LINT_KIT;
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = Release;
+		};
+		145140932064917C00AA63B6 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"SWIFT_LINT_KIT=1",
+				);
+				INFOPLIST_FILE = SwiftLintKit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_LINT_KIT;
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = Profile;
+		};
+		145140B620659FE000AA63B6 /* SwiftLintKit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1212819E878CC005E4BAA /* Release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG=1",
+					"SWIFT_LINT_KIT=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				OTHER_SWIFT_FLAGS = "-D SWIFT_LINT_KIT";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = SWIFT_LINT_KIT;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+			};
+			name = SwiftLintKit;
+		};
+		145140B720659FE000AA63B6 /* SwiftLintKit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "Source/swiftlint/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks/SwiftLintFramework.framework/Versions/Current/Frameworks /Library/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = SwiftLintKit;
+		};
+		145140B820659FE000AA63B6 /* SwiftLintKit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = SwiftLintFramework;
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = SwiftLintKit;
+		};
+		145140B920659FE000AA63B6 /* SwiftLintKit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			buildSettings = {
+				INFOPLIST_FILE = "Tests/SwiftLintFrameworkTests/Supporting Files/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = SwiftLintFrameworkTests;
+				SWIFT_VERSION = 3.0;
+			};
+			name = SwiftLintKit;
+		};
+		145140BA20659FE000AA63B6 /* SwiftLintKit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = SwiftLintKit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wno-error=unknown-warning-option",
+					"-Wno-gcc-compat",
+					"-Wno-unused-const-variable",
+				);
+			};
+			name = SwiftLintKit;
+		};
 		D0D1211D19E87861005E4BAA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212619E878CC005E4BAA /* Debug.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_VERSION = 3.0;
@@ -1836,9 +2212,32 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212819E878CC005E4BAA /* Release.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -1919,8 +2318,30 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212719E878CC005E4BAA /* Profile.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1966,8 +2387,30 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212919E878CC005E4BAA /* Test.xcconfig */;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SWIFT_VERSION = 3.0;
 			};
@@ -2060,12 +2503,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1451408F2064917C00AA63B6 /* Build configuration list for PBXNativeTarget "SwiftLintKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				145140902064917C00AA63B6 /* Debug */,
+				145140912064917C00AA63B6 /* Test */,
+				145140922064917C00AA63B6 /* Release */,
+				145140BA20659FE000AA63B6 /* SwiftLintKit */,
+				145140932064917C00AA63B6 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		D0D1211319E87861005E4BAA /* Build configuration list for PBXProject "SwiftLint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D0D1211D19E87861005E4BAA /* Debug */,
 				D0D1218B19E87B3B005E4BAA /* Test */,
 				D0D1211E19E87861005E4BAA /* Release */,
+				145140B620659FE000AA63B6 /* SwiftLintKit */,
 				D0D1218719E87B38005E4BAA /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2077,6 +2533,7 @@
 				D0D1218019E87B05005E4BAA /* Debug */,
 				D0D1218D19E87B3B005E4BAA /* Test */,
 				D0D1218119E87B05005E4BAA /* Release */,
+				145140B820659FE000AA63B6 /* SwiftLintKit */,
 				D0D1218919E87B38005E4BAA /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2088,6 +2545,7 @@
 				D0D1218219E87B05005E4BAA /* Debug */,
 				D0D1218E19E87B3B005E4BAA /* Test */,
 				D0D1218319E87B05005E4BAA /* Release */,
+				145140B920659FE000AA63B6 /* SwiftLintKit */,
 				D0D1218A19E87B38005E4BAA /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -2099,6 +2557,7 @@
 				D0E7B64A19E9C64600EDBA4D /* Debug */,
 				D0E7B64B19E9C64600EDBA4D /* Test */,
 				D0E7B64C19E9C64600EDBA4D /* Release */,
+				145140B720659FE000AA63B6 /* SwiftLintKit */,
 				D0E7B64D19E9C64600EDBA4D /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;

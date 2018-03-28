@@ -41,8 +41,8 @@ private extension Constructor {
         return Constructor(customMap(env: env))
     }
 
-    static func customMap(env: [String: String]) -> Map {
-        var map = defaultMap
+    static func customMap(env: [String: String]) -> Constructor.ScalarMap {
+        var map = Constructor.defaultScalarMap
         map[.str] = String.constructExpandingEnvVars(env: env)
         map[.bool] = Bool.constructUsingOnlyTrueAndFalse
 
@@ -51,10 +51,10 @@ private extension Constructor {
 }
 
 private extension String {
-    static func constructExpandingEnvVars(env: [String: String]) -> (_ node: Node) -> String? {
-        return { (node: Node) -> String? in
-            assert(node.isScalar)
-            return node.scalar!.string.expandingEnvVars(env: env)
+    static func constructExpandingEnvVars(env: [String: String]) -> (_ node: Node.Scalar) -> String? {
+        return { (node: Node.Scalar) -> String? in
+//            assert(node.isScalar)
+            return node.string.expandingEnvVars(env: env)
         }
     }
 
@@ -69,9 +69,9 @@ private extension String {
 }
 
 private extension Bool {
-    static func constructUsingOnlyTrueAndFalse(from node: Node) -> Bool? {
-        assert(node.isScalar)
-        switch node.scalar!.string.lowercased() {
+    static func constructUsingOnlyTrueAndFalse(from node: Node.Scalar) -> Bool? {
+//        assert(node.isScalar)
+        switch node.string.lowercased() {
         case "true":
             return true
         case "false":

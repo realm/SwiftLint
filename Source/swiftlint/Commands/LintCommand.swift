@@ -13,11 +13,13 @@ import Result
 import SourceKittenFramework
 import SwiftLintFramework
 
-struct LintCommand: CommandProtocol {
-    let verb = "lint"
-    let function = "Print lint warnings and errors (default command)"
+public struct LintCommand: CommandProtocol {
+    public let verb = "lint"
+    public let function = "Print lint warnings and errors (default command)"
 
-    func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
+    public init() {}
+
+    public func run(_ options: LintOptions) -> Result<(), CommandantError<()>> {
         var fileBenchmark = Benchmark(name: "files")
         var ruleBenchmark = Benchmark(name: "rules")
         var violations = [StyleViolation]()
@@ -61,8 +63,14 @@ struct LintCommand: CommandProtocol {
                 ruleBenchmark.save()
             }
             try? cache?.save()
-            return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
-                                             strictWithViolations: options.strict && !violations.isEmpty)
+
+            #if SWIFT_LINT_KIT
+                return LintCommand.successOrReturn(numberOfSeriousViolations: numberOfSeriousViolations,
+                                                 strictWithViolations: options.strict && !violations.isEmpty)
+            #else
+                return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
+                                                 strictWithViolations: options.strict && !violations.isEmpty)
+            #endif
         }
     }
 
@@ -72,6 +80,16 @@ struct LintCommand: CommandProtocol {
             exit(2)
         } else if strictWithViolations {
             exit(3)
+        }
+        return .success(())
+    }
+
+    private static func successOrReturn(numberOfSeriousViolations: Int,
+                                        strictWithViolations: Bool) -> Result<(), CommandantError<()>> {
+        if numberOfSeriousViolations > 0 {
+            return .failure(CommandantError.usageError(description: "\(numberOfSeriousViolations)"))
+        } else if strictWithViolations {
+            return .failure(CommandantError.usageError(description: "\(numberOfSeriousViolations)"))
         }
         return .success(())
     }
@@ -124,8 +142,8 @@ struct LintCommand: CommandProtocol {
     }
 }
 
-struct LintOptions: OptionsProtocol {
-    let path: String
+public struct LintOptions: OptionsProtocol {
+    public let path: String
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
@@ -139,6 +157,22 @@ struct LintOptions: OptionsProtocol {
     let ignoreCache: Bool
     let enableAllRules: Bool
 
+    public init(path: String, useSTDIN: Bool, configurationFile: String, strict: Bool, lenient: Bool, forceExclude: Bool, useScriptInputFiles: Bool, benchmark: Bool, reporter: String, quiet: Bool, cachePath: String, ignoreCache: Bool, enableAllRules: Bool) {
+        self.path = path
+        self.useSTDIN = useSTDIN
+        self.configurationFile = configurationFile
+        self.strict = strict
+        self.lenient = lenient
+        self.forceExclude = forceExclude
+        self.useScriptInputFiles = useScriptInputFiles
+        self.benchmark = benchmark
+        self.reporter = reporter
+        self.quiet = quiet
+        self.cachePath = cachePath
+        self.ignoreCache = ignoreCache
+        self.enableAllRules = enableAllRules
+    }
+
     // swiftlint:disable line_length
     static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
         return { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
@@ -146,7 +180,7 @@ struct LintOptions: OptionsProtocol {
         }}}}}}}}}}}}
     }
 
-    static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
+    public static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "lint")

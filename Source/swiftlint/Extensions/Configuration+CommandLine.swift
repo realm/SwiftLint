@@ -134,13 +134,23 @@ extension Configuration {
 
     // MARK: Lint Command
 
-    init(options: LintOptions) {
-        let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
-        let optional = !CommandLine.arguments.contains("--config")
-        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
-                  optional: optional, quiet: options.quiet,
-                  enableAllRules: options.enableAllRules, cachePath: cachePath)
-    }
+    #if SWIFT_LINT_KIT
+        init(options: LintOptions) {
+            let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+            let optional = !CommandLine.arguments.contains("--config")
+            self.init(path: options.configurationFile, rootPath: options.path.bridge().absolutePathRepresentation(),
+                      optional: optional, quiet: options.quiet,
+                      enableAllRules: options.enableAllRules, cachePath: cachePath)
+        }
+    #else
+        init(options: LintOptions) {
+            let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
+            let optional = !CommandLine.arguments.contains("--config")
+            self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+                      optional: optional, quiet: options.quiet, enableAllRules: options.enableAllRules,
+                      cachePath: cachePath)
+        }
+    #endif
 
     func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
@@ -152,6 +162,7 @@ extension Configuration {
 
     // MARK: AutoCorrect Command
 
+    #if !SWIFT_LINT_KIT
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
@@ -165,4 +176,5 @@ extension Configuration {
         let optional = !CommandLine.arguments.contains("--config")
         self.init(path: options.configurationFile, optional: optional)
     }
+    #endif
 }

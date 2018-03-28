@@ -43,7 +43,9 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             "func foo()↓ -> Void {}\n": "func foo() {}\n",
             "protocol Foo {\n func foo()↓ -> Void\n}\n": "protocol Foo {\n func foo()\n}\n",
             "func foo()↓ -> () {}\n": "func foo() {}\n",
-            "protocol Foo {\n func foo()↓ -> ()\n}\n": "protocol Foo {\n func foo()\n}\n"
+            "protocol Foo {\n func foo()↓ -> ()\n}\n": "protocol Foo {\n func foo()\n}\n",
+            "protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}\n":
+            "protocol Foo {\n    #if true\n    func foo()\n    #endif\n}\n"
         ]
     )
 
@@ -87,7 +89,7 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

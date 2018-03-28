@@ -71,6 +71,10 @@
   `unused_closure_parameter`) rules autocorrection inside functions or other
   declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
+  
+* Fix `redundant_void_return` rule autocorrect when preprocessor macros are present.  
+  [John Szumski](https://github.com/jszumski)
+  [#2115](https://github.com/realm/SwiftLint/issues/2115)
 
 ## 0.25.0: Cleaning the Lint Filter
 

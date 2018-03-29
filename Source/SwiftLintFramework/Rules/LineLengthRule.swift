@@ -65,6 +65,13 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 return nil
             }
 
+            if configuration.ignoresInterpolatedStrings &&
+                lineHasKinds(line: line,
+                             kinds: [.stringInterpolationAnchor],
+                             kindsByLine: syntaxKindsByLine) {
+                return nil
+            }
+
             var strippedString = line.content
             if configuration.ignoresURLs {
                 strippedString = strippedString.strippingURLs

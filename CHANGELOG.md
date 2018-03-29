@@ -6,6 +6,11 @@
 
 #### Enhancements
 
+* Add a new `ignores_interpolated_strings` config parameter to the `line_length` rule
+to interpolated strings from this rule
+[Michael Gray](https://github.com/mishagray)
+[#2100](https://github.com/realm/SwiftLint/pull/2100)
+
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)

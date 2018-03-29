@@ -40,6 +40,10 @@
 
 #### Bug Fixes
 
+* Fixes an issue with the `yoda_condition` rule where the severity would always
+  display as a warning, and the reason would display as the severity type.  
+  [Twig](https://github.com/Twigz)
+
 * Fix TODOs lint message to state that TODOs should be resolved instead of
   avoided.  
   [Adonis Peralta](https://github.com/donileo)
@@ -79,10 +83,6 @@
 * Fix issue where the autocorrect done message used the plural form of "files"
   even if only 1 file changed.  
   [John Szumski](https://github.com/jszumski)
-
-* Fixes an issue with the `yoda_condition` rule where the severity would always
-  display as a warning, and the reason would display as the severity type.  
-  [Twig](https://github.com/Twigz)
 
 ## 0.25.0: Cleaning the Lint Filter
 

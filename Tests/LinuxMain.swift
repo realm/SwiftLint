@@ -1357,6 +1357,12 @@ extension UnusedSetterValueRuleTests {
     ]
 }
 
+extension UnwantedImportsRuleTests {
+    static var allTests: [(String, (UnwantedImportsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ValidIBInspectableRuleTests {
     static var allTests: [(String, (ValidIBInspectableRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1648,6 +1654,7 @@ XCTMain([
     testCase(UnusedOptionalBindingRuleTests.allTests),
     testCase(UnusedPrivateDeclarationRuleTests.allTests),
     testCase(UnusedSetterValueRuleTests.allTests),
+    testCase(UnwantedImportsRuleTests.allTests),
     testCase(ValidIBInspectableRuleTests.allTests),
     testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),
     testCase(VerticalParameterAlignmentRuleTests.allTests),

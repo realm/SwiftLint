@@ -158,6 +158,7 @@
 * [Unused Optional Binding](#unused-optional-binding)
 * [Unused Private Declaration](#unused-private-declaration)
 * [Unused Setter Value](#unused-setter-value)
+* [Unwanted Imports](#unwanted-imports)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
@@ -22931,6 +22932,71 @@ var aValue: String {
         Persister.shared.aValue = aValue
     }
 }
+```
+
+</details>
+
+
+
+## Unwanted Imports
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unwanted_imports` | Disabled | No | style | No | 3.0.0 
+
+Imports that are unwanted should be removed.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+import Foundation
+```
+
+```swift
+import MyFramework
+```
+
+```swift
+@testable import MyFramework
+```
+
+```swift
+// import UIKit
+```
+
+```swift
+// @testable import UIKit
+```
+
+```swift
+// import UnwantedFramework
+```
+
+```swift
+// @testable import UnwantedFramework
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+import UIKit
+```
+
+```swift
+@testable import UIKit
+```
+
+```swift
+import UnwantedFramework
+```
+
+```swift
+@testable import UnwantedFramework
 ```
 
 </details>

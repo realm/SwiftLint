@@ -23,6 +23,12 @@
 * Remove @ mark to fix invalid link in Rules.md.  
   [Hiroki Nagasawa](https://github.com/pixyzehn)
   [#2669](https://github.com/realm/SwiftLint/pull/2669)
+  
+* Add `unwanted_imports` opt-in rule which warns when a module that is unwanted gets imported.  
+  [Donald Ritter](https://github.com/donald-m-ritter)
+
+* Add tutorial for creating native rules.  
+  [Donald Ritter](https://github.com/donald-m-ritter)
 
 #### Bug Fixes
 

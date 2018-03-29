@@ -159,6 +159,7 @@ public let masterRuleList = RuleList(rules: [
     UnusedOptionalBindingRule.self,
     UnusedPrivateDeclarationRule.self,
     UnusedSetterValueRule.self,
+    UnwantedImportsRule.self,
     ValidIBInspectableRule.self,
     VerticalParameterAlignmentOnCallRule.self,
     VerticalParameterAlignmentRule.self,

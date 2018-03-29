@@ -40,6 +40,10 @@
 
 #### Bug Fixes
 
+* Fixes an issue with the `yoda_condition` rule where the severity would always
+  display as a warning, and the reason would display as the severity type.  
+  [Twig](https://github.com/Twigz)
+
 * Fix TODOs lint message to state that TODOs should be resolved instead of
   avoided.  
   [Adonis Peralta](https://github.com/donileo)

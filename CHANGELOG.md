@@ -80,6 +80,10 @@
   even if only 1 file changed.  
   [John Szumski](https://github.com/jszumski)
 
+* Fixes an issue with the `yoda_condition` rule where the severity would always
+  display as a warning, and the reason would display as the severity type.  
+  [Twig](https://github.com/Twigz)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

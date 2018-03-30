@@ -38,6 +38,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyStringRule.self,
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
+    ExplicitFinalRule.self,
     ExplicitInitRule.self,
     ExplicitTopLevelACLRule.self,
     ExplicitTypeInterfaceRule.self,

@@ -118,6 +118,10 @@ class RulesTests: XCTestCase {
         verifyRule(ExplicitEnumRawValueRule.description)
     }
 
+    func testExplicitFinal() {
+        verifyRule(ExplicitFinalRule.description)
+    }
+
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }

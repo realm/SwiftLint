@@ -30,6 +30,7 @@
 * [Empty String](#empty-string)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
+* [Explicit Final](#explicit-final)
 * [Explicit Init](#explicit-init)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
@@ -4359,6 +4360,107 @@ enum Numbers: Decimal {
  case ↓one, ↓two
 }
 
+```
+
+</details>
+
+
+
+## Explicit Final
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`explicit_final` | Disabled | No | idiomatic
+
+Non-open class types should always specify final to encourage composition over inheritance.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+final class A {}
+```
+
+```swift
+internal final class B {}
+```
+
+```swift
+private final class C {}
+```
+
+```swift
+public final class D {}
+```
+
+```swift
+open final class D {}
+```
+
+```swift
+open class D {}
+```
+
+```swift
+final class E {
+    final class F { }
+}
+```
+
+```swift
+final class G {
+    final class H {
+        final class I { }
+    }
+}
+```
+
+```swift
+enum J { }
+```
+
+```swift
+struct K { }
+```
+
+```swift
+protocol L { }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class A {}
+```
+
+```swift
+internal ↓class B {}
+```
+
+```swift
+private ↓class C {}
+```
+
+```swift
+public ↓class D {}
+```
+
+```swift
+final class E {
+    ↓class F { }
+}
+```
+
+```swift
+final class G {
+    final class H {
+        ↓class I { }
+    }
+}
 ```
 
 </details>

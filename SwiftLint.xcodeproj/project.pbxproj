@@ -315,6 +315,7 @@
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
+		F2B895D8206E6F5E0070B690 /* ExplicitFinalRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B895D7206E6F5E0070B690 /* ExplicitFinalRule.swift */; };
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
 		F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */; };
 		F480DC831F2609D700099465 /* ConfigurationTests+ProjectMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */; };
@@ -698,6 +699,7 @@
 		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
+		F2B895D7206E6F5E0070B690 /* ExplicitFinalRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitFinalRule.swift; sourceTree = "<group>"; };
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
 		F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+BundlePath.swift"; sourceTree = "<group>"; };
 		F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+ProjectMock.swift"; sourceTree = "<group>"; };
@@ -1081,6 +1083,7 @@
 				D47079A61DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift */,
 				72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */,
 				827169B21F488181003FB9AF /* ExplicitEnumRawValueRule.swift */,
+				F2B895D7206E6F5E0070B690 /* ExplicitFinalRule.swift */,
 				7C0C2E791D2866CB0076435A /* ExplicitInitRule.swift */,
 				1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */,
 				C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */,
@@ -1690,6 +1693,7 @@
 				B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */,
 				D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */,
 				CE8178ED1EAC039D0063186E /* UnusedOptionalBindingConfiguration.swift in Sources */,
+				F2B895D8206E6F5E0070B690 /* ExplicitFinalRule.swift in Sources */,
 				62DEA1661FB21A9E00BCCCC6 /* PrivateActionRule.swift in Sources */,
 				D4FD58B21E12A0200019503C /* LinterCache.swift in Sources */,
 				3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */,

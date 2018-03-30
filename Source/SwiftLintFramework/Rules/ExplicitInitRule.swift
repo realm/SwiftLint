@@ -35,7 +35,9 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         corrections: [
             "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}",
             "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}":
-            "func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"
+                "func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}",
+            "class C {\n#if true\nfunc f() {\n[1].flatMap{String.init($0)}\n}\n#endif\n}":
+                "class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}"
         ]
     )
 
@@ -78,7 +80,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

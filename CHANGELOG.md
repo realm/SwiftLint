@@ -83,6 +83,11 @@
 * Fix issue where the autocorrect done message used the plural form of "files"
   even if only 1 file changed.  
   [John Szumski](https://github.com/jszumski)
+  
+* Fix autocorrection for several rules (`empty_parentheses_with_trailing_closure`, 
+  `explicit_init`, `joined_default_parameter`, `redundant_optional_initialization` 
+  and `unused_closure_parameter `) when used with preprocessor macros.  
+  [John Szumski](https://github.com/jszumski)
 
 ## 0.25.0: Cleaning the Lint Filter
 

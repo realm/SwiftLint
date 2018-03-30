@@ -34,7 +34,9 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
             "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",
             "let foo = bar.filter(toto)\n.joined(↓separator: \"\")": "let foo = bar.filter(toto)\n.joined()",
             "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}":
-            "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}"
+                "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}",
+            "class C {\n#if true\nlet foo = bar.joined(↓separator: \"\")\n#endif\n}":
+                "class C {\n#if true\nlet foo = bar.joined()\n#endif\n}"
         ]
     )
 
@@ -86,7 +88,7 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File,

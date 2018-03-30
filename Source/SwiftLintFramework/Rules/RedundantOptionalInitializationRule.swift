@@ -43,7 +43,9 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "var myVar: Int?↓ = nil\n": "var myVar: Int?\n",
             "var myVar: Optional<Int>↓ = nil\n": "var myVar: Optional<Int>\n",
             "var myVar: Int?↓=nil\n": "var myVar: Int?\n",
-            "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n"
+            "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n",
+            "class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}":
+                "class C {\n#if true\nvar myVar: Int?\n#endif\n}"
         ]
     )
 
@@ -96,7 +98,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

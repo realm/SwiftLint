@@ -37,7 +37,9 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
             "[1, 2].map↓() { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
             "[1, 2].map↓(  ) { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
             "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}\n":
-            "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}\n"
+                "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}\n",
+            "class C {\n#if true\nfunc f() {\n[1, 2].map↓() { $0 + 1 }\n}\n#endif\n}":
+                "class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}"
         ]
     )
 
@@ -88,7 +90,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

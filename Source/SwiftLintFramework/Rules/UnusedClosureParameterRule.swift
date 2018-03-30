@@ -76,7 +76,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "hoge(arg: num) { ↓num in\n}\n":
                 "hoge(arg: num) { _ in\n}\n",
             "func foo () {\n bar { ↓number in\n return 3\n}\n":
-                "func foo () {\n bar { _ in\n return 3\n}\n"
+                "func foo () {\n bar { _ in\n return 3\n}\n",
+            "class C {\n #if true\n func f() {\n [1, 2].map { ↓number in\n return 3\n }\n }\n #endif\n}":
+                "class C {\n #if true\n func f() {\n [1, 2].map { _ in\n return 3\n }\n }\n #endif\n}"
         ]
     )
 
@@ -164,7 +166,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             }
 
             return ranges
-        }
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

@@ -40,7 +40,9 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             "UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)",
             "UIEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)",
             "NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)",
-            "NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)"
+            "NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)",
+            "UIOffset(horizontal: 0, vertical: 10)",
+            "UIOffset(horizontal: horizontal, vertical: vertical)"
         ],
         triggeringExamples: [
             "↓CGPointMake(10, 10)",
@@ -64,7 +66,9 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             "↓UIEdgeInsetsMake(top, left, bottom, right)",
             "↓NSEdgeInsetsMake(0, 0, 10, 10)",
             "↓NSEdgeInsetsMake(top, left, bottom, right)",
-            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)"
+            "↓CGVectorMake(10, 10)\n↓NSMakeRange(10, 1)",
+            "↓UIOffsetMake(0, 10)",
+            "↓UIOffsetMake(horizontal, vertical)"
         ],
         corrections: [
             "↓CGPointMake(10,  10   )\n": "CGPoint(x: 10, y: 10)\n",
@@ -99,7 +103,10 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
             "NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)\n",
             "↓NSMakeRange(0, attributedString.length)\n":
             "NSRange(location: 0, length: attributedString.length)\n",
-            "↓CGPointMake(calculateX(), 10)\n": "CGPoint(x: calculateX(), y: 10)\n"
+            "↓CGPointMake(calculateX(), 10)\n": "CGPoint(x: calculateX(), y: 10)\n",
+            "↓UIOffsetMake(0, 10)\n": "UIOffset(horizontal: 0, vertical: 10)\n",
+            "↓UIOffsetMake(horizontal, vertical)\n":
+            "UIOffset(horizontal: horizontal, vertical: vertical)\n"
         ]
     )
 
@@ -112,7 +119,8 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                                                   "NSMakeRect": ["x", "y", "width", "height"],
                                                   "NSMakeRange": ["location", "length"],
                                                   "UIEdgeInsetsMake": ["top", "left", "bottom", "right"],
-                                                  "NSEdgeInsetsMake": ["top", "left", "bottom", "right"]]
+                                                  "NSEdgeInsetsMake": ["top", "left", "bottom", "right"],
+                                                  "UIOffsetMake": ["horizontal", "vertical"]]
 
     private static let constructorsToCorrectedNames = ["CGRectMake": "CGRect",
                                                        "CGPointMake": "CGPoint",
@@ -123,7 +131,8 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
                                                        "NSMakeRect": "NSRect",
                                                        "NSMakeRange": "NSRange",
                                                        "UIEdgeInsetsMake": "UIEdgeInsets",
-                                                       "NSEdgeInsetsMake": "NSEdgeInsets"]
+                                                       "NSEdgeInsetsMake": "NSEdgeInsets",
+                                                       "UIOffsetMake": "UIOffset"]
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {

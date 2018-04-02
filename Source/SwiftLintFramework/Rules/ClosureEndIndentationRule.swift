@@ -27,7 +27,14 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "someReallyLongProperty.chainingWithAnotherProperty\n" +
             "   .foo { _ in }",
             "foo(abc, 123)\n" +
-            "{ _ in }\n"
+            "{ _ in }\n",
+            "function(\n" +
+            "    closure: { x in\n" +
+            "        print(x)\n" +
+            "    },\n" +
+            "    anotherClosure: { y in\n" +
+            "        print(y)\n" +
+            "    })"
         ],
         triggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
@@ -38,7 +45,14 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             "   return Command(string: contents, range: range)\n" +
             "   ↓}.flatMap { command in\n" +
             "   return command.expand()\n" +
-            "↓}\n"
+            "↓}\n",
+            "function(\n" +
+            "    closure: { x in\n" +
+            "        print(x)\n" +
+            "↓},\n" +
+            "    anotherClosure: { y in\n" +
+            "        print(y)\n" +
+            "↓})"
         ]
     )
 
@@ -50,6 +64,36 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             return []
         }
 
+        var closureArguments = filterClosureArguments(dictionary.enclosedArguments, file: file)
+
+        if hasTrailingClosure(in: file, dictionary: dictionary), !closureArguments.isEmpty {
+            closureArguments.removeLast()
+        }
+
+        let argumentViolations = closureArguments.flatMap { dictionary in
+            return validateClosureArgument(in: file, dictionary: dictionary)
+        }
+
+        let callViolations = validateCall(in: file, dictionary: dictionary)
+
+        return argumentViolations + callViolations
+    }
+
+    private func hasTrailingClosure(in file: File,
+                                    dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard
+            let offset = dictionary.offset,
+            let length = dictionary.length,
+            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length)
+            else {
+                return false
+        }
+
+        return !text.hasSuffix(")")
+    }
+
+    private func validateCall(in file: File,
+                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset,
             let length = dictionary.length,
@@ -66,6 +110,46 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
             !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
+                return []
+        }
+
+        let range = file.lines[startLine - 1].range
+        let regex = ClosureEndIndentationRule.notWhitespace
+        let actual = endPosition - 1
+        guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
+            case let expected = match.location - range.location,
+            expected != actual  else {
+                return []
+        }
+
+        let reason = "Closure end should have the same indentation as the line that started it. " +
+                     "Expected \(expected), got \(actual)."
+        return [
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severity,
+                           location: Location(file: file, byteOffset: endOffset),
+                           reason: reason)
+        ]
+    }
+
+    private func validateClosureArgument(in file: File,
+                                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        let contents = file.contents.bridge()
+        guard let offset = dictionary.offset,
+            let length = dictionary.length,
+            let bodyLength = dictionary.bodyLength,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            bodyLength > 0,
+            case let endOffset = offset + length - 1,
+            contents.substringWithByteRange(start: endOffset, length: 1) == "}",
+            let startOffset = dictionary.offset,
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: startOffset),
+            let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
+            case let nameEndPosition = nameOffset + nameLength,
+            let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
+            startLine != endLine, bodyOffsetLine != endLine,
+            !isSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
                 return []
         }
 
@@ -107,9 +191,21 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         return methodByteRange.location
     }
 
+    private func isSingleLineClosure(dictionary: [String: SourceKitRepresentable],
+                                     endPosition: Int, file: File) -> Bool {
+        let contents = file.contents.bridge()
+
+        guard let start = dictionary.bodyOffset,
+            let (startLine, _) = contents.lineAndCharacter(forByteOffset: start),
+            let (endLine, _) = contents.lineAndCharacter(forByteOffset: endPosition) else {
+                return false
+        }
+
+        return startLine == endLine
+    }
+
     private func containsSingleLineClosure(dictionary: [String: SourceKitRepresentable],
-                                           endPosition: Int,
-                                           file: File) -> Bool {
+                                           endPosition: Int, file: File) -> Bool {
         let contents = file.contents.bridge()
 
         guard let closure = trailingClosure(dictionary: dictionary, file: file),

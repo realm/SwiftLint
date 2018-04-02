@@ -806,6 +806,16 @@ foo(abc, 123)
 
 ```
 
+```swift
+function(
+    closure: { x in
+        print(x)
+    },
+    anotherClosure: { y in
+        print(y)
+    })
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -825,6 +835,16 @@ return match(pattern: pattern, with: [.comment]).flatMap { range in
    return command.expand()
 ↓}
 
+```
+
+```swift
+function(
+    closure: { x in
+        print(x)
+↓},
+    anotherClosure: { y in
+        print(y)
+↓})
 ```
 
 </details>

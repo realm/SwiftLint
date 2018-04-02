@@ -7834,6 +7834,14 @@ NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
 NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 ```
 
+```swift
+UIOffset(horizontal: 0, vertical: 10)
+```
+
+```swift
+UIOffset(horizontal: horizontal, vertical: vertical)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -7926,6 +7934,14 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 ```swift
 ↓CGVectorMake(10, 10)
 ↓NSMakeRange(10, 1)
+```
+
+```swift
+↓UIOffsetMake(0, 10)
+```
+
+```swift
+↓UIOffsetMake(horizontal, vertical)
 ```
 
 </details>

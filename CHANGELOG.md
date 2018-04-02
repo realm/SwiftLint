@@ -6,6 +6,10 @@
 
 #### Enhancements
 
+* Add `UIOffsetMake` to `legacy_constructor` rule.  
+  [Nealon Young](https://github.com/nealyoung)
+  [#2126](https://github.com/realm/SwiftLint/issues/2126)
+
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  
   [Rounak Jain](https://github.com/rounak)

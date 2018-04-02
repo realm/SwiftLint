@@ -99,6 +99,11 @@ The next release will require Swift 4.0 or higher to build.
   [Ash Furrow](https://github.com/ashfurrow)
   [#2051](https://github.com/realm/SwiftLint/issues/2051)
 
+* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
+  indentation of non-trailing closure parameters.
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
+
 * Adds `discouraged_optional_collection` opt-in rule to encourage the use of
   empty collections instead of optional collections.  
   [Ornithologist Coder](https://github.com/ornithocoder)

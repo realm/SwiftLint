@@ -225,7 +225,7 @@ public struct LegacyConstructorRule: ASTRule, CorrectableRule, ConfigurationProv
 
     private func argumentsContents(file: File, arguments: [[String: SourceKitRepresentable]]) -> [String] {
         let contents = file.contents.bridge()
-        return arguments.flatMap { argument -> String? in
+        return arguments.compactMap { argument -> String? in
             guard argument.name == nil,
                 let offset = argument.offset,
                 let length = argument.length else {

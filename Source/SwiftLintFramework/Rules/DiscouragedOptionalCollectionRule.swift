@@ -101,7 +101,7 @@ private extension String {
     ///
     /// - Returns: An array of ranges.
     func optionalCollectionRanges() -> [Range<String.Index>] {
-        let squareBrackets = balancedRanges(from: "[", to: "]").flatMap { range -> Range<String.Index>? in
+        let squareBrackets = balancedRanges(from: "[", to: "]").compactMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
                 let finalIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex),
@@ -110,7 +110,7 @@ private extension String {
             return Range(range.lowerBound..<finalIndex)
         }
 
-        let angleBrackets = balancedRanges(from: "<", to: ">").flatMap { range -> Range<String.Index>? in
+        let angleBrackets = balancedRanges(from: "<", to: ">").compactMap { range -> Range<String.Index>? in
             guard
                 range.upperBound < endIndex,
                 let initialIndex = index(range.lowerBound, offsetBy: -3, limitedBy: startIndex),
@@ -135,7 +135,7 @@ private extension String {
     /// - Parameter character: The character to look for.
     /// - Returns: Array of indices.
     private func indices(of character: Character) -> [String.Index] {
-        return indices.flatMap { self[$0] == character ? $0 : nil }
+        return indices.compactMap { self[$0] == character ? $0 : nil }
     }
 
     /// Ranges of balanced substrings.
@@ -153,7 +153,7 @@ private extension String {
     ///   - suffix: The suffix to look for.
     /// - Returns: Array of ranges of balanced substrings
     private func balancedRanges(from prefix: Character, to suffix: Character) -> [Range<String.Index>] {
-        return indices(of: prefix).flatMap { prefixIndex in
+        return indices(of: prefix).compactMap { prefixIndex in
             var pairCount = 0
             var currentIndex = prefixIndex
             var foundCharacter = false

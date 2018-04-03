@@ -70,5 +70,7 @@ non_empty_lines(lines).each do |line|
     warn parse_line(line)
   elsif line.start_with? 'Error:'
     fail parse_line(line)
+  else
+    print line
   end
 end

@@ -21,11 +21,13 @@
 * [Discouraged Direct Initialization](#discouraged-direct-initialization)
 * [Discouraged Object Literal](#discouraged-object-literal)
 * [Discouraged Optional Boolean](#discouraged-optional-boolean)
+* [Discouraged Optional Collection](#discouraged-optional-collection)
 * [Dynamic Inline](#dynamic-inline)
 * [Empty Count](#empty-count)
 * [Empty Enum Arguments](#empty-enum-arguments)
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
+* [Empty String](#empty-string)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -113,6 +115,7 @@
 * [Type Name](#type-name)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
+* [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Optional Binding](#unused-optional-binding)
@@ -2788,6 +2791,921 @@ enum Foo {
 
 
 
+## Discouraged Optional Collection
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`discouraged_optional_collection` | Disabled | No | idiomatic
+
+Prefer empty collection over optional collection.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var foo: [Int]
+```
+
+```swift
+var foo: [String: Int]
+```
+
+```swift
+var foo: Set<String>
+```
+
+```swift
+var foo: [String: [String: Int]]
+```
+
+```swift
+let foo: [Int] = []
+```
+
+```swift
+let foo: [String: Int] = [:]
+```
+
+```swift
+let foo: Set<String> = []
+```
+
+```swift
+let foo: [String: [String: Int]] = [:]
+```
+
+```swift
+var foo: [Int] { return [] }
+```
+
+```swift
+func foo() -> [Int] {}
+```
+
+```swift
+func foo() -> [String: String] {}
+```
+
+```swift
+func foo() -> Set<Int> {}
+```
+
+```swift
+func foo() -> ([Int]) -> String {}
+```
+
+```swift
+func foo(input: [String] = []) {}
+```
+
+```swift
+func foo(input: [String: String] = [:]) {}
+```
+
+```swift
+func foo(input: Set<String> = []) {}
+```
+
+```swift
+class Foo {
+	func foo() -> [Int] {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> [String: String] {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> Set<Int> {}
+}
+```
+
+```swift
+class Foo {
+	func foo() -> ([Int]) -> String {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> [Int] {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> [String: String] {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> Set<Int> {}
+}
+```
+
+```swift
+struct Foo {
+	func foo() -> ([Int]) -> String {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> [Int] {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> [String: String] {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> Set<Int> {}
+}
+```
+
+```swift
+enum Foo {
+	func foo() -> ([Int]) -> String {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [String] = []) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: [String: String] = [:]) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(input: Set<String> = []) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [String] = []) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: [String: String] = [:]) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(input: Set<String> = []) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [String] = []) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: [String: String] = [:]) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(input: Set<String> = []) {}
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓var foo: [Int]?
+```
+
+```swift
+↓var foo: [String: Int]?
+```
+
+```swift
+↓var foo: Set<String>?
+```
+
+```swift
+↓let foo: [Int]? = nil
+```
+
+```swift
+↓let foo: [String: Int]? = nil
+```
+
+```swift
+↓let foo: Set<String>? = nil
+```
+
+```swift
+↓var foo: [Int]? { return nil }
+```
+
+```swift
+↓let foo: [Int]? { return nil }()
+```
+
+```swift
+func ↓foo() -> [T]? {}
+```
+
+```swift
+func ↓foo() -> [String: String]? {}
+```
+
+```swift
+func ↓foo() -> [String: [String: String]]? {}
+```
+
+```swift
+func ↓foo() -> [String: [String: String]?] {}
+```
+
+```swift
+func ↓foo() -> Set<Int>? {}
+```
+
+```swift
+static func ↓foo() -> [T]? {}
+```
+
+```swift
+static func ↓foo() -> [String: String]? {}
+```
+
+```swift
+static func ↓foo() -> [String: [String: String]]? {}
+```
+
+```swift
+static func ↓foo() -> [String: [String: String]?] {}
+```
+
+```swift
+static func ↓foo() -> Set<Int>? {}
+```
+
+```swift
+func ↓foo() -> ([Int]?) -> String {}
+```
+
+```swift
+func ↓foo() -> ([Int]) -> [String]? {}
+```
+
+```swift
+func foo(↓input: [String: String]?) {}
+```
+
+```swift
+func foo(↓input: [String: [String: String]]?) {}
+```
+
+```swift
+func foo(↓input: [String: [String: String]?]) {}
+```
+
+```swift
+func foo(↓↓input: [String: [String: String]?]?) {}
+```
+
+```swift
+func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+```
+
+```swift
+func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+```
+
+```swift
+static func foo(↓input: [String: String]?) {}
+```
+
+```swift
+static func foo(↓input: [String: [String: String]]?) {}
+```
+
+```swift
+static func foo(↓input: [String: [String: String]?]) {}
+```
+
+```swift
+static func foo(↓↓input: [String: [String: String]?]?) {}
+```
+
+```swift
+static func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+```
+
+```swift
+static func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+```
+
+```swift
+class Foo {
+	↓var foo: [Int]?
+}
+```
+
+```swift
+class Foo {
+	↓var foo: [String: Int]?
+}
+```
+
+```swift
+class Foo {
+	↓var foo: Set<String>?
+}
+```
+
+```swift
+class Foo {
+	↓let foo: [Int]? = nil
+}
+```
+
+```swift
+class Foo {
+	↓let foo: [String: Int]? = nil
+}
+```
+
+```swift
+class Foo {
+	↓let foo: Set<String>? = nil
+}
+```
+
+```swift
+struct Foo {
+	↓var foo: [Int]?
+}
+```
+
+```swift
+struct Foo {
+	↓var foo: [String: Int]?
+}
+```
+
+```swift
+struct Foo {
+	↓var foo: Set<String>?
+}
+```
+
+```swift
+struct Foo {
+	↓let foo: [Int]? = nil
+}
+```
+
+```swift
+struct Foo {
+	↓let foo: [String: Int]? = nil
+}
+```
+
+```swift
+struct Foo {
+	↓let foo: Set<String>? = nil
+}
+```
+
+```swift
+class Foo {
+	↓var foo: [Int]? { return nil }
+}
+```
+
+```swift
+class Foo {
+	↓let foo: [Int]? { return nil }()
+}
+```
+
+```swift
+class Foo {
+	↓var foo: Set<String>? { return nil }
+}
+```
+
+```swift
+class Foo {
+	↓let foo: Set<String>? { return nil }()
+}
+```
+
+```swift
+struct Foo {
+	↓var foo: [Int]? { return nil }
+}
+```
+
+```swift
+struct Foo {
+	↓let foo: [Int]? { return nil }()
+}
+```
+
+```swift
+struct Foo {
+	↓var foo: Set<String>? { return nil }
+}
+```
+
+```swift
+struct Foo {
+	↓let foo: Set<String>? { return nil }()
+}
+```
+
+```swift
+enum Foo {
+	↓var foo: [Int]? { return nil }
+}
+```
+
+```swift
+enum Foo {
+	↓let foo: [Int]? { return nil }()
+}
+```
+
+```swift
+enum Foo {
+	↓var foo: Set<String>? { return nil }
+}
+```
+
+```swift
+enum Foo {
+	↓let foo: Set<String>? { return nil }()
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+class Foo {
+	static func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+class Foo {
+	static func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+class Foo {
+	static func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+class Foo {
+	static func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+class Foo {
+	static func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+class Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+struct Foo {
+	static func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+struct Foo {
+	static func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+struct Foo {
+	static func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+struct Foo {
+	static func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+struct Foo {
+	static func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+struct Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+enum Foo {
+	static func ↓foo() -> [T]? {}
+}
+```
+
+```swift
+enum Foo {
+	static func ↓foo() -> [String: String]? {}
+}
+```
+
+```swift
+enum Foo {
+	static func ↓foo() -> [String: [String: String]]? {}
+}
+```
+
+```swift
+enum Foo {
+	static func ↓foo() -> [String: [String: String]?] {}
+}
+```
+
+```swift
+enum Foo {
+	static func ↓foo() -> Set<Int>? {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> ([Int]?) -> String {}
+}
+```
+
+```swift
+enum Foo {
+	func ↓foo() -> ([Int]) -> [String]? {}
+}
+```
+
+```swift
+class Foo {
+	func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+class Foo {
+	func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+class Foo {
+	func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+class Foo {
+	func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+class Foo {
+	static func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+class Foo {
+	static func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+class Foo {
+	static func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+struct Foo {
+	func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+struct Foo {
+	func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+struct Foo {
+	func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+struct Foo {
+	static func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+struct Foo {
+	static func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+struct Foo {
+	static func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+enum Foo {
+	func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+enum Foo {
+	func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+enum Foo {
+	func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+enum Foo {
+	static func foo(↓input: [String: String]?) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(↓input: [String: [String: String]]?) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(↓input: [String: [String: String]?]) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo(↓↓input: [String: [String: String]?]?) {}
+}
+```
+
+```swift
+enum Foo {
+	static func foo<K, V>(_ dict1: [K: V], ↓_ dict2: [K: V]?) -> [K: V]
+}
+```
+
+```swift
+enum Foo {
+	static func foo<K, V>(dict1: [K: V], ↓dict2: [K: V]?) -> [K: V]
+}
+```
+
+</details>
+
+
+
 ## Dynamic Inline
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -3017,6 +3935,15 @@ switch foo {
 }
 ```
 
+```swift
+func example(foo: Foo) {
+    switch foo {
+    case case .bar↓(_):
+        break
+    }
+}
+```
+
 </details>
 
 
@@ -3165,6 +4092,50 @@ UIView.animateWithDuration(0.3, animations: {
  number + 1 
 }
 
+```
+
+```swift
+func foo() -> [Int] {
+    return [1, 2].map↓() { $0 + 1 }
+}
+
+```
+
+</details>
+
+
+
+## Empty String
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`empty_string` | Disabled | No | performance
+
+Prefer checking `isEmpty` over comparing `string` to an empty string literal.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+myString.isEmpty
+```
+
+```swift
+!myString.isEmpy
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+myString↓ == ""
+```
+
+```swift
+myString↓ != ""
 ```
 
 </details>
@@ -3426,6 +4397,12 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 
 ```swift
 [String.self].map { Type in Type↓.init(1) }
+```
+
+```swift
+func foo() -> [String] {
+    return [1].flatMap { String↓.init($0) }
+}
 ```
 
 </details>
@@ -6275,6 +7252,12 @@ let foo = bar.filter(toto)
              .joined(↓separator: "")
 ```
 
+```swift
+func foo() -> String {
+   return ["1", "2"].joined(↓separator: "")
+}
+```
+
 </details>
 
 
@@ -6851,6 +7834,14 @@ NSEdgeInsets(top: 0, left: 0, bottom: 10, right: 10)
 NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 ```
 
+```swift
+UIOffset(horizontal: 0, vertical: 10)
+```
+
+```swift
+UIOffset(horizontal: horizontal, vertical: vertical)
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -6861,6 +7852,11 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 
 ```swift
 ↓CGPointMake(xVal, yVal)
+```
+
+```swift
+↓CGPointMake(calculateX(), 10)
+
 ```
 
 ```swift
@@ -6933,6 +7929,19 @@ NSEdgeInsets(top: aTop, left: aLeft, bottom: aBottom, right: aRight)
 
 ```swift
 ↓NSEdgeInsetsMake(top, left, bottom, right)
+```
+
+```swift
+↓CGVectorMake(10, 10)
+↓NSMakeRange(10, 1)
+```
+
+```swift
+↓UIOffsetMake(0, 10)
+```
+
+```swift
+↓UIOffsetMake(horizontal, vertical)
 ```
 
 </details>
@@ -12542,7 +13551,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind
 --- | --- | --- | ---
 `todo` | Enabled | No | lint
 
-TODOs and FIXMEs should be avoided.
+TODOs and FIXMEs should be resolved.
 
 ### Examples
 
@@ -16379,6 +17388,96 @@ foo.bar { [weak self] ↓(x, y) in }
 
 
 
+## Untyped Error in Catch
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`untyped_error_in_catch` | Disabled | No | idiomatic
+
+Catch statements should not declare error variables without type casting.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+do {
+    try foo() 
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch Error.invalidOperation {
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch let error as MyError {
+} catch {}
+```
+
+```swift
+do {
+    try foo() 
+} catch var error as MyError {
+} catch {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+do {
+    try foo() 
+} ↓catch var error {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let error {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let someError {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch var someError {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch let e {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch(let error) {}
+```
+
+```swift
+do {
+    try foo() 
+} ↓catch (let error) {}
+```
+
+</details>
+
+
+
 ## Unused Closure Parameter
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
@@ -16525,6 +17624,14 @@ hoge(arg: num) { ↓num in
 ```swift
 fooFunc { ↓아 in
  }
+```
+
+```swift
+func foo () {
+ bar { ↓number in
+ return 3
+}
+
 ```
 
 </details>

@@ -97,7 +97,7 @@ Alternatively, if you've installed SwiftLint via CocoaPods the script should loo
 To run `swiftlint autocorrect` on save in Xcode, install the
 [SwiftLintXcode](https://github.com/ypresto/SwiftLintXcode) plugin from Alcatraz.
 
-⚠ ️This plugin will not work with Xcode 8 or later without disabling SIP.
+⚠️This plugin will not work with Xcode 8 or later without disabling SIP.
 This is not recommended.
 
 ### AppCode
@@ -115,7 +115,7 @@ APM.
 
 ### fastlane
 
-You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/#swiftlint) to run SwiftLint as part of your fastlane process.
+You can use the [official swiftlint fastlane action](https://docs.fastlane.tools/actions/swiftlint) to run SwiftLint as part of your fastlane process.
 
 ```ruby
 swiftlint(
@@ -248,6 +248,22 @@ For example:
 let noWarning :String = "" // No warning about colons immediately after variable names!
 // swiftlint:enable colon
 let hasWarning :String = "" // Warning generated about colons immediately after variable names
+```
+
+Including the `all` keyword will disable all rules until the linter sees a matching enable comment:
+
+`// swiftlint:disable all`
+`// swiftlint:enable all`
+
+For example:
+
+```swift
+// swiftlint:disable all
+let noWarning :String = "" // No warning about colons immediately after variable names!
+let i = "" // Also no warning about short identifier names
+// swiftlint:enable all
+let hasWarning :String = "" // Warning generated about colons immediately after variable names
+let y = "" // Warning generated about short identifier names
 ```
 
 It's also possible to modify a `disable` or `enable` command by appending

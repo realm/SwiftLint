@@ -49,7 +49,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             let type = self.type(for: kind)
             if !isFunction {
                 let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-                if !allowedSymbols.isSuperset(of: CharacterSet(charactersIn: name)) {
+                if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,

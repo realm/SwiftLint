@@ -66,6 +66,10 @@ extension ConfigurationTests {
         ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
         ("testDuplicatedRules", testDuplicatedRules),
         ("testExcludedPaths", testExcludedPaths),
+        ("testForceExcludesFile", testForceExcludesFile),
+        ("testForceExcludesFileNotPresentInExcluded", testForceExcludesFileNotPresentInExcluded),
+        ("testForceExcludesDirectory", testForceExcludesDirectory),
+        ("testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre", testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre),
         ("testLintablePaths", testLintablePaths),
         ("testIsEqualTo", testIsEqualTo),
         ("testIsNotEqualTo", testIsNotEqualTo),
@@ -122,6 +126,20 @@ extension CyclomaticComplexityRuleTests {
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testIgnoresCaseStatementsConfigurationEnabled", testIgnoresCaseStatementsConfigurationEnabled),
         ("testIgnoresCaseStatementsConfigurationDisabled", testIgnoresCaseStatementsConfigurationDisabled)
+    ]
+}
+
+extension DisableAllTests {
+    static var allTests: [(String, (DisableAllTests) -> () throws -> Void)] = [
+        ("testViolatingPhrase", testViolatingPhrase),
+        ("testDisableAll", testDisableAll),
+        ("testEnableAll", testEnableAll),
+        ("testDisableAllPrevious", testDisableAllPrevious),
+        ("testEnableAllPrevious", testEnableAllPrevious),
+        ("testDisableAllNext", testDisableAllNext),
+        ("testEnableAllNext", testEnableAllNext),
+        ("testDisableAllThis", testDisableAllThis),
+        ("testEnableAllThis", testEnableAllThis)
     ]
 }
 
@@ -205,7 +223,8 @@ extension IdentifierNameRuleTests {
         ("testIdentifierName", testIdentifierName),
         ("testIdentifierNameWithAllowedSymbols", testIdentifierNameWithAllowedSymbols),
         ("testIdentifierNameWithAllowedSymbolsAndViolation", testIdentifierNameWithAllowedSymbolsAndViolation),
-        ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase)
+        ("testIdentifierNameWithIgnoreStartWithLowercase", testIdentifierNameWithIgnoreStartWithLowercase),
+        ("testLinuxCrashOnEmojiNames", testLinuxCrashOnEmojiNames)
     ]
 }
 
@@ -413,11 +432,13 @@ extension RulesTests {
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
         ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),
         ("testDiscouragedOptionalBoolean", testDiscouragedOptionalBoolean),
+        ("testDiscouragedOptionalCollection", testDiscouragedOptionalCollection),
         ("testDynamicInline", testDynamicInline),
         ("testEmptyCount", testEmptyCount),
         ("testEmptyEnumArguments", testEmptyEnumArguments),
         ("testEmptyParameters", testEmptyParameters),
         ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
+        ("testEmptyString", testEmptyString),
         ("testExplicitACL", testExplicitACL),
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
@@ -491,6 +512,7 @@ extension RulesTests {
         ("testTypeBodyLength", testTypeBodyLength),
         ("testUnneededBreakInSwitch", testUnneededBreakInSwitch),
         ("testUnneededParenthesesInClosureArgument", testUnneededParenthesesInClosureArgument),
+        ("testUntypedErrorInCatch", testUntypedErrorInCatch),
         ("testUnusedClosureParameter", testUnusedClosureParameter),
         ("testUnusedEnumerated", testUnusedEnumerated),
         ("testValidIBInspectable", testValidIBInspectable),
@@ -580,6 +602,7 @@ XCTMain([
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
+    testCase(DisableAllTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
     testCase(DocumentationTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),

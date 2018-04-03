@@ -87,8 +87,8 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return matches.map { _ -> StyleViolation in
             let characterOffset = startOffset(of: offset, with: length, in: file)
             let location = Location(file: file, characterOffset: characterOffset)
-            return StyleViolation(ruleDescription: type(of: self).description, severity: .warning,
-                                  location: location, reason: configuration.consoleDescription)
+            return StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+                                  location: location)
         }
     }
 

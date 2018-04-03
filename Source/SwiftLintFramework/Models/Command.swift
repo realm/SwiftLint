@@ -56,12 +56,12 @@ public struct Command: Equatable {
     }
 
     internal let action: Action
-    internal let ruleIdentifiers: [String]
+    internal let ruleIdentifiers: Set<RuleIdentifier>
     internal let line: Int
     internal let character: Int?
     internal let modifier: Modifier?
 
-    public init(action: Action, ruleIdentifiers: [String], line: Int = 0,
+    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
@@ -84,15 +84,16 @@ public struct Command: Equatable {
                 return nil
         }
         self.action = action
-        ruleIdentifiers = scanner.string.bridge()
-            .substring(from: scanner.scanLocation + 1)
-            .components(separatedBy: .whitespaces)
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
+        let ruleTexts = scanner.string.bridge().substring(
+            from: scanner.scanLocation + 1
+        ).components(separatedBy: .whitespaces)
+        ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier
+        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
         if hasModifier {
             let modifierString = actionAndModifierScanner.string.bridge()
                 .substring(from: actionAndModifierScanner.scanLocation)
@@ -122,8 +123,7 @@ public struct Command: Equatable {
         case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
-                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,
-                        character: Int.max)
+                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
             ]
         }
     }

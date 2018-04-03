@@ -15,6 +15,17 @@ private func wrapInSwitch(variable: String = "foo", _ str: String) -> String {
             "}"
 }
 
+private func wrapInFunc(_ str: String) -> String {
+    return """
+    func example(foo: Foo) {
+        switch foo {
+        case \(str):
+            break
+        }
+    }
+    """
+}
+
 public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -39,13 +50,15 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             wrapInSwitch("case .bar↓(_)"),
             wrapInSwitch("case .bar↓()"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"),
-            wrapInSwitch("case .bar↓() where method() > 2")
+            wrapInSwitch("case .bar↓() where method() > 2"),
+            wrapInFunc("case .bar↓(_)")
         ],
         corrections: [
             wrapInSwitch("case .bar↓(_)"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓()"): wrapInSwitch("case .bar"),
             wrapInSwitch("case .bar↓(_), .bar2↓(_)"): wrapInSwitch("case .bar, .bar2"),
-            wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2")
+            wrapInSwitch("case .bar↓() where method() > 2"): wrapInSwitch("case .bar where method() > 2"),
+            wrapInFunc("case .bar↓(_)"): wrapInFunc("case .bar")
         ]
     )
 
@@ -116,12 +129,12 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = StatementKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(StatementKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
+
+            return ranges
         }
     }
 

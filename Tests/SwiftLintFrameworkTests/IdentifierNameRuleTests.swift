@@ -53,4 +53,14 @@ class IdentifierNameRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["validates_start_with_lowercase": false])
     }
+
+    func testLinuxCrashOnEmojiNames() {
+        let baseDescription = IdentifierNameRule.description
+        let triggeringExamples = [
+            "let 👦🏼 = \"👦🏼\""
+        ]
+
+        let description = baseDescription.with(triggeringExamples: triggeringExamples)
+        verifyRule(description, ruleConfiguration: ["allowed_symbols": ["$", "%"]])
+    }
 }

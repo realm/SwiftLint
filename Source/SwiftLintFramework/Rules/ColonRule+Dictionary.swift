@@ -25,7 +25,7 @@ extension ColonRule {
             ranges += dictionaryColonViolationRanges(in: file, dictionary: subDict)
 
             return ranges
-        }
+        }.unique
     }
 
     internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,

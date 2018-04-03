@@ -43,7 +43,9 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
             "func foo()↓ -> Void {}\n": "func foo() {}\n",
             "protocol Foo {\n func foo()↓ -> Void\n}\n": "protocol Foo {\n func foo()\n}\n",
             "func foo()↓ -> () {}\n": "func foo() {}\n",
-            "protocol Foo {\n func foo()↓ -> ()\n}\n": "protocol Foo {\n func foo()\n}\n"
+            "protocol Foo {\n func foo()↓ -> ()\n}\n": "protocol Foo {\n func foo()\n}\n",
+            "protocol Foo {\n    #if true\n    func foo()↓ -> Void\n    #endif\n}\n":
+            "protocol Foo {\n    #if true\n    func foo()\n    #endif\n}\n"
         ]
     )
 
@@ -81,13 +83,13 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
-        }
+
+            return ranges
+        }.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

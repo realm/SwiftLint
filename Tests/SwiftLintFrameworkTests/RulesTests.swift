@@ -78,6 +78,10 @@ class RulesTests: XCTestCase {
         verifyRule(DiscouragedOptionalBooleanRule.description)
     }
 
+    func testDiscouragedOptionalCollection() {
+        verifyRule(DiscouragedOptionalCollectionRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }
@@ -96,6 +100,10 @@ class RulesTests: XCTestCase {
 
     func testEmptyParenthesesWithTrailingClosure() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
+    }
+
+    func testEmptyString() {
+        verifyRule(EmptyStringRule.description)
     }
 
     func testExplicitACL() {
@@ -423,6 +431,10 @@ class RulesTests: XCTestCase {
 
     func testUnneededParenthesesInClosureArgument() {
         verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+
+    func testUntypedErrorInCatch() {
+        verifyRule(UntypedErrorInCatchRule.description)
     }
 
     func testUnusedClosureParameter() {

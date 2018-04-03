@@ -32,7 +32,7 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
     }
 
     var allowedSymbols: CharacterSet {
-        return CharacterSet(charactersIn: allowedSymbolsSet.joined())
+        return CharacterSet(safeCharactersIn: allowedSymbolsSet.joined())
     }
 
     public init(minLengthWarning: Int,

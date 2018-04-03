@@ -61,6 +61,7 @@
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
+* [Lower ACL than parent](#lower-acl-than-parent)
 * [Mark](#mark)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
@@ -8420,6 +8421,83 @@ let x = [
 let x = [
    key: value
    ↓]
+```
+
+</details>
+
+
+
+## Lower ACL than parent
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`lower_acl_than_parent` | Disabled | No | lint
+
+Ensure definitions have a lower access control level than their enclosing parent
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+public struct Foo { public func bar() {} }
+```
+
+```swift
+internal struct Foo { func bar() {} }
+```
+
+```swift
+struct Foo { func bar() {} }
+```
+
+```swift
+open class Foo { public func bar() {} }
+```
+
+```swift
+open class Foo { open func bar() {} }
+```
+
+```swift
+fileprivate struct Foo { private func bar() {} }
+```
+
+```swift
+private struct Foo { private func bar(id: String) }
+```
+
+```swift
+private func foo(id: String) {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+struct Foo { public func bar() {} }
+```
+
+```swift
+extension Foo { public func bar() {} }
+```
+
+```swift
+enum Foo { public func bar() {} }
+```
+
+```swift
+public class Foo { open func bar() }
+```
+
+```swift
+private struct Foo { fileprivate func bar() {} }
+```
+
+```swift
+class Foo { public private(set) var bar: String? }
 ```
 
 </details>

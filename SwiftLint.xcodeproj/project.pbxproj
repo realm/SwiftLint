@@ -147,6 +147,7 @@
 		B89F3BCF1FD5EE1400931E59 /* RequiredEnumCaseRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89F3BC71FD5ED7D00931E59 /* RequiredEnumCaseRuleConfiguration.swift */; };
 		BB00B4E91F5216090079869F /* MultipleClosuresWithTrailingClosureRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */; };
 		BFF028AE1CBCF8A500B38A9D /* TrailingWhitespaceConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */; };
+		C26330382073DAC500D7B4FD /* LowerACLThanBodyRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C26330352073DAA200D7B4FD /* LowerACLThanBodyRule.swift */; };
 		C328A2F71E6759AE00A9E4D7 /* ExplicitTypeInterfaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */; };
 		C3DE5DAC1E7DF9CA00761483 /* FatalErrorMessageRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */; };
 		C946FECB1EAE67EE007DD778 /* LetVarWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */; };
@@ -504,6 +505,7 @@
 		B89F3BCB1FD5EDA900931E59 /* RequiredEnumCaseRuleTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequiredEnumCaseRuleTestCase.swift; sourceTree = "<group>"; };
 		BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleClosuresWithTrailingClosureRule.swift; sourceTree = "<group>"; };
 		BF48D2D61CBCCA5F0080BDAE /* TrailingWhitespaceConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailingWhitespaceConfiguration.swift; sourceTree = "<group>"; };
+		C26330352073DAA200D7B4FD /* LowerACLThanBodyRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LowerACLThanBodyRule.swift; sourceTree = "<group>"; };
 		C328A2F51E67595500A9E4D7 /* ExplicitTypeInterfaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceRule.swift; sourceTree = "<group>"; };
 		C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FatalErrorMessageRule.swift; sourceTree = "<group>"; };
 		C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LetVarWhitespaceRule.swift; sourceTree = "<group>"; };
@@ -1061,6 +1063,7 @@
 				62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */,
 				6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */,
 				62640150201552E0005B9C4A /* DiscouragedOptionalBooleanRule.swift */,
+				C26330352073DAA200D7B4FD /* LowerACLThanBodyRule.swift */,
 				6264015320155533005B9C4A /* DiscouragedOptionalBooleanRuleExamples.swift */,
 				629ADD052006302D0009E362 /* DiscouragedOptionalCollectionRule.swift */,
 				62FE5D30200CAB6E00F68793 /* DiscouragedOptionalCollectionRuleExamples.swift */,
@@ -1512,6 +1515,7 @@
 				D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */,
 				E881985E1BEA982100333A11 /* TypeBodyLengthRule.swift in Sources */,
 				69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */,
+				C26330382073DAC500D7B4FD /* LowerACLThanBodyRule.swift in Sources */,
 				78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */,
 				E80E018D1B92C0F60078EB70 /* Command.swift in Sources */,
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,

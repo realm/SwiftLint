@@ -12,11 +12,12 @@ jobs:
       - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
 
   osscheck:
+    shell: /bin/bash --login -eo pipefail
     macos:
       xcode: "9.2.0"
     steps:
       - checkout
-      - run: brew install ruby
+      - run: echo "ruby-2.3" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec danger --verbose
 
@@ -38,11 +39,12 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash)
 
   cocoapods:
+    shell: /bin/bash --login -eo pipefail
     macos:
       xcode: "9.2.0"
     steps:
       - checkout
-      - run: brew install ruby
+      - run: echo "ruby-2.3" > ~/.ruby-version
       - run: bundle install
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
       - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec

@@ -56,7 +56,7 @@ jobs:
 
   linux_swift_4.1:
     docker:
-      - image: norionomura/swift:swift-4.1-branch
+      - image: norionomura/swift:41
     steps:
       - checkout
       - run: swift test --parallel

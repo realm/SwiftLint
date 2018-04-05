@@ -4,6 +4,9 @@ public protocol Rule {
     static var description: RuleDescription { get }
     var configurationDescription: String { get }
 
+    /// Indicates whether multiple violations in the same location should be treated as one violation
+    var violationsAreUnique: Bool { get }
+
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
 
@@ -18,6 +21,10 @@ extension Rule {
 
     internal var cacheDescription: String {
         return (self as? CacheDescriptionProvider)?.cacheDescription ?? configurationDescription
+    }
+
+    public var violationsAreUnique: Bool {
+        return true
     }
 }
 

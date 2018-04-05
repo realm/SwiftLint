@@ -4664,7 +4664,7 @@ public extension Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind 
 --- | --- | --- | ---
-`fallthrough` | Enabled | No | idiomatic
+`fallthrough` | Disabled | No | idiomatic
 
 Fallthrough should be avoided.
 

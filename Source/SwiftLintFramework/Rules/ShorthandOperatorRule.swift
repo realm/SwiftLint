@@ -79,7 +79,7 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule {
 
         let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
 
-        return matches.flatMap { match -> StyleViolation? in
+        return matches.compactMap { match -> StyleViolation? in
 
             // byteRanges will have the ranges of captured groups
             let byteRanges: [NSRange?] = (1..<match.numberOfRanges).map { rangeIdx in

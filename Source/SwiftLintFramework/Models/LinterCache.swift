@@ -111,7 +111,7 @@ public final class LinterCache {
             return nil
         }
 
-        return violations.flatMap { StyleViolation.from(cache: $0, file: file) }
+        return violations.compactMap { StyleViolation.from(cache: $0, file: file) }
     }
 
     public func save() throws {

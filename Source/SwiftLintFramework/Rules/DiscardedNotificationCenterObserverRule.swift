@@ -51,7 +51,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
             let name = dictionary.name,
             name.hasSuffix(".addObserver"),
             case let arguments = dictionary.enclosedArguments,
-            case let argumentsNames = arguments.flatMap({ $0.name }),
+            case let argumentsNames = arguments.compactMap({ $0.name }),
             argumentsNames == ["forName", "object", "queue"] ||
                 argumentsNames == ["forName", "object", "queue", "using"],
             let offset = dictionary.offset,

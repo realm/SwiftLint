@@ -62,7 +62,7 @@ struct RulesCommand: CommandProtocol {
             return masterRuleList
         }
 
-        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleID, ruleType in
+        let filtered: [Rule.Type] = masterRuleList.list.compactMap { ruleID, ruleType in
             let configuredRule = configuration.rules.first { rule in
                 return type(of: rule).description.identifier == ruleID
             }

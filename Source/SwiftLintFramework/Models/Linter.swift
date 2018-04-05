@@ -31,7 +31,7 @@ private extension Rule {
             return region.isRuleDisabled(superfluousDisableCommandRule)
         }
 
-        return regionsDisablingCurrentRule.flatMap { region -> StyleViolation? in
+        return regionsDisablingCurrentRule.compactMap { region -> StyleViolation? in
             let isSuperflousRuleDisabled = regionsDisablingSuperflousDisableRule.contains { $0.contains(region.start) }
             guard !isSuperflousRuleDisabled else {
                 return nil
@@ -90,7 +90,7 @@ private extension Rule {
 
         let enabledViolations: [StyleViolation]
         if file.contents.hasPrefix("#!") { // if a violation happens on the same line as a shebang, ignore it
-            enabledViolations = enabledViolationsAndRegions.flatMap { violation, _ in
+            enabledViolations = enabledViolationsAndRegions.compactMap { violation, _ in
                 if violation.location.line == 1 { return nil }
                 return violation
             }
@@ -139,7 +139,7 @@ public struct Linter {
                     superfluousDisableCommandRule: superfluousDisableCommandRule)
         }
         let violations = validationResults.flatMap { $0.violations }
-        let ruleTimes = validationResults.flatMap { $0.ruleTime }
+        let ruleTimes = validationResults.compactMap { $0.ruleTime }
         var deprecatedToValidIdentifier = [String: String]()
         for (key, value) in validationResults.flatMap({ $0.deprecatedToValidIDPairs }) {
             deprecatedToValidIdentifier[key] = value
@@ -169,7 +169,7 @@ public struct Linter {
             // let's assume that all rules should have the same duration and split the duration among them
             let totalTime = -start.timeIntervalSinceNow
             let fractionedTime = totalTime / TimeInterval(rules.count)
-            ruleTimes = rules.flatMap { rule in
+            ruleTimes = rules.compactMap { rule in
                 let id = type(of: rule).description.identifier
                 return (id, fractionedTime)
             }
@@ -191,7 +191,7 @@ public struct Linter {
         }
 
         var corrections = [Correction]()
-        for rule in rules.flatMap({ $0 as? CorrectableRule }) {
+        for rule in rules.compactMap({ $0 as? CorrectableRule }) {
             let newCorrections = rule.correct(file: file)
             corrections += newCorrections
             if !newCorrections.isEmpty {

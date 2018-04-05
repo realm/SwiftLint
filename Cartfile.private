@@ -1,3 +1,3 @@
 github "Carthage/Commandant" ~> 0.13.0
 github "jspahrsummers/xcconfigs" "4ac967d12f72c2ccc7f34d163268d09296923a7c"
-github "jpsim/Yams" ~> 0.5
+github "jpsim/Yams" ~> 0.6

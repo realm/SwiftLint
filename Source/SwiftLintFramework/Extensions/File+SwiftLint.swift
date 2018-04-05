@@ -69,7 +69,7 @@ extension File {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment], range: range).flatMap { range in
+        return match(pattern: pattern, with: [.comment], range: range).compactMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
@@ -118,7 +118,7 @@ extension File {
     internal func matchesAndSyntaxKinds(matching pattern: String,
                                         range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
         return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
-            (textCheckingResult, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
+            (textCheckingResult, tokens.compactMap { SyntaxKind(rawValue: $0.type) })
         }
     }
 
@@ -191,7 +191,7 @@ extension File {
             return nil
         }
 
-        return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
+        return tokens.map { $0.compactMap { SyntaxKind(rawValue: $0.type) } }
     }
 
     //Added by S2dent

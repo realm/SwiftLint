@@ -34,7 +34,7 @@ private func scriptInputFiles() -> Result<[File], CommandantError<()>> {
     }()
 
     return count.flatMap { count in
-        let inputFiles = (0..<count).flatMap { fileNumber -> File? in
+        let inputFiles = (0..<count).compactMap { fileNumber -> File? in
             switch getEnvironmentVariable("SCRIPT_INPUT_FILE_\(fileNumber)") {
             case let .success(path):
                 if path.bridge().isSwiftFile() {
@@ -108,7 +108,7 @@ extension Configuration {
             } else {
                 filesAndConfigurations.forEach(visit)
             }
-            return .success(filesAndConfigurations.flatMap({ $0.0 }))
+            return .success(filesAndConfigurations.compactMap({ $0.0 }))
         }
     }
 

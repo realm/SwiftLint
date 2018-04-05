@@ -127,7 +127,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
                 return []
             }
 
-            return inheritedTypes.flatMap { $0 as? [String: SourceKitRepresentable] }.flatMap {
+            return inheritedTypes.compactMap { $0 as? [String: SourceKitRepresentable] }.compactMap {
                 $0[Keys.name] as? String
             }
         }
@@ -141,13 +141,13 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
                 return []
             }
 
-            let caseSubstructures = elements.flatMap { $0 as? [String: SourceKitRepresentable] }.filter {
+            let caseSubstructures = elements.compactMap { $0 as? [String: SourceKitRepresentable] }.filter {
                 $0.filter {
                     $0.0 == Keys.kind && $0.1 as? String == SwiftDeclarationKind.enumcase.rawValue
                 }.isEmpty == false
-            }.flatMap { $0[Keys.substructure] as? [SourceKitRepresentable] }
+            }.compactMap { $0[Keys.substructure] as? [SourceKitRepresentable] }
 
-            return caseSubstructures.flatMap { $0 }.flatMap { $0 as? [String: SourceKitRepresentable] }.flatMap {
+            return caseSubstructures.flatMap { $0 }.compactMap { $0 as? [String: SourceKitRepresentable] }.compactMap {
                 $0[Keys.name] as? String
             }
         }

@@ -92,19 +92,19 @@ public struct ForceUnwrappingRule: OptInRule, ConfigurationProviderRule {
 
         let varDeclarationRanges = ForceUnwrappingRule.varDeclarationRegularExpression
             .matches(in: contents, options: [], range: range)
-            .flatMap { match -> NSRange? in
+            .compactMap { match -> NSRange? in
                 return match.range
             }
 
         let functionDeclarationRanges = regex(ForceUnwrappingRule.functionReturnPattern)
             .matches(in: contents, options: [], range: range)
-            .flatMap { match -> NSRange? in
+            .compactMap { match -> NSRange? in
                 return match.range
             }
 
         return ForceUnwrappingRule.regularExpression
             .matches(in: contents, options: [], range: range)
-            .flatMap { match -> NSRange? in
+            .compactMap { match -> NSRange? in
                 if match.range.intersects(varDeclarationRanges) || match.range.intersects(functionDeclarationRanges) {
                     return nil
                 }

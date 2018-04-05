@@ -62,7 +62,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         guard let name = dictionary.name,
             inits(forClasses: ["UIImage", "NSImage"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
-            arguments.flatMap({ $0.name }) == ["named"],
+            arguments.compactMap({ $0.name }) == ["named"],
             let argument = arguments.first,
             case let kinds = kinds(forArgument: argument, file: file),
             kinds == [.string] else {
@@ -76,7 +76,7 @@ public struct ObjectLiteralRule: ASTRule, ConfigurationProviderRule, OptInRule {
         guard let name = dictionary.name,
             inits(forClasses: ["UIColor", "NSColor"]).contains(name),
             case let arguments = dictionary.enclosedArguments,
-            case let argumentsNames = arguments.flatMap({ $0.name }),
+            case let argumentsNames = arguments.compactMap({ $0.name }),
             argumentsNames == ["red", "green", "blue", "alpha"] || argumentsNames == ["white", "alpha"],
             validateColorKinds(arguments: arguments, file: file) else {
                 return false

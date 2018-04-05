@@ -37,7 +37,7 @@ public struct CSVReporter: Reporter {
             "rule_id"
         ].joined(separator: ",")
 
-        let rows = [keys] + violations.flatMap(csvRow(for:))
+        let rows = [keys] + violations.map(csvRow(for:))
         return rows.joined(separator: "\n")
     }
 

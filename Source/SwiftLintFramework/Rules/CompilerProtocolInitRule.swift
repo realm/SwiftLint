@@ -47,7 +47,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
         for compilerProtocol in ExpressibleByCompiler.allProtocols {
             guard compilerProtocol.initCallNames.contains(name),
-                case let arguments = dictionary.enclosedArguments.flatMap({ $0.name }),
+                case let arguments = dictionary.enclosedArguments.compactMap({ $0.name }),
                 compilerProtocol.match(arguments: arguments),
                 let offset = dictionary.offset,
                 let length = dictionary.length,

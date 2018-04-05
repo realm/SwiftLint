@@ -118,7 +118,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         ]
 
         let intTypes: [String] = ["", "8", "16", "32", "64"].flatMap { size in
-            ["U", ""].flatMap { (sign: String) -> String in
+            ["U", ""].map { (sign: String) -> String in
                 "\(sign)Int\(size)"
             }
         }

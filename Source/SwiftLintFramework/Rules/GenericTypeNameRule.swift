@@ -126,7 +126,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func minParameterOffset(parameters: [[String: SourceKitRepresentable]], file: File) -> Int {
-        let offsets = parameters.flatMap { param -> Int? in
+        let offsets = parameters.compactMap { param -> Int? in
             return param.offset.flatMap {
                 file.contents.bridge().byteRangeToNSRange(start: $0, length: 0)?.location
             }
@@ -140,7 +140,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let namesAndRanges: [(String, NSRange)] = beforeWhere.split(separator: ",").flatMap { string, range in
+        let namesAndRanges: [(String, NSRange)] = beforeWhere.split(separator: ",").compactMap { string, range in
             return string.split(separator: ":").first.map {
                 let (trimmed, trimmedRange) = $0.0.trimmingWhitespaces()
                 return (trimmed, NSRange(location: range.location + trimmedRange.location,
@@ -149,7 +149,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let contents = file.contents.bridge()
-        return namesAndRanges.flatMap { name, range -> (String, Int)? in
+        return namesAndRanges.compactMap { name, range -> (String, Int)? in
             guard let byteRange = contents.NSRangeToByteRange(start: range.location + offset,
                                                               length: range.length),
                 file.syntaxMap.kinds(inByteRange: byteRange) == [.identifier] else {

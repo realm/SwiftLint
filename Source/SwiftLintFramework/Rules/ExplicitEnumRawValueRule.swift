@@ -67,9 +67,9 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
     private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable]) -> [Int] {
 
         let locs = substructureElements(of: dictionary, matching: .enumcase)
-            .flatMap { substructureElements(of: $0, matching: .enumelement) }
+            .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(enumElementsMissingInitExpr)
-            .flatMap { $0.offset }
+            .compactMap { $0.offset }
 
         return locs
     }

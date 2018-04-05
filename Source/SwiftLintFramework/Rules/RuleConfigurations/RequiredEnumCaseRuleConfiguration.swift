@@ -30,8 +30,8 @@ public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
     var protocols: [String: Set<RequiredCase>] = [:]
 
     public var consoleDescription: String {
-        let protocols = self.protocols.sorted(by: { $0.key < $1.key }) .flatMap { name, required in
-            let caseNames: [String] = required.sorted(by: { $0.name < $1.name }).flatMap {
+        let protocols = self.protocols.sorted(by: { $0.key < $1.key }) .compactMap { name, required in
+            let caseNames: [String] = required.sorted(by: { $0.name < $1.name }).map {
                 "[name: \"\($0.name)\", severity: \"\($0.severity.rawValue)\"]"
             }
 

@@ -70,7 +70,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
 
 private extension Array where Element == [String: SourceKitRepresentable] {
     var parameterTypes: [String] {
-        return flatMap { element in
+        return compactMap { element in
             guard element.kind.flatMap(SwiftDeclarationKind.init) == .varParameter else {
                 return nil
             }

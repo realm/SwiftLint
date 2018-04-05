@@ -42,6 +42,10 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#1885](https://github.com/realm/SwiftLint/issues/1885)
 
+* Add 4.1.0, 4.1.1 and 4.2.0 to Swift version detection.  
+  [norio-nomura](https://github.com/norio-nomura)
+  [#2143](https://github.com/realm/SwiftLint/issues/2143)
+
 #### Bug Fixes
 
 * Fixes an issue with the `yoda_condition` rule where the severity would always

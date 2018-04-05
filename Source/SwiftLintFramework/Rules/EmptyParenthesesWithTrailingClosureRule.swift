@@ -83,14 +83,16 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
 
             return ranges
-        }.unique
+        }
+
+        return violationsAreUnique ? ranges.unique : ranges
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

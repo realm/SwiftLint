@@ -9,7 +9,7 @@ extension ColonRule {
             return []
         }
 
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges: [NSRange] = []
             if let kind = subDict.kind.flatMap(KindType.init(rawValue:)) {
                 ranges += dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
@@ -17,7 +17,9 @@ extension ColonRule {
             ranges += dictionaryColonViolationRanges(in: file, dictionary: subDict)
 
             return ranges
-        }.unique
+        }
+
+        return violationsAreUnique ? ranges.unique : ranges
     }
 
     internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,

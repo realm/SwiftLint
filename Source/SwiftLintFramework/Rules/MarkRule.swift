@@ -117,7 +117,7 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
                                           replaceString: "// MARK: - ",
                                           keepLastChar: true))
 
-        return result.unique
+        return violationsAreUnique ? result.unique : result
     }
 
     private func correct(file: File,

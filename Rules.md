@@ -412,6 +412,16 @@ func increase(f: @autoclosure () -> Int) -> Int
 func foo(completionHandler: @escaping () -> Void)
 ```
 
+```swift
+private struct DefaultError: Error {}
+```
+
+```swift
+@testable import foo
+
+private let bar = 1
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

@@ -92,6 +92,11 @@
   even if only 1 file changed.  
   [John Szumski](https://github.com/jszumski)
 
+* Fix false positives in `attributes` rule when using Swift 4.1.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2125](https://github.com/realm/SwiftLint/issues/2125)
+  [#2141](https://github.com/realm/SwiftLint/issues/2141)
+
 ## 0.25.0: Cleaning the Lint Filter
 
 #### Breaking

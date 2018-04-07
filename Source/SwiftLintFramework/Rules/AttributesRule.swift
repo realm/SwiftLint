@@ -311,7 +311,17 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "source.decl.attribute.postfix",
             "source.decl.attribute.prefix",
             "source.decl.attribute.required",
-            "source.decl.attribute.weak"
+            "source.decl.attribute.weak",
+            "source.decl.attribute.private",
+            "source.decl.attribute.fileprivate",
+            "source.decl.attribute.internal",
+            "source.decl.attribute.public",
+            "source.decl.attribute.open",
+            "source.decl.attribute.setter_access.private",
+            "source.decl.attribute.setter_access.fileprivate",
+            "source.decl.attribute.setter_access.internal",
+            "source.decl.attribute.setter_access.public",
+            "source.decl.attribute.setter_access.open"
         ]
         return attributes.filter { !blacklist.contains($0) }
     }

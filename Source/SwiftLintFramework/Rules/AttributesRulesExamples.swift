@@ -44,7 +44,9 @@ internal struct AttributesRuleExamples {
         "@discardableResult\n func a() -> Int",
         "@objc\n @discardableResult\n func a() -> Int",
         "func increase(f: @autoclosure () -> Int) -> Int",
-        "func foo(completionHandler: @escaping () -> Void)"
+        "func foo(completionHandler: @escaping () -> Void)",
+        "private struct DefaultError: Error {}",
+        "@testable import foo\n\nprivate let bar = 1"
     ]
 
     static let triggeringExamples = [

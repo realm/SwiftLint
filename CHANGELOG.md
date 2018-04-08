@@ -6,6 +6,10 @@
 
 #### Enhancements
 
+* Add `LowerACLThanParent` rule  
+  [Keith Smiley](https://github.com/keith)
+  [#2136](https://github.com/realm/SwiftLint/pull/2136)
+
 * Add `UIOffsetMake` to `legacy_constructor` rule.  
   [Nealon Young](https://github.com/nealyoung)
   [#2126](https://github.com/realm/SwiftLint/issues/2126)

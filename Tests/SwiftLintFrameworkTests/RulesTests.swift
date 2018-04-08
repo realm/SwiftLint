@@ -98,6 +98,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyParametersRule.description)
     }
 
+    func testLowerACLThanParent() {
+        verifyRule(LowerACLThanParentRule.description)
+    }
+
     func testEmptyParenthesesWithTrailingClosure() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }

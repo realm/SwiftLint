@@ -62,7 +62,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule {
                 violationOffset = element.offset
             }
 
-            return [violationOffset].flatMap { $0 } + self.validateACL(isHigherThan: accessibility, in: element)
+            return [violationOffset].compactMap { $0 } + self.validateACL(isHigherThan: accessibility, in: element)
         }
     }
 }

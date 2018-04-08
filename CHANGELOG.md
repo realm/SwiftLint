@@ -6,7 +6,10 @@
 
 #### Enhancements
 
-* None.
+* Validate implicit `subscript` getter in `implicit_getter` rule when using
+  Swift 4.1.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#898](https://github.com/realm/SwiftLint/issues/898)
 
 #### Bug Fixes
 

@@ -43,8 +43,12 @@
   [#1885](https://github.com/realm/SwiftLint/issues/1885)
 
 * Add 4.1.0, 4.1.1 and 4.2.0 to Swift version detection.  
-  [norio-nomura](https://github.com/norio-nomura)
+  [Norio Nomura](https://github.com/norio-nomura)
   [#2143](https://github.com/realm/SwiftLint/issues/2143)
+
+* Support building with Swift 4.1.  
+  [Norio Nomura](https://github.com/norio-nomura)
+  [#2038](https://github.com/realm/SwiftLint/issues/2038)
 
 #### Bug Fixes
 

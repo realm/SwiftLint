@@ -465,6 +465,7 @@
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
 		6C032EED2027EA8D00CD7E8D /* shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
 		6C032EF02027F79F00CD7E8D /* shim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
+		6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
 		6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceKitCrashTests.swift; sourceTree = "<group>"; };
 		6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Structure+SwiftLint.swift"; sourceTree = "<group>"; };
 		6CC4259A1C77046200AEA885 /* SyntaxMap+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SyntaxMap+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -903,6 +904,7 @@
 				D0D1213619E878CC005E4BAA /* Mac-DynamicLibrary.xcconfig */,
 				D0D1213719E878CC005E4BAA /* Mac-Framework.xcconfig */,
 				D0D1213819E878CC005E4BAA /* Mac-StaticLibrary.xcconfig */,
+				6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */,
 			);
 			path = "Mac OS X";
 			sourceTree = "<group>";
@@ -1904,7 +1906,7 @@
 		};
 		D0D1218219E87B05005E4BAA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			baseConfigurationReference = 6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFrameworkTests/Supporting Files/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1915,7 +1917,7 @@
 		};
 		D0D1218319E87B05005E4BAA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			baseConfigurationReference = 6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFrameworkTests/Supporting Files/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1962,7 +1964,7 @@
 		};
 		D0D1218A19E87B38005E4BAA /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			baseConfigurationReference = 6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFrameworkTests/Supporting Files/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2009,7 +2011,7 @@
 		};
 		D0D1218E19E87B3B005E4BAA /* Test */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0D1213419E878CC005E4BAA /* Mac-Application.xcconfig */;
+			baseConfigurationReference = 6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = "Tests/SwiftLintFrameworkTests/Supporting Files/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";

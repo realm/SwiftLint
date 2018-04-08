@@ -1,12 +1,15 @@
 ## Master
 
+This is the last release to support building with Swift 3.2 and Swift 3.3.
+The next release will require Swift 4.0 or higher to build.
+
 #### Breaking
 
 * None.
 
 #### Enhancements
 
-* Add `LowerACLThanParent` rule  
+* Add `LowerACLThanParent` rule.  
   [Keith Smiley](https://github.com/keith)
   [#2136](https://github.com/realm/SwiftLint/pull/2136)
 
@@ -20,7 +23,7 @@
   [#2028](https://github.com/realm/SwiftLint/issues/2028)
 
 * Add `empty_string` opt-in rule to validate against comparing strings to `""`
-  instead of using `.isEmpty`.  
+  instead of using `.isEmpty`.  
   [Davide Sibilio](https://github.com/idevid)
 
 * Add `untyped_error_in_catch` opt-in rule to warn against declaring errors
@@ -92,7 +95,8 @@
   declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Fix `redundant_void_return` rule autocorrect when preprocessor macros are present.  
+* Fix `redundant_void_return` rule autocorrect when preprocessor macros are
+  present.  
   [John Szumski](https://github.com/jszumski)
   [#2115](https://github.com/realm/SwiftLint/issues/2115)
 

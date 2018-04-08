@@ -41,7 +41,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.match(pattern: "break", with: [.keyword]).flatMap { range in
+        return file.match(pattern: "break", with: [.keyword]).compactMap { range in
             let contents = file.contents.bridge()
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length),
                 let innerStructure = file.structure.structures(forByteOffset: byteRange.location).last,
@@ -82,7 +82,7 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule {
     }
 
     private func patternEnd(dictionary: [String: SourceKitRepresentable]) -> Int? {
-        let patternEnds = dictionary.elements.flatMap { subDictionary -> Int? in
+        let patternEnds = dictionary.elements.compactMap { subDictionary -> Int? in
             guard subDictionary.kind == "source.lang.swift.structure.elem.pattern",
                 let offset = subDictionary.offset,
                 let length = subDictionary.length else {

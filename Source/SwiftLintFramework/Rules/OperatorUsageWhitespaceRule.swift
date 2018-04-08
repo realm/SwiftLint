@@ -112,7 +112,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         let excludingKinds = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
-                          excludingPattern: excludingPattern).flatMap { range in
+                          excludingPattern: excludingPattern).compactMap { range in
 
             // if it's only a number (i.e. -9e-11), it shouldn't trigger
             guard kinds(in: range, file: file) != [.number] else {

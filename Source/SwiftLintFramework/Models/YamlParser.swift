@@ -38,11 +38,11 @@ public struct YamlParser {
 
 private extension Constructor {
     static func swiftlintContructor(env: [String: String]) -> Constructor {
-        return Constructor(customMap(env: env))
+        return Constructor(customScalarMap(env: env))
     }
 
-    static func customMap(env: [String: String]) -> Map {
-        var map = defaultMap
+    static func customScalarMap(env: [String: String]) -> ScalarMap {
+        var map = defaultScalarMap
         map[.str] = String.constructExpandingEnvVars(env: env)
         map[.bool] = Bool.constructUsingOnlyTrueAndFalse
 
@@ -51,10 +51,9 @@ private extension Constructor {
 }
 
 private extension String {
-    static func constructExpandingEnvVars(env: [String: String]) -> (_ node: Node) -> String? {
-        return { (node: Node) -> String? in
-            assert(node.isScalar)
-            return node.scalar!.string.expandingEnvVars(env: env)
+    static func constructExpandingEnvVars(env: [String: String]) -> (_ scalar: Node.Scalar) -> String? {
+        return { (scalar: Node.Scalar) -> String? in
+            return scalar.string.expandingEnvVars(env: env)
         }
     }
 
@@ -69,9 +68,8 @@ private extension String {
 }
 
 private extension Bool {
-    static func constructUsingOnlyTrueAndFalse(from node: Node) -> Bool? {
-        assert(node.isScalar)
-        switch node.scalar!.string.lowercased() {
+    static func constructUsingOnlyTrueAndFalse(from scalar: Node.Scalar) -> Bool? {
+        switch scalar.string.lowercased() {
         case "true":
             return true
         case "false":
@@ -79,14 +77,5 @@ private extension Bool {
         default:
             return nil
         }
-    }
-}
-
-private extension Node {
-    var isScalar: Bool {
-        if case .scalar = self {
-            return true
-        }
-        return false
     }
 }

@@ -79,7 +79,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
 
         let contents = file.contents.bridge()
 
-        let callsRanges = dictionary.substructure.flatMap { dict -> NSRange? in
+        let callsRanges = dictionary.substructure.compactMap { dict -> NSRange? in
             guard dict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
                 let offset = dict.offset,
                 let length = dict.length,
@@ -99,7 +99,7 @@ public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, Correc
             }
 
             let emptyArgumentRegex = regex("\\.\\S+\\s*(\\([,\\s_]*\\))")
-            return emptyArgumentRegex.matches(in: file.contents, options: [], range: caseRange).flatMap { match in
+            return emptyArgumentRegex.matches(in: file.contents, options: [], range: caseRange).compactMap { match in
                 let parenthesesRange = match.range(at: 1)
 
                 // avoid matches after `where` keyworkd

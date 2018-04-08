@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "SWXMLHash",
-        "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
-        "state": {
-          "branch": null,
-          "revision": "4e7f5af6331735d39fc357b2c71c3bb15af97c8f",
-          "version": "4.3.6"
-        }
-      },
-      {
         "package": "SourceKit",
         "repositoryURL": "https://github.com/norio-nomura/SourceKit.git",
         "state": {
@@ -69,8 +60,8 @@
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
           "branch": null,
-          "revision": "e06eb730499439ae32c5fbb6f72809ebec2371fd",
-          "version": "0.19.1"
+          "revision": "b6b10419ee439167ba6f7bd928ad30754ff5eb5d",
+          "version": "0.20.0"
         }
       },
       {
@@ -83,12 +74,21 @@
         }
       },
       {
+        "package": "SWXMLHash",
+        "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
+        "state": {
+          "branch": null,
+          "revision": "17d992beb3aaeda403fd35f8d5e70ab1a8124f35",
+          "version": "4.6.0"
+        }
+      },
+      {
         "package": "Yams",
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
           "branch": null,
-          "revision": "95f45caf07472ec78223ebada45255086a85b01a",
-          "version": "0.5.0"
+          "revision": "6652aa7b793d3c8a075db0614acb575fcaecf457",
+          "version": "0.7.0"
         }
       }
     ]

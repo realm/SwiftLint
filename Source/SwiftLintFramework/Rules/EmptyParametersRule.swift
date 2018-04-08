@@ -57,7 +57,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
 
         return file.match(pattern: pattern,
                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
-                          excludingPattern: excludingPattern).flatMap { range in
+                          excludingPattern: excludingPattern).compactMap { range in
             let voidRegex = regex(voidPattern)
             return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
         }

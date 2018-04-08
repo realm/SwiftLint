@@ -62,7 +62,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
+        return file.match(pattern: pattern).compactMap { range, kinds -> StyleViolation? in
             guard kinds == [.attributeBuiltin, .keyword] else {
                 return nil
             }
@@ -103,7 +103,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
-        let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
+        let attributesTokensWithRanges = tokens.compactMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
 
@@ -156,7 +156,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
         let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return Set(allAttributes.flatMap { token, hasParameter -> String? in
+        return Set(allAttributes.compactMap { token, hasParameter -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
@@ -224,7 +224,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 break
             }
 
-            let attributesTokens = tokens.flatMap { attributeName(token: $0, file: file) }
+            let attributesTokens = tokens.compactMap { attributeName(token: $0, file: file) }
             guard let firstTokenRange = attributesTokens.first?.1 else {
                 // found a line that does not contain an attribute token - we can stop looking
                 break

@@ -55,7 +55,7 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
 
-        return regex(pattern).matches(in: file.contents, options: [], range: range).flatMap { result in
+        return regex(pattern).matches(in: file.contents, options: [], range: range).compactMap { result in
             let range = result.range
             guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
                 return nil
@@ -90,7 +90,7 @@ public struct SyntacticSugarRule: ConfigurationProviderRule {
             }
 
             let kinds = file.structure.kinds(forByteOffset: byteOffset)
-                .flatMap { SwiftExpressionKind(rawValue: $0.kind) }
+                .compactMap { SwiftExpressionKind(rawValue: $0.kind) }
             guard kinds.contains(.call) else {
                 return false
             }

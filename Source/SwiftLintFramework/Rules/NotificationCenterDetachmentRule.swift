@@ -66,7 +66,7 @@ public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRu
 
         let range = NSRange(location: bodyOffset, length: bodyLength)
         let tokens = file.syntaxMap.tokens(inByteRange: range)
-        let types = tokens.flatMap { SyntaxKind(rawValue: $0.type) }
+        let types = tokens.compactMap { SyntaxKind(rawValue: $0.type) }
 
         guard types == [.keyword], let token = tokens.first else {
             return false

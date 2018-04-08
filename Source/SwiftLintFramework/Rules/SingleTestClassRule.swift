@@ -41,7 +41,7 @@ public struct SingleTestClassRule: Rule, OptInRule, ConfigurationProviderRule {
 
         guard classes.count > 1 else { return [] }
 
-        return classes.flatMap { dictionary in
+        return classes.compactMap { dictionary in
             guard let offset = dictionary.offset else { return nil }
 
             return StyleViolation(ruleDescription: type(of: self).description,

@@ -49,14 +49,14 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule {
 
     private func findAllExplicitInternalTokens(in file: File) -> [NSRange] {
         let contents = file.contents.bridge()
-        return file.match(pattern: "internal", with: [.attributeBuiltin]).flatMap {
+        return file.match(pattern: "internal", with: [.attributeBuiltin]).compactMap {
             contents.NSRangeToByteRange(start: $0.location, length: $0.length)
         }
     }
 
     private func offsetOfElements(from elements: [SourceKittenElement], in file: File,
                                   thatAreNotInRanges ranges: [NSRange]) -> [Int] {
-        return elements.flatMap { element in
+        return elements.compactMap { element in
             guard let typeOffset = element.offset else {
                 return nil
             }

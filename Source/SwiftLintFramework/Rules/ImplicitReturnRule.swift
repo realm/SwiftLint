@@ -38,7 +38,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return violationRanges(in: file).flatMap {
+        return violationRanges(in: file).compactMap {
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
                            location: Location(file: file, characterOffset: $0.location))
@@ -69,7 +69,7 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         let pattern = "(?:\\bin|\\{)\\s+(return\\s+)"
         let contents = file.contents.bridge()
 
-        return file.matchesAndSyntaxKinds(matching: pattern).flatMap { result, kinds in
+        return file.matchesAndSyntaxKinds(matching: pattern).compactMap { result, kinds in
             let range = result.range
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,

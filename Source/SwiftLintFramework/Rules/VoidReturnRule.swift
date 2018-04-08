@@ -64,7 +64,7 @@ public struct VoidReturnRule: ConfigurationProviderRule, CorrectableRule {
         let excludingPattern = "(\(pattern))\\s*(throws\\s+)?->"
 
         return file.match(pattern: pattern, excludingSyntaxKinds: kinds, excludingPattern: excludingPattern,
-                          exclusionMapping: { $0.range(at: 1) }).flatMap {
+                          exclusionMapping: { $0.range(at: 1) }).compactMap {
             let parensRegex = regex(parensPattern)
             return parensRegex.firstMatch(in: file.contents, options: [], range: $0)?.range
         }

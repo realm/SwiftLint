@@ -169,7 +169,7 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let violations = typeColonViolationRanges(in: file, matching: pattern).flatMap { range in
+        let violations = typeColonViolationRanges(in: file, matching: pattern).compactMap { range in
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severityConfiguration.severity,
                                   location: Location(file: file, characterOffset: range.location))
@@ -222,14 +222,15 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
         }
         let dictionary = file.structure.dictionary
         let contents = file.contents.bridge()
-        let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file, dictionary: dictionary).flatMap {
+        let dictViolations: [RangeWithKind] = dictionaryColonViolationRanges(in: file,
+                                                                             dictionary: dictionary).compactMap {
             guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {
                 return nil
             }
             return (range: range, kind: .dictionary)
         }
         let functionViolations: [RangeWithKind] = functionCallColonViolationRanges(in: file,
-                                                                                   dictionary: dictionary).flatMap {
+                                                                                   dictionary: dictionary).compactMap {
             guard let range = contents.byteRangeToNSRange(start: $0.location, length: $0.length) else {
                 return nil
             }

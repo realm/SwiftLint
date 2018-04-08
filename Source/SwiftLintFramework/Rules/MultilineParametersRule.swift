@@ -36,7 +36,7 @@ public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProvider
                 return []
         }
 
-        let parameterRanges = dictionary.substructure.flatMap { subStructure -> ParameterRange? in
+        let parameterRanges = dictionary.substructure.compactMap { subStructure -> ParameterRange? in
             guard
                 let offset = subStructure.offset,
                 let length = subStructure.length,

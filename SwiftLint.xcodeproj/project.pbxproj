@@ -1833,11 +1833,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212619E878CC005E4BAA /* Debug.xcconfig */;
 			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				ONLY_ACTIVE_ARCH = YES;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -1846,10 +1842,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212819E878CC005E4BAA /* Release.xcconfig */;
 			buildSettings = {
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -1864,8 +1857,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;
@@ -1889,8 +1880,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;
@@ -1930,8 +1919,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212719E878CC005E4BAA /* Profile.xcconfig */;
 			buildSettings = {
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1947,8 +1934,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;
@@ -1977,8 +1962,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0D1212919E878CC005E4BAA /* Test.xcconfig */;
 			buildSettings = {
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1994,8 +1977,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				INFOPLIST_FILE = "Source/SwiftLintFramework/Supporting Files/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.realm.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftLintFramework;
 				SWIFT_VERSION = 3.0;

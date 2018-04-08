@@ -46,7 +46,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
                 return firstOffset < secondOffset
             }
             .prefix(2)
-            .flatMap { argument -> String? in
+            .compactMap { argument -> String? in
                 guard
                     let argOffset = argument.offset,
                     let argLength = argument.length,

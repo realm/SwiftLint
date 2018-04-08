@@ -5,7 +5,7 @@
 //  Created by Scott Hoyt on 12/28/15.
 //  Copyright © 2015 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.10.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -47,17 +47,17 @@ public let masterRuleList = RuleList(rules: [
     FileHeaderRule.self,
     FileLengthRule.self,
     FirstWhereRule.self,
+    ForWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
-    ForWhereRule.self,
     FunctionBodyLengthRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,
-    ImplicitlyUnwrappedOptionalRule.self,
     ImplicitReturnRule.self,
+    ImplicitlyUnwrappedOptionalRule.self,
     IsDisjointRule.self,
     JoinedDefaultParameterRule.self,
     LargeTupleRule.self,

@@ -1,3 +1,17 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.

@@ -3,7 +3,7 @@ jobs:
 
   tsan:
     macos:
-      xcode: "9.2.0"
+      xcode: "9.3.0"
     steps:
       - checkout
       # Pre-cache
@@ -14,7 +14,7 @@ jobs:
   osscheck:
     shell: /bin/bash --login -eo pipefail
     macos:
-      xcode: "9.2.0"
+      xcode: "9.3.0"
     steps:
       - checkout
       - run: echo "ruby-2.3" > ~/.ruby-version
@@ -28,9 +28,16 @@ jobs:
       - checkout
       - run: swift test --parallel
 
+  swiftpm_4.1:
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      - run: swift test --parallel
+
   xcode_9:
     macos:
-      xcode: "9.2.0"
+      xcode: "9.3.0"
     steps:
       - checkout
       - run: set -o pipefail && script/cibuild | xcpretty -r junit
@@ -38,10 +45,21 @@ jobs:
           path: build/reports/
       - run: bash <(curl -s https://codecov.io/bash)
 
-  cocoapods:
+  cocoapods_swift_4:
     shell: /bin/bash --login -eo pipefail
     macos:
       xcode: "9.2.0"
+    steps:
+      - checkout
+      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: bundle install
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
+
+  cocoapods_swift_4.1:
+    shell: /bin/bash --login -eo pipefail
+    macos:
+      xcode: "9.3.0"
     steps:
       - checkout
       - run: echo "ruby-2.3" > ~/.ruby-version
@@ -70,7 +88,9 @@ workflows:
       - tsan
       - osscheck
       - swiftpm_4
+      - swiftpm_4.1
       - xcode_9
-      - cocoapods
+      - cocoapods_swift_4
+      - cocoapods_swift_4.1
       - linux_swift_4
       - linux_swift_4.1

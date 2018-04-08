@@ -1,4 +1,4 @@
-## Master
+## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.
 The next release will require Swift 4.0 or higher to build.

@@ -214,8 +214,8 @@ public struct ImplicitGetterRule: ConfigurationProviderRule {
 
         return violatingLocations.map { offset, kind in
             let reason = kind.map { kind -> String in
-                let kind = kind == .functionSubscript ? "subscripts" : "properties"
-                return "Computed read-only \(kind) should avoid using the get keyword."
+                let kindString = kind == .functionSubscript ? "subscripts" : "properties"
+                return "Computed read-only \(kindString) should avoid using the get keyword."
             }
 
             return StyleViolation(ruleDescription: type(of: self).description,

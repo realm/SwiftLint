@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 private let projectRoot = #file.bridge()
@@ -18,6 +18,10 @@ private let projectRoot = #file.bridge()
 class DocumentationTests: XCTestCase {
     // sourcery:skipTestOnLinux
     func testRulesDocumentationIsUpdated() throws {
+        guard SwiftVersion.current >= .fourDotOne else {
+            return
+        }
+
         let docsPath = "\(projectRoot)/Rules.md"
         let existingDocs = try String(contentsOfFile: docsPath)
         let updatedDocs = masterRuleList.generateDocumentation()

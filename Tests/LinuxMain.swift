@@ -513,6 +513,7 @@ extension RulesTests {
         ("testTrailingSemicolon", testTrailingSemicolon),
         ("testTrailingWhitespace", testTrailingWhitespace),
         ("testTypeBodyLength", testTypeBodyLength),
+        ("testUnavailableFunction", testUnavailableFunction),
         ("testUnneededBreakInSwitch", testUnneededBreakInSwitch),
         ("testUnneededParenthesesInClosureArgument", testUnneededParenthesesInClosureArgument),
         ("testUntypedErrorInCatch", testUntypedErrorInCatch),

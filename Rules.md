@@ -115,6 +115,7 @@
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
 * [Type Name](#type-name)
+* [Unavailable Function](#unavailable-function)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
 * [Unneeded Parentheses in Closure Argument](#unneeded-parentheses-in-closure-argument)
 * [Untyped Error in Catch](#untyped-error-in-catch)
@@ -17383,6 +17384,66 @@ protocol Foo {
 protocol Foo {
  associatedtype ↓AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  }
+```
+
+</details>
+
+
+
+## Unavailable Function
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`unavailable_function` | Disabled | No | idiomatic | 4.1.0 
+
+Unimplemented functions should be marked as unavailable.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    @available(*, unavailable)
+    public required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+```
+
+```swift
+func jsonValue(_ jsonString: String) -> NSObject {
+    let data = jsonString.data(using: .utf8)!
+    let result = try! JSONSerialization.jsonObject(with: data, options: [])
+    if let dict = (result as? [String: Any])?.bridge() {
+        return dict
+    } else if let array = (result as? [Any])?.bridge() {
+        return array
+    }
+    fatalError()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    public required ↓init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    public required ↓init?(coder aDecoder: NSCoder) {
+        let reason = "init(coder:) has not been implemented"
+        fatalError(reason)
+    }
+}
 ```
 
 </details>

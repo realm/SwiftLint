@@ -36,6 +36,7 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         identifier: "trailing_newline",
         name: "Trailing Newline",
         description: "Files should have a single trailing newline.",
+        kind: .style,
         nonTriggeringExamples: [
             "let a = 0\n"
         ],
@@ -55,8 +56,8 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
             return []
         }
         return [StyleViolation(ruleDescription: type(of: self).description,
-            severity: configuration.severity,
-            location: Location(file: file.path, line: max(file.lines.count, 1)))]
+                               severity: configuration.severity,
+                               location: Location(file: file.path, line: max(file.lines.count, 1)))]
     }
 
     public func correct(file: File) -> [Correction] {
@@ -72,9 +73,8 @@ public struct TrailingNewlineRule: CorrectableRule, ConfigurationProviderRule, S
         if count < 1 {
             file.append("\n")
         } else {
-            let index = file.contents.characters.index(file.contents.endIndex, offsetBy: 1 - count)
-            let contents = file.contents.substring(to: index)
-            file.write(contents)
+            let index = file.contents.index(file.contents.endIndex, offsetBy: 1 - count)
+            file.write(file.contents[..<index])
         }
         let location = Location(file: file.path, line: max(file.lines.count, 1))
         return [Correction(ruleDescription: type(of: self).description, location: location)]

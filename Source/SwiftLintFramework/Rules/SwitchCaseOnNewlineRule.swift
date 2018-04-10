@@ -22,6 +22,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
         identifier: "switch_case_on_newline",
         name: "Switch Case on Newline",
         description: "Cases inside a switch should always be on a newline",
+        kind: .style,
         nonTriggeringExamples: [
             "/*case 1: */return true",
             "//case 1:\n return true",
@@ -87,7 +88,7 @@ public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptIn
                 return false
             }
 
-            return !SyntaxKind.commentKinds().contains(kind)
+            return !SyntaxKind.commentKinds.contains(kind)
         }
     }
 }

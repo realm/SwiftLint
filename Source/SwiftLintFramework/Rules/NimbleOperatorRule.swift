@@ -18,6 +18,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         identifier: "nimble_operator",
         name: "Nimble Operator",
         description: "Prefer Nimble operator overloads over free matcher functions.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "expect(seagull.squawk) != \"Hi!\"\n",
             "expect(\"Hi!\") == \"Hi!\"\n",
@@ -73,8 +74,8 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let matches = violationMatchesRanges(in: file)
         return matches.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -85,7 +86,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
         let variablePattern = "(.(?!expect\\())+?"
         let pattern = "expect\\(\(variablePattern)\\)\\.to(Not)?\\(\(operatorsPattern)\\(\(variablePattern)\\)\\)"
 
-        let excludingKinds = SyntaxKind.commentKinds()
+        let excludingKinds = SyntaxKind.commentKinds
 
         return file.match(pattern: pattern)
             .filter { _, kinds in
@@ -124,11 +125,11 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     }
 }
 
-extension String {
+private extension String {
     /// Returns corrected string if the correction is possible, otherwise returns nil.
-    fileprivate func replace(function name: NimbleOperatorRule.MatcherFunction,
-                             with operators: NimbleOperatorRule.Operators,
-                             in range: NSRange) -> String? {
+    func replace(function name: NimbleOperatorRule.MatcherFunction,
+                 with operators: NimbleOperatorRule.Operators,
+                 in range: NSRange) -> String? {
 
         let anything = "\\s*(.*?)\\s*"
 
@@ -137,11 +138,7 @@ extension String {
 
         var correctedString: String?
 
-        for (pattern, operatorString) in [toPattern, toNotPattern] {
-            guard let operatorString = operatorString else {
-                continue
-            }
-
+        for case let (pattern, operatorString?) in [toPattern, toNotPattern] {
             let expression = regex(pattern)
             if !expression.matches(in: self, options: [], range: range).isEmpty {
                 correctedString = expression.stringByReplacingMatches(in: self,

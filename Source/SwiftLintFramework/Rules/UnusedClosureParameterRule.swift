@@ -18,6 +18,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         identifier: "unused_closure_parameter",
         name: "Unused Closure Parameter",
         description: "Unused parameter in a closure should be replaced with _.",
+        kind: .lint,
         nonTriggeringExamples: [
             "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map({ $0 + 1 })\n",
@@ -40,7 +41,12 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "}(UILabel())\n",
             "hoge(arg: num) { num in\n" +
             "  return num\n" +
-            "}\n"
+            "}\n",
+            """
+            ({ (manager: FileManager) in
+              print(manager)
+            })(FileManager.default)
+            """
         ],
         triggeringExamples: [
             "[1, 2].map { ↓number in\n return 3\n}\n",
@@ -50,7 +56,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "[1, 2].something { number, ↓idx in\n return number\n}\n",
             "genericsFunc { (↓number: TypeA, idx: TypeB) in return idx\n}\n",
             "hoge(arg: num) { ↓num in\n" +
-            "}\n"
+            "}\n",
+            "fooFunc { ↓아 in\n }",
+            "func foo () {\n bar { ↓number in\n return 3\n}\n"
         ],
         corrections: [
             "[1, 2].map { ↓number in\n return 3\n}\n":
@@ -74,7 +82,9 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             "genericsFunc { (a: Type, ↓b) -> Void in\nreturn a\n}\n":
                 "genericsFunc { (a: Type, _) -> Void in\nreturn a\n}\n",
             "hoge(arg: num) { ↓num in\n}\n":
-                "hoge(arg: num) { _ in\n}\n"
+                "hoge(arg: num) { _ in\n}\n",
+            "func foo () {\n bar { ↓number in\n return 3\n}\n":
+                "func foo () {\n bar { _ in\n return 3\n}\n"
         ]
     )
 
@@ -107,7 +117,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         let parameters = dictionary.enclosedVarParameters
         let contents = file.contents.bridge()
 
-        return parameters.flatMap { param -> (NSRange, String)? in
+        return parameters.compactMap { param -> (NSRange, String)? in
             guard let paramOffset = param.offset,
                 let name = param.name,
                 name != "_",
@@ -118,7 +128,7 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                 return nil
             }
 
-            let paramLength = name.bridge().length
+            let paramLength = name.lengthOfBytes(using: .utf8)
 
             let matches = regex.matches(in: file.contents, options: [], range: range).ranges()
             for range in matches {
@@ -149,19 +159,19 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
         return dictionary.name.flatMap { name -> Bool in
             let length = name.bridge().length
             let range = NSRange(location: 0, length: length)
-            return regex("\\A\\s*\\{").firstMatch(in: name, options: [], range: range) != nil
+            return regex("\\A[\\s\\(]*?\\{").firstMatch(in: name, options: [], range: range) != nil
         } ?? false
     }
 
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, dictionary: subDict, kind: kind).map { $0.0 }
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, dictionary: subDict, kind: kind).map({ $0.0 })
+
+            return ranges
         }
     }
 

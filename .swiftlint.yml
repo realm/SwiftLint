@@ -21,6 +21,23 @@ opt_in_rules:
   - number_separator
   - prohibited_super_call
   - fatal_error_message
+  - vertical_parameter_alignment_on_call
+  - let_var_whitespace
+  - unneeded_parentheses_in_closure_argument
+  - extension_access_modifier
+  - pattern_matching_keywords
+  - array_init
+  - literal_expression_end_indentation
+  - joined_default_parameter
+  - contains_over_first_not_nil
+  - override_in_extension
+  - private_action
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - single_test_class
+  - sorted_first_last
+  - yoda_condition
 
 file_header:
   required_pattern: |
@@ -31,6 +48,31 @@ file_header:
                     \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2}\.
                     \/\/  Copyright © \d{4} Realm\. All rights reserved\.
                     \/\/
+identifier_name:
+  excluded:
+    - id
 line_length: 120
 number_separator:
   minimum_length: 5
+
+custom_rules:
+  rule_id:
+    included: Source/SwiftLintFramework/Rules/\w+\.swift
+    name: Rule ID
+    message: Rule IDs must be all lowercase, snake case and not end with `rule`
+    regex: identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")
+    severity: error
+  fatal_error:
+    name: Fatal Error
+    excluded: "Tests/*"
+    message: Prefer using `queuedFatalError` over `fatalError` to avoid leaking compiler host machine paths.
+    regex: \bfatalError\b
+    match_kinds:
+      - identifier
+    severity: error
+  rule_test_function:
+    included: Tests/SwiftLintFrameworkTests/RulesTests.swift
+    name: Rule Test Function
+    message: Rule Test Function mustn't end with `rule`
+    regex: func\s*test\w+(r|R)ule\(\)
+    severity: error

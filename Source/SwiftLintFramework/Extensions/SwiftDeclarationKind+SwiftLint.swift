@@ -9,43 +9,38 @@
 import SourceKittenFramework
 
 extension SwiftDeclarationKind {
-    internal static func variableKinds() -> [SwiftDeclarationKind] {
-        return [
-            .varClass,
-            .varGlobal,
-            .varInstance,
-            .varLocal,
-            .varParameter,
-            .varStatic
-        ]
-    }
+    internal static let variableKinds: Set<SwiftDeclarationKind> = [
+        .varClass,
+        .varGlobal,
+        .varInstance,
+        .varLocal,
+        .varParameter,
+        .varStatic
+    ]
 
-    internal static func functionKinds() -> [SwiftDeclarationKind] {
-        return [
-            .functionAccessorAddress,
-            .functionAccessorDidset,
-            .functionAccessorGetter,
-            .functionAccessorMutableaddress,
-            .functionAccessorSetter,
-            .functionAccessorWillset,
-            .functionConstructor,
-            .functionDestructor,
-            .functionFree,
-            .functionMethodClass,
-            .functionMethodInstance,
-            .functionMethodStatic,
-            .functionOperator,
-            .functionSubscript
-        ]
-    }
+    internal static let functionKinds: Set<SwiftDeclarationKind> = [
+        .functionAccessorAddress,
+        .functionAccessorDidset,
+        .functionAccessorGetter,
+        .functionAccessorMutableaddress,
+        .functionAccessorSetter,
+        .functionAccessorWillset,
+        .functionConstructor,
+        .functionDestructor,
+        .functionFree,
+        .functionMethodClass,
+        .functionMethodInstance,
+        .functionMethodStatic,
+        .functionOperator,
+        .functionSubscript
+    ]
 
-    internal static func typeKinds() -> [SwiftDeclarationKind] {
-        return [
-            .`class`,
-            .`struct`,
-            .`typealias`,
-            .`enum`
-        ]
-    }
+    internal static let typeKinds: Set<SwiftDeclarationKind> = [
+        .`class`,
+        .`struct`,
+        .`typealias`,
+        .`associatedtype`,
+        .`enum`
+    ]
 
 }

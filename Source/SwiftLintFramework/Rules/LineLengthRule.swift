@@ -14,14 +14,15 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
     public init() {}
 
-    private let commentKinds = Set(SyntaxKind.commentKinds())
-    private let nonCommentKinds = Set(SyntaxKind.allKinds()).subtracting(SyntaxKind.commentKinds())
-    private let functionKinds = Set(SwiftDeclarationKind.functionKinds())
+    private let commentKinds = SyntaxKind.commentKinds
+    private let nonCommentKinds = SyntaxKind.allKinds.subtracting(SyntaxKind.commentKinds)
+    private let functionKinds = SwiftDeclarationKind.functionKinds
 
     public static let description = RuleDescription(
         identifier: "line_length",
         name: "Line Length",
         description: "Lines should not span too many characters.",
+        kind: .metrics,
         nonTriggeringExamples: [
             String(repeating: "/", count: 120) + "\n",
             String(repeating: "#colorLiteral(red: 0.9607843161, green: 0.7058823705, blue: 0.200000003, alpha: 1)", count: 120) + "\n",
@@ -39,10 +40,10 @@ public struct LineLengthRule: ConfigurationProviderRule {
         let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
         let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
 
-        return file.lines.flatMap { line in
-            // `line.content.characters.count` <= `line.range.length` is true.
+        return file.lines.compactMap { line in
+            // `line.content.count` <= `line.range.length` is true.
             // So, `check line.range.length` is larger than minimum parameter value.
-            // for avoiding using heavy `line.content.characters.count`.
+            // for avoiding using heavy `line.content.count`.
             if line.range.length < minValue {
                 return nil
             }
@@ -69,18 +70,19 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 strippedString = strippedString.strippingURLs
             }
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#colorLiteral")
+                                           withDelimiter: "#colorLiteral")
             strippedString = stripLiterals(fromSourceString: strippedString,
-                withDelimiter: "#imageLiteral")
+                                           withDelimiter: "#imageLiteral")
 
-            let length = strippedString.characters.count
+            let length = strippedString.count
 
             for param in configuration.params where length > param.value {
+                let reason = "Line should be \(configuration.length.warning) characters or less: " +
+                             "currently \(length) characters"
                 return StyleViolation(ruleDescription: type(of: self).description,
-                    severity: param.severity,
-                    location: Location(file: file.path, line: line.index),
-                    reason: "Line should be \(configuration.length.warning) characters or less: " +
-                        "currently \(length) characters")
+                                      severity: param.severity,
+                                      location: Location(file: file.path, line: line.index),
+                                      reason: reason)
             }
             return nil
         }
@@ -120,7 +122,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
         if index >= kindsByLine.count {
             return false
         }
-        return !kinds.intersection(kindsByLine[index]).isEmpty
+        return !kinds.isDisjoint(with: kindsByLine[index])
     }
 
 }

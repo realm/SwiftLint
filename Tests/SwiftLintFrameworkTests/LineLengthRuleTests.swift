@@ -12,43 +12,44 @@ import XCTest
 
 class LineLengthRuleTests: XCTestCase {
 
-    private let longFunctionDeclaration = "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
-        "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
-        "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
-        "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
-    "x: String, y: String, z: String) {\n"
+    private let longFunctionDeclarations = [
+        "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
+            "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
+            "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
+            "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
+            "x: String, y: String, z: String) {\n",
+        "func superDuperLongFunctionDeclaration(a: String, b: String, " +
+            "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
+            "j: String, k: String, l: String, m: String, n: String, o: String, p: String, " +
+            "q: String, r: String, s: String, t: String, u: String, v: String, w: String, " +
+            "x: String, y: String, z: String) {\n"
+    ]
 
     private let longComment = String(repeating: "/", count: 121) + "\n"
     private let longBlockComment = "/*" + String(repeating: " ", count: 121) + "*/\n"
     private let declarationWithTrailingLongComment = "let foo = 1 " + String(repeating: "/", count: 121) + "\n"
+
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
     func testLineLengthWithIgnoreFunctionDeclarationsEnabled() {
         let baseDescription = LineLengthRule.description
-        let triggeringExamples = baseDescription.triggeringExamples
-        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [longFunctionDeclaration]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + longFunctionDeclarations
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["ignores_function_declarations": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
 
     func testLineLengthWithIgnoreCommentsEnabled() {
         let baseDescription = LineLengthRule.description
-        let triggeringExamples = [longFunctionDeclaration, declarationWithTrailingLongComment]
+        let triggeringExamples = longFunctionDeclarations + [declarationWithTrailingLongComment]
         let nonTriggeringExamples = [longComment, longBlockComment]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
+
         verifyRule(description, ruleConfiguration: ["ignores_comments": true],
                    commentDoesntViolate: false, stringDoesntViolate: false, skipCommentTests: true)
     }
@@ -62,23 +63,11 @@ class LineLengthRuleTests: XCTestCase {
         let baseDescription = LineLengthRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
         let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: triggeringExamples,
-                                          corrections: baseDescription.corrections)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+                                         .with(triggeringExamples: triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["ignores_urls": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
-    }
-}
-
-extension LineLengthRuleTests {
-    static var allTests: [(String, (LineLengthRuleTests) -> () throws -> Void)] {
-        return [
-            ("testLineLength", testLineLength),
-            ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled)
-        ]
     }
 }

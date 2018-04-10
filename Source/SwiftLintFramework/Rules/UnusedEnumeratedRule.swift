@@ -18,6 +18,7 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
         identifier: "unused_enumerated",
         name: "Unused Enumerated",
         description: "When the index or the item is not used, `.enumerated()` can be removed.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "for (idx, foo) in bar.enumerated() { }\n",
             "for (_, foo) in bar.enumerated().something() { }\n",
@@ -26,7 +27,8 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
             "for foo in bar { }\n",
             "for (idx, _) in bar.enumerated().something() { }\n",
             "for (idx, _) in bar.something() { }\n",
-            "for idx in bar.indices { }\n"
+            "for idx in bar.indices { }\n",
+            "for (section, (event, _)) in data.enumerated() {}\n"
         ],
         triggeringExamples: [
             "for (↓_, foo) in bar.enumerated() { }\n",
@@ -43,12 +45,12 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule {
             isEnumeratedCall(dictionary: dictionary),
             let byteRange = byteRangeForVariables(dictionary: dictionary),
             case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
-            tokens.count > 1,
+            tokens.count == 2,
             let lastToken = tokens.last,
             case let firstTokenIsUnderscore = isTokenUnderscore(tokens[0], file: file),
             case let lastTokenIsUnderscore = isTokenUnderscore(lastToken, file: file),
             firstTokenIsUnderscore || lastTokenIsUnderscore else {
-            return []
+                return []
         }
 
         let offset: Int

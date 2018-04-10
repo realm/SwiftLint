@@ -9,13 +9,14 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RegexConfiguration: RuleConfiguration, Equatable {
+public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String
     public var name: String?
     public var message = "Regex matched."
     public var regex: NSRegularExpression!
     public var included: NSRegularExpression?
-    public var matchKinds = Set(SyntaxKind.allKinds())
+    public var excluded: NSRegularExpression?
+    public var matchKinds = SyntaxKind.allKinds
     public var severityConfiguration = SeverityConfiguration(.warning)
 
     public var severity: ViolationSeverity {
@@ -26,8 +27,27 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
         return "\(severity.rawValue): \(regex.pattern)"
     }
 
+    internal var cacheDescription: String {
+        let jsonObject: [String] = [
+            identifier,
+            name ?? "",
+            message,
+            regex.pattern,
+            included?.pattern ?? "",
+            excluded?.pattern ?? "",
+            matchKinds.map({ $0.rawValue }).sorted(by: <).joined(separator: ","),
+            severityConfiguration.consoleDescription
+        ]
+        if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
+          let jsonString = String(data: jsonData, encoding: .utf8) {
+              return jsonString
+        }
+        queuedFatalError("Could not serialize regex configuration for cache")
+    }
+
     public var description: RuleDescription {
-        return RuleDescription(identifier: identifier, name: name ?? identifier, description: "")
+        return RuleDescription(identifier: identifier, name: name ?? identifier,
+                               description: "", kind: .style)
     }
 
     public init(identifier: String) {
@@ -44,6 +64,10 @@ public struct RegexConfiguration: RuleConfiguration, Equatable {
 
         if let includedString = configurationDict["included"] as? String {
             included = try .cached(pattern: includedString)
+        }
+
+        if let excludedString = configurationDict["excluded"] as? String {
+            excluded = try .cached(pattern: excludedString)
         }
 
         if let name = configurationDict["name"] as? String {
@@ -66,6 +90,7 @@ public func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
            lhs.message == rhs.message &&
            lhs.regex == rhs.regex &&
            lhs.included?.pattern == rhs.included?.pattern &&
+           lhs.excluded?.pattern == rhs.excluded?.pattern &&
            lhs.matchKinds == rhs.matchKinds &&
            lhs.severity == rhs.severity
 }

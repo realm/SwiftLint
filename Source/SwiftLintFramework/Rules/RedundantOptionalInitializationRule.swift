@@ -19,6 +19,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
         identifier: "redundant_optional_initialization",
         name: "Redundant Optional Initialization",
         description: "Initializing an optional variable with nil is redundant.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "var myVar: Int?\n",
             "let myVar: Int? = nil\n",
@@ -36,7 +37,9 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "var foo: Int? = {\n" +
             "   if bar != nil { }\n" +
             "   return 0\n" +
-            "}()\n"
+            "}()\n",
+            // lazy variables need to be initialized
+            "lazy var test: Int? = nil"
         ],
         triggeringExamples: [
             "var myVar: Int?↓ = nil\n",
@@ -65,10 +68,11 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard SwiftDeclarationKind.variableKinds().contains(kind),
+        guard SwiftDeclarationKind.variableKinds.contains(kind),
             dictionary.setterAccessibility != nil,
             let type = dictionary.typeName,
             typeIsOptional(type),
+            !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.lazy"),
             let range = range(for: dictionary, file: file),
             let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
             match.location == range.location + range.length - match.length else {
@@ -94,12 +98,12 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftDeclarationKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
+
+            return ranges
         }
     }
 

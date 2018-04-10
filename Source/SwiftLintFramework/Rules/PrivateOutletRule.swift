@@ -18,6 +18,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         identifier: "private_outlet",
         name: "Private Outlets",
         description: "IBOutlets should be private to avoid leaking UIKit to higher layers.",
+        kind: .lint,
         nonTriggeringExamples: [
             "class Foo {\n  @IBOutlet private var label: UILabel?\n}\n",
             "class Foo {\n  @IBOutlet private var label: UILabel!\n}\n",
@@ -59,8 +60,8 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: location)
+                           severity: configuration.severityConfiguration.severity,
+                           location: location)
         ]
     }
 

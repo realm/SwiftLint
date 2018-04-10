@@ -16,7 +16,9 @@ class RuleConfigurationsTests: XCTestCase {
     func testNameConfigurationSetsCorrectly() {
         let config = [ "min_length": ["warning": 17, "error": 7],
                        "max_length": ["warning": 170, "error": 700],
-                       "excluded": "id"] as [String: Any]
+                       "excluded": "id",
+                       "allowed_symbols": ["$"],
+                       "validates_start_with_lowercase": false] as [String: Any]
         var nameConfig = NameConfiguration(minLengthWarning: 0,
                                            minLengthError: 0,
                                            maxLengthWarning: 0,
@@ -25,7 +27,9 @@ class RuleConfigurationsTests: XCTestCase {
                                      minLengthError: 7,
                                      maxLengthWarning: 170,
                                      maxLengthError: 700,
-                                     excluded: ["id"])
+                                     excluded: ["id"],
+                                     allowedSymbols: ["$"],
+                                     validatesStartWithLowercase: false)
         do {
             try nameConfig.apply(configuration: config)
             XCTAssertEqual(nameConfig, comp)
@@ -89,7 +93,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertEqual(nestingConfig.typeLevel.error, 17)
             XCTAssertEqual(nestingConfig.statementLevel.error, 18)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure nested configurations")
         }
     }
 
@@ -112,7 +116,7 @@ class RuleConfigurationsTests: XCTestCase {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure severity from string")
         }
     }
 
@@ -124,7 +128,7 @@ class RuleConfigurationsTests: XCTestCase {
             try severityConfig.apply(configuration: config)
             XCTAssertEqual(severityConfig, comp)
         } catch {
-            XCTFail()
+            XCTFail("Failed to configure severity from dictionary")
         }
     }
 
@@ -147,6 +151,18 @@ class RuleConfigurationsTests: XCTestCase {
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 17)])
     }
 
+    func testSeverityLevelConfigApplyNilErrorValue() throws {
+        var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
+        try severityConfig.apply(configuration: ["error": nil, "warning": 18])
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
+    }
+
+    func testSeverityLevelConfigApplyMissingErrorValue() throws {
+        var severityConfig = SeverityLevelsConfiguration(warning: 17, error: 20)
+        try severityConfig.apply(configuration: ["warning": 18])
+        XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .warning, value: 18)])
+    }
+
     func testRegexConfigurationThrows() {
         let config = 17
         var regexConfig = RegexConfiguration(identifier: "")
@@ -159,11 +175,11 @@ class RuleConfigurationsTests: XCTestCase {
         var regexConfig = RegexConfiguration(identifier: "regex")
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "regex",
-                                                                description: ""))
+                                                                description: "", kind: .style))
         regexConfig.name = "name"
         XCTAssertEqual(regexConfig.description, RuleDescription(identifier: "regex",
                                                                 name: "name",
-                                                                description: ""))
+                                                                description: "", kind: .style))
     }
 
     func testTrailingWhitespaceConfigurationThrowsOnBadConfig() {
@@ -207,7 +223,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertFalse(configuration.ignoresEmptyLines)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply ignores_empty_lines")
         }
     }
 
@@ -223,7 +239,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: config2)
             XCTAssertFalse(configuration.ignoresComments)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply ignores_comments")
         }
     }
 
@@ -258,7 +274,7 @@ class RuleConfigurationsTests: XCTestCase {
             try configuration.apply(configuration: ["severity": "error"])
             XCTAssert(configuration.severityConfiguration.severity == .error)
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply severity")
         }
     }
 
@@ -274,7 +290,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertFalse(configuration.resolvedMethodNames.contains("viewWillAppear(_:)"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("viewWillDisappear(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf1)")
         }
 
         let conf2 = [
@@ -291,7 +307,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf2)")
         }
 
         let conf3 = [
@@ -307,56 +323,7 @@ class RuleConfigurationsTests: XCTestCase {
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod1()"))
             XCTAssertTrue(configuration.resolvedMethodNames.contains("testMethod2(_:)"))
         } catch {
-            XCTFail()
+            XCTFail("Failed to apply configuration for \(conf3)")
         }
-    }
-}
-
-extension RuleConfigurationsTests {
-    static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] {
-        return [
-            ("testNameConfigurationSetsCorrectly",
-                testNameConfigurationSetsCorrectly),
-            ("testNameConfigurationThrowsOnBadConfig",
-                testNameConfigurationThrowsOnBadConfig),
-            ("testNameConfigurationMinLengthThreshold",
-                testNameConfigurationMinLengthThreshold),
-            ("testNameConfigurationMaxLengthThreshold",
-                testNameConfigurationMaxLengthThreshold),
-            ("testNestingConfigurationSetsCorrectly",
-                testNestingConfigurationSetsCorrectly),
-            ("testNestingConfigurationThrowsOnBadConfig",
-                testNestingConfigurationThrowsOnBadConfig),
-            ("testSeverityConfigurationFromString",
-                testSeverityConfigurationFromString),
-            ("testSeverityConfigurationFromDictionary",
-                testSeverityConfigurationFromDictionary),
-            ("testSeverityConfigurationThrowsOnBadConfig",
-                testSeverityConfigurationThrowsOnBadConfig),
-            ("testSeverityLevelConfigParams",
-                testSeverityLevelConfigParams),
-            ("testSeverityLevelConfigPartialParams",
-                testSeverityLevelConfigPartialParams),
-            ("testRegexConfigurationThrows",
-                testRegexConfigurationThrows),
-            ("testRegexRuleDescription",
-                testRegexRuleDescription),
-            ("testTrailingWhitespaceConfigurationThrowsOnBadConfig",
-                testTrailingWhitespaceConfigurationThrowsOnBadConfig),
-            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines",
-                testTrailingWhitespaceConfigurationInitializerSetsIgnoresEmptyLines),
-            ("testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments",
-                testTrailingWhitespaceConfigurationInitializerSetsIgnoresComments),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines",
-                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresEmptyLines),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments",
-                testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
-            ("testTrailingWhitespaceConfigurationCompares",
-                testTrailingWhitespaceConfigurationCompares),
-            ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration",
-                testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
-            ("testOverridenSuperCallConfigurationFromDictionary",
-                testOverridenSuperCallConfigurationFromDictionary)
-        ]
     }
 }

@@ -19,6 +19,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         name: "Compiler Protocol Init",
         description: "The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` " +
                      "shouldn't be called directly.",
+        kind: .lint,
         nonTriggeringExamples: [
             "let set: Set<Int> = [1, 2]\n",
             "let set = Set(array)\n"
@@ -46,7 +47,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
         for compilerProtocol in ExpressibleByCompiler.allProtocols {
             guard compilerProtocol.initCallNames.contains(name),
-                case let arguments = dictionary.enclosedArguments.flatMap({ $0.name }),
+                case let arguments = dictionary.enclosedArguments.compactMap({ $0.name }),
                 compilerProtocol.match(arguments: arguments),
                 let offset = dictionary.offset,
                 let length = dictionary.length,

@@ -11,16 +11,13 @@
       location = "group:Carthage/Checkouts/Commandant/Commandant.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/Commandant/Carthage/Checkouts/Result/Result.xcodeproj">
+      location = "group:Carthage/Checkouts/Result/Result.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Carthage/Checkouts/SWXMLHash/SWXMLHash.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Carthage/Checkouts/SwiftyTextTable/SwiftyTextTable.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/YamlSwift/Yaml.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Carthage/Checkouts/Yams/Yams.xcodeproj">

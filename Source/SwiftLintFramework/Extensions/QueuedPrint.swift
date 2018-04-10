@@ -47,3 +47,17 @@ public func queuedPrintError(_ string: String) {
         fputs(string + "\n", stderr)
     }
 }
+
+/**
+ A thread-safe, newline-terminated version of fatalError that doesn't leak
+ the source path from the compiled binary.
+ */
+public func queuedFatalError(_ string: String, file: StaticString = #file, line: UInt = #line) -> Never {
+    outputQueue.sync {
+        fflush(stdout)
+        let file = "\(file)".bridge().lastPathComponent
+        fputs("\(string): file \(file), line \(line)\n", stderr)
+    }
+
+    abort()
+}

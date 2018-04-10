@@ -24,11 +24,15 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "mark",
         name: "Mark",
-        description: "MARK comment should be in valid format.",
+        description: "MARK comment should be in valid format. e.g. '// MARK: ...' or '// MARK: - ...'",
+        kind: .lint,
         nonTriggeringExamples: [
             "// MARK: good\n",
             "// MARK: - good\n",
-            "// MARK: -\n"
+            "// MARK: -\n",
+            "// BOOKMARK",
+            "//BOOKMARK",
+            "// BOOKMARKS"
         ],
         triggeringExamples: [
             "↓//MARK: bad",
@@ -42,7 +46,13 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//MARK: - bad",
             "↓//MARK:- bad",
             "↓//MARK: -bad",
-            "↓//MARK:-bad"
+            "↓//MARK:-bad",
+            "↓//Mark: bad",
+            "↓// Mark: bad",
+            "↓// MARK bad",
+            "↓//MARK bad",
+            "↓// MARK - bad",
+            issue1029Example
         ],
         corrections: [
             "↓//MARK: comment": "// MARK: comment",
@@ -51,7 +61,8 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//  MARK: comment": "// MARK: comment",
             "↓//MARK: - comment": "// MARK: - comment",
             "↓// MARK:- comment": "// MARK: - comment",
-            "↓// MARK: -comment": "// MARK: - comment"
+            "↓// MARK: -comment": "// MARK: - comment",
+            issue1029Example: issue1029Correction
         ]
     )
 
@@ -67,19 +78,25 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
 
     private let invalidSpacesAfterHyphenPattern = "(?:\(mark) -\(nonSpaceOrTwoOrMoreSpaceOrNewline))"
 
+    private let invalidLowercasePattern = "(?:// ?[Mm]ark:)"
+
+    private let missingColonPattern = "(?:// ?MARK[^:])"
+
     private var pattern: String {
         return [
             spaceStartPattern,
             invalidEndSpacesPattern,
-            invalidSpacesAfterHyphenPattern
+            invalidSpacesAfterHyphenPattern,
+            invalidLowercasePattern,
+            missingColonPattern
         ].joined(separator: "|")
     }
 
     public func validate(file: File) -> [StyleViolation] {
         return violationRanges(in: file, matching: pattern).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -87,28 +104,28 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         var result = [Correction]()
 
         result.append(contentsOf: correct(file: file,
-            pattern: spaceStartPattern,
-            replaceString: "// MARK:"))
+                                          pattern: spaceStartPattern,
+                                          replaceString: "// MARK:"))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endNonSpacePattern,
-            replaceString: "// MARK: ",
-            keepLastChar: true))
+                                          pattern: endNonSpacePattern,
+                                          replaceString: "// MARK: ",
+                                          keepLastChar: true))
 
         result.append(contentsOf: correct(file: file,
-            pattern: endTwoOrMoreSpacePattern,
-            replaceString: "// MARK: "))
+                                          pattern: endTwoOrMoreSpacePattern,
+                                          replaceString: "// MARK: "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: twoOrMoreSpacesAfterHyphenPattern,
-            replaceString: "// MARK: - "))
+                                          pattern: twoOrMoreSpacesAfterHyphenPattern,
+                                          replaceString: "// MARK: - "))
 
         result.append(contentsOf: correct(file: file,
-            pattern: nonSpaceOrNewlineAfterHyphenPattern,
-            replaceString: "// MARK: - ",
-            keepLastChar: true))
+                                          pattern: nonSpaceOrNewlineAfterHyphenPattern,
+                                          replaceString: "// MARK: - ",
+                                          keepLastChar: true))
 
-        return result
+        return result.unique
     }
 
     private func correct(file: File,
@@ -138,10 +155,22 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
         let nsstring = file.contents.bridge()
         return file.rangesAndTokens(matching: pattern).filter { _, syntaxTokens in
             return !syntaxTokens.isEmpty && SyntaxKind(rawValue: syntaxTokens[0].type) == .comment
-        }.flatMap { range, syntaxTokens in
+        }.compactMap { range, syntaxTokens in
             let identifierRange = nsstring
                 .byteRangeToNSRange(start: syntaxTokens[0].offset, length: 0)
             return identifierRange.map { NSUnionRange($0, range) }
         }
     }
 }
+
+private let issue1029Example = "↓//MARK:- Top-Level bad mark\n" +
+                               "↓//MARK:- Another bad mark\n" +
+                               "struct MarkTest {}\n" +
+                               "↓// MARK:- Bad mark\n" +
+                               "extension MarkTest {}\n"
+
+private let issue1029Correction = "// MARK: - Top-Level bad mark\n" +
+                                 "// MARK: - Another bad mark\n" +
+                                 "struct MarkTest {}\n" +
+                                 "// MARK: - Bad mark\n" +
+                                 "extension MarkTest {}\n"

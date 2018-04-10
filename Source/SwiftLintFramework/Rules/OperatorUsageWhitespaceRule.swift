@@ -20,6 +20,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         name: "Operator Usage Whitespace",
         description: "Operators should be surrounded by a single whitespace " +
                      "when they are being used.",
+        kind: .style,
         nonTriggeringExamples: [
             "let foo = 1 + 2\n",
             "let foo = 1 > 2\n",
@@ -31,7 +32,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let range = 1...3\n",
             "let range = 1 ... 3\n",
             "let range = 1..<3\n",
-            "#if swift(>=3.0)\n",
+            "#if swift(>=3.0)\n    foo()\n#endif\n",
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
@@ -108,10 +109,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"
 
-        let excludingKinds = SyntaxKind.commentAndStringKinds() + [.objectLiteral]
+        let excludingKinds = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
-                          excludingPattern: excludingPattern).flatMap { range in
+                          excludingPattern: excludingPattern).compactMap { range in
 
             // if it's only a number (i.e. -9e-11), it shouldn't trigger
             guard kinds(in: range, file: file) != [.number] else {
@@ -148,7 +149,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             return []
         }
 
-        return file.syntaxMap.tokens(inByteRange: byteRange).flatMap { SyntaxKind(rawValue: $0.type) }
+        return file.syntaxMap.kinds(inByteRange: byteRange)
     }
 
     private func operatorInRange(file: File, range: NSRange) -> String {

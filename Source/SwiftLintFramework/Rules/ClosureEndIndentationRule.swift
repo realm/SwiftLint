@@ -18,6 +18,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         identifier: "closure_end_indentation",
         name: "Closure End Indentation",
         description: "Closure end should have the same indentation as the line that started it.",
+        kind: .style,
         nonTriggeringExamples: [
             "SignalProducer(values: [1, 2, 3])\n" +
             "   .startWithNext { number in\n" +
@@ -72,7 +73,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             case let nameEndPosition = nameOffset + nameLength,
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
-            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file:file) else {
+            !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
                 return []
         }
 
@@ -105,7 +106,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         let contents = file.contents.bridge()
         guard let range = contents.byteRangeToNSRange(start: nameOffset, length: nameLength),
             let match = newLineRegex.matches(in: file.contents, options: [],
-                                             range: range).last?.rangeAt(1),
+                                             range: range).last?.range(at: 1),
             let methodByteRange = contents.NSRangeToByteRange(start: match.location,
                                                               length: match.length) else {
             return nameOffset

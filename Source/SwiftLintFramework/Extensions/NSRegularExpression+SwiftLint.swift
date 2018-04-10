@@ -9,8 +9,17 @@
 import Foundation
 
 #if os(Linux)
-public typealias NSRegularExpression = RegularExpression
+#if !swift(>=4.0)
 public typealias NSTextCheckingResult = TextCheckingResult
+#endif
+#else
+#if !swift(>=4.0)
+extension NSTextCheckingResult {
+    internal func range(at idx: Int) -> NSRange {
+        return rangeAt(idx)
+    }
+}
+#endif
 #endif
 
 private var regexCache = [RegexCacheKey: NSRegularExpression]()

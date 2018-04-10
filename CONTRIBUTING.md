@@ -1,7 +1,8 @@
 ## Pull Requests
 
 All changes, no matter how trivial, must be done via pull request. Commits
-should never be made directly on the `master` branch.
+should never be made directly on the `master` branch. Prefer rebasing over
+merging `master` into your PR branch to update it and resolve conflicts.
 
 _If you have commit access to SwiftLint and believe your change to be trivial
 and not worth waiting for review, you may open a pull request and merge
@@ -16,6 +17,20 @@ don't forget to checkout the submodules as well when cloning, by running
 
 See more info [in the README](https://github.com/realm/SwiftLint#installation).
 
+### Code Generation
+
+If XCTest cases or functions are added/removed/renamed, or if rules are
+added/removed/renamed, you'll need to run `make sourcery`, which requires that
+[Sourcery](https://github.com/krzysztofzablocki/Sourcery) be installed on your
+machine. This will update source files to reflect these changes.
+
+## Documentation
+
+If you're making changes to the `description` property of a rule or
+creating a new rule, make sure to run the unit tests
+before pushing your changes. This will update the documentation
+([Rules.md](Rules.md)) to reflect these changes.
+
 ### Tests
 
 SwiftLint supports building via Xcode and Swift Package Manager on macOS, and
@@ -28,15 +43,11 @@ $ swift test
 $ make docker_test
 ```
 
-XCTest functions that are added need to be mirrored in the `allTests` static var
-in the test class extensions at the bottom of the test files.
-
 ## Rules
 
 New rules should be added in the `Source/SwiftLintFramework/Rules` directory.
 
 Rules should conform to either the `Rule` or `ASTRule` protocols.
-To activate a rule, add the rule to `masterRuleList` in `MasterRuleList.swift`.
 
 All new rules or changes to existing rules should be accompanied by unit tests.
 

@@ -16,12 +16,13 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "function_body_length",
         name: "Function Body Length",
-        description: "Functions bodies should not span too many lines."
+        description: "Functions bodies should not span too many lines.",
+        kind: .metrics
     )
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let offset = dictionary.offset,
             let bodyOffset = dictionary.bodyOffset,
             let bodyLength = dictionary.bodyLength,
@@ -39,7 +40,7 @@ public struct FunctionBodyLengthRule: ASTRule, ConfigurationProviderRule {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,
                                    location: Location(file: file, byteOffset: offset),
-                                   reason: "Function body should span \(parameter.value) lines or less " +
+                                   reason: "Function body should span \(configuration.warning) lines or less " +
                                            "excluding comments and whitespace: currently spans \(lineCount) " +
                                            "lines")]
         }

@@ -11,7 +11,7 @@ import SourceKittenFramework
 
 private func children(of dict: [String: SourceKitRepresentable],
                       matching kind: SwiftDeclarationKind) -> [[String: SourceKitRepresentable]] {
-    return dict.substructure.flatMap { subDict in
+    return dict.substructure.compactMap { subDict in
         if let kindString = subDict.kind,
             SwiftDeclarationKind(rawValue: kindString) == kind {
             return subDict
@@ -29,6 +29,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
         identifier: "redundant_string_enum_value",
         name: "Redundant String Enum Value",
         description: "String enum values can be omitted when they are equal to the enumcase name.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "enum Numbers: String {\n case one\n case two\n}\n",
             "enum Numbers: Int {\n case one = 1\n case two = 2\n}\n",
@@ -97,7 +98,7 @@ public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
                                                 file: File) -> [Int] {
         let enumInits = filterEnumInits(dictionary: dictionary)
 
-        return enumInits.flatMap { dictionary -> Int? in
+        return enumInits.compactMap { dictionary -> Int? in
             guard let offset = dictionary.offset,
                 let length = dictionary.length else {
                     return nil

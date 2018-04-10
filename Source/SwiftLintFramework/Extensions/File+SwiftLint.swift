@@ -20,30 +20,56 @@ internal func regex(_ pattern: String,
 }
 
 extension File {
-    internal func regions() -> [Region] {
+    internal func regions(restrictingRuleIdentifiers: Set<RuleIdentifier>? = nil) -> [Region] {
         var regions = [Region]()
-        var disabledRules = Set<String>()
-        let commands = self.commands()
+        var disabledRules = Set<RuleIdentifier>()
+        let commands: [Command]
+        if let restrictingRuleIdentifiers = restrictingRuleIdentifiers {
+            commands = self.commands().filter { command in
+                return command.ruleIdentifiers.contains(where: restrictingRuleIdentifiers.contains)
+            }
+        } else {
+            commands = self.commands()
+        }
         let commandPairs = zip(commands, Array(commands.dropFirst().map(Optional.init)) + [nil])
         for (command, nextCommand) in commandPairs {
             switch command.action {
-            case .disable: disabledRules.formUnion(command.ruleIdentifiers)
-            case .enable: disabledRules.subtract(command.ruleIdentifiers)
+            case .disable:
+                disabledRules.formUnion(command.ruleIdentifiers)
+
+            case .enable:
+                disabledRules.subtract(command.ruleIdentifiers)
             }
+
             let start = Location(file: path, line: command.line, character: command.character)
             let end = endOf(next: nextCommand)
-            regions.append(Region(start: start, end: end, disabledRuleIdentifiers: disabledRules))
+            guard start < end else { continue }
+            var didSetRegion = false
+            for (index, region) in zip(regions.indices, regions) where region.start == start && region.end == end {
+                regions[index] = Region(
+                    start: start,
+                    end: end,
+                    disabledRuleIdentifiers: disabledRules.union(region.disabledRuleIdentifiers)
+                )
+                didSetRegion = true
+            }
+            if !didSetRegion {
+                regions.append(
+                    Region(start: start, end: end, disabledRuleIdentifiers: disabledRules)
+                )
+            }
         }
         return regions
     }
 
-    fileprivate func commands() -> [Command] {
+    internal func commands(in range: NSRange? = nil) -> [Command] {
         if sourcekitdFailed {
             return []
         }
         let contents = self.contents.bridge()
+        let range = range ?? NSRange(location: 0, length: contents.length)
         let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment]).flatMap { range in
+        return match(pattern: pattern, with: [.comment], range: range).compactMap { range in
             return Command(string: contents, range: range)
         }.flatMap { command in
             return command.expand()
@@ -76,8 +102,8 @@ extension File {
             .map { $0.0 }
     }
 
-    internal func rangesAndTokens(matching pattern: String,
-                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+    internal func matchesAndTokens(matching pattern: String,
+                                   range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxToken])] {
         let contents = self.contents.bridge()
         let range = range ?? NSRange(location: 0, length: contents.length)
         let syntax = syntaxMap
@@ -85,13 +111,25 @@ extension File {
             let matchByteRange = contents.NSRangeToByteRange(start: match.range.location,
                                                              length: match.range.length) ?? match.range
             let tokensInRange = syntax.tokens(inByteRange: matchByteRange)
-            return (match.range, tokensInRange)
+            return (match, tokensInRange)
         }
     }
 
+    internal func matchesAndSyntaxKinds(matching pattern: String,
+                                        range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
+        return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
+            (textCheckingResult, tokens.compactMap { SyntaxKind(rawValue: $0.type) })
+        }
+    }
+
+    internal func rangesAndTokens(matching pattern: String,
+                                  range: NSRange? = nil) -> [(NSRange, [SyntaxToken])] {
+        return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
+    }
+
     internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
-        return rangesAndTokens(matching: pattern, range: range).map { range, tokens in
-            (range, tokens.flatMap { SyntaxKind(rawValue: $0.type) })
+        return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
+            (textCheckingResult.range, syntaxKinds)
         }
     }
 
@@ -110,7 +148,7 @@ extension File {
                 results[line.index].append(swiftDeclarationKind)
             }
             let lineEnd = NSMaxRange(line.byteRange)
-            if structure.byteRange.location > lineEnd {
+            if structure.byteRange.location >= lineEnd {
                 maybeLine = lineIterator.next()
             } else {
                 maybeStructure = structureIterator.next()
@@ -153,7 +191,7 @@ extension File {
             return nil
         }
 
-        return tokens.map { $0.flatMap { SyntaxKind(rawValue: $0.type) } }
+        return tokens.map { $0.compactMap { SyntaxKind(rawValue: $0.type) } }
     }
 
     //Added by S2dent
@@ -169,7 +207,7 @@ extension File {
      file contents.
      */
     internal func match(pattern: String,
-                        excludingSyntaxKinds syntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
             .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
@@ -180,7 +218,7 @@ extension File {
 
     internal func match(pattern: String,
                         range: NSRange? = nil,
-                        excludingSyntaxKinds: [SyntaxKind],
+                        excludingSyntaxKinds: Set<SyntaxKind>,
                         excludingPattern: String,
                         exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)
@@ -195,51 +233,50 @@ extension File {
 
     internal func append(_ string: String) {
         guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         guard let path = path, let fileHandle = FileHandle(forWritingAtPath: path) else {
-            fatalError("can't write to path '\(self.path)'")
+            queuedFatalError("can't write to path '\(String(describing: self.path))'")
         }
         _ = fileHandle.seekToEndOfFile()
         fileHandle.write(stringData)
         fileHandle.closeFile()
         contents += string
-        lines = contents.bridge().lines()
     }
 
-    internal func write(_ string: String) {
+    internal func write<S: StringProtocol>(_ string: S) {
         guard string != contents else {
             return
         }
         guard let path = path else {
-            fatalError("file needs a path to call write(_:)")
+            queuedFatalError("file needs a path to call write(_:)")
         }
-        guard let stringData = string.data(using: .utf8) else {
-            fatalError("can't encode '\(string)' with UTF8")
+        guard let stringData = String(string).data(using: .utf8) else {
+            queuedFatalError("can't encode '\(string)' with UTF8")
         }
         do {
             try stringData.write(to: URL(fileURLWithPath: path), options: .atomic)
         } catch {
-            fatalError("can't write file to \(path)")
+            queuedFatalError("can't write file to \(path)")
         }
-        contents = string
-        lines = contents.bridge().lines()
+        contents = String(string)
+        invalidateCache()
     }
 
     internal func ruleEnabled(violatingRanges: [NSRange], for rule: Rule) -> [NSRange] {
         let fileRegions = regions()
         if fileRegions.isEmpty { return violatingRanges }
         let violatingRanges = violatingRanges.filter { range in
-            let region = fileRegions.first(where: {
+            let region = fileRegions.first {
                 $0.contains(Location(file: self, characterOffset: range.location))
-            })
+            }
             return region?.isRuleEnabled(rule) ?? true
         }
         return violatingRanges
     }
 
     fileprivate func numberOfCommentAndWhitespaceOnlyLines(startLine: Int, endLine: Int) -> Int {
-        let commentKinds = Set(SyntaxKind.commentKinds())
+        let commentKinds = SyntaxKind.commentKinds
         return syntaxKindsByLines[startLine...endLine].filter { kinds in
             kinds.filter { !commentKinds.contains($0) }.isEmpty
         }.count
@@ -255,8 +292,9 @@ extension File {
         return (count > limit, count)
     }
 
+    private typealias RangePatternTemplate = (NSRange, String, String)
+
     internal func correct<R: Rule>(legacyRule: R, patterns: [String: String]) -> [Correction] {
-        typealias RangePatternTemplate = (NSRange, String, String)
         let matches: [RangePatternTemplate]
         matches = patterns.flatMap({ pattern, template -> [RangePatternTemplate] in
             return match(pattern: pattern).filter { range, kinds in
@@ -283,4 +321,13 @@ extension File {
         return corrections
     }
 
+    internal func isACL(token: SyntaxToken) -> Bool {
+        guard SyntaxKind(rawValue: token.type) == .attributeBuiltin else {
+            return false
+        }
+
+        let aclString = contents.bridge().substringWithByteRange(start: token.offset,
+                                                                 length: token.length)
+        return aclString.flatMap(AccessControlLevel.init(description:)) != nil
+    }
 }

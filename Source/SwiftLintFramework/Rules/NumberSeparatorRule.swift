@@ -18,9 +18,10 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
         identifier: "number_separator",
         name: "Number Separator",
         description: "Underscores should be used as thousand separator in large decimal numbers.",
+        kind: .style,
         nonTriggeringExamples: NumberSeparatorRuleExamples.nonTriggeringExamples,
-        triggeringExamples: NumberSeparatorRuleExamples.swift3TriggeringExamples,
-        corrections: NumberSeparatorRuleExamples.swift3Corrections
+        triggeringExamples: NumberSeparatorRuleExamples.triggeringExamples,
+        corrections: NumberSeparatorRuleExamples.corrections
     )
 
     public func validate(file: File) -> [StyleViolation] {
@@ -33,7 +34,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
 
     private func violatingRanges(in file: File) -> [(NSRange, String)] {
         let numberTokens = file.syntaxMap.tokens.filter { SyntaxKind(rawValue: $0.type) == .number }
-        return numberTokens.flatMap { token in
+        return numberTokens.compactMap { (token: SyntaxToken) -> (NSRange, String)? in
             guard let content = contentFrom(file: file, token: token),
                 isDecimal(number: content) else {
                     return nil
@@ -68,7 +69,7 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             var corrected = ""
             let hasSign = content.countOfLeadingCharacters(in: signs) == 1
             if hasSign {
-                corrected += String(content.characters.prefix(1))
+                corrected += String(content.prefix(1))
             }
 
             corrected += expected
@@ -126,10 +127,9 @@ public struct NumberSeparatorRule: OptInRule, CorrectableRule, ConfigurationProv
             minimumLength = configuration.minimumLength
         }
 
-        let shouldAddSeparators = clean.characters.count >= minimumLength
+        let shouldAddSeparators = clean.count >= minimumLength
 
-        for (idx, char) in reversedIfNeeded(Array(clean.characters),
-                                            reversed: !isFraction).enumerated() {
+        for (idx, char) in reversedIfNeeded(Array(clean), reversed: !isFraction).enumerated() {
             if idx % 3 == 0 && idx > 0 && shouldAddSeparators {
                 correctComponents.append("_")
             }

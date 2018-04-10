@@ -10,7 +10,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ExplicitTypeInterfaceConfiguration()
 
     public init() {}
 
@@ -18,6 +18,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         identifier: "explicit_type_interface",
         name: "Explicit Type Interface",
         description: "Properties should have a type interface",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "class Foo {\n  var myVar: Int? = 0\n}\n",
             "class Foo {\n  let myVar: Int? = 0\n}\n",
@@ -32,13 +33,10 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         ]
     )
 
-    private static let allowedKinds: Set<SwiftDeclarationKind> = [.varInstance, .varLocal,
-                                                                  .varStatic, .varClass]
-
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard ExplicitTypeInterfaceRule.allowedKinds.contains(kind),
+        guard configuration.allowedKinds.contains(kind),
             !containsType(dictionary: dictionary),
             let offset = dictionary.offset else {
                 return []
@@ -46,22 +44,12 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: offset))
         ]
     }
 
     private func containsType(dictionary: [String: SourceKitRepresentable]) -> Bool {
-        if let typeName = dictionary.typeName {
-            switch SwiftVersion.current {
-            // on Swift 2.x, `key.typename` returns the `key.name` if there's no explicit type
-            case .two, .twoPointThree:
-                return typeName != dictionary.name
-            case .three:
-                return true
-            }
-        }
-
-        return false
+        return dictionary.typeName != nil
     }
 }

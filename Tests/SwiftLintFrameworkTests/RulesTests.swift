@@ -10,7 +10,17 @@ import SwiftLintFramework
 import XCTest
 
 // swiftlint:disable file_length
+// swiftlint:disable type_body_length
+
 class RulesTests: XCTestCase {
+
+    func testArrayInit() {
+        verifyRule(ArrayInitRule.description)
+    }
+
+    func testBlockBasedKVO() {
+        verifyRule(BlockBasedKVORule.description)
+    }
 
     func testClassDelegateProtocol() {
         verifyRule(ClassDelegateProtocolRule.description)
@@ -41,7 +51,11 @@ class RulesTests: XCTestCase {
     }
 
     func testConditionalReturnsOnNewline() {
-        verifyRule(ConditionalReturnsOnNewline.description)
+        verifyRule(ConditionalReturnsOnNewlineRule.description)
+    }
+
+    func testContainsOverFirstNotNil() {
+        verifyRule(ContainsOverFirstNotNilRule.description)
     }
 
     func testControlStatement() {
@@ -56,6 +70,18 @@ class RulesTests: XCTestCase {
         verifyRule(DiscardedNotificationCenterObserverRule.description)
     }
 
+    func testDiscouragedObjectLiteral() {
+        verifyRule(DiscouragedObjectLiteralRule.description)
+    }
+
+    func testDiscouragedOptionalBoolean() {
+        verifyRule(DiscouragedOptionalBooleanRule.description)
+    }
+
+    func testDiscouragedOptionalCollection() {
+        verifyRule(DiscouragedOptionalCollectionRule.description)
+    }
+
     func testDynamicInline() {
         verifyRule(DynamicInlineRule.description)
     }
@@ -64,29 +90,52 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyCountRule.description)
     }
 
+    func testEmptyEnumArguments() {
+        verifyRule(EmptyEnumArgumentsRule.description)
+    }
+
     func testEmptyParameters() {
         verifyRule(EmptyParametersRule.description)
+    }
+
+    func testLowerACLThanParent() {
+        verifyRule(LowerACLThanParentRule.description)
     }
 
     func testEmptyParenthesesWithTrailingClosure() {
         verifyRule(EmptyParenthesesWithTrailingClosureRule.description)
     }
 
+    func testEmptyString() {
+        verifyRule(EmptyStringRule.description)
+    }
+
+    func testExplicitACL() {
+        verifyRule(ExplicitACLRule.description)
+    }
+
+    func testExplicitEnumRawValue() {
+        verifyRule(ExplicitEnumRawValueRule.description)
+    }
+
     func testExplicitInit() {
         verifyRule(ExplicitInitRule.description)
     }
 
-    func testExplicitTypeInterfaceRule() {
-        verifyRule(ExplicitTypeInterfaceRule.description)
+    func testExplicitTopLevelACL() {
+        verifyRule(ExplicitTopLevelACLRule.description)
     }
 
-    func testFatalErrorMessageRule() {
+    func testExtensionAccessModifier() {
+        verifyRule(ExtensionAccessModifierRule.description)
+    }
+
+    func testFallthrough() {
+        verifyRule(FallthroughRule.description)
+    }
+
+    func testFatalErrorMessage() {
         verifyRule(FatalErrorMessageRule.description)
-    }
-
-    func testFileLength() {
-        verifyRule(FileLengthRule.description, commentDoesntViolate: false,
-                   testMultiByteOffsets: false)
     }
 
     func testFirstWhere() {
@@ -117,14 +166,6 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionParameterCountRule.description)
     }
 
-    func testGenericTypeName() {
-        verifyRule(GenericTypeNameRule.description)
-    }
-
-    func testIdentifierName() {
-        verifyRule(IdentifierNameRule.description)
-    }
-
     func testImplicitGetter() {
         verifyRule(ImplicitGetterRule.description)
     }
@@ -133,12 +174,25 @@ class RulesTests: XCTestCase {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }
 
+    func testImplicitReturn() {
+        verifyRule(ImplicitReturnRule.description)
+    }
+
+    func testIsDisjoint() {
+        verifyRule(IsDisjointRule.description)
+    }
+
+    func testJoinedDefaultParameter() {
+        verifyRule(JoinedDefaultParameterRule.description)
+    }
+
     func testLargeTuple() {
         verifyRule(LargeTupleRule.description)
     }
 
     func testLeadingWhitespace() {
-        verifyRule(LeadingWhitespaceRule.description, testMultiByteOffsets: false)
+        verifyRule(LeadingWhitespaceRule.description, skipDisableCommandTests: true,
+                   testMultiByteOffsets: false, testShebang: false)
     }
 
     func testLegacyCGGeometryFunctions() {
@@ -157,18 +211,36 @@ class RulesTests: XCTestCase {
         verifyRule(LegacyConstructorRule.description)
     }
 
-    func testMark() {
-        verifyRule(MarkRule.description, commentDoesntViolate: false)
+    func testLetVarWhitespace() {
+        verifyRule(LetVarWhitespaceRule.description)
     }
 
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testMissingDocs() {
-//        verifyRule(MissingDocsRule.description)
-//    }
+    func testLiteralExpressionEndIdentation() {
+        verifyRule(LiteralExpressionEndIdentationRule.description)
+    }
+
+    func testMark() {
+        verifyRule(MarkRule.description, skipCommentTests: true)
+    }
+
+    func testMultilineParameters() {
+        verifyRule(MultilineParametersRule.description)
+    }
+
+    func testMultipleClosuresWithTrailingClosure() {
+        verifyRule(MultipleClosuresWithTrailingClosureRule.description)
+    }
 
     func testNesting() {
         verifyRule(NestingRule.description)
+    }
+
+    func testNoExtensionAccessModifier() {
+        verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
+    func testNoGroupingExtension() {
+        verifyRule(NoGroupingExtensionRule.description)
     }
 
     func testNotificationCenterDetachment() {
@@ -177,10 +249,6 @@ class RulesTests: XCTestCase {
 
     func testNimbleOperator() {
         verifyRule(NimbleOperatorRule.description)
-    }
-
-    func testObjectLiteral() {
-        verifyRule(ObjectLiteralRule.description)
     }
 
     func testOpeningBrace() {
@@ -195,6 +263,22 @@ class RulesTests: XCTestCase {
         verifyRule(OperatorUsageWhitespaceRule.description)
     }
 
+    func testOverrideInExtension() {
+        verifyRule(OverrideInExtensionRule.description)
+    }
+
+    func testPatternMatchingKeywords() {
+        verifyRule(PatternMatchingKeywordsRule.description)
+    }
+
+    func testPrefixedTopLevelConstant() {
+        verifyRule(PrefixedTopLevelConstantRule.description)
+    }
+
+    func testPrivateAction() {
+        verifyRule(PrivateActionRule.description)
+    }
+
     func testPrivateOutlet() {
         verifyRule(PrivateOutletRule.description)
 
@@ -205,11 +289,8 @@ class RulesTests: XCTestCase {
             "class Foo {\n  @IBOutlet weak private(set) var label: UILabel?\n}\n",
             "class Foo {\n  @IBOutlet private(set) weak var label: UILabel?\n}\n"
         ]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                          name: baseDescription.name,
-                                          description: baseDescription.description,
-                                          nonTriggeringExamples: nonTriggeringExamples,
-                                          triggeringExamples: baseDescription.triggeringExamples)
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
         verifyRule(description, ruleConfiguration: ["allow_private_set": true])
     }
 
@@ -219,6 +300,22 @@ class RulesTests: XCTestCase {
 
     func testProhibitedSuper() {
         verifyRule(ProhibitedSuperRule.description)
+    }
+
+    func testProtocolPropertyAccessorsOrder() {
+        verifyRule(ProtocolPropertyAccessorsOrderRule.description)
+    }
+
+    func testQuickDiscouragedCall() {
+        verifyRule(QuickDiscouragedCallRule.description)
+    }
+
+    func testQuickDiscouragedFocusedTest() {
+        verifyRule(QuickDiscouragedFocusedTestRule.description)
+    }
+
+    func testQuickDiscouragedPendingTest() {
+        verifyRule(QuickDiscouragedPendingTestRule.description)
     }
 
     func testRedundantDiscardableLet() {
@@ -241,12 +338,25 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantVoidReturnRule.description)
     }
 
+    func testRequiredEnumCase() {
+        let configuration = ["NetworkResponsable": ["notConnected": "error"]]
+        verifyRule(RequiredEnumCaseRule.description, ruleConfiguration: configuration)
+    }
+
     func testReturnArrowWhitespace() {
         verifyRule(ReturnArrowWhitespaceRule.description)
     }
 
     func testShorthandOperator() {
         verifyRule(ShorthandOperatorRule.description)
+    }
+
+    func testSingleTestClass() {
+        verifyRule(SingleTestClassRule.description)
+    }
+
+    func testSortedFirstLast() {
+        verifyRule(SortedFirstLastRule.description)
     }
 
     func testSortedImports() {
@@ -262,12 +372,24 @@ class RulesTests: XCTestCase {
         verifyRule(StatementPositionRule.uncuddledDescription, ruleConfiguration: configuration)
     }
 
+    func testStrictFilePrivate() {
+        verifyRule(StrictFilePrivateRule.description)
+    }
+
+    func testSwitchCaseAlignment() {
+        verifyRule(SwitchCaseAlignmentRule.description)
+    }
+
     func testSwitchCaseOnNewline() {
         verifyRule(SwitchCaseOnNewlineRule.description)
     }
 
     func testSyntacticSugar() {
         verifyRule(SyntacticSugarRule.description)
+    }
+
+    func testTrailingClosure() {
+        verifyRule(TrailingClosureRule.description)
     }
 
     func testTrailingNewline() {
@@ -286,27 +408,18 @@ class RulesTests: XCTestCase {
         // The set of non-triggering examples is extended by a whitespace-indented empty line
         let baseDescription = TrailingWhitespaceRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + [" \n"]
-        let description = RuleDescription(identifier: baseDescription.identifier,
-                                                name: baseDescription.name,
-                                         description: baseDescription.description,
-                               nonTriggeringExamples: nonTriggeringExamples,
-                                  triggeringExamples: baseDescription.triggeringExamples,
-                                         corrections: baseDescription.corrections)
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+
         verifyRule(description,
                    ruleConfiguration: ["ignores_empty_lines": true, "ignores_comments": true])
 
         // Perform additional tests with the ignores_comments settings disabled.
         let triggeringComments = ["// \n", "let name: String // \n"]
-        let baseDescription2 = TrailingWhitespaceRule.description
-        let nonTriggeringExamples2 = baseDescription2.nonTriggeringExamples
+        let nonTriggeringExamples2 = baseDescription.nonTriggeringExamples
             .filter { !triggeringComments.contains($0) }
-        let triggeringExamples2 = baseDescription2.triggeringExamples + triggeringComments
-        let description2 = RuleDescription(identifier: baseDescription2.identifier,
-                                           name: baseDescription2.name,
-                                           description: baseDescription2.description,
-                                           nonTriggeringExamples: nonTriggeringExamples2,
-                                           triggeringExamples: triggeringExamples2,
-                                           corrections: baseDescription2.corrections)
+        let triggeringExamples2 = baseDescription.triggeringExamples + triggeringComments
+        let description2 = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples2)
+                                          .with(triggeringExamples: triggeringExamples2)
         verifyRule(description2,
                    ruleConfiguration: ["ignores_empty_lines": false, "ignores_comments": false],
                    commentDoesntViolate: false)
@@ -316,8 +429,16 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
-    func testTypeName() {
-        verifyRule(TypeNameRule.description)
+    func testUnneededBreakInSwitch() {
+        verifyRule(UnneededBreakInSwitchRule.description)
+    }
+
+    func testUnneededParenthesesInClosureArgument() {
+        verifyRule(UnneededParenthesesInClosureArgumentRule.description)
+    }
+
+    func testUntypedErrorInCatch() {
+        verifyRule(UntypedErrorInCatchRule.description)
     }
 
     func testUnusedClosureParameter() {
@@ -328,18 +449,12 @@ class RulesTests: XCTestCase {
         verifyRule(UnusedEnumeratedRule.description)
     }
 
-    func testUnusedOptionalBinding() {
-        verifyRule(UnusedOptionalBindingRule.description)
-    }
-
-// swiftlint:disable:next todo
-// FIXME: https://github.com/jpsim/SourceKitten/issues/269
-//    func testValidDocs() {
-//        verifyRule(ValidDocsRule.description)
-//    }
-
     func testValidIBInspectable() {
         verifyRule(ValidIBInspectableRule.description)
+    }
+
+    func testVerticalParameterAlignmentOnCall() {
+        verifyRule(VerticalParameterAlignmentOnCallRule.description)
     }
 
     func testVerticalParameterAlignment() {
@@ -357,83 +472,12 @@ class RulesTests: XCTestCase {
     func testWeakDelegate() {
         verifyRule(WeakDelegateRule.description)
     }
-}
 
-extension RulesTests {
-    static var allTests: [(String, (RulesTests) -> () throws -> Void)] {
-        return [
-            ("testClassDelegateProtocol", testClassDelegateProtocol),
-            ("testClosingBrace", testClosingBrace),
-            ("testComma", testComma),
-            ("testCompilerProtocolInit", testCompilerProtocolInit),
-            ("testClosureEndIndentation", testClosureEndIndentation),
-            ("testClosureParameterPosition", testClosureParameterPosition),
-            ("testClosureSpacing", testClosureSpacing),
-            ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-            ("testControlStatement", testControlStatement),
-            ("testCyclomaticComplexity", testCyclomaticComplexity),
-            ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
-            ("testDynamicInline", testDynamicInline),
-            ("testEmptyCount", testEmptyCount),
-            ("testEmptyParameters", testEmptyParameters),
-            ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-            ("testExplicitInit", testExplicitInit),
-            ("testExplicitTypeInterfaceRule", testExplicitTypeInterfaceRule),
-            ("testFatalErrorMessageRule", testFatalErrorMessageRule),
-            ("testFileLength", testFileLength),
-            ("testFirstWhere", testFirstWhere),
-            ("testForceCast", testForceCast),
-            ("testForceTry", testForceTry),
-            // ("testForceUnwrapping", testForceUnwrapping),
-            ("testForWhere", testForWhere),
-            ("testFunctionBodyLength", testFunctionBodyLength),
-            ("testFunctionParameterCount", testFunctionParameterCount),
-            ("testGenericTypeName", testGenericTypeName),
-            ("testIdentifierName", testIdentifierName),
-            ("testImplicitGetter", testImplicitGetter),
-            ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
-            ("testLargeTuple", testLargeTuple),
-            ("testLeadingWhitespace", testLeadingWhitespace),
-            ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-            ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
-            ("testLegacyConstant", testLegacyConstant),
-            ("testLegacyConstructor", testLegacyConstructor),
-            ("testMark", testMark),
-            ("testNesting", testNesting),
-            ("testNimbleOperator", testNimbleOperator),
-            ("testNotificationCenterDetachment", testNotificationCenterDetachment),
-            ("testObjectLiteral", testObjectLiteral),
-            ("testOpeningBrace", testOpeningBrace),
-            ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
-            ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-            ("testPrivateOutlet", testPrivateOutlet),
-            ("testPrivateUnitTest", testPrivateUnitTest),
-            ("testProhibitedSuper", testProhibitedSuper),
-            ("testRedundantDiscardableLet", testRedundantDiscardableLet),
-            ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-            ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-            ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-            ("testRedundantVoidReturn", testRedundantVoidReturn),
-            ("testReturnArrowWhitespace", testReturnArrowWhitespace),
-            ("testShorthandOperator", testShorthandOperator),
-            ("testSortedImports", testSortedImports),
-            ("testStatementPosition", testStatementPosition),
-            ("testStatementPositionUncuddled", testStatementPositionUncuddled),
-            ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
-            ("testSyntacticSugar", testSyntacticSugar),
-            ("testTrailingNewline", testTrailingNewline),
-            ("testTrailingSemicolon", testTrailingSemicolon),
-            ("testTrailingWhitespace", testTrailingWhitespace),
-            ("testTypeBodyLength", testTypeBodyLength),
-            ("testTypeName", testTypeName),
-            ("testUnusedClosureParameter", testUnusedClosureParameter),
-            ("testUnusedEnumerated", testUnusedEnumerated),
-            ("testUnusedOptionalBinding", testUnusedOptionalBinding),
-            ("testValidIBInspectable", testValidIBInspectable),
-            ("testVerticalParameterAlignment", testVerticalParameterAlignment),
-            ("testVoidReturn", testVoidReturn),
-            ("testSuperCall", testSuperCall),
-            ("testWeakDelegate", testWeakDelegate)
-        ]
+    func testXCTFailMessage() {
+        verifyRule(XCTFailMessageRule.description)
+    }
+
+    func testYodaCondition() {
+        verifyRule(YodaConditionRule.description)
     }
 }

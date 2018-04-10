@@ -17,7 +17,7 @@ public struct Location: CustomStringConvertible, Comparable {
         // Xcode likes warnings and errors in the following format:
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         let fileString: String = file ?? "<nopath>"
-        let lineString: String = line.map({ ":\($0)" }) ?? ""
+        let lineString: String = ":\(line ?? 1)"
         let charString: String = character.map({ ":\($0)" }) ?? ""
         return [fileString, lineString, charString].joined()
     }
@@ -58,8 +58,8 @@ public struct Location: CustomStringConvertible, Comparable {
 
 private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
     switch (lhs, rhs) {
-    case let (l?, r?):
-        return l < r
+    case let (lhs?, rhs?):
+        return lhs < rhs
     case (nil, _?):
         return true
     default:

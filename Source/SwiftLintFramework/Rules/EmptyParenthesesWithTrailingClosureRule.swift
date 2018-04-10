@@ -19,6 +19,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
         name: "Empty Parentheses with Trailing Closure",
         description: "When using trailing closures, empty parentheses should be avoided " +
                      "after the method call.",
+        kind: .style,
         nonTriggeringExamples: [
             "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map({ $0 + 1 })\n",
@@ -35,13 +36,16 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
             "[1, 2].map↓() { $0 + 1 }\n",
             "[1, 2].map↓( ) { $0 + 1 }\n",
             "[1, 2].map↓() { number in\n number + 1 \n}\n",
-            "[1, 2].map↓(  ) { number in\n number + 1 \n}\n"
+            "[1, 2].map↓(  ) { number in\n number + 1 \n}\n",
+            "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}\n"
         ],
         corrections: [
             "[1, 2].map↓() { $0 + 1 }\n": "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map↓( ) { $0 + 1 }\n": "[1, 2].map { $0 + 1 }\n",
             "[1, 2].map↓() { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
-            "[1, 2].map↓(  ) { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n"
+            "[1, 2].map↓(  ) { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
+            "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}\n":
+            "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}\n"
         ]
     )
 
@@ -86,12 +90,12 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
+
+            return ranges
         }
     }
 

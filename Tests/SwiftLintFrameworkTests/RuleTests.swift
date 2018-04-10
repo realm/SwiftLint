@@ -16,27 +16,41 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
     static let description = RuleDescription(identifier: "severity_level_mock",
                                              name: "",
                                              description: "",
+                                             kind: .style,
                                              deprecatedAliases: ["mock"])
+
+    init() {}
+    init(configuration: Any) throws {
+        self.init()
+        try self.configuration.apply(configuration: configuration)
+    }
+
     func validate(file: File) -> [StyleViolation] { return [] }
 }
 
 class RuleTests: XCTestCase {
 
     fileprivate struct RuleMock1: Rule {
+        var configurationDescription: String { return "N/A" }
+        static let description = RuleDescription(identifier: "RuleMock1", name: "",
+                                                 description: "", kind: .style)
+
         init() {}
         init(configuration: Any) throws { self.init() }
-        var configurationDescription: String { return "N/A" }
-        static let description = RuleDescription(identifier: "RuleMock1", name: "", description: "")
+
         func validate(file: File) -> [StyleViolation] {
             return []
         }
     }
 
     fileprivate struct RuleMock2: Rule {
+        var configurationDescription: String { return "N/A" }
+        static let description = RuleDescription(identifier: "RuleMock2", name: "",
+                                                 description: "", kind: .style)
+
         init() {}
         init(configuration: Any) throws { self.init() }
-        var configurationDescription: String { return "N/A" }
-        static let description = RuleDescription(identifier: "RuleMock2", name: "", description: "")
+
         func validate(file: File) -> [StyleViolation] {
             return []
         }
@@ -44,10 +58,16 @@ class RuleTests: XCTestCase {
 
     fileprivate struct RuleWithLevelsMock2: ConfigurationProviderRule {
         var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
-
         static let description = RuleDescription(identifier: "violation_level_mock2",
                                                  name: "",
-                                                 description: "")
+                                                 description: "", kind: .style)
+
+        init() {}
+        init(configuration: Any) throws {
+            self.init()
+            try self.configuration.apply(configuration: configuration)
+        }
+
         func validate(file: File) -> [StyleViolation] { return [] }
     }
 
@@ -124,34 +144,5 @@ class RuleTests: XCTestCase {
 
     func testDifferentSeverityLevelRulesNotEqual() {
         XCTAssertFalse(RuleWithLevelsMock().isEqualTo(RuleWithLevelsMock2()))
-    }
-}
-
-extension RuleTests {
-    static var allTests: [(String, (RuleTests) -> () throws -> Void)] {
-        return [
-            ("testRuleIsEqualTo",
-                testRuleIsEqualTo),
-            ("testRuleIsNotEqualTo",
-                testRuleIsNotEqualTo),
-            ("testRuleArraysWithDifferentCountsNotEqual",
-                testRuleArraysWithDifferentCountsNotEqual),
-            ("testSeverityLevelRuleInitsWithConfigDictionary",
-                testSeverityLevelRuleInitsWithConfigDictionary),
-            ("testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary",
-                testSeverityLevelRuleInitsWithWarningOnlyConfigDictionary),
-            ("testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary",
-                testSeverityLevelRuleInitsWithErrorOnlyConfigDictionary),
-            ("testSeverityLevelRuleInitsWithConfigArray",
-                testSeverityLevelRuleInitsWithConfigArray),
-            ("testSeverityLevelRuleInitsWithSingleValueConfigArray",
-                testSeverityLevelRuleInitsWithSingleValueConfigArray),
-            ("testSeverityLevelRuleInitsWithLiteral",
-                testSeverityLevelRuleInitsWithLiteral),
-            ("testSeverityLevelRuleNotEqual",
-                testSeverityLevelRuleNotEqual),
-            ("testDifferentSeverityLevelRulesNotEqual",
-                testDifferentSeverityLevelRulesNotEqual)
-        ]
     }
 }

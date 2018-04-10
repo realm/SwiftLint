@@ -23,21 +23,21 @@ struct LintCommand: CommandProtocol {
         var violations = [StyleViolation]()
         let configuration = Configuration(options: options)
         let reporter = reporterFrom(options: options, configuration: configuration)
-        let cache = LinterCache.makeCache(options: options, configuration: configuration)
+        let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
         let visitorMutationQueue = DispatchQueue(label: "io.realm.swiftlint.lintVisitorMutation")
         return configuration.visitLintableFiles(options: options, cache: cache) { linter in
             let currentViolations: [StyleViolation]
             if options.benchmark {
                 let start = Date()
-                let (_currentViolations, currentRuleTimes) = linter.styleViolationsAndRuleTimes
-                currentViolations = _currentViolations
+                let (violationsBeforeLeniency, currentRuleTimes) = linter.styleViolationsAndRuleTimes
+                currentViolations = LintCommand.applyLeniency(options: options, violations: violationsBeforeLeniency)
                 visitorMutationQueue.sync {
                     fileBenchmark.record(file: linter.file, from: start)
                     currentRuleTimes.forEach { ruleBenchmark.record(id: $0, time: $1) }
                     violations += currentViolations
                 }
             } else {
-                currentViolations = linter.styleViolations
+                currentViolations = LintCommand.applyLeniency(options: options, violations: linter.styleViolations)
                 visitorMutationQueue.sync {
                     violations += currentViolations
                 }
@@ -45,7 +45,8 @@ struct LintCommand: CommandProtocol {
             linter.file.invalidateCache()
             reporter.report(violations: currentViolations, realtimeCondition: true)
         }.flatMap { files in
-            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations) {
+            if LintCommand.isWarningThresholdBroken(configuration: configuration, violations: violations)
+                && !options.lenient {
                 violations.append(LintCommand.createThresholdViolation(threshold: configuration.warningThreshold!))
                 reporter.report(violations: [violations.last!], realtimeCondition: true)
             }
@@ -59,9 +60,7 @@ struct LintCommand: CommandProtocol {
                 fileBenchmark.save()
                 ruleBenchmark.save()
             }
-
-            cache?.save(options: options, configuration: configuration)
-
+            try? cache?.save()
             return LintCommand.successOrExit(numberOfSeriousViolations: numberOfSeriousViolations,
                                              strictWithViolations: options.strict && !violations.isEmpty)
         }
@@ -74,7 +73,7 @@ struct LintCommand: CommandProtocol {
         } else if strictWithViolations {
             exit(3)
         }
-        return .success()
+        return .success(())
     }
 
     private static func printStatus(violations: [StyleViolation], files: [File], serious: Int) {
@@ -98,13 +97,30 @@ struct LintCommand: CommandProtocol {
         let description = RuleDescription(
             identifier: "warning_threshold",
             name: "Warning Threshold",
-            description: "Number of warnings thrown is above the threshold."
+            description: "Number of warnings thrown is above the threshold.",
+            kind: .lint
         )
         return StyleViolation(
             ruleDescription: description,
             severity: .error,
             location: Location(file: "", line: 0, character: 0),
             reason: "Number of warnings exceeded threshold of \(threshold).")
+    }
+
+    private static func applyLeniency(options: LintOptions, violations: [StyleViolation]) -> [StyleViolation] {
+        if !options.lenient {
+            return violations
+        }
+        return violations.map {
+            if $0.severity == .error {
+                return StyleViolation(ruleDescription: $0.ruleDescription,
+                                      severity: .warning,
+                                      location: $0.location,
+                                      reason: $0.reason)
+            } else {
+                return $0
+            }
+        }
     }
 }
 
@@ -113,6 +129,8 @@ struct LintOptions: OptionsProtocol {
     let useSTDIN: Bool
     let configurationFile: String
     let strict: Bool
+    let lenient: Bool
+    let forceExclude: Bool
     let useScriptInputFiles: Bool
     let benchmark: Bool
     let reporter: String
@@ -122,10 +140,10 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
-        return { useSTDIN in { configurationFile in { strict in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
-        }}}}}}}}}}
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
+            self.init(path: path, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
+        }}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
@@ -137,6 +155,10 @@ struct LintOptions: OptionsProtocol {
             <*> mode <| configOption
             <*> mode <| Option(key: "strict", defaultValue: false,
                                usage: "fail on warnings")
+            <*> mode <| Option(key: "lenient", defaultValue: false,
+                               usage: "downgrades serious violations to warnings, warning threshold is disabled")
+            <*> mode <| Option(key: "force-exclude", defaultValue: false,
+                               usage: "exclude files in config `excluded` even if their paths are explicitly specified")
             <*> mode <| useScriptInputFilesOption
             <*> mode <| Option(key: "benchmark", defaultValue: false,
                                usage: "save benchmarks to benchmark_files.txt " +
@@ -145,7 +167,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "the reporter used to log errors and warnings")
             <*> mode <| quietOption(action: "linting")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
-                               usage: "the location of the cache used when linting")
+                               usage: "the directory of the cache used when linting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
                                usage: "ignore cache when linting")
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,

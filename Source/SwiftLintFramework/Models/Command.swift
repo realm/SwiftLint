@@ -8,7 +8,13 @@
 
 import Foundation
 
-#if !os(Linux)
+#if os(Linux)
+private extension Scanner {
+    func scanString(string: String) -> String? {
+        return scanString(string)
+    }
+}
+#else
 private extension Scanner {
     func scanUpToString(_ string: String) -> String? {
         var result: NSString? = nil
@@ -30,12 +36,12 @@ private extension Scanner {
 }
 #endif
 
-public struct Command {
+public struct Command: Equatable {
     public enum Action: String {
         case enable
         case disable
 
-        fileprivate func inverse() -> Action {
+        internal func inverse() -> Action {
             switch self {
             case .enable: return .disable
             case .disable: return .enable
@@ -50,12 +56,12 @@ public struct Command {
     }
 
     internal let action: Action
-    internal let ruleIdentifiers: [String]
+    internal let ruleIdentifiers: Set<RuleIdentifier>
     internal let line: Int
     internal let character: Int?
-    private let modifier: Modifier?
+    internal let modifier: Modifier?
 
-    public init(action: Action, ruleIdentifiers: [String], line: Int = 0,
+    public init(action: Action, ruleIdentifiers: Set<RuleIdentifier>, line: Int = 0,
                 character: Int? = nil, modifier: Modifier? = nil) {
         self.action = action
         self.ruleIdentifiers = ruleIdentifiers
@@ -78,15 +84,16 @@ public struct Command {
                 return nil
         }
         self.action = action
-        ruleIdentifiers = scanner.string.bridge()
-            .substring(from: scanner.scanLocation + 1)
-            .components(separatedBy: .whitespaces)
         line = lineAndCharacter.line
         character = lineAndCharacter.character
 
-        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
+        let ruleTexts = scanner.string.bridge().substring(
+            from: scanner.scanLocation + 1
+        ).components(separatedBy: .whitespaces)
+        ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
 
         // Modifier
+        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
         if hasModifier {
             let modifierString = actionAndModifierScanner.string.bridge()
                 .substring(from: actionAndModifierScanner.scanLocation)
@@ -105,20 +112,29 @@ public struct Command {
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line - 1),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line - 1,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .this:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line),
                 Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line,
-                    character: Int.max)
+                        character: Int.max)
             ]
         case .next:
             return [
                 Command(action: action, ruleIdentifiers: ruleIdentifiers, line: line + 1),
-                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1,
-                    character: Int.max)
+                Command(action: action.inverse(), ruleIdentifiers: ruleIdentifiers, line: line + 1, character: Int.max)
             ]
         }
     }
+}
+
+// MARK: Equatable
+
+public func == (lhs: Command, rhs: Command) -> Bool {
+    return lhs.action == rhs.action &&
+        lhs.ruleIdentifiers == rhs.ruleIdentifiers &&
+        lhs.line == rhs.line &&
+        lhs.character == rhs.character &&
+        lhs.modifier == rhs.modifier
 }

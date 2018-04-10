@@ -27,8 +27,9 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         name: "Attributes",
         description: "Attributes should be on their own lines in functions and types, " +
                      "but on the same line as variables and imports.",
-        nonTriggeringExamples: AttributesRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: AttributesRuleExamples.swift3TriggeringExamples
+        kind: .style,
+        nonTriggeringExamples: AttributesRuleExamples.nonTriggeringExamples,
+        triggeringExamples: AttributesRuleExamples.triggeringExamples
     )
 
     public func validate(file: File) -> [StyleViolation] {
@@ -40,11 +41,11 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
         let attributeShouldBeOnSameLine: Bool?
-        if SwiftDeclarationKind.variableKinds().contains(kind) {
+        if SwiftDeclarationKind.variableKinds.contains(kind) {
             attributeShouldBeOnSameLine = true
-        } else if SwiftDeclarationKind.typeKinds().contains(kind) {
+        } else if SwiftDeclarationKind.typeKinds.contains(kind) {
             attributeShouldBeOnSameLine = false
-        } else if SwiftDeclarationKind.functionKinds().contains(kind) {
+        } else if SwiftDeclarationKind.functionKinds.contains(kind) {
             attributeShouldBeOnSameLine = false
         } else {
             attributeShouldBeOnSameLine = nil
@@ -61,7 +62,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func validateTestableImport(file: File) -> [StyleViolation] {
         let pattern = "@testable[\n]+\\s*import"
-        return file.match(pattern: pattern).flatMap { range, kinds -> StyleViolation? in
+        return file.match(pattern: pattern).compactMap { range, kinds -> StyleViolation? in
             guard kinds == [.attributeBuiltin, .keyword] else {
                 return nil
             }
@@ -102,7 +103,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let line = file.lines[lineNumber - 1]
 
         let tokens = file.syntaxMap.tokens(inByteRange: line.byteRange)
-        let attributesTokensWithRanges = tokens.flatMap { attributeName(token: $0, file: file) }
+        let attributesTokensWithRanges = tokens.compactMap { attributeName(token: $0, file: file) }
 
         let attributesTokens = Set(attributesTokensWithRanges.map { $0.0 })
 
@@ -121,8 +122,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                                                 attributesTokens: attributesTokensWithRanges,
                                                 line: line, file: file)
 
-            guard attributesTokens.intersection(alwaysOnNewLineAttributes).isEmpty &&
-                previousAttributes.intersection(alwaysOnSameLineAttributes).isEmpty else {
+            guard attributesTokens.isDisjoint(with: alwaysOnNewLineAttributes) &&
+                previousAttributes.isDisjoint(with: alwaysOnSameLineAttributes) else {
                 return true
             }
 
@@ -155,7 +156,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
         let allAttributes = previousAttributes + attributesTokensWithParameters
 
-        return Set(allAttributes.flatMap { (token, hasParameter) -> String? in
+        return Set(allAttributes.compactMap { token, hasParameter -> String? in
             // an attribute should be on a new line if one of these is true:
             // 1. it's a parameterized attribute
             //      a. the parameter is on the token (i.e. warn_unused_result)
@@ -181,8 +182,8 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: location)
+                           severity: configuration.severityConfiguration.severity,
+                           location: location)
         ]
     }
 
@@ -223,7 +224,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                 break
             }
 
-            let attributesTokens = tokens.flatMap { attributeName(token: $0, file: file) }
+            let attributesTokens = tokens.compactMap { attributeName(token: $0, file: file) }
             guard let firstTokenRange = attributesTokens.first?.1 else {
                 // found a line that does not contain an attribute token - we can stop looking
                 break
@@ -310,7 +311,17 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
             "source.decl.attribute.postfix",
             "source.decl.attribute.prefix",
             "source.decl.attribute.required",
-            "source.decl.attribute.weak"
+            "source.decl.attribute.weak",
+            "source.decl.attribute.private",
+            "source.decl.attribute.fileprivate",
+            "source.decl.attribute.internal",
+            "source.decl.attribute.public",
+            "source.decl.attribute.open",
+            "source.decl.attribute.setter_access.private",
+            "source.decl.attribute.setter_access.fileprivate",
+            "source.decl.attribute.setter_access.internal",
+            "source.decl.attribute.setter_access.public",
+            "source.decl.attribute.setter_access.open"
         ]
         return attributes.filter { !blacklist.contains($0) }
     }

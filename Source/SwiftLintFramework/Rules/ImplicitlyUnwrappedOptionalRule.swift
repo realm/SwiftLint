@@ -19,6 +19,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         identifier: "implicitly_unwrapped_optional",
         name: "Implicitly Unwrapped Optional",
         description: "Implicitly unwrapped optionals should be avoided when possible.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "@IBOutlet private var label: UILabel!",
             "@IBOutlet var label: UILabel!",
@@ -48,7 +49,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard SwiftDeclarationKind.variableKinds().contains(kind) else {
+        guard SwiftDeclarationKind.variableKinds.contains(kind) else {
             return []
         }
 

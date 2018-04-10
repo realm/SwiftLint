@@ -13,8 +13,8 @@ import XCTest
 
 private let optInRules = masterRuleList.list.filter({ $0.1.init() is OptInRule }).map({ $0.0 })
 
-extension Configuration {
-    fileprivate var disabledRules: [String] {
+private extension Configuration {
+    var disabledRules: [String] {
         let configuredRuleIDs = rules.map({ type(of: $0).description.identifier })
         let defaultRuleIDs = Set(masterRuleList.list.values.filter({
             !($0.init() is OptInRule)
@@ -23,6 +23,7 @@ extension Configuration {
     }
 }
 
+// swiftlint:disable type_body_length
 class ConfigurationTests: XCTestCase {
 
     func testInit() {
@@ -40,8 +41,32 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(config.disabledRules, [])
         XCTAssertEqual(config.included, [])
         XCTAssertEqual(config.excluded, [])
+        XCTAssertEqual(config.indentation, .spaces(count: 4))
         XCTAssertEqual(config.reporter, "xcode")
         XCTAssertEqual(reporterFrom(identifier: config.reporter).identifier, "xcode")
+    }
+
+    func testInitWithRelativePathAndRootPath() {
+        let previousWorkingDir = FileManager.default.currentDirectoryPath
+        let rootPath = projectMockSwift0
+        let expectedConfig = projectMockConfig0
+        FileManager.default.changeCurrentDirectoryPath(projectMockPathLevel0)
+
+        let config = Configuration(path: ".swiftlint.yml", rootPath: rootPath,
+                                   optional: false, quiet: true)
+
+        XCTAssertEqual(config.disabledRules, expectedConfig.disabledRules)
+        XCTAssertEqual(config.included, expectedConfig.included)
+        XCTAssertEqual(config.excluded, expectedConfig.excluded)
+        XCTAssertEqual(config.indentation, expectedConfig.indentation)
+        XCTAssertEqual(config.reporter, expectedConfig.reporter)
+
+        FileManager.default.changeCurrentDirectoryPath(previousWorkingDir)
+    }
+
+    func testEnableAllRulesConfiguration() {
+        let configuration = Configuration(dict: [:], ruleList: masterRuleList, enableAllRules: true, cachePath: nil)!
+        XCTAssertEqual(configuration.rules.count, masterRuleList.list.count)
     }
 
     func testWhitelistRules() {
@@ -74,7 +99,9 @@ class ConfigurationTests: XCTestCase {
             "whitelist_rules": whitelist
         ]
         let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {
-            var d = $0; d[$1.0] = $1.1; return d
+            var dict = $0
+            dict[$1.0] = $1.1
+            return dict
         }
         var configuration = Configuration(dict: enabledRulesConfigDict)
         XCTAssertNil(configuration)
@@ -95,11 +122,6 @@ class ConfigurationTests: XCTestCase {
             type(of: $0).description.identifier
         })
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
-
-        // Duplicate
-        let duplicateConfig = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
-        XCTAssert(duplicateConfig == nil, "initializing Configuration with duplicate rules in " +
-            "Dictionary should fail")
     }
 
     func testDisabledRulesWithUnknownRule() {
@@ -118,6 +140,20 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedIdentifiers, configuredIdentifiers)
     }
 
+    func testDuplicatedRules() {
+        let duplicateConfig1 = Configuration(dict: ["whitelist_rules": ["todo", "todo"]])
+        XCTAssertNil(duplicateConfig1, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig2 = Configuration(dict: ["opt_in_rules": [optInRules.first!, optInRules.first!]])
+        XCTAssertNil(duplicateConfig2, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+
+        let duplicateConfig3 = Configuration(dict: ["disabled_rules": ["todo", "todo"]])
+        XCTAssertNil(duplicateConfig3, "initializing Configuration with duplicate rules in " +
+            "Dictionary should fail")
+    }
+
     private class TestFileManager: LintableFileManager {
         func filesToLint(inPath path: String, rootDirectory: String? = nil) -> [String] {
             switch path {
@@ -131,27 +167,63 @@ class ConfigurationTests: XCTestCase {
             XCTFail("Should not be called with path \(path)")
             return []
         }
+
+        public func modificationDate(forFileAtPath path: String) -> Date? {
+            return nil
+        }
     }
 
     func testExcludedPaths() {
         let configuration = Configuration(included: ["directory"],
                                           excluded: ["directory/excluded",
                                                      "directory/ExcludedFile.swift"])!
-        let paths = configuration.lintablePaths(inPath: "", fileManager: TestFileManager())
+        let paths = configuration.lintablePaths(inPath: "", forceExclude: false, fileManager: TestFileManager())
         XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
     }
 
+    func testForceExcludesFile() {
+        let configuration = Configuration(excluded: ["directory/ExcludedFile.swift"])!
+        let paths = configuration.lintablePaths(inPath: "directory/ExcludedFile.swift", forceExclude: true,
+                                                fileManager: TestFileManager())
+        XCTAssertEqual([], paths)
+    }
+
+    func testForceExcludesFileNotPresentInExcluded() {
+        let configuration = Configuration(included: ["directory"],
+                                          excluded: ["directory/ExcludedFile.swift", "directory/excluded"])!
+        let paths = configuration.lintablePaths(inPath: "", forceExclude: true, fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
+
+    func testForceExcludesDirectory() {
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
+                                                fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
+
+    func testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre() {
+        let configuration = Configuration(excluded: ["directory/excluded", "directory/ExcludedFile.swift"])!
+        let paths = configuration.lintablePaths(inPath: "directory", forceExclude: true,
+                                                fileManager: TestFileManager())
+        XCTAssertEqual(["directory/File1.swift", "directory/File2.swift"], paths)
+    }
+
+    func testLintablePaths() {
+        let paths = Configuration()!.lintablePaths(inPath: projectMockPathLevel0, forceExclude: false)
+        let filenames = paths.map { $0.bridge().lastPathComponent }.sorted()
+        let expectedFilenames = [
+            "DirectoryLevel1.swift",
+            "Level0.swift",
+            "Level1.swift",
+            "Level2.swift",
+            "Level3.swift"
+        ]
+
+        XCTAssertEqual(expectedFilenames, filenames)
+    }
+
     // MARK: - Testing Configuration Equality
-
-    fileprivate var projectMockConfig0: Configuration {
-        var configuration = Configuration(path: projectMockYAML0, optional: false, quiet: true)
-        configuration.rootPath = projectMockPathLevel0
-        return configuration
-    }
-
-    fileprivate var projectMockConfig2: Configuration {
-        return Configuration(path: projectMockYAML2, optional: false, quiet: true)
-    }
 
     func testIsEqualTo() {
         XCTAssertEqual(projectMockConfig0, projectMockConfig0)
@@ -161,30 +233,45 @@ class ConfigurationTests: XCTestCase {
         XCTAssertNotEqual(projectMockConfig0, projectMockConfig2)
     }
 
-    // MARK: - Testing Nested Configurations
+    // MARK: - Testing Custom Configuration File
 
-    func testMerge() {
-        XCTAssertEqual(projectMockConfig0.merge(with: projectMockConfig2), projectMockConfig2)
+    func testCustomConfiguration() {
+        let file = File(path: projectMockSwift0)!
+        XCTAssertNotEqual(projectMockConfig0.configuration(for: file),
+                          projectMockConfig0CustomPath.configuration(for: file))
     }
 
-    func testLevel0() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift0)!),
-                       projectMockConfig0)
+    func testConfigurationWithSwiftFileAsRoot() {
+        let configuration = Configuration(path: projectMockYAML0,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
-    func testLevel1() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift1)!),
-                       projectMockConfig0)
+    func testConfigurationWithSwiftFileAsRootAndCustomConfiguration() {
+        let configuration = Configuration(path: projectMockYAML0CustomPath,
+                                          rootPath: projectMockSwift0,
+                                          optional: false, quiet: true)
+        let file = File(path: projectMockSwift0)!
+        XCTAssertEqual(configuration.configuration(for: file), configuration)
     }
 
-    func testLevel2() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift2)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
+    // MARK: - Testing custom indentation
+
+    func testIndentationTabs() {
+        let configuration = Configuration(dict: ["indentation": "tabs"])!
+        XCTAssertEqual(configuration.indentation, .tabs)
     }
 
-    func testLevel3() {
-        XCTAssertEqual(projectMockConfig0.configuration(for: File(path: projectMockSwift3)!),
-                       projectMockConfig0.merge(with: projectMockConfig2))
+    func testIndentationSpaces() {
+        let configuration = Configuration(dict: ["indentation": 2])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 2))
+    }
+
+    func testIndentationFallback() {
+        let configuration = Configuration(dict: ["indentation": "invalid"])!
+        XCTAssertEqual(configuration.indentation, .spaces(count: 4))
     }
 
     // MARK: - Testing Rules from config dictionary
@@ -238,96 +325,4 @@ class ConfigurationTests: XCTestCase {
         XCTAssert(configuration.rules.isEmpty)
     }
 
-}
-
-// MARK: - ProjectMock Paths
-
-fileprivate extension String {
-    func stringByAppendingPathComponent(_ pathComponent: String) -> String {
-        return bridge().appendingPathComponent(pathComponent)
-    }
-}
-
-extension XCTestCase {
-    var bundlePath: String {
-        #if SWIFT_PACKAGE
-            return "Tests/SwiftLintFrameworkTests/Resources".bridge().absolutePathRepresentation()
-        #else
-            return Bundle(for: type(of: self)).resourcePath!
-        #endif
-    }
-}
-
-fileprivate extension XCTestCase {
-
-    var projectMockPathLevel0: String {
-        return bundlePath.stringByAppendingPathComponent("ProjectMock")
-    }
-
-    var projectMockPathLevel1: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level1")
-    }
-
-    var projectMockPathLevel2: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level2")
-    }
-
-    var projectMockPathLevel3: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level3")
-    }
-
-    var projectMockYAML0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockYAML2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent(Configuration.fileName)
-    }
-
-    var projectMockSwift0: String {
-        return projectMockPathLevel0.stringByAppendingPathComponent("Level0.swift")
-    }
-
-    var projectMockSwift1: String {
-        return projectMockPathLevel1.stringByAppendingPathComponent("Level1.swift")
-    }
-
-    var projectMockSwift2: String {
-        return projectMockPathLevel2.stringByAppendingPathComponent("Level2.swift")
-    }
-
-    var projectMockSwift3: String {
-        return projectMockPathLevel3.stringByAppendingPathComponent("Level3.swift")
-    }
-}
-
-extension ConfigurationTests {
-    static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] {
-        return [
-            ("testInit", testInit),
-            ("testEmptyConfiguration", testEmptyConfiguration),
-            ("testWhitelistRules", testWhitelistRules),
-            ("testWarningThreshold_value", testWarningThreshold_value),
-            ("testWarningThreshold_nil", testWarningThreshold_nil),
-            ("testOtherRuleConfigurationsAlongsideWhitelistRules",
-                testOtherRuleConfigurationsAlongsideWhitelistRules),
-            ("testDisabledRules", testDisabledRules),
-            ("testDisabledRulesWithUnknownRule", testDisabledRulesWithUnknownRule),
-            ("testExcludedPaths", testExcludedPaths),
-            ("testIsEqualTo", testIsEqualTo),
-            ("testIsNotEqualTo", testIsNotEqualTo),
-            ("testMerge", testMerge),
-            ("testLevel0", testLevel0),
-            ("testLevel1", testLevel1),
-            ("testLevel2", testLevel2),
-            ("testLevel3", testLevel3),
-            ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
-            ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-            ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
-            ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
-            ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-            ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-            ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
-        ]
-    }
 }

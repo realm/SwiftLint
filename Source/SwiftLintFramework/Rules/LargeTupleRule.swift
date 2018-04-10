@@ -28,6 +28,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         identifier: "large_tuple",
         name: "Large Tuple",
         description: "Tuples shouldn't have too many members. Create a custom type instead.",
+        kind: .metrics,
         nonTriggeringExamples: [
             "let foo: (Int, Int)\n",
             "let foo: (start: Int, end: Int)\n",
@@ -39,6 +40,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
             "func foo() throws -> (Int, Int)\n",
             "func foo() throws -> (Int, Int) {}\n",
             "let foo: (Int, Int, Int) -> Void\n",
+            "let foo: (Int, Int, Int) throws -> Void\n",
+            "func foo(bar: (Int, String, Float) -> Void)\n",
+            "func foo(bar: (Int, String, Float) throws -> Void)\n",
             "var completionHandler: ((_ data: Data?, _ resp: URLResponse?, _ e: NSError?) -> Void)!\n",
             "func getDictionaryAndInt() -> (Dictionary<Int, String>, Int)?\n",
             "func getGenericTypeAndInt() -> (Type<Int, String, Float>, Int)?\n"
@@ -64,9 +68,9 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         let offsets = violationOffsetsForTypes(in: file, dictionary: dictionary, kind: kind) +
             violationOffsetsForFunctions(in: file, dictionary: dictionary, kind: kind)
 
-        return offsets.flatMap { location, size in
+        return offsets.compactMap { location, size in
             for parameter in configuration.params where size > parameter.value {
-                let reason = "Tuples should have at most \(parameter.value) members."
+                let reason = "Tuples should have at most \(configuration.warning) members."
                 return StyleViolation(ruleDescription: type(of: self).description,
                                       severity: parameter.severity,
                                       location: Location(file: file, byteOffset: location),
@@ -79,7 +83,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
 
     private func violationOffsetsForTypes(in file: File, dictionary: [String: SourceKitRepresentable],
                                           kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
-        let kinds = SwiftDeclarationKind.variableKinds().filter { $0 != .varLocal }
+        let kinds = SwiftDeclarationKind.variableKinds.subtracting([.varLocal])
         guard kinds.contains(kind),
             let type = dictionary.typeName,
             let offset = dictionary.offset else {
@@ -93,7 +97,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     private func violationOffsetsForFunctions(in file: File, dictionary: [String: SourceKitRepresentable],
                                               kind: SwiftDeclarationKind) -> [(offset: Int, size: Int)] {
         let contents = file.contents.bridge()
-        guard SwiftDeclarationKind.functionKinds().contains(kind),
+        guard SwiftDeclarationKind.functionKinds.contains(kind),
             let returnRange = returnRangeForFunction(dictionary: dictionary),
             let returnSubstring = contents.substringWithByteRange(start: returnRange.location,
                                                                   length: returnRange.length) else {
@@ -101,7 +105,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
         }
 
         let offsets = violationOffsets(for: returnSubstring, initialOffset: returnRange.location)
-        return offsets.sorted(by: { $0.offset < $1.offset })
+        return offsets.sorted { $0.offset < $1.offset }
     }
 
     private func violationOffsets(for text: String, initialOffset: Int = 0) -> [(offset: Int, size: Int)] {
@@ -202,7 +206,7 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func containsReturnArrow(in text: String, range: NSRange) -> Bool {
-        let arrowRegex = regex("\\A\\s*->")
+        let arrowRegex = regex("\\A(?:\\s*throws)?\\s*->")
         let start = NSMaxRange(range)
         let restOfStringRange = NSRange(location: start, length: text.bridge().length - start)
 

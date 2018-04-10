@@ -26,8 +26,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             "In an exception to the above, variable names may start with a capital letter " +
             "when they are declared static and immutable. Variable names should not be too " +
             "long or too short.",
-        nonTriggeringExamples: IdentifierNameRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: IdentifierNameRuleExamples.swift3TriggeringExamples,
+        kind: .style,
+        nonTriggeringExamples: IdentifierNameRuleExamples.nonTriggeringExamples,
+        triggeringExamples: IdentifierNameRuleExamples.triggeringExamples,
         deprecatedAliases: ["variable_name"]
     )
 
@@ -42,12 +43,13 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let isFunction = SwiftDeclarationKind.functionKinds().contains(kind)
-            let description = type(of: self).description
+            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
+            let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
             if !isFunction {
-                if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+                let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+                if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
                     return [
                         StyleViolation(ruleDescription: description,
                                        severity: .error,
@@ -57,12 +59,12 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                     ]
                 }
 
-                if let severity = severity(forLength: name.characters.count) {
+                if let severity = severity(forLength: name.count) {
                     let reason = "\(type) name should be between " +
                         "\(configuration.minLengthThreshold) and " +
                         "\(configuration.maxLengthThreshold) characters long: '\(name)'"
                     return [
-                        StyleViolation(ruleDescription: type(of: self).description,
+                        StyleViolation(ruleDescription: Swift.type(of: self).description,
                                        severity: severity,
                                        location: Location(file: file, byteOffset: offset),
                                        reason: reason)
@@ -70,7 +72,9 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 }
             }
 
-            if kind != .varStatic && name.isViolatingCase && !name.isOperator {
+            let requiresCaseCheck = configuration.validatesStartWithLowercase || isFunction
+            if requiresCaseCheck &&
+                kind != .varStatic && name.isViolatingCase && !name.isOperator {
                 let reason = "\(type) name should start with a lowercase character: '\(name)'"
                 return [
                     StyleViolation(ruleDescription: description,
@@ -88,7 +92,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
         guard let name = dictionary.name,
             let offset = dictionary.offset,
-            kinds(for: .current).contains(kind),
+            kinds.contains(kind),
             !name.hasPrefix("$") else {
                 return nil
         }
@@ -96,18 +100,14 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
-    private func kinds(for version: SwiftVersion) -> [SwiftDeclarationKind] {
-        let common = SwiftDeclarationKind.variableKinds() + SwiftDeclarationKind.functionKinds()
-        switch version {
-        case .two, .twoPointThree:
-            return common
-        case .three:
-            return common + [.enumelement]
-        }
-    }
+    private let kinds: Set<SwiftDeclarationKind> = {
+        return SwiftDeclarationKind.variableKinds
+            .union(SwiftDeclarationKind.functionKinds)
+            .union([.enumelement])
+    }()
 
     private func type(for kind: SwiftDeclarationKind) -> String {
-        if SwiftDeclarationKind.functionKinds().contains(kind) {
+        if SwiftDeclarationKind.functionKinds.contains(kind) {
             return "Function"
         } else if kind == .enumelement {
             return "Enum element"
@@ -117,18 +117,16 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-fileprivate extension String {
+private extension String {
     var isViolatingCase: Bool {
-        let secondIndex = characters.index(after: startIndex)
-        let firstCharacter = substring(to: secondIndex)
+        let firstCharacter = String(self[startIndex])
         guard firstCharacter.isUppercase() else {
             return false
         }
-        guard characters.count > 1 else {
+        guard count > 1 else {
             return true
         }
-        let range = secondIndex..<characters.index(after: secondIndex)
-        let secondCharacter = substring(with: range)
+        let secondCharacter = String(self[index(after: startIndex)])
         return secondCharacter.isLowercase()
     }
 

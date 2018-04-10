@@ -19,10 +19,13 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         identifier: "redundant_discardable_let",
         name: "Redundant Discardable Let",
         description: "Prefer `_ = foo()` over `let _ = foo()` when discarding a result from a function.",
+        kind: .style,
         nonTriggeringExamples: [
             "_ = foo()\n",
             "if let _ = foo() { }\n",
-            "guard let _ = foo() else { return }\n"
+            "guard let _ = foo() else { return }\n",
+            "let _: ExplicitType = foo()",
+            "while let _ = SplashStyle(rawValue: maxValue) { maxValue += 1 }\n"
         ],
         triggeringExamples: [
             "↓let _ = foo()\n",
@@ -71,6 +74,8 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
 
             return !isInBooleanCondition(byteOffset: byteRange.location,
                                          dictionary: file.structure.dictionary)
+                && !hasExplicitType(utf16Range: range.location ..< range.location + range.length,
+                                    fileContents: contents)
         }
     }
 
@@ -81,7 +86,8 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
                 return false
         }
 
-        if let kind = dictionary.kind.flatMap(StatementKind.init), kind == .if || kind == .guard {
+        let kinds: Set<StatementKind> = [.if, .guard, .while]
+        if let kind = dictionary.kind.flatMap(StatementKind.init), kinds.contains(kind) {
             let conditionKind = "source.lang.swift.structure.elem.condition_expr"
             for element in dictionary.elements where element.kind == conditionKind {
                 guard let elementOffset = element.offset,
@@ -100,6 +106,14 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         }
 
         return false
+    }
+
+    private func hasExplicitType(utf16Range: Range<Int>, fileContents: NSString) -> Bool {
+        guard utf16Range.upperBound != fileContents.length else {
+            return false
+        }
+        let nextUTF16Unit = fileContents.substring(with: NSRange(location: utf16Range.upperBound, length: 1))
+        return nextUTF16Unit == ":"
     }
 
 }

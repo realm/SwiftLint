@@ -36,21 +36,21 @@ class ReporterTests: XCTestCase {
         let location = Location(file: "filename", line: 1, character: 2)
         return [
             StyleViolation(ruleDescription: LineLengthRule.description,
-                location: location,
-                reason: "Violation Reason."),
+                           location: location,
+                           reason: "Violation Reason."),
             StyleViolation(ruleDescription: LineLengthRule.description,
-                severity: .error,
-                location: location,
-                reason: "Violation Reason."),
+                           severity: .error,
+                           location: location,
+                           reason: "Violation Reason."),
             StyleViolation(ruleDescription: SyntacticSugarRule.description,
-                severity: .error,
-                location: location,
-                reason: "Shorthand syntactic sugar should be used" +
+                           severity: .error,
+                           location: location,
+                           reason: "Shorthand syntactic sugar should be used" +
                 ", i.e. [Int] instead of Array<Int>."),
             StyleViolation(ruleDescription: ColonRule.description,
-                severity: .error,
-                location: Location(file: nil),
-                reason: nil)
+                           severity: .error,
+                           location: Location(file: nil),
+                           reason: nil)
         ]
     }
 
@@ -61,26 +61,29 @@ class ReporterTests: XCTestCase {
     }
 
     func testEmojiReporter() {
+    #if _runtime(_ObjC)
         let expectedOutput = stringFromFile("CannedEmojiReporterOutput.txt")
+    #else
+        let expectedOutput = stringFromFile("CannedEmojiReporterOutputNonObjC.txt")
+    #endif
         let result = EmojiReporter.generateReport(generateViolations())
         XCTAssertEqual(result, expectedOutput)
     }
 
-    func testJSONReporter() {
+    func testJSONReporter() throws {
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
         let result = JSONReporter.generateReport(generateViolations())
-        func jsonValue(_ jsonString: String) -> NSObject {
+        func jsonValue(_ jsonString: String) throws -> NSObject {
             let data = jsonString.data(using: .utf8)!
-            // swiftlint:disable:next force_try
-            let result = try! JSONSerialization.jsonObject(with: data, options: [])
+            let result = try JSONSerialization.jsonObject(with: data, options: [])
             if let dict = (result as? [String: Any])?.bridge() {
                 return dict
             } else if let array = (result as? [Any])?.bridge() {
                 return array
             }
-            fatalError("Unexpected value in JSON: \(result)")
+            queuedFatalError("Unexpected value in JSON: \(result)")
         }
-        XCTAssertEqual(jsonValue(result), jsonValue(expectedOutput))
+        XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
     func testCSVReporter() {
@@ -109,20 +112,5 @@ class ReporterTests: XCTestCase {
                 dateString: "13/12/2016"
         )
         XCTAssertEqual(result, expectedOutput)
-    }
-}
-
-extension ReporterTests {
-    static var allTests: [(String, (ReporterTests) -> () throws -> Void)] {
-        return [
-            ("testReporterFromString", testReporterFromString),
-            ("testXcodeReporter", testXcodeReporter),
-            ("testEmojiReporter", testEmojiReporter),
-            ("testJSONReporter", testJSONReporter),
-            ("testCSVReporter", testCSVReporter),
-            ("testCheckstyleReporter", testCheckstyleReporter),
-            ("testJunitReporter", testJunitReporter),
-            ("testHTMLReporter", testHTMLReporter)
-        ]
     }
 }

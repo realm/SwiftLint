@@ -1,7 +1,98 @@
-machine:
-  xcode:
-    version: "8.2"
+version: 2
+jobs:
 
-test:
-  override:
-    - bundle exec danger --verbose
+  tsan:
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      # Pre-cache
+      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+      # Post-cache
+      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+      # Test
+      - run: make test_tsan
+
+  osscheck:
+    shell: /bin/bash --login -eo pipefail
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: bundle install
+      - run: bundle exec danger --verbose
+
+  swiftpm_4:
+    macos:
+      xcode: "9.2.0"
+    steps:
+      - checkout
+      - run: swift test --parallel
+
+  swiftpm_4.1:
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      - run: swift test --parallel
+
+  xcode_9:
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      - run: set -o pipefail && script/cibuild | xcpretty -r junit
+      - store_test_results:
+          path: build/reports/
+      - run: bash <(curl -s https://codecov.io/bash)
+
+  cocoapods_swift_4:
+    shell: /bin/bash --login -eo pipefail
+    macos:
+      xcode: "9.2.0"
+    steps:
+      - checkout
+      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: bundle install
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
+
+  cocoapods_swift_4.1:
+    shell: /bin/bash --login -eo pipefail
+    macos:
+      xcode: "9.3.0"
+    steps:
+      - checkout
+      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: bundle install
+      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
+      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
+
+  linux_swift_4:
+    docker:
+      - image: norionomura/swift:40
+    steps:
+      - checkout
+      - run: swift test --parallel
+
+  linux_swift_4.1:
+    docker:
+      - image: norionomura/swift:41
+    steps:
+      - checkout
+      - run: swift test --parallel
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - tsan
+      - osscheck
+      - swiftpm_4
+      - swiftpm_4.1
+      - xcode_9
+      - cocoapods_swift_4
+      - cocoapods_swift_4.1
+      - linux_swift_4
+      - linux_swift_4.1

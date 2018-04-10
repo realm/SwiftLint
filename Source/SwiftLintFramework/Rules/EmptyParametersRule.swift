@@ -18,6 +18,7 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
         identifier: "empty_parameters",
         name: "Empty Parameters",
         description: "Prefer `() -> ` over `Void -> `.",
+        kind: .style,
         nonTriggeringExamples: [
             "let abc: () -> Void = {}\n",
             "func foo(completion: () -> Void)\n",
@@ -27,17 +28,17 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
             "let foo: (ConfigurationTests) ->Void throws -> Void)\n"
         ],
         triggeringExamples: [
-            "let abc: ↓Void -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n"
+            "let abc: ↓(Void) -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n",
+            "let foo: ↓(Void) -> () throws -> Void)\n"
         ],
         corrections: [
-            "let abc: ↓Void -> Void = {}\n": "let abc: () -> Void = {}\n",
-            "func foo(completion: ↓Void -> Void)\n": "func foo(completion: () -> Void)\n",
-            "func foo(completion: ↓Void throws -> Void)\n":
+            "let abc: ↓(Void) -> Void = {}\n": "let abc: () -> Void = {}\n",
+            "func foo(completion: ↓(Void) -> Void)\n": "func foo(completion: () -> Void)\n",
+            "func foo(completion: ↓(Void) throws -> Void)\n":
                 "func foo(completion: () throws -> Void)\n",
-            "let foo: ↓Void -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
+            "let foo: ↓(Void) -> () throws -> Void)\n": "let foo: () -> () throws -> Void)\n"
         ]
     )
 
@@ -50,13 +51,13 @@ public struct EmptyParametersRule: ConfigurationProviderRule, CorrectableRule {
     }
 
     private func violationRanges(file: File) -> [NSRange] {
-        let voidPattern = "Void"
+        let voidPattern = "\\(Void\\)"
         let pattern = voidPattern + "\\s*(throws\\s+)?->"
         let excludingPattern = "->\\s*" + pattern // excludes curried functions
 
         return file.match(pattern: pattern,
-                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds(),
-                          excludingPattern: excludingPattern).flatMap { range in
+                          excludingSyntaxKinds: SyntaxKind.commentAndStringKinds,
+                          excludingPattern: excludingPattern).compactMap { range in
             let voidRegex = regex(voidPattern)
             return voidRegex.firstMatch(in: file.contents, options: [], range: range)?.range
         }

@@ -7,6 +7,11 @@
 //
 
 import Commandant
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
 import Result
 import SwiftLintFramework
 import SwiftyTextTable
@@ -38,27 +43,33 @@ struct RulesCommand: CommandProtocol {
             }
 
             print(ruleDescription: rule.description)
-            return .success()
+            return .success(())
         }
 
-        let configuration = Configuration(commandLinePath: options.configurationFile)
+        if options.onlyDisabledRules && options.onlyEnabledRules {
+            return .failure(.usageError(description: "You can't use --disabled and --enabled at the same time."))
+        }
+
+        let configuration = Configuration(options: options)
         let rules = ruleList(for: options, configuration: configuration)
 
         print(TextTable(ruleList: rules, configuration: configuration).render())
-        return .success()
+        return .success(())
     }
 
     private func ruleList(for options: RulesOptions, configuration: Configuration) -> RuleList {
-        guard options.filterEnabled else {
+        guard options.onlyEnabledRules || options.onlyDisabledRules else {
             return masterRuleList
         }
 
-        let filtered: [Rule.Type] = masterRuleList.list.flatMap { ruleID, ruleType in
+        let filtered: [Rule.Type] = masterRuleList.list.compactMap { ruleID, ruleType in
             let configuredRule = configuration.rules.first { rule in
                 return type(of: rule).description.identifier == ruleID
             }
 
-            guard configuredRule != nil else {
+            if options.onlyEnabledRules && configuredRule == nil {
+                return nil
+            } else if options.onlyDisabledRules && configuredRule != nil {
                 return nil
             }
 
@@ -71,14 +82,18 @@ struct RulesCommand: CommandProtocol {
 
 struct RulesOptions: OptionsProtocol {
     fileprivate let ruleID: String?
-    fileprivate let configurationFile: String
-    fileprivate let filterEnabled: Bool
+    let configurationFile: String
+    fileprivate let onlyEnabledRules: Bool
+    fileprivate let onlyDisabledRules: Bool
 
-    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ filterEnabled: Bool) -> RulesOptions {
-        return { ruleID in { filterEnabled in
-            // swiftlint:disable:next line_length
-            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID), configurationFile: configurationFile, filterEnabled: filterEnabled)
-        }}
+    // swiftlint:disable line_length
+    static func create(_ configurationFile: String) -> (_ ruleID: String) -> (_ onlyEnabledRules: Bool) -> (_ onlyDisabledRules: Bool) -> RulesOptions {
+        return { ruleID in { onlyEnabledRules in { onlyDisabledRules in
+            self.init(ruleID: (ruleID.isEmpty ? nil : ruleID),
+                      configurationFile: configurationFile,
+                      onlyEnabledRules: onlyEnabledRules,
+                      onlyDisabledRules: onlyDisabledRules)
+        }}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<RulesOptions, CommandantError<CommandantError<()>>> {
@@ -89,6 +104,9 @@ struct RulesOptions: OptionsProtocol {
             <*> mode <| Switch(flag: "e",
                                key: "enabled",
                                usage: "only display enabled rules")
+            <*> mode <| Switch(flag: "d",
+                               key: "disabled",
+                               usage: "only display disabled rules")
     }
 }
 
@@ -101,10 +119,25 @@ extension TextTable {
             TextTableColumn(header: "opt-in"),
             TextTableColumn(header: "correctable"),
             TextTableColumn(header: "enabled in your config"),
+            TextTableColumn(header: "kind"),
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
         let sortedRules = ruleList.list.sorted { $0.0 < $1.0 }
+        func truncate(_ string: String) -> String {
+            let stringWithNoNewlines = string.replacingOccurrences(of: "\n", with: "\\n")
+            let minWidth = "configuration".count - "...".count
+            let configurationStartColumn = 112
+            let truncatedEndIndex = stringWithNoNewlines.index(
+                stringWithNoNewlines.startIndex,
+                offsetBy: max(minWidth, Terminal.currentWidth() - configurationStartColumn),
+                limitedBy: stringWithNoNewlines.endIndex
+            )
+            if let truncatedEndIndex = truncatedEndIndex {
+                return stringWithNoNewlines[..<truncatedEndIndex] + "..."
+            }
+            return stringWithNoNewlines
+        }
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule = configuration.rules.first { rule in
@@ -115,8 +148,21 @@ extension TextTable {
                 (rule is OptInRule) ? "yes" : "no",
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
-                (configuredRule ?? rule).configurationDescription
+                ruleType.description.kind.rawValue,
+                truncate((configuredRule ?? rule).configurationDescription)
             ])
         }
+    }
+}
+
+struct Terminal {
+    static func currentWidth() -> Int {
+        var size = winsize()
+#if os(Linux)
+        _ = ioctl(CInt(STDOUT_FILENO), UInt(TIOCGWINSZ), &size)
+#else
+        _ = ioctl(STDOUT_FILENO, TIOCGWINSZ, &size)
+#endif
+        return Int(size.ws_col)
     }
 }

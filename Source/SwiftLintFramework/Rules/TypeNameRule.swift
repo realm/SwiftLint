@@ -23,19 +23,12 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         name: "Type Name",
         description: "Type name should only contain alphanumeric characters, start with an " +
                      "uppercase character and span between 3 and 40 characters in length.",
-        nonTriggeringExamples: TypeNameRuleExamples.swift3NonTriggeringExamples,
-        triggeringExamples: TypeNameRuleExamples.swift3TriggeringExamples
+        kind: .idiomatic,
+        nonTriggeringExamples: TypeNameRuleExamples.nonTriggeringExamples,
+        triggeringExamples: TypeNameRuleExamples.triggeringExamples
     )
 
-    private let typeKinds: [SwiftDeclarationKind] = {
-        let common = SwiftDeclarationKind.typeKinds()
-        switch SwiftVersion.current {
-        case .two, .twoPointThree:
-            return common + [.enumelement]
-        case .three:
-            return common
-        }
-    }()
+    private let typeKinds = SwiftDeclarationKind.typeKinds
 
     public func validate(file: File) -> [StyleViolation] {
         return validateTypeAliasesAndAssociatedTypes(in: file) +
@@ -47,7 +40,7 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
         guard typeKinds.contains(kind),
             let name = dictionary.name,
-            let offset = dictionary.offset else {
+            let offset = dictionary.nameOffset else {
                 return []
         }
 
@@ -55,6 +48,10 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func validateTypeAliasesAndAssociatedTypes(in file: File) -> [StyleViolation] {
+        guard SwiftVersion.current < .fourDotOne else {
+            return []
+        }
+
         let rangesAndTokens = file.rangesAndTokens(matching: "(typealias|associatedtype)\\s+.+?\\b")
         return rangesAndTokens.flatMap { _, tokens -> [StyleViolation] in
             guard tokens.count == 2,
@@ -82,22 +79,24 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
         }
 
         let name = name.nameStrippingLeadingUnderscoreIfPrivate(dictionary)
-        if !CharacterSet.alphanumerics.isSuperset(ofCharactersIn: name) {
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
             return [StyleViolation(ruleDescription: type(of: self).description,
-               severity: .error,
-               location: Location(file: file, byteOffset: offset),
-               reason: "Type name should only contain alphanumeric characters: '\(name)'")]
-        } else if !name.substring(to: name.index(after: name.startIndex)).isUppercase() {
+                                   severity: .error,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Type name should only contain alphanumeric characters: '\(name)'")]
+        } else if configuration.validatesStartWithLowercase &&
+            !String(name[name.startIndex]).isUppercase() {
             return [StyleViolation(ruleDescription: type(of: self).description,
-               severity: .error,
-               location: Location(file: file, byteOffset: offset),
-               reason: "Type name should start with an uppercase character: '\(name)'")]
-        } else if let severity = severity(forLength: name.characters.count) {
+                                   severity: .error,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Type name should start with an uppercase character: '\(name)'")]
+        } else if let severity = severity(forLength: name.count) {
             return [StyleViolation(ruleDescription: type(of: self).description,
-               severity: severity,
-               location: Location(file: file, byteOffset: offset),
-               reason: "Type name should be between \(configuration.minLengthThreshold) and " +
-                    "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
+                                   severity: severity,
+                                   location: Location(file: file, byteOffset: offset),
+                                   reason: "Type name should be between \(configuration.minLengthThreshold) and " +
+                "\(configuration.maxLengthThreshold) characters long: '\(name)'")]
         }
 
         return []

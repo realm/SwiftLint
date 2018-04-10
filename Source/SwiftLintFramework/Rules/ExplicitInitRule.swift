@@ -19,6 +19,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         identifier: "explicit_init",
         name: "Explicit Init",
         description: "Explicitly calling .init() should be avoided.",
+        kind: .idiomatic,
         nonTriggeringExamples: [
             "import Foundation; class C: NSObject { override init() { super.init() }}", // super
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self
@@ -28,10 +29,13 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         ],
         triggeringExamples: [
             "[1].flatMap{String↓.init($0)}",
-            "[String.self].map { Type in Type↓.init(1) }"  // starting with capital assumes as type
+            "[String.self].map { Type in Type↓.init(1) }", // starting with capital assumes as type,
+            "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}"
         ],
         corrections: [
-            "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}"
+            "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}",
+            "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}":
+            "func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"
         ]
     )
 
@@ -39,8 +43,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             StyleViolation(ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location))
+                           severity: configuration.severity,
+                           location: Location(file: file, characterOffset: $0.location))
         }
     }
 
@@ -68,12 +72,12 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in
-            guard let kindString = subDict.kind,
-                let kind = SwiftExpressionKind(rawValue: kindString) else {
-                    return []
+            var ranges = violationRanges(in: file, dictionary: subDict)
+            if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
+                ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
-            return violationRanges(in: file, dictionary: subDict) +
-                violationRanges(in: file, kind: kind, dictionary: subDict)
+
+            return ranges
         }
     }
 

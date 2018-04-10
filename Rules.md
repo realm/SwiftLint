@@ -63,6 +63,7 @@
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
 * [Lower ACL than parent](#lower-acl-than-parent)
 * [Mark](#mark)
+* [Modifiers Order](#modifiers-order)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
@@ -8638,6 +8639,114 @@ struct MarkTest {}
 ↓// MARK:- Bad mark
 extension MarkTest {}
 
+```
+
+</details>
+
+
+
+## Modifiers Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`modifiers_order` | Disabled | No | style
+
+Modifiers order should be consistent.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+public static let nnumber = 3 
+
+```
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+ }
+```
+
+```swift
+@objc 
+ override public private(set) weak var foo: Bar?
+
+```
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+ }
+```
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+private final func myFinal() {}
+weak var myWeak: NSString? = nil
+public static let nnumber = 3 
+ }
+```
+
+```swift
+public final class MyClass {}
+```
+
+```swift
+class RootClass { func myFinal() {}}
+internal class MyClass: RootClass {override internal func myFinal() {}}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo { 
+ static public let bar = 3 {} 
+ }
+```
+
+```swift
+class Foo { 
+ class override public let bar = 3 {} 
+ }
+```
+
+```swift
+class Foo { 
+ overide static final public var foo: String {} 
+ }
+```
+
+```swift
+@objc 
+public final class MyClass: NSObject {
+final private func myFinal() {}
+}
+```
+
+```swift
+@objc 
+final public class MyClass: NSObject {}
+
+```
+
+```swift
+final public class MyClass {}
+
+```
+
+```swift
+class MyClass {weak internal var myWeak: NSString? = nil
+}
+```
+
+```swift
+class MyClass {static public let nnumber = 3 
+ }
 ```
 
 </details>

@@ -78,6 +78,10 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         return dictionaries.compactMap { $0["key.attribute"] as? String }
     }
 
+    var enclosedSwiftAttributesWithMetaData: [[String: SourceKitRepresentable]] {
+        return self["key.attributes"] as? [[String: SourceKitRepresentable]] ?? []
+    }
+
     var substructure: [[String: SourceKitRepresentable]] {
         let substructure = self["key.substructure"] as? [SourceKitRepresentable] ?? []
         return substructure.compactMap { $0 as? [String: SourceKitRepresentable] }

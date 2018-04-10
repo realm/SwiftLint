@@ -601,6 +601,10 @@ The next release will require Swift 4.0 or higher to build.
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1078](https://github.com/realm/SwiftLint/issues/1078)
 
+* Added `modifierOrderRule` to enforce the order of modifiers.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [#1472](https://github.com/realm/SwiftLint/issues/1472)
+
 * Add `private_over_fileprivate` correctable rule to check for top-level usages
   of `fileprivate` and recommend `private` instead. This is in line with
   SE-0169's goal "for `fileprivate` to be used rarely". There is a also a new

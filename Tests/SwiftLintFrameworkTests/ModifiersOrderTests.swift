@@ -11,8 +11,8 @@ import XCTest
 
 class ModifiersOrderTests: XCTestCase {
 
-    func testAttibuteStatic() {
-        // testing static attribute position
+    func testAttibuteClass() {
+        // testing class as attribute position
         let descriptionOverride = RuleDescription(
             identifier: "modifiers_order",
             name: "Modifiers Order",
@@ -20,16 +20,10 @@ class ModifiersOrderTests: XCTestCase {
             kind: .style,
             nonTriggeringExamples: [
                 "public class SomeClass { \n" +
-                    "    static public func someFunc() {} \n" +
-                "}",
-                "public class SomeClass { \n" +
                     "    class public func someFunc() {} \n" +
                 "}"
             ],
             triggeringExamples: [
-                "public class SomeClass { \n" +
-                    "    public static func someFunc() {} \n" +
-                "}",
                 "public class SomeClass { \n" +
                     "    public class func someFunc() {} \n" +
                 "}"
@@ -41,7 +35,6 @@ class ModifiersOrderTests: XCTestCase {
     }
 
     func testRightOrderedModifierGroups() {
-        // testing modifiers ordered to the right from the ACL
         let descriptionOverride = RuleDescription(
             identifier: "modifiers_order",
             name: "Modifiers Order",

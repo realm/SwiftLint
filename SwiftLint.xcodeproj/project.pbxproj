@@ -21,15 +21,13 @@
 		12E3D4DC2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */; };
 		181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */; };
 		187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */; };
+		188B3FF2207D61040073C2D6 /* ModifiersOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B3FF1207D61040073C2D6 /* ModifiersOrderRule.swift */; };
+		188B3FF4207D61230073C2D6 /* ModifiersOrderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B3FF3207D61230073C2D6 /* ModifiersOrderConfiguration.swift */; };
 		1894D743207D57F000BD94CF /* ModifiersOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1894D742207D57F000BD94CF /* ModifiersOrderTests.swift */; };
-		1894D744207D583A00BD94CF /* ModifiersOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1894D73A207D576900BD94CF /* ModifiersOrderRule.swift */; };
-		1894D745207D584900BD94CF /* ModifiersOrderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1894D73E207D579C00BD94CF /* ModifiersOrderConfiguration.swift */; };
 		1894D746207D585400BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1894D740207D57AD00BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift */; };
 		1E18574B1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */; };
 		1E3C2D711EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */; };
 		1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */; };
-		1E82F4031EE4B2A100D33439 /* ModifiersOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E82F4021EE4B2A100D33439 /* ModifiersOrderRule.swift */; };
-		1EB7C8511F0C2213004BAD22 /* ModifiersOrderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */; };
 		1EB7C8531F0C45C2004BAD22 /* ModifiersOrderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */; };
 		1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */; };
 		1EF115921EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */; };
@@ -390,15 +388,13 @@
 		12E3D4DB2042729300B3E30E /* ExplicitTypeInterfaceRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitTypeInterfaceRuleTests.swift; sourceTree = "<group>"; };
 		181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UntypedErrorInCatchRule.swift; sourceTree = "<group>"; };
 		1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YodaConditionRule.swift; sourceTree = "<group>"; };
-		1894D73A207D576900BD94CF /* ModifiersOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderRule.swift; sourceTree = "<group>"; };
-		1894D73E207D579C00BD94CF /* ModifiersOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderConfiguration.swift; sourceTree = "<group>"; };
+		188B3FF1207D61040073C2D6 /* ModifiersOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderRule.swift; sourceTree = "<group>"; };
+		188B3FF3207D61230073C2D6 /* ModifiersOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderConfiguration.swift; sourceTree = "<group>"; };
 		1894D740207D57AD00BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDeclarationAttributeKind+Swiftlint.swift"; sourceTree = "<group>"; };
 		1894D742207D57F000BD94CF /* ModifiersOrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderTests.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRule.swift; sourceTree = "<group>"; };
 		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
-		1E82F4021EE4B2A100D33439 /* ModifiersOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderRule.swift; sourceTree = "<group>"; };
-		1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderConfiguration.swift; sourceTree = "<group>"; };
 		1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderTests.swift; sourceTree = "<group>"; };
 		1EC163511D5992D900DD2928 /* VerticalWhitespaceRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerticalWhitespaceRule.swift; sourceTree = "<group>"; };
 		1EF115911EB2AD5900E30140 /* ExplicitTopLevelACLRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitTopLevelACLRule.swift; sourceTree = "<group>"; };
@@ -750,6 +746,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		188B3FF0207D60080073C2D6 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -771,7 +774,6 @@
 		3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */ = {
 			isa = PBXGroup;
 			children = (
-				1894D73E207D579C00BD94CF /* ModifiersOrderConfiguration.swift */,
 				D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */,
 				D43B04671E07228D004016AF /* ColonConfiguration.swift */,
 				67EB4DF81E4CC101004E9ACD /* CyclomaticComplexityConfiguration.swift */,
@@ -781,8 +783,8 @@
 				29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */,
 				47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */,
 				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
-				1EB7C8501F0C2213004BAD22 /* ModifiersOrderConfiguration.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */,
+				188B3FF3207D61230073C2D6 /* ModifiersOrderConfiguration.swift */,
 				D93DA3CF1E699E4E00809827 /* NestingConfiguration.swift */,
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
 				A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */,
@@ -831,6 +833,7 @@
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
+				188B3FF0207D60080073C2D6 /* Recovered References */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -1133,11 +1136,10 @@
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				D4EA77C91F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift */,
 				856651A61D6B395F005E6B29 /* MarkRule.swift */,
-				1894D73A207D576900BD94CF /* ModifiersOrderRule.swift */,
+				188B3FF1207D61040073C2D6 /* ModifiersOrderRule.swift */,
 				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */,
 				B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */,
 				B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */,
-				1E82F4021EE4B2A100D33439 /* ModifiersOrderRule.swift */,
 				6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */,
 				621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */,
 				BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */,
@@ -1540,7 +1542,6 @@
 				827169B51F48D712003FB9AF /* NoGroupingExtensionRule.swift in Sources */,
 				D41B57781ED8CEE0007B0470 /* ExtensionAccessModifierRule.swift in Sources */,
 				E881985C1BEA978500333A11 /* TrailingNewlineRule.swift in Sources */,
-				1EB7C8511F0C2213004BAD22 /* ModifiersOrderConfiguration.swift in Sources */,
 				78F032481D7D614300BE709A /* OverridenSuperCallConfiguration.swift in Sources */,
 				D47079A71DFCEB2D00027086 /* EmptyParenthesesWithTrailingClosureRule.swift in Sources */,
 				E881985E1BEA982100333A11 /* TypeBodyLengthRule.swift in Sources */,
@@ -1573,6 +1574,7 @@
 				E812249C1B04FADC001783D2 /* Linter.swift in Sources */,
 				1F11B3CF1C252F23002E8FA8 /* ClosingBraceRule.swift in Sources */,
 				DAD3BE4A1D6ECD9500660239 /* PrivateOutletRuleConfiguration.swift in Sources */,
+				188B3FF4207D61230073C2D6 /* ModifiersOrderConfiguration.swift in Sources */,
 				D4B022961E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift in Sources */,
 				2E02005F1C54BF680024D09D /* CyclomaticComplexityRule.swift in Sources */,
 				D4FBADD01E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift in Sources */,
@@ -1580,7 +1582,6 @@
 				623675B01F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift in Sources */,
 				D47079AD1DFE2FA700027086 /* EmptyParametersRule.swift in Sources */,
 				E87E4A091BFB9CAE00FCFE46 /* SyntaxKind+SwiftLint.swift in Sources */,
-				1E82F4031EE4B2A100D33439 /* ModifiersOrderRule.swift in Sources */,
 				3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */,
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,
@@ -1619,7 +1620,6 @@
 				D4EA77C81F817FD200C315FB /* UnneededBreakInSwitchRule.swift in Sources */,
 				006204DC1E1E492F00FFFBE1 /* VerticalWhitespaceConfiguration.swift in Sources */,
 				E88198441BEA93D200333A11 /* ColonRule.swift in Sources */,
-				1894D745207D584900BD94CF /* ModifiersOrderConfiguration.swift in Sources */,
 				623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */,
 				D403A4A31F4DB5510020CA02 /* PatternMatchingKeywordsRule.swift in Sources */,
 				E809EDA11B8A71DF00399043 /* Configuration.swift in Sources */,
@@ -1651,7 +1651,6 @@
 				D4DAE8BC1DE14E8F00B0AE7A /* NimbleOperatorRule.swift in Sources */,
 				6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */,
 				D4C0E46F1E3D973600C560F2 /* ForWhereRule.swift in Sources */,
-				1894D744207D583A00BD94CF /* ModifiersOrderRule.swift in Sources */,
 				D4EA77CA1F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift in Sources */,
 				E86396C51BADAC15002C9E88 /* XcodeReporter.swift in Sources */,
 				E889D8C51F1D11A200058332 /* Configuration+LintableFiles.swift in Sources */,
@@ -1712,6 +1711,7 @@
 				E88DEA711B09847500A66CB0 /* ViolationSeverity.swift in Sources */,
 				187290721FC37CA50016BEA2 /* YodaConditionRule.swift in Sources */,
 				1E3C2D711EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift in Sources */,
+				188B3FF2207D61040073C2D6 /* ModifiersOrderRule.swift in Sources */,
 				72EA17B61FD31F10009D5CE6 /* ExplicitACLRule.swift in Sources */,
 				B2902A0C1D66815600BFCCF7 /* PrivateUnitTestRule.swift in Sources */,
 				D47A51101DB2DD4800A4CC21 /* AttributesRule.swift in Sources */,

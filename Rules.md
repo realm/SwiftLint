@@ -8649,9 +8649,9 @@ extension MarkTest {}
 
 ## Modifiers Order
 
-Identifier | Enabled by default | Supports autocorrection | Kind 
---- | --- | --- | ---
-`modifiers_order` | Disabled | No | style
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`modifiers_order` | Disabled | No | style | 4.1.0 
 
 Modifiers order should be consistent.
 
@@ -8661,44 +8661,135 @@ Modifiers order should be consistent.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-public static let nnumber = 3 
+public class Foo { 
+   public convenience required init() {} 
+}
+```
+
+```swift
+public class Foo { 
+   public static let bar = 42 
+}
+```
+
+```swift
+public class Foo { 
+   public static var bar: Int { 
+       return 42   }}
+```
+
+```swift
+public class Foo { 
+   public class var bar: Int { 
+       return 42 
+   } 
+}
+```
+
+```swift
+public class Bar { 
+   public class var foo: String { 
+       return "foo" 
+   } 
+} 
+public class Foo: Bar { 
+   override public final class var foo: String { 
+       return "bar" 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   public var foo: Int? { 
+       return 42 
+   } 
+} 
+open class Foo: Bar { 
+   override public var foo: Int? { 
+       return 43 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   override open class func foo() -> Int { 
+       return 43 
+   } 
+}
+```
+
+```swift
+protocol Foo: class {} 
+class Bar { 
+    public private(set) weak var foo: Foo? 
+} 
 
 ```
 
 ```swift
 @objc 
-public final class MyClass: NSObject {
- }
+public final class Foo: NSObject {} 
+
+```
+
+```swift
+@objcMembers 
+public final class Foo: NSObject {} 
+
 ```
 
 ```swift
 @objc 
- override public private(set) weak var foo: Bar?
+override public private(set) weak var foo: Bar? 
 
 ```
 
 ```swift
 @objc 
-public final class MyClass: NSObject {
- }
+public final class Foo: NSObject {} 
+
 ```
 
 ```swift
 @objc 
-public final class MyClass: NSObject {
-private final func myFinal() {}
-weak var myWeak: NSString? = nil
-public static let nnumber = 3 
- }
+open final class Foo: NSObject { 
+   open weak var weakBar: NSString? = nil 
+}
 ```
 
 ```swift
-public final class MyClass {}
+public final class Foo {}
 ```
 
 ```swift
-class RootClass { func myFinal() {}}
-internal class MyClass: RootClass {override internal func myFinal() {}}
+class Bar { 
+   func bar() {} 
+}
+```
+
+```swift
+internal class Foo: Bar { 
+   override internal func bar() {} 
+}
+```
+
+```swift
+public struct Foo { 
+   internal weak var weakBar: NSObject? = nil 
+}
+```
+
+```swift
+class Foo { 
+   internal lazy var bar: String = "foo" 
+}
 ```
 
 </details>
@@ -8707,48 +8798,131 @@ internal class MyClass: RootClass {override internal func myFinal() {}}
 
 ```swift
 class Foo { 
- static public let bar = 3 {} 
- }
+   convenience required public init() {} 
+}
 ```
 
 ```swift
-class Foo { 
- class override public let bar = 3 {} 
- }
+public class Foo { 
+   static public let bar = 42 
+}
 ```
 
 ```swift
-class Foo { 
- overide static final public var foo: String {} 
- }
+public class Foo { 
+   static public var bar: Int { 
+       return 42 
+   } 
+} 
+
 ```
 
 ```swift
-@objc 
-public final class MyClass: NSObject {
-final private func myFinal() {}
+public class Foo { 
+   class public var bar: Int { 
+       return 42 
+   } 
+}
+```
+
+```swift
+public class RootFoo { 
+   class public var foo: String { 
+       return "foo" 
+   } 
+} 
+public class Foo: RootFoo { 
+   override final class public var foo: String { 
+       return "bar" 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   public var foo: Int? { 
+       return 42 
+   } 
+} 
+open class Foo: Bar { 
+    public override var foo: Int? { 
+       return 43 
+   } 
+}
+```
+
+```swift
+protocol Foo: class {} 
+class Bar { 
+    private(set) public weak var foo: Foo? 
+} 
+
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   class open override func foo() -> Int { 
+       return 43 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   open override class func foo() -> Int { 
+       return 43 
+   } 
 }
 ```
 
 ```swift
 @objc 
-final public class MyClass: NSObject {}
-
+final public class Foo: NSObject {}
 ```
 
 ```swift
-final public class MyClass {}
-
+@objcMembers 
+final public class Foo: NSObject {}
 ```
 
 ```swift
-class MyClass {weak internal var myWeak: NSString? = nil
+@objc 
+final open class Foo: NSObject { 
+   weak open var weakBar: NSString? = nil 
 }
 ```
 
 ```swift
-class MyClass {static public let nnumber = 3 
- }
+final public class Foo {} 
+
+```
+
+```swift
+internal class Foo: Bar { 
+   internal override func bar() {} 
+}
+```
+
+```swift
+public struct Foo { 
+   weak internal var weakBar: NSObjetc? = nil 
+}
+```
+
+```swift
+class Foo { 
+   lazy internal var bar: String = "foo" 
+}
 ```
 
 </details>

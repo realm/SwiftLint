@@ -17,8 +17,11 @@ public extension SwiftDeclarationAttributeKind {
         case mutators
         case final
         case typeMethods
-        case interfaceBuilder
-        case objcInteroperability
+        case `required`
+        case `convenience`
+        case `lazy`
+        case `dynamic`
+        case atPrefixed
 
         var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
             switch self {
@@ -46,28 +49,25 @@ public extension SwiftDeclarationAttributeKind {
                 return [.final]
             case .typeMethods:
                 return []
-            case .objcInteroperability:
+            case .required:
+                return [.required]
+            case .convenience:
+                return [.convenience]
+            case .lazy:
+                return [.lazy]
+            case .dynamic:
+                return [.dynamic]
+            case .atPrefixed:
                 return [.objc,
                         .nonobjc,
-                        .objcMembers]
-            case .interfaceBuilder:
-                return [.ibaction,
+                        .objcMembers,
+                        .ibaction,
                         .iboutlet,
                         .ibdesignable,
-                        .ibinspectable]
+                        .ibinspectable,
+                        .nsManaged,
+                        .nsCopying]
             }
-        }
-
-        static var allValues: Set<SwiftDeclarationAttributeKind.ModifierGroup> {
-            return [.acl,
-                    .setterACL,
-                    .mutators,
-                    .override,
-                    .owned,
-                    .objcInteroperability,
-                    .final,
-                    .interfaceBuilder,
-                    .typeMethods]
         }
 
         public var debugDescription: String {

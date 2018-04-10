@@ -11,21 +11,27 @@ import XCTest
 
 class ModifiersOrderTests: XCTestCase {
 
-    func testAttibuteClass() {
-        // testing class as attribute position
+    func testAttributeTypeMethod() {
         let descriptionOverride = RuleDescription(
             identifier: "modifiers_order",
             name: "Modifiers Order",
             description: "Modifiers order should be consistent.",
             kind: .style,
+            minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
                 "public class SomeClass { \n" +
-                    "    class public func someFunc() {} \n" +
+                "   class public func someFunc() {} \n" +
+                "}",
+                "public class SomeClass { \n" +
+                "   static public func someFunc() {} \n" +
                 "}"
             ],
             triggeringExamples: [
                 "public class SomeClass { \n" +
-                    "    public class func someFunc() {} \n" +
+                "   public class func someFunc() {} \n" +
+                "}",
+                "public class SomeClass { \n" +
+                "   public static func someFunc() {} \n" +
                 "}"
             ]
         )
@@ -40,6 +46,7 @@ class ModifiersOrderTests: XCTestCase {
             name: "Modifiers Order",
             description: "Modifiers order should be consistent.",
             kind: .style,
+            minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
                 "public protocol Foo: class {}\n" +
                 "public weak internal(set) var bar: Foo? \n",
@@ -68,5 +75,81 @@ class ModifiersOrderTests: XCTestCase {
                                                                     "final",
                                                                     "mutators",
                                                                     "override"]])
+    }
+
+    //swiftlint:disable function_body_length
+    func testAtPrefixedGroup() {
+        let descriptionOverride = RuleDescription(
+            identifier: "modifiers_order",
+            name: "Modifiers Order",
+            description: "Modifiers order should be consistent.",
+            kind: .style,
+            minSwiftVersion: .fourDotOne,
+            nonTriggeringExamples: [
+                "class Foo { \n"                                        +
+                "   @objc \n"                                           +
+                "   internal var bar: String {\n"                       +
+                "       return \"foo\"\n"                               +
+                "   }\n"                                                +
+                "} \n"                                                  +
+                "class Bar: Foo { \n"                                   +
+                "   @objc \n"                                           +
+                "   override internal var bar: String { \n"             +
+                "       return \"bar\"\n"                               +
+                "   }\n"                                                +
+                "}",
+                "@objcMembers \n"                                       +
+                "public final class Bar {} \n",
+                "class Foo { \n"                                        +
+                "   @IBOutlet internal weak var bar: UIView!\n"         +
+                "}",
+                "class Foo { \n"                                        +
+                "   @IBAction internal func bar() {}\n"                 +
+                "}\n"                                                   +
+                "class Bar: Foo { \n"                                   +
+                "   @IBAction override internal func bar() {}\n"        +
+                "}",
+                "public class Foo {\n"                                  +
+                "   @NSCopying public final var foo:NSString = \"s\"\n" +
+                "}",
+                "public class Bar {\n"                                  +
+                "   @NSManaged public final var foo: NSString \n"       +
+                "}\n"
+            ],
+            triggeringExamples: [
+                "class Foo { \n"                                        +
+                "   @objc \n"                                           +
+                "   internal var bar: String {\n"                       +
+                "       return \"foo\"\n"                               +
+                "   }\n"                                                +
+                "} \n"                                                  +
+                "class Bar: Foo { \n"                                   +
+                "   @objc \n"                                           +
+                "   internal override var bar: String { \n"             +
+                "       return \"bar\"\n"                               +
+                "   }\n"                                                +
+                "}",
+                "@objcMembers \n"                                       +
+                "final public class Bar {} \n",
+                "class Foo { \n"                                        +
+                "   @IBOutlet weak internal var bar: UIView!\n"         +
+                "}",
+                "class Foo { \n"                                        +
+                "   @IBAction internal func bar() {}\n"                 +
+                "}\n"                                                   +
+                "class Bar: Foo { \n"                                   +
+                "   @IBAction internal override func bar() {}\n"        +
+                "}",
+                "public class Foo {\n"                                  +
+                "   @NSCopying final public var foo:NSString = \"s\"\n" +
+                "}",
+                "public class Bar {\n"                                  +
+                "   @NSManaged final public var foo: NSString \n"       +
+                "}\n"
+            ]
+        )
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["prefered_modifiers_order": ["override", "acl", "final"]])
     }
 }

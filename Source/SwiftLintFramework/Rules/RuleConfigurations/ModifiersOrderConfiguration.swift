@@ -25,11 +25,13 @@ public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        if let beforeACL = configuration["prefered_modifiers_order"] as? [String] {
-            self.preferedModifiersOrder = try beforeACL.map {
-                guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0) else {
+        if let preferedModifiersOrder = configuration["prefered_modifiers_order"] as? [String] {
+            self.preferedModifiersOrder = try preferedModifiersOrder.map {
+                guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
+                      modifierGroup != .atPrefixed else {
                     throw ConfigurationError.unknownConfiguration
                 }
+
                 return modifierGroup
             }
         }
@@ -37,5 +39,11 @@ public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
         if let severityString = configuration["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
+    }
+
+    public static func == (lhs: ModifiersOrderConfiguration,
+                           rhs: ModifiersOrderConfiguration) -> Bool {
+        return lhs.preferedModifiersOrder == rhs.preferedModifiersOrder &&
+               lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

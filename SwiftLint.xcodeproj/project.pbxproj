@@ -393,7 +393,6 @@
 		188B3FF1207D61040073C2D6 /* ModifiersOrderRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderRule.swift; sourceTree = "<group>"; };
 		188B3FF3207D61230073C2D6 /* ModifiersOrderConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderConfiguration.swift; sourceTree = "<group>"; };
 		1894D740207D57AD00BD94CF /* SwiftDeclarationAttributeKind+Swiftlint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDeclarationAttributeKind+Swiftlint.swift"; sourceTree = "<group>"; };
-		1894D742207D57F000BD94CF /* ModifiersOrderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifiersOrderTests.swift; sourceTree = "<group>"; };
 		1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoExtensionAccessModifierRule.swift; sourceTree = "<group>"; };
 		1E3C2D701EE36C6F00C8386D /* PrivateOverFilePrivateRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrivateOverFilePrivateRule.swift; sourceTree = "<group>"; };
 		1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSpacingRule.swift; sourceTree = "<group>"; };
@@ -750,13 +749,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		188B3FF0207D60080073C2D6 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Recovered References";
-			sourceTree = "<group>";
-		};
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -837,7 +829,6 @@
 				D0D1211A19E87861005E4BAA /* swiftlint */,
 				D0D1216E19E87B05005E4BAA /* SwiftLintFramework */,
 				D0D1217B19E87B05005E4BAA /* SwiftLintFrameworkTests */,
-				188B3FF0207D60080073C2D6 /* Recovered References */,
 			);
 			indentWidth = 4;
 			sourceTree = "<group>";
@@ -996,7 +987,6 @@
 				1EB7C8521F0C45C2004BAD22 /* ModifiersOrderTests.swift */,
 				D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */,
 				B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */,
-				1894D742207D57F000BD94CF /* ModifiersOrderTests.swift */,
 				825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */,
 				D4246D6E1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift */,
 				E81ADD711ED5ED9D000CD451 /* RegionTests.swift */,

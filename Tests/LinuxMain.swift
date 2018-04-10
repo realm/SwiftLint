@@ -307,9 +307,8 @@ extension MultilineArgumentsRuleTests {
 
 extension ModifiersOrderTests {
     static var allTests: [(String, (ModifiersOrderTests) -> () throws -> Void)] = [
-        ("testAttibuteStatic", testAttibuteStatic),
-        ("testAttibuteClass", testAttibuteClass),
-        ("testAttributesOrderLeft", testAttributesOrderLeft)
+        ("testAttributeTypeMethod", testAttributeTypeMethod),
+        ("testRightOrderedModifierGroups", testRightOrderedModifierGroups)
     ]
 }
 
@@ -476,7 +475,7 @@ extension RulesTests {
         ("testLegacyConstructor", testLegacyConstructor),
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
-        ("testModifiersOrderRule", testModifiersOrderRule),
+        ("testModifiersOrder", testModifiersOrder),
         ("testMark", testMark),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),

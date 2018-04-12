@@ -48,7 +48,7 @@ public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard
             let offset = dictionary.offset,
             kind == .functionMethodInstance,
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.ibaction"),
+            dictionary.enclosedSwiftAttributes.contains(.ibaction),
             let controlLevel = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)),
             controlLevel.isPrivate == false
             else {

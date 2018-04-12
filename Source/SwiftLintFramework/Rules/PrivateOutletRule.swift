@@ -39,7 +39,7 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         }
 
         // Check if IBOutlet
-        let isOutlet = dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.iboutlet")
+        let isOutlet = dictionary.enclosedSwiftAttributes.contains(.iboutlet)
         guard isOutlet else { return [] }
 
         // Check if private

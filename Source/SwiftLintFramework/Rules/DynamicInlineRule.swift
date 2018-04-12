@@ -41,8 +41,8 @@ public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
         // the attribute we are interested in.
         guard functionKinds.contains(kind),
             case let attributes = dictionary.enclosedSwiftAttributes,
-            attributes.contains("source.decl.attribute.dynamic"),
-            attributes.contains("source.decl.attribute.inline"),
+            attributes.contains(.dynamic),
+            attributes.contains(.inline),
             let funcByteOffset = dictionary.offset,
             let funcOffset = file.contents.bridge()
                 .byteRangeToNSRange(start: funcByteOffset, length: 0)?.location,

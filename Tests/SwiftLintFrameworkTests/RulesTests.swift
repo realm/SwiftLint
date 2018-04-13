@@ -473,6 +473,10 @@ class RulesTests: XCTestCase {
         verifyRule(WeakDelegateRule.description)
     }
 
+    func testWeakViewController() {
+        verifyRule(WeakViewControllerRule.description)
+    }
+
     func testXCTFailMessage() {
         verifyRule(XCTFailMessageRule.description)
     }

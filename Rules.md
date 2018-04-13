@@ -126,6 +126,7 @@
 * [Vertical Whitespace](#vertical-whitespace)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
+* [Weak View Controller](#weak-view-controller)
 * [XCTFail Message](#xctfail-message)
 * [Yoda condition rule](#yoda-condition-rule)
 --------
@@ -18530,6 +18531,107 @@ class Foo {
 ```swift
 class Foo {
   ↓var scrollDelegate: ScrollDelegate?
+}
+
+```
+
+</details>
+
+
+
+## Weak View Controller
+
+Identifier | Enabled by default | Supports autocorrection | Kind 
+--- | --- | --- | ---
+`weak_view_controller` | Disabled | No | lint
+
+View Controllers should be weak to avoid reference cycles.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class Foo {
+  weak var viewController: SomeVC?
+}
+
+```
+
+```swift
+class Foo {
+  weak var someViewController: SomeViewControllerProtocol?
+}
+
+```
+
+```swift
+class Foo {
+  weak var viewControllerScroll: ScrollViewController?
+}
+
+```
+
+```swift
+class Foo {
+  var scrollHandler: ScrollViewController?
+}
+
+```
+
+```swift
+func foo() {
+  var viewController: SomeViewController
+}
+
+```
+
+```swift
+class Foo {
+  var viewControllerNotified: Bool?
+}
+
+```
+
+```swift
+protocol P {
+ var viewController: AnyObject? { get set }
+}
+
+```
+
+```swift
+class Foo {
+ protocol P {
+ var viewController: AnyObject? { get set }
+}
+}
+
+```
+
+```swift
+class Foo {
+ var computedViewController: ComputedViewController {
+ return bar() 
+} 
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo {
+  ↓var viewController: SomeVC?
+}
+
+```
+
+```swift
+class Foo {
+  ↓var scrollViewController: ScrollViewController?
 }
 
 ```

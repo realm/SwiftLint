@@ -33,6 +33,7 @@ The next release will require Swift 4.0 or higher to build.
 * Add `UIOffsetMake` to `legacy_constructor` rule.  
   [Nealon Young](https://github.com/nealyoung)
   [#2126](https://github.com/realm/SwiftLint/issues/2126)
+
 * Add `explicit_final` opt-in rule to enforce final declarations on non-open
   types.  
   [Twig](https://github.com/Twigz)

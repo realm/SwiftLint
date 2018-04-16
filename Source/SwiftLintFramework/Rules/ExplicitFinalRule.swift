@@ -56,12 +56,10 @@ public struct ExplicitFinalRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard kind == .class else { return [] }
-
-        guard let accessibility = dictionary.accessibility else { return [] }
-        guard AccessControlLevel(identifier: accessibility) != .open else { return [] }
-
-        guard !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.final") else { return [] }
+        guard kind == .class,
+              let accessibility = dictionary.accessibility,
+              AccessControlLevel(identifier: accessibility) != .open,
+              !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.final") else { return [] }
 
         guard let offset = dictionary.offset else { return [] }
 

@@ -443,6 +443,7 @@ extension RulesTests {
         ("testEmptyString", testEmptyString),
         ("testExplicitACL", testExplicitACL),
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
+        ("testExplicitFinal", textExplicitFinal),
         ("testExplicitInit", testExplicitInit),
         ("testExplicitTopLevelACL", testExplicitTopLevelACL),
         ("testExtensionAccessModifier", testExtensionAccessModifier),

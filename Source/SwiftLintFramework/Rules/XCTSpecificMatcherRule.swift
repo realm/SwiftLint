@@ -19,6 +19,7 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
         name: "XCTest Specific Matcher",
         description: "Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`",
         kind: .idiomatic,
+        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: XCTSpecificMatcherRuleExamples.nonTriggeringExamples,
         triggeringExamples: XCTSpecificMatcherRuleExamples.triggeringExamples
     )
@@ -33,8 +34,15 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             let matcher = XCTestMatcher(rawValue: name) else { return [] }
 
         /*
-         *  - Get the first two arguments and creates an array where the protected
+         *  - Gets the first two arguments and creates an array where the protected
          *    word is the first one (if any).
+         *
+         *  Examples:
+         *
+         *  - XCTAssertEqual(foo, true) -> [true, foo]
+         *  - XCTAssertEqual(true, foo) -> [true, foo]
+         *  - XCTAssertEqual(foo, true, "toto") -> [true, foo]
+         *  - XCTAssertEqual(1, 2, accuracy: 0.1, "toto") -> [1, 2]
          */
         let arguments = dictionary.substructure
             .filter { $0.offset != nil }
@@ -60,10 +68,18 @@ public struct XCTSpecificMatcherRule: ASTRule, OptInRule, ConfigurationProviderR
             }
 
         /*
-         *  - Check if the number of arguments is two (otherwise there's no need to continue)
-         *  - Check if the first argument is a protected word (otherwise there's no need to continue)
-         *  - Get the suggestion for the given protected word (taking in consideration the presence of
-         *    optionals
+         *  - Checks if the number of arguments is two (otherwise there's no need to continue).
+         *  - Checks if the first argument is a protected word (otherwise there's no need to continue).
+         *  - Gets the suggestion for the given protected word (taking in consideration the presence of
+         *    optionals.
+         *
+         *  Examples:
+         *
+         *  - equal, [true, foo.bar] -> XCTAssertTrue
+         *  - equal, [true, foo?.bar] -> no violation
+         *  - equal, [nil, foo.bar] -> XCTAssertNil
+         *  - equal, [nil, foo?.bar] -> XCTAssertNil
+         *  - equal, [1, 2] -> no violation
          */
         guard
             arguments.count == 2,

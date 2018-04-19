@@ -22768,9 +22768,9 @@ class Foo {
 
 ## XCTest Specific Matcher
 
-Identifier | Enabled by default | Supports autocorrection | Kind 
---- | --- | --- | ---
-`xct_specific_matcher` | Disabled | No | idiomatic
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`xct_specific_matcher` | Disabled | No | idiomatic | 4.1.0 
 
 Prefer specific XCTest matchers over `XCTAssertEqual` and `XCTAssertNotEqual`
 

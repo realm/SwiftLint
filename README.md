@@ -120,7 +120,7 @@ You can use the [official swiftlint fastlane action](https://docs.fastlane.tools
 ```ruby
 swiftlint(
     mode: :lint,                            # SwiftLint mode: :lint (default) or :autocorrect
-    executable: "Pods/SwiftLint/swiftlint", # The SwiftLint binary path (optional). Important if you've installed it via CocoaPod
+    executable: "Pods/SwiftLint/swiftlint", # The SwiftLint binary path (optional). Important if you've installed it via CocoaPods
     path: "/path/to/lint",                  # Specify path to lint (optional)
     output_file: "swiftlint.result.json",   # The path of the output file (optional)
     reporter: "json",                       # The custom reporter to use (optional)

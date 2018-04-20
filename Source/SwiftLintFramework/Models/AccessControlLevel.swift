@@ -51,10 +51,10 @@ extension AccessControlLevel: Comparable {
     private var priority: Int {
         switch self {
         case .private: return 1
-        case .fileprivate: return 2
-        case .internal: return 3
-        case .public: return 4
-        case .open: return 5
+        case .fileprivate: return 1
+        case .internal: return 2
+        case .public: return 3
+        case .open: return 4
         }
     }
 

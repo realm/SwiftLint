@@ -27,14 +27,14 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule {
             "open class Foo { open func bar() {} }",
             "fileprivate struct Foo { private func bar() {} }",
             "private struct Foo { private func bar(id: String) }",
+            "extension Foo { public func bar() {} }",
+            "private struct Foo { fileprivate func bar() {} }",
             "private func foo(id: String) {}"
         ],
         triggeringExamples: [
             "struct Foo { public func bar() {} }",
-            "extension Foo { public func bar() {} }",
             "enum Foo { public func bar() {} }",
             "public class Foo { open func bar() }",
-            "private struct Foo { fileprivate func bar() {} }",
             "class Foo { public private(set) var bar: String? }"
         ]
     )
@@ -70,17 +70,16 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule {
 private extension SwiftDeclarationKind {
     var isRelevantDeclaration: Bool {
         switch self {
-        case .`associatedtype`, .enumcase, .enumelement, .functionAccessorAddress,
-             .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
-             .functionAccessorSetter, .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module,
-             .precedenceGroup, .varLocal, .varParameter:
+        case .`associatedtype`, .enumcase, .enumelement, .`extension`, .`extensionClass`, .`extensionEnum`,
+             .extensionProtocol, .extensionStruct, .functionAccessorAddress, .functionAccessorDidset,
+             .functionAccessorGetter, .functionAccessorMutableaddress, .functionAccessorSetter,
+             .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module, .precedenceGroup, .varLocal,
+             .varParameter:
             return false
-        case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
-             .extensionProtocol, .extensionStruct, .functionConstructor,
-             .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
-             .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass,
-             .varGlobal, .varInstance, .varStatic:
+        case .`class`, .`enum`, .functionConstructor, .functionFree, .functionMethodClass, .functionMethodInstance,
+             .functionMethodStatic, .functionOperator, .functionOperatorInfix, .functionOperatorPostfix,
+             .functionOperatorPrefix, .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass, .varGlobal,
+             .varInstance, .varStatic:
             return true
         }
     }

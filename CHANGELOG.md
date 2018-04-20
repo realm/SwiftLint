@@ -13,7 +13,9 @@
 
 #### Bug Fixes
 
-* None.
+* Update `LowerACLThanParent` rule to not lint extensions.  
+  [Keith Smiley](https://github.com/keith)
+  [#2164](https://github.com/realm/SwiftLint/pull/2164)
 
 ## 0.25.1: Lid Locked
 

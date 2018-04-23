@@ -32,10 +32,8 @@ struct Benchmark {
 
     func save() {
         // Decomposed to improve compile times
-        let entriesDict: [String: Double] = entries.reduce([String: Double]()) { accu, idAndTime in
-            var accu = accu
+        let entriesDict: [String: Double] = entries.reduce(into: [String: Double]()) { accu, idAndTime in
             accu[idAndTime.id] = (accu[idAndTime.id] ?? 0) + idAndTime.time
-            return accu
         }
         let entriesKeyValues: [(String, Double)] = entriesDict.sorted { $0.1 < $1.1 }
         let lines: [String] = entriesKeyValues.map { id, time -> String in

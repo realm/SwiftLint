@@ -209,11 +209,8 @@ private func containsDuplicateIdentifiers(_ identifiers: [String]) -> Bool {
         return false
     }
 
-    let duplicateRules = identifiers.reduce([String: Int]()) { accu, element in
-        var accu = accu
-        accu[element] = (accu[element] ?? 0) + 1
-        return accu
-    }.filter { $0.1 > 1 }
+    let duplicateRules = identifiers.reduce(into: [String: Int]()) { $0[$1] = ($0[$1] ?? 0) + 1 }
+        .filter { $0.1 > 1 }
     queuedPrintError(duplicateRules.map { rule in
         "configuration error: '\(rule.0)' is listed \(rule.1) times"
     }.joined(separator: "\n"))

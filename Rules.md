@@ -13581,7 +13581,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `switch_case_alignment` | Enabled | No | style | 3.0.0 
 
-Case statements should vertically align with the enclosing switch statement.
+Case statements should vertically align with the enclosing switch statement, or indented if configured otherwise.
 
 ### Examples
 

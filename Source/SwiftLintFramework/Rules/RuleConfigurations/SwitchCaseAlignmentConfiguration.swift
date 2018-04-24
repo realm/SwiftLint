@@ -8,12 +8,12 @@
 
 public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var indentation: Int = 0
+    private(set) var indentedCases = false
 
     init() {}
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", indentation: \(indentation)"
+        return severityConfiguration.consoleDescription + ", indented cases: \(indentedCases)"
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -21,12 +21,12 @@ public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        self.indentation = configuration["indentation"] as? Int ?? 0
+        self.indentedCases = configuration["indented_cases"] as? Bool ?? false
     }
 
     public static func == (lhs: SwitchCaseAlignmentConfiguration,
                            rhs: SwitchCaseAlignmentConfiguration) -> Bool {
-        return lhs.indentation == rhs.indentation &&
+        return lhs.indentedCases == rhs.indentedCases &&
                lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

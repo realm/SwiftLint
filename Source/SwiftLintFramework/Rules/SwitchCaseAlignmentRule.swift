@@ -10,7 +10,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
         description: "Case statements should vertically align with the enclosing switch statement, " +
-                     "or indentated by the provided indentation value.",
+                     "or indented if configured otherwise.",
         kind: .style,
         nonTriggeringExamples: [
             "switch someBool {\n" +
@@ -100,8 +100,22 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
             return Location(file: file.path, line: line, character: char)
         }
 
+        guard let firstCase = caseLocations.first,
+              let firstCaseCharacter = firstCase.character else {
+            return []
+        }
+
+        // If indent_cases is on, the first case should be indented from its containing switch.
+        if configuration.indentedCases, firstCaseCharacter <= switchCharacter {
+            return [StyleViolation(ruleDescription: type(of: self).description,
+                                   severity: configuration.severityConfiguration.severity,
+                                   location: firstCase)]
+        }
+
+        let indentation = configuration.indentedCases ? firstCaseCharacter - switchCharacter : 0
+
         return caseLocations
-            .filter { $0.character != switchCharacter + configuration.indentation }
+            .filter { $0.character != switchCharacter + indentation }
             .map {
                 StyleViolation(ruleDescription: type(of: self).description,
                                severity: configuration.severityConfiguration.severity,

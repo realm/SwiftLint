@@ -76,6 +76,11 @@
 
 #### Bug Fixes
 
+* Fixes an issue with `control_statement` where commas in clauses prevent the
+  rule from applying.  
+  [Allen Wu](https://github.com/allewun)
+  [#2170](https://github.com/realm/SwiftLint/pull/2170)
+  
 * Update `LowerACLThanParent` rule to not lint extensions.  
   [Keith Smiley](https://github.com/keith)
   [#2164](https://github.com/realm/SwiftLint/pull/2164)

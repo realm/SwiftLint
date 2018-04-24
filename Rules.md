@@ -1746,7 +1746,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `control_statement` | Enabled | No | style | 3.0.0 
 
-if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.
+`if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their conditionals or arguments in parentheses.
 
 ### Examples
 
@@ -1838,6 +1838,16 @@ do {
 foo().catch(all: true) {}
 ```
 
+```swift
+if max(a, b) < c {
+
+```
+
+```swift
+switch (lhs, rhs) {
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1849,6 +1859,11 @@ foo().catch(all: true) {}
 
 ```swift
 ↓if(condition) {
+
+```
+
+```swift
+↓if (condition == endIndex) {
 
 ```
 
@@ -1926,6 +1941,11 @@ do { ; } ↓while (condition) {
 do {
 } ↓catch(let error as NSError) {
 }
+```
+
+```swift
+↓if (max(a, b) < c) {
+
 ```
 
 </details>

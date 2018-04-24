@@ -2,14 +2,15 @@ import Foundation
 import SourceKittenFramework
 
 public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = SwitchCaseAlignmentConfiguration()
 
     public init() {}
 
     public static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
-        description: "Case statements should vertically align with the enclosing switch statement.",
+        description: "Case statements should vertically align with the enclosing switch statement, " +
+                     "or indentated by the provided indentation value.",
         kind: .style,
         nonTriggeringExamples: [
             "switch someBool {\n" +
@@ -74,10 +75,11 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         let contents = file.contents.bridge()
+
         guard kind == .switch,
-            let offset = dictionary.offset,
-            let (_, switchCharacter) = contents.lineAndCharacter(forByteOffset: offset) else {
-                return []
+              let offset = dictionary.offset,
+              let (_, switchCharacter) = contents.lineAndCharacter(forByteOffset: offset) else {
+            return []
         }
 
         let caseStatements = dictionary.substructure.filter { subDict in
@@ -91,17 +93,18 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
 
         let caseLocations = caseStatements.compactMap { caseDict -> Location? in
             guard let byteOffset = caseDict.offset,
-                let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                    return nil
+                  let (line, char) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                return nil
             }
+
             return Location(file: file.path, line: line, character: char)
         }
 
         return caseLocations
-            .filter { $0.character != switchCharacter }
+            .filter { $0.character != switchCharacter + configuration.indentation }
             .map {
                 StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severity,
+                               severity: configuration.severityConfiguration.severity,
                                location: $0)
             }
     }

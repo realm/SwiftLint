@@ -330,6 +330,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantOptionalInitializationRule.description)
     }
 
+    func testRedundantSetAccessControl() {
+        verifyRule(RedundantSetAccessControlRule.description)
+    }
+
     func testRedundantStringEnumValue() {
         verifyRule(RedundantStringEnumValueRule.description)
     }

@@ -12,64 +12,8 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         description: "Case statements should vertically align with the enclosing switch statement, " +
                      "or indented if configured otherwise.",
         kind: .style,
-        nonTriggeringExamples: [
-            "switch someBool {\n" +
-            "case true: // case 1\n" +
-            "    print('red')\n" +
-            "case false:\n" +
-            "    /*\n" +
-            "    case 2\n" +
-            "    */\n" +
-            "    if case let .someEnum(val) = someFunc() {\n" +
-            "        print('blue')\n" +
-            "    }\n" +
-            "}\n" +
-            "enum SomeEnum {\n" +
-            "    case innocent\n" +
-            "}",
-            "if aBool {\n" +
-            "    switch someBool {\n" +
-            "    case true:\n" +
-            "        print('red')\n" +
-            "    case false:\n" +
-            "        print('blue')\n" +
-            "    }\n" +
-            "}",
-            "switch someInt {\n" +
-            "// comments ignored\n" +
-            "case 0:\n" +
-            "    // zero case\n" +
-            "    print('Zero')\n" +
-            "case 1:\n" +
-            "    print('One')\n" +
-            "default:\n" +
-            "    print('Some other number')\n" +
-            "}"
-        ],
-        triggeringExamples: [
-            "switch someBool {\n" +
-            "    ↓case true:\n" +
-            "         print('red')\n" +
-            "    ↓case false:\n" +
-            "         print('blue')\n" +
-            "}",
-            "if aBool {\n" +
-            "    switch someBool {\n" +
-            "        ↓case true:\n" +
-            "            print('red')\n" +
-            "    case false:\n" +
-            "        print('blue')\n" +
-            "    }\n" +
-            "}",
-            "switch someInt {\n" +
-            "    ↓case 0:\n" +
-            "    print('Zero')\n" +
-            "case 1:\n" +
-            "    print('One')\n" +
-            "    ↓default:\n" +
-            "    print('Some other number')\n" +
-            "}"
-        ]
+        nonTriggeringExamples: Examples.nonIndentedCases,
+        triggeringExamples: Examples.indentedCases
     )
 
     public func validate(file: File, kind: StatementKind,
@@ -121,5 +65,82 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
                                severity: configuration.severityConfiguration.severity,
                                location: $0)
             }
+    }
+}
+
+public extension SwitchCaseAlignmentRule {
+    struct Examples {
+        static public let indentedCases = [
+            """
+            switch someBool {
+                case true:
+                    print("red")
+                case false:
+                    print("blue")
+            }
+            """,
+            """
+            if aBool {
+                switch someBool {
+                    case true:
+                        print('red')
+                    case false:
+                        print('blue')
+                }
+            }
+            """,
+            """
+            switch someInt {
+                case 0:
+                    print('Zero')
+                case 1:
+                    print('One')
+                default:
+                    print('Some other number')
+            }
+            """
+        ]
+
+
+        static public let nonIndentedCases = [
+            """
+            switch someBool {
+            case true: // case 1
+                print('red')
+            case false:
+                /*
+                case 2
+                */
+                if case let .someEnum(val) = someFunc() {
+                    print('blue')
+                }
+            }
+            enum SomeEnum {
+                case innocent
+            }
+            """,
+            """
+            if aBool {
+                switch someBool {
+                case true:
+                    print('red')
+                case false:
+                    print('blue')
+                }
+            }
+            """,
+            """
+            switch someInt {
+            // comments ignored
+            case 0:
+                // zero case
+                print('Zero')
+            case 1:
+                print('One')
+            default:
+                print('Some other number')
+            }
+            """
+        ]
     }
 }

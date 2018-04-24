@@ -14,6 +14,9 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1472](https://github.com/realm/SwiftLint/issues/1472)
   [#1585](https://github.com/realm/SwiftLint/issues/1585)
+* Add `indented_cases` support to `switch_case_alignment` rule.
+  [Shai Mishali](https://github.com/freak4pc)
+  [#2119](https://github.com/realm/SwiftLint/issues/2119)
 
 * Validate implicit `subscript` getter in `implicit_getter` rule when using
   Swift 4.1 or later.  

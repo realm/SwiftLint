@@ -17,6 +17,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2127](https://github.com/realm/SwiftLint/issues/2127)
 
+* Add `redundant_set_access_control` rule to warn against using redundant
+  setter ACLs on variable declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1869](https://github.com/realm/SwiftLint/issues/1869)
+
 #### Bug Fixes
 
 * None.
@@ -144,11 +149,6 @@ The next release will require Swift 4.0 or higher to build.
   the use of optional booleans.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2011](https://github.com/realm/SwiftLint/issues/2011)
-
-* Add `redundant_set_access_control` rule to warn against using redundant
-  setter ACLs on variable declarations.  
-  [Marcelo Fabri](https://github.com/marcelofabri)
-  [#1869](https://github.com/realm/SwiftLint/issues/1869)
 
 #### Bug Fixes
 

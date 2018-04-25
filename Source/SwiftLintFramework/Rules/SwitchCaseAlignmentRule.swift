@@ -62,7 +62,7 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func locationToViolation(_ location: Location) -> StyleViolation {
-        return StyleViolation(ruleDescription: type(of: self).description,
+        return StyleViolation(ruleDescription: configuration.ruleDescription,
                               severity: configuration.severityConfiguration.severity,
                               location: location)
     }

@@ -65,7 +65,7 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
             let name = dictionary.name,
             kind == .functionMethodInstance,
             configuration.resolvedMethodNames.contains(name),
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
+            dictionary.enclosedSwiftAttributes.contains(.override),
             !dictionary.extractCallsToSuper(methodName: name).isEmpty
             else { return [] }
 

@@ -41,7 +41,7 @@ public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard SwiftVersion.current >= .four, kind == .functionMethodInstance,
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override"),
+            dictionary.enclosedSwiftAttributes.contains(.override),
             dictionary.name == "observeValue(forKeyPath:of:change:context:)",
             hasExpectedParamTypes(types: dictionary.enclosedVarParameters.parameterTypes),
             let offset = dictionary.offset else {

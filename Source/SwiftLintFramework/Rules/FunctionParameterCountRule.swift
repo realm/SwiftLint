@@ -83,8 +83,8 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return []
     }
 
-    fileprivate func allFunctionParameterCount(structure: [[String: SourceKitRepresentable]],
-                                               offset: Int, length: Int) -> Int {
+    private func allFunctionParameterCount(structure: [[String: SourceKitRepresentable]],
+                                           offset: Int, length: Int) -> Int {
         var parameterCount = 0
         for subDict in structure {
             guard let key = subDict.kind,
@@ -103,13 +103,13 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return parameterCount
     }
 
-    fileprivate func defaultFunctionParameterCount(file: File, byteOffset: Int, byteLength: Int) -> Int {
+    private func defaultFunctionParameterCount(file: File, byteOffset: Int, byteLength: Int) -> Int {
         let substring = file.contents.bridge().substringWithByteRange(start: byteOffset, length: byteLength)!
         let equals = substring.filter { $0 == "=" }
         return equals.count
     }
 
-    fileprivate func functionIsInitializer(file: File, byteOffset: Int, byteLength: Int) -> Bool {
+    private func functionIsInitializer(file: File, byteOffset: Int, byteLength: Int) -> Bool {
         guard let name = file.contents.bridge()
             .substringWithByteRange(start: byteOffset, length: byteLength),
             name.hasPrefix("init"),
@@ -124,7 +124,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
         return alphaNumericName == "init"
     }
 
-    fileprivate func functionIsOverride(attributes: [String]) -> Bool {
-        return attributes.contains("source.decl.attribute.override")
+    private func functionIsOverride(attributes: [SwiftDeclarationAttributeKind]) -> Bool {
+        return attributes.contains(.override)
     }
 }

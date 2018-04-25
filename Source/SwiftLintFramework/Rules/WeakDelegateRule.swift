@@ -53,7 +53,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if non-weak
-        let isWeak = dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.weak")
+        let isWeak = dictionary.enclosedSwiftAttributes.contains(.weak)
         guard !isWeak else { return [] }
 
         // if the declaration is inside a protocol

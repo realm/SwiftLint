@@ -34,7 +34,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        guard !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override") else {
+        guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
             return []
         }
 

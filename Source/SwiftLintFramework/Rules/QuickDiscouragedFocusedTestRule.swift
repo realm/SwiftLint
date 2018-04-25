@@ -33,7 +33,7 @@ public struct QuickDiscouragedFocusedTestRule: OptInRule, ConfigurationProviderR
             return classDict.substructure.filter {
                 return $0.name == "spec()" && $0.enclosedVarParameters.isEmpty &&
                     $0.kind.flatMap(SwiftDeclarationKind.init) == .functionMethodInstance &&
-                    $0.enclosedSwiftAttributes.contains("source.decl.attribute.override")
+                    $0.enclosedSwiftAttributes.contains(.override)
             }
         }
 

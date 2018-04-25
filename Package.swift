@@ -9,7 +9,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.13.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.20.0"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.21.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "0.7.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.0"),
     ],

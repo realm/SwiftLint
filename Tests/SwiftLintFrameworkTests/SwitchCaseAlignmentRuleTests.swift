@@ -16,28 +16,20 @@ class SwitchCaseAlignmentRuleTests: XCTestCase {
 
     func testSwitchCaseAlignmentWithoutIndentedCases() {
         let baseDescription = SwitchCaseAlignmentRule.description
+        let examples = SwitchCaseAlignmentRule.Examples(indentedCases: false)
 
-        let description = baseDescription.with(nonTriggeringExamples: SwitchCaseAlignmentRule.Examples.nonIndentedCases)
-        verifyRule(description)
-    }
+        let description = baseDescription.with(nonTriggeringExamples: examples.nonIndentedCases,
+                                               triggeringExamples: examples.indentedCases)
 
-    func testSwitchCaseAlignmentWithoutIndentedCasesAndViolation() {
-        let baseDescription = SwitchCaseAlignmentRule.description
-
-        let description = baseDescription.with(triggeringExamples: SwitchCaseAlignmentRule.Examples.indentedCases)
         verifyRule(description)
     }
 
     func testSwitchCaseAlignmentWithIndentedCases() {
         let baseDescription = SwitchCaseAlignmentRule.description
-        let description = baseDescription.with(nonTriggeringExamples: SwitchCaseAlignmentRule.Examples.indentedCases)
+        let examples = SwitchCaseAlignmentRule.Examples(indentedCases: true)
 
-        verifyRule(description, ruleConfiguration: ["indented_cases": true])
-    }
-
-    func testSwitchCaseAlignmentWithIndentedCasesAndViolation() {
-        let baseDescription = SwitchCaseAlignmentRule.description
-        let description = baseDescription.with(nonTriggeringExamples: SwitchCaseAlignmentRule.Examples.nonIndentedCases)
+        let description = baseDescription.with(nonTriggeringExamples: examples.indentedCases,
+                                               triggeringExamples: examples.nonIndentedCases)
 
         verifyRule(description, ruleConfiguration: ["indented_cases": true])
     }

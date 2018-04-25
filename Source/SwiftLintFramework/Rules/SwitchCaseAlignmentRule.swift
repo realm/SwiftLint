@@ -12,8 +12,8 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
         description: "Case statements should vertically align with the enclosing switch statement, " +
                      "or indented if configured otherwise.",
         kind: .style,
-        nonTriggeringExamples: Examples.nonIndentedCases,
-        triggeringExamples: Examples.indentedCases
+        nonTriggeringExamples: Examples(indentedCases: false).nonIndentedCases,
+        triggeringExamples: Examples(indentedCases: false).indentedCases
     )
 
     public func validate(file: File, kind: StatementKind,
@@ -51,96 +51,110 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
 
         // If indent_cases is on, the first case should be indented from its containing switch.
         if configuration.indentedCases, firstCaseCharacter <= switchCharacter {
-            return [StyleViolation(ruleDescription: type(of: self).description,
-                                   severity: configuration.severityConfiguration.severity,
-                                   location: firstCase)]
+            return caseLocations.map(locationToViolation)
         }
 
         let indentation = configuration.indentedCases ? firstCaseCharacter - switchCharacter : 0
 
         return caseLocations
             .filter { $0.character != switchCharacter + indentation }
-            .map {
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: configuration.severityConfiguration.severity,
-                               location: $0)
-            }
+            .map(locationToViolation)
+    }
+
+    private func locationToViolation(_ location: Location) -> StyleViolation {
+        return StyleViolation(ruleDescription: type(of: self).description,
+                              severity: configuration.severityConfiguration.severity,
+                              location: location)
     }
 }
 
 public extension SwitchCaseAlignmentRule {
     struct Examples {
-        static public let indentedCases = [
-            """
-            switch someBool {
-                case true:
-                    print("red")
-                case false:
-                    print("blue")
-            }
-            """,
-            """
-            if aBool {
-                switch someBool {
-                    case true:
-                        print('red')
-                    case false:
-                        print('blue')
-                }
-            }
-            """,
-            """
-            switch someInt {
-                case 0:
-                    print('Zero')
-                case 1:
-                    print('One')
-                default:
-                    print('Some other number')
-            }
-            """
-        ]
+        private let indentedCasesOption: Bool
+        private let violationMarker = "↓"
 
+        public init(indentedCases: Bool) {
+            self.indentedCasesOption = indentedCases
+        }
 
-        static public let nonIndentedCases = [
-            """
-            switch someBool {
-            case true: // case 1
-                print('red')
-            case false:
-                /*
-                case 2
-                */
-                if case let .someEnum(val) = someFunc() {
-                    print('blue')
-                }
-            }
-            enum SomeEnum {
-                case innocent
-            }
-            """,
-            """
-            if aBool {
+        public var indentedCases: [String] {
+            let violationMarker = indentedCasesOption ? "" : self.violationMarker
+
+            return [
+                """
                 switch someBool {
-                case true:
+                    \(violationMarker)case true:
+                        print("red")
+                    \(violationMarker)case false:
+                        print("blue")
+                }
+                """,
+                """
+                if aBool {
+                    switch someBool {
+                        \(violationMarker)case true:
+                            print('red')
+                        \(violationMarker)case false:
+                            print('blue')
+                    }
+                }
+                """,
+                """
+                switch someInt {
+                    \(violationMarker)case 0:
+                        print('Zero')
+                    \(violationMarker)case 1:
+                        print('One')
+                    \(violationMarker)default:
+                        print('Some other number')
+                }
+                """
+            ]
+        }
+
+        public var nonIndentedCases: [String] {
+            let violationMarker = indentedCasesOption ? self.violationMarker : ""
+
+            return [
+                """
+                switch someBool {
+                \(violationMarker)case true: // case 1
                     print('red')
-                case false:
-                    print('blue')
+                \(violationMarker)case false:
+                    /*
+                    case 2
+                    */
+                    if case let .someEnum(val) = someFunc() {
+                        print('blue')
+                    }
                 }
-            }
-            """,
-            """
-            switch someInt {
-            // comments ignored
-            case 0:
-                // zero case
-                print('Zero')
-            case 1:
-                print('One')
-            default:
-                print('Some other number')
-            }
-            """
-        ]
+                enum SomeEnum {
+                    case innocent
+                }
+                """,
+                """
+                if aBool {
+                    switch someBool {
+                    \(violationMarker)case true:
+                        print('red')
+                    \(violationMarker)case false:
+                        print('blue')
+                    }
+                }
+                """,
+                """
+                switch someInt {
+                // comments ignored
+                \(violationMarker)case 0:
+                    // zero case
+                    print('Zero')
+                \(violationMarker)case 1:
+                    print('One')
+                \(violationMarker)default:
+                    print('Some other number')
+                }
+                """
+            ]
+        }
     }
 }

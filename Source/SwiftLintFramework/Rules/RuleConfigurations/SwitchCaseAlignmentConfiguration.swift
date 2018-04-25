@@ -13,7 +13,7 @@ public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
     init() {}
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", indented cases: \(indentedCases)"
+        return severityConfiguration.consoleDescription + ", indented_cases: \(indentedCases)"
     }
 
     public mutating func apply(configuration: Any) throws {

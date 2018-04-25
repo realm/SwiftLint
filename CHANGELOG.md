@@ -144,6 +144,11 @@ The next release will require Swift 4.0 or higher to build.
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2011](https://github.com/realm/SwiftLint/issues/2011)
 
+* Add `redundant_set_access_control` rule to warn against using redundant
+  setter ACLs on variable declarations.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1869](https://github.com/realm/SwiftLint/issues/1869)
+
 #### Bug Fixes
 
 * Fix some cases where `colon` rule wouldn't be autocorrected.  

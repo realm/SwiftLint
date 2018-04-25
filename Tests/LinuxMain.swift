@@ -502,6 +502,7 @@ extension RulesTests {
         ("testRedundantDiscardableLet", testRedundantDiscardableLet),
         ("testRedundantNilCoalescing", testRedundantNilCoalescing),
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
+        ("testRedundantSetAccessControl", testRedundantSetAccessControl),
         ("testRedundantStringEnumValue", testRedundantStringEnumValue),
         ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testRequiredEnumCase", testRequiredEnumCase),

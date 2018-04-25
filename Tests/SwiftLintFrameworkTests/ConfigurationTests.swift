@@ -23,7 +23,6 @@ private extension Configuration {
     }
 }
 
-// swiftlint:disable type_body_length
 class ConfigurationTests: XCTestCase {
 
     func testInit() {
@@ -98,11 +97,7 @@ class ConfigurationTests: XCTestCase {
             "disabled_rules": ["identifier_name"],
             "whitelist_rules": whitelist
         ]
-        let combinedRulesConfigDict = enabledRulesConfigDict.reduce(disabledRulesConfigDict) {
-            var dict = $0
-            dict[$1.0] = $1.1
-            return dict
-        }
+        let combinedRulesConfigDict = enabledRulesConfigDict.reduce(into: disabledRulesConfigDict) { $0[$1.0] = $1.1 }
         var configuration = Configuration(dict: enabledRulesConfigDict)
         XCTAssertNil(configuration)
         configuration = Configuration(dict: disabledRulesConfigDict)

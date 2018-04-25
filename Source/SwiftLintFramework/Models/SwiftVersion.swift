@@ -9,24 +9,24 @@
 import Foundation
 import SourceKittenFramework
 
-struct SwiftVersion: RawRepresentable {
-    typealias RawValue = String
+public struct SwiftVersion: RawRepresentable {
+    public typealias RawValue = String
 
-    let rawValue: String
+    public let rawValue: String
 
-    init(rawValue: String) {
+    public init(rawValue: String) {
         self.rawValue = rawValue
     }
 }
 
 extension SwiftVersion: Comparable {
     // Comparable
-    static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
+    public static func < (lhs: SwiftVersion, rhs: SwiftVersion) -> Bool {
         return lhs.rawValue < rhs.rawValue
     }
 }
 
-extension SwiftVersion {
+public extension SwiftVersion {
     static let three = SwiftVersion(rawValue: "3.0.0")
     static let four = SwiftVersion(rawValue: "4.0.0")
     static let fourDotOne = SwiftVersion(rawValue: "4.1.0")

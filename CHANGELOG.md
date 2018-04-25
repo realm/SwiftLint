@@ -11,6 +11,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#898](https://github.com/realm/SwiftLint/issues/898)
 
+* Add `unavailable_function` opt-in rule to validate that functions that are
+  currently unimplemented (using a placeholder `fatalError`) are marked with
+  `@available(*, unavailable)`.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2127](https://github.com/realm/SwiftLint/issues/2127)
+
 #### Bug Fixes
 
 * None.

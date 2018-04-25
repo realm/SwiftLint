@@ -9,11 +9,11 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     public static let description = RuleDescription(
         identifier: "switch_case_alignment",
         name: "Switch and Case Statement Alignment",
-        description: "Case statements should vertically align with the enclosing switch statement, " +
+        description: "Case statements should vertically align with their enclosing switch statement, " +
                      "or indented if configured otherwise.",
         kind: .style,
-        nonTriggeringExamples: Examples(indentedCases: false).nonIndentedCases,
-        triggeringExamples: Examples(indentedCases: false).indentedCases
+        nonTriggeringExamples: Examples(indentedCases: false).nonTriggeringExamples,
+        triggeringExamples: Examples(indentedCases: false).triggeringExamples
     )
 
     public func validate(file: File, kind: StatementKind,
@@ -68,16 +68,24 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     }
 }
 
-public extension SwitchCaseAlignmentRule {
+extension SwitchCaseAlignmentRule {
     struct Examples {
         private let indentedCasesOption: Bool
         private let violationMarker = "↓"
 
-        public init(indentedCases: Bool) {
+        init(indentedCases: Bool) {
             self.indentedCasesOption = indentedCases
         }
 
-        public var indentedCases: [String] {
+        var triggeringExamples: [String] {
+            return indentedCasesOption ? nonIndentedCases : indentedCases
+        }
+
+        var nonTriggeringExamples: [String] {
+            return indentedCasesOption ? indentedCases : nonIndentedCases
+        }
+
+        private var indentedCases: [String] {
             let violationMarker = indentedCasesOption ? "" : self.violationMarker
 
             return [
@@ -112,7 +120,7 @@ public extension SwitchCaseAlignmentRule {
             ]
         }
 
-        public var nonIndentedCases: [String] {
+        private var nonIndentedCases: [String] {
             let violationMarker = indentedCasesOption ? self.violationMarker : ""
 
             return [

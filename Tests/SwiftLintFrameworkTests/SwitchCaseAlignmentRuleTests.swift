@@ -6,7 +6,7 @@
 //  Copyright © 2018 Realm. All rights reserved.
 //
 
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 class SwitchCaseAlignmentRuleTests: XCTestCase {
@@ -18,8 +18,8 @@ class SwitchCaseAlignmentRuleTests: XCTestCase {
         let baseDescription = SwitchCaseAlignmentRule.description
         let examples = SwitchCaseAlignmentRule.Examples(indentedCases: false)
 
-        let description = baseDescription.with(nonTriggeringExamples: examples.nonIndentedCases,
-                                               triggeringExamples: examples.indentedCases)
+        let description = baseDescription.with(nonTriggeringExamples: examples.nonTriggeringExamples,
+                                               triggeringExamples: examples.triggeringExamples)
 
         verifyRule(description)
     }
@@ -28,8 +28,8 @@ class SwitchCaseAlignmentRuleTests: XCTestCase {
         let baseDescription = SwitchCaseAlignmentRule.description
         let examples = SwitchCaseAlignmentRule.Examples(indentedCases: true)
 
-        let description = baseDescription.with(nonTriggeringExamples: examples.indentedCases,
-                                               triggeringExamples: examples.nonIndentedCases)
+        let description = baseDescription.with(nonTriggeringExamples: examples.nonTriggeringExamples,
+                                               triggeringExamples: examples.triggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["indented_cases": true])
     }

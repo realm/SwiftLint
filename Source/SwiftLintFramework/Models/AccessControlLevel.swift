@@ -46,19 +46,3 @@ public enum AccessControlLevel: String, CustomStringConvertible {
     }
 
 }
-
-extension AccessControlLevel: Comparable {
-    private var priority: Int {
-        switch self {
-        case .private: return 1
-        case .fileprivate: return 1
-        case .internal: return 2
-        case .public: return 3
-        case .open: return 4
-        }
-    }
-
-    public static func < (lhs: AccessControlLevel, rhs: AccessControlLevel) -> Bool {
-        return lhs.priority < rhs.priority
-    }
-}

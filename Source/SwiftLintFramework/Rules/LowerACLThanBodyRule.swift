@@ -58,7 +58,7 @@ public struct LowerACLThanParentRule: OptInRule, ConfigurationProviderRule {
             var violationOffset: Int?
             let accessibility = element.accessibility.flatMap(AccessControlLevel.init(identifier:))
                 ?? .`internal`
-            if accessibility > parentAccessibility {
+            if accessibility.priority > parentAccessibility.priority {
                 violationOffset = element.offset
             }
 
@@ -81,6 +81,18 @@ private extension SwiftDeclarationKind {
              .functionOperatorPrefix, .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass, .varGlobal,
              .varInstance, .varStatic:
             return true
+        }
+    }
+}
+
+private extension AccessControlLevel {
+    var priority: Int {
+        switch self {
+        case .private: return 1
+        case .fileprivate: return 1
+        case .internal: return 2
+        case .public: return 3
+        case .open: return 4
         }
     }
 }

@@ -138,7 +138,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `array_init` | Disabled | No | lint | 3.0.0 
 
-Prefer using Array(seq) over seq.map { $0 } to convert a sequence into an Array.
+Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.
 
 ### Examples
 

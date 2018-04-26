@@ -57,7 +57,7 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
         guard hasImplicitlyUnwrappedOptional(typeName) else { return [] }
 
         if configuration.mode == .allExceptIBOutlets {
-            let isOutlet = dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.iboutlet")
+            let isOutlet = dictionary.enclosedSwiftAttributes.contains(.iboutlet)
             if isOutlet { return [] }
         }
 

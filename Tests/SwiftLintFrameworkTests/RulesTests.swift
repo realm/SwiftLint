@@ -441,6 +441,10 @@ class RulesTests: XCTestCase {
         verifyRule(TypeBodyLengthRule.description)
     }
 
+    func testUnavailableFunction() {
+        verifyRule(UnavailableFunctionRule.description)
+    }
+
     func testUnneededBreakInSwitch() {
         verifyRule(UnneededBreakInSwitchRule.description)
     }

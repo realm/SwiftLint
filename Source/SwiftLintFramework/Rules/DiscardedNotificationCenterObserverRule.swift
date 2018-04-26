@@ -67,7 +67,7 @@ public struct DiscardedNotificationCenterObserverRule: ASTRule, ConfigurationPro
         if let lastMatch = file.match(pattern: "\\breturn\\s+", with: [.keyword], range: range).last,
             lastMatch.location == range.length - lastMatch.length,
             let lastFunction = file.structure.functions(forByteOffset: offset).last,
-            !lastFunction.enclosedSwiftAttributes.contains("source.decl.attribute.discardableResult") {
+            !lastFunction.enclosedSwiftAttributes.contains(.discardableResult) {
             return []
         }
 

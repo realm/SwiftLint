@@ -51,8 +51,7 @@ public struct ValidIBInspectableRule: ASTRule, ConfigurationProviderRule {
         }
 
         // Check if IBInspectable
-        let isIBInspectable = dictionary.enclosedSwiftAttributes.contains(
-           "source.decl.attribute.ibinspectable")
+        let isIBInspectable = dictionary.enclosedSwiftAttributes.contains(.ibinspectable)
         guard isIBInspectable else {
             return []
         }

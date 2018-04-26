@@ -296,32 +296,31 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         return false
     }
 
-    private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [String] {
+    private func parseAttributes(dictionary: [String: SourceKitRepresentable]) -> [SwiftDeclarationAttributeKind] {
         let attributes = dictionary.enclosedSwiftAttributes
-        let blacklist: Set<String> = [
-            "source.decl.attribute.__raw_doc_comment",
-            "source.decl.attribute.mutating",
-            "source.decl.attribute.nonmutating",
-            "source.decl.attribute.lazy",
-            "source.decl.attribute.dynamic",
-            "source.decl.attribute.final",
-            "source.decl.attribute.infix",
-            "source.decl.attribute.optional",
-            "source.decl.attribute.override",
-            "source.decl.attribute.postfix",
-            "source.decl.attribute.prefix",
-            "source.decl.attribute.required",
-            "source.decl.attribute.weak",
-            "source.decl.attribute.private",
-            "source.decl.attribute.fileprivate",
-            "source.decl.attribute.internal",
-            "source.decl.attribute.public",
-            "source.decl.attribute.open",
-            "source.decl.attribute.setter_access.private",
-            "source.decl.attribute.setter_access.fileprivate",
-            "source.decl.attribute.setter_access.internal",
-            "source.decl.attribute.setter_access.public",
-            "source.decl.attribute.setter_access.open"
+        let blacklist: Set<SwiftDeclarationAttributeKind> = [
+            .mutating,
+            .nonmutating,
+            .lazy,
+            .dynamic,
+            .final,
+            .infix,
+            .optional,
+            .override,
+            .postfix,
+            .prefix,
+            .required,
+            .weak,
+            .private,
+            .fileprivate,
+            .internal,
+            .public,
+            .open,
+            .setterPrivate,
+            .setterFilePrivate,
+            .setterInternal,
+            .setterPublic,
+            .setterOpen
         ]
         return attributes.filter { !blacklist.contains($0) }
     }

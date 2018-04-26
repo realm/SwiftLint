@@ -72,7 +72,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             dictionary.setterAccessibility != nil,
             let type = dictionary.typeName,
             typeIsOptional(type),
-            !dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.lazy"),
+            !dictionary.enclosedSwiftAttributes.contains(.lazy),
             let range = range(for: dictionary, file: file),
             let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
             match.location == range.location + range.length - match.length else {

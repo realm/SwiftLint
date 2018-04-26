@@ -76,8 +76,9 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
         return self["key.attribute"] as? String
     }
 
-    var enclosedSwiftAttributes: [String] {
+    var enclosedSwiftAttributes: [SwiftDeclarationAttributeKind] {
         return swiftAttributes.compactMap { $0.attribute }
+                              .compactMap(SwiftDeclarationAttributeKind.init(rawValue:))
     }
 
     var swiftAttributes: [[String: SourceKitRepresentable]] {

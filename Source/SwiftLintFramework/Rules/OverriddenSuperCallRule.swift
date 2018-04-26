@@ -74,7 +74,7 @@ public struct OverriddenSuperCallRule: ConfigurationProviderRule, ASTRule, OptIn
             let name = dictionary.name,
             kind == .functionMethodInstance,
             configuration.resolvedMethodNames.contains(name),
-            dictionary.enclosedSwiftAttributes.contains("source.decl.attribute.override")
+            dictionary.enclosedSwiftAttributes.contains(.override)
         else { return [] }
 
         let callsToSuper = dictionary.extractCallsToSuper(methodName: name)

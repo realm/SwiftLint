@@ -5,7 +5,7 @@
 //  Created by JP Simard on 12/11/16.
 //  Copyright © 2016 Realm. All rights reserved.
 //
-// Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -526,7 +526,8 @@ extension RulesTests {
         ("testSuperCall", testSuperCall),
         ("testWeakDelegate", testWeakDelegate),
         ("testXCTFailMessage", testXCTFailMessage),
-        ("testYodaCondition", testYodaCondition)
+        ("testYodaCondition", testYodaCondition),
+        ("testMissingDocs", testMissingDocs)
     ]
 }
 

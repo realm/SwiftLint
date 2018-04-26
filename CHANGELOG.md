@@ -22,6 +22,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1869](https://github.com/realm/SwiftLint/issues/1869)
 
+* Add `missing_docs` rule to warn against undocumented declarations.  
+  [Nef10](https://github.com/Nef10)
+  [#1652](https://github.com/realm/SwiftLint/issues/1652)
+
 #### Bug Fixes
 
 * None.

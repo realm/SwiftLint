@@ -63,6 +63,7 @@
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
 * [Lower ACL than parent](#lower-acl-than-parent)
 * [Mark](#mark)
+* [Missing Docs](#missing-docs)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
@@ -8640,6 +8641,76 @@ struct MarkTest {}
 ↓// MARK:- Bad mark
 extension MarkTest {}
 
+```
+
+</details>
+
+
+
+## Missing Docs
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`missing_docs` | Disabled | No | lint | 4.1.0 
+
+Declarations should be documented.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+/// docs
+public class A {
+/// docs
+public func b() {}
+}
+/// docs
+public class B: A { override public func b() {} }
+
+```
+
+```swift
+import Foundation
+/// docs
+public class B: NSObject {
+// no docs
+override public var description: String { fatalError() } }
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+public func a() {}
+
+```
+
+```swift
+// regular comment
+public func a() {}
+
+```
+
+```swift
+/* regular comment */
+public func a() {}
+
+```
+
+```swift
+/// docs
+public protocol A {
+// no docs
+var b: Int { get } }
+/// docs
+public struct C: A {
+
+public let b: Int
+}
 ```
 
 </details>

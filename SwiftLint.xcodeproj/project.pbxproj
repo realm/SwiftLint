@@ -321,6 +321,7 @@
 		F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */; };
 		F480DC831F2609D700099465 /* ConfigurationTests+ProjectMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */; };
 		F9D73F031D0CF15E00222FC4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = F9D73F021D0CF15E00222FC4 /* test.txt */; };
+		F9E691282091952E0085B53E /* MissingDocsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E691272091952E0085B53E /* MissingDocsRule.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -706,6 +707,7 @@
 		F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+BundlePath.swift"; sourceTree = "<group>"; };
 		F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+ProjectMock.swift"; sourceTree = "<group>"; };
 		F9D73F021D0CF15E00222FC4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
+		F9E691272091952E0085B53E /* MissingDocsRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1196,6 +1198,7 @@
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */,
+				F9E691272091952E0085B53E /* MissingDocsRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -1722,6 +1725,7 @@
 				29FFC37A1F15764D007E4825 /* FileLengthRuleConfiguration.swift in Sources */,
 				3B5B9FE11C444DA20009AD27 /* Array+SwiftLint.swift in Sources */,
 				8FD216CC205584AF008ED13F /* CharacterSet+SwiftLint.swift in Sources */,
+				F9E691282091952E0085B53E /* MissingDocsRule.swift in Sources */,
 				D43B04641E0620AB004016AF /* UnusedEnumeratedRule.swift in Sources */,
 				62A498561F306A7700D766E4 /* DiscouragedDirectInitConfiguration.swift in Sources */,
 				29AD4C661F6EA1D5009B66E1 /* ContainsOverFirstNotNilRule.swift in Sources */,

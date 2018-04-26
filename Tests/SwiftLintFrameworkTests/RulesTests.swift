@@ -488,4 +488,8 @@ class RulesTests: XCTestCase {
     func testYodaCondition() {
         verifyRule(YodaConditionRule.description)
     }
+
+    func testMissingDocs() {
+        verifyRule(MissingDocsRule.description)
+    }
 }

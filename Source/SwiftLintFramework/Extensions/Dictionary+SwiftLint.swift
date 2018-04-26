@@ -71,6 +71,10 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     var usr: Int? {
         return (self["key.usr"] as? Int64).flatMap({ Int($0) })
     }
+    /// Documentation length.
+    var docLength: Int? {
+        return (self["key.doclength"] as? Int64).flatMap({ Int($0) })
+    }
 
     var attribute: String? {
         return self["key.attribute"] as? String

@@ -1,5 +1,5 @@
 //
-//  ModifiersOrderTests.swift
+//  ModifierOrderTests.swift
 //  SwiftLint
 //
 //  Created by Jose Cheyo Jimenez on 06/05/17.
@@ -9,13 +9,13 @@
 @testable import SwiftLintFramework
 import XCTest
 
-class ModifiersOrderTests: XCTestCase {
+class ModifierOrderTests: XCTestCase {
 
     func testAttributeTypeMethod() {
         let descriptionOverride = RuleDescription(
-            identifier: "modifiers_order",
-            name: "Modifiers Order",
-            description: "Modifiers order should be consistent.",
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
             kind: .style,
             minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
@@ -37,14 +37,14 @@ class ModifiersOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifiers_order": ["typeMethods", "acl"]])
+                   ruleConfiguration: ["prefered_modifier_order": ["typeMethods", "acl"]])
     }
 
     func testRightOrderedModifierGroups() {
         let descriptionOverride = RuleDescription(
-            identifier: "modifiers_order",
-            name: "Modifiers Order",
-            description: "Modifiers order should be consistent.",
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
             kind: .style,
             minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
@@ -68,7 +68,7 @@ class ModifiersOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifiers_order": ["acl",
+                   ruleConfiguration: ["prefered_modifier_order": ["acl",
                                                                     "typeMethods",
                                                                     "owned",
                                                                     "setterACL",
@@ -80,9 +80,9 @@ class ModifiersOrderTests: XCTestCase {
     //swiftlint:disable function_body_length
     func testAtPrefixedGroup() {
         let descriptionOverride = RuleDescription(
-            identifier: "modifiers_order",
-            name: "Modifiers Order",
-            description: "Modifiers order should be consistent.",
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
             kind: .style,
             minSwiftVersion: .fourDotOne,
             nonTriggeringExamples: [
@@ -150,6 +150,6 @@ class ModifiersOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifiers_order": ["override", "acl", "final"]])
+                   ruleConfiguration: ["prefered_modifier_order": ["override", "acl", "final"]])
     }
 }

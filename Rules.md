@@ -63,7 +63,7 @@
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
 * [Lower ACL than parent](#lower-acl-than-parent)
 * [Mark](#mark)
-* [Modifiers Order](#modifiers-order)
+* [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
@@ -8647,13 +8647,13 @@ extension MarkTest {}
 
 
 
-## Modifiers Order
+## Modifier Order
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`modifiers_order` | Disabled | No | style | 4.1.0 
+`modifier_order` | Disabled | No | style | 4.1.0 
 
-Modifiers order should be consistent.
+Modifier order should be consistent.
 
 ### Examples
 

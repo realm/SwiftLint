@@ -1,5 +1,5 @@
 //
-//  ModifiersOrderRule.swift
+//  ModifierOrderRule.swift
 //  SwiftLint
 //
 //  Created by Jose Cheyo Jimenez on 05/06/17.
@@ -9,16 +9,16 @@
 import SourceKittenFramework
 
 // swiftlint:disable type_body_length
-public struct ModifiersOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
-    public var configuration = ModifiersOrderConfiguration(preferedModifiersOrder: [.override, .acl])
+    public var configuration = ModifierOrderConfiguration(preferedModifierOrder: [.override, .acl])
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "modifiers_order",
-        name: "Modifiers Order",
-        description: "Modifiers order should be consistent.",
+        identifier: "modifier_order",
+        name: "Modifier Order",
+        description: "Modifier order should be consistent.",
         kind: .style,
         minSwiftVersion: .fourDotOne ,
         nonTriggeringExamples: [
@@ -188,7 +188,7 @@ public struct ModifiersOrderRule: ASTRule, OptInRule, ConfigurationProviderRule 
             return []
         }
 
-        let preferedOrderOfModifiers = [.atPrefixed] + configuration.preferedModifiersOrder
+        let preferedOrderOfModifiers = [.atPrefixed] + configuration.preferedModifierOrder
         let modifierGroupsInDeclaration = findModifierGroups(in: dictionary)
         let filteredPreferedOrderOfModifiers = preferedOrderOfModifiers.filter {
             return modifierGroupsInDeclaration.contains($0)

@@ -1,5 +1,5 @@
 //
-//  ModifiersOrderConfiguration.swift
+//  ModifierOrderConfiguration.swift
 //  SwiftLint
 //
 //  Created by Jose Cheyo Jimenez on 06/04/17.
@@ -8,16 +8,16 @@
 
 import SourceKittenFramework
 
-public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
+public struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var preferedModifiersOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
+    private(set) var preferedModifierOrder = [SwiftDeclarationAttributeKind.ModifierGroup]()
 
     public var consoleDescription: String {
-        return severityConfiguration.consoleDescription + ", prefered_modifiers_order: \(preferedModifiersOrder)"
+        return severityConfiguration.consoleDescription + ", prefered_modifier_order: \(preferedModifierOrder)"
     }
 
-    public init(preferedModifiersOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = []) {
-        self.preferedModifiersOrder = preferedModifiersOrder
+    public init(preferedModifierOrder: [SwiftDeclarationAttributeKind.ModifierGroup] = []) {
+        self.preferedModifierOrder = preferedModifierOrder
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -25,8 +25,8 @@ public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        if let preferedModifiersOrder = configuration["prefered_modifiers_order"] as? [String] {
-            self.preferedModifiersOrder = try preferedModifiersOrder.map {
+        if let preferedModifierOrder = configuration["prefered_modifier_order"] as? [String] {
+            self.preferedModifierOrder = try preferedModifierOrder.map {
                 guard let modifierGroup = SwiftDeclarationAttributeKind.ModifierGroup(rawValue: $0),
                       modifierGroup != .atPrefixed else {
                     throw ConfigurationError.unknownConfiguration
@@ -41,9 +41,9 @@ public struct ModifiersOrderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    public static func == (lhs: ModifiersOrderConfiguration,
-                           rhs: ModifiersOrderConfiguration) -> Bool {
-        return lhs.preferedModifiersOrder == rhs.preferedModifiersOrder &&
+    public static func == (lhs: ModifierOrderConfiguration,
+                           rhs: ModifierOrderConfiguration) -> Bool {
+        return lhs.preferedModifierOrder == rhs.preferedModifierOrder &&
                lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

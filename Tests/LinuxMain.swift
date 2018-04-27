@@ -305,10 +305,11 @@ extension MultilineArgumentsRuleTests {
     ]
 }
 
-extension ModifiersOrderTests {
-    static var allTests: [(String, (ModifiersOrderTests) -> () throws -> Void)] = [
+extension ModifierOrderTests {
+    static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
-        ("testRightOrderedModifierGroups", testRightOrderedModifierGroups)
+        ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
+        ("testAtPrefixedGroup", testAtPrefixedGroup)
     ]
 }
 
@@ -475,7 +476,7 @@ extension RulesTests {
         ("testLegacyConstructor", testLegacyConstructor),
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
-        ("testModifiersOrder", testModifiersOrder),
+        ("testModifierOrder", testModifierOrder),
         ("testMark", testMark),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
@@ -632,7 +633,7 @@ XCTMain([
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
-    testCase(ModifiersOrderTests.allTests),
+    testCase(ModifierOrderTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),

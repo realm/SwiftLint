@@ -13,8 +13,8 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration {
     private(set) var parameters = [RuleParameter<AccessControlLevel>]()
 
     public var consoleDescription: String {
-        return parameters.group { $0.severity }.map {
-            "\($0.rawValue): \($1.map { $0.value.description }.joined(separator: ", "))"
+        return parameters.group { $0.severity }.sorted { $0.key.rawValue < $1.key.rawValue }.map {
+            "\($0.rawValue): \($1.map { $0.value.description }.sorted(by: <).joined(separator: ", "))"
         }.joined(separator: ", ")
     }
 

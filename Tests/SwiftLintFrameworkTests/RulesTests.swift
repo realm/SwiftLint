@@ -492,5 +492,4 @@ class RulesTests: XCTestCase {
     func testYodaCondition() {
         verifyRule(YodaConditionRule.description)
     }
-
 }

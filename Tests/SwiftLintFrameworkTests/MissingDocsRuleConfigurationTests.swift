@@ -26,7 +26,7 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
         let configuration = MissingDocsRuleConfiguration(
             parameters: [RuleParameter<AccessControlLevel>(severity: .error, value: .open),
                          RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
-        XCTAssertEqual(configuration.consoleDescription, "warning: public, error: open")
+        XCTAssertEqual(configuration.consoleDescription, "error: open, warning: public")
     }
 
     func testDescriptionMultipleAcls() {
@@ -45,15 +45,17 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
     func testParsingMultipleSeverities() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["warning": "public", "error": "open"])
-        XCTAssertEqual(configuration.parameters, [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-                                                  RuleParameter<AccessControlLevel>(severity: .error, value: .open)])
+        XCTAssertEqual(configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
+                       [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                        RuleParameter<AccessControlLevel>(severity: .error, value: .open)])
     }
 
     func testParsingMultipleAcls() {
         var configuration = MissingDocsRuleConfiguration()
         try? configuration.apply(configuration: ["warning": ["public", "open"]])
-        XCTAssertEqual(configuration.parameters, [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
-                                                  RuleParameter<AccessControlLevel>(severity: .warning, value: .open)])
+        XCTAssertEqual(configuration.parameters.sorted { $0.value.rawValue > $1.value.rawValue },
+                       [RuleParameter<AccessControlLevel>(severity: .warning, value: .public),
+                        RuleParameter<AccessControlLevel>(severity: .warning, value: .open)])
     }
 
     func testInvalidServety() {

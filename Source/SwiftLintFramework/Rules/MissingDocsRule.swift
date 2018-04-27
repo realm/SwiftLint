@@ -8,7 +8,7 @@
 
 import SourceKittenFramework
 
-internal extension File {
+private extension File {
     func missingDocOffsets(in dictionary: [String: SourceKitRepresentable],
                            acls: [AccessControlLevel]) -> [(Int, AccessControlLevel)] {
         if dictionary.enclosedSwiftAttributes.contains(.override) ||
@@ -32,41 +32,16 @@ internal extension File {
     }
 }
 
-public struct MissingDocsRule: OptInRule {
-    public init(configuration: Any) throws {
-        guard let dict = configuration as? [String: Any] else {
-            throw ConfigurationError.unknownConfiguration
-        }
-        parameters = try dict.flatMap { (key: String, value: Any) -> [RuleParameter<AccessControlLevel>] in
-            guard let severity = ViolationSeverity(rawValue: key) else {
-                throw ConfigurationError.unknownConfiguration
-            }
-            if let array = [String].array(of: value) {
-                return try array.map {
-                    guard let acl = AccessControlLevel(description: $0) else {
-                        throw ConfigurationError.unknownConfiguration
-                    }
-                    return RuleParameter<AccessControlLevel>(severity: severity, value: acl)
-                }
-            } else if let string = value as? String, let acl = AccessControlLevel(description: string) {
-                return [RuleParameter<AccessControlLevel>(severity: severity, value: acl)]
-            }
-            throw ConfigurationError.unknownConfiguration
-        }
-    }
-
-    public var configurationDescription: String {
-        return parameters.map({
-            "\($0.severity.rawValue): \($0.value.rawValue)"
-        }).joined(separator: ", ")
-    }
+public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
 
     public init() {
-        parameters = [RuleParameter(severity: .warning, value: .public),
-                      RuleParameter(severity: .warning, value: .open)]
+        configuration = MissingDocsRuleConfiguration(
+            parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),
+                         RuleParameter<AccessControlLevel>(severity: .warning, value: .public)])
     }
 
-    public let parameters: [RuleParameter<AccessControlLevel>]
+    public typealias ConfigurationType = MissingDocsRuleConfiguration
+    public var configuration: MissingDocsRuleConfiguration
 
     public static let description = RuleDescription(
         identifier: "missing_docs",
@@ -96,11 +71,11 @@ public struct MissingDocsRule: OptInRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let acls = parameters.map { $0.value }
+        let acls = configuration.parameters.map { $0.value }
         return file.missingDocOffsets(in: file.structure.dictionary,
                                       acls: acls).map { (offset: Int, acl: AccessControlLevel) in
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: parameters.first { $0.value == acl }?.severity ?? .warning,
+                           severity: configuration.parameters.first { $0.value == acl }?.severity ?? .warning,
                            location: Location(file: file, byteOffset: offset),
                            reason: "\(acl.description) declarations should be documented.")
         }
@@ -108,7 +83,7 @@ public struct MissingDocsRule: OptInRule {
 
     public func isEqualTo(_ rule: Rule) -> Bool {
         if let rule = rule as? MissingDocsRule {
-            return rule.parameters == parameters
+            return rule.configuration.isEqualTo(configuration)
         }
         return false
     }

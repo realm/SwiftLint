@@ -320,6 +320,8 @@
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
 		F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */; };
 		F480DC831F2609D700099465 /* ConfigurationTests+ProjectMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */; };
+		F90DBD7F2092E669002CC310 /* MissingDocsRuleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */; };
+		F90DBD812092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90DBD802092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift */; };
 		F9D73F031D0CF15E00222FC4 /* test.txt in Resources */ = {isa = PBXBuildFile; fileRef = F9D73F021D0CF15E00222FC4 /* test.txt */; };
 		F9E691282091952E0085B53E /* MissingDocsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9E691272091952E0085B53E /* MissingDocsRule.swift */; };
 /* End PBXBuildFile section */
@@ -706,6 +708,8 @@
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
 		F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+BundlePath.swift"; sourceTree = "<group>"; };
 		F480DC821F2609D700099465 /* ConfigurationTests+ProjectMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+ProjectMock.swift"; sourceTree = "<group>"; };
+		F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRuleConfiguration.swift; sourceTree = "<group>"; };
+		F90DBD802092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRuleConfigurationTests.swift; sourceTree = "<group>"; };
 		F9D73F021D0CF15E00222FC4 /* test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		F9E691272091952E0085B53E /* MissingDocsRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MissingDocsRule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -772,6 +776,7 @@
 				29FFC3781F1574FD007E4825 /* FileLengthRuleConfiguration.swift */,
 				47ACC8971E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift */,
 				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
+				F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */,
 				D93DA3CF1E699E4E00809827 /* NestingConfiguration.swift */,
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
@@ -977,6 +982,7 @@
 				3B63D46E1E1F09DF0057BE35 /* LineLengthRuleTests.swift */,
 				D4C27BFF1E12DFF500DF713E /* LinterCacheTests.swift */,
 				D4CA758E1E2DEEA500A40E8A /* NumberSeparatorRuleTests.swift */,
+				F90DBD802092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift */,
 				B25DCD0F1F7EF6DC0028A199 /* MultilineArgumentsRuleTests.swift */,
 				825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */,
 				D4246D6E1F30DB260097E658 /* PrivateOverFilePrivateRuleTests.swift */,
@@ -1121,6 +1127,7 @@
 				E88DEA7B1B098D7D00A66CB0 /* LineLengthRule.swift */,
 				D4EA77C91F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift */,
 				856651A61D6B395F005E6B29 /* MarkRule.swift */,
+				F9E691272091952E0085B53E /* MissingDocsRule.swift */,
 				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */,
 				B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */,
 				B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */,
@@ -1198,7 +1205,6 @@
 				094384FF1D5D2382009168CF /* WeakDelegateRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
 				1872906F1FC37A9B0016BEA2 /* YodaConditionRule.swift */,
-				F9E691272091952E0085B53E /* MissingDocsRule.swift */,
 			);
 			path = Rules;
 			sourceTree = "<group>";
@@ -1618,6 +1624,7 @@
 				E88198591BEA95F100333A11 /* LeadingWhitespaceRule.swift in Sources */,
 				D42B45D91F0AF5E30086B683 /* StrictFilePrivateRule.swift in Sources */,
 				1EC163521D5992D900DD2928 /* VerticalWhitespaceRule.swift in Sources */,
+				F90DBD7F2092E669002CC310 /* MissingDocsRuleConfiguration.swift in Sources */,
 				67EB4DFA1E4CC111004E9ACD /* CyclomaticComplexityConfiguration.swift in Sources */,
 				57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */,
 				D43B04691E072291004016AF /* ColonConfiguration.swift in Sources */,
@@ -1801,6 +1808,7 @@
 				E88198631BEA9A5400333A11 /* RulesTests.swift in Sources */,
 				47ACC89A1E7DCCAD0088EEB2 /* ImplicitlyUnwrappedOptionalConfigurationTests.swift in Sources */,
 				67932E2D1E54AF4B00CB0629 /* CyclomaticComplexityConfigurationTests.swift in Sources */,
+				F90DBD812092EA81002CC310 /* MissingDocsRuleConfigurationTests.swift in Sources */,
 				D4470D5B1EB76F44008A1B2E /* UnusedOptionalBindingRuleTests.swift in Sources */,
 				F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */,
 				B89F3BCE1FD5EE0200931E59 /* RequiredEnumCaseRuleTestCase.swift in Sources */,

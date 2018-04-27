@@ -297,6 +297,21 @@ extension LinterCacheTests {
     ]
 }
 
+extension MissingDocsRuleConfigurationTests {
+    static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
+        ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionSingleServety", testDescriptionSingleServety),
+        ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
+        ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
+        ("testParsingSingleServety", testParsingSingleServety),
+        ("testParsingMultipleSeverities", testParsingMultipleSeverities),
+        ("testParsingMultipleAcls", testParsingMultipleAcls),
+        ("testInvalidServety", testInvalidServety),
+        ("testInvalidAcl", testInvalidAcl),
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+    ]
+}
+
 extension MultilineArgumentsRuleTests {
     static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
         ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
@@ -469,6 +484,7 @@ extension RulesTests {
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
+        ("testMissingDocs", testMissingDocs),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
@@ -526,8 +542,7 @@ extension RulesTests {
         ("testSuperCall", testSuperCall),
         ("testWeakDelegate", testWeakDelegate),
         ("testXCTFailMessage", testXCTFailMessage),
-        ("testYodaCondition", testYodaCondition),
-        ("testMissingDocs", testMissingDocs)
+        ("testYodaCondition", testYodaCondition)
     ]
 }
 
@@ -624,6 +639,7 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),

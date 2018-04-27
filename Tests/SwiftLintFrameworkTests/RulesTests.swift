@@ -223,6 +223,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
+    func testMissingDocs() {
+        verifyRule(MissingDocsRule.description)
+    }
+
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
     }
@@ -489,7 +493,4 @@ class RulesTests: XCTestCase {
         verifyRule(YodaConditionRule.description)
     }
 
-    func testMissingDocs() {
-        verifyRule(MissingDocsRule.description)
-    }
 }

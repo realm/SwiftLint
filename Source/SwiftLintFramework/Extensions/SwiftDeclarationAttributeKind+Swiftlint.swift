@@ -26,21 +26,26 @@ public extension SwiftDeclarationAttributeKind {
         var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
             switch self {
             case .acl:
-                return [.private,
-                        .fileprivate,
-                        .internal,
-                        .public,
-                        .open]
+                return [
+                    .private,
+                    .fileprivate,
+                    .internal,
+                    .public,
+                    .open
+                ]
             case .setterACL:
-                return [.setterPrivate,
-                        .setterFilePrivate,
-                        .setterInternal,
-                        .setterPublic,
-                        .setterOpen
-                        ]
+                return [
+                    .setterPrivate,
+                    .setterFilePrivate,
+                    .setterInternal,
+                    .setterPublic,
+                    .setterOpen
+                ]
             case .mutators:
-                return [.mutating,
-                        .nonmutating]
+                return [
+                    .mutating,
+                    .nonmutating
+                ]
             case .override:
                 return [.override]
             case .owned:
@@ -58,15 +63,17 @@ public extension SwiftDeclarationAttributeKind {
             case .dynamic:
                 return [.dynamic]
             case .atPrefixed:
-                return [.objc,
-                        .nonobjc,
-                        .objcMembers,
-                        .ibaction,
-                        .iboutlet,
-                        .ibdesignable,
-                        .ibinspectable,
-                        .nsManaged,
-                        .nsCopying]
+                return [
+                    .objc,
+                    .nonobjc,
+                    .objcMembers,
+                    .ibaction,
+                    .iboutlet,
+                    .ibdesignable,
+                    .ibinspectable,
+                    .nsManaged,
+                    .nsCopying
+                ]
             }
         }
 

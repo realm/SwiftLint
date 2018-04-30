@@ -816,6 +816,22 @@ function(
     })
 ```
 
+```swift
+function(parameter: param,
+         closure: { x in
+    print(x)
+})
+```
+
+```swift
+function(parameter: param, closure: { x in
+        print(x)
+    },
+    anotherClosure: { y in
+        print(y)
+    })
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

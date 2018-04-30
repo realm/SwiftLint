@@ -1,6 +1,64 @@
 import Foundation
 import SourceKittenFramework
 
+internal struct ClosureEndIndentationRuleExamples {
+
+    static let nonTriggeringExamples = [
+        "SignalProducer(values: [1, 2, 3])\n" +
+        "   .startWithNext { number in\n" +
+        "       print(number)\n" +
+        "   }\n",
+        "[1, 2].map { $0 + 1 }\n",
+        "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
+        "   return Command(string: contents, range: range)\n" +
+        "}.flatMap { command in\n" +
+        "   return command.expand()\n" +
+        "}\n",
+        "foo(foo: bar,\n" +
+        "    options: baz) { _ in }\n",
+        "someReallyLongProperty.chainingWithAnotherProperty\n" +
+        "   .foo { _ in }",
+        "foo(abc, 123)\n" +
+        "{ _ in }\n",
+        "function(\n" +
+        "    closure: { x in\n" +
+        "        print(x)\n" +
+        "    },\n" +
+        "    anotherClosure: { y in\n" +
+        "        print(y)\n" +
+        "    })",
+        "function(parameter: param,\n" +
+        "         closure: { x in\n" +
+        "    print(x)\n" +
+        "})",
+        "function(parameter: param, closure: { x in\n" +
+        "        print(x)\n" +
+        "    },\n" +
+        "    anotherClosure: { y in\n" +
+        "        print(y)\n" +
+        "    })"
+    ]
+
+    static let triggeringExamples = [
+        "SignalProducer(values: [1, 2, 3])\n" +
+        "   .startWithNext { number in\n" +
+        "       print(number)\n" +
+        "↓}\n",
+        "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
+        "   return Command(string: contents, range: range)\n" +
+        "   ↓}.flatMap { command in\n" +
+        "   return command.expand()\n" +
+        "↓}\n",
+        "function(\n" +
+        "    closure: { x in\n" +
+        "        print(x)\n" +
+        "↓},\n" +
+        "    anotherClosure: { y in\n" +
+        "        print(y)\n" +
+        "↓})"
+    ]
+}
+
 public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -11,49 +69,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         name: "Closure End Indentation",
         description: "Closure end should have the same indentation as the line that started it.",
         kind: .style,
-        nonTriggeringExamples: [
-            "SignalProducer(values: [1, 2, 3])\n" +
-            "   .startWithNext { number in\n" +
-            "       print(number)\n" +
-            "   }\n",
-            "[1, 2].map { $0 + 1 }\n",
-            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
-            "   return Command(string: contents, range: range)\n" +
-            "}.flatMap { command in\n" +
-            "   return command.expand()\n" +
-            "}\n",
-            "foo(foo: bar,\n" +
-            "    options: baz) { _ in }\n",
-            "someReallyLongProperty.chainingWithAnotherProperty\n" +
-            "   .foo { _ in }",
-            "foo(abc, 123)\n" +
-            "{ _ in }\n",
-            "function(\n" +
-            "    closure: { x in\n" +
-            "        print(x)\n" +
-            "    },\n" +
-            "    anotherClosure: { y in\n" +
-            "        print(y)\n" +
-            "    })"
-        ],
-        triggeringExamples: [
-            "SignalProducer(values: [1, 2, 3])\n" +
-            "   .startWithNext { number in\n" +
-            "       print(number)\n" +
-            "↓}\n",
-            "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
-            "   return Command(string: contents, range: range)\n" +
-            "   ↓}.flatMap { command in\n" +
-            "   return command.expand()\n" +
-            "↓}\n",
-            "function(\n" +
-            "    closure: { x in\n" +
-            "        print(x)\n" +
-            "↓},\n" +
-            "    anotherClosure: { y in\n" +
-            "        print(y)\n" +
-            "↓})"
-        ]
+        nonTriggeringExamples: ClosureEndIndentationRuleExamples.nonTriggeringExamples,
+        triggeringExamples: ClosureEndIndentationRuleExamples.triggeringExamples
     )
 
     private static let notWhitespace = regex("[^\\s]")
@@ -64,19 +81,8 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             return []
         }
 
-        var closureArguments = filterClosureArguments(dictionary.enclosedArguments, file: file)
-
-        if hasTrailingClosure(in: file, dictionary: dictionary), !closureArguments.isEmpty {
-            closureArguments.removeLast()
-        }
-
-        let argumentViolations = closureArguments.flatMap { dictionary in
-            return validateClosureArgument(in: file, dictionary: dictionary)
-        }
-
-        let callViolations = validateCall(in: file, dictionary: dictionary)
-
-        return argumentViolations + callViolations
+        return validateArguments(in: file, dictionary: dictionary) +
+            validateCall(in: file, dictionary: dictionary)
     }
 
     private func hasTrailingClosure(in file: File,
@@ -130,6 +136,25 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
                            location: Location(file: file, byteOffset: endOffset),
                            reason: reason)
         ]
+    }
+
+    func validateArguments(in file: File,
+                           dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        guard isFirstArgumentOnNewline(dictionary, file: file) else {
+            return []
+        }
+
+        var closureArguments = filterClosureArguments(dictionary.enclosedArguments, file: file)
+
+        if hasTrailingClosure(in: file, dictionary: dictionary), !closureArguments.isEmpty {
+            closureArguments.removeLast()
+        }
+
+        let argumentViolations = closureArguments.flatMap { dictionary in
+            return validateClosureArgument(in: file, dictionary: dictionary)
+        }
+
+        return argumentViolations
     }
 
     private func validateClosureArgument(in file: File,
@@ -244,5 +269,23 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
 
             return true
         }
+    }
+
+    private func isFirstArgumentOnNewline(_ dictionary: [String: SourceKitRepresentable],
+                                          file: File) -> Bool {
+        guard
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let firstArgument = dictionary.enclosedArguments.first,
+            let firstArgumentOffset = firstArgument.offset,
+            case let offset = nameOffset + nameLength,
+            case let length = firstArgumentOffset - offset,
+            let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+            let match = regex("\\(\\s*\\n\\s*").firstMatch(in: file.contents, options: [], range: range)?.range,
+            match.location == range.location else {
+                return false
+        }
+
+        return true
     }
 }

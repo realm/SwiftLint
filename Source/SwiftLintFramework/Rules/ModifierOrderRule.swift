@@ -190,10 +190,7 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         let preferedOrderOfModifiers = [.atPrefixed] + configuration.preferedModifierOrder
         let modifierGroupsInDeclaration = findModifierGroups(in: dictionary)
-        let filteredPreferedOrderOfModifiers = preferedOrderOfModifiers.filter {
-            return modifierGroupsInDeclaration.contains($0)
-        }
-
+        let filteredPreferedOrderOfModifiers = preferedOrderOfModifiers.filter(modifierGroupsInDeclaration.contains)
         for (index, preferedGroup) in filteredPreferedOrderOfModifiers.enumerated()
             where preferedGroup != modifierGroupsInDeclaration[index] {
                 return [StyleViolation(ruleDescription: type(of: self).description,
@@ -203,44 +200,46 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
         return []
     }
-    // swiftlint:disable line_length
-    private func findModifierGroups(in dictionary: [String: SourceKitRepresentable]) -> [SwiftDeclarationAttributeKind.ModifierGroup] {
 
-        var declarationAttributes = dictionary.swiftAttributes
-        if let delcarationKinds = contains(in: dictionary,
-                                           declarationKinds: .functionMethodClass, .functionMethodStatic, .varClass, .varStatic) {
+    private func findModifierGroups(in dictionary: [String: SourceKitRepresentable])
+        -> [SwiftDeclarationAttributeKind.ModifierGroup] {
+
+            var declarationAttributes = dictionary.swiftAttributes
+        let kinds = [SwiftDeclarationKind.functionMethodClass, .functionMethodStatic, .varClass, .varStatic]
+        if let delcarationKinds = contains(in: dictionary, declarationKinds: kinds) {
             declarationAttributes.append(delcarationKinds)
         }
-
         return declarationAttributes
             .sorted {
-                guard let rhsOffset = $0["key.offset"] as? Int64,
-                      let lhsOffset = $1["key.offset"] as? Int64 else {
+                guard let rhsOffset = $0.offset, let lhsOffset = $1.offset else {
                     return false
-
                 }
                 return rhsOffset < lhsOffset
             }
             .compactMap {
-                if let attribute = $0["key.attribute"] as? String { return group(of: attribute) }
-                if $0["key.kind"] != nil { return .typeMethods }
+                if let attribute = $0.attribute { return group(of: attribute) }
+                if $0.kind != nil { return .typeMethods }
                 return nil
             }
     }
 
     private func group(of rawAttribute: String) -> SwiftDeclarationAttributeKind.ModifierGroup? {
-        let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [.acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic,
-                                                                                   .final, .typeMethods, .required, .convenience, .lazy]
+        let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
+            .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
+            .required, .convenience, .lazy
+        ]
         return allModifierGroups.first {
             $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
         }
     }
 
     private func contains(in dictionary: [String: SourceKitRepresentable],
-                          declarationKinds: SwiftDeclarationKind...) -> [String: SourceKitRepresentable]? {
+                          declarationKinds: [SwiftDeclarationKind]) -> [String: SourceKitRepresentable]? {
         guard let rawKind = dictionary.kind,
             let kind = SwiftDeclarationKind(rawValue: rawKind),
-            let offset = dictionary.offset else { return nil }
+            let offset = dictionary.offset else {
+                return nil
+        }
 
         if declarationKinds.contains(kind) {
             return ["key.kind": rawKind, "key.offset": Int64(offset)]

@@ -1,11 +1,3 @@
-//
-//  LineLengthConfigurationTests.swift
-//  SwiftLint
-//
-//  Created by Javier Hernández on 05/01/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest

@@ -1,11 +1,3 @@
-//
-//  UntypedErrorInCatchRule.swift
-//  SwiftLint
-//
-//  Created by Daniel.Metzing on 17/02/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

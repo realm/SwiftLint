@@ -1,11 +1,3 @@
-//
-//  DiscouragedOptinalCollection.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 1/10/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

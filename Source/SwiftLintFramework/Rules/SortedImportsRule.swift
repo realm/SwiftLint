@@ -1,11 +1,3 @@
-//
-//  SortedImportsRule.swift
-//  SwiftLint
-//
-//  Created by Scott Berrevoets on 12/15/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

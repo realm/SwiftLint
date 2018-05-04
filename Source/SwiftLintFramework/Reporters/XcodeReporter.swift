@@ -1,11 +1,3 @@
-//
-//  XcodeReporter.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 9/19/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 public struct XcodeReporter: Reporter {
     public static let identifier = "xcode"
     public static let isRealtime = true

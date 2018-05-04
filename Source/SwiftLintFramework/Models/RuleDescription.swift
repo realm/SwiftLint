@@ -1,11 +1,3 @@
-//
-//  RuleDescription.swift
-//  SwiftLint
-//
-//  Created by Chris Eidhof on 25/05/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 public struct RuleDescription: Equatable {
     public let identifier: String
     public let name: String

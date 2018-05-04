@@ -1,11 +1,3 @@
-//
-//  PrivateOverFilePrivateRuleTests.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 08/01/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

@@ -1,11 +1,3 @@
-//
-//  PrivateActionRule.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 11/7/17.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

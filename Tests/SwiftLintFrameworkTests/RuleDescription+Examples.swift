@@ -1,11 +1,3 @@
-//
-//  RuleDescription+Examples.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 02/07/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 
 extension RuleDescription {

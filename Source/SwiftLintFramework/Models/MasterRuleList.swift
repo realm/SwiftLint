@@ -1,10 +1,3 @@
-//
-//  MasterRuleList.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 12/28/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
 // Generated using Sourcery 0.11.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 

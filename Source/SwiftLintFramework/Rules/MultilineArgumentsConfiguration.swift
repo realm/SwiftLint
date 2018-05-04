@@ -1,11 +1,3 @@
-//
-//  MultilineArgumentsConfiguration.swift
-//  SwiftLint
-//
-//  Created by Marcel Jackwerth on 9/29/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 private enum ConfigurationKey: String {

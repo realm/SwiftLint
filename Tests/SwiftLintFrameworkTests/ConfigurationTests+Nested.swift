@@ -1,11 +1,3 @@
-//
-//  ConfigurationTests+Nested.swift
-//  SwiftLint
-//
-//  Created by Stéphane Copin on 7/24/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintFramework

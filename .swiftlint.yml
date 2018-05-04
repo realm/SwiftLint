@@ -39,15 +39,6 @@ opt_in_rules:
   - sorted_first_last
   - yoda_condition
 
-file_header:
-  required_pattern: |
-                    \/\/
-                    \/\/  .*?\.swift
-                    \/\/  SwiftLint
-                    \/\/
-                    \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2}\.
-                    \/\/  Copyright © \d{4} Realm\. All rights reserved\.
-                    \/\/
 identifier_name:
   excluded:
     - id

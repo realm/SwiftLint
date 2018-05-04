@@ -1,11 +1,3 @@
-//
-//  OperatorWhitespaceRule.swift
-//  SwiftLint
-//
-//  Created by Akira Hirakawa on 8/6/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {

@@ -1,11 +1,3 @@
-//
-//  EmptyStringRule.swift
-//  SwiftLint
-//
-//  Created by Davide Sibilio on 02/22/18.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct EmptyStringRule: ConfigurationProviderRule, OptInRule {

@@ -1,11 +1,3 @@
-//
-//  FallthroughRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 09/11/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct FallthroughRule: ConfigurationProviderRule, OptInRule {

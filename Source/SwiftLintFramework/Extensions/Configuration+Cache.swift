@@ -1,11 +1,3 @@
-//
-//  Configuration+Cache.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/22/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

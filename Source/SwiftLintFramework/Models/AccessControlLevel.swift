@@ -1,11 +1,3 @@
-//
-//  AccessControlLevel.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 23/04/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 public enum AccessControlLevel: String, CustomStringConvertible {

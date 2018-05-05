@@ -1,11 +1,3 @@
-//
-//  EmojiReporter.swift
-//  SwiftLint
-//
-//  Created by Michał Kałużny on 12/01/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct EmojiReporter: Reporter {

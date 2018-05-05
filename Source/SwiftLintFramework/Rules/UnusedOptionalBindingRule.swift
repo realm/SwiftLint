@@ -1,11 +1,3 @@
-//
-//  UnusedOptionalBindingRule.swift
-//  SwiftLint
-//
-//  Created by Rafael Machado on 1/5/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

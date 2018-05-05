@@ -1,11 +1,3 @@
-//
-//  ExplicitACLRule.swift
-//  SwiftLint
-//
-//  Created by Josep Rodriguez on 02/12/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

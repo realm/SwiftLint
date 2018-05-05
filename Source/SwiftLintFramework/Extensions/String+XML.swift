@@ -1,11 +1,3 @@
-//
-//  String+XML.swift
-//  SwiftLint
-//
-//  Created by Fabian Ehrentraud on 12/12/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 extension String {
     func escapedForXML() -> String {
         // & needs to go first, otherwise other replacements will be replaced again

@@ -1,11 +1,3 @@
-//
-//  UnavailableFunctionRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 04/09/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

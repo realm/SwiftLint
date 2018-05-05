@@ -1,11 +1,3 @@
-//
-//  File+Cache.swift
-//  SwiftLint
-//
-//  Created by Nikolaj Schumacher on 5/26/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

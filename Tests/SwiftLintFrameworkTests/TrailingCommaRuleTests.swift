@@ -1,11 +1,3 @@
-//
-//  TrailingCommaRuleTests.swift
-//  SwiftLint
-//
-//  Created by Matt Rubin on 12/22/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

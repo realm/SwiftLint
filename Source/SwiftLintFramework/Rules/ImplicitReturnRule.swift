@@ -1,11 +1,3 @@
-//
-//  ImplicitReturnRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 04/30/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

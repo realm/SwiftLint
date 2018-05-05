@@ -1,11 +1,3 @@
-//
-//  ExplicitInitRule.swift
-//  SwiftLint
-//
-//  Created by Matt Taube on 7/2/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

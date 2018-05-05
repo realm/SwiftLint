@@ -1,11 +1,3 @@
-//
-//  ControlStatementRule.swift
-//  SwiftLint
-//
-//  Created by Andrea Mazzini on 26/05/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule {

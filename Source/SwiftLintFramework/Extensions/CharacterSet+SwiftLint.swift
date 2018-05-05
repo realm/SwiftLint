@@ -1,11 +1,3 @@
-//
-//  CharacterSet+SwiftLint.swift
-//  SwiftLint
-//
-//  Created by Cyril Lashkevich on 3/11/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 
 // This is workaround for https://bugs.swift.org/browse/SR-5971

@@ -1,11 +1,3 @@
-//
-//  CommonOptions.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 2/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Commandant
 import SwiftLintFramework
 

@@ -1,11 +1,3 @@
-//
-//  ArrayInitRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 09/16/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

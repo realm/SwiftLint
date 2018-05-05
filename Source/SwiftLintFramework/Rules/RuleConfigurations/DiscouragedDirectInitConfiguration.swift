@@ -1,11 +1,3 @@
-//
-//  DiscouragedInitConfiguration.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 8/1/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

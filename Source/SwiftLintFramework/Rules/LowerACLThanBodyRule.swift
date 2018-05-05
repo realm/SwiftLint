@@ -1,11 +1,3 @@
-//
-//  LowerACLThanParentRule.swift
-//  SwiftLint
-//
-//  Created by Keith Smiley on 4/3/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

@@ -1,11 +1,3 @@
-//
-//  UnneededParenthesesInClosureArgumentRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 07/17/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

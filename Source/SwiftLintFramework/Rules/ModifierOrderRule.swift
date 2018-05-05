@@ -224,7 +224,7 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
     }
 }
 
-private extension SwiftDeclarationAttributeKind.ModifierGroup {
+fileprivate extension SwiftDeclarationAttributeKind.ModifierGroup {
     init?(rawAttribute: String) {
         let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
             .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,

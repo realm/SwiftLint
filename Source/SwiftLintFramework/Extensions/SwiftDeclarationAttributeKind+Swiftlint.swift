@@ -1,11 +1,3 @@
-//
-//  SwiftDeclarationAttributeKind+Swiftlint.swift
-//  SwiftLint
-//
-//  Created by Daniel.Metzing on 04/08/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public extension SwiftDeclarationAttributeKind {

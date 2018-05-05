@@ -321,41 +321,44 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testModifierOrderConfigurationFromDictionary() throws {
         var configuration = ModifierOrderConfiguration()
-        let config = ["severity": "warning",
-                      "prefered_modifier_order": [
-                        "override",
-                        "acl",
-                        "setterACL",
-                        "owned",
-                        "mutators",
-                        "final",
-                        "typeMethods",
-                        "required",
-                        "convenience",
-                        "lazy",
-                        "dynamic"
-                      ]
-                      ]  as [String: Any]
+        let config = [
+            "severity": "warning",
+            "preferred_modifier_order": [
+                "override",
+                "acl",
+                "setterACL",
+                "owned",
+                "mutators",
+                "final",
+                "typeMethods",
+                "required",
+                "convenience",
+                "lazy",
+                "dynamic"
+            ]
+        ]  as [String: Any]
 
         try configuration.apply(configuration: config)
+        let expected: [SwiftDeclarationAttributeKind.ModifierGroup] = [
+            .override,
+            .acl,
+            .setterACL,
+            .owned,
+            .mutators,
+            .final,
+            .typeMethods,
+            .required,
+            .convenience,
+            .lazy,
+            .dynamic
+        ]
         XCTAssert(configuration.severityConfiguration.severity == .warning)
-        XCTAssertEqual(configuration.preferedModifierOrder.count, 11)
-        XCTAssertEqual(configuration.preferedModifierOrder[0], .override)
-        XCTAssertEqual(configuration.preferedModifierOrder[1], .acl)
-        XCTAssertEqual(configuration.preferedModifierOrder[2], .setterACL)
-        XCTAssertEqual(configuration.preferedModifierOrder[3], .owned)
-        XCTAssertEqual(configuration.preferedModifierOrder[4], .mutators)
-        XCTAssertEqual(configuration.preferedModifierOrder[5], .final)
-        XCTAssertEqual(configuration.preferedModifierOrder[6], .typeMethods)
-        XCTAssertEqual(configuration.preferedModifierOrder[7], .required)
-        XCTAssertEqual(configuration.preferedModifierOrder[8], .convenience)
-        XCTAssertEqual(configuration.preferedModifierOrder[9], .lazy)
-        XCTAssertEqual(configuration.preferedModifierOrder[10], .dynamic)
+        XCTAssertTrue(configuration.preferredModifierOrder == expected)
     }
 
     func testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup() {
         var configuration = ModifierOrderConfiguration()
-        let config = ["severity": "warning", "prefered_modifier_order": ["specialize"]]  as [String: Any]
+        let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: Any]
 
         checkError(ConfigurationError.unknownConfiguration) {
             try configuration.apply(configuration: config)
@@ -364,7 +367,7 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
         var configuration = ModifierOrderConfiguration()
-        let config = ["severity": "warning", "prefered_modifier_order": ["atPrexied"]]  as [String: Any]
+        let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: Any]
         checkError(ConfigurationError.unknownConfiguration) {
             try configuration.apply(configuration: config)
         }

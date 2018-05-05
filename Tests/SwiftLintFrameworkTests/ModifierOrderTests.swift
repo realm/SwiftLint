@@ -1,11 +1,3 @@
-//
-//  ModifierOrderTests.swift
-//  SwiftLint
-//
-//  Created by Jose Cheyo Jimenez on 06/05/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 @testable import SwiftLintFramework
 import XCTest
 
@@ -37,7 +29,7 @@ class ModifierOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifier_order": ["typeMethods", "acl"]])
+                   ruleConfiguration: ["preferred_modifier_order": ["typeMethods", "acl"]])
     }
 
     func testRightOrderedModifierGroups() {
@@ -68,7 +60,7 @@ class ModifierOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifier_order": ["acl",
+                   ruleConfiguration: ["preferred_modifier_order": ["acl",
                                                                     "typeMethods",
                                                                     "owned",
                                                                     "setterACL",
@@ -150,6 +142,6 @@ class ModifierOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["prefered_modifier_order": ["override", "acl", "final"]])
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "final"]])
     }
 }

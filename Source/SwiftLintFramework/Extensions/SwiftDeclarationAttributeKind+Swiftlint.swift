@@ -15,6 +15,22 @@ public extension SwiftDeclarationAttributeKind {
         case `dynamic`
         case atPrefixed
 
+        init?(rawAttribute: String) {
+            let allModifierGroups: Set<SwiftDeclarationAttributeKind.ModifierGroup> = [
+                .acl, .setterACL, .mutators, .override, .owned, .atPrefixed, .dynamic, .final, .typeMethods,
+                .required, .convenience, .lazy
+            ]
+            let modifierGroup = allModifierGroups.first {
+                $0.swiftDeclarationAttributeKinds.contains(where: { $0.rawValue == rawAttribute })
+            }
+
+            if let modifierGroup = modifierGroup {
+                self = modifierGroup
+            } else {
+                return nil
+            }
+        }
+
         var swiftDeclarationAttributeKinds: Set<SwiftDeclarationAttributeKind> {
             switch self {
             case .acl:

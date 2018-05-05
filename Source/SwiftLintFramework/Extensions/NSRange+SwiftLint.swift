@@ -1,11 +1,3 @@
-//
-//  NSRange+SwiftLint.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 1/13/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 extension NSRange {

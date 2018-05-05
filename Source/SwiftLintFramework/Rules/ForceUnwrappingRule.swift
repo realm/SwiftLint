@@ -1,11 +1,3 @@
-//
-//  ForceUnwrappingRule.swift
-//  SwiftLint
-//
-//  Created by Benjamin Otto on 14/01/16.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

@@ -1,11 +1,3 @@
-//
-//  YamlParserTests.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 1/1/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 @testable import SwiftLintFramework
 import XCTest
 

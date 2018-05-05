@@ -1,11 +1,3 @@
-//
-//  AttributesRulesExamples.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/09/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 internal struct AttributesRuleExamples {
 
     static let nonTriggeringExamples = [

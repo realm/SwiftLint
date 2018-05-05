@@ -1,11 +1,3 @@
-//
-//  RequiredEnumCaseRuleConfiguration.swift
-//  SwiftLint
-//
-//  Created by Ritter, Donald on 9/13/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {

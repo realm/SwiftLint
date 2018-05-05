@@ -1,11 +1,3 @@
-//
-//  LegacyNSGeometryFunctionsRule.swift
-//  SwiftLint
-//
-//  Created by David Rönnqvist on 01/08/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

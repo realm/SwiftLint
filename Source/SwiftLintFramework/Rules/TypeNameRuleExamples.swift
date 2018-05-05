@@ -1,11 +1,3 @@
-//
-//  TypeNameRuleExamples.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 30/12/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 internal struct TypeNameRuleExamples {

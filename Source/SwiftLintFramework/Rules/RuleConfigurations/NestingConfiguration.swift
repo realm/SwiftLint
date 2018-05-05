@@ -1,11 +1,3 @@
-//
-//  NestingConfiguration.swift
-//  SwiftLint
-//
-//  Created by 林達也 on 03/03/16.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct NestingConfiguration: RuleConfiguration, Equatable {

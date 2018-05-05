@@ -1,11 +1,3 @@
-//
-//  FileLengthRuleTests.swift
-//  SwiftLint
-//
-//  Created by Samuel Susla on 11/07/17.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

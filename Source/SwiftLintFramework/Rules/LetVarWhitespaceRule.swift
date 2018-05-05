@@ -1,11 +1,3 @@
-//
-//  LetVarWhitespaceRule.swift
-//  SwiftLint
-//
-//  Created by David Catmull on 4/24/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

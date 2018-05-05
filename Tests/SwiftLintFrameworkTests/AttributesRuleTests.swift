@@ -1,11 +1,3 @@
-//
-//  AttributesRuleTests.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 11/30/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 @testable import SwiftLintFramework
 import XCTest
 

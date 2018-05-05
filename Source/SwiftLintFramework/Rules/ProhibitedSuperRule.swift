@@ -1,11 +1,3 @@
-//
-//  ProhibitedSuperRule.swift
-//  SwiftLint
-//
-//  Created by Aaron McTavish on 12/12/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {

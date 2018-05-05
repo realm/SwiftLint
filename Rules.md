@@ -139,7 +139,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `array_init` | Disabled | No | lint | 3.0.0 
 
-Prefer using Array(seq) than seq.map { $0 } to convert a sequence into an Array.
+Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.
 
 ### Examples
 
@@ -4678,7 +4678,7 @@ public extension Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`fallthrough` | Enabled | No | idiomatic | 3.0.0 
+`fallthrough` | Disabled | No | idiomatic | 3.0.0 
 
 Fallthrough should be avoided.
 

@@ -1,11 +1,3 @@
-//
-//  RedundantSetAccessControlRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 02/03/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

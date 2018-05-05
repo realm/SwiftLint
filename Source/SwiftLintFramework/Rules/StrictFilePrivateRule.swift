@@ -1,11 +1,3 @@
-//
-//  StrictFilePrivateRule.swift
-//  SwiftLint
-//
-//  Created by Jose Cheyo Jimenez on 05/02/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

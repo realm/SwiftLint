@@ -13,6 +13,7 @@
   [Jose Cheyo Jimenez](https://github.com/masters3d)
   [Daniel Metzing](https://github.com/dirtydanee)
   [#1472](https://github.com/realm/SwiftLint/issues/1472)
+  [#1585](https://github.com/realm/SwiftLint/issues/1585)
 
 * Validate implicit `subscript` getter in `implicit_getter` rule when using
   Swift 4.1 or later.  

@@ -8,6 +8,10 @@
 
 #### Enhancements
 
+* Add `indented_cases` support to `switch_case_alignment` rule.  
+  [Shai Mishali](https://github.com/freak4pc)
+  [#2119](https://github.com/realm/SwiftLint/issues/2119)
+
 * Add opt-in `modifier_order` to enforce the order of declaration modifiers.
   Requires Swift 4.1 or later.  
   [Jose Cheyo Jimenez](https://github.com/masters3d)

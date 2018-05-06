@@ -13581,7 +13581,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `switch_case_alignment` | Enabled | No | style | 3.0.0 
 
-Case statements should vertically align with the enclosing switch statement.
+Case statements should vertically align with their enclosing switch statement, or indented if configured otherwise.
 
 ### Examples
 
@@ -13636,9 +13636,9 @@ default:
 ```swift
 switch someBool {
     ↓case true:
-         print('red')
+        print("red")
     ↓case false:
-         print('blue')
+        print("blue")
 }
 ```
 
@@ -13647,8 +13647,8 @@ if aBool {
     switch someBool {
         ↓case true:
             print('red')
-    case false:
-        print('blue')
+        ↓case false:
+            print('blue')
     }
 }
 ```
@@ -13656,11 +13656,31 @@ if aBool {
 ```swift
 switch someInt {
     ↓case 0:
-    print('Zero')
-case 1:
-    print('One')
+        print('Zero')
+    ↓case 1:
+        print('One')
     ↓default:
-    print('Some other number')
+        print('Some other number')
+}
+```
+
+```swift
+switch someBool {
+case true:
+    print('red')
+    ↓case false:
+        print('blue')
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+        ↓case true:
+        print('red')
+    case false:
+    print('blue')
+    }
 }
 ```
 

@@ -37,6 +37,13 @@
   [Keith Smiley](https://github.com/keith)
   [#2164](https://github.com/realm/SwiftLint/pull/2164)
 
+* Fix autocorrection for several rules
+  (`empty_parentheses_with_trailing_closure`, `explicit_init`,
+  `joined_default_parameter`, `redundant_optional_initialization` and
+  `unused_closure_parameter `) when used with preprocessor macros.  
+  [John Szumski](https://github.com/jszumski)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.
@@ -141,11 +148,6 @@ The next release will require Swift 4.0 or higher to build.
 
 * Fix issue where the autocorrect done message used the plural form of "files"
   even if only 1 file changed.  
-  [John Szumski](https://github.com/jszumski)
-  
-* Fix autocorrection for several rules (`empty_parentheses_with_trailing_closure`, 
-  `explicit_init`, `joined_default_parameter`, `redundant_optional_initialization` 
-  and `unused_closure_parameter `) when used with preprocessor macros.  
   [John Szumski](https://github.com/jszumski)
 
 * Fix false positives in `attributes` rule when using Swift 4.1.  

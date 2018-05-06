@@ -62,9 +62,15 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func locationToViolation(_ location: Location) -> StyleViolation {
-        return StyleViolation(ruleDescription: configuration.ruleDescription,
+        // swiftlint:disable line_length
+        let reason = configuration.indentedCases ? "Case statements should be indented within their enclosing switch statement"
+                                                 : "Case statements should vertically align with their enclosing switch statement"
+        // swiftlint:enable line_length
+
+        return StyleViolation(ruleDescription: SwitchCaseAlignmentRule.description,
                               severity: configuration.severityConfiguration.severity,
-                              location: location)
+                              location: location,
+                              reason: reason)
     }
 }
 

@@ -54,40 +54,56 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
         self.ignoresInterpolatedStrings = options.contains(.ignoreInterpolatedStrings)
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     public mutating func apply(configuration: Any) throws {
-        if let configurationArray = [Int].array(of: configuration),
-            !configurationArray.isEmpty {
-            let warning = configurationArray[0]
-            let error = (configurationArray.count > 1) ? configurationArray[1] : nil
-            length = SeverityLevelsConfiguration(warning: warning, error: error)
-        } else if let configDict = configuration as? [String: Any], !configDict.isEmpty {
-            for (string, value) in configDict {
-                guard let key = ConfigurationKey(rawValue: string) else {
-                    throw ConfigurationError.unknownConfiguration
-                }
-                switch (key, value) {
-                case (.error, let intValue as Int):
-                    length.error = intValue
-                case (.warning, let intValue as Int):
-                    length.warning = intValue
-                case (.ignoresFunctionDeclarations, let boolValue as Bool):
-                    ignoresFunctionDeclarations = boolValue
-                case (.ignoresComments, let boolValue as Bool):
-                    ignoresComments = boolValue
-                case (.ignoresURLs, let boolValue as Bool):
-                    ignoresURLs = boolValue
-                case (.ignoresInterpolatedStrings, let boolValue as Bool):
-                    ignoresInterpolatedStrings = boolValue
-                default:
-                    throw ConfigurationError.unknownConfiguration
-                }
-            }
-        } else {
-            throw ConfigurationError.unknownConfiguration
+        if applyArray(configuration: configuration) {
+            return
         }
+        try applyDictionary(configuration: configuration)
     }
 
+    /// Applies configuration as an array of integers. Returns true if did apply.
+    private mutating func applyArray(configuration: Any) -> Bool {
+        guard let configurationArray = [Int].array(of: configuration),
+            !configurationArray.isEmpty else {
+            return false
+        }
+
+        let warning = configurationArray[0]
+        let error = (configurationArray.count > 1) ? configurationArray[1] : nil
+        length = SeverityLevelsConfiguration(warning: warning, error: error)
+        return true
+    }
+
+    /// Applies configuration as a dictionary. Throws if configuration couldn't be applied.
+    private mutating func applyDictionary(configuration: Any) throws {
+        let error = ConfigurationError.unknownConfiguration
+        guard let configDict = configuration as? [String: Any],
+            !configDict.isEmpty else {
+            throw error
+        }
+
+        for (string, value) in configDict {
+            guard let key = ConfigurationKey(rawValue: string) else {
+                throw error
+            }
+            switch (key, value) {
+            case (.error, let intValue as Int):
+                length.error = intValue
+            case (.warning, let intValue as Int):
+                length.warning = intValue
+            case (.ignoresFunctionDeclarations, let boolValue as Bool):
+                ignoresFunctionDeclarations = boolValue
+            case (.ignoresComments, let boolValue as Bool):
+                ignoresComments = boolValue
+            case (.ignoresURLs, let boolValue as Bool):
+                ignoresURLs = boolValue
+            case (.ignoresInterpolatedStrings, let boolValue as Bool):
+                ignoresInterpolatedStrings = boolValue
+            default:
+                throw error
+            }
+        }
+    }
 }
 
 public func == (lhs: LineLengthConfiguration, rhs: LineLengthConfiguration) -> Bool {

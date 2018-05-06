@@ -758,7 +758,7 @@ Closing brace with closing parenthesis should not have any whitespaces in the mi
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`closure_end_indentation` | Disabled | No | style | 3.0.0 
+`closure_end_indentation` | Disabled | Yes | style | 3.0.0 
 
 Closure end should have the same indentation as the line that started it.
 

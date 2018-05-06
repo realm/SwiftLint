@@ -21,8 +21,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
         "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
         "let example = [ 1,\n2↓,\n // 3,\n]",
-        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n",
-        "class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"
+        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
+        // Swift 4.1 or later: "class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"
         // "foo([1: \"\\(error)\"↓,])\n"
     ]
 

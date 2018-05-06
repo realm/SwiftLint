@@ -548,7 +548,6 @@ extension SourceKitCrashTests {
 
 extension SwitchCaseAlignmentRuleTests {
     static var allTests: [(String, (SwitchCaseAlignmentRuleTests) -> () throws -> Void)] = [
-        ("testSwitchCaseAlignment", testSwitchCaseAlignment),
         ("testSwitchCaseAlignmentWithoutIndentedCases", testSwitchCaseAlignmentWithoutIndentedCases),
         ("testSwitchCaseAlignmentWithIndentedCases", testSwitchCaseAlignmentWithIndentedCases)
     ]

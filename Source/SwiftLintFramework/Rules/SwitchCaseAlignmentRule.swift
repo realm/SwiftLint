@@ -84,7 +84,7 @@ extension SwitchCaseAlignmentRule {
         }
 
         var triggeringExamples: [String] {
-            return indentedCasesOption ? nonIndentedCases : indentedCases
+            return (indentedCasesOption ? nonIndentedCases : indentedCases) + invalidCases
         }
 
         var nonTriggeringExamples: [String] {
@@ -166,6 +166,31 @@ extension SwitchCaseAlignmentRule {
                     print('One')
                 \(violationMarker)default:
                     print('Some other number')
+                }
+                """
+            ]
+        }
+
+        private var invalidCases: [String] {
+            let indentation = indentedCasesOption ? "    " : ""
+
+            return [
+                """
+                switch someBool {
+                \(indentation)case true:
+                    \(indentation)print('red')
+                    \(indentation)\(violationMarker)case false:
+                        \(indentation)print('blue')
+                }
+                """,
+                """
+                if aBool {
+                    switch someBool {
+                        \(indentation)\(indentedCasesOption ? "" : violationMarker)case true:
+                        \(indentation)print('red')
+                    \(indentation)\(indentedCasesOption ? violationMarker : "")case false:
+                    \(indentation)print('blue')
+                    }
                 }
                 """
             ]

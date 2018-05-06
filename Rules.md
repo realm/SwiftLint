@@ -13664,6 +13664,26 @@ switch someInt {
 }
 ```
 
+```swift
+switch someBool {
+case true:
+    print('red')
+    ↓case false:
+        print('blue')
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+        ↓case true:
+        print('red')
+    case false:
+    print('blue')
+    }
+}
+```
+
 </details>
 
 

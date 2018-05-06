@@ -13,7 +13,11 @@ public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
-        self.indentedCases = configuration["indented_cases"] as? Bool ?? false
+        indentedCases = configuration["indented_cases"] as? Bool ?? false
+
+        if let severityString = configuration["severity"] as? String {
+            try severityConfiguration.apply(configuration: severityString)
+        }
     }
 
     public static func == (lhs: SwitchCaseAlignmentConfiguration,

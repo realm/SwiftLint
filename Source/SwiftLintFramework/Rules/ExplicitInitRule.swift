@@ -74,7 +74,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             return ranges
         }
 
-        return violationsAreUnique ? ranges.unique : ranges
+        return ranges.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

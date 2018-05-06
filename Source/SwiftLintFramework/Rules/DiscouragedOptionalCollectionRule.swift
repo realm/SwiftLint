@@ -3,9 +3,6 @@ import SourceKittenFramework
 
 public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
-    public var violationsAreUnique: Bool {
-        return false
-    }
 
     public init() {}
 

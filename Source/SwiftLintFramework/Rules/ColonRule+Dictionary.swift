@@ -19,7 +19,7 @@ extension ColonRule {
             return ranges
         }
 
-        return violationsAreUnique ? ranges.unique : ranges
+        return ranges.unique
     }
 
     internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,

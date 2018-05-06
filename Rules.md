@@ -13865,16 +13865,6 @@ switch foo {
 
 ```
 
-```swift
-class C {
- #if true
- func f() {
- let foo = [1, 2, 3↓,]
- }
- #endif
-}
-```
-
 </details>
 
 
@@ -14057,6 +14047,16 @@ TODOs and FIXMEs should be resolved.
 ```swift
 /** ↓TODO: */
 
+```
+
+```swift
+class C {
+ #if true
+ func f() {
+ let foo = [1, 2, 3↓,]
+ }
+ #endif
+}
 ```
 
 </details>

@@ -156,7 +156,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
             return violations
         }
 
-        return violationsAreUnique ? ranges.unique : ranges
+        return ranges.unique
     }
 
     public func correct(file: File) -> [Correction] {

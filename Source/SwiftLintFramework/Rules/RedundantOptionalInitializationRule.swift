@@ -100,7 +100,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             return ranges
         }
 
-        return violationsAreUnique ? ranges.unique : ranges
+        return ranges.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

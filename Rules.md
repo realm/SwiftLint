@@ -8487,6 +8487,14 @@ private struct Foo { private func bar(id: String) }
 ```
 
 ```swift
+extension Foo { public func bar() {} }
+```
+
+```swift
+private struct Foo { fileprivate func bar() {} }
+```
+
+```swift
 private func foo(id: String) {}
 ```
 
@@ -8499,19 +8507,11 @@ struct Foo { public func bar() {} }
 ```
 
 ```swift
-extension Foo { public func bar() {} }
-```
-
-```swift
 enum Foo { public func bar() {} }
 ```
 
 ```swift
 public class Foo { open func bar() }
-```
-
-```swift
-private struct Foo { fileprivate func bar() {} }
 ```
 
 ```swift

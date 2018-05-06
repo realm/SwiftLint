@@ -14049,16 +14049,6 @@ TODOs and FIXMEs should be resolved.
 
 ```
 
-```swift
-class C {
- #if true
- func f() {
- let foo = [1, 2, 3↓,]
- }
- #endif
-}
-```
-
 </details>
 
 
@@ -14230,6 +14220,16 @@ let example = [ 1,
 ```swift
 let foo = ["אבג", "αβγ", "🇺🇸"↓,]
 
+```
+
+```swift
+class C {
+ #if true
+ func f() {
+ let foo = [1, 2, 3↓,]
+ }
+ #endif
+}
 ```
 
 </details>

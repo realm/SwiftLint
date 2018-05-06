@@ -142,6 +142,11 @@ The next release will require Swift 4.0 or higher to build.
 * Fix issue where the autocorrect done message used the plural form of "files"
   even if only 1 file changed.  
   [John Szumski](https://github.com/jszumski)
+  
+* Fix autocorrection for several rules (`empty_parentheses_with_trailing_closure`, 
+  `explicit_init`, `joined_default_parameter`, `redundant_optional_initialization` 
+  and `unused_closure_parameter `) when used with preprocessor macros.  
+  [John Szumski](https://github.com/jszumski)
 
 * Fix false positives in `attributes` rule when using Swift 4.1.  
   [Marcelo Fabri](https://github.com/marcelofabri)

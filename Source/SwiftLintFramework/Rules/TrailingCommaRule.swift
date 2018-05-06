@@ -21,7 +21,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         "struct Bar {\n let foo = [1: 2, 2: 3↓, ]\n}\n",
         "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
         "let example = [ 1,\n2↓,\n // 3,\n]",
-        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
+        "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n",
+        "class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"
         // "foo([1: \"\\(error)\"↓,])\n"
     ]
 
@@ -143,7 +144,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var violations = violationRanges(in: file, dictionary: subDict)
 
             if let kindString = subDict.kind,
@@ -154,6 +155,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
             return violations
         }
+
+        return violationsAreUnique ? ranges.unique : ranges
     }
 
     public func correct(file: File) -> [Correction] {

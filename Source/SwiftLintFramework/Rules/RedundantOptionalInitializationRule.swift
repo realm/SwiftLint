@@ -43,7 +43,9 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "var myVar: Int?↓ = nil\n": "var myVar: Int?\n",
             "var myVar: Optional<Int>↓ = nil\n": "var myVar: Optional<Int>\n",
             "var myVar: Int?↓=nil\n": "var myVar: Int?\n",
-            "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n"
+            "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n",
+            "class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}":
+                "class C {\n#if true\nvar myVar: Int?\n#endif\n}"
         ]
     )
 
@@ -89,7 +91,7 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
@@ -97,6 +99,8 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
 
             return ranges
         }
+
+        return violationsAreUnique ? ranges.unique : ranges
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

@@ -44,12 +44,11 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
             return Location(file: file.path, line: line, character: char)
         }
 
-        guard let firstCase = caseLocations.first,
-              let firstCaseCharacter = firstCase.character else {
+        guard let firstCaseCharacter = caseLocations.first?.character else {
             return []
         }
 
-        // If indent_cases is on, the first case should be indented from its containing switch.
+        // If indented_cases is on, the first case should be indented from its containing switch.
         if configuration.indentedCases, firstCaseCharacter <= switchCharacter {
             return caseLocations.map(locationToViolation)
         }
@@ -62,10 +61,11 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
     }
 
     private func locationToViolation(_ location: Location) -> StyleViolation {
-        // swiftlint:disable line_length
-        let reason = configuration.indentedCases ? "Case statements should be indented within their enclosing switch statement"
-                                                 : "Case statements should vertically align with their enclosing switch statement"
-        // swiftlint:enable line_length
+        let reason = """
+                    Case statements should
+                    \(configuration.indentedCases ? " be indented within " : " vertically align with ")
+                    their enclosing switch statement.
+                    """
 
         return StyleViolation(ruleDescription: SwitchCaseAlignmentRule.description,
                               severity: configuration.severityConfiguration.severity,

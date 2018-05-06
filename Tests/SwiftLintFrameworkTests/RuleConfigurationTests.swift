@@ -321,7 +321,7 @@ class RuleConfigurationsTests: XCTestCase {
 
     func testModifierOrderConfigurationFromDictionary() throws {
         var configuration = ModifierOrderConfiguration()
-        let config = [
+        let config: [String: Any] = [
             "severity": "warning",
             "preferred_modifier_order": [
                 "override",
@@ -336,7 +336,7 @@ class RuleConfigurationsTests: XCTestCase {
                 "lazy",
                 "dynamic"
             ]
-        ]  as [String: Any]
+        ]
 
         try configuration.apply(configuration: config)
         let expected: [SwiftDeclarationAttributeKind.ModifierGroup] = [

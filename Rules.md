@@ -14222,16 +14222,6 @@ let foo = ["אבג", "αβγ", "🇺🇸"↓,]
 
 ```
 
-```swift
-class C {
- #if true
- func f() {
- let foo = [1, 2, 3↓,]
- }
- #endif
-}
-```
-
 </details>
 
 

@@ -30,6 +30,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2127](https://github.com/realm/SwiftLint/issues/2127)
 
+* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
+  indentation of non-trailing closure parameters.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
+
 * Add `redundant_set_access_control` rule to warn against using redundant
   setter ACLs on variable declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

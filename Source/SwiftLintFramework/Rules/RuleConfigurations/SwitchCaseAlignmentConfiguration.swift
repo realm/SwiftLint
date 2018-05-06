@@ -1,11 +1,3 @@
-//
-//  SwitchCaseAlignmentRuleConfiguration.swift
-//  SwiftLint
-//
-//  Created by Shai Mishali on 4/23/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var indentedCases = false

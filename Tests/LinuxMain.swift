@@ -1,10 +1,3 @@
-//
-//  LinuxMain.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 12/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
 // Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
@@ -255,6 +248,7 @@ extension LineLengthConfigurationTests {
         ("testLineLengthConfigurationInitialiserSetsIgnoresURLs", testLineLengthConfigurationInitialiserSetsIgnoresURLs),
         ("testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations", testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations),
         ("testLineLengthConfigurationInitialiserSetsIgnoresComments", testLineLengthConfigurationInitialiserSetsIgnoresComments),
+        ("testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings", testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings),
         ("testLineLengthConfigurationParams", testLineLengthConfigurationParams),
         ("testLineLengthConfigurationPartialParams", testLineLengthConfigurationPartialParams),
         ("testLineLengthConfigurationThrowsOnBadConfig", testLineLengthConfigurationThrowsOnBadConfig),
@@ -270,7 +264,9 @@ extension LineLengthRuleTests {
         ("testLineLength", testLineLength),
         ("testLineLengthWithIgnoreFunctionDeclarationsEnabled", testLineLengthWithIgnoreFunctionDeclarationsEnabled),
         ("testLineLengthWithIgnoreCommentsEnabled", testLineLengthWithIgnoreCommentsEnabled),
-        ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled)
+        ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled),
+        ("testLineLengthWithIgnoreInterpolatedStringsTrue", testLineLengthWithIgnoreInterpolatedStringsTrue),
+        ("testLineLengthWithIgnoreInterpolatedStringsFalse", testLineLengthWithIgnoreInterpolatedStringsFalse)
     ]
 }
 
@@ -297,19 +293,19 @@ extension LinterCacheTests {
     ]
 }
 
-extension MultilineArgumentsRuleTests {
-    static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
-        ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
-        ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
-        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
-    ]
-}
-
 extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
         ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
         ("testAtPrefixedGroup", testAtPrefixedGroup)
+    ]
+}
+
+extension MultilineArgumentsRuleTests {
+    static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
+        ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
+        ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
+        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
     ]
 }
 
@@ -403,7 +399,10 @@ extension RuleConfigurationsTests {
         ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments", testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
         ("testTrailingWhitespaceConfigurationCompares", testTrailingWhitespaceConfigurationCompares),
         ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration", testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
-        ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary)
+        ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
+        ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
+        ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
+        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup)
     ]
 }
 
@@ -476,8 +475,8 @@ extension RulesTests {
         ("testLegacyConstructor", testLegacyConstructor),
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
-        ("testModifierOrder", testModifierOrder),
         ("testMark", testMark),
+        ("testModifierOrder", testModifierOrder),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
@@ -640,8 +639,8 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
-    testCase(MultilineArgumentsRuleTests.allTests),
     testCase(ModifierOrderTests.allTests),
+    testCase(MultilineArgumentsRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),

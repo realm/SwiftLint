@@ -1,11 +1,3 @@
-//
-//  SwitchCaseAlignmentRuleTests.swift
-//  SwiftLint
-//
-//  Created by Shai Mishali on 4/24/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 @testable import SwiftLintFramework
 import XCTest
 

@@ -318,4 +318,58 @@ class RuleConfigurationsTests: XCTestCase {
             XCTFail("Failed to apply configuration for \(conf3)")
         }
     }
+
+    func testModifierOrderConfigurationFromDictionary() throws {
+        var configuration = ModifierOrderConfiguration()
+        let config: [String: Any] = [
+            "severity": "warning",
+            "preferred_modifier_order": [
+                "override",
+                "acl",
+                "setterACL",
+                "owned",
+                "mutators",
+                "final",
+                "typeMethods",
+                "required",
+                "convenience",
+                "lazy",
+                "dynamic"
+            ]
+        ]
+
+        try configuration.apply(configuration: config)
+        let expected: [SwiftDeclarationAttributeKind.ModifierGroup] = [
+            .override,
+            .acl,
+            .setterACL,
+            .owned,
+            .mutators,
+            .final,
+            .typeMethods,
+            .required,
+            .convenience,
+            .lazy,
+            .dynamic
+        ]
+        XCTAssert(configuration.severityConfiguration.severity == .warning)
+        XCTAssertTrue(configuration.preferredModifierOrder == expected)
+    }
+
+    func testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup() {
+        var configuration = ModifierOrderConfiguration()
+        let config = ["severity": "warning", "preferred_modifier_order": ["specialize"]]  as [String: Any]
+
+        checkError(ConfigurationError.unknownConfiguration) {
+            try configuration.apply(configuration: config)
+        }
+    }
+
+    func testModifierOrderConfigurationThrowsOnNonModifiableGroup() {
+        var configuration = ModifierOrderConfiguration()
+        let config = ["severity": "warning", "preferred_modifier_order": ["atPrefixed"]]  as [String: Any]
+        checkError(ConfigurationError.unknownConfiguration) {
+            try configuration.apply(configuration: config)
+        }
+    }
 }

@@ -215,6 +215,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
+    func testModifierOrder() {
+        verifyRule(ModifierOrderRule.description)
+    }
+
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
     }

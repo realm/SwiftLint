@@ -8,8 +8,14 @@
 
 #### Enhancements
 
+* Add opt-in `modifier_order` to enforce the order of declaration modifiers.
+  Requires Swift 4.1 or later.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#1472](https://github.com/realm/SwiftLint/issues/1472)
+
 * Validate implicit `subscript` getter in `implicit_getter` rule when using
-  Swift 4.1.  
+  Swift 4.1 or later.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#898](https://github.com/realm/SwiftLint/issues/898)
 

@@ -62,8 +62,8 @@ public struct SwitchCaseAlignmentRule: ASTRule, ConfigurationProviderRule {
 
     private func locationToViolation(_ location: Location) -> StyleViolation {
         let reason = """
-                    Case statements should
-                    \(configuration.indentedCases ? " be indented within " : " vertically align with ")
+                    Case statements should \
+                    \(configuration.indentedCases ? "be indented within" : "vertically align with") \
                     their enclosing switch statement.
                     """
 

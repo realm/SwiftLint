@@ -31,6 +31,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1869](https://github.com/realm/SwiftLint/issues/1869)
 
+* Add a new `ignores_interpolated_strings` config parameter to the `line_length`
+  rule to ignore lines that include interpolated strings from this rule.  
+  [Michael Gray](https://github.com/mishagray)
+  [#2100](https://github.com/realm/SwiftLint/pull/2100)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  
@@ -62,10 +67,6 @@ The next release will require Swift 4.0 or higher to build.
 * Add `UIOffsetMake` to `legacy_constructor` rule.  
   [Nealon Young](https://github.com/nealyoung)
   [#2126](https://github.com/realm/SwiftLint/issues/2126)
-* Add a new `ignores_interpolated_strings` config parameter to the `line_length` rule
-to interpolated strings from this rule
-[Michael Gray](https://github.com/mishagray)
-[#2100](https://github.com/realm/SwiftLint/pull/2100)
 
 * Add a new `excluded` config parameter to the `explicit_type_interface` rule
   to exempt certain types of variables from the rule.  

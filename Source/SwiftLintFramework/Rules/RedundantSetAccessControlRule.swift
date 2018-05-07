@@ -17,7 +17,12 @@ public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule 
             "private(set) public var foo: Int",
             "public let foo: Int",
             "public var foo: Int",
-            "var foo: Int"
+            "var foo: Int",
+            """
+            private final class A {
+                private(set) var value: Int
+            }
+            """
         ],
         triggeringExamples: [
             "↓private(set) private var foo: Int",
@@ -27,6 +32,16 @@ public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule 
             """
             open class Foo {
                 ↓open(set) open var bar: Int
+            }
+            """,
+            """
+            class A {
+                ↓internal(set) var value: Int
+            }
+            """,
+            """
+            fileprivate class A {
+                ↓fileprivate(set) var value: Int
             }
             """
         ]
@@ -45,6 +60,22 @@ public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule 
 
         guard let offset = explicitSetACL?.offset else {
             return []
+        }
+
+        let aclAttributes: Set<SwiftDeclarationAttributeKind> = [.private, .fileprivate, .internal, .public, .open]
+        let explicitACL = dictionary.swiftAttributes.first { dict in
+            guard let attribute = dict.attribute.flatMap(SwiftDeclarationAttributeKind.init) else {
+                return false
+            }
+
+            return aclAttributes.contains(attribute)
+        }
+
+        // if it's an inferred `private`, it means the variable is actually inside a fileprivate structure
+        if dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)) == .private,
+            explicitACL?.offset == nil,
+            dictionary.setterAccessibility.flatMap(AccessControlLevel.init(identifier:)) == .private {
+                return []
         }
 
         return [

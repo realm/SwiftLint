@@ -12506,6 +12506,12 @@ public var foo: Int
 var foo: Int
 ```
 
+```swift
+private final class A {
+    private(set) var value: Int
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -12529,6 +12535,18 @@ var foo: Int
 ```swift
 open class Foo {
     ↓open(set) open var bar: Int
+}
+```
+
+```swift
+class A {
+    ↓internal(set) var value: Int
+}
+```
+
+```swift
+fileprivate class A {
+    ↓fileprivate(set) var value: Int
 }
 ```
 

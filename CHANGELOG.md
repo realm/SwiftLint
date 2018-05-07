@@ -11,6 +11,10 @@
 
 #### Enhancements
 
+* Add optional filename verification to the `file_header` rule.  
+  [Anders Hasselqvist](https://github.com/nevil)
+  [#1079](https://github.com/realm/SwiftLint/issues/1079)
+
 * Updates the `untyped_error_in_catch` rule to support autocorrection.  
   [Daniel Metzing](https://github.com/dirtydanee)
 

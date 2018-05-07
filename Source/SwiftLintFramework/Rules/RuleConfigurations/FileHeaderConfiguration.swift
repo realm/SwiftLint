@@ -3,7 +3,7 @@ import Foundation
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private var requiredString: String?
-    private var requiredPattern: String?
+    private(set) var requiredPattern: String?
     private var forbiddenString: String?
     private var forbiddenPattern: String?
 
@@ -27,6 +27,9 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
+    /// Used for unit tests of SWIFTLINT_CURRENT_FILENAME when File.path is nil
+    internal let filenameForTest: String = "Default.swift"
+
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
     public var consoleDescription: String {
@@ -34,6 +37,7 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         let requiredPatternDescription = requiredPattern ?? "None"
         let forbiddenStringDescription = forbiddenString ?? "None"
         let forbiddenPatternDescription = forbiddenPattern ?? "None"
+
         return severityConfiguration.consoleDescription +
             ", required_string: \(requiredStringDescription)" +
             ", required_pattern: \(requiredPatternDescription)" +
@@ -54,6 +58,8 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
                                                     options: [.ignoreMetacharacters])
         } else if let requiredPattern = configuration["required_pattern"] {
             self.requiredPattern = requiredPattern
+            // For requiredPattern the regex might be recompiled in FileHeaderRule
+            // as it could contain the SWIFTLINT_CURRENT_FILENAME placeholder.
             requiredRegex = try .cached(pattern: requiredPattern)
         }
 

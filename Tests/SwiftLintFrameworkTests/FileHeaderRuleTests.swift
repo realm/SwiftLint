@@ -120,4 +120,27 @@ class FileHeaderRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
                    skipCommentTests: true, testMultiByteOffsets: false)
     }
+
+    func testFileHeaderWithRequiredPatternAndFilenamePlaceholder() {
+        let nonTriggeringExamples = [
+            "// Default.swift\n// Copyright © 2016 Realm",
+            "//\n// Default.swift\n// Copyright © 2016 Realm"
+        ]
+
+        let triggeringExamples = [
+            "↓// Default.Swift\n// Copyright © 2016 Realm",
+            "↓// ADefault.swift\n// Copyright © 2016 Realm",
+            "↓//\n// Default.Swift\n// Copyright © 2016 Realm",
+            "↓// Copyright © 2016 Realm\n// Default.swift",
+            "↓//\n// Copyright © 2016 Realm\n// Default.swift"
+        ]
+
+        let description = FileHeaderRule.description
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description,
+                   ruleConfiguration: ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4} Realm"],
+                   stringDoesntViolate: false, skipCommentTests: true, testMultiByteOffsets: false)
+    }
 }

@@ -48,6 +48,11 @@
   [Michael Gray](https://github.com/mishagray)
   [#2100](https://github.com/realm/SwiftLint/pull/2100)
 
+* Add `empty_xctest_method` opt-in rule which warns against empty
+  XCTest methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#2190](https://github.com/realm/SwiftLint/pull/2190)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

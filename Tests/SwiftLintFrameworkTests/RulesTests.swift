@@ -102,6 +102,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyStringRule.description)
     }
 
+    func testEmptyXCTestMethods() {
+        verifyRule(EmptyXCTestMethodRule.description)
+    }
+
     func testExplicitACL() {
         verifyRule(ExplicitACLRule.description)
     }

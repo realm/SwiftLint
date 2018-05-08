@@ -74,6 +74,7 @@
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
 * [No Extension Access Modifier](#no-extension-access-modifier)
+* [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
 * [Number Separator](#number-separator)
@@ -10292,6 +10293,96 @@ extension String {}
 
 ```swift
 ↓fileprivate extension String {}
+```
+
+</details>
+
+
+
+## No Fallthrough Only
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`no_fallthrough_only` | Disabled | No | idiomatic | 3.0.0 
+
+Fallthroughs can only be used if the `case` contains at least one other statement.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch {
+case 1:
+    var a = 1
+    fallthrough
+case 2:
+    var a = 2
+}
+```
+
+```swift
+switch {
+case "a":
+    var one = 1
+    var two = 2
+    fallthrough
+case "b": /* comment */
+    var three = 3
+}
+```
+
+```swift
+switch {
+case 1:
+   let one = 1
+case 2:
+   // comment
+   var two = 2
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch {
+case 1:
+    fallthrough
+case 2:
+    var a = 1
+}
+```
+
+```swift
+switch {
+case 1:
+    var a = 2
+case 2:
+    fallthrough
+case 3:
+    var a = 3
+}
+```
+
+```swift
+switch {
+case 1: // comment
+    fallthrough
+}
+```
+
+```swift
+switch {
+case 1: /* multi
+    line
+    comment */
+    fallthrough
+case 2:
+    var a = 2
+}
 ```
 
 </details>

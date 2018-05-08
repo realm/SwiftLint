@@ -332,6 +332,7 @@
 		E8BE1FCC1E07687400F781C7 /* Yams.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = E8BE1FCB1E07687400F781C7 /* Yams.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */; };
 		E8EA41171C2D1DBE004F9930 /* CheckstyleReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */; };
+		EDD0096920A3AC2F001CFD6C /* NoFallthroughRuleOnlyRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED3ACD1A20A26ED90054C1A1 /* NoFallthroughRuleOnlyRule.swift */; };
 		F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */; };
 		F480DC7F1F26090000099465 /* ConfigurationTests+Nested.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */; };
 		F480DC811F2609AB00099465 /* XCTestCase+BundlePath.swift in Sources */ = {isa = PBXBuildFile; fileRef = F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */; };
@@ -733,6 +734,7 @@
 		E8BE1FCB1E07687400F781C7 /* Yams.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yams.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8C0DFCC1AD349DB007EE3D4 /* SWXMLHash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SWXMLHash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E8EA41161C2D1DBE004F9930 /* CheckstyleReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckstyleReporter.swift; sourceTree = "<group>"; };
+		ED3ACD1A20A26ED90054C1A1 /* NoFallthroughRuleOnlyRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoFallthroughRuleOnlyRule.swift; sourceTree = "<group>"; };
 		F22314AE1D4F7C77009AD165 /* LegacyNSGeometryFunctionsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyNSGeometryFunctionsRule.swift; sourceTree = "<group>"; };
 		F480DC7E1F26090000099465 /* ConfigurationTests+Nested.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ConfigurationTests+Nested.swift"; sourceTree = "<group>"; };
 		F480DC801F2609AB00099465 /* XCTestCase+BundlePath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+BundlePath.swift"; sourceTree = "<group>"; };
@@ -1175,6 +1177,7 @@
 				E88DEA951B099CF200A66CB0 /* NestingRule.swift */,
 				D4DAE8BB1DE14E8F00B0AE7A /* NimbleOperatorRule.swift */,
 				1E18574A1EADBA51004F89F7 /* NoExtensionAccessModifierRule.swift */,
+				ED3ACD1A20A26ED90054C1A1 /* NoFallthroughRuleOnlyRule.swift */,
 				827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */,
 				D4DABFD61E2C23B1009617B6 /* NotificationCenterDetachmentRule.swift */,
 				D4DABFD81E2C59BC009617B6 /* NotificationCenterDetachmentRuleExamples.swift */,
@@ -1582,6 +1585,7 @@
 				C26330382073DAC500D7B4FD /* LowerACLThanParentRule.swift in Sources */,
 				78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */,
 				E80E018D1B92C0F60078EB70 /* Command.swift in Sources */,
+				EDD0096920A3AC2F001CFD6C /* NoFallthroughRuleOnlyRule.swift in Sources */,
 				E88198571BEA953300333A11 /* ForceCastRule.swift in Sources */,
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,
 				D286EC021E02DF6F0003CF72 /* SortedImportsRule.swift in Sources */,

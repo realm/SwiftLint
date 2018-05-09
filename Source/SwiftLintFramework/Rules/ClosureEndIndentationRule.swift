@@ -43,7 +43,9 @@ extension ClosureEndIndentationRule: CorrectableRule {
             !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
         }
 
-        guard !allViolations.isEmpty else { return [] }
+        guard !allViolations.isEmpty else {
+            return []
+        }
 
         var correctedContents = file.contents
         var correctedLocations: [Int] = []
@@ -212,7 +214,7 @@ extension ClosureEndIndentationRule {
             closureArguments.removeLast()
         }
 
-        let argumentViolations = closureArguments.flatMap { dictionary in
+        let argumentViolations = closureArguments.compactMap { dictionary in
             return validateClosureArgument(in: file, dictionary: dictionary)
         }
 

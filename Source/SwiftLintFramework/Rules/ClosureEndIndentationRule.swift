@@ -1,65 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-internal struct ClosureEndIndentationRuleExamples {
-
-    static let nonTriggeringExamples = [
-        "SignalProducer(values: [1, 2, 3])\n" +
-        "   .startWithNext { number in\n" +
-        "       print(number)\n" +
-        "   }\n",
-        "[1, 2].map { $0 + 1 }\n",
-        "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
-        "   return Command(string: contents, range: range)\n" +
-        "}.flatMap { command in\n" +
-        "   return command.expand()\n" +
-        "}\n",
-        "foo(foo: bar,\n" +
-        "    options: baz) { _ in }\n",
-        "someReallyLongProperty.chainingWithAnotherProperty\n" +
-        "   .foo { _ in }",
-        "foo(abc, 123)\n" +
-        "{ _ in }\n",
-        "function(\n" +
-        "    closure: { x in\n" +
-        "        print(x)\n" +
-        "    },\n" +
-        "    anotherClosure: { y in\n" +
-        "        print(y)\n" +
-        "    })",
-        "function(parameter: param,\n" +
-        "         closure: { x in\n" +
-        "    print(x)\n" +
-        "})",
-        "function(parameter: param, closure: { x in\n" +
-        "        print(x)\n" +
-        "    },\n" +
-        "    anotherClosure: { y in\n" +
-        "        print(y)\n" +
-        "    })"
-    ]
-
-    static let triggeringExamples = [
-        "SignalProducer(values: [1, 2, 3])\n" +
-        "   .startWithNext { number in\n" +
-        "       print(number)\n" +
-        "↓}\n",
-        "return match(pattern: pattern, with: [.comment]).flatMap { range in\n" +
-        "   return Command(string: contents, range: range)\n" +
-        "   ↓}.flatMap { command in\n" +
-        "   return command.expand()\n" +
-        "↓}\n",
-        "function(\n" +
-        "    closure: { x in\n" +
-        "        print(x)\n" +
-        "↓},\n" +
-        "    anotherClosure: { y in\n" +
-        "        print(y)\n" +
-        "↓})"
-    ]
-}
-
-public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -70,19 +12,139 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         description: "Closure end should have the same indentation as the line that started it.",
         kind: .style,
         nonTriggeringExamples: ClosureEndIndentationRuleExamples.nonTriggeringExamples,
-        triggeringExamples: ClosureEndIndentationRuleExamples.triggeringExamples
+        triggeringExamples: ClosureEndIndentationRuleExamples.triggeringExamples,
+        corrections: ClosureEndIndentationRuleExamples.corrections
     )
 
-    private static let notWhitespace = regex("[^\\s]")
+    fileprivate static let notWhitespace = regex("[^\\s]")
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
+        return violations(in: file).map { violation in
+            return styleViolation(for: violation, in: file)
+        }
+    }
+
+    private func styleViolation(for violation: Violation, in file: File) -> StyleViolation {
+        let reason = "Closure end should have the same indentation as the line that started it. " +
+                     "Expected \(violation.indentationRanges.expected.length), " +
+                     "got \(violation.indentationRanges.actual.length)."
+
+        return StyleViolation(ruleDescription: type(of: self).description,
+                              severity: configuration.severity,
+                              location: Location(file: file, byteOffset: violation.endOffset),
+                              reason: reason)
+    }
+
+}
+
+extension ClosureEndIndentationRule: CorrectableRule {
+    public func correct(file: File) -> [Correction] {
+        let allViolations = violations(in: file).reversed().filter {
+            !file.ruleEnabled(violatingRanges: [$0.range], for: self).isEmpty
+        }
+
+        guard !allViolations.isEmpty else {
+            return []
+        }
+
+        var correctedContents = file.contents
+        var correctedLocations: [Int] = []
+
+        let actualLookup = actualViolationLookup(for: allViolations)
+
+        for violation in allViolations {
+            let expected = actualLookup(violation).indentationRanges.expected
+            let actual = violation.indentationRanges.actual
+            if correct(contents: &correctedContents, expected: expected, actual: actual) {
+                correctedLocations.append(actual.location)
+            }
+        }
+
+        var corrections = correctedLocations.map {
+            return Correction(ruleDescription: type(of: self).description,
+                              location: Location(file: file, characterOffset: $0))
+        }
+
+        file.write(correctedContents)
+
+        // Re-correct to catch cascading indentation from the first round.
+        corrections += correct(file: file)
+
+        return corrections
+    }
+
+    private func correct(contents: inout String, expected: NSRange, actual: NSRange) -> Bool {
+        guard let actualIndices = contents.nsrangeToIndexRange(actual) else {
+            return false
+        }
+
+        let regex = ClosureEndIndentationRule.notWhitespace
+        if regex.firstMatch(in: contents, options: [], range: actual) != nil {
+            var correction = "\n"
+            correction.append(contents.substring(from: expected.location, length: expected.length))
+            contents.insert(contentsOf: correction, at: actualIndices.upperBound)
+        } else {
+            let correction = contents.substring(from: expected.location, length: expected.length)
+            contents = contents.replacingCharacters(in: actualIndices, with: correction)
+        }
+
+        return true
+    }
+
+    private func actualViolationLookup(for violations: [Violation]) -> (Violation) -> Violation {
+        let lookup = violations.reduce(into: [NSRange: Violation](), { result, violation in
+            result[violation.indentationRanges.actual] = violation
+        })
+
+        func actualViolation(for violation: Violation) -> Violation {
+            guard let actual = lookup[violation.indentationRanges.expected] else { return violation }
+            return actualViolation(for: actual)
+        }
+
+        return actualViolation
+    }
+}
+
+extension ClosureEndIndentationRule {
+
+    fileprivate struct Violation {
+        var location: Location
+        var indentationRanges: (expected: NSRange, actual: NSRange)
+        var endOffset: Int
+        var range: NSRange
+    }
+
+    fileprivate func violations(in file: File) -> [Violation] {
+        return violations(in: file, dictionary: file.structure.dictionary)
+    }
+
+    private func violations(in file: File,
+                            dictionary: [String: SourceKitRepresentable]) -> [Violation] {
+        return dictionary.substructure.flatMap { subDict -> [Violation] in
+            var subViolations = violations(in: file, dictionary: subDict)
+
+            if let kindString = subDict.kind,
+                let kind = SwiftExpressionKind(rawValue: kindString) {
+                subViolations += violations(in: file, of: kind, dictionary: subDict)
+            }
+
+            return subViolations
+        }
+    }
+
+    private func violations(in file: File, of kind: SwiftExpressionKind,
+                            dictionary: [String: SourceKitRepresentable]) -> [Violation] {
         guard kind == .call else {
             return []
         }
 
-        return validateArguments(in: file, dictionary: dictionary) +
-            validateCall(in: file, dictionary: dictionary)
+        var violations = validateArguments(in: file, dictionary: dictionary)
+
+        if let callViolation = validateCall(in: file, dictionary: dictionary) {
+            violations.append(callViolation)
+        }
+
+        return violations
     }
 
     private func hasTrailingClosure(in file: File,
@@ -99,7 +161,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
     }
 
     private func validateCall(in file: File,
-                              dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                              dictionary: [String: SourceKitRepresentable]) -> Violation? {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset,
             let length = dictionary.length,
@@ -116,7 +178,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
             !containsSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
-                return []
+                return nil
         }
 
         let range = file.lines[startLine - 1].range
@@ -125,21 +187,23 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
             expected != actual  else {
-                return []
+                return nil
         }
 
-        let reason = "Closure end should have the same indentation as the line that started it. " +
-                     "Expected \(expected), got \(actual)."
-        return [
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: endOffset),
-                           reason: reason)
-        ]
+        var expectedRange = range
+        expectedRange.length = expected
+
+        var actualRange = file.lines[endLine - 1].range
+        actualRange.length = actual
+
+        return Violation(location: Location(file: file, byteOffset: endOffset),
+                         indentationRanges: (expected: expectedRange, actual: actualRange),
+                         endOffset: endOffset,
+                         range: NSRange(location: offset, length: length))
     }
 
-    func validateArguments(in file: File,
-                           dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    private func validateArguments(in file: File,
+                                   dictionary: [String: SourceKitRepresentable]) -> [Violation] {
         guard isFirstArgumentOnNewline(dictionary, file: file) else {
             return []
         }
@@ -150,7 +214,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             closureArguments.removeLast()
         }
 
-        let argumentViolations = closureArguments.flatMap { dictionary in
+        let argumentViolations = closureArguments.compactMap { dictionary in
             return validateClosureArgument(in: file, dictionary: dictionary)
         }
 
@@ -158,7 +222,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
     }
 
     private func validateClosureArgument(in file: File,
-                                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+                                         dictionary: [String: SourceKitRepresentable]) -> Violation? {
         let contents = file.contents.bridge()
         guard let offset = dictionary.offset,
             let length = dictionary.length,
@@ -175,7 +239,7 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
             let (bodyOffsetLine, _) = contents.lineAndCharacter(forByteOffset: nameEndPosition),
             startLine != endLine, bodyOffsetLine != endLine,
             !isSingleLineClosure(dictionary: dictionary, endPosition: endOffset, file: file) else {
-                return []
+                return nil
         }
 
         let range = file.lines[startLine - 1].range
@@ -184,17 +248,19 @@ public struct ClosureEndIndentationRule: ASTRule, OptInRule, ConfigurationProvid
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
             expected != actual  else {
-                return []
+                return nil
         }
 
-        let reason = "Closure end should have the same indentation as the line that started it. " +
-                     "Expected \(expected), got \(actual)."
-        return [
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, byteOffset: endOffset),
-                           reason: reason)
-        ]
+        var expectedRange = range
+        expectedRange.length = expected
+
+        var actualRange = file.lines[endLine - 1].range
+        actualRange.length = actual
+
+        return Violation(location: Location(file: file, byteOffset: endOffset),
+                         indentationRanges: (expected: expectedRange, actual: actualRange),
+                         endOffset: endOffset,
+                         range: NSRange(location: offset, length: length))
     }
 
     private func startOffset(forDictionary dictionary: [String: SourceKitRepresentable], file: File) -> Int? {

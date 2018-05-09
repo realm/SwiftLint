@@ -41,6 +41,7 @@
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
 		31F1B6CC1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */; };
 		37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */; };
+		3A915E5B20A1543700519F3A /* ClosureEndIndentationRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */; };
 		3B034B6E1E0BE549005D49A9 /* LineLengthConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */; };
 		3B0B14541C505D6300BE82F7 /* SeverityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */; };
 		3B12C9C11C3209CB000B423F /* test.yml in Resources */ = {isa = PBXBuildFile; fileRef = 3B12C9BF1C3209AC000B423F /* test.yml */; };
@@ -411,6 +412,7 @@
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
 		31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRule.swift; sourceTree = "<group>"; };
 		37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+SwiftLint.swift"; sourceTree = "<group>"; };
+		3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClosureEndIndentationRuleExamples.swift; path = RuleConfigurations/ClosureEndIndentationRuleExamples.swift; sourceTree = "<group>"; };
 		3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineLengthConfiguration.swift; sourceTree = "<group>"; };
 		3B0B14531C505D6300BE82F7 /* SeverityConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeverityConfiguration.swift; sourceTree = "<group>"; };
 		3B12C9BF1C3209AC000B423F /* test.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.yml; sourceTree = "<group>"; };
@@ -1072,6 +1074,7 @@
 				D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */,
 				1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */,
 				D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */,
+				3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */,
 				D47079A81DFDBED000027086 /* ClosureParameterPositionRule.swift */,
 				1E82D5581D7775C7009553D7 /* ClosureSpacingRule.swift */,
 				E88DEA831B0990F500A66CB0 /* ColonRule.swift */,
@@ -1587,6 +1590,7 @@
 				E88198551BEA949A00333A11 /* ControlStatementRule.swift in Sources */,
 				E57B23C11B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift in Sources */,
 				D4246D6D1F30D8620097E658 /* PrivateOverFilePrivateRuleConfiguration.swift in Sources */,
+				3A915E5B20A1543700519F3A /* ClosureEndIndentationRuleExamples.swift in Sources */,
 				629ADD062006302D0009E362 /* DiscouragedOptionalCollectionRule.swift in Sources */,
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,

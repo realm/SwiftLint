@@ -44,6 +44,20 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testFoo() {}
         }
+        """,
+
+        // Methods with parameters
+
+        """
+        class TotoTests: XCTestCase {
+            func setUp(with object: Foobar) {}
+
+            func tearDown(object: Foobar) {}
+
+            func testFoo(_ foo: Foobar) {}
+
+            func testBar(bar: (String) -> Int) {}
+        }
         """
     ]
 

@@ -40,6 +40,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule 
                 let swiftKind = SwiftDeclarationKind(rawValue: kind),
                 SwiftDeclarationKind.functionKinds.contains(swiftKind),
                 let name = subDictionary.name, isXCTestMethod(name),
+                subDictionary.enclosedVarParameters.isEmpty,
                 let offset = subDictionary.offset,
                 let bodyOffset = subDictionary.bodyOffset,
                 let bodyLength = subDictionary.bodyLength,

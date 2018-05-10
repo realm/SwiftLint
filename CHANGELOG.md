@@ -54,6 +54,10 @@
   [Keith Smiley](https://github.com/keith)
   [#2164](https://github.com/realm/SwiftLint/pull/2164)
 
+* Fix operator usage spacing nested generics false positive.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2196](https://github.com/realm/SwiftLint/pull/2196)
+
 * Fix autocorrection for several rules
   (`empty_parentheses_with_trailing_closure`, `explicit_init`,
   `joined_default_parameter`, `redundant_optional_initialization` and

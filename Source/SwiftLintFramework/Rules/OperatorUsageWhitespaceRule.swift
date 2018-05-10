@@ -19,6 +19,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let foo = !false\n",
             "let foo: Int?\n",
             "let foo: Array<String>\n",
+            "let model = CustomView<Container<Button>, NSAttributedString>(\n",
             "let foo: [String]\n",
             "let foo = 1 + \n  2\n",
             "let range = 1...3\n",
@@ -96,7 +97,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
-        let genericPattern = "<(?:\(oneSpace)|\\S)+?>" // not using dot to avoid matching new line
+        let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
         let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"

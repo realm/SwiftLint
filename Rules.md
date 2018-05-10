@@ -10602,6 +10602,11 @@ let foo: Array<String>
 ```
 
 ```swift
+let model = CustomView<Container<Button>, NSAttributedString>(
+
+```
+
+```swift
 let foo: [String]
 
 ```

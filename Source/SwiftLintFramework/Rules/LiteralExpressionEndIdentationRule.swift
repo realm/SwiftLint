@@ -71,6 +71,20 @@ public struct LiteralExpressionEndIdentationRule: ASTRule, ConfigurationProvider
             "let x = [\n" +
             "   1,\n" +
             "   2\n" +
+            "]",
+            "let x = [\n" +
+            "   1,\n" +
+            "   2\n" +
+            "↓   ] + [\n" +
+            "   3,\n" +
+            "   4\n" +
+            "↓   ]":
+            "let x = [\n" +
+            "   1,\n" +
+            "   2\n" +
+            "] + [\n" +
+            "   3,\n" +
+            "   4\n" +
             "]"
         ]
     )

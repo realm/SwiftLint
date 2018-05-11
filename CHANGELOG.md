@@ -48,6 +48,12 @@
   [Michael Gray](https://github.com/mishagray)
   [#2100](https://github.com/realm/SwiftLint/pull/2100)
 
+* Add a new `ignores_default_parameters` config parameter to the
+  `function_parameter_count` rule to ignore default parameter when calculating
+  parameter count. True by default.  
+  [Varun P M](https://github.com/varunpm1)
+  [#2171](https://github.com/realm/SwiftLint/issues/2171)
+
 * Add `empty_xctest_method` opt-in rule which warns against empty
   XCTest methods.  
   [Ornithologist Coder](https://github.com/ornithocoder)

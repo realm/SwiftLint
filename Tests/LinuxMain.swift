@@ -202,6 +202,13 @@ extension FunctionBodyLengthRuleTests {
     ]
 }
 
+extension FunctionParameterCountRuleTests {
+    static var allTests: [(String, (FunctionParameterCountRuleTests) -> () throws -> Void)] = [
+        ("testFunctionParameterCount", testFunctionParameterCount),
+        ("testDefaultFunctionParameterCount", testDefaultFunctionParameterCount)
+    ]
+}
+
 extension GenericTypeNameRuleTests {
     static var allTests: [(String, (GenericTypeNameRuleTests) -> () throws -> Void)] = [
         ("testGenericTypeName", testGenericTypeName),
@@ -630,6 +637,7 @@ XCTMain([
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
+    testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),

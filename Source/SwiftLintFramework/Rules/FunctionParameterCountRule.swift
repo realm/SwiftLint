@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
-    public var configuration = SeverityLevelsConfiguration(warning: 5, error: 8)
+    public var configuration = FunctionParameterCountConfiguration(warning: 5, error: 8)
 
     public init() {}
 
@@ -51,7 +51,7 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let minThreshold = configuration.params.map({ $0.value }).min(by: <)
+        let minThreshold = configuration.severityConfiguration.params.map({ $0.value }).min(by: <)
 
         let allParameterCount = allFunctionParameterCount(structure: dictionary.substructure, offset: nameOffset,
                                                           length: length)
@@ -59,12 +59,15 @@ public struct FunctionParameterCountRule: ASTRule, ConfigurationProviderRule {
             return []
         }
 
-        let parameterCount = allParameterCount -
-            defaultFunctionParameterCount(file: file, byteOffset: nameOffset, byteLength: length)
+        var parameterCount = allParameterCount
 
-        for parameter in configuration.params where parameterCount > parameter.value {
+        if configuration.ignoresDefaultParameters {
+            parameterCount -= defaultFunctionParameterCount(file: file, byteOffset: nameOffset, byteLength: length)
+        }
+
+        for parameter in configuration.severityConfiguration.params where parameterCount > parameter.value {
             let offset = dictionary.offset ?? 0
-            let reason = "Function should have \(configuration.warning) parameters or less: " +
+            let reason = "Function should have \(configuration.severityConfiguration.warning) parameters or less: " +
                          "it currently has \(parameterCount)"
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: parameter.severity,

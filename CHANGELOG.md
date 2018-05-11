@@ -70,7 +70,7 @@
   [John Szumski](https://github.com/jszumski)
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Fix `unneeded_parentheses_in_closure_argument` false positives when multiple
+* Fix `unneeded_parentheses_in_closure_argument` false negatives when multiple
   violations are nested.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2188](https://github.com/realm/SwiftLint/issues/2188)

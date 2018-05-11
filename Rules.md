@@ -10602,7 +10602,7 @@ let foo: Array<String>
 ```
 
 ```swift
-let model = CustomView<Container<Button>, NSAttributedString>(
+let model = CustomView<Container<Button>, NSAttributedString>()
 
 ```
 
@@ -10656,6 +10656,16 @@ button.setImage(#imageLiteral(resourceName: "image-1"), for: .normal)
 
 ```swift
 let doubleValue = -9e-11
+
+```
+
+```swift
+let foo = GenericType<(UIViewController) -> Void>()
+
+```
+
+```swift
+let foo = Foo<Bar<T>, Baz>()
 
 ```
 

@@ -28,6 +28,7 @@
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
+* [Empty XCTest Method](#empty-xctest-method)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -4186,6 +4187,166 @@ myString↓ == ""
 
 ```swift
 myString↓ != ""
+```
+
+</details>
+
+
+
+## Empty XCTest Method
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`empty_xctest_method` | Disabled | No | lint | 3.0.0 
+
+Empty XCTest method should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: XCTestCase {
+    var foobar: Foobar?
+
+    override func setUp() {
+        super.setUp()
+        foobar = Foobar()
+    }
+
+    override func tearDown() {
+        foobar = nil
+        super.tearDown()
+    }
+
+    func testFoo() {
+        XCTAssertTrue(foobar?.foo)
+    }
+
+    func testBar() {
+        // comment...
+
+        XCTAssertFalse(foobar?.bar)
+
+        // comment...
+    }
+}
+```
+
+```swift
+class Foobar {
+    func setUp() {}
+
+    func tearDown() {}
+
+    func testFoo() {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    func setUp(with object: Foobar) {}
+
+    func tearDown(object: Foobar) {}
+
+    func testFoo(_ foo: Foobar) {}
+
+    func testBar(bar: (String) -> Int) {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    func testFoo() { XCTAssertTrue(foobar?.foo) }
+
+    func testBar() { XCTAssertFalse(foobar?.bar) }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {
+    }
+
+    override ↓func tearDown() {
+
+    }
+
+    ↓func testFoo() {
+
+
+    }
+
+    ↓func testBar() {
+
+
+
+    }
+
+    func helperFunction() {
+    }
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {}
+
+    override ↓func tearDown() {}
+
+    ↓func testFoo() {}
+
+    func helperFunction() {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {
+        // comment...
+    }
+
+    override ↓func tearDown() {
+        // comment...
+        // comment...
+    }
+
+    ↓func testFoo() {
+        // comment...
+
+        // comment...
+
+        // comment...
+    }
+
+    ↓func testBar() {
+        /*
+         * comment...
+         *
+         * comment...
+         *
+         * comment...
+         */
+    }
+
+    func helperFunction() {
+    }
+}
+```
+
+```swift
+class FooTests: XCTestCase {
+    override ↓func setUp() {}
+}
+
+class BarTests: XCTestCase {
+    ↓func testFoo() {}
+}
 ```
 
 </details>

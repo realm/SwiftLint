@@ -81,6 +81,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2188](https://github.com/realm/SwiftLint/issues/2188)
 
+* Fix false negatives in `implicit_return` rule when using closures as
+  function arguments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2187](https://github.com/realm/SwiftLint/issues/2187)
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.

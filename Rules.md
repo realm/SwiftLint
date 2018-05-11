@@ -7292,6 +7292,16 @@ foo.map {
 }
 ```
 
+```swift
+foo.map({ ↓return $0 + 1})
+```
+
+```swift
+[1, 2].first(where: {
+    ↓return true
+})
+```
+
 </details>
 
 

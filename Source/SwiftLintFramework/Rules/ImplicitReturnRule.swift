@@ -21,11 +21,28 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
         ],
         triggeringExamples: [
             "foo.map { value in\n  ↓return value + 1\n}",
-            "foo.map {\n  ↓return $0 + 1\n}"
+            "foo.map {\n  ↓return $0 + 1\n}",
+            "foo.map({ ↓return $0 + 1})",
+            """
+            [1, 2].first(where: {
+                ↓return true
+            })
+            """
         ],
         corrections: [
             "foo.map { value in\n  ↓return value + 1\n}": "foo.map { value in\n  value + 1\n}",
-            "foo.map {\n  ↓return $0 + 1\n}": "foo.map {\n  $0 + 1\n}"
+            "foo.map {\n  ↓return $0 + 1\n}": "foo.map {\n  $0 + 1\n}",
+            "foo.map({ ↓return $0 + 1})": "foo.map({ $0 + 1})",
+            """
+            [1, 2].first(where: {
+                ↓return true
+            })
+            """:
+            """
+            [1, 2].first(where: {
+                true
+            })
+            """
         ]
     )
 
@@ -66,8 +83,9 @@ public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, Op
             guard kinds == [.keyword, .keyword] || kinds == [.keyword],
                 let byteRange = contents.NSRangeToByteRange(start: range.location,
                                                             length: range.length),
-                let outerKind = file.structure.kinds(forByteOffset: byteRange.location).last,
-                SwiftExpressionKind(rawValue: outerKind.kind) == .call else {
+                let outerKindString = file.structure.kinds(forByteOffset: byteRange.location).last?.kind,
+                let outerKind = SwiftExpressionKind(rawValue: outerKindString),
+                [.call, .argument].contains(outerKind) else {
                     return nil
             }
 

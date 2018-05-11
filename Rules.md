@@ -17960,6 +17960,32 @@ foo.map { ($0, $0) }.forEach { ↓(x, y) in }
 foo.bar { [weak self] ↓(x, y) in }
 ```
 
+```swift
+[].first { ↓(temp) in
+    [].first { ↓(temp) in
+        [].first { ↓(temp) in
+            _ = temp
+            return false
+        }
+        return false
+    }
+    return false
+}
+```
+
+```swift
+[].first { temp in
+    [].first { ↓(temp) in
+        [].first { ↓(temp) in
+            _ = temp
+            return false
+        }
+        return false
+    }
+    return false
+}
+```
+
 </details>
 
 

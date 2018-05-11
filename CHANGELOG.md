@@ -65,6 +65,11 @@
   [John Szumski](https://github.com/jszumski)
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix `unneeded_parentheses_in_closure_argument` false positives when multiple
+  violations are nested.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2188](https://github.com/realm/SwiftLint/issues/2188)
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.

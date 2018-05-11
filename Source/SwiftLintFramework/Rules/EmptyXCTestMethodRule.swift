@@ -11,7 +11,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule 
         identifier: "empty_xctest_method",
         name: "Empty XCTest Method",
         description: "Empty XCTest method should be avoided.",
-        kind: .idiomatic,
+        kind: .lint,
         nonTriggeringExamples: EmptyXCTestMethodRuleExamples.nonTriggeringExamples,
         triggeringExamples: EmptyXCTestMethodRuleExamples.triggeringExamples
     )
@@ -27,8 +27,7 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule 
             guard
                 let kind = dictionary.kind,
                 SwiftDeclarationKind(rawValue: kind) == .class else { return false }
-
-            return !dictionary.inheritedTypes.filter { $0 == "XCTestCase" }.isEmpty
+            return dictionary.inheritedTypes.contains("XCTestCase")
         }
     }
 
@@ -36,19 +35,12 @@ public struct EmptyXCTestMethodRule: Rule, OptInRule, ConfigurationProviderRule 
                             for dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return dictionary.substructure.compactMap { subDictionary -> StyleViolation? in
             guard
-                let kind = subDictionary.kind,
-                let swiftKind = SwiftDeclarationKind(rawValue: kind),
-                SwiftDeclarationKind.functionKinds.contains(swiftKind),
+                let kind = subDictionary.kind.flatMap(SwiftDeclarationKind.init),
+                SwiftDeclarationKind.functionKinds.contains(kind),
                 let name = subDictionary.name, isXCTestMethod(name),
-                subDictionary.enclosedVarParameters.isEmpty,
                 let offset = subDictionary.offset,
-                let bodyOffset = subDictionary.bodyOffset,
-                let bodyLength = subDictionary.bodyLength,
-                case let bodyContent = file.contents.bridge(),
-                let startLine = bodyContent.lineAndCharacter(forByteOffset: bodyOffset)?.line,
-                let endLine = bodyContent.lineAndCharacter(forByteOffset: bodyOffset + bodyLength)?.line,
-                case let (_, lineCount) = file.exceedsLineCountExcludingCommentsAndWhitespace(startLine, endLine, 0),
-                lineCount < 1 else { return nil }
+                subDictionary.enclosedVarParameters.isEmpty,
+                subDictionary.substructure.isEmpty else { return nil }
 
             return StyleViolation(ruleDescription: type(of: self).description,
                                   severity: configuration.severity,

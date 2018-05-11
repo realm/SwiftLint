@@ -4197,7 +4197,7 @@ myString↓ != ""
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`empty_xctest_method` | Disabled | No | idiomatic | 3.0.0 
+`empty_xctest_method` | Disabled | No | lint | 3.0.0 
 
 Empty XCTest method should be avoided.
 
@@ -4253,6 +4253,14 @@ class TotoTests: XCTestCase {
     func testFoo(_ foo: Foobar) {}
 
     func testBar(bar: (String) -> Int) {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    func testFoo() { XCTAssertTrue(foobar?.foo) }
+
+    func testBar() { XCTAssertFalse(foobar?.bar) }
 }
 ```
 

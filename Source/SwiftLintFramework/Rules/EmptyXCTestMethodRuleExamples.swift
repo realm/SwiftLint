@@ -58,6 +58,16 @@ internal struct EmptyXCTestMethodRuleExamples {
 
             func testBar(bar: (String) -> Int) {}
         }
+        """,
+
+        // Asserts in one line
+
+        """
+        class TotoTests: XCTestCase {
+            func testFoo() { XCTAssertTrue(foobar?.foo) }
+
+            func testBar() { XCTAssertFalse(foobar?.bar) }
+        }
         """
     ]
 

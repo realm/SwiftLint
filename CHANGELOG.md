@@ -47,9 +47,10 @@
   rule to ignore lines that include interpolated strings from this rule.  
   [Michael Gray](https://github.com/mishagray)
   [#2100](https://github.com/realm/SwiftLint/pull/2100)
-  
-* Added a new `ignores_default_parameters` config parameter to `function_parameter_count`
-  rule to ignore default parameter when calculating parameter count.  
+
+* Add a new `ignores_default_parameters` config parameter to the
+  `function_parameter_count` rule to ignore default parameter when calculating
+  parameter count. True by default.  
   [Varun P M](https://github.com/varunpm1)
   [#2171](https://github.com/realm/SwiftLint/issues/2171)
 

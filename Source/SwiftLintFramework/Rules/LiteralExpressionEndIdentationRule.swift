@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LiteralExpressionEndIdentationRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRule, OptInRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -89,8 +89,7 @@ public struct LiteralExpressionEndIdentationRule: ASTRule, ConfigurationProvider
         ]
     )
 
-    public func validate(file: File, kind: SwiftExpressionKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
         return violations(in: file).map { violation in
             return styleViolation(for: violation, in: file)
         }

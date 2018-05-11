@@ -54,11 +54,20 @@
   [Varun P M](https://github.com/varunpm1)
   [#2171](https://github.com/realm/SwiftLint/issues/2171)
 
+* Add `empty_xctest_method` opt-in rule which warns against empty
+  XCTest methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#2190](https://github.com/realm/SwiftLint/pull/2190)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  
   [Keith Smiley](https://github.com/keith)
   [#2164](https://github.com/realm/SwiftLint/pull/2164)
+
+* Fix operator usage spacing nested generics false positive.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#1897](https://github.com/realm/SwiftLint/issues/1897)
 
 * Fix autocorrection for several rules
   (`empty_parentheses_with_trailing_closure`, `explicit_init`,
@@ -66,6 +75,11 @@
   `unused_closure_parameter `) when used with preprocessor macros.  
   [John Szumski](https://github.com/jszumski)
   [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix `unneeded_parentheses_in_closure_argument` false negatives when multiple
+  violations are nested.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2188](https://github.com/realm/SwiftLint/issues/2188)
 
 ## 0.25.1: Lid Locked
 

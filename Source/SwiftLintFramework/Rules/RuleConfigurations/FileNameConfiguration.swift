@@ -1,7 +1,7 @@
 public struct FileNameConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(severity) \(severity.consoleDescription), " +
-        "excluded: \(excluded.sorted())"
+            "excluded: \(excluded.sorted())"
     }
 
     private(set) public var severity: SeverityConfiguration

@@ -63,6 +63,12 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2190](https://github.com/realm/SwiftLint/pull/2190)
 
+* Add `function_default_parameter_at_end` opt-in rule to validate that
+  parameters with defaults are located toward the end of the parameter list in a
+  function declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2176](https://github.com/realm/SwiftLint/issues/2176)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

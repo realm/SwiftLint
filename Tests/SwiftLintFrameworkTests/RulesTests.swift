@@ -158,6 +158,10 @@ class RulesTests: XCTestCase {
         verifyRule(FunctionBodyLengthRule.description)
     }
 
+    func testFunctionDefaultParameterAtEnd() {
+        verifyRule(FunctionDefaultParameterAtEndRule.description)
+    }
+
     func testFunctionParameterCount() {
         verifyRule(FunctionParameterCountRule.description)
     }

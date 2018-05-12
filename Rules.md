@@ -45,6 +45,7 @@
 * [Force Try](#force-try)
 * [Force Unwrapping](#force-unwrapping)
 * [Function Body Length](#function-body-length)
+* [Function Default Parameter at End](#function-default-parameter-at-end)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
 * [Identifier Name](#identifier-name)
@@ -6635,6 +6636,70 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 `function_body_length` | Enabled | No | metrics | 3.0.0 
 
 Functions bodies should not span too many lines.
+
+
+
+## Function Default Parameter at End
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`function_default_parameter_at_end` | Disabled | No | idiomatic | 3.0.0 
+
+Prefer to locate parameters with defaults toward the end of the parameter list.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func foo(baz: String, bar: Int = 0) {}
+```
+
+```swift
+func foo(x: String, y: Int = 0, z: CGFloat = 0) {}
+```
+
+```swift
+func foo(bar: String, baz: Int = 0, z: () -> Void) {}
+```
+
+```swift
+func foo(bar: String, z: () -> Void, baz: Int = 0) {}
+```
+
+```swift
+func foo(bar: Int = 0) {}
+```
+
+```swift
+func foo() {}
+```
+
+```swift
+class A: B {
+    override func foo(bar: Int = 0, baz: String) {}
+```
+
+```swift
+func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}
+```
+
+```swift
+func foo(a: Int, b: CGFloat = 0) {
+    let block = { (error: Error?) in }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓func foo(bar: Int = 0, baz: String) {}
+```
+
+</details>
 
 
 

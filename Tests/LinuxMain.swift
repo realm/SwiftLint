@@ -468,6 +468,7 @@ extension RulesTests {
         ("testForceUnwrapping", testForceUnwrapping),
         ("testForWhere", testForWhere),
         ("testFunctionBodyLength", testFunctionBodyLength),
+        ("testFunctionDefaultParameterAtEnd", testFunctionDefaultParameterAtEnd),
         ("testFunctionParameterCount", testFunctionParameterCount),
         ("testImplicitGetter", testImplicitGetter),
         ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),

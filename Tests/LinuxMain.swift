@@ -194,6 +194,19 @@ extension FileLengthRuleTests {
     ]
 }
 
+extension FileNameRuleTests {
+    static var allTests: [(String, (FileNameRuleTests) -> () throws -> Void)] = [
+        ("testMainDoesntTrigger", testMainDoesntTrigger),
+        ("testLinuxMainDoesntTrigger", testLinuxMainDoesntTrigger),
+        ("testClassNameDoesntTrigger", testClassNameDoesntTrigger),
+        ("testStructNameDoesntTrigger", testStructNameDoesntTrigger),
+        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
+        ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
+        ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
+        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
@@ -637,6 +650,7 @@ XCTMain([
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
+    testCase(FileNameRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),

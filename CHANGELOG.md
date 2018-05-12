@@ -69,6 +69,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2176](https://github.com/realm/SwiftLint/issues/2176)
 
+* Add `file_name` opt-in rule validating that file names contain the name of a
+  type or extension declared in the file (if any).  
+  [JP Simard](https://github.com/jpsim)
+  [#1420](https://github.com/realm/SwiftLint/issues/1420)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

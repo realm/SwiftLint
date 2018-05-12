@@ -133,6 +133,8 @@
 		85DA81321D6B471000951BC4 /* MarkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856651A61D6B395F005E6B29 /* MarkRule.swift */; };
 		8B01E4FD20A41C8700C9233E /* FunctionParameterCountConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B01E4FB20A4183C00C9233E /* FunctionParameterCountConfiguration.swift */; };
 		8B01E50220A4349100C9233E /* FunctionParameterCountRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B01E4FF20A4340A00C9233E /* FunctionParameterCountRuleTests.swift */; };
+		8F2CC1CB20A6A070006ED34F /* FileNameConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2CC1CA20A6A070006ED34F /* FileNameConfiguration.swift */; };
+		8F2CC1CD20A6A189006ED34F /* FileNameRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2CC1CC20A6A189006ED34F /* FileNameRuleTests.swift */; };
 		8F8050821FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */; };
 		8FC9F5111F4B8E48006826C1 /* IsDisjointRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */; };
 		8FD216CC205584AF008ED13F /* CharacterSet+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD216CB205584AF008ED13F /* CharacterSet+SwiftLint.swift */; };
@@ -280,6 +282,7 @@
 		E82367E01ED3BD1E0040A88E /* Configuration+Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */; };
 		E832F10B1B17E2F5003F265F /* NSFileManager+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */; };
 		E832F10D1B17E725003F265F /* IntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E832F10C1B17E725003F265F /* IntegrationTests.swift */; };
+		E83530C61ED6328A00FBAF79 /* FileNameRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83530C51ED6328A00FBAF79 /* FileNameRule.swift */; };
 		E83A0B351A5D382B0041A60A /* VersionCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83A0B341A5D382B0041A60A /* VersionCommand.swift */; };
 		E847F0A91BFBBABD00EA9363 /* EmptyCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */; };
 		E84E07471C13F95300F11122 /* AutoCorrectCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */; };
@@ -508,6 +511,8 @@
 		856651A61D6B395F005E6B29 /* MarkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkRule.swift; sourceTree = "<group>"; };
 		8B01E4FB20A4183C00C9233E /* FunctionParameterCountConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountConfiguration.swift; sourceTree = "<group>"; };
 		8B01E4FF20A4340A00C9233E /* FunctionParameterCountRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRuleTests.swift; sourceTree = "<group>"; };
+		8F2CC1CA20A6A070006ED34F /* FileNameConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileNameConfiguration.swift; sourceTree = "<group>"; };
+		8F2CC1CC20A6A189006ED34F /* FileNameRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileNameRuleTests.swift; sourceTree = "<group>"; };
 		8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Configuration+IndentationStyle.swift"; sourceTree = "<group>"; };
 		8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IsDisjointRule.swift; sourceTree = "<group>"; };
 		8FD216CB205584AF008ED13F /* CharacterSet+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CharacterSet+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -676,6 +681,7 @@
 		E82367DF1ED3BD1E0040A88E /* Configuration+Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Configuration+Cache.swift"; sourceTree = "<group>"; };
 		E832F10A1B17E2F5003F265F /* NSFileManager+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+SwiftLint.swift"; sourceTree = "<group>"; };
 		E832F10C1B17E725003F265F /* IntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationTests.swift; sourceTree = "<group>"; };
+		E83530C51ED6328A00FBAF79 /* FileNameRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileNameRule.swift; sourceTree = "<group>"; };
 		E83A0B341A5D382B0041A60A /* VersionCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersionCommand.swift; sourceTree = "<group>"; };
 		E847F0A81BFBBABD00EA9363 /* EmptyCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyCountRule.swift; sourceTree = "<group>"; };
 		E84E07461C13F95300F11122 /* AutoCorrectCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCorrectCommand.swift; sourceTree = "<group>"; };
@@ -815,6 +821,7 @@
 				CE8178EB1EAC02CD0063186E /* UnusedOptionalBindingConfiguration.swift */,
 				006204DA1E1E48F900FFFBE1 /* VerticalWhitespaceConfiguration.swift */,
 				787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */,
+				8F2CC1CA20A6A070006ED34F /* FileNameConfiguration.swift */,
 			);
 			path = RuleConfigurations;
 			sourceTree = "<group>";
@@ -992,6 +999,7 @@
 				02FD8AEE1BFC18D60014BFFB /* ExtendedNSStringTests.swift */,
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
 				29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */,
+				8F2CC1CC20A6A189006ED34F /* FileNameRuleTests.swift */,
 				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
 				8B01E4FF20A4340A00C9233E /* FunctionParameterCountRuleTests.swift */,
 				3B20CD091EB699380069EF2E /* GenericTypeNameRuleTests.swift */,
@@ -1127,6 +1135,7 @@
 				C3DE5DAA1E7DF99B00761483 /* FatalErrorMessageRule.swift */,
 				D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
+				E83530C51ED6328A00FBAF79 /* FileNameRule.swift */,
 				D42D2B371E09CC0D00CD7A2E /* FirstWhereRule.swift */,
 				E88DEA7F1B09903300A66CB0 /* ForceCastRule.swift */,
 				E816194D1BFBFEAB00946723 /* ForceTryRule.swift */,
@@ -1611,6 +1620,7 @@
 				3A915E5B20A1543700519F3A /* ClosureEndIndentationRuleExamples.swift in Sources */,
 				629ADD062006302D0009E362 /* DiscouragedOptionalCollectionRule.swift in Sources */,
 				E816194E1BFBFEAB00946723 /* ForceTryRule.swift in Sources */,
+				8F2CC1CB20A6A070006ED34F /* FileNameConfiguration.swift in Sources */,
 				D4CFC5D2209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift in Sources */,
 				E88198541BEA945100333A11 /* CommaRule.swift in Sources */,
 				D4DA1DFE1E1A10DB0037413D /* NumberSeparatorConfiguration.swift in Sources */,
@@ -1755,6 +1765,7 @@
 				E88DEA6B1B0983FE00A66CB0 /* StyleViolation.swift in Sources */,
 				62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */,
 				B89F3BCD1FD5EDFB00931E59 /* RequiredEnumCaseRule.swift in Sources */,
+				E83530C61ED6328A00FBAF79 /* FileNameRule.swift in Sources */,
 				3BB47D831C514E8100AE6A10 /* RegexConfiguration.swift in Sources */,
 				D401D9261ED85EF0005DA5D4 /* RuleKind.swift in Sources */,
 				626B01B620A173F100D2C42F /* EmptyXCTestMethodRuleExamples.swift in Sources */,
@@ -1853,6 +1864,7 @@
 				3B63D46F1E1F09DF0057BE35 /* LineLengthRuleTests.swift in Sources */,
 				3BCC04D41C502BAB006073C3 /* RuleConfigurationTests.swift in Sources */,
 				E809EDA31B8A73FB00399043 /* ConfigurationTests.swift in Sources */,
+				8F2CC1CD20A6A189006ED34F /* FileNameRuleTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

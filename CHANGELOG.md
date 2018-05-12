@@ -33,6 +33,10 @@
 * Updates the `closure_end_indentation` rule to support autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
 
+* Updates the `literal_expression_end_indentation` rule to support
+  autocorrection.  
+  [Eric Horacek](https://github.com/erichoracek)
+
 * Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
   indentation of non-trailing closure parameters.  
   [Eric Horacek](https://github.com/erichoracek)

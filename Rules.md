@@ -8567,7 +8567,7 @@ Lines should not span too many characters.
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`literal_expression_end_indentation` | Disabled | No | style | 3.0.0 
+`literal_expression_end_indentation` | Disabled | Yes | style | 3.0.0 
 
 Array and dictionary literal end should have the same indentation as the line that started it.
 

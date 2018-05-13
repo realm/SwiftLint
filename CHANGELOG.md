@@ -14,6 +14,10 @@
 * Updates the `untyped_error_in_catch` rule to support autocorrection.  
   [Daniel Metzing](https://github.com/dirtydanee)
 
+* Add `redundant_objc_attribute` to warn against already implied objc attribute.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2193](https://github.com/realm/SwiftLint/issues/2193)
+
 * Add `indented_cases` support to `switch_case_alignment` rule.  
   [Shai Mishali](https://github.com/freak4pc)
   [#2119](https://github.com/realm/SwiftLint/issues/2119)

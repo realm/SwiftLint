@@ -10,7 +10,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         identifier: "control_statement",
         name: "Control Statement",
         description:
-            "if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.",
+            "`if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their " +
+            "conditionals or arguments in parentheses.",
         kind: .style,
         nonTriggeringExamples: [
             "if condition {\n",
@@ -29,11 +30,14 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "do { ; } while condition {\n",
             "switch foo {\n",
             "do {\n} catch let error as NSError {\n}",
-            "foo().catch(all: true) {}"
+            "foo().catch(all: true) {}",
+            "if max(a, b) < c {\n",
+            "switch (lhs, rhs) {\n"
         ],
         triggeringExamples: [
             "↓if (condition) {\n",
             "↓if(condition) {\n",
+            "↓if (condition == endIndex) {\n",
             "↓if ((a || b) && (c || d)) {\n",
             "↓if ((min...max).contains(value)) {\n",
             "↓for (item in collection) {\n",
@@ -48,7 +52,8 @@ public struct ControlStatementRule: ConfigurationProviderRule {
             "do { ; } ↓while(condition) {\n",
             "do { ; } ↓while (condition) {\n",
             "↓switch (foo) {\n",
-            "do {\n} ↓catch(let error as NSError) {\n}"
+            "do {\n} ↓catch(let error as NSError) {\n}",
+            "↓if (max(a, b) < c) {\n"
         ]
     )
 
@@ -56,8 +61,10 @@ public struct ControlStatementRule: ConfigurationProviderRule {
         let statements = ["if", "for", "guard", "switch", "while", "catch"]
         let statementPatterns: [String] = statements.map { statement -> String in
             let isGuard = statement == "guard"
+            let isSwitch = statement == "switch"
             let elsePattern = isGuard ? "else\\s*" : ""
-            return "\(statement)\\s*\\([^,{]*\\)\\s*\(elsePattern)\\{"
+            let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
+            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
         }
         return statementPatterns.flatMap { pattern -> [StyleViolation] in
             return file.match(pattern: pattern)

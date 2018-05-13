@@ -183,7 +183,11 @@ extension FileHeaderRuleTests {
         ("testFileHeaderWithRequiredStringAndURLComment", testFileHeaderWithRequiredStringAndURLComment),
         ("testFileHeaderWithForbiddenString", testFileHeaderWithForbiddenString),
         ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern),
-        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment)
+        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment),
+        ("testFileHeaderWithRequiredStringUsingFilenamePlaceholder", testFileHeaderWithRequiredStringUsingFilenamePlaceholder),
+        ("testFileHeaderWithForbiddenStringUsingFilenamePlaceholder", testFileHeaderWithForbiddenStringUsingFilenamePlaceholder),
+        ("testFileHeaderWithRequiredPatternUsingFilenamePlaceholder", testFileHeaderWithRequiredPatternUsingFilenamePlaceholder),
+        ("testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder", testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder)
     ]
 }
 
@@ -456,6 +460,7 @@ extension RulesTests {
         ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
         ("testContainsOverFirstNotNil", testContainsOverFirstNotNil),
         ("testControlStatement", testControlStatement),
+        ("testConvenienceType", testConvenienceType),
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
         ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),
@@ -499,10 +504,12 @@ extension RulesTests {
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
         ("testModifierOrder", testModifierOrder),
+        ("testMultilineFunctionChains", testMultilineFunctionChains),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
         ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
+        ("testNoFallthroughOnly", testNoFallthroughOnly),
         ("testNoGroupingExtension", testNoGroupingExtension),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),

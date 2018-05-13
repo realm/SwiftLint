@@ -15,6 +15,7 @@
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
 * [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
+* [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
@@ -68,11 +69,13 @@
 * [Mark](#mark)
 * [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
+* [Multiline Function Chains](#multiline-function-chains)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
 * [No Extension Access Modifier](#no-extension-access-modifier)
+* [No Fallthrough Only](#no-fallthrough-only)
 * [No Grouping Extension](#no-grouping-extension)
 * [Notification Center Detachment](#notification-center-detachment)
 * [Number Separator](#number-separator)
@@ -95,6 +98,7 @@
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
+* [Redundant @objc Attribute](#redundant-@objc-attribute)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
 * [Redundant Set Access Control Rule](#redundant-set-access-control-rule)
 * [Redundant String Enum Value](#redundant-string-enum-value)
@@ -1755,7 +1759,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `control_statement` | Enabled | No | style | 3.0.0 
 
-if,for,while,do,catch statements shouldn't wrap their conditionals or arguments in parentheses.
+`if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their conditionals or arguments in parentheses.
 
 ### Examples
 
@@ -1847,6 +1851,16 @@ do {
 foo().catch(all: true) {}
 ```
 
+```swift
+if max(a, b) < c {
+
+```
+
+```swift
+switch (lhs, rhs) {
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -1858,6 +1872,11 @@ foo().catch(all: true) {}
 
 ```swift
 ↓if(condition) {
+
+```
+
+```swift
+↓if (condition == endIndex) {
 
 ```
 
@@ -1934,6 +1953,81 @@ do { ; } ↓while (condition) {
 ```swift
 do {
 } ↓catch(let error as NSError) {
+}
+```
+
+```swift
+↓if (max(a, b) < c) {
+
+```
+
+</details>
+
+
+
+## Convenience Type
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`convenience_type` | Disabled | No | idiomatic | 4.1.0 
+
+Types used for hosting only static members should be implemented as a caseless enum to avoid instantiation.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Math { // enum
+    public static let pi = 3.14
+}
+```
+
+```swift
+// class with inheritance
+class MathViewController: UIViewController {
+    public static let pi = 3.14
+}
+```
+
+```swift
+@objc class Math: NSObject { // class visible to Obj-C
+    public static let pi = 3.14
+}
+```
+
+```swift
+struct Math { // type with non-static declarations
+    public static let pi = 3.14
+    public let randomNumber = 2
+}
+```
+
+```swift
+class DummyClass {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓struct Math {
+    public static let pi = 3.14
+}
+```
+
+```swift
+↓class Math {
+    public static let pi = 3.14
+}
+```
+
+```swift
+↓struct Math {
+    public static let pi = 3.14
+    @available(*, unavailable) init() {}
 }
 ```
 
@@ -4974,7 +5068,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `file_header` | Disabled | No | style | 3.0.0 
 
-Header comments should be consistent with project patterns.
+Header comments should be consistent with project patterns. The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the required and forbidden patterns. It will be replaced by the real file name.
 
 ### Examples
 
@@ -6921,7 +7015,7 @@ typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)
 ```
 
 ```swift
-typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>
+typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>
 
 ```
 
@@ -7063,6 +7157,14 @@ func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool
 
 ```swift
 override func IsOperator(name: String) -> Bool
+```
+
+```swift
+enum Foo { case `private` }
+```
+
+```swift
+enum Foo { case value(String) }
 ```
 
 </details>
@@ -9362,6 +9464,116 @@ foo(
 
 
 
+## Multiline Function Chains
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`multiline_function_chains` | Disabled | No | style | 3.0.0 
+
+Chained function calls should be either on the same line, or one per line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)
+```
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4]
+    .filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)",
+```
+
+```swift
+let chain = a
+    .b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c { blah in print(blah) }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c(.init(
+        a: 1,
+        b, 2,
+        c, 3))
+    .d()
+```
+
+```swift
+self.viewModel.outputs.postContextualNotification
+  .observeForUI()
+  .observeValues {
+    NotificationCenter.default.post(
+      Notification(
+        name: .ksr_showNotificationsDialog,
+        userInfo: [UserInfoKeys.context: PushNotificationDialog.Context.pledge,
+                   UserInfoKeys.viewController: self]
+     )
+    )
+  }
+```
+
+```swift
+let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))
+```
+
+```swift
+self.happeningNewsletterOn = self.updateCurrentUser
+    .map { $0.newsletters.happening }.skipNil().skipRepeats()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4]
+    .filter { $0 % 2 == 0 }↓.map { $0 * $0 }
+    .reduce(0, +)
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }↓.d()
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)
+    .c(2, 3, 4)↓.d()
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
+        print(blah)
+    }
+    .d()
+```
+
+</details>
+
+
+
 ## Multiline Parameters
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
@@ -10181,6 +10393,184 @@ extension String {}
 
 ```swift
 ↓fileprivate extension String {}
+```
+
+</details>
+
+
+
+## No Fallthrough Only
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`no_fallthrough_only` | Enabled | No | idiomatic | 3.0.0 
+
+Fallthroughs can only be used if the `case` contains at least one other statement.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+switch myvar {
+case 1:
+    var a = 1
+    fallthrough
+case 2:
+    var a = 2
+}
+```
+
+```swift
+switch myvar {
+case "a":
+    var one = 1
+    var two = 2
+    fallthrough
+case "b": /* comment */
+    var three = 3
+}
+```
+
+```swift
+switch myvar {
+case 1:
+   let one = 1
+case 2:
+   // comment
+   var two = 2
+}
+```
+
+```swift
+switch myvar {
+case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
+    var three = 3
+    fallthrough
+default:
+    var three = 4
+}
+```
+
+```swift
+switch myvar {
+case .alpha:
+    var one = 1
+case .beta:
+    var three = 3
+    fallthrough
+default:
+    var four = 4
+}
+```
+
+```swift
+let aPoint = (1, -1)
+switch aPoint {
+case let (x, y) where x == y:
+    let A = "A"
+case let (x, y) where x == -y:
+    let B = "B"
+    fallthrough
+default:
+    let C = "C"
+}
+```
+
+```swift
+switch myvar {
+case MyFun(with: { $1 }):
+    let one = 1
+    fallthrough
+case "abc":
+    let two = 2
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+switch myvar {
+case 1:
+    ↓fallthrough
+case 2:
+    var a = 1
+}
+```
+
+```swift
+switch myvar {
+case 1:
+    var a = 2
+case 2:
+    ↓fallthrough
+case 3:
+    var a = 3
+}
+```
+
+```swift
+switch myvar {
+case 1: // comment
+    ↓fallthrough
+}
+```
+
+```swift
+switch myvar {
+case 1: /* multi
+    line
+    comment */
+    ↓fallthrough
+case 2:
+    var a = 2
+}
+```
+
+```swift
+switch myvar {
+case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
+    ↓fallthrough
+default:
+    var three = 4
+}
+```
+
+```swift
+switch myvar {
+case .alpha:
+    var one = 1
+case .beta:
+    ↓fallthrough
+case .gamma:
+    var three = 3
+default:
+  var four = 4
+}
+```
+
+```swift
+let aPoint = (1, -1)
+switch aPoint {
+case let (x, y) where x == y:
+    let A = "A"
+case let (x, y) where x == -y:
+    ↓fallthrough
+default:
+    let B = "B"
+}
+```
+
+```swift
+switch myvar {
+case MyFun(with: { $1 }):
+    ↓fallthrough
+case "abc":
+    let two = 2
+}
 ```
 
 </details>
@@ -12673,6 +13063,179 @@ var myVar: Int? = nil; myVar↓ ?? nil
 ```swift
 var myVar: Int? = nil; myVar↓??nil
 
+```
+
+</details>
+
+
+
+## Redundant @objc Attribute
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`redundant_objc_attribute` | Enabled | No | idiomatic | 3.0.0 
+
+Objective-C attribute (@objc) is redundant in declaration.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+@objc private var foo: String? {}
+```
+
+```swift
+@IBInspectable private var foo: String? {}
+```
+
+```swift
+@objc private func foo(_ sender: Any) {}
+```
+
+```swift
+@IBAction private func foo(_ sender: Any) {}
+```
+
+```swift
+@GKInspectable private var foo: String! {}
+```
+
+```swift
+private @GKInspectable var foo: String! {}
+```
+
+```swift
+@NSManaged var foo: String!
+```
+
+```swift
+@objc @NSCopying var foo: String!
+```
+
+```swift
+@objcMembers
+class Foo {
+   var bar: Any?
+   @objc
+   class Bar {
+       @objc
+       var foo: Any?
+   }
+}
+```
+
+```swift
+@objc
+extension Foo {
+   var bar: Int {
+       return 0
+   }
+}
+```
+
+```swift
+extension Foo {
+   @objc
+   var bar: Int { return 0 }
+}
+```
+
+```swift
+@objc @IBDesignable
+extension Foo {
+   var bar: Int { return 0 }
+}
+```
+
+```swift
+@IBDesignable
+extension Foo {
+   @objc
+   var bar: Int { return 0 }
+   var fooBar: Int { return 1 }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+@objc @IBInspectable private ↓var foo: String? {}
+```
+
+```swift
+@IBInspectable @objc private ↓var foo: String? {}
+```
+
+```swift
+@objc @IBAction private ↓func foo(_ sender: Any) {}
+```
+
+```swift
+@IBAction @objc private ↓func foo(_ sender: Any) {}
+```
+
+```swift
+@objc @GKInspectable private ↓var foo: String! {}
+```
+
+```swift
+@GKInspectable @objc private ↓var foo: String! {}
+```
+
+```swift
+@objc @NSManaged private ↓var foo: String!
+```
+
+```swift
+@NSManaged @objc private ↓var foo: String!
+```
+
+```swift
+@objc @IBDesignable ↓class Foo {}
+```
+
+```swift
+@objcMembers
+class Foo {
+   @objc ↓var bar: Any?
+}
+```
+
+```swift
+@objcMembers
+class Foo {
+   @objc ↓var bar: Any?
+   @objc ↓var foo: Any?
+   @objc
+   class Bar {
+       @objc
+       var foo: Any?
+   }
+}
+```
+
+```swift
+@objc
+extension Foo {
+   @objc
+   ↓var bar: Int {
+       return 0
+    }
+}
+```
+
+```swift
+@objc @IBDesignable
+extension Foo {
+   @objc
+   ↓var bar: Int {
+       return 0
+    }
+}
 ```
 
 </details>
@@ -18463,6 +19026,12 @@ hoge(arg: num) { num in
 ({ (manager: FileManager) in
   print(manager)
 })(FileManager.default)
+```
+
+```swift
+withPostSideEffect { input in
+    if true { print("\(input)") }
+}
 ```
 
 </details>

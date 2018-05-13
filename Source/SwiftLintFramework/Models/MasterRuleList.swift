@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -16,6 +16,7 @@ public let masterRuleList = RuleList(rules: [
     ConditionalReturnsOnNewlineRule.self,
     ContainsOverFirstNotNilRule.self,
     ControlStatementRule.self,
+    ConvenienceTypeRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,
@@ -69,11 +70,13 @@ public let masterRuleList = RuleList(rules: [
     MarkRule.self,
     ModifierOrderRule.self,
     MultilineArgumentsRule.self,
+    MultilineFunctionChainsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
     NestingRule.self,
     NimbleOperatorRule.self,
     NoExtensionAccessModifierRule.self,
+    NoFallthroughOnlyRule.self,
     NoGroupingExtensionRule.self,
     NotificationCenterDetachmentRule.self,
     NumberSeparatorRule.self,
@@ -97,6 +100,7 @@ public let masterRuleList = RuleList(rules: [
     RedundantDiscardableLetRule.self,
     RedundantNilCoalescingRule.self,
     RedundantOptionalInitializationRule.self,
+    RedundantObjcAttributeRule.self,
     RedundantSetAccessControlRule.self,
     RedundantStringEnumValueRule.self,
     RedundantVoidReturnRule.self,

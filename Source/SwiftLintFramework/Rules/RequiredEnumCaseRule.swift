@@ -69,30 +69,17 @@ import SourceKittenFramework
 /// }
 /// ````
 public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public typealias KindType = SwiftDeclarationKind
-    typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
-
-    /// Keys needed to parse the information from the SourceKitRepresentable dictionary.
-    struct Keys {
-        static let offset = "key.offset"
-        static let inheritedTypes = "key.inheritedtypes"
-        static let name = "key.name"
-        static let substructure = "key.substructure"
-        static let kind = "key.kind"
-        static let enumCase = "source.lang.swift.decl.enumcase"
-    }
+    private typealias RequiredCase = RequiredEnumCaseRuleConfiguration.RequiredCase
 
     /// Simple representation of parsed information from the SourceKitRepresentable dictionary.
-    struct Enum {
-        let file: File
+    private struct Enum {
         let location: Location
         let inheritedTypes: [String]
         let cases: [String]
 
         init(from dictionary: [String: SourceKitRepresentable], in file: File) {
-            self.file = file
             location = Enum.location(from: dictionary, in: file)
-            inheritedTypes = Enum.inheritedTypes(from: dictionary)
+            inheritedTypes = dictionary.inheritedTypes
             cases = Enum.cases(from: dictionary)
         }
 
@@ -103,25 +90,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ///   - file: File that contains the enum.
         /// - Returns: Location of where the enum declaration starts.
         static func location(from dictionary: [String: SourceKitRepresentable], in file: File) -> Location {
-            guard let offset = dictionary[Keys.offset] as? Int64 else {
-                return Location(file: file, characterOffset: 0)
-            }
-
-            return Location(file: file, characterOffset: Int(offset))
-        }
-
-        /// Determines all of the inherited types the enum has.
-        ///
-        /// - Parameter dictionary: Parsed source for the enum.
-        /// - Returns: All of the inherited types the enum has.
-        static func inheritedTypes(from dictionary: [String: SourceKitRepresentable]) -> [String] {
-            guard let inheritedTypes = dictionary[Keys.inheritedTypes] as? [SourceKitRepresentable] else {
-                return []
-            }
-
-            return inheritedTypes.compactMap { $0 as? [String: SourceKitRepresentable] }.compactMap {
-                $0[Keys.name] as? String
-            }
+            return Location(file: file, characterOffset: dictionary.offset ?? 0)
         }
 
         /// Determines the names of cases found in the enum.
@@ -129,18 +98,19 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         /// - Parameter dictionary: Parsed source for the enum.
         /// - Returns: Names of cases found in the enum.
         static func cases(from dictionary: [String: SourceKitRepresentable]) -> [String] {
-            guard let elements = dictionary[Keys.substructure] as? [SourceKitRepresentable] else {
-                return []
-            }
+            let caseSubstructures = dictionary.substructure.filter { dict in
+                return dict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) == .enumcase
+            }.flatMap { $0.substructure }
 
-            let caseSubstructures = elements.compactMap { $0 as? [String: SourceKitRepresentable] }.filter {
-                $0.filter {
-                    $0.0 == Keys.kind && $0.1 as? String == SwiftDeclarationKind.enumcase.rawValue
-                }.isEmpty == false
-            }.compactMap { $0[Keys.substructure] as? [SourceKitRepresentable] }
-
-            return caseSubstructures.flatMap { $0 }.compactMap { $0 as? [String: SourceKitRepresentable] }.compactMap {
-                $0[Keys.name] as? String
+            return caseSubstructures.compactMap { $0.name }.map { name in
+                if SwiftVersion.current > .fourDotOne,
+                    let parenIndex = name.index(of: "("),
+                    parenIndex > name.startIndex {
+                    let index = name.index(before: parenIndex)
+                    return String(name[...index])
+                } else {
+                    return name
+                }
             }
         }
     }
@@ -190,7 +160,8 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
         ]
     )
 
-    public func validate(file: File, kind: KindType, dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+    public func validate(file: File, kind: SwiftDeclarationKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .enum else {
             return []
         }
@@ -203,7 +174,7 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
     /// - Parameters:
     ///   - parsed: Enum information parsed from the SourceKitRepresentable dictionary.
     /// - Returns: Violations for missing cases.
-    func violations(for parsed: Enum) -> [StyleViolation] {
+    private func violations(for parsed: Enum) -> [StyleViolation] {
         var violations: [StyleViolation] = []
 
         for (type, requiredCases) in configuration.protocols where parsed.inheritedTypes.contains(type) {
@@ -222,9 +193,9 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
     ///   - protocolName: Name of the protocol that is missing the case.
     ///   - requiredCase: Information about the case and the severity of the violation.
     /// - Returns: Created violation.
-    func create(violationIn parsed: Enum,
-                for protocolName: String,
-                missing requiredCase: RequiredCase) -> StyleViolation {
+    private func create(violationIn parsed: Enum,
+                        for protocolName: String,
+                        missing requiredCase: RequiredCase) -> StyleViolation {
 
         return StyleViolation(
             ruleDescription: type(of: self).description,

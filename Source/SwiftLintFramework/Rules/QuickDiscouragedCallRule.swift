@@ -68,7 +68,15 @@ public struct QuickDiscouragedCallRule: OptInRule, ConfigurationProviderRule {
 
     private func violationOffsets(in substructure: [[String: SourceKitRepresentable]]) -> [Int] {
         return substructure.flatMap { dictionary -> [Int] in
-            return dictionary.substructure.flatMap(toViolationOffsets)
+            let substructure = dictionary.substructure.flatMap { dict -> [[String: SourceKitRepresentable]] in
+                if dict.kind.flatMap(SwiftExpressionKind.init) == .closure {
+                    return dict.substructure
+                } else {
+                    return [dict]
+                }
+            }
+
+            return substructure.flatMap(toViolationOffsets)
         }
     }
 

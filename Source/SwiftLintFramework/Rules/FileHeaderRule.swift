@@ -9,7 +9,9 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "file_header",
         name: "File Header",
-        description: "Header comments should be consistent with project patterns.",
+        description: "Header comments should be consistent with project patterns. " +
+            "The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the " +
+            "required and forbidden patterns. It will be replaced by the real file name.",
         kind: .style,
         nonTriggeringExamples: [
             "let foo = \"Copyright\"",
@@ -28,6 +30,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             "//"
         ]
     )
+
+    private static let reason = "Header comments should be consistent with project patterns."
 
     public func validate(file: File) -> [StyleViolation] {
         var firstToken: SyntaxToken?
@@ -53,6 +57,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             lastToken = token
         }
 
+        let requiredRegex = configuration.requiredRegex(for: file)
+
         var violationsOffsets = [Int]()
         if let firstToken = firstToken, let lastToken = lastToken {
             let start = firstToken.offset
@@ -61,35 +67,33 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 return []
             }
 
-            if let regex = configuration.forbiddenRegex,
+            if let regex = configuration.forbiddenRegex(for: file),
                 let firstMatch = regex.matches(in: file.contents, options: [], range: range).first {
                 violationsOffsets.append(firstMatch.range.location)
             }
 
-            if let regex = configuration.requiredRegex,
+            if let regex = requiredRegex,
                 case let matches = regex.matches(in: file.contents, options: [], range: range),
                 matches.isEmpty {
                 violationsOffsets.append(start)
             }
-        } else if configuration.requiredRegex != nil {
+        } else if requiredRegex != nil {
             let location = firstNonCommentToken.map {
                 Location(file: file, byteOffset: $0.offset)
             } ?? Location(file: file.path, line: 1)
             return [
-                StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: location
-                )
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severityConfiguration.severity,
+                               location: location,
+                               reason: type(of: self).reason)
             ]
         }
 
         return violationsOffsets.map {
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, characterOffset: $0)
-            )
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: $0),
+                           reason: type(of: self).reason)
         }
     }
 

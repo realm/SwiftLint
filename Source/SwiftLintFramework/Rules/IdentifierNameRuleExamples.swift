@@ -13,7 +13,9 @@ internal struct IdentifierNameRuleExamples {
         "func isOperator(name: String) -> Bool",
         "func typeForKind(_ kind: SwiftDeclarationKind) -> String",
         "func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool",
-        "override func IsOperator(name: String) -> Bool"
+        "override func IsOperator(name: String) -> Bool",
+        "enum Foo { case `private` }",
+        "enum Foo { case value(String) }"
     ]
 
     static let triggeringExamples = [

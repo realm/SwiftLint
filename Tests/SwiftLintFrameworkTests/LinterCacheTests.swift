@@ -323,6 +323,8 @@ class LinterCacheTests: XCTestCase {
     func testDetectSwiftVersion() {
         #if swift(>=4.2.0)
             let version = "4.2.0"
+        #elseif swift(>=4.1.2)
+            let version = "4.1.2"
         #elseif swift(>=4.1.1)
             let version = "4.1.1"
         #elseif swift(>=4.1.0)
@@ -337,6 +339,8 @@ class LinterCacheTests: XCTestCase {
             let version = "4.0.0"
         #elseif swift(>=3.4.0)
             let version = "4.2.0" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.2.0
+        #elseif swift(>=3.3.2)
+            let version = "4.1.2" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.1.2
         #elseif swift(>=3.3.1)
             let version = "4.1.1" // Since we can't pass SWIFT_VERSION=3 to sourcekit, it returns 4.1.1
         #elseif swift(>=3.3.0)

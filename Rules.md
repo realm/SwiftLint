@@ -39,6 +39,7 @@
 * [Fatal Error Message](#fatal-error-message)
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
+* [File Name](#file-name)
 * [First Where](#first-where)
 * [For Where](#for-where)
 * [Force Cast](#force-cast)
@@ -6244,6 +6245,16 @@ print("swiftlint")
 ```
 
 </details>
+
+
+
+## File Name
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`file_name` | Disabled | No | idiomatic | 3.0.0 
+
+File name should match a type or extension declared in the file (if any).
 
 
 

@@ -194,6 +194,19 @@ extension FileLengthRuleTests {
     ]
 }
 
+extension FileNameRuleTests {
+    static var allTests: [(String, (FileNameRuleTests) -> () throws -> Void)] = [
+        ("testMainDoesntTrigger", testMainDoesntTrigger),
+        ("testLinuxMainDoesntTrigger", testLinuxMainDoesntTrigger),
+        ("testClassNameDoesntTrigger", testClassNameDoesntTrigger),
+        ("testStructNameDoesntTrigger", testStructNameDoesntTrigger),
+        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
+        ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
+        ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
+        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
@@ -382,8 +395,8 @@ extension RequiredEnumCaseRuleTestCase {
     ]
 }
 
-extension RuleConfigurationsTests {
-    static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] = [
+extension RuleConfigurationTests {
+    static var allTests: [(String, (RuleConfigurationTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
         ("testNameConfigurationThrowsOnBadConfig", testNameConfigurationThrowsOnBadConfig),
         ("testNameConfigurationMinLengthThreshold", testNameConfigurationMinLengthThreshold),
@@ -455,6 +468,7 @@ extension RulesTests {
         ("testLowerACLThanParent", testLowerACLThanParent),
         ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
         ("testEmptyString", testEmptyString),
+        ("testEmptyXCTestMethods", testEmptyXCTestMethods),
         ("testExplicitACL", testExplicitACL),
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
@@ -637,6 +651,7 @@ XCTMain([
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
+    testCase(FileNameRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
@@ -655,7 +670,7 @@ XCTMain([
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
-    testCase(RuleConfigurationsTests.allTests),
+    testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
     testCase(SourceKitCrashTests.allTests),

@@ -10303,7 +10303,7 @@ extension String {}
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`no_fallthrough_only` | Disabled | No | idiomatic | 3.0.0 
+`no_fallthrough_only` | Enabled | No | idiomatic | 3.0.0 
 
 Fallthroughs can only be used if the `case` contains at least one other statement.
 
@@ -10313,7 +10313,7 @@ Fallthroughs can only be used if the `case` contains at least one other statemen
 <summary>Non Triggering Examples</summary>
 
 ```swift
-switch {
+switch myvar {
 case 1:
     var a = 1
     fallthrough
@@ -10323,7 +10323,7 @@ case 2:
 ```
 
 ```swift
-switch {
+switch myvar {
 case "a":
     var one = 1
     var two = 2
@@ -10334,7 +10334,7 @@ case "b": /* comment */
 ```
 
 ```swift
-switch {
+switch myvar {
 case 1:
    let one = 1
 case 2:
@@ -10348,38 +10348,38 @@ case 2:
 <summary>Triggering Examples</summary>
 
 ```swift
-switch {
+switch myvar {
 case 1:
-    fallthrough
+    ↓fallthrough
 case 2:
     var a = 1
 }
 ```
 
 ```swift
-switch {
+switch myvar {
 case 1:
     var a = 2
 case 2:
-    fallthrough
+    ↓fallthrough
 case 3:
     var a = 3
 }
 ```
 
 ```swift
-switch {
+switch myvar {
 case 1: // comment
-    fallthrough
+    ↓fallthrough
 }
 ```
 
 ```swift
-switch {
+switch myvar {
 case 1: /* multi
     line
     comment */
-    fallthrough
+    ↓fallthrough
 case 2:
     var a = 2
 }

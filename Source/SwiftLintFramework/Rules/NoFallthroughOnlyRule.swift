@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -13,7 +13,7 @@ public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRu
         kind: .idiomatic,
         nonTriggeringExamples: [
             """
-            switch {
+            switch myvar {
             case 1:
                 var a = 1
                 fallthrough
@@ -22,7 +22,7 @@ public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRu
             }
             """,
             """
-            switch {
+            switch myvar {
             case "a":
                 var one = 1
                 var two = 2
@@ -32,7 +32,7 @@ public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRu
             }
             """,
             """
-            switch {
+            switch myvar {
             case 1:
                let one = 1
             case 2:
@@ -43,35 +43,35 @@ public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRu
         ],
         triggeringExamples: [
             """
-            switch {
+            switch myvar {
             case 1:
-                fallthrough
+                ↓fallthrough
             case 2:
                 var a = 1
             }
             """,
             """
-            switch {
+            switch myvar {
             case 1:
                 var a = 2
             case 2:
-                fallthrough
+                ↓fallthrough
             case 3:
                 var a = 3
             }
             """,
             """
-            switch {
+            switch myvar {
             case 1: // comment
-                fallthrough
+                ↓fallthrough
             }
             """,
             """
-            switch {
+            switch myvar {
             case 1: /* multi
                 line
                 comment */
-                fallthrough
+                ↓fallthrough
             case 2:
                 var a = 2
             }
@@ -83,27 +83,33 @@ public struct NoFallthroughOnlyRule: ASTRule, OptInRule, ConfigurationProviderRu
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard kind == StatementKind.case else {
-            return []
-        }
-
-        guard
+        guard kind == .case,
             let length = dictionary.length,
-            let offset = dictionary.offset
+            let offset = dictionary.offset,
+            case let nsstring = file.contents.bridge(),
+            let range = nsstring.byteRangeToNSRange(start: offset, length: length),
+            let colonLocation = file.match(pattern: ":", range: range).first?.0.location
         else {
             return []
         }
 
-        let pattern = "case[^:]+:\\s*" + // match start of case
-            "((//.*\\n)|" + // match double-slash comments, or
-            "(/\\*(.|\\n)*\\*/))*" + // match block comments (zero or more consecutive comments)
-            "\\s*fallthrough" // look for fallthrough immediately following case and consecutive comments
-        let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
-
-        return file.match(pattern: pattern, range: range).map { nsRange, _ in
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: nsRange.location))
+        let caseBodyRange = NSRange(location: colonLocation,
+                                    length: range.length + range.location - colonLocation)
+        let nonCommentCaseBody = file.match(pattern: "\\w+", range: caseBodyRange).filter { _, syntaxKinds in
+            return !Set(syntaxKinds).subtracting(SyntaxKind.commentKinds).isEmpty
         }
+
+        guard nonCommentCaseBody.count == 1 else {
+            return []
+        }
+
+        let nsRange = nonCommentCaseBody[0].0
+        if nsstring.substring(with: nsRange) == "fallthrough" && nonCommentCaseBody[0].1 == [.keyword] {
+            return [StyleViolation(ruleDescription: type(of: self).description,
+                                   severity: configuration.severity,
+                                   location: Location(file: file, characterOffset: nsRange.location))]
+        }
+
+        return []
     }
 }

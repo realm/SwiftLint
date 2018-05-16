@@ -82,6 +82,7 @@
 
 * Fix operator usage spacing nested generics false positive.  
   [Eric Horacek](https://github.com/erichoracek)
+  [#1341](https://github.com/realm/SwiftLint/issues/1341)
   [#1897](https://github.com/realm/SwiftLint/issues/1897)
 
 * Fix autocorrection for several rules

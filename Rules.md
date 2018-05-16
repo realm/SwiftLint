@@ -10916,6 +10916,11 @@ let foo = Foo<Bar<T>, Baz>()
 
 ```
 
+```swift
+let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

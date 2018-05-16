@@ -31,7 +31,8 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
             "let doubleValue = -9e-11\n",
             "let foo = GenericType<(UIViewController) -> Void>()\n",
-            "let foo = Foo<Bar<T>, Baz>()\n"
+            "let foo = Foo<Bar<T>, Baz>()\n",
+            "let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",

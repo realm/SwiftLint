@@ -42,6 +42,9 @@
   [Eric Horacek](https://github.com/erichoracek)
   [#2121](https://github.com/realm/SwiftLint/issues/2121)]
 
+* Improves the `mark` rule's autocorrection.  
+  [Eric Horacek](https://github.com/erichoracek)
+
 * Add `redundant_set_access_control` rule to warn against using redundant
   setter ACLs on variable declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)

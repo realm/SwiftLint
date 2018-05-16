@@ -44,6 +44,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓// MARK bad",
             "↓//MARK bad",
             "↓// MARK - bad",
+            "↓//MARK : bad",
+            "↓// MARKL:",
+            "↓// MARKR ",
+            "↓// MARKK -",
             issue1029Example
         ],
         corrections: [
@@ -54,6 +58,15 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
             "↓//MARK: - comment": "// MARK: - comment",
             "↓// MARK:- comment": "// MARK: - comment",
             "↓// MARK: -comment": "// MARK: - comment",
+            "↓// MARK: -  comment": "// MARK: - comment",
+            "↓// Mark: comment": "// MARK: comment",
+            "↓// Mark: - comment": "// MARK: - comment",
+            "↓// MARK - comment": "// MARK: - comment",
+            "↓// MARK : comment": "// MARK: comment",
+            "↓// MARKL:": "// MARK:",
+            "↓// MARKL: -": "// MARK: -",
+            "↓// MARKK ": "// MARK: ",
+            "↓// MARKK -": "// MARK: -",
             issue1029Example: issue1029Correction
         ]
     )
@@ -73,6 +86,10 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
     private let invalidLowercasePattern = "(?:// ?[Mm]ark:)"
 
     private let missingColonPattern = "(?:// ?MARK[^:])"
+    // The below patterns more specifically describe some of the above pattern's failure cases for correction.
+    private let oneOrMoreSpacesBeforeColonPattern = "(?:// ?MARK +:)"
+    private let nonWhitespaceBeforeColonPattern = "(?:// ?MARK\\S+:)"
+    private let nonWhitespaceNorColonBeforeSpacesPattern = "(?:// ?MARK[^\\s:]* +)"
 
     private var pattern: String {
         return [
@@ -116,6 +133,25 @@ public struct MarkRule: CorrectableRule, ConfigurationProviderRule {
                                           pattern: nonSpaceOrNewlineAfterHyphenPattern,
                                           replaceString: "// MARK: - ",
                                           keepLastChar: true))
+
+        result.append(contentsOf: correct(file: file,
+                                          pattern: oneOrMoreSpacesBeforeColonPattern,
+                                          replaceString: "// MARK:",
+                                          keepLastChar: false))
+
+        result.append(contentsOf: correct(file: file,
+                                          pattern: nonWhitespaceBeforeColonPattern,
+                                          replaceString: "// MARK:",
+                                          keepLastChar: false))
+
+        result.append(contentsOf: correct(file: file,
+                                          pattern: nonWhitespaceNorColonBeforeSpacesPattern,
+                                          replaceString: "// MARK: ",
+                                          keepLastChar: false))
+
+        result.append(contentsOf: correct(file: file,
+                                          pattern: invalidLowercasePattern,
+                                          replaceString: "// MARK:"))
 
         return result.unique
     }

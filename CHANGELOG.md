@@ -159,6 +159,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1871](https://github.com/realm/SwiftLint/issues/1871)  
 
+* Support for passing multiple path arguments.  
+  [Ben Asher](https://github.com/benasher44)
+  [#810](https://github.com/realm/SwiftLint/issues/810)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

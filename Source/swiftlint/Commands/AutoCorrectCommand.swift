@@ -27,7 +27,7 @@ struct AutoCorrectCommand: CommandProtocol {
             useTabs = options.useTabs
         }
 
-        return configuration.visitLintableFiles(path: options.path, action: "Correcting",
+        return configuration.visitLintableFiles(paths: options.paths, action: "Correcting",
                                                 quiet: options.quiet,
                                                 useScriptInputFiles: options.useScriptInputFiles,
                                                 forceExclude: options.forceExclude,
@@ -53,7 +53,7 @@ struct AutoCorrectCommand: CommandProtocol {
 }
 
 struct AutoCorrectOptions: OptionsProtocol {
-    let path: String
+    let paths: [String]
     let configurationFile: String
     let useScriptInputFiles: Bool
     let quiet: Bool
@@ -64,16 +64,18 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useTabs: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
-        }}}}}}}}
+    static func create(_ path: String) -> (_ paths: [String]) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
+        return { paths in { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in
+            let allPaths = Set([path] + paths)
+            return self.init(paths: Array(allPaths), configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
+        }}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
+            <*> mode <| pathsArgument(action: "correct")
             <*> mode <| configOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")

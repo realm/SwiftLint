@@ -48,15 +48,15 @@ private func autoreleasepool(block: () -> Void) { block() }
 
 extension Configuration {
 
-    func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
+    func visitLintableFiles(paths: [String], action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool, forceExclude: Bool,
                             cache: LinterCache? = nil, parallel: Bool = false,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
-        return getFiles(path: path, action: action, useSTDIN: useSTDIN, quiet: quiet, forceExclude: forceExclude,
+        return getFiles(paths: paths, action: action, useSTDIN: useSTDIN, quiet: quiet, forceExclude: forceExclude,
                         useScriptInputFiles: useScriptInputFiles)
         .flatMap { files -> Result<[Configuration: [File]], CommandantError<()>> in
             if files.isEmpty {
-                let errorMessage = "No lintable files found at path '\(path)'"
+                let errorMessage = "No lintable files found at paths: '\(paths.joined(separator: ", "))'"
                 return .failure(.usageError(description: errorMessage))
             }
             return .success(Dictionary(grouping: files, by: configuration(for:)))
@@ -105,7 +105,7 @@ extension Configuration {
     }
 
     // swiftlint:disable function_parameter_count
-    fileprivate func getFiles(path: String, action: String, useSTDIN: Bool, quiet: Bool, forceExclude: Bool,
+    fileprivate func getFiles(paths: [String], action: String, useSTDIN: Bool, quiet: Bool, forceExclude: Bool,
                               useScriptInputFiles: Bool) -> Result<[File], CommandantError<()>> {
         if useSTDIN {
             let stdinData = FileHandle.standardInput.readDataToEndOfFile()
@@ -117,26 +117,36 @@ extension Configuration {
             return scriptInputFiles()
         }
         if !quiet {
-            let message = "\(action) Swift files " + (path.isEmpty ? "in current working directory" : "at path \(path)")
+            let filesInfo = paths.isEmpty ? "in current working directory" : "at paths \(paths.joined(separator: ", "))"
+            let message = "\(action) Swift files \(filesInfo)"
             queuedPrintError(message)
         }
-        return .success(lintableFiles(inPath: path, forceExclude: forceExclude))
+        return .success(paths.flatMap {
+            self.lintableFiles(inPath: $0, forceExclude: forceExclude)
+        })
     }
     // swiftlint:enable function_parameter_count
+
+    private static func rootPath(from paths: [String]) -> String? {
+        // We don't know the root when more than one path is passed (i.e. not useful if the root of 2 paths is ~)
+        return paths.count == 1 ? paths.first?.absolutePathStandardized() : nil
+    }
 
     // MARK: Lint Command
 
     init(options: LintOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
-        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+        self.init(path: options.configurationFile,
+                  rootPath: type(of: self).rootPath(from: options.paths),
                   optional: optional, quiet: options.quiet,
-                  enableAllRules: options.enableAllRules, cachePath: cachePath)
+                  enableAllRules: options.enableAllRules,
+                  cachePath: cachePath)
     }
 
     func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
-        return visitLintableFiles(path: options.path, action: "Linting", useSTDIN: options.useSTDIN,
+        return visitLintableFiles(paths: options.paths, action: "Linting", useSTDIN: options.useSTDIN,
                                   quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
                                   forceExclude: options.forceExclude, cache: cache, parallel: true,
                                   visitorBlock: visitorBlock)
@@ -147,7 +157,7 @@ extension Configuration {
     init(options: AutoCorrectOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
-        self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
+        self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
                   optional: optional, quiet: options.quiet, cachePath: cachePath)
     }
 

@@ -66,7 +66,12 @@ struct AutoCorrectOptions: OptionsProtocol {
     // swiftlint:disable line_length
     static func create(_ path: String) -> (_ paths: [String]) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
         return { paths in { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in
-            let allPaths = Set([path] + paths)
+            let allPaths: [String]
+            if !path.isEmpty {
+                allPaths = [path]
+            } else {
+                allPaths = paths
+            }
             return self.init(paths: Array(allPaths), configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
         }}}}}}}}}
     }

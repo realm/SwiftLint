@@ -134,7 +134,12 @@ struct LintOptions: OptionsProtocol {
     // swiftlint:disable line_length
     static func create(_ path: String) -> (_ paths: [String]) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
         return { paths in { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
-            let allPaths = Set([path] + paths)
+            let allPaths: [String]
+            if !path.isEmpty {
+                allPaths = [path]
+            } else {
+                allPaths = paths
+            }
             return self.init(paths: Array(allPaths), useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
         }}}}}}}}}}}}}
     }

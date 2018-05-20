@@ -429,6 +429,15 @@ private struct DefaultError: Error {}
 private let bar = 1
 ```
 
+```swift
+import XCTest
+@testable import DeleteMe
+
+@available (iOS 11.0, *)
+class DeleteMeTests: XCTestCase {
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

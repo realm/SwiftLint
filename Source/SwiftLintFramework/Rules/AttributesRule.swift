@@ -209,7 +209,7 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                     return false
                 }
 
-                return ["func", "var", "let"].contains(keyword)
+                return ["func", "var", "let", "import"].contains(keyword)
             }
 
             guard nonAttributeTokens.isEmpty else {

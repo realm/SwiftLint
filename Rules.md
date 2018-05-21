@@ -11890,18 +11890,28 @@ Some methods should not call super
 
 ```swift
 class VC: UIViewController {
-	override func loadView() {
-	}
+    override func loadView() {
+    }
 }
-
 ```
 
 ```swift
 class NSView {
-	func updateLayer() {
-		self.method1()	}
+    func updateLayer() {
+        self.method1()
+    }
 }
+```
 
+```swift
+public class FileProviderExtension: NSFileProviderExtension {
+    override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {
+        guard let identifier = persistentIdentifierForItem(at: url) else {
+            completionHandler(NSFileProviderError(.noSuchItem))
+            return
+        }
+    }
+}
 ```
 
 </details>
@@ -11910,43 +11920,39 @@ class NSView {
 
 ```swift
 class VC: UIViewController {
-	override func loadView() {↓
-		super.loadView()
-	}
+    override func loadView() {↓
+        super.loadView()
+    }
 }
-
 ```
 
 ```swift
 class VC: NSFileProviderExtension {
-	override func providePlaceholder(at url: URL,completionHandler: @escaping (Error?) -> Void) {↓
-		self.method1()
-		super.providePlaceholder(at:url, completionHandler: completionHandler)
-	}
+    override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {↓
+        self.method1()
+        super.providePlaceholder(at:url, completionHandler: completionHandler)
+    }
 }
-
 ```
 
 ```swift
 class VC: NSView {
-	override func updateLayer() {↓
-		self.method1()
-		super.updateLayer()
-		self.method2()
-	}
+    override func updateLayer() {↓
+        self.method1()
+        super.updateLayer()
+        self.method2()
+    }
 }
-
 ```
 
 ```swift
 class VC: NSView {
-	override func updateLayer() {↓
-		defer {
-			super.updateLayer()
-		}
-	}
+    override func updateLayer() {↓
+        defer {
+            super.updateLayer()
+        }
+    }
 }
-
 ```
 
 </details>

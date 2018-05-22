@@ -18271,7 +18271,7 @@ foo.bar { [weak self] ↓(x, y) in }
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`untyped_error_in_catch` | Disabled | No | idiomatic | 3.0.0 
+`untyped_error_in_catch` | Disabled | Yes | idiomatic | 3.0.0 
 
 Catch statements should not declare error variables without type casting.
 

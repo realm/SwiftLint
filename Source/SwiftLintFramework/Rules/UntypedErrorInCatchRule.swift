@@ -77,9 +77,9 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
 
 extension UntypedErrorInCatchRule: CorrectableRule {
     public func correct(file: File) -> [Correction] {
-         let violations = violationRanges(in: file)
-         let matches = file.ruleEnabled(violatingRanges: violations, for: self)
-         if matches.isEmpty { return [] }
+        let violations = violationRanges(in: file)
+        let matches = file.ruleEnabled(violatingRanges: violations, for: self)
+        if matches.isEmpty { return [] }
 
         var contents = file.contents.bridge()
         let description = type(of: self).description

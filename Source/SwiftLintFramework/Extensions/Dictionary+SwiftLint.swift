@@ -122,11 +122,14 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 
     internal func extractCallsToSuper(methodName: String) -> [String] {
-        let superCall = "super.\(methodName)"
+        guard let methodNameWithoutArguments = methodName.split(separator: "(").first else {
+            return []
+        }
+        let superCall = "super.\(methodNameWithoutArguments)"
         return substructure.flatMap { elems -> [String] in
-            guard let type = elems.kind.flatMap({ SwiftExpressionKind(rawValue: $0) }),
+            guard let type = elems.kind.flatMap(SwiftExpressionKind.init),
                 let name = elems.name,
-                type == .call && superCall.contains(name) else {
+                type == .call && superCall == name else {
                     return elems.extractCallsToSuper(methodName: methodName)
             }
             return [name]

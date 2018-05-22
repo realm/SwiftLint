@@ -106,6 +106,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2211](https://github.com/realm/SwiftLint/issues/2211)
 
+* Fix false positives in `prohibited_super_call` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2212](https://github.com/realm/SwiftLint/issues/2212)
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.

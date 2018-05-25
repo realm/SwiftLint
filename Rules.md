@@ -9435,6 +9435,11 @@ self.viewModel.outputs.postContextualNotification
 let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))
 ```
 
+```swift
+self.happeningNewsletterOn = self.updateCurrentUser
+    .map { $0.newsletters.happening }.skipNil().skipRepeats()
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

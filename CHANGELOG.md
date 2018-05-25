@@ -43,8 +43,8 @@
   autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
 
-* Add a new `multiline_function_chains` rule to validate indentation of chained
-  function calls.  
+* Add a new `multiline_function_chains` rule to validate chained function 
+  calls start either on the same line or one per line.  
   [Eric Horacek](https://github.com/erichoracek)
   [#2214](https://github.com/realm/SwiftLint/issues/2121)]
 

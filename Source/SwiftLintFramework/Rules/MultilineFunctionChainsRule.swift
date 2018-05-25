@@ -98,7 +98,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
         let uniqueLines = calls
             .map { $0.dotLine }
-            .reduce(into: Set<Int>()) { result, line in
+            .reduce(into: Set<Int>()) { (result: inout Set<Int>, line: Int) in
                 result.insert(line)
             }
 

@@ -58,7 +58,11 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                 )
               }
             """,
-            "let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))"
+            "let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))",
+            """
+            self.happeningNewsletterOn = self.updateCurrentUser
+                .map { $0.newsletters.happening }.skipNil().skipRepeats()
+            """
         ],
         triggeringExamples: [
             """
@@ -131,7 +135,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         guard
             let range = file.contents.bridge().byteRangeToNSRange(start: callRange.location, length: callRange.length),
             case let regex = type(of: self).whitespaceDotRegex,
-            let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range else {
+            let match = regex.matches(in: file.contents, options: [], range: range).last?.range else {
                 return nil
         }
         return match.location + match.length - 1

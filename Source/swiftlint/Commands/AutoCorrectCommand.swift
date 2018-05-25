@@ -64,8 +64,8 @@ struct AutoCorrectOptions: OptionsProtocol {
     let useTabs: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ paths: [String]) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
-        return { paths in { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
@@ -80,7 +80,6 @@ struct AutoCorrectOptions: OptionsProtocol {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
-            <*> mode <| pathsArgument(action: "correct")
             <*> mode <| configOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")
@@ -97,5 +96,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| Option(key: "use-tabs",
                                defaultValue: false,
                                usage: "should use tabs over spaces when reformatting. Deprecated.")
+            // This should go last to avoid eating other args
+            <*> mode <| pathsArgument(action: "correct")
     }
 }

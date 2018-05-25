@@ -132,8 +132,8 @@ struct LintOptions: OptionsProtocol {
     let enableAllRules: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ paths: [String]) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> LintOptions {
-        return { paths in { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in
+    static func create(_ path: String) -> (_ useSTDIN: Bool) -> (_ configurationFile: String) -> (_ strict: Bool) -> (_ lenient: Bool) -> (_ forceExclude: Bool) -> (_ useScriptInputFiles: Bool) -> (_ benchmark: Bool) -> (_ reporter: String) -> (_ quiet: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ enableAllRules: Bool) -> (_ paths: [String]) -> LintOptions {
+        return { useSTDIN in { configurationFile in { strict in { lenient in { forceExclude in { useScriptInputFiles in { benchmark in { reporter in { quiet in { cachePath in { ignoreCache in { enableAllRules in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
@@ -148,7 +148,6 @@ struct LintOptions: OptionsProtocol {
         // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "lint")
-            <*> mode <| pathsArgument(action: "lint")
             <*> mode <| Option(key: "use-stdin", defaultValue: false,
                                usage: "lint standard input")
             <*> mode <| configOption
@@ -171,5 +170,7 @@ struct LintOptions: OptionsProtocol {
                                usage: "ignore cache when linting")
             <*> mode <| Option(key: "enable-all-rules", defaultValue: false,
                                usage: "run all rules, even opt-in and disabled ones, ignoring `whitelist_rules`")
+            // This should go last to avoid eating other args
+            <*> mode <| pathsArgument(action: "lint")
     }
 }

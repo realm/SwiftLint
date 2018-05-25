@@ -227,6 +227,10 @@ class RulesTests: XCTestCase {
         verifyRule(ModifierOrderRule.description)
     }
 
+    func testMultilineFunctionChains() {
+        verifyRule(MultilineFunctionChainsRule.description)
+    }
+
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
     }

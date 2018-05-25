@@ -43,10 +43,10 @@
   autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
 
-* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
-  indentation of non-trailing closure parameters.  
+* Add a new `multiline_function_chains` rule to validate indentation of chained
+  function calls.  
   [Eric Horacek](https://github.com/erichoracek)
-  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
+  [#2214](https://github.com/realm/SwiftLint/issues/2121)]
 
 * Improves the `mark` rule's autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
@@ -93,6 +93,11 @@
   [Eric Horacek](https://github.com/erichoracek)
   [#1341](https://github.com/realm/SwiftLint/issues/1341)
   [#1897](https://github.com/realm/SwiftLint/issues/1897)
+
+* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
+  indentation of non-trailing closure parameters.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
 
 * Fix autocorrection for several rules
   (`empty_parentheses_with_trailing_closure`, `explicit_init`,

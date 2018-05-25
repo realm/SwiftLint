@@ -121,7 +121,9 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
         if uniqueLines.count == 1 { return [] }
 
-        let noLeadingNewlineViolations = calls.dropLast()
+        // The first call (last here) is allowed to not have a leading newline.
+        let noLeadingNewlineViolations = calls
+            .dropLast()
             .filter { line in
                 !callHasLeadingNewline(file: file, callRange: line.range)
             }

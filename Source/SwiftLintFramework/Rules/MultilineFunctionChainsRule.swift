@@ -44,8 +44,21 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                     b, 2,
                     c, 3))
                 .d()
+            """,
             """
-
+            self.viewModel.outputs.postContextualNotification
+              .observeForUI()
+              .observeValues {
+                NotificationCenter.default.post(
+                  Notification(
+                    name: .ksr_showNotificationsDialog,
+                    userInfo: [UserInfoKeys.context: PushNotificationDialog.Context.pledge,
+                               UserInfoKeys.viewController: self]
+                 )
+                )
+              }
+            """,
+            "let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))"
         ],
         triggeringExamples: [
             """
@@ -156,7 +169,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
 
         return subcalls.flatMap { call -> [NSRange] in
-            guard let range = callRange(file: file, call: call, parentCallName: name) else {
+            guard let range = callRange(file: file, call: call, parentName: name, parentNameOffset: offset) else {
                 return []
             }
 
@@ -166,20 +179,22 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 
     private func callRange(file: File,
                            call: [String: SourceKitRepresentable],
-                           parentCallName: String) -> NSRange? {
+                           parentName: String,
+                           parentNameOffset: Int) -> NSRange? {
         guard
             case let contents = file.contents.bridge(),
             let nameOffset = call.nameOffset,
+            parentNameOffset == nameOffset,
             let nameLength = call.nameLength,
             let bodyOffset = call.bodyOffset,
             let bodyLength = call.bodyLength,
             let name = contents.substringWithByteRange(start: nameOffset, length: nameLength),
-            parentCallName.starts(with: name) else {
+            parentName.starts(with: name) else {
                 return nil
         }
 
         let linkOffset = nameOffset + nameLength
-        let linkLength = parentCallName.bridge().length - nameLength
+        let linkLength = parentName.bridge().length - nameLength
         let offsetDifference = bodyOffset - linkOffset
 
         return NSRange(location: linkOffset + offsetDifference + bodyLength,

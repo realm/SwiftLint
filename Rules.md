@@ -9417,6 +9417,24 @@ let chain = a.b(1, 2, 3)
     .d()
 ```
 
+```swift
+self.viewModel.outputs.postContextualNotification
+  .observeForUI()
+  .observeValues {
+    NotificationCenter.default.post(
+      Notification(
+        name: .ksr_showNotificationsDialog,
+        userInfo: [UserInfoKeys.context: PushNotificationDialog.Context.pledge,
+                   UserInfoKeys.viewController: self]
+     )
+    )
+  }
+```
+
+```swift
+let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

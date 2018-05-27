@@ -1,11 +1,3 @@
-//
-//  LineLengthConfigurationTests.swift
-//  SwiftLint
-//
-//  Created by Javier Hernández on 05/01/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
@@ -59,6 +51,18 @@ class LineLengthConfigurationTests: XCTestCase {
         let configuration2 = LineLengthConfiguration(warning: 100,
                                                      error: 150)
         XCTAssertFalse(configuration2.ignoresComments)
+    }
+
+    func testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings() {
+        let configuration1 = LineLengthConfiguration(warning: 100,
+                                                     error: 150,
+                                                     options: [.ignoreInterpolatedStrings])
+
+        XCTAssertTrue(configuration1.ignoresInterpolatedStrings)
+
+        let configuration2 = LineLengthConfiguration(warning: 100,
+                                                     error: 150)
+        XCTAssertFalse(configuration2.ignoresInterpolatedStrings)
     }
 
     func testLineLengthConfigurationParams() {

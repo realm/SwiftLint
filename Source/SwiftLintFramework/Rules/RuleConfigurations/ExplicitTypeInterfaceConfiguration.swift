@@ -1,11 +1,3 @@
-//
-//  ExplicitTypeInterfaceConfiguration.swift
-//  SwiftLint
-//
-//  Created by Rounak Jain on 2/18/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

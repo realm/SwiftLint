@@ -28,6 +28,7 @@
 * [Empty Parameters](#empty-parameters)
 * [Empty Parentheses with Trailing Closure](#empty-parentheses-with-trailing-closure)
 * [Empty String](#empty-string)
+* [Empty XCTest Method](#empty-xctest-method)
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
@@ -38,12 +39,14 @@
 * [Fatal Error Message](#fatal-error-message)
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
+* [File Name](#file-name)
 * [First Where](#first-where)
 * [For Where](#for-where)
 * [Force Cast](#force-cast)
 * [Force Try](#force-try)
 * [Force Unwrapping](#force-unwrapping)
 * [Function Body Length](#function-body-length)
+* [Function Default Parameter at End](#function-default-parameter-at-end)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
 * [Identifier Name](#identifier-name)
@@ -64,6 +67,7 @@
 * [Lower ACL than parent](#lower-acl-than-parent)
 * [Mark](#mark)
 * [Missing Docs](#missing-docs)
+* [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
@@ -139,7 +143,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `array_init` | Disabled | No | lint | 3.0.0 
 
-Prefer using Array(seq) than seq.map { $0 } to convert a sequence into an Array.
+Prefer using `Array(seq)` over `seq.map { $0 }` to convert a sequence into an Array.
 
 ### Examples
 
@@ -424,6 +428,15 @@ private struct DefaultError: Error {}
 @testable import foo
 
 private let bar = 1
+```
+
+```swift
+import XCTest
+@testable import DeleteMe
+
+@available (iOS 11.0, *)
+class DeleteMeTests: XCTestCase {
+}
 ```
 
 </details>
@@ -758,7 +771,7 @@ Closing brace with closing parenthesis should not have any whitespaces in the mi
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`closure_end_indentation` | Disabled | No | style | 3.0.0 
+`closure_end_indentation` | Disabled | Yes | style | 3.0.0 
 
 Closure end should have the same indentation as the line that started it.
 
@@ -806,6 +819,32 @@ foo(abc, 123)
 
 ```
 
+```swift
+function(
+    closure: { x in
+        print(x)
+    },
+    anotherClosure: { y in
+        print(y)
+    })
+```
+
+```swift
+function(parameter: param,
+         closure: { x in
+    print(x)
+})
+```
+
+```swift
+function(parameter: param, closure: { x in
+        print(x)
+    },
+    anotherClosure: { y in
+        print(y)
+    })
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -825,6 +864,16 @@ return match(pattern: pattern, with: [.comment]).flatMap { range in
    return command.expand()
 ↓}
 
+```
+
+```swift
+function(
+    closure: { x in
+        print(x)
+↓},
+    anotherClosure: { y in
+        print(y)
+↓})
 ```
 
 </details>
@@ -4156,6 +4205,166 @@ myString↓ != ""
 
 
 
+## Empty XCTest Method
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`empty_xctest_method` | Disabled | No | lint | 3.0.0 
+
+Empty XCTest method should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class TotoTests: XCTestCase {
+    var foobar: Foobar?
+
+    override func setUp() {
+        super.setUp()
+        foobar = Foobar()
+    }
+
+    override func tearDown() {
+        foobar = nil
+        super.tearDown()
+    }
+
+    func testFoo() {
+        XCTAssertTrue(foobar?.foo)
+    }
+
+    func testBar() {
+        // comment...
+
+        XCTAssertFalse(foobar?.bar)
+
+        // comment...
+    }
+}
+```
+
+```swift
+class Foobar {
+    func setUp() {}
+
+    func tearDown() {}
+
+    func testFoo() {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    func setUp(with object: Foobar) {}
+
+    func tearDown(object: Foobar) {}
+
+    func testFoo(_ foo: Foobar) {}
+
+    func testBar(bar: (String) -> Int) {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    func testFoo() { XCTAssertTrue(foobar?.foo) }
+
+    func testBar() { XCTAssertFalse(foobar?.bar) }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {
+    }
+
+    override ↓func tearDown() {
+
+    }
+
+    ↓func testFoo() {
+
+
+    }
+
+    ↓func testBar() {
+
+
+
+    }
+
+    func helperFunction() {
+    }
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {}
+
+    override ↓func tearDown() {}
+
+    ↓func testFoo() {}
+
+    func helperFunction() {}
+}
+```
+
+```swift
+class TotoTests: XCTestCase {
+    override ↓func setUp() {
+        // comment...
+    }
+
+    override ↓func tearDown() {
+        // comment...
+        // comment...
+    }
+
+    ↓func testFoo() {
+        // comment...
+
+        // comment...
+
+        // comment...
+    }
+
+    ↓func testBar() {
+        /*
+         * comment...
+         *
+         * comment...
+         *
+         * comment...
+         */
+    }
+
+    func helperFunction() {
+    }
+}
+```
+
+```swift
+class FooTests: XCTestCase {
+    override ↓func setUp() {}
+}
+
+class BarTests: XCTestCase {
+    ↓func testFoo() {}
+}
+```
+
+</details>
+
+
+
 ## Explicit ACL
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
@@ -4678,7 +4887,7 @@ public extension Foo {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`fallthrough` | Enabled | No | idiomatic | 3.0.0 
+`fallthrough` | Disabled | No | idiomatic | 3.0.0 
 
 Fallthrough should be avoided.
 
@@ -6049,6 +6258,16 @@ print("swiftlint")
 
 
 
+## File Name
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`file_name` | Disabled | No | idiomatic | 3.0.0 
+
+File name should match a type or extension declared in the file (if any).
+
+
+
 ## First Where
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
@@ -6438,6 +6657,70 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 `function_body_length` | Enabled | No | metrics | 3.0.0 
 
 Functions bodies should not span too many lines.
+
+
+
+## Function Default Parameter at End
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`function_default_parameter_at_end` | Disabled | No | idiomatic | 3.0.0 
+
+Prefer to locate parameters with defaults toward the end of the parameter list.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func foo(baz: String, bar: Int = 0) {}
+```
+
+```swift
+func foo(x: String, y: Int = 0, z: CGFloat = 0) {}
+```
+
+```swift
+func foo(bar: String, baz: Int = 0, z: () -> Void) {}
+```
+
+```swift
+func foo(bar: String, z: () -> Void, baz: Int = 0) {}
+```
+
+```swift
+func foo(bar: Int = 0) {}
+```
+
+```swift
+func foo() {}
+```
+
+```swift
+class A: B {
+    override func foo(bar: Int = 0, baz: String) {}
+```
+
+```swift
+func foo(bar: Int = 0, completion: @escaping CompletionHandler) {}
+```
+
+```swift
+func foo(a: Int, b: CGFloat = 0) {
+    let block = { (error: Error?) in }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓func foo(bar: Int = 0, baz: String) {}
+```
+
+</details>
 
 
 
@@ -7093,6 +7376,16 @@ foo.map { value in
 foo.map {
   ↓return $0 + 1
 }
+```
+
+```swift
+foo.map({ ↓return $0 + 1})
+```
+
+```swift
+[1, 2].first(where: {
+    ↓return true
+})
 ```
 
 </details>
@@ -8360,7 +8653,7 @@ Lines should not span too many characters.
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`literal_expression_end_indentation` | Disabled | No | style | 3.0.0 
+`literal_expression_end_indentation` | Disabled | Yes | style | 3.0.0 
 
 Array and dictionary literal end should have the same indentation as the line that started it.
 
@@ -8487,6 +8780,14 @@ private struct Foo { private func bar(id: String) }
 ```
 
 ```swift
+extension Foo { public func bar() {} }
+```
+
+```swift
+private struct Foo { fileprivate func bar() {} }
+```
+
+```swift
 private func foo(id: String) {}
 ```
 
@@ -8499,19 +8800,11 @@ struct Foo { public func bar() {} }
 ```
 
 ```swift
-extension Foo { public func bar() {} }
-```
-
-```swift
 enum Foo { public func bar() {} }
 ```
 
 ```swift
 public class Foo { open func bar() }
-```
-
-```swift
-private struct Foo { fileprivate func bar() {} }
 ```
 
 ```swift
@@ -8710,6 +9003,288 @@ var b: Int { get } }
 public struct C: A {
 
 public let b: Int
+}
+```
+
+</details>
+
+
+
+## Modifier Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`modifier_order` | Disabled | No | style | 4.1.0 
+
+Modifier order should be consistent.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+public class Foo { 
+   public convenience required init() {} 
+}
+```
+
+```swift
+public class Foo { 
+   public static let bar = 42 
+}
+```
+
+```swift
+public class Foo { 
+   public static var bar: Int { 
+       return 42   }}
+```
+
+```swift
+public class Foo { 
+   public class var bar: Int { 
+       return 42 
+   } 
+}
+```
+
+```swift
+public class Bar { 
+   public class var foo: String { 
+       return "foo" 
+   } 
+} 
+public class Foo: Bar { 
+   override public final class var foo: String { 
+       return "bar" 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   public var foo: Int? { 
+       return 42 
+   } 
+} 
+open class Foo: Bar { 
+   override public var foo: Int? { 
+       return 43 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   override open class func foo() -> Int { 
+       return 43 
+   } 
+}
+```
+
+```swift
+protocol Foo: class {} 
+class Bar { 
+    public private(set) weak var foo: Foo? 
+} 
+
+```
+
+```swift
+@objc 
+public final class Foo: NSObject {} 
+
+```
+
+```swift
+@objcMembers 
+public final class Foo: NSObject {} 
+
+```
+
+```swift
+@objc 
+override public private(set) weak var foo: Bar? 
+
+```
+
+```swift
+@objc 
+public final class Foo: NSObject {} 
+
+```
+
+```swift
+@objc 
+open final class Foo: NSObject { 
+   open weak var weakBar: NSString? = nil 
+}
+```
+
+```swift
+public final class Foo {}
+```
+
+```swift
+class Bar { 
+   func bar() {} 
+}
+```
+
+```swift
+internal class Foo: Bar { 
+   override internal func bar() {} 
+}
+```
+
+```swift
+public struct Foo { 
+   internal weak var weakBar: NSObject? = nil 
+}
+```
+
+```swift
+class Foo { 
+   internal lazy var bar: String = "foo" 
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class Foo { 
+   convenience required public init() {} 
+}
+```
+
+```swift
+public class Foo { 
+   static public let bar = 42 
+}
+```
+
+```swift
+public class Foo { 
+   static public var bar: Int { 
+       return 42 
+   } 
+} 
+
+```
+
+```swift
+public class Foo { 
+   class public var bar: Int { 
+       return 42 
+   } 
+}
+```
+
+```swift
+public class RootFoo { 
+   class public var foo: String { 
+       return "foo" 
+   } 
+} 
+public class Foo: RootFoo { 
+   override final class public var foo: String { 
+       return "bar" 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   public var foo: Int? { 
+       return 42 
+   } 
+} 
+open class Foo: Bar { 
+    public override var foo: Int? { 
+       return 43 
+   } 
+}
+```
+
+```swift
+protocol Foo: class {} 
+class Bar { 
+    private(set) public weak var foo: Foo? 
+} 
+
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   class open override func foo() -> Int { 
+       return 43 
+   } 
+}
+```
+
+```swift
+open class Bar { 
+   open class func foo() -> Int { 
+       return 42 
+   } 
+} 
+class Foo: Bar { 
+   open override class func foo() -> Int { 
+       return 43 
+   } 
+}
+```
+
+```swift
+@objc 
+final public class Foo: NSObject {}
+```
+
+```swift
+@objcMembers 
+final public class Foo: NSObject {}
+```
+
+```swift
+@objc 
+final open class Foo: NSObject { 
+   weak open var weakBar: NSString? = nil 
+}
+```
+
+```swift
+final public class Foo {} 
+
+```
+
+```swift
+internal class Foo: Bar { 
+   internal override func bar() {} 
+}
+```
+
+```swift
+public struct Foo { 
+   weak internal var weakBar: NSObjetc? = nil 
+}
+```
+
+```swift
+class Foo { 
+   lazy internal var bar: String = "foo" 
 }
 ```
 
@@ -10354,6 +10929,11 @@ let foo: Array<String>
 ```
 
 ```swift
+let model = CustomView<Container<Button>, NSAttributedString>()
+
+```
+
+```swift
 let foo: [String]
 
 ```
@@ -10403,6 +10983,21 @@ button.setImage(#imageLiteral(resourceName: "image-1"), for: .normal)
 
 ```swift
 let doubleValue = -9e-11
+
+```
+
+```swift
+let foo = GenericType<(UIViewController) -> Void>()
+
+```
+
+```swift
+let foo = Foo<Bar<T>, Baz>()
+
+```
+
+```swift
+let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)
 
 ```
 
@@ -11366,18 +11961,28 @@ Some methods should not call super
 
 ```swift
 class VC: UIViewController {
-	override func loadView() {
-	}
+    override func loadView() {
+    }
 }
-
 ```
 
 ```swift
 class NSView {
-	func updateLayer() {
-		self.method1()	}
+    func updateLayer() {
+        self.method1()
+    }
 }
+```
 
+```swift
+public class FileProviderExtension: NSFileProviderExtension {
+    override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {
+        guard let identifier = persistentIdentifierForItem(at: url) else {
+            completionHandler(NSFileProviderError(.noSuchItem))
+            return
+        }
+    }
+}
 ```
 
 </details>
@@ -11386,43 +11991,39 @@ class NSView {
 
 ```swift
 class VC: UIViewController {
-	override func loadView() {↓
-		super.loadView()
-	}
+    override func loadView() {↓
+        super.loadView()
+    }
 }
-
 ```
 
 ```swift
 class VC: NSFileProviderExtension {
-	override func providePlaceholder(at url: URL,completionHandler: @escaping (Error?) -> Void) {↓
-		self.method1()
-		super.providePlaceholder(at:url, completionHandler: completionHandler)
-	}
+    override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {↓
+        self.method1()
+        super.providePlaceholder(at:url, completionHandler: completionHandler)
+    }
 }
-
 ```
 
 ```swift
 class VC: NSView {
-	override func updateLayer() {↓
-		self.method1()
-		super.updateLayer()
-		self.method2()
-	}
+    override func updateLayer() {↓
+        self.method1()
+        super.updateLayer()
+        self.method2()
+    }
 }
-
 ```
 
 ```swift
 class VC: NSView {
-	override func updateLayer() {↓
-		defer {
-			super.updateLayer()
-		}
-	}
+    override func updateLayer() {↓
+        defer {
+            super.updateLayer()
+        }
+    }
 }
-
 ```
 
 </details>
@@ -12258,6 +12859,12 @@ public var foo: Int
 var foo: Int
 ```
 
+```swift
+private final class A {
+    private(set) var value: Int
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -12281,6 +12888,18 @@ var foo: Int
 ```swift
 open class Foo {
     ↓open(set) open var bar: Int
+}
+```
+
+```swift
+class A {
+    ↓internal(set) var value: Int
+}
+```
+
+```swift
+fileprivate class A {
+    ↓fileprivate(set) var value: Int
 }
 ```
 
@@ -13369,7 +13988,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `switch_case_alignment` | Enabled | No | style | 3.0.0 
 
-Case statements should vertically align with the enclosing switch statement.
+Case statements should vertically align with their enclosing switch statement, or indented if configured otherwise.
 
 ### Examples
 
@@ -13424,9 +14043,9 @@ default:
 ```swift
 switch someBool {
     ↓case true:
-         print('red')
+        print("red")
     ↓case false:
-         print('blue')
+        print("blue")
 }
 ```
 
@@ -13435,8 +14054,8 @@ if aBool {
     switch someBool {
         ↓case true:
             print('red')
-    case false:
-        print('blue')
+        ↓case false:
+            print('blue')
     }
 }
 ```
@@ -13444,11 +14063,31 @@ if aBool {
 ```swift
 switch someInt {
     ↓case 0:
-    print('Zero')
-case 1:
-    print('One')
+        print('Zero')
+    ↓case 1:
+        print('One')
     ↓default:
-    print('Some other number')
+        print('Some other number')
+}
+```
+
+```swift
+switch someBool {
+case true:
+    print('red')
+    ↓case false:
+        print('blue')
+}
+```
+
+```swift
+if aBool {
+    switch someBool {
+        ↓case true:
+        print('red')
+    case false:
+    print('blue')
+    }
 }
 ```
 
@@ -17669,6 +18308,32 @@ foo.map { ($0, $0) }.forEach { ↓(x, y) in }
 foo.bar { [weak self] ↓(x, y) in }
 ```
 
+```swift
+[].first { ↓(temp) in
+    [].first { ↓(temp) in
+        [].first { ↓(temp) in
+            _ = temp
+            return false
+        }
+        return false
+    }
+    return false
+}
+```
+
+```swift
+[].first { temp in
+    [].first { ↓(temp) in
+        [].first { ↓(temp) in
+            _ = temp
+            return false
+        }
+        return false
+    }
+    return false
+}
+```
+
 </details>
 
 
@@ -17677,7 +18342,7 @@ foo.bar { [weak self] ↓(x, y) in }
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`untyped_error_in_catch` | Disabled | No | idiomatic | 3.0.0 
+`untyped_error_in_catch` | Disabled | Yes | idiomatic | 3.0.0 
 
 Catch statements should not declare error variables without type casting.
 

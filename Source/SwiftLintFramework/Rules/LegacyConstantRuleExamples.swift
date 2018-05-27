@@ -1,11 +1,3 @@
-//
-//  LegacyConstantRuleExamples.swift
-//  SwiftLint
-//
-//  Created by Aaron McTavish on 01/16/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 internal struct LegacyConstantRuleExamples {

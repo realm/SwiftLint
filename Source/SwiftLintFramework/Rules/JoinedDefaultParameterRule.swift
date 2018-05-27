@@ -1,11 +1,3 @@
-//
-//  JoinedDefaultRule.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 8/3/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -34,7 +26,9 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
             "let foo = bar.joined(↓separator: \"\")": "let foo = bar.joined()",
             "let foo = bar.filter(toto)\n.joined(↓separator: \"\")": "let foo = bar.filter(toto)\n.joined()",
             "func foo() -> String {\n   return [\"1\", \"2\"].joined(↓separator: \"\")\n}":
-            "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}"
+                "func foo() -> String {\n   return [\"1\", \"2\"].joined()\n}",
+            "class C {\n#if true\nlet foo = bar.joined(↓separator: \"\")\n#endif\n}":
+                "class C {\n#if true\nlet foo = bar.joined()\n#endif\n}"
         ]
     )
 
@@ -79,7 +73,7 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
 
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
@@ -87,6 +81,8 @@ public struct JoinedDefaultParameterRule: ASTRule, ConfigurationProviderRule, Op
 
             return ranges
         }
+
+        return ranges.unique
     }
 
     private func violationRanges(in file: File,

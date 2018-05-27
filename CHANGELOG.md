@@ -2,12 +2,28 @@
 
 #### Breaking
 
-* None.
+* `fallthrough` rule is now opt-in.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1892](https://github.com/realm/SwiftLint/issues/1892)
 
 #### Enhancements
 
+* Updates the `untyped_error_in_catch` rule to support autocorrection.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+
+* Add `indented_cases` support to `switch_case_alignment` rule.  
+  [Shai Mishali](https://github.com/freak4pc)
+  [#2119](https://github.com/realm/SwiftLint/issues/2119)
+
+* Add opt-in `modifier_order` to enforce the order of declaration modifiers.
+  Requires Swift 4.1 or later.  
+  [Jose Cheyo Jimenez](https://github.com/masters3d)
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#1472](https://github.com/realm/SwiftLint/issues/1472)
+  [#1585](https://github.com/realm/SwiftLint/issues/1585)
+
 * Validate implicit `subscript` getter in `implicit_getter` rule when using
-  Swift 4.1.  
+  Swift 4.1 or later.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#898](https://github.com/realm/SwiftLint/issues/898)
 
@@ -17,6 +33,18 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2127](https://github.com/realm/SwiftLint/issues/2127)
 
+* Updates the `closure_end_indentation` rule to support autocorrection.  
+  [Eric Horacek](https://github.com/erichoracek)
+
+* Updates the `literal_expression_end_indentation` rule to support
+  autocorrection.  
+  [Eric Horacek](https://github.com/erichoracek)
+
+* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
+  indentation of non-trailing closure parameters.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
+
 * Add `redundant_set_access_control` rule to warn against using redundant
   setter ACLs on variable declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -25,10 +53,68 @@
 * Add `missing_docs` rule to warn against undocumented declarations.  
   [Nef10](https://github.com/Nef10)
   [#1652](https://github.com/realm/SwiftLint/issues/1652)
+* Add a new `ignores_interpolated_strings` config parameter to the `line_length`
+  rule to ignore lines that include interpolated strings from this rule.  
+  [Michael Gray](https://github.com/mishagray)
+  [#2100](https://github.com/realm/SwiftLint/pull/2100)
+
+* Add a new `ignores_default_parameters` config parameter to the
+  `function_parameter_count` rule to ignore default parameter when calculating
+  parameter count. True by default.  
+  [Varun P M](https://github.com/varunpm1)
+  [#2171](https://github.com/realm/SwiftLint/issues/2171)
+
+* Add `empty_xctest_method` opt-in rule which warns against empty
+  XCTest methods.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#2190](https://github.com/realm/SwiftLint/pull/2190)
+
+* Add `function_default_parameter_at_end` opt-in rule to validate that
+  parameters with defaults are located toward the end of the parameter list in a
+  function declaration.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2176](https://github.com/realm/SwiftLint/issues/2176)
+
+* Add `file_name` opt-in rule validating that file names contain the name of a
+  type or extension declared in the file (if any).  
+  [JP Simard](https://github.com/jpsim)
+  [#1420](https://github.com/realm/SwiftLint/issues/1420)
 
 #### Bug Fixes
 
-* None.
+* Update `LowerACLThanParent` rule to not lint extensions.  
+  [Keith Smiley](https://github.com/keith)
+  [#2164](https://github.com/realm/SwiftLint/pull/2164)
+
+* Fix operator usage spacing nested generics false positive.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#1341](https://github.com/realm/SwiftLint/issues/1341)
+  [#1897](https://github.com/realm/SwiftLint/issues/1897)
+
+* Fix autocorrection for several rules
+  (`empty_parentheses_with_trailing_closure`, `explicit_init`,
+  `joined_default_parameter`, `redundant_optional_initialization` and
+  `unused_closure_parameter `) when used with preprocessor macros.  
+  [John Szumski](https://github.com/jszumski)
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
+* Fix `unneeded_parentheses_in_closure_argument` false negatives when multiple
+  violations are nested.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2188](https://github.com/realm/SwiftLint/issues/2188)
+
+* Fix false negatives in `implicit_return` rule when using closures as
+  function arguments.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2187](https://github.com/realm/SwiftLint/issues/2187)
+
+* Fix false positives in `attributes` rule when `@testable` is used.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2211](https://github.com/realm/SwiftLint/issues/2211)
+
+* Fix false positives in `prohibited_super_call` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2212](https://github.com/realm/SwiftLint/issues/2212)
 
 ## 0.25.1: Lid Locked
 

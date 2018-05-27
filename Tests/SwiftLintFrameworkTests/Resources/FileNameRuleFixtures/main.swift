@@ -1,0 +1,3 @@
+struct A {}
+
+print("hello")

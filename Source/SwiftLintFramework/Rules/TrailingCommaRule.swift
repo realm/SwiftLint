@@ -1,11 +1,3 @@
-//
-//  TrailingCommaRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 21/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -30,6 +22,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
         "let foo = [1, 2, 3↓,] + [4, 5, 6↓,]\n",
         "let example = [ 1,\n2↓,\n // 3,\n]",
         "let foo = [\"אבג\", \"αβγ\", \"🇺🇸\"↓,]\n"
+        // Swift 4.1 or later: "class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"
         // "foo([1: \"\\(error)\"↓,])\n"
     ]
 
@@ -151,7 +144,7 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
     private func violationRanges(in file: File,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var violations = violationRanges(in: file, dictionary: subDict)
 
             if let kindString = subDict.kind,
@@ -162,6 +155,8 @@ public struct TrailingCommaRule: ASTRule, CorrectableRule, ConfigurationProvider
 
             return violations
         }
+
+        return ranges.unique
     }
 
     public func correct(file: File) -> [Correction] {

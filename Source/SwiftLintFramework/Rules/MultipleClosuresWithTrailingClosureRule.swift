@@ -1,11 +1,3 @@
-//
-//  MultipleClosuresWithTrailingClosureRule.swift
-//  SwiftLint
-//
-//  Created by Erik Strottmann on 8/26/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

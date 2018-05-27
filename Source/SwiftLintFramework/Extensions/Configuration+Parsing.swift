@@ -1,11 +1,3 @@
-//
-//  Configuration+Parsing.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 7/17/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 extension Configuration {

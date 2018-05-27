@@ -1,11 +1,3 @@
-//
-//  ImplicitlyUnwrappedOptionalRule.swift
-//  SwiftLint
-//
-//  Created by Siarhei Fedartsou on 17/03/17.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

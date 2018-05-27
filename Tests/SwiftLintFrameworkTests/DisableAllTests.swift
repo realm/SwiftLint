@@ -1,11 +1,3 @@
-//
-//  DisableAllTests.swift
-//  SwiftLint
-//
-//  Created by Frederick Pietschmann on 3/11/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 @testable import SwiftLintFramework
 import XCTest

@@ -1,11 +1,3 @@
-//
-//  UnusedOptionalBindingConfiguration.swift
-//  SwiftLint
-//
-//  Created by Sergey Galezdinov on 23/04/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 public struct UnusedOptionalBindingConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var ignoreOptionalTry: Bool

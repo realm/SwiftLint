@@ -1,11 +1,3 @@
-//
-//  ColonRule+Dictionary.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 09/13/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -17,7 +9,7 @@ extension ColonRule {
             return []
         }
 
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges: [NSRange] = []
             if let kind = subDict.kind.flatMap(KindType.init(rawValue:)) {
                 ranges += dictionaryColonViolationRanges(in: file, kind: kind, dictionary: subDict)
@@ -25,7 +17,9 @@ extension ColonRule {
             ranges += dictionaryColonViolationRanges(in: file, dictionary: subDict)
 
             return ranges
-        }.unique
+        }
+
+        return ranges.unique
     }
 
     internal func dictionaryColonViolationRanges(in file: File, kind: SwiftExpressionKind,

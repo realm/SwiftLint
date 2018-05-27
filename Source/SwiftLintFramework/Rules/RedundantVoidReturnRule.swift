@@ -1,11 +1,3 @@
-//
-//  RedundantVoidReturnRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/26/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -82,14 +74,16 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
     private let excludingKinds = SyntaxKind.allKinds.subtracting([.typeidentifier])
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftDeclarationKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
             }
 
             return ranges
-        }.unique
+        }
+
+        return ranges.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

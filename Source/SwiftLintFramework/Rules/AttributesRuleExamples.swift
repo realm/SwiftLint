@@ -1,11 +1,3 @@
-//
-//  AttributesRulesExamples.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/09/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 internal struct AttributesRuleExamples {
 
     static let nonTriggeringExamples = [
@@ -46,7 +38,15 @@ internal struct AttributesRuleExamples {
         "func increase(f: @autoclosure () -> Int) -> Int",
         "func foo(completionHandler: @escaping () -> Void)",
         "private struct DefaultError: Error {}",
-        "@testable import foo\n\nprivate let bar = 1"
+        "@testable import foo\n\nprivate let bar = 1",
+        """
+        import XCTest
+        @testable import DeleteMe
+
+        @available (iOS 11.0, *)
+        class DeleteMeTests: XCTestCase {
+        }
+        """
     ]
 
     static let triggeringExamples = [

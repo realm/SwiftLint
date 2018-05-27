@@ -1,11 +1,3 @@
-//
-//  AutoCorrectCommand.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 12/5/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Commandant
 import Result
 import SwiftLintFramework

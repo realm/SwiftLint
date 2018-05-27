@@ -1,11 +1,3 @@
-//
-//  SortedFirstLastRule.swift
-//  SwiftLint
-//
-//  Created by Tom Quist on 11/06/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct SortedFirstLastRule: CallPairRule, OptInRule, ConfigurationProviderRule {

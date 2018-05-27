@@ -4,56 +4,54 @@ included:
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
 opt_in_rules:
-  - empty_count
-  - file_header
-  - explicit_init
-  - closure_spacing
-  - overridden_super_call
-  - redundant_nil_coalescing
-  - private_outlet
-  - nimble_operator
-  - attributes
-  - operator_usage_whitespace
-  - closure_end_indentation
-  - first_where
-  - sorted_imports
-  - object_literal
-  - number_separator
-  - prohibited_super_call
-  - fatal_error_message
-  - vertical_parameter_alignment_on_call
-  - let_var_whitespace
-  - unneeded_parentheses_in_closure_argument
-  - extension_access_modifier
-  - pattern_matching_keywords
   - array_init
-  - literal_expression_end_indentation
-  - joined_default_parameter
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
   - contains_over_first_not_nil
+  - empty_count
+  - explicit_init
+  - extension_access_modifier
+  - fatal_error_message
+  - file_header
+  - file_name
+  - first_where
+  - joined_default_parameter
+  - let_var_whitespace
+  - literal_expression_end_indentation
+  - nimble_operator
+  - number_separator
+  - object_literal
+  - operator_usage_whitespace
+  - overridden_super_call
   - override_in_extension
+  - pattern_matching_keywords
   - private_action
+  - private_outlet
+  - prohibited_super_call
   - quick_discouraged_call
   - quick_discouraged_focused_test
   - quick_discouraged_pending_test
+  - redundant_nil_coalescing
   - single_test_class
   - sorted_first_last
+  - sorted_imports
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
   - yoda_condition
 
-file_header:
-  required_pattern: |
-                    \/\/
-                    \/\/  .*?\.swift
-                    \/\/  SwiftLint
-                    \/\/
-                    \/\/  Created by .*? on \d{1,2}\/\d{1,2}\/\d{2}\.
-                    \/\/  Copyright © \d{4} Realm\. All rights reserved\.
-                    \/\/
 identifier_name:
   excluded:
     - id
 line_length: 120
 number_separator:
   minimum_length: 5
+file_name:
+  excluded:
+    - main.swift
+    - LinuxMain.swift
+    - TestHelpers.swift
+    - shim.swift
 
 custom_rules:
   rule_id:

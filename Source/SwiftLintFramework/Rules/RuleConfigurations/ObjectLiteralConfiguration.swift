@@ -1,11 +1,3 @@
-//
-//  ObjectLiteralConfiguration.swift
-//  SwiftLint
-//
-//  Created by Cihat Gündüz on 06/03/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {

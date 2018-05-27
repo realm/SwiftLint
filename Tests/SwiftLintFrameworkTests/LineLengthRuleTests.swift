@@ -1,11 +1,3 @@
-//
-//  LineLengthRuleTests.swift
-//  SwiftLint
-//
-//  Created by Javier Hernández on 06/01/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest
@@ -28,6 +20,8 @@ class LineLengthRuleTests: XCTestCase {
     private let longComment = String(repeating: "/", count: 121) + "\n"
     private let longBlockComment = "/*" + String(repeating: " ", count: 121) + "*/\n"
     private let declarationWithTrailingLongComment = "let foo = 1 " + String(repeating: "/", count: 121) + "\n"
+    private let interpolatedString = "print(\"\\(value)" + String(repeating: "A", count: 113) + "\" )\n"
+    private let plainString = "print(\"" + String(repeating: "A", count: 121) + ")\"\n"
 
     func testLineLength() {
         verifyRule(LineLengthRule.description, commentDoesntViolate: false, stringDoesntViolate: false)
@@ -70,4 +64,35 @@ class LineLengthRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_urls": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
     }
+
+    func testLineLengthWithIgnoreInterpolatedStringsTrue() {
+        let triggeringLines = [plainString]
+        let nonTriggeringLines = [interpolatedString]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
+                   commentDoesntViolate: false, stringDoesntViolate: false)
+
+    }
+    func testLineLengthWithIgnoreInterpolatedStringsFalse() {
+        let triggeringLines = [plainString, interpolatedString]
+
+        let baseDescription = LineLengthRule.description
+        let nonTriggeringExamples = baseDescription.nonTriggeringExamples
+        let triggeringExamples = baseDescription.triggeringExamples + triggeringLines
+
+        let description = baseDescription.with(nonTriggeringExamples: nonTriggeringExamples)
+            .with(triggeringExamples: triggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
+                   commentDoesntViolate: false, stringDoesntViolate: false)
+
+    }
+
 }

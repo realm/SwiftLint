@@ -8956,21 +8956,24 @@ Declarations should be documented.
 ```swift
 /// docs
 public class A {
-/// docs
-public func b() {}
+    /// docs
+    public func b() {}
 }
-/// docs
-public class B: A { override public func b() {} }
 
+/// docs
+public class B: A {
+    override public func b() {}
+}
 ```
 
 ```swift
 import Foundation
+
 /// docs
 public class B: NSObject {
-// no docs
-override public var description: String { fatalError() } }
-
+    // no docs
+    override public var description: String { fatalError() }
+}
 ```
 
 </details>
@@ -8979,30 +8982,28 @@ override public var description: String { fatalError() } }
 
 ```swift
 public func a() {}
-
 ```
 
 ```swift
 // regular comment
 public func a() {}
-
 ```
 
 ```swift
 /* regular comment */
 public func a() {}
-
 ```
 
 ```swift
 /// docs
 public protocol A {
-// no docs
-var b: Int { get } }
+    // no docs
+    var b: Int { get } }
+    
 /// docs
 public struct C: A {
 
-public let b: Int
+    public let b: Int
 }
 ```
 

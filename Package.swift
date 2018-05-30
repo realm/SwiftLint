@@ -38,6 +38,5 @@ let package = Package(
                 "Resources",
             ]
         )
-    ],
-    swiftLanguageVersions: [3, 4]
+    ]
 )

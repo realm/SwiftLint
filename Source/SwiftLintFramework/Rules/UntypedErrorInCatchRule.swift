@@ -51,11 +51,7 @@ public struct UntypedErrorInCatchRule: OptInRule, ConfigurationProviderRule {
             "do {\n    try foo() \n} ↓catch (let error) {}"
         ],
         corrections: [
-            "do {\n    try foo() \n} ↓catch var error {}": "do {\n    try foo() \n} catch {}",
             "do {\n    try foo() \n} ↓catch let error {}": "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} ↓catch let someError {}": "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} ↓catch var someError {}": "do {\n    try foo() \n} catch {}",
-            "do {\n    try foo() \n} ↓catch let e {}": "do {\n    try foo() \n} catch {}",
             "do {\n    try foo() \n} ↓catch(let error) {}": "do {\n    try foo() \n} catch {}",
             "do {\n    try foo() \n} ↓catch (let error) {}": "do {\n    try foo() \n} catch {}"
         ])
@@ -85,7 +81,7 @@ extension UntypedErrorInCatchRule: CorrectableRule {
         let description = type(of: self).description
         var corrections = [Correction]()
 
-        for range in matches.reversed() {
+        for range in matches.reversed() where contents.substring(with: range).contains("let error") {
             contents = contents.replacingCharacters(in: range, with: "catch {").bridge()
             let location = Location(file: file, characterOffset: range.location)
             corrections.append(Correction(ruleDescription: description, location: location))

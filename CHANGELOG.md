@@ -2,6 +2,9 @@
 
 #### Breaking
 
+* SwiftLint now requires Swift 4.0 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
+
 * `fallthrough` rule is now opt-in.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1892](https://github.com/realm/SwiftLint/issues/1892)

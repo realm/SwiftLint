@@ -99,7 +99,7 @@ private extension String {
                 let finalIndex = index(range.upperBound, offsetBy: 1, limitedBy: endIndex),
                 self[range.upperBound] == "?" else { return nil }
 
-            return Range(range.lowerBound..<finalIndex)
+            return range.lowerBound..<finalIndex
         }
 
         let angleBrackets = balancedRanges(from: "<", to: ">").compactMap { range -> Range<String.Index>? in
@@ -110,7 +110,7 @@ private extension String {
                 self[initialIndex..<range.lowerBound] == "Set",
                 self[range.upperBound] == "?" else { return nil }
 
-            return Range(initialIndex..<finalIndex)
+            return initialIndex..<finalIndex
         }
 
         return squareBrackets + angleBrackets
@@ -160,7 +160,7 @@ private extension String {
                 if pairCount == 0 && foundCharacter { break }
             }
 
-            return pairCount == 0 && foundCharacter ? Range(prefixIndex..<currentIndex) : nil
+            return pairCount == 0 && foundCharacter ? prefixIndex..<currentIndex : nil
         }
     }
 }

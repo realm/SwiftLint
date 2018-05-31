@@ -54,6 +54,7 @@
   [Nef10](https://github.com/Nef10)
   [Andrés Cecilia Luque](https://github.com/acecilia)
   [#1652](https://github.com/realm/SwiftLint/issues/1652)
+
 * Add a new `ignores_interpolated_strings` config parameter to the `line_length`
   rule to ignore lines that include interpolated strings from this rule.  
   [Michael Gray](https://github.com/mishagray)

@@ -1,11 +1,3 @@
-//
-//  OperatorUsageWhitespaceRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/13/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -27,6 +19,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "let foo = !false\n",
             "let foo: Int?\n",
             "let foo: Array<String>\n",
+            "let model = CustomView<Container<Button>, NSAttributedString>()\n",
             "let foo: [String]\n",
             "let foo = 1 + \n  2\n",
             "let range = 1...3\n",
@@ -36,7 +29,10 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
             "array.removeAtIndex(-200)\n",
             "let name = \"image-1\"\n",
             "button.setImage(#imageLiteral(resourceName: \"image-1\"), for: .normal)\n",
-            "let doubleValue = -9e-11\n"
+            "let doubleValue = -9e-11\n",
+            "let foo = GenericType<(UIViewController) -> Void>()\n",
+            "let foo = Foo<Bar<T>, Baz>()\n",
+            "let foo = SignalProducer<Signal<Value, Error>, Error>([ self.signal, next ]).flatten(.concat)\n"
         ],
         triggeringExamples: [
             "let foo = 1↓+2\n",
@@ -104,7 +100,7 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
         }
         let pattern = "(?:\(patterns.joined(separator: "|")))"
 
-        let genericPattern = "<(?:\(oneSpace)|\\S)+?>" // not using dot to avoid matching new line
+        let genericPattern = "<(?:\(oneSpace)|\\S)*>" // not using dot to avoid matching new line
         let validRangePattern = leadingVariableOrNumber + zeroSpaces + rangePattern +
             zeroSpaces + trailingVariableOrNumber
         let excludingPattern = "(?:\(genericPattern)|\(validRangePattern))"

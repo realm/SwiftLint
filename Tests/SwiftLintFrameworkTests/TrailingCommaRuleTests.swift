@@ -1,11 +1,3 @@
-//
-//  TrailingCommaRuleTests.swift
-//  SwiftLint
-//
-//  Created by Matt Rubin on 12/22/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 
@@ -13,7 +5,13 @@ class TrailingCommaRuleTests: XCTestCase {
 
     func testTrailingCommaRuleWithDefaultConfiguration() {
         // Verify TrailingCommaRule with test values for when mandatory_comma is false (default).
-        verifyRule(TrailingCommaRule.description)
+        if SwiftVersion.current >= .fourDotOne {
+            let triggeringExamples = TrailingCommaRule.description.triggeringExamples +
+                ["class C {\n #if true\n func f() {\n let foo = [1, 2, 3↓,]\n }\n #endif\n}"]
+            verifyRule(TrailingCommaRule.description.with(triggeringExamples: triggeringExamples))
+        } else {
+            verifyRule(TrailingCommaRule.description)
+        }
 
         // Ensure the rule produces the correct reason string.
         let failingCase = "let array = [\n\t1,\n\t2,\n]\n"

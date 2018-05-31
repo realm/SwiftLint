@@ -1,11 +1,3 @@
-//
-//  ExplicitEnumRawValueRule.swift
-//  SwiftLint
-//
-//  Created by Mazyad Alabduljaleel on 8/19/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

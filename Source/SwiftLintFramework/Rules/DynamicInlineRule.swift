@@ -1,11 +1,3 @@
-//
-//  DynamicInlineRule.swift
-//  SwiftLint
-//
-//  Created by Daniel Duan on 12/08/16.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

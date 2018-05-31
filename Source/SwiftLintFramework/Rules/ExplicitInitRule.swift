@@ -1,11 +1,3 @@
-//
-//  ExplicitInitRule.swift
-//  SwiftLint
-//
-//  Created by Matt Taube on 7/2/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -35,7 +27,9 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         corrections: [
             "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}",
             "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}":
-            "func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}"
+                "func foo() -> [String] {\n    return [1].flatMap { String($0) }\n}",
+            "class C {\n#if true\nfunc f() {\n[1].flatMap{String.init($0)}\n}\n#endif\n}":
+                "class C {\n#if true\nfunc f() {\n[1].flatMap{String($0)}\n}\n#endif\n}"
         ]
     )
 
@@ -71,7 +65,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
@@ -79,6 +73,8 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
 
             return ranges
         }
+
+        return ranges.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

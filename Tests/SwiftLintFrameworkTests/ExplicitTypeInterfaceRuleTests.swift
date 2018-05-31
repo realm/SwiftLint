@@ -1,11 +1,3 @@
-//
-//  ExplicitTypeInterfaceRuleTests.swift
-//  SwiftLint
-//
-//  Created by Rounak Jain on 2/24/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

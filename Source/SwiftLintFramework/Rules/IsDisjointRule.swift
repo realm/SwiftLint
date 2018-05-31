@@ -1,11 +1,3 @@
-//
-//  IsDisjointRule.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 8/21/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct IsDisjointRule: ConfigurationProviderRule {

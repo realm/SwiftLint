@@ -1,11 +1,3 @@
-//
-//  SwiftVersion.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/29/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -45,6 +37,8 @@ public extension SwiftVersion {
         let file = File(contents: """
             #if swift(>=4.2.0)
                 let version = "4.2.0"
+            #elseif swift(>=4.1.2)
+                let version = "4.1.2"
             #elseif swift(>=4.1.1)
                 let version = "4.1.1"
             #elseif swift(>=4.1.0)
@@ -59,6 +53,8 @@ public extension SwiftVersion {
                 let version = "4.0.0"
             #elseif swift(>=3.4.0)
                 let version = "3.4.0"
+            #elseif swift(>=3.3.2)
+                let version = "3.3.2"
             #elseif swift(>=3.3.1)
                 let version = "3.3.1"
             #elseif swift(>=3.3.0)

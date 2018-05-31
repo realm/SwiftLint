@@ -1,10 +1,3 @@
-//
-//  CyclomaticComplexityConfiguration.swift
-//  SwiftLint
-//
-//  Created by Mike Welles on 2/9/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
 import Foundation
 import SourceKittenFramework
 

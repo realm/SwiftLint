@@ -1,11 +1,3 @@
-//
-//  NoExtensionAccessModifier.swift
-//  SwiftLint
-//
-//  Created by Jose Cheyo Jimenez on 04/23/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

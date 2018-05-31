@@ -1,11 +1,3 @@
-//
-//  Reporter+CommandLine.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 12/30/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 
 extension Reporter {

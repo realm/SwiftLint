@@ -1,11 +1,3 @@
-//
-//  SeverityConfiguration.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 1/20/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct SeverityConfiguration: RuleConfiguration, Equatable {

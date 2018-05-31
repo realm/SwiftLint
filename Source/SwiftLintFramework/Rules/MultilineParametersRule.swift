@@ -1,11 +1,3 @@
-//
-//  MultilineParametersRule.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 22/05/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

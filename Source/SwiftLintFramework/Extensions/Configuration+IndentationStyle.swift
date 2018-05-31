@@ -1,11 +1,3 @@
-//
-//  Configuration+IndentationStyle.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 1/3/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 public extension Configuration {
     enum IndentationStyle: Equatable {
         case tabs

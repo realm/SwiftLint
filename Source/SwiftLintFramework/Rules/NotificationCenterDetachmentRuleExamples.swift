@@ -1,11 +1,3 @@
-//
-//  NotificationCenterDetachmentRuleExamples.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 01/15/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 internal struct NotificationCenterDetachmentRuleExamples {
 
     static let nonTriggeringExamples = [

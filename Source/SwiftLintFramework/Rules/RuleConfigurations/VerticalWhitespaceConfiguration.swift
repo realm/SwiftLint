@@ -1,11 +1,3 @@
-//
-//  VerticalWhitespaceConfiguration.swift
-//  SwiftLint
-//
-//  Created by Aaron McTavish on 01/05/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var maxEmptyLines: Int

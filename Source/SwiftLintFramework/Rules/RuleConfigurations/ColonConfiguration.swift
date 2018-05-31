@@ -1,11 +1,3 @@
-//
-//  ColonConfiguration.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/18/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct ColonConfiguration: RuleConfiguration, Equatable {

@@ -1,11 +1,3 @@
-//
-//  SourceKitCrashTests.swift
-//  SwiftLint
-//
-//  Created by 野村 憲男 on 2/10/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 @testable import SwiftLintFramework

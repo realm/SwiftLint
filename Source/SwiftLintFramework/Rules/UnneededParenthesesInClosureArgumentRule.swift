@@ -1,11 +1,3 @@
-//
-//  UnneededParenthesesInClosureArgumentRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 07/17/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -30,7 +22,31 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
             "call(arg: { ↓(bar, _) in })\n",
             "let foo = { ↓(bar) -> Bool in return true }\n",
             "foo.map { ($0, $0) }.forEach { ↓(x, y) in }",
-            "foo.bar { [weak self] ↓(x, y) in }"
+            "foo.bar { [weak self] ↓(x, y) in }",
+            """
+            [].first { ↓(temp) in
+                [].first { ↓(temp) in
+                    [].first { ↓(temp) in
+                        _ = temp
+                        return false
+                    }
+                    return false
+                }
+                return false
+            }
+            """,
+            """
+            [].first { temp in
+                [].first { ↓(temp) in
+                    [].first { ↓(temp) in
+                        _ = temp
+                        return false
+                    }
+                    return false
+                }
+                return false
+            }
+            """
         ],
         corrections: [
             "call(arg: { ↓(bar) in })\n": "call(arg: { bar in })\n",
@@ -52,7 +68,7 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
 
     private func violationRanges(file: File) -> [NSRange] {
         let capturesPattern = "(?:\\[[^\\]]+\\])?"
-        let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+\\))\\s*(in|->)"
+        let pattern = "\\{\\s*\(capturesPattern)\\s*(\\([^:}]+?\\))\\s*(in|->)"
         let contents = file.contents.bridge()
         let range = NSRange(location: 0, length: contents.length)
         return regex(pattern).matches(in: file.contents, options: [], range: range).compactMap { match -> NSRange? in

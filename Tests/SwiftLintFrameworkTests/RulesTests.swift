@@ -1,11 +1,3 @@
-//
-//  RulesTests.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/28/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 
@@ -110,6 +102,10 @@ class RulesTests: XCTestCase {
         verifyRule(EmptyStringRule.description)
     }
 
+    func testEmptyXCTestMethods() {
+        verifyRule(EmptyXCTestMethodRule.description)
+    }
+
     func testExplicitACL() {
         verifyRule(ExplicitACLRule.description)
     }
@@ -160,6 +156,10 @@ class RulesTests: XCTestCase {
 
     func testFunctionBodyLength() {
         verifyRule(FunctionBodyLengthRule.description)
+    }
+
+    func testFunctionDefaultParameterAtEnd() {
+        verifyRule(FunctionDefaultParameterAtEndRule.description)
     }
 
     func testFunctionParameterCount() {
@@ -225,6 +225,10 @@ class RulesTests: XCTestCase {
 
     func testMissingDocs() {
         verifyRule(MissingDocsRule.description)
+    }
+
+    func testModifierOrder() {
+        verifyRule(ModifierOrderRule.description)
     }
 
     func testMultilineParameters() {

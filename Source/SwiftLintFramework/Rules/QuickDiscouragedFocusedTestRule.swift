@@ -1,11 +1,3 @@
-//
-//  QuickDiscouragedFocusedTestRule.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 10/15/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

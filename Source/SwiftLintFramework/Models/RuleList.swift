@@ -1,11 +1,3 @@
-//
-//  RuleList.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/31/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 
 public enum RuleListError: Error {

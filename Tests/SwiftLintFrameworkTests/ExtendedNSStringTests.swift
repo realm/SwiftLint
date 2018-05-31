@@ -1,11 +1,3 @@
-//
-//  ExtendedNSStringTests.swift
-//  SwiftLint
-//
-//  Created by crimsonwoods on 11/18/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import XCTest
 

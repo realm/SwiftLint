@@ -1,11 +1,3 @@
-//
-//  NSFileManager+SwiftLint.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/28/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 
 public protocol LintableFileManager {

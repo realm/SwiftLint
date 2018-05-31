@@ -1,11 +1,3 @@
-//
-//  RequiredEnumCaseRuleTestCase.swift
-//  SwiftLint
-//
-//  Created by Ritter, Donald (CONT) on 9/13/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 @testable import SwiftLintFramework
 import XCTest

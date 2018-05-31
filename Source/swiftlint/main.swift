@@ -1,11 +1,3 @@
-//
-//  main.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/16/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Commandant
 import Dispatch
 import Foundation

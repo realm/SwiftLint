@@ -1,11 +1,3 @@
-//
-//  SyntaxMap+SwiftLint.swift
-//  SwiftLint
-//
-//  Created by Norio Nomura on 2/19/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

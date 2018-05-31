@@ -1,11 +1,3 @@
-//
-//  NumberSeparatorConfiguration.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 01/02/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var minimumLength: Int

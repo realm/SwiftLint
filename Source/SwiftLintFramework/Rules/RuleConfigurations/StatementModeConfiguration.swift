@@ -1,11 +1,3 @@
-//
-//  StatementPositionConfiguration.swift
-//  SwiftLint
-//
-//  Created by Michael Skiba on 6/8/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 public enum StatementModeConfiguration: String {

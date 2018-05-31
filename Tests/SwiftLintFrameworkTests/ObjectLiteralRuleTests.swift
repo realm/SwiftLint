@@ -1,11 +1,3 @@
-//
-//  ObjectLiteralRuleTests.swift
-//  SwiftLint
-//
-//  Created by Cihat Gündüz on 06/13/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

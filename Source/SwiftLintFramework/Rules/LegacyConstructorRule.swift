@@ -1,11 +1,3 @@
-//
-//  LegacyConstructorRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 29/11/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

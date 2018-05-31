@@ -1,11 +1,3 @@
-//
-//  ProhibitedSuperRule.swift
-//  SwiftLint
-//
-//  Created by Aaron McTavish on 12/12/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule {
@@ -19,43 +11,64 @@ public struct ProhibitedSuperRule: ConfigurationProviderRule, ASTRule, OptInRule
         description: "Some methods should not call super",
         kind: .lint,
         nonTriggeringExamples: [
-            "class VC: UIViewController {\n" +
-                "\toverride func loadView() {\n" +
-                "\t}\n" +
-            "}\n",
-            "class NSView {\n" +
-                "\tfunc updateLayer() {\n" +
-                    "\t\tself.method1()" +
-                "\t}\n" +
-            "}\n"
+            """
+            class VC: UIViewController {
+                override func loadView() {
+                }
+            }
+            """,
+            """
+            class NSView {
+                func updateLayer() {
+                    self.method1()
+                }
+            }
+            """,
+            """
+            public class FileProviderExtension: NSFileProviderExtension {
+                override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {
+                    guard let identifier = persistentIdentifierForItem(at: url) else {
+                        completionHandler(NSFileProviderError(.noSuchItem))
+                        return
+                    }
+                }
+            }
+            """
         ],
         triggeringExamples: [
-            "class VC: UIViewController {\n" +
-                "\toverride func loadView() {↓\n" +
-                    "\t\tsuper.loadView()\n" +
-                "\t}\n" +
-            "}\n",
-            "class VC: NSFileProviderExtension {\n" +
-                "\toverride func providePlaceholder(at url: URL," +
-                "completionHandler: @escaping (Error?) -> Void) {↓\n" +
-                    "\t\tself.method1()\n" +
-                    "\t\tsuper.providePlaceholder(at:url, completionHandler: completionHandler)\n" +
-                "\t}\n" +
-            "}\n",
-            "class VC: NSView {\n" +
-                "\toverride func updateLayer() {↓\n" +
-                    "\t\tself.method1()\n" +
-                    "\t\tsuper.updateLayer()\n" +
-                    "\t\tself.method2()\n" +
-                "\t}\n" +
-            "}\n",
-            "class VC: NSView {\n" +
-                "\toverride func updateLayer() {↓\n" +
-                "\t\tdefer {\n" +
-                "\t\t\tsuper.updateLayer()\n" +
-                "\t\t}\n" +
-                "\t}\n" +
-            "}\n"
+            """
+            class VC: UIViewController {
+                override func loadView() {↓
+                    super.loadView()
+                }
+            }
+            """,
+            """
+            class VC: NSFileProviderExtension {
+                override func providePlaceholder(at url: URL, completionHandler: @escaping (Error?) -> Void) {↓
+                    self.method1()
+                    super.providePlaceholder(at:url, completionHandler: completionHandler)
+                }
+            }
+            """,
+            """
+            class VC: NSView {
+                override func updateLayer() {↓
+                    self.method1()
+                    super.updateLayer()
+                    self.method2()
+                }
+            }
+            """,
+            """
+            class VC: NSView {
+                override func updateLayer() {↓
+                    defer {
+                        super.updateLayer()
+                    }
+                }
+            }
+            """
         ]
     )
 

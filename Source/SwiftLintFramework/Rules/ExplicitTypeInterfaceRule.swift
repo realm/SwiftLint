@@ -1,11 +1,3 @@
-//
-//  ExplicitTypeInterfaceRule.swift
-//  SwiftLint
-//
-//  Created by Kim de Vos on 02/28/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

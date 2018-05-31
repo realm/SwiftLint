@@ -1,10 +1,3 @@
-//
-//  MasterRuleList.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 12/28/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
 // Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
@@ -36,6 +29,7 @@ public let masterRuleList = RuleList(rules: [
     EmptyParametersRule.self,
     EmptyParenthesesWithTrailingClosureRule.self,
     EmptyStringRule.self,
+    EmptyXCTestMethodRule.self,
     ExplicitACLRule.self,
     ExplicitEnumRawValueRule.self,
     ExplicitInitRule.self,
@@ -46,12 +40,14 @@ public let masterRuleList = RuleList(rules: [
     FatalErrorMessageRule.self,
     FileHeaderRule.self,
     FileLengthRule.self,
+    FileNameRule.self,
     FirstWhereRule.self,
     ForWhereRule.self,
     ForceCastRule.self,
     ForceTryRule.self,
     ForceUnwrappingRule.self,
     FunctionBodyLengthRule.self,
+    FunctionDefaultParameterAtEndRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
     IdentifierNameRule.self,
@@ -72,6 +68,7 @@ public let masterRuleList = RuleList(rules: [
     LowerACLThanParentRule.self,
     MarkRule.self,
     MissingDocsRule.self,
+    ModifierOrderRule.self,
     MultilineArgumentsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,

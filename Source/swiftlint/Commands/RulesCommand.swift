@@ -1,11 +1,3 @@
-//
-//  RulesCommand.swift
-//  SwiftLint
-//
-//  Created by Chris Eidhof on 20/05/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Commandant
 #if os(Linux)
 import Glibc

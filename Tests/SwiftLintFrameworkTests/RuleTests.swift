@@ -1,11 +1,3 @@
-//
-//  RuleTests.swift
-//  SwiftLint
-//
-//  Created by Scott Hoyt on 12/29/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest

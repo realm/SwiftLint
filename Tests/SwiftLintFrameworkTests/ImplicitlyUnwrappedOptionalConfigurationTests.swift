@@ -1,11 +1,3 @@
-//
-//  ImplicitlyUnwrappedOptionalConfigurationTests.swift
-//  SwiftLint
-//
-//  Created by Siarhei Fedartsou on 18/03/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest

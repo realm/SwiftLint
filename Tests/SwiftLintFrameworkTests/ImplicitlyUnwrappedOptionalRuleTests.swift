@@ -1,11 +1,3 @@
-//
-//  ImplicitlyUnwrappedOptionalRuleTests.swift
-//  SwiftLint
-//
-//  Created by Siarhei Fedartsou on 18/03/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 @testable import SwiftLintFramework
 import XCTest

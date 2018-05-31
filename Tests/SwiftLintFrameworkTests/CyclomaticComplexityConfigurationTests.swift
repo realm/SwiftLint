@@ -1,11 +1,3 @@
-//
-//  CyclomaticComplexityConfigurationTests.swift
-//  SwiftLint
-//
-//  Created by Michael  Welles on 2/15/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 @testable import SwiftLintFramework
 import XCTest

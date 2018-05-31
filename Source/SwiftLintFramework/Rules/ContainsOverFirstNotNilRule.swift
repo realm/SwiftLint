@@ -1,11 +1,3 @@
-//
-//  ContainsOverFirstNotNilRule.swift
-//  SwiftLint
-//
-//  Created by Samuel Susla on 17/09/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SourceKittenFramework
 
 public struct ContainsOverFirstNotNilRule: CallPairRule, OptInRule, ConfigurationProviderRule {

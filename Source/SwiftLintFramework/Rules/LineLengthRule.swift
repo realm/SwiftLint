@@ -1,11 +1,3 @@
-//
-//  LineLengthRule.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 5/16/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -62,6 +54,13 @@ public struct LineLengthRule: ConfigurationProviderRule {
                 !lineHasKinds(line: line,
                               kinds: nonCommentKinds,
                               kindsByLine: syntaxKindsByLine) {
+                return nil
+            }
+
+            if configuration.ignoresInterpolatedStrings &&
+                lineHasKinds(line: line,
+                             kinds: [.stringInterpolationAnchor],
+                             kindsByLine: syntaxKindsByLine) {
                 return nil
             }
 

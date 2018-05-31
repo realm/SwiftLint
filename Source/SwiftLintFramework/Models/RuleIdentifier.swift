@@ -1,11 +1,3 @@
-//
-//  RuleIdentifier.swift
-//  SwiftLint
-//
-//  Created by Frederick Pietschmann on 3/5/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 
 public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {

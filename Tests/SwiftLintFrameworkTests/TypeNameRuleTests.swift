@@ -1,11 +1,3 @@
-//
-//  TypeNameRuleTests.swift
-//  SwiftLint
-//
-//  Created by Javier Hernandez on 30/04/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

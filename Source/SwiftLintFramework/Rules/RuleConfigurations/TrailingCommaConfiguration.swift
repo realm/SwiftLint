@@ -1,11 +1,3 @@
-//
-//  TrailingCommaConfiguration.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 25/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {

@@ -1,11 +1,3 @@
-//
-//  EmptyParenthesesWithTrailingClosureRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 12/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 
@@ -45,7 +37,9 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
             "[1, 2].map↓() { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
             "[1, 2].map↓(  ) { number in\n number + 1 \n}\n": "[1, 2].map { number in\n number + 1 \n}\n",
             "func foo() -> [Int] {\n    return [1, 2].map↓() { $0 + 1 }\n}\n":
-            "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}\n"
+                "func foo() -> [Int] {\n    return [1, 2].map { $0 + 1 }\n}\n",
+            "class C {\n#if true\nfunc f() {\n[1, 2].map↓() { $0 + 1 }\n}\n#endif\n}":
+                "class C {\n#if true\nfunc f() {\n[1, 2].map { $0 + 1 }\n}\n#endif\n}"
         ]
     )
 
@@ -89,7 +83,7 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
     }
 
     private func violationRanges(in file: File, dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        return dictionary.substructure.flatMap { subDict -> [NSRange] in
+        let ranges = dictionary.substructure.flatMap { subDict -> [NSRange] in
             var ranges = violationRanges(in: file, dictionary: subDict)
             if let kind = subDict.kind.flatMap(SwiftExpressionKind.init(rawValue:)) {
                 ranges += violationRanges(in: file, kind: kind, dictionary: subDict)
@@ -97,6 +91,8 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
 
             return ranges
         }
+
+        return ranges.unique
     }
 
     private func violationRanges(in file: File) -> [NSRange] {

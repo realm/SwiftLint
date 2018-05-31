@@ -1,11 +1,3 @@
-//
-//  ClosingBraceRule.swift
-//  SwiftLint
-//
-//  Created by Yasuhiro Inami on 12/19/15.
-//  Copyright © 2015 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

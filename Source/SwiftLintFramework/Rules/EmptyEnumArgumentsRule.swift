@@ -1,11 +1,3 @@
-//
-//  EmptyEnumArgumentsRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 05/01/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

@@ -1,11 +1,3 @@
-//
-//  ProtocolPropertyAccessorsOrderRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 15/05/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

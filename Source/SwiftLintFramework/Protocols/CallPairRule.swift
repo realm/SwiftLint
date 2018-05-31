@@ -1,11 +1,3 @@
-//
-//  CallPairRule.swift
-//  SwiftLint
-//
-//  Created by Tom Quist on 11/07/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 import SourceKittenFramework
 

@@ -1,10 +1,3 @@
-//
-//  LinuxMain.swift
-//  SwiftLint
-//
-//  Created by JP Simard on 12/11/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
 // Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
@@ -201,11 +194,31 @@ extension FileLengthRuleTests {
     ]
 }
 
+extension FileNameRuleTests {
+    static var allTests: [(String, (FileNameRuleTests) -> () throws -> Void)] = [
+        ("testMainDoesntTrigger", testMainDoesntTrigger),
+        ("testLinuxMainDoesntTrigger", testLinuxMainDoesntTrigger),
+        ("testClassNameDoesntTrigger", testClassNameDoesntTrigger),
+        ("testStructNameDoesntTrigger", testStructNameDoesntTrigger),
+        ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
+        ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
+        ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
+        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
         ("testFunctionBodyLengths", testFunctionBodyLengths),
         ("testFunctionBodyLengthsWithComments", testFunctionBodyLengthsWithComments),
         ("testFunctionBodyLengthsWithMultilineComments", testFunctionBodyLengthsWithMultilineComments)
+    ]
+}
+
+extension FunctionParameterCountRuleTests {
+    static var allTests: [(String, (FunctionParameterCountRuleTests) -> () throws -> Void)] = [
+        ("testFunctionParameterCount", testFunctionParameterCount),
+        ("testDefaultFunctionParameterCount", testDefaultFunctionParameterCount)
     ]
 }
 
@@ -255,6 +268,7 @@ extension LineLengthConfigurationTests {
         ("testLineLengthConfigurationInitialiserSetsIgnoresURLs", testLineLengthConfigurationInitialiserSetsIgnoresURLs),
         ("testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations", testLineLengthConfigurationInitialiserSetsIgnoresFunctionDeclarations),
         ("testLineLengthConfigurationInitialiserSetsIgnoresComments", testLineLengthConfigurationInitialiserSetsIgnoresComments),
+        ("testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings", testLineLengthConfigurationInitialiserSetsIgnoresInterpolatedStrings),
         ("testLineLengthConfigurationParams", testLineLengthConfigurationParams),
         ("testLineLengthConfigurationPartialParams", testLineLengthConfigurationPartialParams),
         ("testLineLengthConfigurationThrowsOnBadConfig", testLineLengthConfigurationThrowsOnBadConfig),
@@ -270,7 +284,9 @@ extension LineLengthRuleTests {
         ("testLineLength", testLineLength),
         ("testLineLengthWithIgnoreFunctionDeclarationsEnabled", testLineLengthWithIgnoreFunctionDeclarationsEnabled),
         ("testLineLengthWithIgnoreCommentsEnabled", testLineLengthWithIgnoreCommentsEnabled),
-        ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled)
+        ("testLineLengthWithIgnoreURLsEnabled", testLineLengthWithIgnoreURLsEnabled),
+        ("testLineLengthWithIgnoreInterpolatedStringsTrue", testLineLengthWithIgnoreInterpolatedStringsTrue),
+        ("testLineLengthWithIgnoreInterpolatedStringsFalse", testLineLengthWithIgnoreInterpolatedStringsFalse)
     ]
 }
 
@@ -309,6 +325,14 @@ extension MissingDocsRuleConfigurationTests {
         ("testInvalidServety", testInvalidServety),
         ("testInvalidAcl", testInvalidAcl),
         ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+    ]
+}
+
+extension ModifierOrderTests {
+    static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
+        ("testAttributeTypeMethod", testAttributeTypeMethod),
+        ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
+        ("testAtPrefixedGroup", testAtPrefixedGroup)
     ]
 }
 
@@ -386,8 +410,8 @@ extension RequiredEnumCaseRuleTestCase {
     ]
 }
 
-extension RuleConfigurationsTests {
-    static var allTests: [(String, (RuleConfigurationsTests) -> () throws -> Void)] = [
+extension RuleConfigurationTests {
+    static var allTests: [(String, (RuleConfigurationTests) -> () throws -> Void)] = [
         ("testNameConfigurationSetsCorrectly", testNameConfigurationSetsCorrectly),
         ("testNameConfigurationThrowsOnBadConfig", testNameConfigurationThrowsOnBadConfig),
         ("testNameConfigurationMinLengthThreshold", testNameConfigurationMinLengthThreshold),
@@ -410,7 +434,10 @@ extension RuleConfigurationsTests {
         ("testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments", testTrailingWhitespaceConfigurationApplyConfigurationSetsIgnoresComments),
         ("testTrailingWhitespaceConfigurationCompares", testTrailingWhitespaceConfigurationCompares),
         ("testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration", testTrailingWhitespaceConfigurationApplyConfigurationUpdatesSeverityConfiguration),
-        ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary)
+        ("testOverridenSuperCallConfigurationFromDictionary", testOverridenSuperCallConfigurationFromDictionary),
+        ("testModifierOrderConfigurationFromDictionary", testModifierOrderConfigurationFromDictionary),
+        ("testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup", testModifierOrderConfigurationThrowsOnUnrecognizedModifierGroup),
+        ("testModifierOrderConfigurationThrowsOnNonModifiableGroup", testModifierOrderConfigurationThrowsOnNonModifiableGroup)
     ]
 }
 
@@ -456,6 +483,7 @@ extension RulesTests {
         ("testLowerACLThanParent", testLowerACLThanParent),
         ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
         ("testEmptyString", testEmptyString),
+        ("testEmptyXCTestMethods", testEmptyXCTestMethods),
         ("testExplicitACL", testExplicitACL),
         ("testExplicitEnumRawValue", testExplicitEnumRawValue),
         ("testExplicitInit", testExplicitInit),
@@ -469,6 +497,7 @@ extension RulesTests {
         ("testForceUnwrapping", testForceUnwrapping),
         ("testForWhere", testForWhere),
         ("testFunctionBodyLength", testFunctionBodyLength),
+        ("testFunctionDefaultParameterAtEnd", testFunctionDefaultParameterAtEnd),
         ("testFunctionParameterCount", testFunctionParameterCount),
         ("testImplicitGetter", testImplicitGetter),
         ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
@@ -485,6 +514,7 @@ extension RulesTests {
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
         ("testMissingDocs", testMissingDocs),
+        ("testModifierOrder", testModifierOrder),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
@@ -551,6 +581,13 @@ extension SourceKitCrashTests {
         ("testAssertHandlerIsNotCalledOnNormalFile", testAssertHandlerIsNotCalledOnNormalFile),
         ("testAssertHandlerIsCalledOnFileThatCrashedSourceKitService", testAssertHandlerIsCalledOnFileThatCrashedSourceKitService),
         ("testRulesWithFileThatCrashedSourceKitService", testRulesWithFileThatCrashedSourceKitService)
+    ]
+}
+
+extension SwitchCaseAlignmentRuleTests {
+    static var allTests: [(String, (SwitchCaseAlignmentRuleTests) -> () throws -> Void)] = [
+        ("testSwitchCaseAlignmentWithoutIndentedCases", testSwitchCaseAlignmentWithoutIndentedCases),
+        ("testSwitchCaseAlignmentWithIndentedCases", testSwitchCaseAlignmentWithIndentedCases)
     ]
 }
 
@@ -630,7 +667,9 @@ XCTMain([
     testCase(ExtendedNSStringTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
+    testCase(FileNameRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
+    testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
@@ -640,6 +679,7 @@ XCTMain([
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
     testCase(MissingDocsRuleConfigurationTests.allTests),
+    testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
@@ -647,10 +687,11 @@ XCTMain([
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
-    testCase(RuleConfigurationsTests.allTests),
+    testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
     testCase(SourceKitCrashTests.allTests),
+    testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),

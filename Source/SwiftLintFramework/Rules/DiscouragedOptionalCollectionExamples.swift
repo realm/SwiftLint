@@ -1,11 +1,3 @@
-//
-//  DiscouragedOptionalCollectionRuleExamples.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 1/15/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 
 internal struct DiscouragedOptionalCollectionExamples {

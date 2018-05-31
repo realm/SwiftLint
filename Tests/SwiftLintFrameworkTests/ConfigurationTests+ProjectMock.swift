@@ -1,11 +1,3 @@
-//
-//  ConfigurationTests+ProjectMock.swift
-//  SwiftLint
-//
-//  Created by Stéphane Copin on 7/24/17.
-//  Copyright © 2017 Realm. All rights reserved.
-//
-
 import Foundation
 @testable import SwiftLintFramework
 

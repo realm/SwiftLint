@@ -1,11 +1,3 @@
-//
-//  RegexHelpers.swift
-//  SwiftLint
-//
-//  Created by Blaise Sarr on 13/04/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 struct RegexHelpers {
     // A single variable
     static let varName = "[a-zA-Z_][a-zA-Z0-9_]+"

@@ -1,11 +1,3 @@
-//
-//  HTMLReporter.swift
-//  SwiftLint
-//
-//  Created by Johnykutty on 10/27/16.
-//  Copyright © 2016 Realm. All rights reserved.
-//
-
 import Foundation
 
 private let formatter: DateFormatter = {

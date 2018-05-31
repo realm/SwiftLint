@@ -1,11 +1,3 @@
-//
-//  MissingDocsRuleConfiguration.swift
-//  SwiftLint
-//
-//  Created by Steffen Kötte on 04/26/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 
 public struct MissingDocsRuleConfiguration: RuleConfiguration {

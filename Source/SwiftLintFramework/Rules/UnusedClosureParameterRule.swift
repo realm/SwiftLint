@@ -38,6 +38,11 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
             ({ (manager: FileManager) in
               print(manager)
             })(FileManager.default)
+            """,
+            """
+            withPostSideEffect { input in
+                if true { print("\\(input)") }
+            }
             """
         ],
         triggeringExamples: [
@@ -130,15 +135,18 @@ public struct UnusedClosureParameterRule: ASTRule, ConfigurationProviderRule, Co
                                                                   length: range.length),
                     // if it's the parameter declaration itself, we should skip
                     byteRange.location > paramOffset,
-                    case let tokens = file.syntaxMap.tokens(inByteRange: byteRange),
-                    // a parameter usage should be only one token
-                    tokens.count == 1 else {
-                    continue
+                    case let tokens = file.syntaxMap.tokens(inByteRange: byteRange) else {
+                        continue
                 }
 
+                let token = tokens.first(where: { token -> Bool in
+                    return SyntaxKind(rawValue: token.type) == .identifier &&
+                        token.offset == byteRange.location &&
+                        token.length == byteRange.length
+                })
+
                 // found a usage, there's no violation!
-                if let token = tokens.first, SyntaxKind(rawValue: token.type) == .identifier,
-                    token.offset == byteRange.location, token.length == byteRange.length {
+                guard token == nil else {
                     return nil
                 }
             }

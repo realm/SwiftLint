@@ -119,6 +119,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2212](https://github.com/realm/SwiftLint/issues/2212)
 
+* Fix a false positive in `unused_closure_parameter` rule when a parameter
+  is used in a string interpolation.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2062](https://github.com/realm/SwiftLint/issues/2062)
+
 ## 0.25.1: Lid Locked
 
 This is the last release to support building with Swift 3.2 and Swift 3.3.

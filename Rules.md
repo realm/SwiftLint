@@ -18465,6 +18465,12 @@ hoge(arg: num) { num in
 })(FileManager.default)
 ```
 
+```swift
+withPostSideEffect { input in
+    if true { print("\(input)") }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

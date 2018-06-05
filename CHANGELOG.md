@@ -85,6 +85,10 @@
 
 #### Bug Fixes
 
+* Fix identifier name false positive for enum cases with associated values in Xcode 10.
+  [Jacob Greenfield](https://github.com/Coder-256)
+  [#2231](https://github.com/realm/SwiftLint/issues/2231)
+
 * Update `LowerACLThanParent` rule to not lint extensions.  
   [Keith Smiley](https://github.com/keith)
   [#2164](https://github.com/realm/SwiftLint/pull/2164)

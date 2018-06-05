@@ -39,7 +39,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
-            if !isFunction {
+            if !isFunction && kind != .enumelement {
                 let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
                 if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
                     return [

@@ -24,13 +24,23 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
         deprecatedAliases: ["variable_name"]
     )
 
+    private func mapName(name: String, kind: SwiftDeclarationKind) -> String {
+        if kind == .enumelement, let index = name.firstIndex(of: "(") {
+            return String(name[name.startIndex..<index])
+        } else {
+            return name
+        }
+    }
+
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard !dictionary.enclosedSwiftAttributes.contains(.override) else {
             return []
         }
 
-        return validateName(dictionary: dictionary, kind: kind).map { name, offset in
+        return validateName(dictionary: dictionary, kind: kind).map { originalName, offset in
+            let name = mapName(name: originalName, kind: kind)
+
             guard !configuration.excluded.contains(name) else {
                 return []
             }
@@ -39,7 +49,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
-            if !isFunction && kind != .enumelement {
+            if !isFunction {
                 let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
                 if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
                     return [

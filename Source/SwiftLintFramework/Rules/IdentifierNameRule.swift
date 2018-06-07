@@ -88,7 +88,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             !name.hasPrefix("$") else {
                 return nil
         }
-        
+
         let newName: String
         if kind == .enumelement, let length = dictionary.nameLength {
             let maxIndex = name.index(name.startIndex, offsetBy: length)

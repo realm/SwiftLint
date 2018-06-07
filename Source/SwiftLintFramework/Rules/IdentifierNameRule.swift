@@ -35,7 +35,7 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return []
             }
 
-            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind) || kind == .enumelement
+            let isFunction = SwiftDeclarationKind.functionKinds.contains(kind)
             let description = Swift.type(of: self).description
 
             let type = self.type(for: kind)
@@ -88,8 +88,16 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
             !name.hasPrefix("$") else {
                 return nil
         }
+        
+        let newName: String
+        if kind == .enumelement, let length = dictionary.nameLength {
+            let maxIndex = name.index(name.startIndex, offsetBy: length)
+            newName = String(name[name.startIndex..<maxIndex])
+        } else {
+            newName = name
+        }
 
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+        return (newName.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
     private let kinds: Set<SwiftDeclarationKind> = {

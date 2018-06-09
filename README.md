@@ -21,13 +21,24 @@ unacceptable behavior to [info@realm.io](mailto:info@realm.io).
 
 ## Installation
 
-### Using [Homebrew](http://brew.sh/):
+### Ubuntu (from source)
+
+```console
+$ git clone https://github.com/realm/SwiftLint.git
+$ cd SwiftLint
+$ git submodule update --init --recursive
+$ sudo make install
+```
+
+### macOS
+
+#### Using [Homebrew](http://brew.sh/):
 
 ```
 brew install swiftlint
 ```
 
-### Using [CocoaPods](https://cocoapods.org):
+#### Using [CocoaPods](https://cocoapods.org):
 
 Simply add the following line to your Podfile:
 
@@ -46,21 +57,16 @@ Note that this will add the SwiftLint binaries, its dependencies' binaries and t
 library distribution to the `Pods/` directory, so checking in this directory to SCM such as
 git is discouraged.
 
-### Using [Mint](https://github.com/yonaskolb/mint):
+#### Using [Mint](https://github.com/yonaskolb/mint):
 ```
 $ mint run realm/SwiftLint
 ```
 
-### Using a pre-built package:
+#### Using a pre-built package:
 
 You can also install SwiftLint by downloading `SwiftLint.pkg` from the
 [latest GitHub release](https://github.com/realm/SwiftLint/releases/latest) and
 running it.
-
-### Compiling from source:
-
-You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 9.0 or later).
 
 ## Usage
 

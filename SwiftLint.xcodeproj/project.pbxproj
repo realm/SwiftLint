@@ -78,6 +78,7 @@
 		4DCB8E7F1CBE494E0070FCF0 /* RegexHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB8E7D1CBE43640070FCF0 /* RegexHelpers.swift */; };
 		57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57ED82791CF65183002B3513 /* JUnitReporter.swift */; };
 		621061BF1ED57E640082D51E /* MultilineParametersRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */; };
+		621C8EA420CBC7A10007DA74 /* RedundantTypeAnnotationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6208ED4E20C297AC004E78D1 /* RedundantTypeAnnotationRule.swift */; };
 		62329C2B1F30B2310035737E /* DiscouragedDirectInitRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AF35D71F30B183009B11EE /* DiscouragedDirectInitRuleTests.swift */; };
 		623675B01F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */; };
 		623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */; };
@@ -458,6 +459,7 @@
 		5499CA961A2394B700783309 /* Components.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Components.plist; sourceTree = "<group>"; };
 		5499CA971A2394B700783309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57ED82791CF65183002B3513 /* JUnitReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JUnitReporter.swift; sourceTree = "<group>"; };
+		6208ED4E20C297AC004E78D1 /* RedundantTypeAnnotationRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantTypeAnnotationRule.swift; sourceTree = "<group>"; };
 		621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRuleExamples.swift; sourceTree = "<group>"; };
 		623675AF1F960C5C009BE6F3 /* QuickDiscouragedPendingTestRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedPendingTestRule.swift; sourceTree = "<group>"; };
 		623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedPendingTestRuleExamples.swift; sourceTree = "<group>"; };
@@ -1202,6 +1204,7 @@
 				D4B022951E0EF80C007E5297 /* RedundantOptionalInitializationRule.swift */,
 				D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */,
 				D41E7E0A1DF9DABB0065259A /* RedundantStringEnumValueRule.swift */,
+				6208ED4E20C297AC004E78D1 /* RedundantTypeAnnotationRule.swift */,
 				D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */,
 				B89F3BC91FD5ED9000931E59 /* RequiredEnumCaseRule.swift */,
 				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
@@ -1671,6 +1674,7 @@
 				57ED827B1CF656E3002B3513 /* JUnitReporter.swift in Sources */,
 				D43B04691E072291004016AF /* ColonConfiguration.swift in Sources */,
 				E82367E01ED3BD1E0040A88E /* Configuration+Cache.swift in Sources */,
+				621C8EA420CBC7A10007DA74 /* RedundantTypeAnnotationRule.swift in Sources */,
 				62DADC481FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift in Sources */,
 				D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,

@@ -99,6 +99,7 @@ public let masterRuleList = RuleList(rules: [
     RedundantOptionalInitializationRule.self,
     RedundantSetAccessControlRule.self,
     RedundantStringEnumValueRule.self,
+    RedundantTypeAnnotationRule.self,
     RedundantVoidReturnRule.self,
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,

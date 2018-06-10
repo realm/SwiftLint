@@ -82,6 +82,11 @@
   type or extension declared in the file (if any).  
   [JP Simard](https://github.com/jpsim)
   [#1420](https://github.com/realm/SwiftLint/issues/1420)
+  
+* Add `redundant_type_annotation` opt-in rule which warns against
+  unnecessary type annotations for variables.  
+  [Šimon Javora](https://github.com/sjavora)
+  [#2239](https://github.com/realm/SwiftLint/pull/2239)
 
 #### Bug Fixes
 

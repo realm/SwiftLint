@@ -209,7 +209,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 fileprivate extension Dictionary where Key: ExpressibleByStringLiteral {
     var subcalls: [[String: SourceKitRepresentable]] {
         return substructure.compactMap { dictionary -> [String: SourceKitRepresentable]? in
-            guard case .call? = dictionary.kind.flatMap(SwiftExpressionKind.init) else {
+            guard case .call? = dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) else {
                 return nil
             }
             return dictionary

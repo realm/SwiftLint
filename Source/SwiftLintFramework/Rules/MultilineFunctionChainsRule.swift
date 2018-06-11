@@ -113,11 +113,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
             return (dotLine: line, dotOffset: offset, range: range)
         }
 
-        let uniqueLines = calls
-            .map { $0.dotLine }
-            .reduce(into: Set<Int>()) { (result: inout Set<Int>, line: Int) in
-                result.insert(line)
-            }
+        let uniqueLines = calls.map { $0.dotLine }.unique
 
         if uniqueLines.count == 1 { return [] }
 
@@ -175,7 +171,8 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
 
         return subcalls.flatMap { call -> [NSRange] in
-            guard let range = callRange(file: file, call: call, parentName: name, parentNameOffset: offset) else {
+            // Bail out early if there's no subcall, since this means there's no chain.
+            guard let range = subcallRange(file: file, call: call, parentName: name, parentNameOffset: offset) else {
                 return []
             }
 
@@ -183,10 +180,10 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
     }
 
-    private func callRange(file: File,
-                           call: [String: SourceKitRepresentable],
-                           parentName: String,
-                           parentNameOffset: Int) -> NSRange? {
+    private func subcallRange(file: File,
+                              call: [String: SourceKitRepresentable],
+                              parentName: String,
+                              parentNameOffset: Int) -> NSRange? {
         guard
             case let contents = file.contents.bridge(),
             let nameOffset = call.nameOffset,
@@ -199,12 +196,12 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                 return nil
         }
 
-        let linkOffset = nameOffset + nameLength
-        let linkLength = parentName.bridge().length - nameLength
-        let offsetDifference = bodyOffset - linkOffset
+        let nameEndOffset = nameOffset + nameLength
+        let nameLengthDifference = parentName.bridge().length - nameLength
+        let offsetDifference = bodyOffset - nameEndOffset
 
-        return NSRange(location: linkOffset + offsetDifference + bodyLength,
-                       length: linkLength - bodyLength - offsetDifference)
+        return NSRange(location: nameEndOffset + offsetDifference + bodyLength,
+                       length: nameLengthDifference - bodyLength - offsetDifference)
     }
 
 }
@@ -212,7 +209,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 fileprivate extension Dictionary where Key: ExpressibleByStringLiteral {
     var subcalls: [[String: SourceKitRepresentable]] {
         return substructure.compactMap { dictionary -> [String: SourceKitRepresentable]? in
-            guard case .call? = dictionary.kind.flatMap({ SwiftExpressionKind(rawValue: $0) }) else {
+            guard case .call? = dictionary.kind.flatMap(SwiftExpressionKind.init) else {
                 return nil
             }
             return dictionary

@@ -68,6 +68,7 @@
 * [Mark](#mark)
 * [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
+* [Multiline Function Chains](#multiline-function-chains)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
@@ -9356,6 +9357,116 @@ foo(
     0, ↓param1: 1,
     param2: true, ↓param3: [3]
 )
+```
+
+</details>
+
+
+
+## Multiline Function Chains
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`multiline_function_chains` | Disabled | No | style | 3.0.0 
+
+Chained function calls should be either on the same line, or one per line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4].filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)
+```
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4]
+    .filter { $0 % 2 == 0 }.map { $0 * $0 }.reduce(0, +)",
+```
+
+```swift
+let chain = a
+    .b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c { blah in print(blah) }
+    .d()
+```
+
+```swift
+let chain = a.b(1, 2, 3)
+    .c(.init(
+        a: 1,
+        b, 2,
+        c, 3))
+    .d()
+```
+
+```swift
+self.viewModel.outputs.postContextualNotification
+  .observeForUI()
+  .observeValues {
+    NotificationCenter.default.post(
+      Notification(
+        name: .ksr_showNotificationsDialog,
+        userInfo: [UserInfoKeys.context: PushNotificationDialog.Context.pledge,
+                   UserInfoKeys.viewController: self]
+     )
+    )
+  }
+```
+
+```swift
+let remainingIDs = Array(Set(self.currentIDs).subtracting(Set(response.ids)))
+```
+
+```swift
+self.happeningNewsletterOn = self.updateCurrentUser
+    .map { $0.newsletters.happening }.skipNil().skipRepeats()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let evenSquaresSum = [20, 17, 35, 4]
+    .filter { $0 % 2 == 0 }↓.map { $0 * $0 }
+    .reduce(0, +)
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)
+    .c { blah in
+        print(blah)
+    }↓.d()
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)
+    .c(2, 3, 4)↓.d()
+```
+
+```swift
+let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
+        print(blah)
+    }
+    .d()
 ```
 
 </details>

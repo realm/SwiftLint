@@ -499,6 +499,7 @@ extension RulesTests {
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
         ("testModifierOrder", testModifierOrder),
+        ("testMultilineFunctionChains", testMultilineFunctionChains),
         ("testMultilineParameters", testMultilineParameters),
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),

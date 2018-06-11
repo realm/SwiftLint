@@ -69,6 +69,7 @@ public let masterRuleList = RuleList(rules: [
     MarkRule.self,
     ModifierOrderRule.self,
     MultilineArgumentsRule.self,
+    MultilineFunctionChainsRule.self,
     MultilineParametersRule.self,
     MultipleClosuresWithTrailingClosureRule.self,
     NestingRule.self,

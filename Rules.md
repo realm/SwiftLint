@@ -9995,51 +9995,6 @@ UIView.animate(withDuration: 1.0) {
 }
 ```
 
-```swift
-switch myvar {
-case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-    var three = 3
-    fallthrough
-default:
-    var three = 4
-}
-```
-
-```swift
-switch myvar {
-case .alpha:
-    var one = 1
-case .beta:
-    var three = 3
-    fallthrough
-default:
-    var four = 4
-}
-```
-
-```swift
-let aPoint = (1, -1)
-switch aPoint {
-case let (x, y) where x == y:
-    let A = "A"
-case let (x, y) where x == -y:
-    let B = "B"
-    fallthrough
-default:
-    let C = "C"
-}
-```
-
-```swift
-switch myvar {
-case MyFun(with: { $1 }):
-    let one = 1
-    fallthrough
-case "abc":
-    let two = 2
-}
-```
-
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -10053,49 +10008,6 @@ UIView.animate(withDuration: 1.0, animations: {
     someView.alpha = 0.0
 }) ↓{ _ in
     someView.removeFromSuperview()
-}
-```
-
-```swift
-switch myvar {
-case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
-    ↓fallthrough
-default:
-    var three = 4
-}
-```
-
-```swift
-switch myvar {
-case .alpha:
-    var one = 1
-case .beta:
-    ↓fallthrough
-case .gamma:
-    var three = 3
-default:
-  var four = 4
-}
-```
-
-```swift
-let aPoint = (1, -1)
-switch aPoint {
-case let (x, y) where x == y:
-    let A = "A"
-case let (x, y) where x == -y:
-    ↓fallthrough
-default:
-    let B = "B"
-}
-```
-
-```swift
-switch myvar {
-case MyFun(with: { $1 }):
-    ↓fallthrough
-case "abc":
-    let two = 2
 }
 ```
 
@@ -10431,6 +10343,51 @@ case 2:
 }
 ```
 
+```swift
+switch myvar {
+case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
+    var three = 3
+    fallthrough
+default:
+    var three = 4
+}
+```
+
+```swift
+switch myvar {
+case .alpha:
+    var one = 1
+case .beta:
+    var three = 3
+    fallthrough
+default:
+    var four = 4
+}
+```
+
+```swift
+let aPoint = (1, -1)
+switch aPoint {
+case let (x, y) where x == y:
+    let A = "A"
+case let (x, y) where x == -y:
+    let B = "B"
+    fallthrough
+default:
+    let C = "C"
+}
+```
+
+```swift
+switch myvar {
+case MyFun(with: { $1 }):
+    let one = 1
+    fallthrough
+case "abc":
+    let two = 2
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -10470,6 +10427,49 @@ case 1: /* multi
     ↓fallthrough
 case 2:
     var a = 2
+}
+```
+
+```swift
+switch myvar {
+case MyFunc(x: [1, 2, YourFunc(a: 23)], y: 2):
+    ↓fallthrough
+default:
+    var three = 4
+}
+```
+
+```swift
+switch myvar {
+case .alpha:
+    var one = 1
+case .beta:
+    ↓fallthrough
+case .gamma:
+    var three = 3
+default:
+  var four = 4
+}
+```
+
+```swift
+let aPoint = (1, -1)
+switch aPoint {
+case let (x, y) where x == y:
+    let A = "A"
+case let (x, y) where x == -y:
+    ↓fallthrough
+default:
+    let B = "B"
+}
+```
+
+```swift
+switch myvar {
+case MyFun(with: { $1 }):
+    ↓fallthrough
+case "abc":
+    let two = 2
 }
 ```
 

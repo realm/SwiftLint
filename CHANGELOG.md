@@ -43,11 +43,6 @@
   autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
 
-* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
-  indentation of non-trailing closure parameters.  
-  [Eric Horacek](https://github.com/erichoracek)
-  [#2121](https://github.com/realm/SwiftLint/issues/2121)]
-
 * Add a new `multiline_function_chains` rule to validate chained function 
   calls start either on the same line or one per line.  
   [Eric Horacek](https://github.com/erichoracek)
@@ -128,6 +123,11 @@
   is used in a string interpolation.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2062](https://github.com/realm/SwiftLint/issues/2062)
+
+* Fixes a case where the `closure_end_indentation` rule wouldn't lint the end
+  indentation of non-trailing closure parameters.  
+  [Eric Horacek](https://github.com/erichoracek)
+  [#2121](https://github.com/realm/SwiftLint/issues/2121)
 
 ## 0.25.1: Lid Locked
 

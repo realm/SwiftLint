@@ -4,6 +4,7 @@
 public let masterRuleList = RuleList(rules: [
     ArrayInitRule.self,
     AttributesRule.self,
+    BalancedBlankLinesRule.self,
     BlockBasedKVORule.self,
     ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,

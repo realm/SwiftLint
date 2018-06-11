@@ -3,6 +3,7 @@
 
 * [Array Init](#array-init)
 * [Attributes](#attributes)
+* [Balanced Blank Lines](#balanced-blank-lines)
 * [Block Based KVO](#block-based-kvo)
 * [Class Delegate Protocol](#class-delegate-protocol)
 * [Closing Brace Spacing](#closing-brace-spacing)
@@ -601,6 +602,95 @@ class DeleteMeTests: XCTestCase {
 
  @discardableResult
  ↓func a() -> Int
+```
+
+</details>
+
+
+
+## Balanced Blank Lines
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`balanced_blank_lines` | Disabled | Yes | style | 3.0.0 
+
+The number of blank lines at the beginning and end of a curly-braced body should be identical.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+if x == y {
+    return
+}
+```
+
+```swift
+func foo() {
+    return 0
+}
+```
+
+```swift
+class C {
+    let x = true
+}
+```
+
+```swift
+class C {
+
+    let x = true
+
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+if x == y ↓{
+
+    return
+}
+```
+
+```swift
+if x == y {
+    return
+
+↓}
+```
+
+```swift
+func foo() ↓{
+
+    return 0
+}
+```
+
+```swift
+func foo() {
+    return 0
+
+↓}
+```
+
+```swift
+class C {
+
+    let x = true
+↓}
+```
+
+```swift
+class C {
+    let x = true
+
+↓}
 ```
 
 </details>

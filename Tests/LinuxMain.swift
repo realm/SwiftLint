@@ -14,6 +14,12 @@ extension AttributesRuleTests {
     ]
 }
 
+extension BalancedBlankLinesRuleTests {
+    static var allTests: [(String, (BalancedBlankLinesRuleTests) -> () throws -> Void)] = [
+        ("testBalancedBlankLines", testBalancedBlankLines)
+    ]
+}
+
 extension ColonRuleTests {
     static var allTests: [(String, (ColonRuleTests) -> () throws -> Void)] = [
         ("testColonWithDefaultConfiguration", testColonWithDefaultConfiguration),
@@ -637,6 +643,7 @@ extension YamlSwiftLintTests {
 
 XCTMain([
     testCase(AttributesRuleTests.allTests),
+    testCase(BalancedBlankLinesRuleTests.allTests),
     testCase(ColonRuleTests.allTests),
     testCase(CommandTests.allTests),
     testCase(ConfigurationTests.allTests),

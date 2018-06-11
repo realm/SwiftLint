@@ -83,6 +83,11 @@
   [JP Simard](https://github.com/jpsim)
   [#1420](https://github.com/realm/SwiftLint/issues/1420)
 
+* Add `balanced_blank_lines` opt-in rule validating leading and trailing blank
+  lines in bodies
+  [Johannes Marbach](https://github.com/Johennes)
+  [#2241](https://github.com/realm/SwiftLint/issues/2241)
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

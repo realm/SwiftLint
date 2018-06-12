@@ -247,6 +247,10 @@ class RulesTests: XCTestCase {
         verifyRule(NoExtensionAccessModifierRule.description)
     }
 
+    func testNoFallthroughOnly() {
+        verifyRule(NoFallthroughOnlyRule.description)
+    }
+
     func testNoGroupingExtension() {
         verifyRule(NoGroupingExtensionRule.description)
     }

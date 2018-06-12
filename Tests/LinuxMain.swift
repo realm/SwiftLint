@@ -504,6 +504,7 @@ extension RulesTests {
         ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
         ("testNesting", testNesting),
         ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
+        ("testNoFallthroughOnly", testNoFallthroughOnly),
         ("testNoGroupingExtension", testNoGroupingExtension),
         ("testNotificationCenterDetachment", testNotificationCenterDetachment),
         ("testNimbleOperator", testNimbleOperator),

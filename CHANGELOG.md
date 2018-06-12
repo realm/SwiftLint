@@ -13,8 +13,9 @@
 
 * Updates the `untyped_error_in_catch` rule to support autocorrection.  
   [Daniel Metzing](https://github.com/dirtydanee)
-* Add `no-fallthrough-only` rule to check that `case` statements do not contain
-  only a `fallthrough`.  
+
+* Add `no_fallthrough_only` rule to check that `case` statements do not
+  contain only a `fallthrough`.  
   [Austin Belknap](https://github.com/dabelknap)
 
 * Add `indented_cases` support to `switch_case_alignment` rule.  

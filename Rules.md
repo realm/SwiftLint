@@ -4976,7 +4976,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `file_header` | Disabled | No | style | 3.0.0 
 
-Header comments should be consistent with project patterns.
+Header comments should be consistent with project patterns. The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the required and forbidden patterns. It will be replaced by the real file name.
 
 ### Examples
 

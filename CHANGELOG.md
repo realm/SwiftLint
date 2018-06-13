@@ -11,6 +11,12 @@
 
 #### Enhancements
 
+* Add optional filename verification to the `file_header` rule.
+  All occurrences in the pattern of the `SWIFTLINT_CURRENT_FILENAME`
+  placeholder are replaced by the name of the validated file.  
+  [Anders Hasselqvist](https://github.com/nevil)
+  [#1079](https://github.com/realm/SwiftLint/issues/1079)
+
 * Updates the `untyped_error_in_catch` rule to support autocorrection.  
   [Daniel Metzing](https://github.com/dirtydanee)
 

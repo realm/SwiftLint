@@ -74,15 +74,17 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     private func makeRegex(for file: File, using pattern: String,
                            options: NSRegularExpression.Options, escapeFileName: Bool) -> NSRegularExpression? {
-        // Recompile the regex for this file
-        guard let fileName = file.path?.bridge().lastPathComponent else {
-            queuedFatalError("Expected to validate a file.")
-        }
 
-        // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
-        let escapedName = escapeFileName ? NSRegularExpression.escapedPattern(for: fileName) : fileName
-        let replacedPattern = pattern.replacingOccurrences(of: FileHeaderConfiguration.fileNamePlaceholder,
-                                                           with: escapedName)
+        // Recompile the regex for this file...
+        let replacedPattern = file.path.map { path in
+            let fileName = path.bridge().lastPathComponent
+
+            // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
+            let escapedName = escapeFileName ? NSRegularExpression.escapedPattern(for: fileName) : fileName
+            return pattern.replacingOccurrences(of: FileHeaderConfiguration.fileNamePlaceholder,
+                                                with: escapedName)
+        } ?? pattern
+
         do {
             return try NSRegularExpression(pattern: replacedPattern, options: options)
         } catch {

@@ -31,6 +31,8 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
         ]
     )
 
+    private static let reason = "Header comments should be consistent with project patterns."
+
     public func validate(file: File) -> [StyleViolation] {
         var firstToken: SyntaxToken?
         var lastToken: SyntaxToken?
@@ -80,20 +82,18 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 Location(file: file, byteOffset: $0.offset)
             } ?? Location(file: file.path, line: 1)
             return [
-                StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severityConfiguration.severity,
-                    location: location
-                )
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severityConfiguration.severity,
+                               location: location,
+                               reason: type(of: self).reason)
             ]
         }
 
         return violationsOffsets.map {
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severityConfiguration.severity,
-                location: Location(file: file, characterOffset: $0)
-            )
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: Location(file: file, characterOffset: $0),
+                           reason: type(of: self).reason)
         }
     }
 

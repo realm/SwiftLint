@@ -9,7 +9,9 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
     public static let description = RuleDescription(
         identifier: "file_header",
         name: "File Header",
-        description: "Header comments should be consistent with project patterns.",
+        description: "Header comments should be consistent with project patterns. " +
+            "The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the " +
+            "required and forbidden patterns. It will be replaced by the real file name.",
         kind: .style,
         nonTriggeringExamples: [
             "let foo = \"Copyright\"",
@@ -53,9 +55,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
             lastToken = token
         }
 
-        // If we have a requiredPattern, replace the filename placeholder if needed
-        // and compile the regex.
-        let requiredRegex = replaceRequiredRegexIfNeeded(configuration, file: file)
+        let requiredRegex = configuration.requiredRegex(for: file)
 
         var violationsOffsets = [Int]()
         if let firstToken = firstToken, let lastToken = lastToken {
@@ -65,7 +65,7 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 return []
             }
 
-            if let regex = configuration.forbiddenRegex,
+            if let regex = configuration.forbiddenRegex(for: file),
                 let firstMatch = regex.matches(in: file.contents, options: [], range: range).first {
                 violationsOffsets.append(firstMatch.range.location)
             }
@@ -95,26 +95,6 @@ public struct FileHeaderRule: ConfigurationProviderRule, OptInRule {
                 location: Location(file: file, characterOffset: $0)
             )
         }
-    }
-
-    private func replaceRequiredRegexIfNeeded(_ configuration: FileHeaderConfiguration,
-                                              file: File) -> NSRegularExpression? {
-        if let requiredPattern = configuration.requiredPattern {
-            let fileName = file.path?.bridge().lastPathComponent ?? configuration.filenameForTest
-
-            // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
-            let escapedName = NSRegularExpression.escapedPattern(for: fileName)
-            let replacedPattern = requiredPattern.replacingOccurrences(of: "SWIFTLINT_CURRENT_FILENAME",
-                                                                       with: escapedName)
-            do {
-                return try NSRegularExpression(pattern: replacedPattern,
-                                               options: [.anchorsMatchLines, .dotMatchesLineSeparators])
-            } catch {
-                queuedFatalError("Invalid pattern for required_pattern in 'file_header'")
-            }
-        }
-
-        return configuration.requiredRegex
     }
 
     private func isSwiftLintCommand(token: SyntaxToken, file: File) -> Bool {

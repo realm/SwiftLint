@@ -11,7 +11,9 @@
 
 #### Enhancements
 
-* Add optional filename verification to the `file_header` rule.  
+* Add optional filename verification to the `file_header` rule.
+  The first occurrence in the pattern of the `SWIFTLINT_CURRENT_FILENAME`
+  placeholder is replaced by the name of the validated file.  
   [Anders Hasselqvist](https://github.com/nevil)
   [#1079](https://github.com/realm/SwiftLint/issues/1079)
 

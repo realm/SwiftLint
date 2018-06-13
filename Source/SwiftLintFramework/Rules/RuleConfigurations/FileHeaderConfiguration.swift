@@ -3,6 +3,10 @@ import SourceKittenFramework
 
 public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
     private static let fileNamePlaceholder = "SWIFTLINT_CURRENT_FILENAME"
+    private static let stringRegexOptions: NSRegularExpression.Options = [.ignoreMetacharacters]
+    private static let patternRegexOptions: NSRegularExpression.Options =
+        [.anchorsMatchLines, .dotMatchesLineSeparators]
+
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private var requiredString: String?
     private var requiredPattern: String?
@@ -11,22 +15,6 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     private var _forbiddenRegex: NSRegularExpression?
     private var _requiredRegex: NSRegularExpression?
-    private(set) var forbiddenRegexQ: NSRegularExpression? {
-        get {
-            if _forbiddenRegex != nil {
-                return _forbiddenRegex
-            }
-
-            if _requiredRegex == nil {
-                return FileHeaderConfiguration.defaultRegex
-            }
-
-            return nil
-        }
-        set {
-            _forbiddenRegex = newValue
-        }
-    }
 
     private static let defaultRegex = regex("\\bCopyright\\b", options: [.caseInsensitive])
 
@@ -50,16 +38,17 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
 
+        // Cache the created regexes if possible.
+        // If the pattern contains the SWIFTLINT_CURRENT_FILENAME placeholder,
+        // the regex will be recompiled for each validated file.
         if let requiredString = configuration["required_string"] {
             self.requiredString = requiredString
-            _requiredRegex = try NSRegularExpression(pattern: requiredString,
-                                                     options: [.ignoreMetacharacters])
+            if !requiredString.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+                _requiredRegex = try NSRegularExpression(pattern: requiredString,
+                                                         options: FileHeaderConfiguration.stringRegexOptions)
+            }
         } else if let requiredPattern = configuration["required_pattern"] {
             self.requiredPattern = requiredPattern
-
-            // Cache the created regex of requiredPattern if possible.
-            // If requiredPattern contains the SWIFTLINT_CURRENT_FILENAME placeholder,
-            // the regex will be recompiled for each validated file.
             if !requiredPattern.contains(FileHeaderConfiguration.fileNamePlaceholder) {
                 _requiredRegex = try .cached(pattern: requiredPattern)
             }
@@ -67,14 +56,12 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
         if let forbiddenString = configuration["forbidden_string"] {
             self.forbiddenString = forbiddenString
-            _forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
-                                                      options: [.ignoreMetacharacters])
+            if !forbiddenString.contains(FileHeaderConfiguration.fileNamePlaceholder) {
+                _forbiddenRegex = try NSRegularExpression(pattern: forbiddenString,
+                                                          options: FileHeaderConfiguration.stringRegexOptions)
+            }
         } else if let forbiddenPattern = configuration["forbidden_pattern"] {
             self.forbiddenPattern = forbiddenPattern
-
-            // Cache the created regex of forbiddenPattern if possible.
-            // If forbiddenPattern contains the SWIFTLINT_CURRENT_FILENAME placeholder,
-            // the regex will be recompiled for each validated file.
             if !forbiddenPattern.contains(FileHeaderConfiguration.fileNamePlaceholder) {
                 _forbiddenRegex = try .cached(pattern: forbiddenPattern)
             }
@@ -85,22 +72,32 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-    private func makeRegex(for file: File, using pattern: String) -> NSRegularExpression? {
+    private func makeRegex(for file: File, using pattern: String,
+                           options: NSRegularExpression.Options, escapeFileName: Bool) -> NSRegularExpression? {
         // Recompile the regex for this file
         guard let fileName = file.path?.bridge().lastPathComponent else {
             queuedFatalError("Expected to validate a file.")
         }
 
         // Replace SWIFTLINT_CURRENT_FILENAME with the filename.
-        let escapedName = NSRegularExpression.escapedPattern(for: fileName)
+        let escapedName = escapeFileName ? NSRegularExpression.escapedPattern(for: fileName) : fileName
         let replacedPattern = pattern.replacingOccurrences(of: FileHeaderConfiguration.fileNamePlaceholder,
                                                            with: escapedName)
         do {
-            return try NSRegularExpression(pattern: replacedPattern,
-                                           options: [.anchorsMatchLines, .dotMatchesLineSeparators])
+            return try NSRegularExpression(pattern: replacedPattern, options: options)
         } catch {
             queuedFatalError("Failed to compile pattern '\(replacedPattern)'")
         }
+    }
+
+    private func regexFromString(for file: File, using pattern: String) -> NSRegularExpression? {
+        return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.stringRegexOptions,
+                         escapeFileName: false)
+    }
+
+    private func regexFromPattern(for file: File, using pattern: String) -> NSRegularExpression? {
+        return makeRegex(for: file, using: pattern, options: FileHeaderConfiguration.patternRegexOptions,
+                         escapeFileName: true)
     }
 
     func forbiddenRegex(for file: File) -> NSRegularExpression? {
@@ -108,7 +105,11 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
             return _forbiddenRegex
         }
 
-        if let regex = forbiddenPattern.flatMap({ makeRegex(for: file, using: $0) }) {
+        if let regex = forbiddenString.flatMap({ regexFromString(for: file, using: $0) }) {
+            return regex
+        }
+
+        if let regex = forbiddenPattern.flatMap({ regexFromPattern(for: file, using: $0) }) {
             return regex
         }
 
@@ -124,7 +125,11 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
             return _requiredRegex
         }
 
-        return requiredPattern.flatMap { makeRegex(for: file, using: $0) }
+        if let regex = requiredString.flatMap({ regexFromString(for: file, using: $0) }) {
+            return regex
+        }
+
+        return requiredPattern.flatMap { regexFromPattern(for: file, using: $0) }
     }
 }
 

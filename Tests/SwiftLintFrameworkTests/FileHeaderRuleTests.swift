@@ -132,6 +132,30 @@ class FileHeaderRuleTests: XCTestCase {
                    skipCommentTests: true, testMultiByteOffsets: false)
     }
 
+    func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() {
+        let configuration = ["required_string": "// SWIFTLINT_CURRENT_FILENAME"]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
+    }
+
+    func testFileHeaderWithForbiddenStringUsingFilenamePlaceholder() {
+        let configuration = ["forbidden_string": "// SWIFTLINT_CURRENT_FILENAME"]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).count, 1)
+    }
+
     func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
         let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
         let configuration2 = ["required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]

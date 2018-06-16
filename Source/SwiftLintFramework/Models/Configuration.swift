@@ -116,6 +116,7 @@ public struct Configuration: Hashable {
         cachePath = configuration.cachePath
         rootPath = configuration.rootPath
         indentation = configuration.indentation
+        mergeNestedConfigs = configuration.mergeNestedConfigs
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,

@@ -66,12 +66,13 @@ struct AutoCorrectOptions: OptionsProtocol {
     let cachePath: String
     let ignoreCache: Bool
     let useTabs: Bool
+    let disableNestedConfigMerge: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in
-            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
-        }}}}}}}}
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> (_ disableNestedConfigMerge: Bool) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in { disableNestedConfigMerge in
+            self.init(path: path, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs, disableNestedConfigMerge: disableNestedConfigMerge)
+        }}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
@@ -94,5 +95,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| Option(key: "use-tabs",
                                defaultValue: false,
                                usage: "should use tabs over spaces when reformatting. Deprecated.")
+            <*> mode <| Option(key: "disable-nested-config-merge", defaultValue: false,
+                               usage: "do not attempt to merge nested configurations")
     }
 }

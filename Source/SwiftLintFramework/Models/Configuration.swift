@@ -20,6 +20,7 @@ public struct Configuration: Hashable {
     public let warningThreshold: Int?                  // warning threshold
     public private(set) var rootPath: String?          // the root path to search for nested configurations
     public private(set) var configurationPath: String? // if successfully loaded from a path
+    public private(set) var mergeNestedConfigs: Bool?  // merge configurations in nested folders
     public let cachePath: String?
 
     public var hashValue: Int {
@@ -118,7 +119,8 @@ public struct Configuration: Hashable {
     }
 
     public init(path: String = Configuration.fileName, rootPath: String? = nil,
-                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil) {
+                optional: Bool = true, quiet: Bool = false, enableAllRules: Bool = false, cachePath: String? = nil,
+                mergeNestedConfigs: Bool = true) {
         let fullPath: String
         if let rootPath = rootPath, rootPath.isDirectory() {
             fullPath = path.bridge().absolutePathRepresentation(rootDirectory: rootPath)
@@ -141,6 +143,7 @@ public struct Configuration: Hashable {
             if !optional { fail("File not found.") }
             self.init(rulesMode: rulesMode, cachePath: cachePath)!
             self.rootPath = rootPath
+            self.mergeNestedConfigs = mergeNestedConfigs
             return
         }
         do {
@@ -152,6 +155,7 @@ public struct Configuration: Hashable {
             self.init(dict: dict, enableAllRules: enableAllRules, cachePath: cachePath)!
             configurationPath = fullPath
             self.rootPath = rootPath
+            self.mergeNestedConfigs = mergeNestedConfigs
             setCached(atPath: fullPath)
             return
         } catch YamlParserError.yamlParsing(let message) {
@@ -174,7 +178,8 @@ public struct Configuration: Hashable {
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules) &&
-            (lhs.indentation == rhs.indentation)
+            (lhs.indentation == rhs.indentation) &&
+            (lhs.mergeNestedConfigs == rhs.mergeNestedConfigs)
     }
 }
 

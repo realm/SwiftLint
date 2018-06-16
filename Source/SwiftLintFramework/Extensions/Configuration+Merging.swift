@@ -23,7 +23,8 @@ extension Configuration {
             let fullPath = pathNSString.absolutePathRepresentation()
             let config = Configuration.getCached(atPath: fullPath) ??
                 Configuration(path: configurationSearchPath, rootPath: fullPath, optional: false, quiet: true)
-            return merge(with: config)
+            let shouldMergeNestedConfigs = mergeNestedConfigs ?? true
+            return shouldMergeNestedConfigs ? merge(with: config) : config
         }
 
         // If we are not at the root path, continue down the tree

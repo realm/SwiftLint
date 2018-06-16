@@ -131,7 +131,8 @@ extension Configuration {
         let optional = !CommandLine.arguments.contains("--config")
         self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
                   optional: optional, quiet: options.quiet,
-                  enableAllRules: options.enableAllRules, cachePath: cachePath)
+                  enableAllRules: options.enableAllRules, cachePath: cachePath,
+                  mergeNestedConfigs: !options.disableNestedConfigMerge)
     }
 
     func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
@@ -148,7 +149,8 @@ extension Configuration {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         let optional = !CommandLine.arguments.contains("--config")
         self.init(path: options.configurationFile, rootPath: options.path.absolutePathStandardized(),
-                  optional: optional, quiet: options.quiet, cachePath: cachePath)
+                  optional: optional, quiet: options.quiet, cachePath: cachePath,
+                  mergeNestedConfigs: !options.disableNestedConfigMerge)
     }
 
     // MARK: Rules command

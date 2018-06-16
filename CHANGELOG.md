@@ -11,6 +11,9 @@
 
 #### Enhancements
 
+* Add an option to disable nested config merges with the `--disable-nested-config-merge` command-line option
+  [Akshay Venkatesh](https://github.com/aksvenk)
+
 * Add optional filename verification to the `file_header` rule.
   All occurrences in the pattern of the `SWIFTLINT_CURRENT_FILENAME`
   placeholder are replaced by the name of the validated file.  

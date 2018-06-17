@@ -1,11 +1,3 @@
-//
-//  XCTSpecificMatcherRuleTests.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 1/9/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import SwiftLintFramework
 import XCTest
 

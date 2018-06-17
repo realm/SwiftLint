@@ -93,6 +93,11 @@
   [JP Simard](https://github.com/jpsim)
   [#1420](https://github.com/realm/SwiftLint/issues/1420)
 
+* Add `convenience_type` opt-in rule to validate that types hosting only static
+  members should be enums to avoid instantiation.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1871](https://github.com/realm/SwiftLint/issues/1871)  
+
 #### Bug Fixes
 
 * Update `LowerACLThanParent` rule to not lint extensions.  

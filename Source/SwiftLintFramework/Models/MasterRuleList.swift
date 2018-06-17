@@ -16,6 +16,7 @@ public let masterRuleList = RuleList(rules: [
     ConditionalReturnsOnNewlineRule.self,
     ContainsOverFirstNotNilRule.self,
     ControlStatementRule.self,
+    ConvenienceTypeRule.self,
     CustomRules.self,
     CyclomaticComplexityRule.self,
     DiscardedNotificationCenterObserverRule.self,

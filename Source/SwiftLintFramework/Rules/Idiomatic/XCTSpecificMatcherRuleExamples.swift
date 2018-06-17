@@ -1,11 +1,3 @@
-//
-//  XCTSpecificMatcherRuleExamples.swift
-//  SwiftLint
-//
-//  Created by Ornithologist Coder on 1/7/18.
-//  Copyright © 2018 Realm. All rights reserved.
-//
-
 import Foundation
 
 internal struct XCTSpecificMatcherRuleExamples {

@@ -1333,6 +1333,7 @@ extension WeakDelegateRuleTests {
 extension XCTFailMessageRuleTests {
     static var allTests: [(String, (XCTFailMessageRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
 }
 
 extension XCTSpecificMatcherRuleTests {
@@ -1344,6 +1345,8 @@ extension XCTSpecificMatcherRuleTests {
         ("testNotEqualTrue", testNotEqualTrue),
         ("testNotEqualFalse", testNotEqualFalse),
         ("testNotEqualNil", testNotEqualNil),
+        ("testEqualOptionalFalse", testEqualOptionalFalse),
+        ("testEqualUnwrappedOptionalFalse", testEqualUnwrappedOptionalFalse),
         ("testEqualNilNil", testEqualNilNil),
         ("testEqualTrueTrue", testEqualTrueTrue),
         ("testEqualFalseFalse", testEqualFalseFalse),
@@ -1552,6 +1555,7 @@ XCTMain([
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),
     testCase(XCTFailMessageRuleTests.allTests),
+    testCase(XCTSpecificMatcherRuleTests.allTests),
     testCase(YamlParserTests.allTests),
     testCase(YamlSwiftLintTests.allTests),
     testCase(YodaConditionRuleTests.allTests)

@@ -15,6 +15,7 @@
 * [Conditional Returns on Newline](#conditional-returns-on-newline)
 * [Contains over first not nil](#contains-over-first-not-nil)
 * [Control Statement](#control-statement)
+* [Convenience Type](#convenience-type)
 * [Custom Rules](#custom-rules)
 * [Cyclomatic Complexity](#cyclomatic-complexity)
 * [Discarded Notification Center Observer](#discarded-notification-center-observer)
@@ -1936,6 +1937,76 @@ do { ; } ↓while (condition) {
 ```swift
 do {
 } ↓catch(let error as NSError) {
+}
+```
+
+</details>
+
+
+
+## Convenience Type
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`convenience_type` | Disabled | No | idiomatic | 4.1.0 
+
+Types used for hosting only static members should be implemented as a caseless enum to avoid instantiation.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+enum Math { // enum
+    public static let pi = 3.14
+}
+```
+
+```swift
+// class with inheritance
+class MathViewController: UIViewController {
+    public static let pi = 3.14
+}
+```
+
+```swift
+@objc class Math: NSObject { // class visible to Obj-C
+    public static let pi = 3.14
+}
+```
+
+```swift
+struct Math { // type with non-static declarations
+    public static let pi = 3.14
+    public let randomNumber = 2
+}
+```
+
+```swift
+class DummyClass {}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓struct Math {
+    public static let pi = 3.14
+}
+```
+
+```swift
+↓class Math {
+    public static let pi = 3.14
+}
+```
+
+```swift
+↓struct Math {
+    public static let pi = 3.14
+    @available(*, unavailable) init() {}
 }
 ```
 

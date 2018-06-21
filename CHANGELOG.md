@@ -6,7 +6,9 @@
 
 #### Enhancements
 
-* None.
+* Decrease default severity of `superfluous_disable_command` to `warning`.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#2250](https://github.com/realm/SwiftLint/issues/2250)
 
 #### Bug Fixes
 

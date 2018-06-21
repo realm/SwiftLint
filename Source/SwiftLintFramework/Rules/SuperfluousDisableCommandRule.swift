@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct SuperfluousDisableCommandRule: ConfigurationProviderRule {
-    public var configuration = SeverityConfiguration(.error)
+    public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 

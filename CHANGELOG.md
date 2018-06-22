@@ -5,7 +5,7 @@
 * SwiftLint now requires Swift 4.0 or higher to build.  
   [JP Simard](https://github.com/jpsim)
 
-* `fallthrough` rule is now opt-in.  
+* The `fallthrough` rule is now opt-in.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1892](https://github.com/realm/SwiftLint/issues/1892)
 
@@ -53,7 +53,7 @@
   autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)
 
-* Add a new `multiline_function_chains` rule to validate chained function 
+* Add a new `multiline_function_chains` rule to validate that chained function
   calls start either on the same line or one per line.  
   [Eric Horacek](https://github.com/erichoracek)
   [#2214](https://github.com/realm/SwiftLint/issues/2121)]

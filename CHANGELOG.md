@@ -1,4 +1,4 @@
-## Master
+## 0.26.0: Maytagged Pointers
 
 #### Breaking
 

@@ -70,7 +70,7 @@
 * Add a new `multiline_function_chains` rule to validate that chained function
   calls start either on the same line or one per line.  
   [Eric Horacek](https://github.com/erichoracek)
-  [#2214](https://github.com/realm/SwiftLint/issues/2121)]
+  [#2214](https://github.com/realm/SwiftLint/issues/2214)
 
 * Improves the `mark` rule's autocorrection.  
   [Eric Horacek](https://github.com/erichoracek)

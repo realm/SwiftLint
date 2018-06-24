@@ -3,7 +3,7 @@ jobs:
 
   tsan:
     macos:
-      xcode: "9.3.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       # Pre-cache
@@ -16,7 +16,7 @@ jobs:
   osscheck:
     shell: /bin/bash --login -eo pipefail
     macos:
-      xcode: "9.3.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       - run: echo "ruby-2.3" > ~/.ruby-version
@@ -32,14 +32,14 @@ jobs:
 
   swiftpm_4.1:
     macos:
-      xcode: "9.3.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       - run: swift test --parallel
 
   xcode_9:
     macos:
-      xcode: "9.3.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       - run: set -o pipefail && script/cibuild | xcpretty -r junit
@@ -61,7 +61,7 @@ jobs:
   cocoapods_swift_4.1:
     shell: /bin/bash --login -eo pipefail
     macos:
-      xcode: "9.3.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       - run: echo "ruby-2.3" > ~/.ruby-version

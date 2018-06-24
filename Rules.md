@@ -7014,7 +7014,7 @@ typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)
 ```
 
 ```swift
-typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>
+typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>
 
 ```
 

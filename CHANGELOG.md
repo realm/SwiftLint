@@ -10,6 +10,11 @@
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2250](https://github.com/realm/SwiftLint/issues/2250)
 
+* Don't touch files when running `autocorrect --format` if the contents haven't
+  changed.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2249](https://github.com/realm/SwiftLint/issues/2249)
+
 #### Bug Fixes
 
 * Fix an issue with `control_statement` where commas in clauses prevented the

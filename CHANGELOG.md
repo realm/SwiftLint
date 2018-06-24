@@ -14,8 +14,9 @@
   rule from applying.  
   [Allen Wu](https://github.com/allewun)
 
-* Fix `explicit_enum_raw_value`, `generic_type_name`, `implicit_return` and
-  `required_enum_case` rules when linting with Swift 4.2.  
+* Fix `explicit_enum_raw_value`, `generic_type_name`, `implicit_return`,
+  `required_enum_case` and `quick_discouraged_call` rules when linting
+  with Swift 4.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 * Fix `identifier_name` rule false positives with `enum` when linting

@@ -17,6 +17,12 @@
 * Fix `explicit_enum_raw_value` rule when linting with Swift 4.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix `identifier_name` rule false positives with `enum` when linting
+  using Swift 4.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [Jacob Greenfield](https://github.com/Coder-256)
+  [#2231](https://github.com/realm/SwiftLint/issues/2231)
+
 ## 0.26.0: Maytagged Pointers
 
 #### Breaking

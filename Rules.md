@@ -7158,6 +7158,14 @@ func == (lhs: SyntaxToken, rhs: SyntaxToken) -> Bool
 override func IsOperator(name: String) -> Bool
 ```
 
+```swift
+enum Foo { case `private` }
+```
+
+```swift
+enum Foo { case value(String) }
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

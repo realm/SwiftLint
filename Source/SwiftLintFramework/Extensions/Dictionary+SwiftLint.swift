@@ -97,7 +97,8 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
 
             if SwiftDeclarationKind(rawValue: kindString) == .varParameter {
                 return [subDict]
-            } else if SwiftExpressionKind(rawValue: kindString) == .argument {
+            } else if SwiftExpressionKind(rawValue: kindString) == .argument ||
+                SwiftExpressionKind(rawValue: kindString) == .closure {
                 return subDict.enclosedVarParameters
             }
 

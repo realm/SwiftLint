@@ -38,11 +38,7 @@ struct AutoCorrectCommand: CommandProtocol {
                 queuedPrint(correctionLogs.joined(separator: "\n"))
             }
             if options.format {
-                let formattedContents = try? linter.file.format(trimmingTrailingWhitespace: true,
-                                                                useTabs: useTabs,
-                                                                indentWidth: indentWidth)
-                _ = try? formattedContents?
-                    .write(toFile: linter.file.path!, atomically: true, encoding: .utf8)
+                linter.format(useTabs: useTabs, indentWidth: indentWidth)
             }
         }.flatMap { files in
             if !options.quiet {

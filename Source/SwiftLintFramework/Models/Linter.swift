@@ -192,4 +192,13 @@ public struct Linter {
         }
         return corrections
     }
+
+    public func format(useTabs: Bool, indentWidth: Int) {
+        let formattedContents = try? file.format(trimmingTrailingWhitespace: true,
+                                                 useTabs: useTabs,
+                                                 indentWidth: indentWidth)
+        if let formattedContents = formattedContents {
+            file.write(formattedContents)
+        }
+    }
 }

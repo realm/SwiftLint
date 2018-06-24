@@ -6,4 +6,5 @@ public enum SwiftExpressionKind: String {
     case array = "source.lang.swift.expr.array"
     case dictionary = "source.lang.swift.expr.dictionary"
     case objectLiteral = "source.lang.swift.expr.object_literal"
+    case closure = "source.lang.swift.expr.closure"
 }

@@ -34,14 +34,13 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
         }
 
         // Check if it's an enum which supports raw values
-        let implicitRawValueTypes: [Any] = [
-            Int.self, Int8.self, Int16.self, Int32.self, Int64.self,
-            UInt.self, UInt8.self, UInt16.self, UInt32.self, UInt64.self,
-            Double.self, Float.self, Float80.self, Decimal.self, NSNumber.self,
-            NSDecimalNumber.self, "NSInteger", String.self
+        let implicitRawValueSet: Set<String> = [
+            "Int", "Int8", "Int16", "Int32", "Int64",
+            "UInt", "UInt8", "UInt16", "UInt32", "UInt64",
+            "Double", "Float", "Float80", "Decimal", "NSNumber",
+            "NSDecimalNumber", "NSInteger", "String"
         ]
 
-        let implicitRawValueSet = Set(implicitRawValueTypes.map(String.init(describing:)))
         let enumInheritedTypesSet = Set(dictionary.inheritedTypes)
 
         guard !implicitRawValueSet.isDisjoint(with: enumInheritedTypesSet) else {

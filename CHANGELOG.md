@@ -14,6 +14,9 @@
   rule from applying.  
   [Allen Wu](https://github.com/allewun)
 
+* Fix `explicit_enum_raw_value` rule when linting with Swift 4.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+
 ## 0.26.0: Maytagged Pointers
 
 #### Breaking

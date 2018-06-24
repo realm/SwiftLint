@@ -89,7 +89,15 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
                 return nil
         }
 
-        return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
+        let newName: String
+        if kind == .enumelement, let length = dictionary.nameLength {
+            let maxIndex = name.index(name.startIndex, offsetBy: length)
+            newName = String(name[name.startIndex..<maxIndex])
+        } else {
+            newName = name
+        }
+
+        return (newName.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)
     }
 
     private let kinds: Set<SwiftDeclarationKind> = {

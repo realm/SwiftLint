@@ -124,6 +124,10 @@
   members should be enums to avoid instantiation.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1871](https://github.com/realm/SwiftLint/issues/1871)  
+  
+* Decrease default severity of  `SuperfluousDisableCommandRule` to `warning`.  
+  [Frederick Pietschmann](https://github.com/fredpi)
+  [#2250](https://github.com/realm/SwiftLint/issues/2250)  
 
 #### Bug Fixes
 

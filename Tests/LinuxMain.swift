@@ -183,7 +183,11 @@ extension FileHeaderRuleTests {
         ("testFileHeaderWithRequiredStringAndURLComment", testFileHeaderWithRequiredStringAndURLComment),
         ("testFileHeaderWithForbiddenString", testFileHeaderWithForbiddenString),
         ("testFileHeaderWithForbiddenPattern", testFileHeaderWithForbiddenPattern),
-        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment)
+        ("testFileHeaderWithForbiddenPatternAndDocComment", testFileHeaderWithForbiddenPatternAndDocComment),
+        ("testFileHeaderWithRequiredStringUsingFilenamePlaceholder", testFileHeaderWithRequiredStringUsingFilenamePlaceholder),
+        ("testFileHeaderWithForbiddenStringUsingFilenamePlaceholder", testFileHeaderWithForbiddenStringUsingFilenamePlaceholder),
+        ("testFileHeaderWithRequiredPatternUsingFilenamePlaceholder", testFileHeaderWithRequiredPatternUsingFilenamePlaceholder),
+        ("testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder", testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder)
     ]
 }
 
@@ -456,6 +460,7 @@ extension RulesTests {
         ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
         ("testContainsOverFirstNotNil", testContainsOverFirstNotNil),
         ("testControlStatement", testControlStatement),
+        ("testConvenienceType", testConvenienceType),
         ("testCyclomaticComplexity", testCyclomaticComplexity),
         ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
         ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),

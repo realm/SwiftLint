@@ -1,7 +1,18 @@
+import SourceKittenFramework
 import SwiftLintFramework
 import XCTest
 
+private let fixturesDirectory = #file.bridge()
+    .deletingLastPathComponent.bridge()
+    .appendingPathComponent("Resources/FileHeaderRuleFixtures")
+
 class FileHeaderRuleTests: XCTestCase {
+
+    private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
+        let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
+        let rule = try FileHeaderRule(configuration: configuration)
+        return rule.validate(file: file)
+    }
 
     func testFileHeaderWithDefaultConfiguration() {
         verifyRule(FileHeaderRule.description, skipCommentTests: true)
@@ -119,5 +130,61 @@ class FileHeaderRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["forbidden_pattern": "[tT]ests"],
                    skipCommentTests: true, testMultiByteOffsets: false)
+    }
+
+    func testFileHeaderWithRequiredStringUsingFilenamePlaceholder() {
+        let configuration = ["required_string": "// SWIFTLINT_CURRENT_FILENAME"]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration).count, 1)
+    }
+
+    func testFileHeaderWithForbiddenStringUsingFilenamePlaceholder() {
+        let configuration = ["forbidden_string": "// SWIFTLINT_CURRENT_FILENAME"]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration).count, 1)
+    }
+
+    func testFileHeaderWithRequiredPatternUsingFilenamePlaceholder() {
+        let configuration1 = ["required_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
+        let configuration2 = ["required_pattern": "// Copyright © \\d{4}\n// File: \"SWIFTLINT_CURRENT_FILENAME\""]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMismatch.swift", using: configuration1).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMissing.swift", using: configuration1).count, 1)
+    }
+
+    func testFileHeaderWithForbiddenPatternUsingFilenamePlaceholder() {
+        let configuration1 = ["forbidden_pattern": "// SWIFTLINT_CURRENT_FILENAME\n.*\\d{4}"]
+        let configuration2 = ["forbidden_pattern": "//.*(\\s|\")SWIFTLINT_CURRENT_FILENAME(\\s|\").*"]
+
+        // Non triggering tests
+        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration1).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration1).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration1).isEmpty)
+
+        XCTAssert(try validate(fileName: "FileNameCaseMismatch.swift", using: configuration2).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMismatch.swift", using: configuration2).isEmpty)
+        XCTAssert(try validate(fileName: "FileNameMissing.swift", using: configuration2).isEmpty)
+
+        // Triggering tests
+        XCTAssertEqual(try validate(fileName: "FileNameMatchingSimple.swift", using: configuration1).count, 1)
+        XCTAssertEqual(try validate(fileName: "FileNameMatchingComplex.swift", using: configuration2).count, 1)
     }
 }

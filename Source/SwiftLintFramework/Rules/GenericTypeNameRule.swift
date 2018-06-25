@@ -38,7 +38,7 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             "func foo<↓type>() {}\n",
             "typealias StringDictionary<↓T_Foo> = Dictionary<String, T_Foo>\n",
             "typealias BackwardTriple<T1, ↓T2_Bar, T3> = (T3, T2_Bar, T1)\n",
-            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T, String>\n"
+            "typealias DictionaryOfStrings<↓T_Foo: Hashable> = Dictionary<T_Foo, String>\n"
         ] + ["class", "struct", "enum"].flatMap { type -> [String] in
             return [
                 "\(type) Foo<↓T_Foo> {}\n",
@@ -50,31 +50,83 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
         }
     )
 
-    private let genericTypePattern = "<(\\s*\\w.*?)>"
-    private var genericTypeRegex: NSRegularExpression {
-        return regex(genericTypePattern)
-    }
+    private let shouldUseLegacyImplementation = SwiftVersion.current < .fourDotTwo
 
     public func validate(file: File) -> [StyleViolation] {
-        return validate(file: file, dictionary: file.structure.dictionary) +
-            validateGenericTypeAliases(in: file)
+        if shouldUseLegacyImplementation {
+            return validate(file: file, dictionary: file.structure.dictionary) +
+                validateGenericTypeAliases(in: file)
+        } else {
+            return validate(file: file, dictionary: file.structure.dictionary)
+        }
     }
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        let types = genericTypesForType(in: file, kind: kind, dictionary: dictionary) +
+        if shouldUseLegacyImplementation {
+            let types = genericTypesForType(in: file, kind: kind, dictionary: dictionary) +
                 genericTypesForFunction(in: file, kind: kind, dictionary: dictionary)
 
-        return types.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
+            return types.flatMap { validate(name: $0.0, file: file, offset: $0.1) }
+        } else {
+            guard kind == .genericTypeParam,
+                let name = dictionary.name,
+                let offset = dictionary.offset else {
+                    return []
+            }
+
+            return validate(name: name, file: file, offset: offset)
+        }
     }
 
+    private func validate(name: String, file: File, offset: Int) -> [StyleViolation] {
+        guard !configuration.excluded.contains(name) else {
+            return []
+        }
+
+        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
+        if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
+            return [
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: .error,
+                               location: Location(file: file, byteOffset: offset),
+                               reason: "Generic type name should only contain alphanumeric characters: '\(name)'")
+            ]
+        } else if configuration.validatesStartWithLowercase &&
+            !String(name[name.startIndex]).isUppercase() {
+            return [
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: .error,
+                               location: Location(file: file, byteOffset: offset),
+                               reason: "Generic type name should start with an uppercase character: '\(name)'")
+            ]
+        } else if let severity = severity(forLength: name.count) {
+            return [
+                StyleViolation(ruleDescription: type(of: self).description,
+                               severity: severity,
+                               location: Location(file: file, byteOffset: offset),
+                               reason: "Generic type name should be between \(configuration.minLengthThreshold) and " +
+                                       "\(configuration.maxLengthThreshold) characters long: '\(name)'")
+            ]
+        }
+
+        return []
+    }
+}
+
+// MARK: - Legacy Implementation
+
+extension GenericTypeNameRule {
+    private static let genericTypePattern = "<(\\s*\\w.*?)>"
+    private static let genericTypeRegex = regex(genericTypePattern)
+
     private func validateGenericTypeAliases(in file: File) -> [StyleViolation] {
-        let pattern = "typealias\\s+\\w+?\\s*" + genericTypePattern + "\\s*="
+        let pattern = "typealias\\s+\\w+?\\s*" + type(of: self).genericTypePattern + "\\s*="
         return file.match(pattern: pattern).flatMap { range, tokens -> [(String, Int)] in
             guard tokens.first == .keyword,
                 Set(tokens.dropFirst()) == [.identifier],
-                let match = genericTypeRegex.firstMatch(in: file.contents, options: [],
-                                                        range: range)?.range(at: 1) else {
+                let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
+                                                                       range: range)?.range(at: 1) else {
                     return []
             }
 
@@ -93,7 +145,8 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             case let start = nameOffset + nameLength,
             case let length = bodyOffset - start,
             let range = contents.byteRangeToNSRange(start: start, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1) else {
+            let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents, options: [],
+                                                                   range: range)?.range(at: 1) else {
                 return []
         }
 
@@ -108,9 +161,10 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             let length = dictionary.nameLength,
             case let contents = file.contents.bridge(),
             let range = contents.byteRangeToNSRange(start: offset, length: length),
-            let match = genericTypeRegex.firstMatch(in: file.contents, options: [], range: range)?.range(at: 1),
+            let match = type(of: self).genericTypeRegex.firstMatch(in: file.contents,
+                                                                   options: [], range: range)?.range(at: 1),
             match.location < minParameterOffset(parameters: dictionary.enclosedVarParameters, file: file) else {
-            return []
+                return []
         }
 
         let genericConstraint = contents.substring(with: match)
@@ -151,40 +205,6 @@ public struct GenericTypeNameRule: ASTRule, ConfigurationProviderRule {
             return (name, byteRange.location)
         }
     }
-
-    private func validate(name: String, file: File, offset: Int) -> [StyleViolation] {
-        guard !configuration.excluded.contains(name) else {
-            return []
-        }
-
-        let allowedSymbols = configuration.allowedSymbols.union(.alphanumerics)
-        if !allowedSymbols.isSuperset(of: CharacterSet(safeCharactersIn: name)) {
-            return [
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: .error,
-                               location: Location(file: file, byteOffset: offset),
-                               reason: "Generic type name should only contain alphanumeric characters: '\(name)'")
-            ]
-        } else if configuration.validatesStartWithLowercase &&
-            !String(name[name.startIndex]).isUppercase() {
-            return [
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: .error,
-                               location: Location(file: file, byteOffset: offset),
-                               reason: "Generic type name should start with an uppercase character: '\(name)'")
-            ]
-        } else if let severity = severity(forLength: name.count) {
-            return [
-                StyleViolation(ruleDescription: type(of: self).description,
-                               severity: severity,
-                               location: Location(file: file, byteOffset: offset),
-                               reason: "Generic type name should be between \(configuration.minLengthThreshold) and " +
-                                        "\(configuration.maxLengthThreshold) characters long: '\(name)'")
-            ]
-        }
-
-        return []
-    }
 }
 
 private extension String {
@@ -208,7 +228,7 @@ private extension String {
         let range = NSRange(location: 0, length: bridged.length)
         guard let match = regex("^\\s*(\\S*)\\s*$").firstMatch(in: self, options: [], range: range),
             NSEqualRanges(range, match.range) else {
-            return (self, range)
+                return (self, range)
         }
 
         let trimmedRange = match.range(at: 1)

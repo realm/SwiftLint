@@ -1,6 +1,6 @@
 import Foundation
 import SourceKittenFramework
-import SwiftLintFramework
+@testable import SwiftLintFramework
 import XCTest
 
 let config: Configuration = {
@@ -19,7 +19,7 @@ class IntegrationTests: XCTestCase {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
         XCTAssert(swiftFiles.map({ $0.path! }).contains(#file), "current file should be included")
 
-        let violations = swiftFiles.flatMap {
+        let violations = swiftFiles.parallelFlatMap {
             Linter(file: $0, configuration: config).styleViolations
         }
         violations.forEach { violation in
@@ -31,7 +31,7 @@ class IntegrationTests: XCTestCase {
 
     func testSwiftLintAutoCorrects() {
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)
-        let corrections = swiftFiles.flatMap { Linter(file: $0, configuration: config).correct() }
+        let corrections = swiftFiles.parallelFlatMap { Linter(file: $0, configuration: config).correct() }
         for correction in corrections {
             correction.location.file!.withStaticString {
                 XCTFail(correction.ruleDescription.description,

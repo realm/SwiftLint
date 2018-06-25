@@ -54,6 +54,10 @@ class RulesTests: XCTestCase {
         verifyRule(ControlStatementRule.description)
     }
 
+    func testConvenienceType() {
+        verifyRule(ConvenienceTypeRule.description)
+    }
+
     func testCyclomaticComplexity() {
         verifyRule(CyclomaticComplexityRule.description)
     }
@@ -227,6 +231,10 @@ class RulesTests: XCTestCase {
         verifyRule(ModifierOrderRule.description)
     }
 
+    func testMultilineFunctionChains() {
+        verifyRule(MultilineFunctionChainsRule.description)
+    }
+
     func testMultilineParameters() {
         verifyRule(MultilineParametersRule.description)
     }
@@ -241,6 +249,10 @@ class RulesTests: XCTestCase {
 
     func testNoExtensionAccessModifier() {
         verifyRule(NoExtensionAccessModifierRule.description)
+    }
+
+    func testNoFallthroughOnly() {
+        verifyRule(NoFallthroughOnlyRule.description)
     }
 
     func testNoGroupingExtension() {

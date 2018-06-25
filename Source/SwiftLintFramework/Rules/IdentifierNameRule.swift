@@ -82,11 +82,19 @@ public struct IdentifierNameRule: ASTRule, ConfigurationProviderRule {
 
     private func validateName(dictionary: [String: SourceKitRepresentable],
                               kind: SwiftDeclarationKind) -> (name: String, offset: Int)? {
-        guard let name = dictionary.name,
+        guard var name = dictionary.name,
             let offset = dictionary.offset,
             kinds.contains(kind),
             !name.hasPrefix("$") else {
                 return nil
+        }
+
+        if kind == .enumelement,
+            SwiftVersion.current > .fourDotOne,
+            let parenIndex = name.index(of: "("),
+            parenIndex > name.startIndex {
+            let index = name.index(before: parenIndex)
+            name = String(name[...index])
         }
 
         return (name.nameStrippingLeadingUnderscoreIfPrivate(dictionary), offset)

@@ -346,6 +346,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantOptionalInitializationRule.description)
     }
 
+    func testRedundantObjcAttribute() {
+        verifyRule(RedundantObjcAttributeRule.description)
+    }
+
     func testRedundantSetAccessControl() {
         verifyRule(RedundantSetAccessControlRule.description)
     }

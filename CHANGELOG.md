@@ -6,6 +6,10 @@
 
 #### Enhancements
 
+* Add `redundant_objc_attribute` to warn against already implied objc attribute.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2193](https://github.com/realm/SwiftLint/issues/2193)
+
 * Decrease default severity of `superfluous_disable_command` to `warning`.  
   [Frederick Pietschmann](https://github.com/fredpi)
   [#2250](https://github.com/realm/SwiftLint/issues/2250)

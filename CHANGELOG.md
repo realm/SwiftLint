@@ -27,8 +27,8 @@
   when linting with Swift 4.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
-* Fix `identifier_name` rule false positives with `enum` when linting
-  using Swift 4.2.  
+* Fix `identifier_name` rule false positives with `enum`-with-associated-value when linting.
+  [Mingyu Cui](https://github.com/gnou)
   [Marcelo Fabri](https://github.com/marcelofabri)
   [Jacob Greenfield](https://github.com/Coder-256)
   [#2231](https://github.com/realm/SwiftLint/issues/2231)

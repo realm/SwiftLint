@@ -102,6 +102,12 @@ class DiscouragedOptionalCollectionRuleTests: XCTestCase {
     }
 }
 
+class DuplicateImportsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(DuplicateImportsRule.description)
+    }
+}
+
 class DynamicInlineRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(DynamicInlineRule.description)

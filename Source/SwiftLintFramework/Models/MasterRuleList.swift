@@ -27,6 +27,7 @@ public let masterRuleList = RuleList(rules: [
     DiscouragedObjectLiteralRule.self,
     DiscouragedOptionalBooleanRule.self,
     DiscouragedOptionalCollectionRule.self,
+    DuplicateImportsRule.self,
     DynamicInlineRule.self,
     EmptyCountRule.self,
     EmptyEnumArgumentsRule.self,

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct ConvenienceTypeRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

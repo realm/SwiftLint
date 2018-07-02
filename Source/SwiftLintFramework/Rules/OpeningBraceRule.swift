@@ -14,7 +14,7 @@ private extension File {
     }
 }
 
-public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule {
+public struct OpeningBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

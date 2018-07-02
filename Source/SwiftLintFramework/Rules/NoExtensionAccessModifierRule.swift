@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct NoExtensionAccessModifierRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct MultilineParametersRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     private typealias ParameterRange = (offset: Int, length: Int)

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule {
+public struct XCTFailMessageRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -10,7 +10,7 @@ private enum RangeKind {
     case generic
 }
 
-public struct LargeTupleRule: ASTRule, ConfigurationProviderRule {
+public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 

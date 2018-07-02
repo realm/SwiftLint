@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

@@ -23,6 +23,8 @@ extension Rule {
 
 public protocol OptInRule: Rule {}
 
+public protocol AutomaticTestableRule: Rule {}
+
 public protocol ConfigurationProviderRule: Rule {
     associatedtype ConfigurationType: RuleConfiguration
 

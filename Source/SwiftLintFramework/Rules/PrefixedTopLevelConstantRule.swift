@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     private let topLevelPrefix = "k"

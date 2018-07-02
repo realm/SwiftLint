@@ -8,7 +8,7 @@ private extension File {
     }
 }
 
-public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule {
+public struct TrailingSemicolonRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
+public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

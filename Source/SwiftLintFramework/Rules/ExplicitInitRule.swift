@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableRule, OptInRule {
+public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

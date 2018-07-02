@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct SyntacticSugarRule: ConfigurationProviderRule {
+public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

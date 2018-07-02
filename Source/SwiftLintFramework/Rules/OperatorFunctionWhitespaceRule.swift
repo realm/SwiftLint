@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule {
+public struct OperatorFunctionWhitespaceRule: ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

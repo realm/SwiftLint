@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct UnavailableFunctionRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

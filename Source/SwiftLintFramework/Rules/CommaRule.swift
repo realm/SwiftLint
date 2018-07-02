@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CommaRule: CorrectableRule, ConfigurationProviderRule {
+public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

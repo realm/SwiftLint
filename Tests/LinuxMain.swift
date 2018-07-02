@@ -6,6 +6,18 @@ import XCTest
 
 // swiftlint:disable line_length file_length
 
+extension AnyObjectProtocolRuleTests {
+    static var allTests: [(String, (AnyObjectProtocolRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ArrayInitRuleTests {
+    static var allTests: [(String, (ArrayInitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension AttributesRuleTests {
     static var allTests: [(String, (AttributesRuleTests) -> () throws -> Void)] = [
         ("testAttributesWithDefaultConfiguration", testAttributesWithDefaultConfiguration),
@@ -14,11 +26,53 @@ extension AttributesRuleTests {
     ]
 }
 
+extension BlockBasedKVORuleTests {
+    static var allTests: [(String, (BlockBasedKVORuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ClassDelegateProtocolRuleTests {
+    static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ClosingBraceRuleTests {
+    static var allTests: [(String, (ClosingBraceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ClosureEndIndentationRuleTests {
+    static var allTests: [(String, (ClosureEndIndentationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ClosureParameterPositionRuleTests {
+    static var allTests: [(String, (ClosureParameterPositionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ClosureSpacingRuleTests {
+    static var allTests: [(String, (ClosureSpacingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ColonRuleTests {
     static var allTests: [(String, (ColonRuleTests) -> () throws -> Void)] = [
         ("testColonWithDefaultConfiguration", testColonWithDefaultConfiguration),
         ("testColonWithFlexibleRightSpace", testColonWithFlexibleRightSpace),
         ("testColonWithoutApplyToDictionaries", testColonWithoutApplyToDictionaries)
+    ]
+}
+
+extension CommaRuleTests {
+    static var allTests: [(String, (CommaRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -42,6 +96,18 @@ extension CommandTests {
         ("testSuperfluousDisableCommands", testSuperfluousDisableCommands),
         ("testSuperfluousDisableCommandsDisabled", testSuperfluousDisableCommandsDisabled),
         ("testSuperfluousDisableCommandsDisabledOnConfiguration", testSuperfluousDisableCommandsDisabledOnConfiguration)
+    ]
+}
+
+extension CompilerProtocolInitRuleTests {
+    static var allTests: [(String, (CompilerProtocolInitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ConditionalReturnsOnNewlineRuleTests {
+    static var allTests: [(String, (ConditionalReturnsOnNewlineRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -87,6 +153,24 @@ extension ConfigurationTests {
         ("testNestedConfigurationWithCustomRootPath", testNestedConfigurationWithCustomRootPath),
         ("testMergedWarningThreshold", testMergedWarningThreshold),
         ("testNestedWhitelistedRules", testNestedWhitelistedRules)
+    ]
+}
+
+extension ContainsOverFirstNotNilRuleTests {
+    static var allTests: [(String, (ContainsOverFirstNotNilRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ControlStatementRuleTests {
+    static var allTests: [(String, (ControlStatementRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ConvenienceTypeRuleTests {
+    static var allTests: [(String, (ConvenienceTypeRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -136,6 +220,12 @@ extension DisableAllTests {
     ]
 }
 
+extension DiscardedNotificationCenterObserverRuleTests {
+    static var allTests: [(String, (DiscardedNotificationCenterObserverRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension DiscouragedDirectInitRuleTests {
     static var allTests: [(String, (DiscouragedDirectInitRuleTests) -> () throws -> Void)] = [
         ("testDiscouragedDirectInitWithDefaultConfiguration", testDiscouragedDirectInitWithDefaultConfiguration),
@@ -145,8 +235,92 @@ extension DiscouragedDirectInitRuleTests {
     ]
 }
 
+extension DiscouragedObjectLiteralRuleTests {
+    static var allTests: [(String, (DiscouragedObjectLiteralRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension DiscouragedOptionalBooleanRuleTests {
+    static var allTests: [(String, (DiscouragedOptionalBooleanRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension DiscouragedOptionalCollectionRuleTests {
+    static var allTests: [(String, (DiscouragedOptionalCollectionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension DocumentationTests {
     static var allTests: [(String, (DocumentationTests) -> () throws -> Void)] = [
+    ]
+}
+
+extension DynamicInlineRuleTests {
+    static var allTests: [(String, (DynamicInlineRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyCountRuleTests {
+    static var allTests: [(String, (EmptyCountRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyEnumArgumentsRuleTests {
+    static var allTests: [(String, (EmptyEnumArgumentsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyParametersRuleTests {
+    static var allTests: [(String, (EmptyParametersRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyParenthesesWithTrailingClosureRuleTests {
+    static var allTests: [(String, (EmptyParenthesesWithTrailingClosureRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyStringRuleTests {
+    static var allTests: [(String, (EmptyStringRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension EmptyXCTestMethodRuleTests {
+    static var allTests: [(String, (EmptyXCTestMethodRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ExplicitACLRuleTests {
+    static var allTests: [(String, (ExplicitACLRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ExplicitEnumRawValueRuleTests {
+    static var allTests: [(String, (ExplicitEnumRawValueRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ExplicitInitRuleTests {
+    static var allTests: [(String, (ExplicitInitRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ExplicitTopLevelACLRuleTests {
+    static var allTests: [(String, (ExplicitTopLevelACLRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -172,6 +346,24 @@ extension ExplicitTypeInterfaceRuleTests {
 extension ExtendedNSStringTests {
     static var allTests: [(String, (ExtendedNSStringTests) -> () throws -> Void)] = [
         ("testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters", testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters)
+    ]
+}
+
+extension ExtensionAccessModifierRuleTests {
+    static var allTests: [(String, (ExtensionAccessModifierRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension FallthroughRuleTests {
+    static var allTests: [(String, (FallthroughRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension FatalErrorMessageRuleTests {
+    static var allTests: [(String, (FatalErrorMessageRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -211,16 +403,54 @@ extension FileNameRuleTests {
     ]
 }
 
+extension FirstWhereRuleTests {
+    static var allTests: [(String, (FirstWhereRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ForWhereRuleTests {
+    static var allTests: [(String, (ForWhereRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ForceCastRuleTests {
+    static var allTests: [(String, (ForceCastRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ForceTryRuleTests {
+    static var allTests: [(String, (ForceTryRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ForceUnwrappingRuleTests {
+    static var allTests: [(String, (ForceUnwrappingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension FunctionBodyLengthRuleTests {
     static var allTests: [(String, (FunctionBodyLengthRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testFunctionBodyLengths", testFunctionBodyLengths),
         ("testFunctionBodyLengthsWithComments", testFunctionBodyLengthsWithComments),
         ("testFunctionBodyLengthsWithMultilineComments", testFunctionBodyLengthsWithMultilineComments)
     ]
 }
 
+extension FunctionDefaultParameterAtEndRuleTests {
+    static var allTests: [(String, (FunctionDefaultParameterAtEndRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension FunctionParameterCountRuleTests {
     static var allTests: [(String, (FunctionParameterCountRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testFunctionParameterCount", testFunctionParameterCount),
         ("testDefaultFunctionParameterCount", testDefaultFunctionParameterCount)
     ]
@@ -245,6 +475,18 @@ extension IdentifierNameRuleTests {
     ]
 }
 
+extension ImplicitGetterRuleTests {
+    static var allTests: [(String, (ImplicitGetterRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ImplicitReturnRuleTests {
+    static var allTests: [(String, (ImplicitReturnRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ImplicitlyUnwrappedOptionalConfigurationTests {
     static var allTests: [(String, (ImplicitlyUnwrappedOptionalConfigurationTests) -> () throws -> Void)] = [
         ("testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary", testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary),
@@ -254,6 +496,7 @@ extension ImplicitlyUnwrappedOptionalConfigurationTests {
 
 extension ImplicitlyUnwrappedOptionalRuleTests {
     static var allTests: [(String, (ImplicitlyUnwrappedOptionalRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testImplicitlyUnwrappedOptionalRuleDefaultConfiguration", testImplicitlyUnwrappedOptionalRuleDefaultConfiguration),
         ("testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode", testImplicitlyUnwrappedOptionalRuleWarnsOnOutletsInAllMode)
     ]
@@ -263,6 +506,54 @@ extension IntegrationTests {
     static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] = [
         ("testSwiftLintLints", testSwiftLintLints),
         ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects)
+    ]
+}
+
+extension IsDisjointRuleTests {
+    static var allTests: [(String, (IsDisjointRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension JoinedDefaultParameterRuleTests {
+    static var allTests: [(String, (JoinedDefaultParameterRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LargeTupleRuleTests {
+    static var allTests: [(String, (LargeTupleRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyCGGeometryFunctionsRuleTests {
+    static var allTests: [(String, (LegacyCGGeometryFunctionsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyConstantRuleTests {
+    static var allTests: [(String, (LegacyConstantRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyConstructorRuleTests {
+    static var allTests: [(String, (LegacyConstructorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyNSGeometryFunctionsRuleTests {
+    static var allTests: [(String, (LegacyNSGeometryFunctionsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LetVarWhitespaceRuleTests {
+    static var allTests: [(String, (LetVarWhitespaceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -317,6 +608,18 @@ extension LinterCacheTests {
     ]
 }
 
+extension LiteralExpressionEndIdentationRuleTests {
+    static var allTests: [(String, (LiteralExpressionEndIdentationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LowerACLThanParentRuleTests {
+    static var allTests: [(String, (LowerACLThanParentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
@@ -331,6 +634,60 @@ extension MultilineArgumentsRuleTests {
         ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
         ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
         ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
+    ]
+}
+
+extension MultilineFunctionChainsRuleTests {
+    static var allTests: [(String, (MultilineFunctionChainsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension MultilineParametersRuleTests {
+    static var allTests: [(String, (MultilineParametersRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension MultipleClosuresWithTrailingClosureRuleTests {
+    static var allTests: [(String, (MultipleClosuresWithTrailingClosureRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NestingRuleTests {
+    static var allTests: [(String, (NestingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NimbleOperatorRuleTests {
+    static var allTests: [(String, (NimbleOperatorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NoExtensionAccessModifierRuleTests {
+    static var allTests: [(String, (NoExtensionAccessModifierRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NoFallthroughOnlyRuleTests {
+    static var allTests: [(String, (NoFallthroughOnlyRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NoGroupingExtensionRuleTests {
+    static var allTests: [(String, (NoGroupingExtensionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension NotificationCenterDetachmentRuleTests {
+    static var allTests: [(String, (NotificationCenterDetachmentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -351,11 +708,138 @@ extension ObjectLiteralRuleTests {
     ]
 }
 
+extension OpeningBraceRuleTests {
+    static var allTests: [(String, (OpeningBraceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension OperatorFunctionWhitespaceRuleTests {
+    static var allTests: [(String, (OperatorFunctionWhitespaceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension OperatorUsageWhitespaceRuleTests {
+    static var allTests: [(String, (OperatorUsageWhitespaceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension OverriddenSuperCallRuleTests {
+    static var allTests: [(String, (OverriddenSuperCallRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension OverrideInExtensionRuleTests {
+    static var allTests: [(String, (OverrideInExtensionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension PatternMatchingKeywordsRuleTests {
+    static var allTests: [(String, (PatternMatchingKeywordsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension PrefixedTopLevelConstantRuleTests {
+    static var allTests: [(String, (PrefixedTopLevelConstantRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension PrivateActionRuleTests {
+    static var allTests: [(String, (PrivateActionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension PrivateOutletRuleTests {
+    static var allTests: [(String, (PrivateOutletRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithAllowPrivateSet", testWithAllowPrivateSet)
+    ]
+}
+
 extension PrivateOverFilePrivateRuleTests {
     static var allTests: [(String, (PrivateOverFilePrivateRuleTests) -> () throws -> Void)] = [
         ("testPrivateOverFilePrivateWithDefaultConfiguration", testPrivateOverFilePrivateWithDefaultConfiguration),
         ("testPrivateOverFilePrivateValidatingExtensions", testPrivateOverFilePrivateValidatingExtensions),
         ("testPrivateOverFilePrivateNotValidatingExtensions", testPrivateOverFilePrivateNotValidatingExtensions)
+    ]
+}
+
+extension PrivateUnitTestRuleTests {
+    static var allTests: [(String, (PrivateUnitTestRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ProhibitedSuperRuleTests {
+    static var allTests: [(String, (ProhibitedSuperRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension ProtocolPropertyAccessorsOrderRuleTests {
+    static var allTests: [(String, (ProtocolPropertyAccessorsOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension QuickDiscouragedCallRuleTests {
+    static var allTests: [(String, (QuickDiscouragedCallRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension QuickDiscouragedFocusedTestRuleTests {
+    static var allTests: [(String, (QuickDiscouragedFocusedTestRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension QuickDiscouragedPendingTestRuleTests {
+    static var allTests: [(String, (QuickDiscouragedPendingTestRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantDiscardableLetRuleTests {
+    static var allTests: [(String, (RedundantDiscardableLetRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantNilCoalescingRuleTests {
+    static var allTests: [(String, (RedundantNilCoalescingRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantOptionalInitializationRuleTests {
+    static var allTests: [(String, (RedundantOptionalInitializationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantSetAccessControlRuleTests {
+    static var allTests: [(String, (RedundantSetAccessControlRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantStringEnumValueRuleTests {
+    static var allTests: [(String, (RedundantStringEnumValueRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension RedundantVoidReturnRuleTests {
+    static var allTests: [(String, (RedundantVoidReturnRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -397,6 +881,12 @@ extension RequiredEnumCaseRuleTestCase {
         ("testEqualsReturnsTrue", testEqualsReturnsTrue),
         ("testEqualsReturnsFalseBecauseProtocolsArentEqual", testEqualsReturnsFalseBecauseProtocolsArentEqual),
         ("testEqualsReturnsFalseBecauseSeverityIsntEqual", testEqualsReturnsFalseBecauseSeverityIsntEqual)
+    ]
+}
+
+extension ReturnArrowWhitespaceRuleTests {
+    static var allTests: [(String, (ReturnArrowWhitespaceRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -449,124 +939,34 @@ extension RuleTests {
 
 extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
-        ("testAnyObjectProtocol", testAnyObjectProtocol),
-        ("testArrayInit", testArrayInit),
-        ("testBlockBasedKVO", testBlockBasedKVO),
-        ("testClassDelegateProtocol", testClassDelegateProtocol),
-        ("testClosingBrace", testClosingBrace),
-        ("testClosureEndIndentation", testClosureEndIndentation),
-        ("testClosureParameterPosition", testClosureParameterPosition),
-        ("testClosureSpacing", testClosureSpacing),
-        ("testComma", testComma),
-        ("testCompilerProtocolInit", testCompilerProtocolInit),
-        ("testConditionalReturnsOnNewline", testConditionalReturnsOnNewline),
-        ("testContainsOverFirstNotNil", testContainsOverFirstNotNil),
-        ("testControlStatement", testControlStatement),
-        ("testConvenienceType", testConvenienceType),
-        ("testCyclomaticComplexity", testCyclomaticComplexity),
-        ("testDiscardedNotificationCenterObserver", testDiscardedNotificationCenterObserver),
-        ("testDiscouragedObjectLiteral", testDiscouragedObjectLiteral),
-        ("testDiscouragedOptionalBoolean", testDiscouragedOptionalBoolean),
-        ("testDiscouragedOptionalCollection", testDiscouragedOptionalCollection),
-        ("testDynamicInline", testDynamicInline),
-        ("testEmptyCount", testEmptyCount),
-        ("testEmptyEnumArguments", testEmptyEnumArguments),
-        ("testEmptyParameters", testEmptyParameters),
-        ("testLowerACLThanParent", testLowerACLThanParent),
-        ("testEmptyParenthesesWithTrailingClosure", testEmptyParenthesesWithTrailingClosure),
-        ("testEmptyString", testEmptyString),
-        ("testEmptyXCTestMethods", testEmptyXCTestMethods),
-        ("testExplicitACL", testExplicitACL),
-        ("testExplicitEnumRawValue", testExplicitEnumRawValue),
-        ("testExplicitInit", testExplicitInit),
-        ("testExplicitTopLevelACL", testExplicitTopLevelACL),
-        ("testExtensionAccessModifier", testExtensionAccessModifier),
-        ("testFallthrough", testFallthrough),
-        ("testFatalErrorMessage", testFatalErrorMessage),
-        ("testFirstWhere", testFirstWhere),
-        ("testForceCast", testForceCast),
-        ("testForceTry", testForceTry),
-        ("testForceUnwrapping", testForceUnwrapping),
-        ("testForWhere", testForWhere),
-        ("testFunctionBodyLength", testFunctionBodyLength),
-        ("testFunctionDefaultParameterAtEnd", testFunctionDefaultParameterAtEnd),
-        ("testFunctionParameterCount", testFunctionParameterCount),
-        ("testImplicitGetter", testImplicitGetter),
-        ("testImplicitlyUnwrappedOptional", testImplicitlyUnwrappedOptional),
-        ("testImplicitReturn", testImplicitReturn),
-        ("testIsDisjoint", testIsDisjoint),
-        ("testJoinedDefaultParameter", testJoinedDefaultParameter),
-        ("testLargeTuple", testLargeTuple),
         ("testLeadingWhitespace", testLeadingWhitespace),
-        ("testLegacyCGGeometryFunctions", testLegacyCGGeometryFunctions),
-        ("testLegacyNSGeometryFunctions", testLegacyNSGeometryFunctions),
-        ("testLegacyConstant", testLegacyConstant),
-        ("testLegacyConstructor", testLegacyConstructor),
-        ("testLetVarWhitespace", testLetVarWhitespace),
-        ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
-        ("testModifierOrder", testModifierOrder),
-        ("testMultilineFunctionChains", testMultilineFunctionChains),
-        ("testMultilineParameters", testMultilineParameters),
-        ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
-        ("testNesting", testNesting),
-        ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
-        ("testNoFallthroughOnly", testNoFallthroughOnly),
-        ("testNoGroupingExtension", testNoGroupingExtension),
-        ("testNotificationCenterDetachment", testNotificationCenterDetachment),
-        ("testNimbleOperator", testNimbleOperator),
-        ("testOpeningBrace", testOpeningBrace),
-        ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
-        ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
-        ("testOverrideInExtension", testOverrideInExtension),
-        ("testPatternMatchingKeywords", testPatternMatchingKeywords),
-        ("testPrefixedTopLevelConstant", testPrefixedTopLevelConstant),
-        ("testPrivateAction", testPrivateAction),
-        ("testPrivateOutlet", testPrivateOutlet),
-        ("testPrivateUnitTest", testPrivateUnitTest),
-        ("testProhibitedSuper", testProhibitedSuper),
-        ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
-        ("testQuickDiscouragedCall", testQuickDiscouragedCall),
-        ("testQuickDiscouragedFocusedTest", testQuickDiscouragedFocusedTest),
-        ("testQuickDiscouragedPendingTest", testQuickDiscouragedPendingTest),
-        ("testRedundantDiscardableLet", testRedundantDiscardableLet),
-        ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-        ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-        ("testRedundantSetAccessControl", testRedundantSetAccessControl),
-        ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-        ("testRedundantTypeAnnotation", testRedundantTypeAnnotation),
-        ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testRequiredEnumCase", testRequiredEnumCase),
-        ("testReturnArrowWhitespace", testReturnArrowWhitespace),
-        ("testShorthandOperator", testShorthandOperator),
-        ("testSingleTestClass", testSingleTestClass),
-        ("testSortedFirstLast", testSortedFirstLast),
-        ("testSortedImports", testSortedImports),
-        ("testStatementPosition", testStatementPosition),
-        ("testStatementPositionUncuddled", testStatementPositionUncuddled),
-        ("testStrictFilePrivate", testStrictFilePrivate),
-        ("testSwitchCaseAlignment", testSwitchCaseAlignment),
-        ("testSwitchCaseOnNewline", testSwitchCaseOnNewline),
-        ("testSyntacticSugar", testSyntacticSugar),
-        ("testTrailingClosure", testTrailingClosure),
-        ("testTrailingNewline", testTrailingNewline),
-        ("testTrailingSemicolon", testTrailingSemicolon),
-        ("testTrailingWhitespace", testTrailingWhitespace),
-        ("testTypeBodyLength", testTypeBodyLength),
-        ("testUnavailableFunction", testUnavailableFunction),
-        ("testUnneededBreakInSwitch", testUnneededBreakInSwitch),
-        ("testUnneededParenthesesInClosureArgument", testUnneededParenthesesInClosureArgument),
-        ("testUntypedErrorInCatch", testUntypedErrorInCatch),
-        ("testUnusedClosureParameter", testUnusedClosureParameter),
-        ("testUnusedEnumerated", testUnusedEnumerated),
-        ("testValidIBInspectable", testValidIBInspectable),
-        ("testVerticalParameterAlignmentOnCall", testVerticalParameterAlignmentOnCall),
-        ("testVerticalParameterAlignment", testVerticalParameterAlignment),
-        ("testVoidReturn", testVoidReturn),
-        ("testSuperCall", testSuperCall),
-        ("testWeakDelegate", testWeakDelegate),
-        ("testXCTFailMessage", testXCTFailMessage),
-        ("testYodaCondition", testYodaCondition)
+        ("testTrailingNewline", testTrailingNewline)
+    ]
+}
+
+extension ShorthandOperatorRuleTests {
+    static var allTests: [(String, (ShorthandOperatorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SingleTestClassRuleTests {
+    static var allTests: [(String, (SingleTestClassRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SortedFirstLastRuleTests {
+    static var allTests: [(String, (SortedFirstLastRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SortedImportsRuleTests {
+    static var allTests: [(String, (SortedImportsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -578,10 +978,36 @@ extension SourceKitCrashTests {
     ]
 }
 
+extension StatementPositionRuleTests {
+    static var allTests: [(String, (StatementPositionRuleTests) -> () throws -> Void)] = [
+        ("testStatementPosition", testStatementPosition),
+        ("testStatementPositionUncuddled", testStatementPositionUncuddled)
+    ]
+}
+
+extension StrictFilePrivateRuleTests {
+    static var allTests: [(String, (StrictFilePrivateRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension SwitchCaseAlignmentRuleTests {
     static var allTests: [(String, (SwitchCaseAlignmentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
         ("testSwitchCaseAlignmentWithoutIndentedCases", testSwitchCaseAlignmentWithoutIndentedCases),
         ("testSwitchCaseAlignmentWithIndentedCases", testSwitchCaseAlignmentWithIndentedCases)
+    ]
+}
+
+extension SwitchCaseOnNewlineRuleTests {
+    static var allTests: [(String, (SwitchCaseOnNewlineRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension SyntacticSugarRuleTests {
+    static var allTests: [(String, (SyntacticSugarRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -593,10 +1019,36 @@ extension TodoRuleTests {
     ]
 }
 
+extension TrailingClosureRuleTests {
+    static var allTests: [(String, (TrailingClosureRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension TrailingCommaRuleTests {
     static var allTests: [(String, (TrailingCommaRuleTests) -> () throws -> Void)] = [
         ("testTrailingCommaRuleWithDefaultConfiguration", testTrailingCommaRuleWithDefaultConfiguration),
         ("testTrailingCommaRuleWithMandatoryComma", testTrailingCommaRuleWithMandatoryComma)
+    ]
+}
+
+extension TrailingSemicolonRuleTests {
+    static var allTests: [(String, (TrailingSemicolonRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension TrailingWhitespaceTests {
+    static var allTests: [(String, (TrailingWhitespaceTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testWithIgnoresEmptyLinesEnabled", testWithIgnoresEmptyLinesEnabled),
+        ("testWithIgnoresCommentsDisabled", testWithIgnoresCommentsDisabled)
+    ]
+}
+
+extension TypeBodyLengthRuleTests {
+    static var allTests: [(String, (TypeBodyLengthRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -609,10 +1061,64 @@ extension TypeNameRuleTests {
     ]
 }
 
+extension UnavailableFunctionRuleTests {
+    static var allTests: [(String, (UnavailableFunctionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UnneededBreakInSwitchRuleTests {
+    static var allTests: [(String, (UnneededBreakInSwitchRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UnneededParenthesesInClosureArgumentRuleTests {
+    static var allTests: [(String, (UnneededParenthesesInClosureArgumentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UntypedErrorInCatchRuleTests {
+    static var allTests: [(String, (UntypedErrorInCatchRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UnusedClosureParameterRuleTests {
+    static var allTests: [(String, (UnusedClosureParameterRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension UnusedEnumeratedRuleTests {
+    static var allTests: [(String, (UnusedEnumeratedRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnusedOptionalBindingRuleTests {
     static var allTests: [(String, (UnusedOptionalBindingRuleTests) -> () throws -> Void)] = [
         ("testDefaultConfiguration", testDefaultConfiguration),
         ("testIgnoreOptionalTryEnabled", testIgnoreOptionalTryEnabled)
+    ]
+}
+
+extension ValidIBInspectableRuleTests {
+    static var allTests: [(String, (ValidIBInspectableRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension VerticalParameterAlignmentOnCallRuleTests {
+    static var allTests: [(String, (VerticalParameterAlignmentOnCallRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension VerticalParameterAlignmentRuleTests {
+    static var allTests: [(String, (VerticalParameterAlignmentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -623,6 +1129,24 @@ extension VerticalWhitespaceRuleTests {
         ("testAutoCorrectionWithMaxEmptyLines", testAutoCorrectionWithMaxEmptyLines),
         ("testViolationMessageWithMaxEmptyLines", testViolationMessageWithMaxEmptyLines),
         ("testViolationMessageWithDefaultConfiguration", testViolationMessageWithDefaultConfiguration)
+    ]
+}
+
+extension VoidReturnRuleTests {
+    static var allTests: [(String, (VoidReturnRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension WeakDelegateRuleTests {
+    static var allTests: [(String, (WeakDelegateRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension XCTFailMessageRuleTests {
+    static var allTests: [(String, (XCTFailMessageRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -645,51 +1169,163 @@ extension YamlSwiftLintTests {
     ]
 }
 
+extension YodaConditionRuleTests {
+    static var allTests: [(String, (YodaConditionRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 XCTMain([
+    testCase(AnyObjectProtocolRuleTests.allTests),
+    testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
+    testCase(BlockBasedKVORuleTests.allTests),
+    testCase(ClassDelegateProtocolRuleTests.allTests),
+    testCase(ClosingBraceRuleTests.allTests),
+    testCase(ClosureEndIndentationRuleTests.allTests),
+    testCase(ClosureParameterPositionRuleTests.allTests),
+    testCase(ClosureSpacingRuleTests.allTests),
     testCase(ColonRuleTests.allTests),
+    testCase(CommaRuleTests.allTests),
     testCase(CommandTests.allTests),
+    testCase(CompilerProtocolInitRuleTests.allTests),
+    testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
     testCase(ConfigurationTests.allTests),
+    testCase(ContainsOverFirstNotNilRuleTests.allTests),
+    testCase(ControlStatementRuleTests.allTests),
+    testCase(ConvenienceTypeRuleTests.allTests),
     testCase(CustomRulesTests.allTests),
     testCase(CyclomaticComplexityConfigurationTests.allTests),
     testCase(CyclomaticComplexityRuleTests.allTests),
     testCase(DisableAllTests.allTests),
+    testCase(DiscardedNotificationCenterObserverRuleTests.allTests),
     testCase(DiscouragedDirectInitRuleTests.allTests),
+    testCase(DiscouragedObjectLiteralRuleTests.allTests),
+    testCase(DiscouragedOptionalBooleanRuleTests.allTests),
+    testCase(DiscouragedOptionalCollectionRuleTests.allTests),
     testCase(DocumentationTests.allTests),
+    testCase(DynamicInlineRuleTests.allTests),
+    testCase(EmptyCountRuleTests.allTests),
+    testCase(EmptyEnumArgumentsRuleTests.allTests),
+    testCase(EmptyParametersRuleTests.allTests),
+    testCase(EmptyParenthesesWithTrailingClosureRuleTests.allTests),
+    testCase(EmptyStringRuleTests.allTests),
+    testCase(EmptyXCTestMethodRuleTests.allTests),
+    testCase(ExplicitACLRuleTests.allTests),
+    testCase(ExplicitEnumRawValueRuleTests.allTests),
+    testCase(ExplicitInitRuleTests.allTests),
+    testCase(ExplicitTopLevelACLRuleTests.allTests),
     testCase(ExplicitTypeInterfaceConfigurationTests.allTests),
     testCase(ExplicitTypeInterfaceRuleTests.allTests),
     testCase(ExtendedNSStringTests.allTests),
+    testCase(ExtensionAccessModifierRuleTests.allTests),
+    testCase(FallthroughRuleTests.allTests),
+    testCase(FatalErrorMessageRuleTests.allTests),
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
     testCase(FileNameRuleTests.allTests),
+    testCase(FirstWhereRuleTests.allTests),
+    testCase(ForWhereRuleTests.allTests),
+    testCase(ForceCastRuleTests.allTests),
+    testCase(ForceTryRuleTests.allTests),
+    testCase(ForceUnwrappingRuleTests.allTests),
     testCase(FunctionBodyLengthRuleTests.allTests),
+    testCase(FunctionDefaultParameterAtEndRuleTests.allTests),
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
+    testCase(ImplicitGetterRuleTests.allTests),
+    testCase(ImplicitReturnRuleTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalConfigurationTests.allTests),
     testCase(ImplicitlyUnwrappedOptionalRuleTests.allTests),
     testCase(IntegrationTests.allTests),
+    testCase(IsDisjointRuleTests.allTests),
+    testCase(JoinedDefaultParameterRuleTests.allTests),
+    testCase(LargeTupleRuleTests.allTests),
+    testCase(LegacyCGGeometryFunctionsRuleTests.allTests),
+    testCase(LegacyConstantRuleTests.allTests),
+    testCase(LegacyConstructorRuleTests.allTests),
+    testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
+    testCase(LetVarWhitespaceRuleTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(LiteralExpressionEndIdentationRuleTests.allTests),
+    testCase(LowerACLThanParentRuleTests.allTests),
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
+    testCase(MultilineFunctionChainsRuleTests.allTests),
+    testCase(MultilineParametersRuleTests.allTests),
+    testCase(MultipleClosuresWithTrailingClosureRuleTests.allTests),
+    testCase(NestingRuleTests.allTests),
+    testCase(NimbleOperatorRuleTests.allTests),
+    testCase(NoExtensionAccessModifierRuleTests.allTests),
+    testCase(NoFallthroughOnlyRuleTests.allTests),
+    testCase(NoGroupingExtensionRuleTests.allTests),
+    testCase(NotificationCenterDetachmentRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),
     testCase(ObjectLiteralRuleTests.allTests),
+    testCase(OpeningBraceRuleTests.allTests),
+    testCase(OperatorFunctionWhitespaceRuleTests.allTests),
+    testCase(OperatorUsageWhitespaceRuleTests.allTests),
+    testCase(OverriddenSuperCallRuleTests.allTests),
+    testCase(OverrideInExtensionRuleTests.allTests),
+    testCase(PatternMatchingKeywordsRuleTests.allTests),
+    testCase(PrefixedTopLevelConstantRuleTests.allTests),
+    testCase(PrivateActionRuleTests.allTests),
+    testCase(PrivateOutletRuleTests.allTests),
     testCase(PrivateOverFilePrivateRuleTests.allTests),
+    testCase(PrivateUnitTestRuleTests.allTests),
+    testCase(ProhibitedSuperRuleTests.allTests),
+    testCase(ProtocolPropertyAccessorsOrderRuleTests.allTests),
+    testCase(QuickDiscouragedCallRuleTests.allTests),
+    testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
+    testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(RedundantDiscardableLetRuleTests.allTests),
+    testCase(RedundantNilCoalescingRuleTests.allTests),
+    testCase(RedundantOptionalInitializationRuleTests.allTests),
+    testCase(RedundantSetAccessControlRuleTests.allTests),
+    testCase(RedundantStringEnumValueRuleTests.allTests),
+    testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),
+    testCase(ReturnArrowWhitespaceRuleTests.allTests),
     testCase(RuleConfigurationTests.allTests),
     testCase(RuleTests.allTests),
     testCase(RulesTests.allTests),
+    testCase(ShorthandOperatorRuleTests.allTests),
+    testCase(SingleTestClassRuleTests.allTests),
+    testCase(SortedFirstLastRuleTests.allTests),
+    testCase(SortedImportsRuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
+    testCase(StatementPositionRuleTests.allTests),
+    testCase(StrictFilePrivateRuleTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
+    testCase(SwitchCaseOnNewlineRuleTests.allTests),
+    testCase(SyntacticSugarRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
+    testCase(TrailingClosureRuleTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
+    testCase(TrailingSemicolonRuleTests.allTests),
+    testCase(TrailingWhitespaceTests.allTests),
+    testCase(TypeBodyLengthRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),
+    testCase(UnavailableFunctionRuleTests.allTests),
+    testCase(UnneededBreakInSwitchRuleTests.allTests),
+    testCase(UnneededParenthesesInClosureArgumentRuleTests.allTests),
+    testCase(UntypedErrorInCatchRuleTests.allTests),
+    testCase(UnusedClosureParameterRuleTests.allTests),
+    testCase(UnusedEnumeratedRuleTests.allTests),
     testCase(UnusedOptionalBindingRuleTests.allTests),
+    testCase(ValidIBInspectableRuleTests.allTests),
+    testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),
+    testCase(VerticalParameterAlignmentRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
+    testCase(VoidReturnRuleTests.allTests),
+    testCase(WeakDelegateRuleTests.allTests),
+    testCase(XCTFailMessageRuleTests.allTests),
     testCase(YamlParserTests.allTests),
-    testCase(YamlSwiftLintTests.allTests)
+    testCase(YamlSwiftLintTests.allTests),
+    testCase(YodaConditionRuleTests.allTests)
 ])

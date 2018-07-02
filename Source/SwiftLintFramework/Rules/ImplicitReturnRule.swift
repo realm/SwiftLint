@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, OptInRule {
+public struct ImplicitReturnRule: ConfigurationProviderRule, CorrectableRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule {
+public struct NotificationCenterDetachmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -33,7 +33,7 @@
   [Jacob Greenfield](https://github.com/Coder-256)
   [#2231](https://github.com/realm/SwiftLint/issues/2231)
 
-* Fix a crash when running with Swift 4.2.  
+* Fix a crash when running with Xcode 10.  
   [Norio Nomura](https://github.com/norio-nomura)
   [SR-7954](https://bugs.swift.org/browse/SR-7954)
 

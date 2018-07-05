@@ -58,4 +58,47 @@ class MultilineArgumentsRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["first_argument_location": "same_line"])
     }
+
+    func testMultilineArgumentsWithAllowFirstClosureOnSameLine() {
+        let nonTriggeringExamples: [String] = [
+            "foo()",
+            "foo(0)",
+            "foo(1, bar: 1) { }",
+            "foo(\n" +
+            "    4, bar: baz) { }",
+            "foo(a: a, b: {\n" +
+            "}, c: {\n" +
+            "})",
+            "foo(\n" +
+            "    a: a, b: {\n" +
+            "    }, c: {\n" +
+            "})",
+            "foo(a: a, b: b, c: {\n" +
+            "}, d: {\n" +
+            "})",
+            "foo(\n" +
+            "    a: a, b: b, c: {\n" +
+            "    }, d: {\n" +
+            "})",
+            "foo(a: a, b: { [weak self] in\n" +
+            "}, c: { flag in\n" +
+            "})"
+        ]
+
+        let triggeringExamples = [
+            "foo(a: a,\n" +
+            "    b: b, c: {\n" +
+            "})",
+            "foo(a: a, b: b,\n" +
+            "    c: c, d: {\n" +
+            "    }, d: {\n" +
+            "})"
+        ]
+
+        let description = MultilineArgumentsRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["allow_first_closure_on_same_line": true])
+    }
 }

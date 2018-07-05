@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -329,7 +329,8 @@ extension MultilineArgumentsRuleTests {
     static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
         ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
         ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
-        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
+        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine),
+        ("testMultilineArgumentsWithAllowFirstClosureOnSameLine", testMultilineArgumentsWithAllowFirstClosureOnSameLine)
     ]
 }
 

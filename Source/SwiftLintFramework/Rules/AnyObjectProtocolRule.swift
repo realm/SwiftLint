@@ -11,6 +11,7 @@ public struct AnyObjectProtocolRule: ASTRule, ConfigurationProviderRule {
         name: "AnyObject Protocol",
         description: "Prefer using `AnyObject` over `class` for class-only protocols.",
         kind: .lint,
+        minSwiftVersion: .four,
         nonTriggeringExamples: [
             "protocol SomeProtocol {}",
             "protocol SomeClassOnlyProtocol: AnyObject {}",

@@ -17,8 +17,8 @@ public struct AnyObjectProtocolRule: ASTRule, ConfigurationProviderRule {
             "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"
         ],
         triggeringExamples: [
-            "protocol ↓SomeClassOnlyProtocol: class {}",
-            "protocol ↓SomeClassOnlyProtocol: class, SomeInheritedProtocol {}"
+            "↓protocol SomeClassOnlyProtocol: class {}",
+            "↓protocol SomeClassOnlyProtocol: class, SomeInheritedProtocol {}"
         ]
     )
 
@@ -28,7 +28,7 @@ public struct AnyObjectProtocolRule: ASTRule, ConfigurationProviderRule {
         guard
             kind == .protocol,
             dictionary.inheritedTypes.contains("class"),
-            let offset = dictionary.nameOffset
+            let offset = dictionary.offset
             else {
                 return []
         }

@@ -170,11 +170,11 @@ protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}
 <summary>Triggering Examples</summary>
 
 ```swift
-protocol ↓SomeClassOnlyProtocol: class {}
+↓protocol SomeClassOnlyProtocol: class {}
 ```
 
 ```swift
-protocol ↓SomeClassOnlyProtocol: class, SomeInheritedProtocol {}
+↓protocol SomeClassOnlyProtocol: class, SomeInheritedProtocol {}
 ```
 
 </details>

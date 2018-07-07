@@ -6,6 +6,10 @@ import XCTest
 
 class RulesTests: XCTestCase {
 
+    func testAnyObjectProtocol() {
+        verifyRule(AnyObjectProtocolRule.description)
+    }
+
     func testArrayInit() {
         verifyRule(ArrayInitRule.description)
     }

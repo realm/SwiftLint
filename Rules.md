@@ -165,6 +165,10 @@ protocol SomeClassOnlyProtocol: AnyObject {}
 protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}
 ```
 
+```swift
+@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -175,6 +179,10 @@ protocol SomeClassOnlyProtocol: ↓class {}
 
 ```swift
 protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}
+```
+
+```swift
+@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}
 ```
 
 </details>

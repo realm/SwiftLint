@@ -15,11 +15,13 @@ public struct AnyObjectProtocolRule: ASTRule, CorrectableRule, ConfigurationProv
         nonTriggeringExamples: [
             "protocol SomeProtocol {}",
             "protocol SomeClassOnlyProtocol: AnyObject {}",
-            "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"
+            "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}",
+            "@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"
         ],
         triggeringExamples: [
             "protocol SomeClassOnlyProtocol: ↓class {}",
-            "protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"
+            "protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}",
+            "@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}"
         ],
         corrections: [
             "protocol SomeClassOnlyProtocol: ↓class {}":
@@ -27,7 +29,9 @@ public struct AnyObjectProtocolRule: ASTRule, CorrectableRule, ConfigurationProv
             "protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}":
                 "protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}",
             "protocol SomeClassOnlyProtocol: SomeInheritedProtocol, ↓class {}":
-                "protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {}"
+                "protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {}",
+            "@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}":
+                "@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}"
         ]
     )
 
@@ -86,9 +90,9 @@ public struct AnyObjectProtocolRule: ASTRule, CorrectableRule, ConfigurationProv
         return ranges.unique
     }
 
-    func violationRanges(in file: File,
-                         kind: SwiftDeclarationKind,
-                         dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+    private func violationRanges(in file: File,
+                                 kind: SwiftDeclarationKind,
+                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard kind == .protocol else { return [] }
 
         return dictionary.elements.compactMap { subDict -> NSRange? in

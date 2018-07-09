@@ -48,6 +48,7 @@ private func autoreleasepool(block: () -> Void) { block() }
 
 extension Configuration {
 
+    // swiftlint:disable:next function_body_length
     func visitLintableFiles(path: String, action: String, useSTDIN: Bool = false,
                             quiet: Bool = false, useScriptInputFiles: Bool, forceExclude: Bool,
                             cache: LinterCache? = nil, parallel: Bool = false,
@@ -60,6 +61,18 @@ extension Configuration {
                 return .failure(.usageError(description: errorMessage))
             }
             return .success(Dictionary(grouping: files, by: configuration(for:)))
+        }.flatMap { filesPerConfig -> Result<[Configuration: [File]], CommandantError<()>> in
+            guard !useSTDIN else { return .success(filesPerConfig) }
+
+            let filteredFilesPerConfiguration = filesPerConfig.compactMap { config, files -> (Configuration, [File])? in
+                let filteredFiles = config.lintableFiles(in: files, forceExclude: forceExclude)
+                return filteredFiles.isEmpty ? nil : (config, filteredFiles)
+            }
+            if filteredFilesPerConfiguration.isEmpty {
+                let errorMessage = "All lintable files have been excluded"
+                return .failure(.usageError(description: errorMessage))
+            }
+            return .success([Configuration: [File]](uniqueKeysWithValues: filteredFilesPerConfiguration))
         }.flatMap { filesPerConfiguration in
             let queue = DispatchQueue(label: "io.realm.swiftlint.indexIncrementer")
             var index = 0

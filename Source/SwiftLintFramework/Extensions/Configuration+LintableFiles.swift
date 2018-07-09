@@ -2,6 +2,13 @@ import Foundation
 import SourceKittenFramework
 
 extension Configuration {
+    public func lintableFiles(in files: [File], forceExclude: Bool) -> [File] {
+        return files.compactMap { file -> File? in
+            guard let filePath = file.path else { return nil }
+            return lintableFiles(inPath: filePath, forceExclude: forceExclude).first
+        }
+    }
+
     public func lintableFiles(inPath path: String, forceExclude: Bool) -> [File] {
         return lintablePaths(inPath: path, forceExclude: forceExclude).compactMap(File.init(pathDeferringReading:))
     }

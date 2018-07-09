@@ -15,10 +15,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2249](https://github.com/realm/SwiftLint/issues/2249)
 
-* Add default rule `anyobject_protocol` which suggests using `AnyObject` over
+* Add `anyobject_protocol` opt-in rule which suggests using `AnyObject` over
   `class` for class-only protocols.  
   [Ornithologist Coder](https://github.com/ornithocoder)
-  [#2283](https://github.com/realm/SwiftLint/pull/2283)
+  [#2283](https://github.com/realm/SwiftLint/issues/2283)
 
 #### Bug Fixes
 

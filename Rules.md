@@ -144,7 +144,7 @@
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`anyobject_protocol` | Enabled | Yes | lint | 4.0.0 
+`anyobject_protocol` | Disabled | Yes | lint | 4.0.0 
 
 Prefer using `AnyObject` over `class` for class-only protocols.
 

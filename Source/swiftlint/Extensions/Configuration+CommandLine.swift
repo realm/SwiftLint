@@ -62,7 +62,7 @@ extension Configuration {
             }
             return .success(Dictionary(grouping: files, by: configuration(for:)))
         }.flatMap { filesPerConfig -> Result<[Configuration: [File]], CommandantError<()>> in
-            guard !useSTDIN else { return .success(filesPerConfig) }
+            guard !useSTDIN, forceExclude else { return .success(filesPerConfig) }
 
             let filteredFilesPerConfiguration = filesPerConfig.compactMap { config, files -> (Configuration, [File])? in
                 let filteredFiles = config.lintableFiles(in: files, forceExclude: forceExclude)

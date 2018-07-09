@@ -36,6 +36,13 @@
 * Fix a crash when running with Swift 4.2.  
   [Norio Nomura](https://github.com/norio-nomura)
   [SR-7954](https://bugs.swift.org/browse/SR-7954)
+  
+* Fix an issue where excluded files in the configuration are not taken into account
+  when processing input files from the `--path` or `--use-script-input-files` parameters,
+  despite specifying `--force-exclude`.
+  [Mahdi Bchatnia](https://github.com/inket)
+  [#2275](https://github.com/realm/SwiftLint/issues/2275)
+  [#987](https://github.com/realm/SwiftLint/issues/987)
 
 ## 0.26.0: Maytagged Pointers
 

@@ -93,19 +93,18 @@ public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule, Config
     private func violationRanges(in file: File,
                                  kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard kind == .protocol else { return [] }
-
-        return dictionary.elements.compactMap { subDict -> NSRange? in
-            guard
-                let offset = subDict.offset,
-                let length = subDict.length,
-                let content = file.contents.bridge().substringWithByteRange(start: offset, length: length),
-                content == "class"
-                else {
-                    return nil
-            }
-
-            return file.contents.bridge().byteRangeToNSRange(start: offset, length: length)
+        guard
+            kind == .protocol,
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let bodyOffset = dictionary.bodyOffset,
+            case let contents = file.contents.bridge(),
+            case let start = nameOffset + nameLength,
+            let range = contents.byteRangeToNSRange(start: start, length: bodyOffset - start)
+            else {
+                return []
         }
+
+        return file.match(pattern: "\\bclass\\b", with: [.typeidentifier], range: range)
     }
 }

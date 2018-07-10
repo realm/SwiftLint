@@ -11,7 +11,7 @@ public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule, Config
         name: "AnyObject Protocol",
         description: "Prefer using `AnyObject` over `class` for class-only protocols.",
         kind: .lint,
-        minSwiftVersion: .four,
+        minSwiftVersion: .fourDotOne,
         nonTriggeringExamples: [
             "protocol SomeProtocol {}\n",
             "protocol SomeClassOnlyProtocol: AnyObject {}\n",

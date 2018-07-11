@@ -23,7 +23,7 @@ public struct VerticalWhitespaceOpeningBracesRule {
     private let pattern = "([{(\\[][ \\t]*)((?:\\n[ \\t]*)+)(\\n)"
 }
 
-extension VerticalWhitespaceOpeningBracesRule: Rule {
+extension VerticalWhitespaceOpeningBracesRule: OptInRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}
@@ -55,21 +55,26 @@ extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
         guard !violatingRanges.isEmpty else { return [] }
 
         let patternRegex: NSRegularExpression = regex(pattern)
-        let template = "$1$2"
+        let replacementTemplate = "$1$3"
         let description = type(of: self).description
 
         var corrections = [Correction]()
-        var contents = file.contents
+        var fileContents = file.contents
 
-        for range in violatingRanges {
-            contents = patternRegex.stringByReplacingMatches(in: contents, options: [], range: range, withTemplate: template)
+        for violationRange in violatingRanges {
+            fileContents = patternRegex.stringByReplacingMatches(
+                in: fileContents,
+                options: [],
+                range: violationRange,
+                withTemplate: replacementTemplate
+            )
 
-            let location = Location(file: file, characterOffset: range.location)
+            let location = Location(file: file, characterOffset: violationRange.location)
             let correction = Correction(ruleDescription: description, location: location)
             corrections.append(correction)
         }
 
-        file.write(contents)
+        file.write(fileContents)
         return corrections
     }
 }

@@ -37,6 +37,10 @@
   [Norio Nomura](https://github.com/norio-nomura)
   [SR-7954](https://bugs.swift.org/browse/SR-7954)
 
+* Fix `literal_expression_end_indentation` false positives with multiline 
+  literal elements.  
+  [Eric Horacek](https://github.com/erichoracek)
+
 ## 0.26.0: Maytagged Pointers
 
 #### Breaking

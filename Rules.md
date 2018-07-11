@@ -151,8 +151,12 @@
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
 * [Vertical Whitespace](#vertical-whitespace)
+<<<<<<< HEAD
 * [Vertical Whitespace Between Cases](#vertical-whitespace-between-cases)
 * [Vertical Whitespace after Closing Braces](#vertical-whitespace-after-closing-braces)
+=======
+* [Vertical Whitespace before Closing Braces](#vertical-whitespace-before-closing-braces)
+>>>>>>> Fix copy & paste issue
 * [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
@@ -22047,6 +22051,7 @@ class BBBB {}
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Vertical Whitespace Between Cases
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -22056,6 +22061,9 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 Include a single empty line between switch cases.
 =======
 ## Vertical Whitespace after Closing Braces
+=======
+## Vertical Whitespace before Closing Braces
+>>>>>>> Fix copy & paste issue
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---

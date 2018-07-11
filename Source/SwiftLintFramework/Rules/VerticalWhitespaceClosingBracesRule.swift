@@ -26,7 +26,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule {
 
     public static let description = RuleDescription(
         identifier: "vertical_whitespace_closing_braces",
-        name: "Vertical Whitespace after Closing Braces",
+        name: "Vertical Whitespace before Closing Braces",
         description: "Don't include vertical whitespace (empty line) before closing braces.",
         kind: .style,
         nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),

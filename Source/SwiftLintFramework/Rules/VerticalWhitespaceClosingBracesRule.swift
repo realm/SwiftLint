@@ -1,14 +1,22 @@
 import Foundation
 import SourceKittenFramework
 
+private extension File {
+    func violatingRanges(for pattern: String) -> [NSRange] {
+        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+    }
+}
+
 public struct VerticalWhitespaceClosingBracesRule {
     public init() {}
 
-    private static let invalidToValidExamples: [String: String] = [
-        "print(\"x is 5\")\n↓\n}": "print(\"x is 5\")\n}",
-        "print(\"x is 5\")\n↓\n\n}": "print(\"x is 5\")\n}",
-        "print(\"x is 5\")\n    ↓\n}": "print(\"x is 5\")\n}"
+    private static let violatingToValidExamples: [String: String] = [
+        "    print(\"x is 5\")\n\n}": "    print(\"x is 5\")\n}",
+        "    print(\"x is 5\")\n\n\n}": "    print(\"x is 5\")\n}",
+        "    print(\"x is 5\")\n    \n}": "    print(\"x is 5\")\n}"
     ]
+
+    private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
 }
 
 extension VerticalWhitespaceClosingBracesRule: Rule {
@@ -17,24 +25,47 @@ extension VerticalWhitespaceClosingBracesRule: Rule {
     public init(configuration: Any) throws {}
 
     public static let description = RuleDescription(
-        identifier: "vertical_whitespace_opening_braces",
-        name: "Vertical Whitespace after Opening Braces",
-        description: "Don't include vertical whitespace (empty line) after opening braces.",
+        identifier: "vertical_whitespace_closing_braces",
+        name: "Vertical Whitespace after Closing Braces",
+        description: "Don't include vertical whitespace (empty line) before closing braces.",
         kind: .style,
-        nonTriggeringExamples: Array(invalidToValidExamples.values),
-        triggeringExamples: invalidToValidExamples.keys.map({ $0.replacingOccurrences(of: "↓", with: "") }),
-        corrections: invalidToValidExamples
+        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
+        triggeringExamples: violatingToValidExamples.keys.map({ $0.replacingOccurrences(of: "↓", with: "") }),
+        corrections: violatingToValidExamples
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        // TODO: not yet implemented
-        return []
+        return file.violatingRanges(for: pattern).map {
+            StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: ViolationSeverity.warning,
+                location: Location(file: file, characterOffset: $0.location)
+            )
+        }
     }
 }
 
 extension VerticalWhitespaceClosingBracesRule: CorrectableRule {
     public func correct(file: File) -> [Correction] {
-        // TODO: not yet implemented
-        return []
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
+        guard !violatingRanges.isEmpty else { return [] }
+
+        let patternRegex: NSRegularExpression = regex(pattern)
+        let template = "$2"
+        let description = type(of: self).description
+
+        var corrections = [Correction]()
+        var contents = file.contents
+
+        for range in violatingRanges {
+            contents = patternRegex.stringByReplacingMatches(in: contents, options: [], range: range, withTemplate: template)
+
+            let location = Location(file: file, characterOffset: range.location)
+            let correction = Correction(ruleDescription: description, location: location)
+            corrections.append(correction)
+        }
+
+        file.write(contents)
+        return corrections
     }
 }

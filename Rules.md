@@ -152,6 +152,8 @@
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
 * [Vertical Whitespace](#vertical-whitespace)
 * [Vertical Whitespace Between Cases](#vertical-whitespace-between-cases)
+* [Vertical Whitespace after Closing Braces](#vertical-whitespace-after-closing-braces)
+* [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
 * [XCTFail Message](#xctfail-message)
@@ -22044,6 +22046,7 @@ class BBBB {}
 
 
 
+<<<<<<< HEAD
 ## Vertical Whitespace Between Cases
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -22051,6 +22054,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `vertical_whitespace_between_cases` | Disabled | Yes | style | No | 3.0.0 
 
 Include a single empty line between switch cases.
+=======
+## Vertical Whitespace after Closing Braces
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`vertical_whitespace_closing_braces` | Enabled | Yes | style | 3.0.0 
+
+Don't include vertical whitespace (empty line) before closing braces.
+>>>>>>> Implement validate, correct & add rules to lists
 
 ### Examples
 
@@ -22058,6 +22070,7 @@ Include a single empty line between switch cases.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+<<<<<<< HEAD
     switch x {
     case .valid:
         print("multiple ...")
@@ -22123,6 +22136,9 @@ case 0..<5: print("x is low")
 case 5..<10: print("x is high")
 default: print("x is invalid")
 }
+=======
+    print("x is 5")
+}
 ```
 
 </details>
@@ -22130,6 +22146,78 @@ default: print("x is invalid")
 <summary>Triggering Examples</summary>
 
 ```swift
+    print("x is 5")
+
+}
+```
+
+```swift
+    print("x is 5")
+    
+}
+```
+
+```swift
+    print("x is 5")
+
+
+}
+```
+
+</details>
+
+
+
+## Vertical Whitespace after Opening Braces
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`vertical_whitespace_opening_braces` | Enabled | Yes | style | 3.0.0 
+
+Don't include vertical whitespace (empty line) after opening braces.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+struct MyStruct {
+  let x = 5
+```
+
+```swift
+if x == 5 {
+  print("x is 5")
+```
+
+```swift
+struct MyStruct {
+	let x = 5
+```
+
+```swift
+if x == 5 {
+    print("x is 5")
+```
+
+```swift
+struct MyStruct {
+    let x = 5
+```
+
+```swift
+if x == 5 {
+	print("x is 5")
+>>>>>>> Implement validate, correct & add rules to lists
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+<<<<<<< HEAD
     switch x {
     case .valid:
         print("multiple ...")
@@ -22156,6 +22244,48 @@ default: print("x is invalid")
 ↓    default:
         print("x is invalid")
     }
+=======
+struct MyStruct {
+
+    let x = 5
+```
+
+```swift
+struct MyStruct {
+
+  let x = 5
+```
+
+```swift
+if x == 5 {
+
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+
+  print("x is 5")
+```
+
+```swift
+if x == 5 {
+
+
+    print("x is 5")
+```
+
+```swift
+struct MyStruct {
+
+	let x = 5
+```
+
+```swift
+if x == 5 {
+
+	print("x is 5")
+>>>>>>> Implement validate, correct & add rules to lists
 ```
 
 </details>

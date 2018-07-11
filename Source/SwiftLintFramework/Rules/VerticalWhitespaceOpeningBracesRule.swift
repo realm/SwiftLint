@@ -1,18 +1,26 @@
 import Foundation
 import SourceKittenFramework
 
+private extension File {
+    func violatingRanges(for pattern: String) -> [NSRange] {
+        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
+    }
+}
+
 public struct VerticalWhitespaceOpeningBracesRule {
     public init() {}
 
-    private static let invalidToValidExamples: [String: String] = [
-        "if x == 5 {\n↓\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
-        "if x == 5 {\n↓\n\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
-        "if x == 5 {\n↓\n  print(\"x is 5\")": "if x == 5 {\n  print(\"x is 5\")",
-        "if x == 5 {\n↓\n\tprint(\"x is 5\")": "if x == 5 {\n\tprint(\"x is 5\")",
-        "struct MyStruct {\n↓\n    let x = 5": "struct MyStruct {\n    let x = 5",
-        "struct MyStruct {\n↓\n  let x = 5": "struct MyStruct {\n  let x = 5",
-        "struct MyStruct {\n↓\n\tlet x = 5": "struct MyStruct {\n\tlet x = 5"
+    private static let violatingToValidExamples: [String: String] = [
+        "if x == 5 {\n\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
+        "if x == 5 {\n\n\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
+        "if x == 5 {\n\n  print(\"x is 5\")": "if x == 5 {\n  print(\"x is 5\")",
+        "if x == 5 {\n\n\tprint(\"x is 5\")": "if x == 5 {\n\tprint(\"x is 5\")",
+        "struct MyStruct {\n\n    let x = 5": "struct MyStruct {\n    let x = 5",
+        "struct MyStruct {\n\n  let x = 5": "struct MyStruct {\n  let x = 5",
+        "struct MyStruct {\n\n\tlet x = 5": "struct MyStruct {\n\tlet x = 5"
     ]
+
+    private let pattern = "([{(\\[][ \\t]*)((?:\\n[ \\t]*)+)(\\n)"
 }
 
 extension VerticalWhitespaceOpeningBracesRule: Rule {
@@ -25,20 +33,43 @@ extension VerticalWhitespaceOpeningBracesRule: Rule {
         name: "Vertical Whitespace after Opening Braces",
         description: "Don't include vertical whitespace (empty line) after opening braces.",
         kind: .style,
-        nonTriggeringExamples: Array(invalidToValidExamples.values),
-        triggeringExamples: invalidToValidExamples.keys.map({ $0.replacingOccurrences(of: "↓", with: "") }),
-        corrections: invalidToValidExamples
+        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
+        triggeringExamples: violatingToValidExamples.keys.map({ $0.replacingOccurrences(of: "↓", with: "") }),
+        corrections: violatingToValidExamples
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        // TODO: not yet implemented
-        return []
+        return file.violatingRanges(for: pattern).map {
+            StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: ViolationSeverity.warning,
+                location: Location(file: file, characterOffset: $0.location)
+            )
+        }
     }
 }
 
 extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
     public func correct(file: File) -> [Correction] {
-        // TODO: not yet implemented
-        return []
+        let violatingRanges = file.ruleEnabled(violatingRanges: file.violatingRanges(for: pattern), for: self)
+        guard !violatingRanges.isEmpty else { return [] }
+
+        let patternRegex: NSRegularExpression = regex(pattern)
+        let template = "$1$2"
+        let description = type(of: self).description
+
+        var corrections = [Correction]()
+        var contents = file.contents
+
+        for range in violatingRanges {
+            contents = patternRegex.stringByReplacingMatches(in: contents, options: [], range: range, withTemplate: template)
+
+            let location = Location(file: file, characterOffset: range.location)
+            let correction = Correction(ruleDescription: description, location: location)
+            corrections.append(correction)
+        }
+
+        file.write(contents)
+        return corrections
     }
 }

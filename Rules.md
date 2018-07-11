@@ -8810,6 +8810,20 @@ Array and dictionary literal end should have the same indentation as the line th
 ]
 ```
 
+```swift
+[
+  .init(
+    a: 1,
+    b: 2)]
+```
+
+```swift
+[
+  .normal: .init(
+    a: 1,
+    b: 2)]
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

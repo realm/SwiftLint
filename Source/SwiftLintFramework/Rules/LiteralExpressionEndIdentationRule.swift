@@ -34,7 +34,19 @@ public struct LiteralExpressionEndIdentationRule: Rule, ConfigurationProviderRul
             "[\n" +
             "   key: 0,\n" +
             "   key2: 20\n" +
-            "]"
+            "]",
+            """
+            [
+              .init(
+                a: 1,
+                b: 2)]
+            """,
+            """
+            [
+              .normal: .init(
+                a: 1,
+                b: 2)]
+            """
         ],
         triggeringExamples: [
             "let x = [\n" +
@@ -215,7 +227,8 @@ extension LiteralExpressionEndIdentationRule {
             let (firstParamLine, _) = contents.lineAndCharacter(forByteOffset: firstParamOffset),
             startLine != firstParamLine,
             let lastParamOffset = elements.last?.offset,
-            let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset),
+            let lastParamLength = elements.last?.length,
+            let (lastParamLine, _) = contents.lineAndCharacter(forByteOffset: lastParamOffset + lastParamLength),
             case let endOffset = offset + length - 1,
             let (endLine, endPosition) = contents.lineAndCharacter(forByteOffset: endOffset),
             lastParamLine != endLine else {
@@ -227,7 +240,7 @@ extension LiteralExpressionEndIdentationRule {
         let actual = endPosition - 1
         guard let match = regex.firstMatch(in: file.contents, options: [], range: range)?.range,
             case let expected = match.location - range.location,
-            expected != actual  else {
+            expected != actual else {
                 return nil
         }
 

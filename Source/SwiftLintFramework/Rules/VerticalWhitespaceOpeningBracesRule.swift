@@ -34,7 +34,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
         description: "Don't include vertical whitespace (empty line) after opening braces.",
         kind: .style,
         nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
-        triggeringExamples: violatingToValidExamples.keys.map({ $0.replacingOccurrences(of: "↓", with: "") }),
+        triggeringExamples: Array(Set(violatingToValidExamples.keys)),
         corrections: violatingToValidExamples
     )
 
@@ -61,7 +61,7 @@ extension VerticalWhitespaceOpeningBracesRule: CorrectableRule {
         var corrections = [Correction]()
         var fileContents = file.contents
 
-        for violationRange in violatingRanges {
+        for violationRange in violatingRanges.reversed() {
             fileContents = patternRegex.stringByReplacingMatches(
                 in: fileContents,
                 options: [],

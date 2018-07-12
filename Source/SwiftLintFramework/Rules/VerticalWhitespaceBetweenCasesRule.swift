@@ -7,7 +7,20 @@ private extension File {
     }
 }
 
-public struct VerticalWhitespaceBetweenCasesRule {
+private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
+    func cleanedKeysDict() -> [String: String] {
+        var cleanDict = [String: String]()
+
+        for (key, value) in self {
+            guard let keyString = key as? String else { continue }
+            let cleanedKey = keyString.replacingOccurrences(of: "↓", with: "")
+            cleanDict[cleanedKey] = value as? String
+        }
+
+        return cleanDict
+    }
+}
+
 public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
@@ -25,6 +38,26 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
         default:
             print("x is invalid")
+
+        }
+        """,
+        """
+        switch x {
+        case 0..<5:
+            print("x is low")
+
+        case 5..<10:
+            print("x is high")
+
+        default:
+            print("x is invalid")
+        }
+        """,
+        """
+        switch x {
+        case 0..<5: print("x is low")
+        case 5..<10: print("x is high")
+        default: print("x is invalid")
         }
         """
     ]
@@ -34,7 +67,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
         switch x {
         case 0..<5:
             print("x is valid")
-        default:
+    ↓    default:
             print("x is invalid")
         }
     """: """
@@ -63,15 +96,23 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
         kind: .style,
         nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
         triggeringExamples: Array(Set(violatingToValidExamples.keys)),
-        corrections: violatingToValidExamples
+        corrections: violatingToValidExamples.cleanedKeysDict()
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingRanges(for: pattern).map {
-            StyleViolation(
+        let patternRegex: NSRegularExpression = regex(pattern)
+
+        return file.violatingRanges(for: pattern).map { violationRange in
+            let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
+            let substringRange = NSRange(location: 0, length: substring.count)
+            let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substringRange)!
+            let violatingSubrange = matchResult.range(at: 2)
+            let characterOffset = violationRange.location + violatingSubrange.location
+
+            return StyleViolation(
                 ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, characterOffset: $0.location)
+                location: Location(file: file, characterOffset: characterOffset)
             )
         }
     }

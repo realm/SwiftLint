@@ -8,6 +8,9 @@ private extension File {
 }
 
 public struct VerticalWhitespaceBetweenCasesRule {
+public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
+    public var configuration = SeverityConfiguration(.warning)
+
     public init() {}
 
     private static let violatingToValidExamples: [String: String] = [
@@ -51,7 +54,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
         return file.violatingRanges(for: pattern).map {
             StyleViolation(
                 ruleDescription: type(of: self).description,
-                severity: ViolationSeverity.warning,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: $0.location)
             )
         }

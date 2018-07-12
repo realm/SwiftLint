@@ -21,7 +21,9 @@ private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
     }
 }
 
-public struct VerticalWhitespaceClosingBracesRule {
+public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
+    public var configuration = SeverityConfiguration(.warning)
+
     public init() {}
 
     private static let nonTriggeringExamples = [
@@ -78,7 +80,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule {
 
             return StyleViolation(
                 ruleDescription: type(of: self).description,
-                severity: ViolationSeverity.warning,
+                severity: configuration.severity,
                 location: Location(file: file, characterOffset: characterOffset)
             )
         }

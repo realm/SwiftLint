@@ -13,6 +13,22 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
     public init() {}
 
+    private static let nonTriggeringExamples = [
+        """
+        switch x {
+
+        case 0..<5:
+            print("x is low")
+
+        case 5..<10:
+            print("x is high")
+
+        default:
+            print("x is invalid")
+        }
+        """
+    ]
+
     private static let violatingToValidExamples: [String: String] = [
     """
         switch x {
@@ -45,7 +61,7 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule {
         name: "Vertical Whitespace Between Cases",
         description: "Include a vertical whitespace (empty line) between cases in switch statements.",
         kind: .style,
-        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
+        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
         triggeringExamples: Array(Set(violatingToValidExamples.keys)),
         corrections: violatingToValidExamples
     )

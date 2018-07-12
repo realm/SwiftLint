@@ -22161,14 +22161,23 @@ default:
 ```
 
 ```swift
-        )
+    print("x is 5")
 }
+<<<<<<< HEAD
     }
 >>>>>>> Add more validation examples
+=======
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+>>>>>>> Point to exact location of violation + update tests
 }
 ```
 
 ```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 switch x {
 case 0..<5: print("x is low")
@@ -22179,6 +22188,11 @@ default: print("x is invalid")
 =======
 >>>>>>> Add more validation examples
     print("x is 5")
+=======
+        )
+}
+    }
+>>>>>>> Point to exact location of violation + update tests
 }
 ```
 
@@ -22212,14 +22226,46 @@ y:6
 <summary>Triggering Examples</summary>
 
 ```swift
-    print("x is 5")
+foo(
+x: 5,
+y:6
+↓
+)
+```
 
+```swift
+        )
+}
+↓
+    }
 }
 ```
 
 ```swift
     print("x is 5")
-    
+↓    
+}
+```
+
+```swift
+    print("x is 5")
+↓
+}
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+↓
+}
+```
+
+<<<<<<< HEAD
+=======
+```swift
+    print("x is 5")
+↓
+
 }
 ```
 
@@ -22228,17 +22274,11 @@ y:6
 1,
 2,
 3
-
+↓
 ]
 ```
 
-```swift
-    print("x is 5")
-
-
-}
-```
-
+>>>>>>> Point to exact location of violation + update tests
 </details>
 
 
@@ -22262,16 +22302,16 @@ struct MyStruct {
 ```
 
 ```swift
-if x == 5 {
-  print("x is 5")
-```
-
-```swift
 [
 1,
 2,
 3
 ]
+```
+
+```swift
+if x == 5 {
+  print("x is 5")
 ```
 
 ```swift
@@ -22294,6 +22334,12 @@ if x == 5 {
 ```swift
 struct MyStruct {
     let x = 5
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+}
 ```
 
 ```swift
@@ -22365,60 +22411,47 @@ y:6
     }
 =======
 struct MyStruct {
-
+↓
     let x = 5
 ```
 
 ```swift
-struct MyStruct {
-
-  let x = 5
-```
-
-```swift
-foo(
-
-x: 5,
-y:6
-)
+class Name {
+↓
+    run(5) { x in print(x) }
+}
 ```
 
 ```swift
 if x == 5 {
+↓
 
     print("x is 5")
 ```
 
 ```swift
 if x == 5 {
-
-  print("x is 5")
+↓
+	print("x is 5")
 ```
 
 ```swift
 if x == 5 {
-
-
+↓
     print("x is 5")
-```
-
-```swift
-struct MyStruct {
-
-	let x = 5
 ```
 
 ```swift
 class X {
     struct Y {
-
+↓
     class Z {
 
 ```
 
 ```swift
 [
-
+↓
 1,
 2,
 3
@@ -22426,10 +22459,34 @@ class X {
 ```
 
 ```swift
-if x == 5 {
+struct MyStruct {
+↓
+  let x = 5
+```
 
+```swift
+if x == 5 {
+↓
+  print("x is 5")
+```
+
+<<<<<<< HEAD
 	print("x is 5")
 >>>>>>> Implement validate, correct & add rules to lists
+=======
+```swift
+struct MyStruct {
+↓
+	let x = 5
+```
+
+```swift
+foo(
+↓
+x: 5,
+y:6
+)
+>>>>>>> Point to exact location of violation + update tests
 ```
 
 </details>

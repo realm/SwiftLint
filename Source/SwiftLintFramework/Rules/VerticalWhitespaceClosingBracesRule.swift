@@ -7,6 +7,20 @@ private extension File {
     }
 }
 
+private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
+    func cleanedKeysDict() -> [String: String] {
+        var cleanDict = [String: String]()
+
+        for (key, value) in self {
+            guard let keyString = key as? String else { continue }
+            let cleanedKey = keyString.replacingOccurrences(of: "↓", with: "")
+            cleanDict[cleanedKey] = value as? String
+        }
+
+        return cleanDict
+    }
+}
+
 public struct VerticalWhitespaceClosingBracesRule {
     public init() {}
 
@@ -25,12 +39,13 @@ public struct VerticalWhitespaceClosingBracesRule {
     ]
 
     private static let violatingToValidExamples: [String: String] = [
-        "    print(\"x is 5\")\n\n}": "    print(\"x is 5\")\n}",
-        "    print(\"x is 5\")\n\n\n}": "    print(\"x is 5\")\n}",
-        "    print(\"x is 5\")\n    \n}": "    print(\"x is 5\")\n}",
-        "        )\n}\n\n    }\n}": "        )\n}\n    }\n}",
-        "[\n1,\n2,\n3\n\n]": "[\n1,\n2,\n3\n]",
-        "foo(\nx: 5,\ny:6\n\n)": "foo(\nx: 5,\ny:6\n)"
+        "    print(\"x is 5\")\n↓\n}": "    print(\"x is 5\")\n}",
+        "    print(\"x is 5\")\n↓\n\n}": "    print(\"x is 5\")\n}",
+        "    print(\"x is 5\")\n↓    \n}": "    print(\"x is 5\")\n}",
+        "        )\n}\n↓\n    }\n}": "        )\n}\n    }\n}",
+        "[\n1,\n2,\n3\n↓\n]": "[\n1,\n2,\n3\n]",
+        "foo(\nx: 5,\ny:6\n↓\n)": "foo(\nx: 5,\ny:6\n)",
+        "class Name {\n    run(5) { x in print(x) }\n↓\n}": "class Name {\n    run(5) { x in print(x) }\n}"
     ]
 
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
@@ -48,15 +63,23 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule {
         kind: .style,
         nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
         triggeringExamples: Array(Set(violatingToValidExamples.keys)),
-        corrections: violatingToValidExamples
+        corrections: violatingToValidExamples.cleanedKeysDict()
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.violatingRanges(for: pattern).map {
-            StyleViolation(
+        let patternRegex: NSRegularExpression = regex(pattern)
+
+        return file.violatingRanges(for: pattern).map { violationRange in
+            let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
+            let substringRange = NSRange(location: 0, length: substring.count)
+            let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substringRange)!
+            let violatingSubrange = matchResult.range(at: 1)
+            let characterOffset = violationRange.location + violatingSubrange.location + 1
+
+            return StyleViolation(
                 ruleDescription: type(of: self).description,
                 severity: ViolationSeverity.warning,
-                location: Location(file: file, characterOffset: $0.location)
+                location: Location(file: file, characterOffset: characterOffset)
             )
         }
     }

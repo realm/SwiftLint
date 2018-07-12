@@ -21731,6 +21731,42 @@ Include a vertical whitespace (empty line) between cases in switch statements.
     }
 ```
 
+```swift
+switch x {
+
+case 0..<5:
+    print("x is low")
+
+case 5..<10:
+    print("x is high")
+
+default:
+    print("x is invalid")
+
+}
+```
+
+```swift
+switch x {
+case 0..<5:
+    print("x is low")
+
+case 5..<10:
+    print("x is high")
+
+default:
+    print("x is invalid")
+}
+```
+
+```swift
+switch x {
+case 0..<5: print("x is low")
+case 5..<10: print("x is high")
+default: print("x is invalid")
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -21739,7 +21775,7 @@ Include a vertical whitespace (empty line) between cases in switch statements.
     switch x {
     case 0..<5:
         print("x is valid")
-    default:
+↓    default:
         print("x is invalid")
     }
 ```

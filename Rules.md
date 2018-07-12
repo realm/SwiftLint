@@ -20911,6 +20911,22 @@ class ViewController: UIViewController {
 }
 ```
 
+```swift
+        )
+}
+
+    }
+}
+```
+
+```swift
+foo(
+x: 5,
+y:6
+
+)
+```
+
 </details>
 
 
@@ -22079,6 +22095,7 @@ Don't include vertical whitespace (empty line) before closing braces.
 
 ```swift
 <<<<<<< HEAD
+<<<<<<< HEAD
     switch x {
     case .valid:
         print("multiple ...")
@@ -22135,18 +22152,59 @@ case 5..<10:
 
 default:
     print("x is invalid")
+=======
+[
+1,
+2,
+3
+]
+```
+
+```swift
+        )
+}
+    }
+>>>>>>> Add more validation examples
 }
 ```
 
 ```swift
+<<<<<<< HEAD
 switch x {
 case 0..<5: print("x is low")
 case 5..<10: print("x is high")
 default: print("x is invalid")
 }
 =======
+=======
+>>>>>>> Add more validation examples
     print("x is 5")
 }
+```
+
+```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+```swift
+[1, 2].map { $0 }.filter {
+```
+
+```swift
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+/*
+    class X {
+
+        let x = 5
+
+    }
+*/
 ```
 
 </details>
@@ -22163,6 +22221,15 @@ default: print("x is invalid")
     print("x is 5")
     
 }
+```
+
+```swift
+[
+1,
+2,
+3
+
+]
 ```
 
 ```swift
@@ -22200,8 +22267,23 @@ if x == 5 {
 ```
 
 ```swift
+[
+1,
+2,
+3
+]
+```
+
+```swift
 struct MyStruct {
 	let x = 5
+```
+
+```swift
+class X {
+    struct Y {
+    class Z {
+
 ```
 
 ```swift
@@ -22218,6 +22300,35 @@ struct MyStruct {
 if x == 5 {
 	print("x is 5")
 >>>>>>> Implement validate, correct & add rules to lists
+```
+
+```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+```swift
+[1, 2].map { $0 }.foo()
+```
+
+```swift
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+// [1, 2].map { $0 }.filter { num in
+```
+
+```swift
+/*
+    class X {
+
+        let x = 5
+
+    }
+*/
 ```
 
 </details>
@@ -22265,6 +22376,14 @@ struct MyStruct {
 ```
 
 ```swift
+foo(
+
+x: 5,
+y:6
+)
+```
+
+```swift
 if x == 5 {
 
     print("x is 5")
@@ -22287,6 +22406,23 @@ if x == 5 {
 struct MyStruct {
 
 	let x = 5
+```
+
+```swift
+class X {
+    struct Y {
+
+    class Z {
+
+```
+
+```swift
+[
+
+1,
+2,
+3
+]
 ```
 
 ```swift

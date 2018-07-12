@@ -10,10 +10,27 @@ private extension File {
 public struct VerticalWhitespaceClosingBracesRule {
     public init() {}
 
+    private static let nonTriggeringExamples = [
+        "[1, 2].map { $0 }.filter {",
+        "[1, 2].map { $0 }.filter { num in",
+        """
+        /*
+            class X {
+
+                let x = 5
+
+            }
+        */
+        """
+    ]
+
     private static let violatingToValidExamples: [String: String] = [
         "    print(\"x is 5\")\n\n}": "    print(\"x is 5\")\n}",
         "    print(\"x is 5\")\n\n\n}": "    print(\"x is 5\")\n}",
-        "    print(\"x is 5\")\n    \n}": "    print(\"x is 5\")\n}"
+        "    print(\"x is 5\")\n    \n}": "    print(\"x is 5\")\n}",
+        "        )\n}\n\n    }\n}": "        )\n}\n    }\n}",
+        "[\n1,\n2,\n3\n\n]": "[\n1,\n2,\n3\n]",
+        "foo(\nx: 5,\ny:6\n\n)": "foo(\nx: 5,\ny:6\n)"
     ]
 
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
@@ -29,7 +46,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule {
         name: "Vertical Whitespace before Closing Braces",
         description: "Don't include vertical whitespace (empty line) before closing braces.",
         kind: .style,
-        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
+        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
         triggeringExamples: Array(Set(violatingToValidExamples.keys)),
         corrections: violatingToValidExamples
     )

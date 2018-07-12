@@ -10,6 +10,21 @@ private extension File {
 public struct VerticalWhitespaceOpeningBracesRule {
     public init() {}
 
+    private static let nonTriggeringExamples = [
+        "[1, 2].map { $0 }.foo()",
+        "[1, 2].map { $0 }.filter { num in",
+        "// [1, 2].map { $0 }.filter { num in",
+        """
+        /*
+            class X {
+
+                let x = 5
+
+            }
+        */
+        """
+    ]
+
     private static let violatingToValidExamples: [String: String] = [
         "if x == 5 {\n\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
         "if x == 5 {\n\n\n    print(\"x is 5\")": "if x == 5 {\n    print(\"x is 5\")",
@@ -17,7 +32,10 @@ public struct VerticalWhitespaceOpeningBracesRule {
         "if x == 5 {\n\n\tprint(\"x is 5\")": "if x == 5 {\n\tprint(\"x is 5\")",
         "struct MyStruct {\n\n    let x = 5": "struct MyStruct {\n    let x = 5",
         "struct MyStruct {\n\n  let x = 5": "struct MyStruct {\n  let x = 5",
-        "struct MyStruct {\n\n\tlet x = 5": "struct MyStruct {\n\tlet x = 5"
+        "struct MyStruct {\n\n\tlet x = 5": "struct MyStruct {\n\tlet x = 5",
+        "class X {\n    struct Y {\n\n    class Z {\n": "class X {\n    struct Y {\n    class Z {\n",
+        "[\n\n1,\n2,\n3\n]": "[\n1,\n2,\n3\n]",
+        "foo(\n\nx: 5,\ny:6\n)": "foo(\nx: 5,\ny:6\n)"
     ]
 
     private let pattern = "([{(\\[][ \\t]*)((?:\\n[ \\t]*)+)(\\n)"
@@ -33,7 +51,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule {
         name: "Vertical Whitespace after Opening Braces",
         description: "Don't include vertical whitespace (empty line) after opening braces.",
         kind: .style,
-        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)),
+        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
         triggeringExamples: Array(Set(violatingToValidExamples.keys)),
         corrections: violatingToValidExamples
     )

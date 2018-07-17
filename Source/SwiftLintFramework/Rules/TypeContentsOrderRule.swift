@@ -1,16 +1,52 @@
 import Foundation
 import SourceKittenFramework
 
+enum TypeContent {
+    case `case`
+    case typeAlias
+    case subtype
+    case storedTypeProperty
+    case computedTypeProperty
+    case storedInstanceProperty
+    case computedInstanceProperty
+    case ibOutlet
+    case initializer
+    case typeMethod
+    case lifeCycleMethod
+    case ibAction
+    case otherMethod
+    case `subscript`
+
+    static var defaultOrder: [[TypeContent]] {
+        return [
+            [.case],
+            [.typeAlias],
+            [.subtype],
+            [.storedTypeProperty],
+            [.computedTypeProperty],
+            [.storedInstanceProperty],
+            [.computedInstanceProperty],
+            [.ibOutlet],
+            [.initializer],
+            [.typeMethod],
+            [.lifeCycleMethod],
+            [.ibAction],
+            [.otherMethod],
+            [.subscript]
+        ]
+    }
+}
+
 // swiftlint:disable:next type_body_length
-public struct FileContentOrderRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "file_content_order",
-        name: "File Content Order",
-        description: "Specifies the order of types, properties, methods & more within a file including one main type.",
+        identifier: "type_contents_order",
+        name: "Type Contents Order",
+        description: "Specifies the order of subtypes, properties, methods & more within a type.",
         kind: .style,
         nonTriggeringExamples: [
             """
@@ -133,28 +169,6 @@ public struct FileContentOrderRule: ASTRule, ConfigurationProviderRule, OptInRul
             """
         ],
         triggeringExamples: [
-            """
-            class TestViewController: UIViewController {}
-
-            // Supporting Types
-            protocol TestViewControllerDelegate {
-                func didPressTrackedButton()
-            }
-            """,
-            """
-            // Extensions
-            extension TestViewController: UITableViewDataSource {
-                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-                    return 1
-                }
-
-                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                    return UITableViewCell()
-                }
-            }
-
-            class TestViewController: UIViewController {}
-            """,
             """
             class TestViewController: UIViewController {
                 // Subtypes
@@ -294,31 +308,14 @@ public struct FileContentOrderRule: ASTRule, ConfigurationProviderRule, OptInRul
         ]
     )
 
-    public func validate(
-        file: File,
-        kind: SwiftDeclarationKind,
-        dictionary: [String: SourceKitRepresentable]
-    ) -> [StyleViolation] {
+    public func validate(file: File) -> [StyleViolation] {
+        let substructures = file.structure.dictionary.substructure
+        return substructures.reduce([StyleViolation]()) { violations, substructure -> [StyleViolation] in
+            return violations + validateTypeSubstructure(substructure)
+        }
+    }
+
+    private func validateTypeSubstructure(_ substructure: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return [] // TODO: not yet implemented
     }
 }
-
-//private extension File {
-//    func violatingRanges(for pattern: String) -> [NSRange] {
-//        return match(pattern: pattern, excludingSyntaxKinds: SyntaxKind.commentAndStringKinds)
-//    }
-//}
-
-//private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
-//    func cleanedKeysDict() -> [String: String] {
-//        var cleanDict = [String: String]()
-//
-//        for (key, value) in self {
-//            guard let keyString = key as? String else { continue }
-//            let cleanedKey = keyString.replacingOccurrences(of: "↓", with: "")
-//            cleanDict[cleanedKey] = value as? String
-//        }
-//
-//        return cleanDict
-//    }
-//}

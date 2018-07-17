@@ -44,10 +44,10 @@
 * [Extension Access Modifier](#extension-access-modifier)
 * [Fallthrough](#fallthrough)
 * [Fatal Error Message](#fatal-error-message)
-* [File Content Order](#file-content-order)
 * [File Header](#file-header)
 * [File Line Length](#file-line-length)
 * [File Name](#file-name)
+* [File Types Order](#file-types-order)
 * [First Where](#first-where)
 * [For Where](#for-where)
 * [Force Cast](#force-cast)
@@ -147,6 +147,7 @@
 * [Trailing Semicolon](#trailing-semicolon)
 * [Trailing Whitespace](#trailing-whitespace)
 * [Type Body Length](#type-body-length)
+* [Type Contents Order](#type-contents-order)
 * [Type Name](#type-name)
 * [Unavailable Function](#unavailable-function)
 * [Unneeded Break in Switch](#unneeded-break-in-switch)
@@ -6293,13 +6294,13 @@ func foo() {
 
 
 
-## File Content Order
+## File Header
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`file_content_order` | Disabled | No | style | 3.0.0 
+`file_header` | Disabled | No | style | 3.0.0 
 
-Specifies the order of types, properties, methods & more within a file including one main type.
+Header comments should be consistent with project patterns. The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the required and forbidden patterns. It will be replaced by the real file name.
 
 ### Examples
 
@@ -6307,122 +6308,16 @@ Specifies the order of types, properties, methods & more within a file including
 <summary>Non Triggering Examples</summary>
 
 ```swift
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
+let foo = "Copyright"
+```
 
-class TestViewController: UIViewController {
-    // Type Aliases
-    typealias CompletionHandler = ((TestEnum) -> Void)
+```swift
+let foo = 2 // Copyright
+```
 
-    // Subtypes
-    class TestClass {
-        // 10 lines
-    }
-
-    struct TestStruct {
-        // 3 lines
-    }
-
-    enum TestEnum {
-        // 5 lines
-    }
-
-    // Stored Type Properties
-    static let cellIdentifier: String = "AmazingCell"
-
-    // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
-
-    // Computed Instance Properties
-    private var hasAnyLayoutedView: Bool {
-         return hasLayoutedView1 || hasLayoutedView2
-    }
-
-    // IBOutlets
-    @IBOutlet private var view1: UIView!
-    @IBOutlet private var view2: UIView!
-
-    // Initializers
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // Type Methods
-    static func makeViewController() -> TestViewController {
-        // some code
-    }
-
-    // Life-Cycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view1.setNeedsLayout()
-        view1.layoutIfNeeded()
-        hasLayoutedView1 = true
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        view2.setNeedsLayout()
-        view2.layoutIfNeeded()
-        hasLayoutedView2 = true
-    }
-
-    // IBActions
-    @IBAction func goNextButtonPressed() {
-        goToNextVc()
-        delegate?.didPressTrackedButton()
-    }
-
-    @objc
-    func goToRandomVcButtonPressed() {
-        goToRandomVc()
-    }
-
-    // MARK: Other Methods
-    func goToNextVc() { /* TODO */ }
-
-    func goToInfoVc() { /* TODO */ }
-
-    func goToRandomVc() {
-        let viewCtrl = getRandomVc()
-        present(viewCtrl, animated: true)
-    }
-
-    private func getRandomVc() -> UIViewController { return UIViewController() }
-
-    // Subscripts
-    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
-        get {
-            return "This is just a test"
-        }
-
-        set {
-            log.warning("Just a test", newValue)
-        }
-    }
-}
-
-// Extensions
-extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
+```swift
+let foo = 2
+ // Copyright
 ```
 
 </details>
@@ -6430,133 +6325,40 @@ extension TestViewController: UITableViewDataSource {
 <summary>Triggering Examples</summary>
 
 ```swift
-class TestViewController: UIViewController {}
+// ↓Copyright
 
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
 ```
 
 ```swift
-// Extensions
-extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-
-class TestViewController: UIViewController {}
+//
+// ↓Copyright
 ```
 
 ```swift
-class TestViewController: UIViewController {
-    // Subtypes
-    class TestClass {
-        // 10 lines
-    }
-
-    // Type Aliases
-    typealias CompletionHandler = ((TestEnum) -> Void)
-}
+//
+//  FileHeaderRule.swift
+//  SwiftLint
+//
+//  Created by Marcelo Fabri on 27/11/16.
+//  ↓Copyright © 2016 Realm. All rights reserved.
+//
 ```
 
-```swift
-class TestViewController: UIViewController {
-    // Stored Type Properties
-    static let cellIdentifier: String = "AmazingCell"
+</details>
 
-    // Subtypes
-    class TestClass {
-        // 10 lines
-    }
-}
-```
 
-```swift
-class TestViewController: UIViewController {
-    // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
 
-    // Stored Type Properties
-    static let cellIdentifier: String = "AmazingCell"
-}
-```
+## File Line Length
 
-```swift
-class TestViewController: UIViewController {
-    // Computed Instance Properties
-    private var hasAnyLayoutedView: Bool {
-         return hasLayoutedView1 || hasLayoutedView2
-    }
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`file_length` | Enabled | No | metrics | 3.0.0 
 
-    // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
-}
-```
+Files should not span too many lines.
 
-```swift
-class TestViewController: UIViewController {
-    // IBOutlets
-    @IBOutlet private var view1: UIView!
-    @IBOutlet private var view2: UIView!
+### Examples
 
-    // Computed Instance Properties
-    private var hasAnyLayoutedView: Bool {
-         return hasLayoutedView1 || hasLayoutedView2
-    }
-}
-```
-
-```swift
-class TestViewController: UIViewController {
-    // Initializers
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-
-    // IBOutlets
-    @IBOutlet private var view1: UIView!
-    @IBOutlet private var view2: UIView!
-}
-```
-
-```swift
-class TestViewController: UIViewController {
-    // Life-Cycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view1.setNeedsLayout()
-        view1.layoutIfNeeded()
-        hasLayoutedView1 = true
-    }
-
-    // Type Methods
-    static func makeViewController() -> TestViewController {
-        // some code
-    }
-}
-```
-
-```swift
-class TestViewController: UIViewController {
-    // IBActions
-    @IBAction func goNextButtonPressed() {
-        goToNextVc()
-        delegate?.didPressTrackedButton()
-    }
-
+<<<<<<< HEAD
     // Life-Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -6613,6 +6415,8 @@ Header comments should be consistent with project patterns. The SWIFTLINT_CURREN
 
 ### Examples
 
+=======
+>>>>>>> Split new rule up into two separate rules
 <details>
 <summary>Non Triggering Examples</summary>
 
@@ -8299,6 +8103,7 @@ Functions bodies should not span too many lines.
 
 
 
+<<<<<<< HEAD
 ## Function Default Parameter at End
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -8306,6 +8111,15 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `function_default_parameter_at_end` | Disabled | No | idiomatic | No | 3.0.0 
 
 Prefer to locate parameters with defaults toward the end of the parameter list.
+=======
+## File Types Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`file_types_order` | Disabled | No | style | 3.0.0 
+
+Specifies how the types within a file should be ordered.
+>>>>>>> Split new rule up into two separate rules
 
 ### Examples
 
@@ -8313,6 +8127,7 @@ Prefer to locate parameters with defaults toward the end of the parameter list.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+<<<<<<< HEAD
 func foo(baz: String, bar: Int = 0) {}
 ```
 
@@ -8350,11 +8165,31 @@ func foo(a: Int, b: CGFloat = 0) {
   let block = { (error: Error?) in }
 }
 ```
+=======
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
 
-</details>
-<details>
-<summary>Triggering Examples</summary>
+class TestViewController: UIViewController {
+    // Type Aliases
+    typealias CompletionHandler = ((TestEnum) -> Void)
 
+    // Subtypes
+    class TestClass {
+        // 10 lines
+    }
+
+    struct TestStruct {
+        // 3 lines
+    }
+>>>>>>> Split new rule up into two separate rules
+
+    enum TestEnum {
+        // 5 lines
+    }
+
+<<<<<<< HEAD
 ```swift
 ↓func foo(bar: Int = 0, baz: String) {}
 ```
@@ -8438,11 +8273,81 @@ struct Foo {
 init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
 ↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}
 ```
+=======
+    // Stored Type Properties
+    static let cellIdentifier: String = "AmazingCell"
 
-</details>
+    // Stored Instance Properties
+    var shouldLayoutView1: Bool!
+    weak var delegate: TestViewControllerDelegate?
+    private var hasLayoutedView1: Bool = false
+    private var hasLayoutedView2: Bool = false
 
+    // Computed Instance Properties
+    private var hasAnyLayoutedView: Bool {
+         return hasLayoutedView1 || hasLayoutedView2
+    }
 
+    // IBOutlets
+    @IBOutlet private var view1: UIView!
+    @IBOutlet private var view2: UIView!
 
+    // Initializers
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // Type Methods
+    static func makeViewController() -> TestViewController {
+        // some code
+    }
+
+    // Life-Cycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view1.setNeedsLayout()
+        view1.layoutIfNeeded()
+        hasLayoutedView1 = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        view2.setNeedsLayout()
+        view2.layoutIfNeeded()
+        hasLayoutedView2 = true
+    }
+
+    // IBActions
+    @IBAction func goNextButtonPressed() {
+        goToNextVc()
+        delegate?.didPressTrackedButton()
+    }
+
+    @objc
+    func goToRandomVcButtonPressed() {
+        goToRandomVc()
+    }
+
+    // MARK: Other Methods
+    func goToNextVc() { /* TODO */ }
+>>>>>>> Split new rule up into two separate rules
+
+    func goToInfoVc() { /* TODO */ }
+
+    func goToRandomVc() {
+        let viewCtrl = getRandomVc()
+        present(viewCtrl, animated: true)
+    }
+
+    private func getRandomVc() -> UIViewController { return UIViewController() }
+
+<<<<<<< HEAD
 ## Generic Type Name
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -8450,6 +8355,74 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `generic_type_name` | Enabled | No | idiomatic | No | 3.0.0 
 
 Generic type name should only contain alphanumeric characters, start with an uppercase character and span between 1 and 20 characters in length.
+=======
+    // Subscripts
+    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+        get {
+            return "This is just a test"
+        }
+
+        set {
+            log.warning("Just a test", newValue)
+        }
+    }
+}
+
+// Extensions
+extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+>>>>>>> Split new rule up into two separate rules
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+<<<<<<< HEAD
+func foo<T>() {}
+=======
+class TestViewController: UIViewController {}
+
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+```
+
+```swift
+// Extensions
+extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+
+class TestViewController: UIViewController {}
+```
+
+</details>
+
+
+
+## First Where
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`first_where` | Disabled | No | performance | 3.0.0 
+
+Prefer using `.first(where:)` over `.filter { }.first` in collections.
 
 ### Examples
 
@@ -8457,7 +8430,85 @@ Generic type name should only contain alphanumeric characters, start with an upp
 <summary>Non Triggering Examples</summary>
 
 ```swift
-func foo<T>() {}
+kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
+
+```
+
+```swift
+myList.first(where: { $0 % 2 == 0 })
+
+```
+
+```swift
+match(pattern: pattern).filter { $0.first == .identifier }
+
+```
+
+```swift
+(myList.filter { $0 == 1 }.suffix(2)).first
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓myList.filter { $0 % 2 == 0 }.first
+
+```
+
+```swift
+↓myList.filter({ $0 % 2 == 0 }).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first
+
+```
+
+```swift
+↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()
+
+```
+
+```swift
+↓myList.filter(someFunction).first
+
+```
+
+```swift
+↓myList.filter({ $0 % 2 == 0 })
+.first
+
+```
+
+```swift
+(↓myList.filter { $0 == 1 }).first
+
+```
+
+</details>
+
+
+
+## For Where
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`for_where` | Enabled | No | idiomatic | 3.0.0 
+
+`where` clauses are preferred over a single `if` inside a `for`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+for user in users where user.id == 1 { }
+>>>>>>> Split new rule up into two separate rules
 
 ```
 
@@ -22040,6 +22091,292 @@ let abc = 0
 let abc = 0
 }
 
+```
+
+</details>
+
+
+
+## Type Contents Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`type_contents_order` | Disabled | No | style | 3.0.0 
+
+Specifies the order of subtypes, properties, methods & more within a type.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+
+class TestViewController: UIViewController {
+    // Type Aliases
+    typealias CompletionHandler = ((TestEnum) -> Void)
+
+    // Subtypes
+    class TestClass {
+        // 10 lines
+    }
+
+    struct TestStruct {
+        // 3 lines
+    }
+
+    enum TestEnum {
+        // 5 lines
+    }
+
+    // Stored Type Properties
+    static let cellIdentifier: String = "AmazingCell"
+
+    // Stored Instance Properties
+    var shouldLayoutView1: Bool!
+    weak var delegate: TestViewControllerDelegate?
+    private var hasLayoutedView1: Bool = false
+    private var hasLayoutedView2: Bool = false
+
+    // Computed Instance Properties
+    private var hasAnyLayoutedView: Bool {
+         return hasLayoutedView1 || hasLayoutedView2
+    }
+
+    // IBOutlets
+    @IBOutlet private var view1: UIView!
+    @IBOutlet private var view2: UIView!
+
+    // Initializers
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // Type Methods
+    static func makeViewController() -> TestViewController {
+        // some code
+    }
+
+    // Life-Cycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view1.setNeedsLayout()
+        view1.layoutIfNeeded()
+        hasLayoutedView1 = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        view2.setNeedsLayout()
+        view2.layoutIfNeeded()
+        hasLayoutedView2 = true
+    }
+
+    // IBActions
+    @IBAction func goNextButtonPressed() {
+        goToNextVc()
+        delegate?.didPressTrackedButton()
+    }
+
+    @objc
+    func goToRandomVcButtonPressed() {
+        goToRandomVc()
+    }
+
+    // MARK: Other Methods
+    func goToNextVc() { /* TODO */ }
+
+    func goToInfoVc() { /* TODO */ }
+
+    func goToRandomVc() {
+        let viewCtrl = getRandomVc()
+        present(viewCtrl, animated: true)
+    }
+
+    private func getRandomVc() -> UIViewController { return UIViewController() }
+
+    // Subscripts
+    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+        get {
+            return "This is just a test"
+        }
+
+        set {
+            log.warning("Just a test", newValue)
+        }
+    }
+}
+
+// Extensions
+extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class TestViewController: UIViewController {
+    // Subtypes
+    class TestClass {
+        // 10 lines
+    }
+
+    // Type Aliases
+    typealias CompletionHandler = ((TestEnum) -> Void)
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Stored Type Properties
+    static let cellIdentifier: String = "AmazingCell"
+
+    // Subtypes
+    class TestClass {
+        // 10 lines
+    }
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Stored Instance Properties
+    var shouldLayoutView1: Bool!
+    weak var delegate: TestViewControllerDelegate?
+    private var hasLayoutedView1: Bool = false
+    private var hasLayoutedView2: Bool = false
+
+    // Stored Type Properties
+    static let cellIdentifier: String = "AmazingCell"
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Computed Instance Properties
+    private var hasAnyLayoutedView: Bool {
+         return hasLayoutedView1 || hasLayoutedView2
+    }
+
+    // Stored Instance Properties
+    var shouldLayoutView1: Bool!
+    weak var delegate: TestViewControllerDelegate?
+    private var hasLayoutedView1: Bool = false
+    private var hasLayoutedView2: Bool = false
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // IBOutlets
+    @IBOutlet private var view1: UIView!
+    @IBOutlet private var view2: UIView!
+
+    // Computed Instance Properties
+    private var hasAnyLayoutedView: Bool {
+         return hasLayoutedView1 || hasLayoutedView2
+    }
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Initializers
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    // IBOutlets
+    @IBOutlet private var view1: UIView!
+    @IBOutlet private var view2: UIView!
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Life-Cycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view1.setNeedsLayout()
+        view1.layoutIfNeeded()
+        hasLayoutedView1 = true
+    }
+
+    // Type Methods
+    static func makeViewController() -> TestViewController {
+        // some code
+    }
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // IBActions
+    @IBAction func goNextButtonPressed() {
+        goToNextVc()
+        delegate?.didPressTrackedButton()
+    }
+
+    // Life-Cycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view1.setNeedsLayout()
+        view1.layoutIfNeeded()
+        hasLayoutedView1 = true
+    }
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // MARK: Other Methods
+    func goToNextVc() { /* TODO */ }
+
+    // IBActions
+    @IBAction func goNextButtonPressed() {
+        goToNextVc()
+        delegate?.didPressTrackedButton()
+    }
+}
+```
+
+```swift
+class TestViewController: UIViewController {
+    // Subscripts
+    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+        get {
+            return "This is just a test"
+        }
+
+        set {
+            log.warning("Just a test", newValue)
+        }
+    }
+
+    // MARK: Other Methods
+    func goToNextVc() { /* TODO */ }
+}
 ```
 
 </details>

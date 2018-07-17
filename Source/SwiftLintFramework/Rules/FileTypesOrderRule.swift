@@ -172,7 +172,51 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return [] // TODO: not yet implemented
+        guard let mainTypeSubstructure = mainTypeSubstructure(in: file) else { return [] }
+
+        let extensionsSubstructures = self.extensionsSubstructures(
+            in: file,
+            mainTypeSubstructure: mainTypeSubstructure
+        )
+
+        let supportingTypesSubstructures = self.supportingTypesSubstructures(
+            in: file,
+            mainTypeSubstructure: mainTypeSubstructure
+        )
+
+        typealias FileTypeOffset = (fileType: FileType, offset: Int)
+
+        let mainTypeOffset: [FileTypeOffset] = [(FileType.mainType, mainTypeSubstructure.offset!)]
+        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.map { (FileType.extension, $0.offset!) }
+        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.map { (FileType.extension, $0.offset!) }
+
+        var orderedFileTypeOffsets = (mainTypeOffset + extensionOffsets + supportingTypeOffsets).sorted { lhs, rhs in
+            return lhs.offset < rhs.offset
+        }
+
+        for expectedTypes in FileType.defaultOrder {
+            while !orderedFileTypeOffsets.isEmpty && expectedTypes.contains(orderedFileTypeOffsets.first!.fileType) {
+                orderedFileTypeOffsets.removeFirst()
+            }
+        }
+
+        return orderedFileTypeOffsets.map {
+            StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: configuration.severity,
+                location: Location(file: file, byteOffset: $0.offset)
+            )
+        }
+    }
+
+    private func extensionsSubstructures(
+        in file: File,
+        mainTypeSubstructure: [String: SourceKitRepresentable]
+    ) -> [[String: SourceKitRepresentable]] {
+        return file.structure.dictionary.substructure.filter { substructure in
+            return substructure.bridge() != mainTypeSubstructure.bridge() &&
+                substructure.kind!.contains(SwiftDeclarationKind.extension.rawValue)
+        }
     }
 
     private func supportingTypesSubstructures(

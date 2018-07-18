@@ -8423,17 +8423,6 @@ protocol TestViewControllerDelegate {
 
 ↓class TestViewController: UIViewController {}
 
-// Extensions
-↓extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-
 // Supporting Types
 protocol TestViewControllerDelegate {
     func didPressTrackedButton()
@@ -22192,16 +22181,15 @@ class TestViewController: UIViewController {
         // 5 lines
     }
 
-    // Stored Type Properties
+    // Type Properties
     static let cellIdentifier: String = "AmazingCell"
 
-    // Stored Instance Properties
+    // Instance Properties
     var shouldLayoutView1: Bool!
     weak var delegate: TestViewControllerDelegate?
     private var hasLayoutedView1: Bool = false
     private var hasLayoutedView2: Bool = false
 
-    // Computed Instance Properties
     private var hasAnyLayoutedView: Bool {
          return hasLayoutedView1 || hasLayoutedView2
     }
@@ -22224,7 +22212,7 @@ class TestViewController: UIViewController {
         // some code
     }
 
-    // Life-Cycle Methods
+    // View Life-Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22247,12 +22235,7 @@ class TestViewController: UIViewController {
         delegate?.didPressTrackedButton()
     }
 
-    @objc
-    func goToRandomVcButtonPressed() {
-        goToRandomVc()
-    }
-
-    // MARK: Other Methods
+    // Other Methods
     func goToNextVc() { /* TODO */ }
 
     func goToInfoVc() { /* TODO */ }
@@ -22295,7 +22278,7 @@ extension TestViewController: UITableViewDataSource {
 ```swift
 class TestViewController: UIViewController {
     // Subtypes
-    class TestClass {
+    ↓class TestClass {
         // 10 lines
     }
 
@@ -22307,7 +22290,7 @@ class TestViewController: UIViewController {
 ```swift
 class TestViewController: UIViewController {
     // Stored Type Properties
-    static let cellIdentifier: String = "AmazingCell"
+    ↓static let cellIdentifier: String = "AmazingCell"
 
     // Subtypes
     class TestClass {
@@ -22319,10 +22302,7 @@ class TestViewController: UIViewController {
 ```swift
 class TestViewController: UIViewController {
     // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
+    ↓var shouldLayoutView1: Bool!
 
     // Stored Type Properties
     static let cellIdentifier: String = "AmazingCell"
@@ -22331,24 +22311,8 @@ class TestViewController: UIViewController {
 
 ```swift
 class TestViewController: UIViewController {
-    // Computed Instance Properties
-    private var hasAnyLayoutedView: Bool {
-         return hasLayoutedView1 || hasLayoutedView2
-    }
-
-    // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
-}
-```
-
-```swift
-class TestViewController: UIViewController {
     // IBOutlets
-    @IBOutlet private var view1: UIView!
-    @IBOutlet private var view2: UIView!
+    ↓@IBOutlet private var view1: UIView!
 
     // Computed Instance Properties
     private var hasAnyLayoutedView: Bool {
@@ -22360,7 +22324,7 @@ class TestViewController: UIViewController {
 ```swift
 class TestViewController: UIViewController {
     // Initializers
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    ↓override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
@@ -22372,8 +22336,8 @@ class TestViewController: UIViewController {
 
 ```swift
 class TestViewController: UIViewController {
-    // Life-Cycle Methods
-    override func viewDidLoad() {
+    // View Life-Cycle Methods
+    ↓override func viewDidLoad() {
         super.viewDidLoad()
 
         view1.setNeedsLayout()
@@ -22391,12 +22355,12 @@ class TestViewController: UIViewController {
 ```swift
 class TestViewController: UIViewController {
     // IBActions
-    @IBAction func goNextButtonPressed() {
+    ↓@IBAction func goNextButtonPressed() {
         goToNextVc()
         delegate?.didPressTrackedButton()
     }
 
-    // Life-Cycle Methods
+    // View Life-Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22409,8 +22373,8 @@ class TestViewController: UIViewController {
 
 ```swift
 class TestViewController: UIViewController {
-    // MARK: Other Methods
-    func goToNextVc() { /* TODO */ }
+    // Other Methods
+    ↓func goToNextVc() { /* TODO */ }
 
     // IBActions
     @IBAction func goNextButtonPressed() {
@@ -22423,7 +22387,7 @@ class TestViewController: UIViewController {
 ```swift
 class TestViewController: UIViewController {
     // Subscripts
-    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+    ↓subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
         get {
             return "This is just a test"
         }

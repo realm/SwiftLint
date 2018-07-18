@@ -1,18 +1,19 @@
 import Foundation
 import SourceKittenFramework
 
+// swiftlint:disable file_length
+
 enum TypeContent {
     case `case`
     case typeAlias
+    case associatedType
     case subtype
-    case storedTypeProperty
-    case computedTypeProperty
-    case storedInstanceProperty
-    case computedInstanceProperty
+    case typeProperty
+    case instanceProperty
     case ibOutlet
     case initializer
     case typeMethod
-    case lifeCycleMethod
+    case viewLifeCycleMethod
     case ibAction
     case otherMethod
     case `subscript`
@@ -20,16 +21,14 @@ enum TypeContent {
     static var defaultOrder: [[TypeContent]] {
         return [
             [.case],
-            [.typeAlias],
+            [.typeAlias, .associatedType],
             [.subtype],
-            [.storedTypeProperty],
-            [.computedTypeProperty],
-            [.storedInstanceProperty],
-            [.computedInstanceProperty],
+            [.typeProperty],
+            [.instanceProperty],
             [.ibOutlet],
             [.initializer],
             [.typeMethod],
-            [.lifeCycleMethod],
+            [.viewLifeCycleMethod],
             [.ibAction],
             [.otherMethod],
             [.subscript]
@@ -37,6 +36,7 @@ enum TypeContent {
     }
 }
 
+// swiftlint:disable:next type_body_length
 public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: Int)
 
@@ -76,16 +76,15 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                     // 5 lines
                 }
 
-                // Stored Type Properties
+                // Type Properties
                 static let cellIdentifier: String = "AmazingCell"
 
-                // Stored Instance Properties
+                // Instance Properties
                 var shouldLayoutView1: Bool!
                 weak var delegate: TestViewControllerDelegate?
                 private var hasLayoutedView1: Bool = false
                 private var hasLayoutedView2: Bool = false
 
-                // Computed Instance Properties
                 private var hasAnyLayoutedView: Bool {
                      return hasLayoutedView1 || hasLayoutedView2
                 }
@@ -108,7 +107,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                     // some code
                 }
 
-                // Life-Cycle Methods
+                // View Life-Cycle Methods
                 override func viewDidLoad() {
                     super.viewDidLoad()
 
@@ -131,12 +130,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                     delegate?.didPressTrackedButton()
                 }
 
-                @objc
-                func goToRandomVcButtonPressed() {
-                    goToRandomVc()
-                }
-
-                // MARK: Other Methods
+                // Other Methods
                 func goToNextVc() { /* TODO */ }
 
                 func goToInfoVc() { /* TODO */ }
@@ -176,7 +170,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Subtypes
-                class TestClass {
+                ↓class TestClass {
                     // 10 lines
                 }
 
@@ -187,7 +181,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Stored Type Properties
-                static let cellIdentifier: String = "AmazingCell"
+                ↓static let cellIdentifier: String = "AmazingCell"
 
                 // Subtypes
                 class TestClass {
@@ -198,10 +192,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Stored Instance Properties
-                var shouldLayoutView1: Bool!
-                weak var delegate: TestViewControllerDelegate?
-                private var hasLayoutedView1: Bool = false
-                private var hasLayoutedView2: Bool = false
+                ↓var shouldLayoutView1: Bool!
 
                 // Stored Type Properties
                 static let cellIdentifier: String = "AmazingCell"
@@ -209,23 +200,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """,
             """
             class TestViewController: UIViewController {
-                // Computed Instance Properties
-                private var hasAnyLayoutedView: Bool {
-                     return hasLayoutedView1 || hasLayoutedView2
-                }
-
-                // Stored Instance Properties
-                var shouldLayoutView1: Bool!
-                weak var delegate: TestViewControllerDelegate?
-                private var hasLayoutedView1: Bool = false
-                private var hasLayoutedView2: Bool = false
-            }
-            """,
-            """
-            class TestViewController: UIViewController {
                 // IBOutlets
-                @IBOutlet private var view1: UIView!
-                @IBOutlet private var view2: UIView!
+                ↓@IBOutlet private var view1: UIView!
 
                 // Computed Instance Properties
                 private var hasAnyLayoutedView: Bool {
@@ -236,7 +212,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Initializers
-                override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+                ↓override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
                 }
 
@@ -247,8 +223,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """,
             """
             class TestViewController: UIViewController {
-                // Life-Cycle Methods
-                override func viewDidLoad() {
+                // View Life-Cycle Methods
+                ↓override func viewDidLoad() {
                     super.viewDidLoad()
 
                     view1.setNeedsLayout()
@@ -265,12 +241,12 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // IBActions
-                @IBAction func goNextButtonPressed() {
+                ↓@IBAction func goNextButtonPressed() {
                     goToNextVc()
                     delegate?.didPressTrackedButton()
                 }
 
-                // Life-Cycle Methods
+                // View Life-Cycle Methods
                 override func viewDidLoad() {
                     super.viewDidLoad()
 
@@ -282,8 +258,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """,
             """
             class TestViewController: UIViewController {
-                // MARK: Other Methods
-                func goToNextVc() { /* TODO */ }
+                // Other Methods
+                ↓func goToNextVc() { /* TODO */ }
 
                 // IBActions
                 @IBAction func goNextButtonPressed() {
@@ -295,7 +271,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Subscripts
-                subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+                ↓subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
                     get {
                         return "This is just a test"
                     }
@@ -323,7 +299,8 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
         _ substructure: [String: SourceKitRepresentable],
         in file: File
     ) -> [StyleViolation] {
-        let orderedTypeContentOffsets = [TypeContentOffset]().sorted { lhs, rhs in lhs.offset < rhs.offset } // TODO: not yet implemented
+        let typeContentOffsets = self.typeContentOffsets(in: substructure)
+        let orderedTypeContentOffsets = typeContentOffsets.sorted { lhs, rhs in lhs.offset < rhs.offset }
 
         var violations =  [StyleViolation]()
 
@@ -354,5 +331,73 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
         }
 
         return violations
+    }
+
+    private func typeContentOffsets(in typeStructure: [String: SourceKitRepresentable]) -> [TypeContentOffset] {
+        return typeStructure.substructure.compactMap { typeContentStructure in
+            guard let typeContent = self.typeContent(for: typeContentStructure) else { return nil }
+            return (typeContent, typeContentStructure.offset!)
+        }
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    private func typeContent(for typeContentStructure: [String: SourceKitRepresentable]) -> TypeContent? {
+        guard let typeContentKind = SwiftDeclarationKind(rawValue: typeContentStructure.kind!) else { return nil }
+
+        switch typeContentKind {
+        case .enumcase, .enumelement:
+            return .case
+
+        case .typealias:
+            return .typeAlias
+
+        case .associatedtype:
+            return .associatedType
+
+        case .class, .enum, .extension, .protocol, .struct:
+            return .subtype
+
+        case .varClass, .varStatic:
+            return .typeProperty
+
+        case .varInstance:
+            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.iboutlet) {
+                return .ibOutlet
+            } else {
+                return .instanceProperty
+            }
+
+        case .functionMethodClass, .functionMethodStatic:
+            return .typeMethod
+
+        case .functionMethodInstance:
+            let viewLifecycleMethodNames = [
+                "loadView(",
+                "loadViewIfNeeded(",
+                "viewDidLoad(",
+                "viewWillAppear(",
+                "viewWillLayoutSubviews(",
+                "viewDidLayoutSubviews(",
+                "viewDidAppear(",
+                "viewWillDisappear(",
+                "viewDidDisappear("
+            ]
+
+            if typeContentStructure.name!.starts(with: "init") || typeContentStructure.name!.starts(with: "deinit") {
+                return .initializer
+            } else if viewLifecycleMethodNames.contains(where: { typeContentStructure.name!.starts(with: $0) }) {
+                return .viewLifeCycleMethod
+            } else if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.ibaction) {
+                return .ibAction
+            } else {
+                return .otherMethod
+            }
+
+        case .functionSubscript:
+            return .subscript
+
+        default:
+            return nil
+        }
     }
 }

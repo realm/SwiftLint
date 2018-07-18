@@ -1,10 +1,10 @@
 import Foundation
 import SourceKittenFramework
 
-private enum FileType {
-    case supportingType
-    case mainType
-    case `extension`
+private enum FileType: String {
+    case supportingType = "supporting_type"
+    case mainType = "main_type"
+    case `extension` = "extension"
 
     static var defaultOrder: [[FileType]] {
         return [
@@ -15,8 +15,14 @@ private enum FileType {
     }
 }
 
+// swiftlint:disable:next type_body_length
 public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
+    private typealias FileTypeOffset = (fileType: FileType, offset: Int)
+
     public var configuration = SeverityConfiguration(.warning)
+    private var expectedOrder: [[FileType]] {
+        return FileType.defaultOrder // TODO: not yet configurable
+    }
 
     public init() {}
 
@@ -147,7 +153,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         ],
         triggeringExamples: [
             """
-            class TestViewController: UIViewController {}
+            ↓class TestViewController: UIViewController {}
 
             // Supporting Types
             protocol TestViewControllerDelegate {
@@ -156,7 +162,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             """,
             """
             // Extensions
-            extension TestViewController: UITableViewDataSource {
+            ↓extension TestViewController: UITableViewDataSource {
                 func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
                     return 1
                 }
@@ -167,6 +173,60 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             }
 
             class TestViewController: UIViewController {}
+            """,
+            """
+            // Supporting Types
+            protocol TestViewControllerDelegate {
+                func didPressTrackedButton()
+            }
+
+            ↓class TestViewController: UIViewController {}
+
+            // Extensions
+            ↓extension TestViewController: UITableViewDataSource {
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return 1
+                }
+
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    return UITableViewCell()
+                }
+            }
+
+            // Supporting Types
+            protocol TestViewControllerDelegate {
+                func didPressTrackedButton()
+            }
+            """,
+            """
+            // Supporting Types
+            protocol TestViewControllerDelegate {
+                func didPressTrackedButton()
+            }
+
+            // Extensions
+            ↓extension TestViewController: UITableViewDataSource {
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return 1
+                }
+
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    return UITableViewCell()
+                }
+            }
+
+            class TestViewController: UIViewController {}
+
+            // Extensions
+            extension TestViewController: UITableViewDataSource {
+                func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+                    return 1
+                }
+
+                func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                    return UITableViewCell()
+                }
+            }
             """
         ]
     )
@@ -184,29 +244,43 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        typealias FileTypeOffset = (fileType: FileType, offset: Int)
-
-        let mainTypeOffset: [FileTypeOffset] = [(FileType.mainType, mainTypeSubstructure.offset!)]
-        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.map { (FileType.extension, $0.offset!) }
-        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.map { (FileType.extension, $0.offset!) }
+        let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstructure.offset!)]
+        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.map { (.extension, $0.offset!) }
+        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.map { (.supportingType, $0.offset!) }
 
         var orderedFileTypeOffsets = (mainTypeOffset + extensionOffsets + supportingTypeOffsets).sorted { lhs, rhs in
             return lhs.offset < rhs.offset
         }
 
-        for expectedTypes in FileType.defaultOrder {
-            while !orderedFileTypeOffsets.isEmpty && expectedTypes.contains(orderedFileTypeOffsets.first!.fileType) {
-                orderedFileTypeOffsets.removeFirst()
+        var violations =  [StyleViolation]()
+
+        var lastMatchingIndex = -1
+        for expectedTypes in expectedOrder {
+            var potentialViolatingIndexes = [Int]()
+
+            let startIndex = lastMatchingIndex + 1
+            (startIndex..<orderedFileTypeOffsets.count).forEach { index in
+                let fileType = orderedFileTypeOffsets[index].fileType
+                if expectedTypes.contains(fileType) {
+                    lastMatchingIndex = index
+                } else {
+                    potentialViolatingIndexes.append(index)
+                }
+            }
+
+            let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
+            violatingIndexes.forEach { index in
+                let fileTypeOffset = orderedFileTypeOffsets[index]
+                let styleViolation = StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: fileTypeOffset.offset)
+                )
+                violations.append(styleViolation)
             }
         }
 
-        return orderedFileTypeOffsets.map {
-            StyleViolation(
-                ruleDescription: type(of: self).description,
-                severity: configuration.severity,
-                location: Location(file: file, byteOffset: $0.offset)
-            )
-        }
+        return violations
     }
 
     private func extensionsSubstructures(

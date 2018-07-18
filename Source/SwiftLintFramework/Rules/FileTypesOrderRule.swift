@@ -248,7 +248,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.map { (.extension, $0.offset!) }
         let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.map { (.supportingType, $0.offset!) }
 
-        var orderedFileTypeOffsets = (mainTypeOffset + extensionOffsets + supportingTypeOffsets).sorted { lhs, rhs in
+        let orderedFileTypeOffsets = (mainTypeOffset + extensionOffsets + supportingTypeOffsets).sorted { lhs, rhs in
             return lhs.offset < rhs.offset
         }
 

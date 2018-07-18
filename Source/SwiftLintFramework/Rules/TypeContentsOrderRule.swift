@@ -37,9 +37,13 @@ enum TypeContent {
     }
 }
 
-// swiftlint:disable:next type_body_length
 public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+    private typealias TypeContentOffset = (typeContent: TypeContent, offset: Int)
+
     public var configuration = SeverityConfiguration(.warning)
+    private var expectedOrder: [[TypeContent]] {
+        return TypeContent.defaultOrder // TODO: not yet configurable
+    }
 
     public init() {}
 
@@ -311,11 +315,44 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
     public func validate(file: File) -> [StyleViolation] {
         let substructures = file.structure.dictionary.substructure
         return substructures.reduce([StyleViolation]()) { violations, substructure -> [StyleViolation] in
-            return violations + validateTypeSubstructure(substructure)
+            return violations + validateTypeSubstructure(substructure, in: file)
         }
     }
 
-    private func validateTypeSubstructure(_ substructure: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return [] // TODO: not yet implemented
+    private func validateTypeSubstructure(
+        _ substructure: [String: SourceKitRepresentable],
+        in file: File
+    ) -> [StyleViolation] {
+        let orderedTypeContentOffsets = [TypeContentOffset]().sorted { lhs, rhs in lhs.offset < rhs.offset } // TODO: not yet implemented
+
+        var violations =  [StyleViolation]()
+
+        var lastMatchingIndex = -1
+        for expectedTypes in expectedOrder {
+            var potentialViolatingIndexes = [Int]()
+
+            let startIndex = lastMatchingIndex + 1
+            (startIndex..<orderedTypeContentOffsets.count).forEach { index in
+                let typeContent = orderedTypeContentOffsets[index].typeContent
+                if expectedTypes.contains(typeContent) {
+                    lastMatchingIndex = index
+                } else {
+                    potentialViolatingIndexes.append(index)
+                }
+            }
+
+            let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
+            violatingIndexes.forEach { index in
+                let typeContentOffset = orderedTypeContentOffsets[index]
+                let styleViolation = StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: typeContentOffset.offset)
+                )
+                violations.append(styleViolation)
+            }
+        }
+
+        return violations
     }
 }

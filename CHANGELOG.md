@@ -654,6 +654,15 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 * Add options `prefix_pattern` and `suffix_pattern` to rule `file_name`.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2309](https://github.com/realm/SwiftLint/issues/2309)
+* Add new opt-in rule `file_types_order` to specify how the types in a file
+  should be sorted.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
+
+* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
+  properties, methods & more within a type.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 * Add new bool config option `if_only` to rule `conditional_returns_on_newline`
   to specify that the rule should only be applied to `if` statements.  

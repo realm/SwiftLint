@@ -1,6 +1,7 @@
 
 # Rules
 
+* [AnyObject Protocol](#anyobject-protocol)
 * [Array Init](#array-init)
 * [Attributes](#attributes)
 * [Block Based KVO](#block-based-kvo)
@@ -138,6 +139,62 @@
 * [XCTFail Message](#xctfail-message)
 * [Yoda condition rule](#yoda-condition-rule)
 --------
+
+## AnyObject Protocol
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`anyobject_protocol` | Disabled | Yes | lint | 4.1.0 
+
+Prefer using `AnyObject` over `class` for class-only protocols.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+protocol SomeProtocol {}
+
+```
+
+```swift
+protocol SomeClassOnlyProtocol: AnyObject {}
+
+```
+
+```swift
+protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}
+
+```
+
+```swift
+@objc protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {}
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+protocol SomeClassOnlyProtocol: ↓class {}
+
+```
+
+```swift
+protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}
+
+```
+
+```swift
+@objc protocol SomeClassOnlyProtocol: ↓class, SomeInheritedProtocol {}
+
+```
+
+</details>
+
+
 
 ## Array Init
 

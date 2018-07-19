@@ -267,13 +267,13 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
         var violations =  [StyleViolation]()
 
         var lastMatchingIndex = -1
-        for expectedTypes in configuration.order {
+        for expectedTypesContents in configuration.order {
             var potentialViolatingIndexes = [Int]()
 
             let startIndex = lastMatchingIndex + 1
             (startIndex..<orderedTypeContentOffsets.count).forEach { index in
                 let typeContent = orderedTypeContentOffsets[index].typeContent
-                if expectedTypes.contains(typeContent) {
+                if expectedTypesContents.contains(typeContent) {
                     lastMatchingIndex = index
                 } else {
                     potentialViolatingIndexes.append(index)
@@ -283,10 +283,16 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
             violatingIndexes.forEach { index in
                 let typeContentOffset = orderedTypeContentOffsets[index]
+
+                let content = typeContentOffset.typeContent.rawValue
+                let expectedContents = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
+                let reason = "A '\(content)' should not be placed amongst the type content(s) '\(expectedContents)'."
+
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, characterOffset: typeContentOffset.offset)
+                    location: Location(file: file, characterOffset: typeContentOffset.offset),
+                    reason: reason
                 )
                 violations.append(styleViolation)
             }

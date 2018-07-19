@@ -243,10 +243,16 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
             let violatingIndexes = potentialViolatingIndexes.filter { $0 < lastMatchingIndex }
             violatingIndexes.forEach { index in
                 let fileTypeOffset = orderedFileTypeOffsets[index]
+
+                let fileType = fileTypeOffset.fileType.rawValue
+                let expectedFileTypes = expectedTypes.map { $0.rawValue }.joined(separator: ",")
+                let reason = "A '\(fileType)' should not be placed amongst the file type(s) '\(expectedFileTypes)'."
+
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, characterOffset: fileTypeOffset.offset)
+                    location: Location(file: file, characterOffset: fileTypeOffset.offset),
+                    reason: reason
                 )
                 violations.append(styleViolation)
             }

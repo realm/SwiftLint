@@ -144,4 +144,24 @@ class ModifierOrderTests: XCTestCase {
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "final"]])
     }
+    func testViolationMessage() {
+
+        guard SwiftVersion.current >= .fourDotOne else {
+            return
+        }
+
+        let ruleID = ModifierOrderRule.description.identifier
+        guard let config = makeConfig(["preferred_modifier_order": ["acl", "final"]], ruleID) else {
+            XCTFail("Failed to create configuration")
+            return
+        }
+
+        let allViolations = violations("final public var foo: String", config: config)
+        let modifierOrderRuleViolation = allViolations.first { $0.ruleDescription.identifier == ruleID }
+        if let violation = modifierOrderRuleViolation {
+            XCTAssertEqual(violation.reason, "public modifier should be before final.")
+        } else {
+            XCTFail("A modifier order violation should have been triggered!")
+        }
+    }
 }

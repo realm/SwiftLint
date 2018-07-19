@@ -38,6 +38,8 @@ public extension SwiftVersion {
         let file = File(contents: """
             #if swift(>=4.2.0)
                 let version = "4.2.0"
+            #elseif swift(>=4.1.50)
+                let version = "4.1.50"
             #elseif swift(>=4.1.2)
                 let version = "4.1.2"
             #elseif swift(>=4.1.1)

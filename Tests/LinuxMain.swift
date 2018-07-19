@@ -534,6 +534,7 @@ extension RulesTests {
         ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
         ("testRedundantSetAccessControl", testRedundantSetAccessControl),
         ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+        ("testRedundantTypeAnnotation", testRedundantTypeAnnotation),
         ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testReturnArrowWhitespace", testReturnArrowWhitespace),

@@ -1,28 +1,11 @@
 import Foundation
 import SourceKittenFramework
 
-private enum FileType: String {
-    case supportingType = "supporting_type"
-    case mainType = "main_type"
-    case `extension` = "extension"
-
-    static var defaultOrder: [[FileType]] {
-        return [
-            [.supportingType],
-            [.mainType],
-            [.extension]
-        ]
-    }
-}
-
 // swiftlint:disable:next type_body_length
 public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias FileTypeOffset = (fileType: FileType, offset: Int)
 
-    public var configuration = SeverityConfiguration(.warning)
-    private var expectedOrder: [[FileType]] {
-        return FileType.defaultOrder // TODO: not yet configurable
-    }
+    public var configuration = FileTypesOrderConfiguration()
 
     public init() {}
 
@@ -244,7 +227,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         var violations =  [StyleViolation]()
 
         var lastMatchingIndex = -1
-        for expectedTypes in expectedOrder {
+        for expectedTypes in configuration.order {
             var potentialViolatingIndexes = [Int]()
 
             let startIndex = lastMatchingIndex + 1
@@ -262,7 +245,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                 let fileTypeOffset = orderedFileTypeOffsets[index]
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
+                    severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, characterOffset: fileTypeOffset.offset)
                 )
                 violations.append(styleViolation)

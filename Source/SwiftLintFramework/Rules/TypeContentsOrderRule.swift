@@ -1,49 +1,11 @@
 import Foundation
 import SourceKittenFramework
 
-// swiftlint:disable file_length
-
-enum TypeContent {
-    case `case`
-    case typeAlias
-    case associatedType
-    case subtype
-    case typeProperty
-    case instanceProperty
-    case ibOutlet
-    case initializer
-    case typeMethod
-    case viewLifeCycleMethod
-    case ibAction
-    case otherMethod
-    case `subscript`
-
-    static var defaultOrder: [[TypeContent]] {
-        return [
-            [.case],
-            [.typeAlias, .associatedType],
-            [.subtype],
-            [.typeProperty],
-            [.instanceProperty],
-            [.ibOutlet],
-            [.initializer],
-            [.typeMethod],
-            [.viewLifeCycleMethod],
-            [.ibAction],
-            [.otherMethod],
-            [.subscript]
-        ]
-    }
-}
-
 // swiftlint:disable:next type_body_length
 public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: Int)
 
-    public var configuration = SeverityConfiguration(.warning)
-    private var expectedOrder: [[TypeContent]] {
-        return TypeContent.defaultOrder // TODO: not yet configurable
-    }
+    public var configuration = TypeContentsOrderConfiguration()
 
     public init() {}
 
@@ -305,7 +267,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
         var violations =  [StyleViolation]()
 
         var lastMatchingIndex = -1
-        for expectedTypes in expectedOrder {
+        for expectedTypes in configuration.order {
             var potentialViolatingIndexes = [Int]()
 
             let startIndex = lastMatchingIndex + 1
@@ -323,7 +285,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                 let typeContentOffset = orderedTypeContentOffsets[index]
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
+                    severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, characterOffset: typeContentOffset.offset)
                 )
                 violations.append(styleViolation)

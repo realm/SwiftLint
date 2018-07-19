@@ -102,6 +102,7 @@
 * [Redundant Optional Initialization](#redundant-optional-initialization)
 * [Redundant Set Access Control Rule](#redundant-set-access-control-rule)
 * [Redundant String Enum Value](#redundant-string-enum-value)
+* [Redundant Type Annotation](#redundant-type-annotation)
 * [Redundant Void Return](#redundant-void-return)
 * [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
@@ -13374,6 +13375,59 @@ enum Numbers: String {
  case one, two = ↓"two"
 }
 
+```
+
+</details>
+
+
+
+## Redundant Type Annotation
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`redundant_type_annotation` | Disabled | Yes | idiomatic | 3.0.0 
+
+Variables should not have redundant type annotation
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+var url = URL()
+```
+
+```swift
+var url: CustomStringConvertible = URL()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓var url:URL=URL()
+```
+
+```swift
+↓var url:URL = URL(string: "")
+```
+
+```swift
+↓var url: URL = URL()
+```
+
+```swift
+↓let url: URL = URL()
+```
+
+```swift
+lazy ↓var url: URL = URL()
+```
+
+```swift
+↓let alphanumerics: CharacterSet = CharacterSet.alphanumerics
 ```
 
 </details>

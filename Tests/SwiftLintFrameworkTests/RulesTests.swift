@@ -358,6 +358,10 @@ class RulesTests: XCTestCase {
         verifyRule(RedundantStringEnumValueRule.description)
     }
 
+    func testRedundantTypeAnnotation() {
+        verifyRule(RedundantTypeAnnotationRule.description)
+    }
+
     func testRedundantVoidReturn() {
         verifyRule(RedundantVoidReturnRule.description)
     }

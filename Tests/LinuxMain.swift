@@ -321,7 +321,8 @@ extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
         ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
-        ("testAtPrefixedGroup", testAtPrefixedGroup)
+        ("testAtPrefixedGroup", testAtPrefixedGroup),
+        ("testViolationMessage", testViolationMessage)
     ]
 }
 

@@ -144,9 +144,9 @@ class ModifierOrderTests: XCTestCase {
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "final"]])
     }
-    func testViolationMessage() {
 
-        guard SwiftVersion.current >= .fourDotOne else {
+    func testViolationMessage() {
+        guard SwiftVersion.current >= ModifierOrderRule.description.minSwiftVersion else {
             return
         }
 

@@ -1,4 +1,15 @@
+import Foundation
 import SourceKittenFramework
+
+fileprivate extension String {
+    // Safely index string
+    subscript (safe index: String.Index?) -> Element? {
+        guard let index = index else {
+            return nil
+        }
+        return self.indices.contains(index) ? self[index] : nil
+    }
+}
 
 public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestableRule, CorrectableRule {
 
@@ -105,11 +116,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                     // After last paren
                     let indexAfter = correctedContents.index(lastParenIndex, offsetBy: 1,
                                                              limitedBy: correctedContents.endIndex)
-                    var nextChar: Character? = nil
-                    if let after = indexAfter {
-                        nextChar = correctedContents[after]
-                    }
-                    if nextChar == " " {
+                    if correctedContents[safe: indexAfter] == " " {
                         // Remove paren
                         correctedContents.remove(at: lastParenIndex)
                     } else {
@@ -120,11 +127,7 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                     // Before first paren
                     let indexBefore = correctedContents.index(firstParenIndex, offsetBy: -1,
                                                               limitedBy: correctedContents.startIndex)
-                    var prevChar: Character? = nil
-                    if let before = indexBefore {
-                        prevChar = correctedContents[before]
-                    }
-                    if prevChar == " " {
+                    if correctedContents[safe: indexBefore] == " " {
                         // Remove paren
                         correctedContents.remove(at: firstParenIndex)
                     } else {

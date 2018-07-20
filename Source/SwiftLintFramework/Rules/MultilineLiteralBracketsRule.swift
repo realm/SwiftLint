@@ -7,7 +7,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "multiline_literal_indentation",
+        identifier: "multiline_literal_brackets",
         name: "Multiline Literal Brackets",
         description: "Multiline literals should have their surrounding brackets in a new line.",
         kind: .style,

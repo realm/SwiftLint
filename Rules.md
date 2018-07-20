@@ -11280,6 +11280,14 @@ let houseCup = [
     "ravenclaw": 410, "slytherin": 450↓]
 ```
 
+```swift
+class Hogwarts {
+    let houseCup = [
+        "gryffinder": 460, "hufflepuff": 370,
+        "ravenclaw": 410, "slytherin": 450↓]
+}
+```
+
 </details>
 
 

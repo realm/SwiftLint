@@ -61,6 +61,13 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
             let houseCup = [
                 "gryffinder": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450↓]
+            """,
+            """
+            class Hogwarts {
+                let houseCup = [
+                    "gryffinder": 460, "hufflepuff": 370,
+                    "ravenclaw": 410, "slytherin": 450↓]
+            }
             """
         ]
     )
@@ -70,6 +77,31 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         kind: SwiftExpressionKind,
         dictionary: [String: SourceKitRepresentable]
     ) -> [StyleViolation] {
-        return [] // TODO: not yet implemented
+        var violations = [StyleViolation]()
+
+        if kind == .array || kind == .dictionary {
+            let body = file.contents.substring(from: dictionary.bodyOffset!, length: dictionary.bodyLength!)
+            let isMultiline = body.contains("\n")
+
+            if isMultiline {
+                if !body.hasPrefix("\n") {
+                    violations.append(StyleViolation(
+                        ruleDescription: type(of: self).description,
+                        severity: configuration.severity,
+                        location: Location(file: file, byteOffset: dictionary.bodyOffset!)
+                    ))
+                }
+
+                if !body.hasSuffix("\n") {
+                    violations.append(StyleViolation(
+                        ruleDescription: type(of: self).description,
+                        severity: configuration.severity,
+                        location: Location(file: file, byteOffset: dictionary.bodyOffset! + dictionary.bodyLength!)
+                    ))
+                }
+            }
+        }
+
+        return violations
     }
 }

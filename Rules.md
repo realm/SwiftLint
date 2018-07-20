@@ -78,6 +78,7 @@
 * [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
 * [Multiline Function Chains](#multiline-function-chains)
+* [Multiline Literal Brackets](#multiline-literal-brackets)
 * [Multiline Parameters](#multiline-parameters)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
@@ -11201,6 +11202,82 @@ let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
 a.b {
 //  ““
 }↓.e()
+```
+
+</details>
+
+
+
+## Multiline Literal Brackets
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`multiline_literal_indentation` | Disabled | No | style | 3.0.0 
+
+Multiline literals should have their surrounding brackets in a new line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let trio = ["harry", "ronald", "hermione"]
+let houseCup = ["gryffinder": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
+```
+
+```swift
+let trio = [
+    "harry",
+    "ronald",
+    "hermione"
+]
+let houseCup = [
+    "gryffinder": 460,
+    "hufflepuff": 370,
+    "ravenclaw": 410,
+    "slytherin": 450
+]
+```
+
+```swift
+let trio = [
+    "harry", "ronald", "hermione"
+]
+let houseCup = [
+    "gryffinder": 460, "hufflepuff": 370,
+    "ravenclaw": 410, "slytherin": 450
+]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let trio = [↓"harry",
+            "ronald",
+            "hermione"
+]
+```
+
+```swift
+let houseCup = [↓"gryffinder": 460, "hufflepuff": 370,
+                "ravenclaw": 410, "slytherin": 450
+]
+```
+
+```swift
+let trio = [
+    "harry",
+    "ronald",
+    "hermione"↓]
+```
+
+```swift
+let houseCup = [
+    "gryffinder": 460, "hufflepuff": 370,
+    "ravenclaw": 410, "slytherin": 450↓]
 ```
 
 </details>

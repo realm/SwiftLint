@@ -1814,7 +1814,7 @@ let first = myList.first { $0 % 2 == 0 }
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`control_statement` | Enabled | No | style | 3.0.0 
+`control_statement` | Enabled | Yes | style | 3.0.0 
 
 `if`, `for`, `guard`, `switch`, `while`, and `catch` statements shouldn't unnecessarily wrap their conditionals or arguments in parentheses.
 

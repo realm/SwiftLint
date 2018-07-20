@@ -163,7 +163,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // IBOutlets
-                ↓@IBOutlet private var view1: UIView!
+                @IBOutlet private ↓var view1: UIView!
 
                 // Computed Instance Properties
                 private var hasAnyLayoutedView: Bool {
@@ -174,7 +174,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // Initializers
-                ↓override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+                override ↓init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
                 }
 
@@ -186,7 +186,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // View Life-Cycle Methods
-                ↓override func viewDidLoad() {
+                override ↓func viewDidLoad() {
                     super.viewDidLoad()
 
                     view1.setNeedsLayout()
@@ -203,7 +203,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             """
             class TestViewController: UIViewController {
                 // IBActions
-                ↓@IBAction func goNextButtonPressed() {
+                @IBAction ↓func goNextButtonPressed() {
                     goToNextVc()
                     delegate?.didPressTrackedButton()
                 }

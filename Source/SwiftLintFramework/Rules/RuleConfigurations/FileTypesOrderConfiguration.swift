@@ -25,7 +25,7 @@ public struct FileTypesOrderConfiguration: RuleConfiguration, Equatable {
         }
 
         var customOrder = [[FileType]]()
-        if let custom = configuration["custom"] as? [Any] {
+        if let custom = configuration["order"] as? [Any] {
             for entry in custom {
                 if let singleEntry = entry as? String {
                     if let fileType = FileType(rawValue: singleEntry) {

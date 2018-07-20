@@ -275,9 +275,13 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         in file: File,
         mainTypeSubstructure: [String: SourceKitRepresentable]
     ) -> [[String: SourceKitRepresentable]] {
+        var supportingTypeKinds = SwiftDeclarationKind.typeKinds
+        supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
+
         return file.structure.dictionary.substructure.filter { substructure in
+            guard let declarationKind = SwiftDeclarationKind(rawValue: substructure.kind!) else { return false }
             return substructure.bridge() != mainTypeSubstructure.bridge() &&
-                !substructure.kind!.contains(SwiftDeclarationKind.extension.rawValue)
+                supportingTypeKinds.contains(declarationKind)
         }
     }
 

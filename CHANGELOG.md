@@ -267,6 +267,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   [Cihat Gündüz](https://github.com/Dschee)
   [#2309](https://github.com/realm/SwiftLint/issues/2309)
 * Add new rule `vertical_whitespace_between_cases` to warn against crowded
+
 * Add new opt-in rule `vertical_whitespace_between_cases` to warn against crowded
   switch case cases.  
   [Cihat Gündüz](https://github.com/Dschee)

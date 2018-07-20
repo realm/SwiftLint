@@ -27,6 +27,8 @@
   to specify that the rule should only be applied to `if` statements.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2307](https://github.com/realm/SwiftLint/issues/2307)
+* Add autocorrect support for `control_statement`.  
+  [Jonathan Cole](https://github.com/colejd)
 
 #### Bug Fixes
 

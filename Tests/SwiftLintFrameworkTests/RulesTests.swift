@@ -231,6 +231,10 @@ class RulesTests: XCTestCase {
         verifyRule(MarkRule.description, skipCommentTests: true)
     }
 
+    func testMissingDocs() {
+        verifyRule(MissingDocsRule.description)
+    }
+
     func testModifierOrder() {
         verifyRule(ModifierOrderRule.description)
     }

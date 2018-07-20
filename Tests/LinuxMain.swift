@@ -317,6 +317,21 @@ extension LinterCacheTests {
     ]
 }
 
+extension MissingDocsRuleConfigurationTests {
+    static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
+        ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionSingleServety", testDescriptionSingleServety),
+        ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
+        ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
+        ("testParsingSingleServety", testParsingSingleServety),
+        ("testParsingMultipleSeverities", testParsingMultipleSeverities),
+        ("testParsingMultipleAcls", testParsingMultipleAcls),
+        ("testInvalidServety", testInvalidServety),
+        ("testInvalidAcl", testInvalidAcl),
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+    ]
+}
+
 extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
@@ -505,6 +520,7 @@ extension RulesTests {
         ("testLetVarWhitespace", testLetVarWhitespace),
         ("testLiteralExpressionEndIdentation", testLiteralExpressionEndIdentation),
         ("testMark", testMark),
+        ("testMissingDocs", testMissingDocs),
         ("testModifierOrder", testModifierOrder),
         ("testMultilineFunctionChains", testMultilineFunctionChains),
         ("testMultilineParameters", testMultilineParameters),
@@ -672,6 +688,7 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
     testCase(NumberSeparatorRuleTests.allTests),

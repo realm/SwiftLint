@@ -7,7 +7,7 @@ fileprivate extension String {
         guard let index = index else {
             return nil
         }
-        return self.indices.contains(index) ? self[index] : nil
+        return (startIndex ..< endIndex).contains(index) ? self[index] : nil
     }
 }
 
@@ -107,12 +107,12 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         for violatingRange in violatingRanges.reversed() {
             if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
 
-                let text = correctedContents[indexRange]
+                var firstParenIndex: String.Index?
+                var lastParenIndex: String.Index?
+                (firstParenIndex, lastParenIndex) = getOutermostParenIndices(in: correctedContents[indexRange])
 
-                if let firstParenIndex = text.index(of: "("),
-                    let matches = getMatchingParens(text: text),
-                    let lastParenIndex = matches[firstParenIndex] {
-
+                if let firstParenIndex = firstParenIndex,
+                    let lastParenIndex = lastParenIndex {
                     // After last paren
                     let indexAfter = correctedContents.index(lastParenIndex, offsetBy: 1,
                                                              limitedBy: correctedContents.endIndex)
@@ -134,7 +134,6 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
                         // Replace paren with space
                         correctedContents.replaceSubrange(firstParenIndex...firstParenIndex, with: " ")
                     }
-
                 }
 
                 adjustedLocations.insert(violatingRange.location, at: 0)
@@ -149,23 +148,29 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         }
     }
 
-    fileprivate func getMatchingParens(text: Substring) -> [String.Index: String.Index]? {
-        var stack: [String.Index] = []
-        var dict: [String.Index: String.Index] = [:]
+    fileprivate func getOutermostParenIndices(in text: Substring) -> (String.Index?, String.Index?) {
+        let firstParenIndex = text.index(of: "(")
+        var lastParenIndex: String.Index?
 
-        for index in text.indices {
-            let char = text[index]
-            if char == "(" {
-                stack.append(index)
-            } else if char == ")" {
-                if let last = stack.popLast() {
-                    dict[last] = index
-                } else {
-                    return nil
+        if let firstParenIndex = firstParenIndex {
+            let restOfText = text[firstParenIndex ..< text.endIndex]
+            var parenCount: Int = 0
+
+            for index in restOfText.indices {
+                let char = restOfText[index]
+                if char == "(" {
+                    parenCount += 1
+                } else if char == ")" {
+                    parenCount -= 1
+                    if parenCount == 0 {
+                        lastParenIndex = index
+                        break
+                    }
                 }
             }
         }
-        return dict
+
+        return (firstParenIndex, lastParenIndex)
     }
 
     fileprivate func isFalsePositive(_ content: String, syntaxKind: SyntaxKind?) -> Bool {

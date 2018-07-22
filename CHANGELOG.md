@@ -50,6 +50,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2297](https://github.com/realm/SwiftLint/issues/2297)
 
+* `redundant_optional_initialization` rule now lints local variables.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2233](https://github.com/realm/SwiftLint/issues/2233)
+
 ## 0.26.0: Maytagged Pointers
 
 #### Breaking

@@ -32,23 +32,49 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
             "   return 0\n" +
             "}()\n",
             // lazy variables need to be initialized
-            "lazy var test: Int? = nil"
+            "lazy var test: Int? = nil",
+            // local variables
+            "func funcName() {\n    var myVar: String?\n}",
+            "func funcName() {\n    let myVar: String? = nil\n}"
         ],
-        triggeringExamples: [
+        triggeringExamples: triggeringExamples,
+        corrections: corrections
+    )
+
+    private static let triggeringExamples: [String] = {
+        let commonExamples = [
             "var myVar: Int?↓ = nil\n",
             "var myVar: Optional<Int>↓ = nil\n",
             "var myVar: Int?↓=nil\n",
             "var myVar: Optional<Int>↓=nil\n"
-        ],
-        corrections: [
+        ]
+
+        guard SwiftVersion.current >= .fourDotOne else {
+            return commonExamples
+        }
+
+        return commonExamples + [
+            "func funcName() {\n    var myVar: String?↓ = nil\n}"
+        ]
+    }()
+
+    private static let corrections: [String: String] = {
+        var corrections = [
             "var myVar: Int?↓ = nil\n": "var myVar: Int?\n",
             "var myVar: Optional<Int>↓ = nil\n": "var myVar: Optional<Int>\n",
             "var myVar: Int?↓=nil\n": "var myVar: Int?\n",
             "var myVar: Optional<Int>↓=nil\n": "var myVar: Optional<Int>\n",
             "class C {\n#if true\nvar myVar: Int?↓ = nil\n#endif\n}":
-                "class C {\n#if true\nvar myVar: Int?\n#endif\n}"
+            "class C {\n#if true\nvar myVar: Int?\n#endif\n}"
         ]
-    )
+
+        guard SwiftVersion.current >= .fourDotOne else {
+            return corrections
+        }
+
+        corrections["func foo() {\n    var myVar: String?↓ = nil\n}"] = "func foo() {\n    var myVar: String?\n}"
+        return corrections
+    }()
 
     private let pattern = "\\s*=\\s*nil\\b"
 
@@ -64,10 +90,10 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     private func violationRanges(in file: File, kind: SwiftDeclarationKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard SwiftDeclarationKind.variableKinds.contains(kind),
-            dictionary.setterAccessibility != nil,
             let type = dictionary.typeName,
             typeIsOptional(type),
             !dictionary.enclosedSwiftAttributes.contains(.lazy),
+            dictionary.isMutableVariable(file: file),
             let range = range(for: dictionary, file: file),
             let match = file.match(pattern: pattern, with: [.keyword], range: range).first,
             match.location == range.location + range.length - match.length else {
@@ -134,4 +160,25 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
         return type.hasSuffix("?") || type.hasPrefix("Optional<")
     }
 
+}
+
+extension Dictionary where Key == String, Value == SourceKitRepresentable {
+    fileprivate func isMutableVariable(file: File) -> Bool {
+        return setterAccessibility != nil || (isLocal && isVariable(file: file))
+    }
+
+    private var isLocal: Bool {
+        return accessibility == nil && setterAccessibility == nil
+    }
+
+    private func isVariable(file: File) -> Bool {
+        guard let start = offset, let length = length,
+            case let contents = file.contents.bridge(),
+            let range = contents.byteRangeToNSRange(start: start, length: length),
+            !file.match(pattern: "\\Avar\\b", with: [.keyword], range: range).isEmpty else {
+                return false
+        }
+
+        return true
+    }
 }

@@ -9,7 +9,7 @@ private extension Scanner {
 #else
 private extension Scanner {
     func scanUpToString(_ string: String) -> String? {
-        var result: NSString? = nil
+        var result: NSString?
         let success = scanUpTo(string, into: &result)
         if success {
             return result?.bridge()
@@ -18,7 +18,7 @@ private extension Scanner {
     }
 
     func scanString(string: String) -> String? {
-        var result: NSString? = nil
+        var result: NSString?
         let success = scanString(string, into: &result)
         if success {
             return result?.bridge()

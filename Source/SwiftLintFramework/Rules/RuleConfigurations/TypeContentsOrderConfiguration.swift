@@ -16,7 +16,7 @@ enum TypeContent: String {
     case `subscript` = "subscript"
 }
 
-public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
+public struct TypeContentsOrderConfiguration: RuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var order: [[TypeContent]] = [
         [.case],
@@ -60,5 +60,17 @@ public struct TypeContentsOrderConfiguration: RuleConfiguration, Equatable {
         if !customOrder.isEmpty {
             self.order = customOrder
         }
+    }
+}
+
+extension TypeContentsOrderConfiguration: Equatable {
+    public static func == (lhs: TypeContentsOrderConfiguration, rhs: TypeContentsOrderConfiguration) -> Bool {
+        guard lhs.order.count == rhs.order.count else { return false }
+
+        for (leftIndex, leftOrderEntry) in lhs.order.enumerated() {
+            guard rhs.order[leftIndex] == leftOrderEntry else { return false }
+        }
+
+        return lhs.severityConfiguration == rhs.severityConfiguration
     }
 }

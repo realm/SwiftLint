@@ -291,7 +291,7 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, characterOffset: typeContentOffset.offset),
+                    location: Location(file: file, byteOffset: typeContentOffset.offset),
                     reason: reason
                 )
                 violations.append(styleViolation)

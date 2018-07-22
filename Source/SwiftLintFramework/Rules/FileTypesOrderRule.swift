@@ -251,7 +251,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
-                    location: Location(file: file, characterOffset: fileTypeOffset.offset),
+                    location: Location(file: file, byteOffset: fileTypeOffset.offset),
                     reason: reason
                 )
                 violations.append(styleViolation)

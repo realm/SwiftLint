@@ -474,6 +474,12 @@ class RedundantStringEnumValueRuleTests: XCTestCase {
     }
 }
 
+class RedundantTypeAnnotationRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RedundantTypeAnnotationRule.description)
+    }
+}
+
 class RedundantVoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantVoidReturnRule.description)

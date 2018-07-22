@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule, ConfigurationProviderRule {
+public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
+                                           ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

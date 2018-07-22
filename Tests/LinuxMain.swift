@@ -837,6 +837,12 @@ extension RedundantStringEnumValueRuleTests {
     ]
 }
 
+extension RedundantTypeAnnotationRuleTests {
+    static var allTests: [(String, (RedundantTypeAnnotationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantVoidReturnRuleTests {
     static var allTests: [(String, (RedundantVoidReturnRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1286,6 +1292,7 @@ XCTMain([
     testCase(RedundantOptionalInitializationRuleTests.allTests),
     testCase(RedundantSetAccessControlRuleTests.allTests),
     testCase(RedundantStringEnumValueRuleTests.allTests),
+    testCase(RedundantTypeAnnotationRuleTests.allTests),
     testCase(RedundantVoidReturnRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),

@@ -468,6 +468,12 @@ extension FileNameRuleTests {
     ]
 }
 
+extension FileTypesOrderRuleTests {
+    static var allTests: [(String, (FileTypesOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension FirstWhereRuleTests {
     static var allTests: [(String, (FirstWhereRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1281,6 +1287,12 @@ extension TypeBodyLengthRuleTests {
     ]
 }
 
+extension TypeContentsOrderRuleTests {
+    static var allTests: [(String, (TypeContentsOrderRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension TypeNameRuleTests {
     static var allTests: [(String, (TypeNameRuleTests) -> () throws -> Void)] = [
         ("testTypeName", testTypeName),
@@ -1528,6 +1540,7 @@ XCTMain([
     testCase(FileHeaderRuleTests.allTests),
     testCase(FileLengthRuleTests.allTests),
     testCase(FileNameRuleTests.allTests),
+    testCase(FileTypesOrderRuleTests.allTests),
     testCase(FirstWhereRuleTests.allTests),
     testCase(ForWhereRuleTests.allTests),
     testCase(ForceCastRuleTests.allTests),
@@ -1636,6 +1649,7 @@ XCTMain([
     testCase(TrailingSemicolonRuleTests.allTests),
     testCase(TrailingWhitespaceTests.allTests),
     testCase(TypeBodyLengthRuleTests.allTests),
+    testCase(TypeContentsOrderRuleTests.allTests),
     testCase(TypeNameRuleTests.allTests),
     testCase(UnavailableFunctionRuleTests.allTests),
     testCase(UnneededBreakInSwitchRuleTests.allTests),

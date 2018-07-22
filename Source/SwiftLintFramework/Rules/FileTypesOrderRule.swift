@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 // swiftlint:disable:next type_body_length
-public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
+public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     private typealias FileTypeOffset = (fileType: FileType, offset: Int)
 
     public var configuration = FileTypesOrderConfiguration()

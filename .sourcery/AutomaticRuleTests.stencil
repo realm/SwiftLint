@@ -9,7 +9,6 @@ class {{ rule.name }}Tests: XCTestCase {
         verifyRule({{ rule.name }}.description)
     }
 }
+{% if not forloop.last %}
 
-{% endfor %}
-// just to avoid a file_name warning
-private struct AutomaticRuleTests {}
+{% endif %}{% endfor %}

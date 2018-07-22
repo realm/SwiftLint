@@ -623,6 +623,3 @@ class YodaConditionRuleTests: XCTestCase {
         verifyRule(YodaConditionRule.description)
     }
 }
-
-// just to avoid a file_name warning
-private struct AutomaticRuleTests {}

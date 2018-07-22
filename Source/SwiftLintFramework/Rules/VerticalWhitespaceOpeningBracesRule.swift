@@ -58,7 +58,7 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
     private let pattern = "([{(\\[][ \\t]*)((?:\\n[ \\t]*)+)(\\n)"
 }
 
-extension VerticalWhitespaceOpeningBracesRule: OptInRule {
+extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}

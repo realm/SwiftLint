@@ -1272,8 +1272,19 @@ extension VerticalParameterAlignmentRuleTests {
     ]
 }
 
+<<<<<<< HEAD
 extension VerticalWhitespaceBetweenCasesRuleTests {
     static var allTests: [(String, (VerticalWhitespaceBetweenCasesRuleTests) -> () throws -> Void)] = [
+=======
+extension VerticalWhitespaceClosingBracesRuleTests {
+    static var allTests: [(String, (VerticalWhitespaceClosingBracesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension VerticalWhitespaceOpeningBracesRuleTests {
+    static var allTests: [(String, (VerticalWhitespaceOpeningBracesRuleTests) -> () throws -> Void)] = [
+>>>>>>> Fix issues after rebasing
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1497,7 +1508,12 @@ XCTMain([
     testCase(ValidIBInspectableRuleTests.allTests),
     testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),
     testCase(VerticalParameterAlignmentRuleTests.allTests),
+<<<<<<< HEAD
     testCase(VerticalWhitespaceBetweenCasesRuleTests.allTests),
+=======
+    testCase(VerticalWhitespaceClosingBracesRuleTests.allTests),
+    testCase(VerticalWhitespaceOpeningBracesRuleTests.allTests),
+>>>>>>> Fix issues after rebasing
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),

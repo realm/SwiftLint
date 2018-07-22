@@ -53,7 +53,7 @@ public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     private let pattern = "((?:\\n[ \\t]*)+)(\\n[ \\t]*[)}\\]])"
 }
 
-extension VerticalWhitespaceClosingBracesRule: OptInRule {
+extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}

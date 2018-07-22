@@ -336,6 +336,12 @@ class MultilineFunctionChainsRuleTests: XCTestCase {
     }
 }
 
+class MultilineLiteralBracketsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineLiteralBracketsRule.description)
+    }
+}
+
 class MultilineParametersRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineParametersRule.description)

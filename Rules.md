@@ -11212,7 +11212,7 @@ a.b {
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
 --- | --- | --- | --- | ---
-`multiline_literal_indentation` | Disabled | No | style | 3.0.0 
+`multiline_literal_brackets` | Disabled | No | style | 3.0.0 
 
 Multiline literals should have their surrounding brackets in a new line.
 

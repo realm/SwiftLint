@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule {
+public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -80,7 +80,11 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
         var violations = [StyleViolation]()
 
         if kind == .array || kind == .dictionary {
-            let body = file.contents.substring(from: dictionary.bodyOffset!, length: dictionary.bodyLength!)
+            let range = file.contents.bridge().byteRangeToNSRange(
+                start: dictionary.bodyOffset!,
+                length: dictionary.bodyLength!
+            )!
+            let body = file.contents.substring(from: range.location, length: range.length)
             let isMultiline = body.contains("\n")
 
             if isMultiline {

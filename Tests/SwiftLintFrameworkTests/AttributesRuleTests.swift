@@ -54,4 +54,48 @@ class AttributesRuleTests: XCTestCase {
         verifyRule(alwaysOnNewLineDescription,
                    ruleConfiguration: ["always_on_line_above": ["@objc"]])
     }
+
+    func testAttributesWithAttributesOnLineAboveButOnOtherDeclaration() {
+        let nonTriggeringExamples = [
+            """
+            @IBDesignable open class TagListView: UIView {
+                @IBInspectable open dynamic var textColor: UIColor = UIColor.white {
+                    didSet {}
+                }
+            }
+            """,
+            """
+            @objc public protocol TagListViewDelegate {
+                @objc optional func tagDidSelect(_ title: String, sender: TagListView)
+                @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
+            }
+            """
+        ]
+
+        let triggeringExamples = [
+            """
+            @IBDesignable open class TagListView: UIView {
+                @IBInspectable
+                open dynamic ↓var textColor: UIColor = UIColor.white {
+                    didSet {}
+                }
+            }
+            """,
+            """
+            @objc public protocol TagListViewDelegate {
+                @objc
+                optional ↓func tagDidSelect(_ title: String, sender: TagListView)
+                @objc optional func tagDidDeselect(_ title: String, sender: TagListView)
+            }
+            """
+        ]
+
+        let alwaysOnNewLineDescription = AttributesRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(alwaysOnNewLineDescription,
+                   ruleConfiguration: ["always_on_same_line": ["@discardableResult", "@objc",
+                                                               "@IBAction", "@IBDesignable"]])
+    }
 }

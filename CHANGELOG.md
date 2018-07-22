@@ -315,6 +315,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   [Cihat Gündüz](https://github.com/Dschee)
   [#2309](https://github.com/realm/SwiftLint/issues/2309)
 * Add new rule `vertical_whitespace_opening_braces` to warn against empty lines
+
 * Add new opt-in rule `vertical_whitespace_opening_braces` to warn against empty lines
   after opening braces.  
   [Cihat Gündüz](https://github.com/Dschee)

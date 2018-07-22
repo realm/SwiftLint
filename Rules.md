@@ -9085,6 +9085,23 @@ func example2() {
 }
 ```
 
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9↓]
+```
+
+```swift
+    _ = [↓1, 2, 3,
+         4, 5, 6,
+         7, 8, 9
+    ]
+```
+
 </details>
 
 
@@ -10367,6 +10384,17 @@ Array and dictionary literal end should have the same indentation as the line th
    key: 0,
    key2: 20
 ]
+```
+
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9
+    ]
 ```
 
 </details>

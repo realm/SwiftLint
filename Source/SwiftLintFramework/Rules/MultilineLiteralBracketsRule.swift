@@ -37,6 +37,16 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 "gryffinder": 460, "hufflepuff": 370,
                 "ravenclaw": 410, "slytherin": 450
             ]
+            """,
+            """
+                _ = [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5, 6,
+                    7, 8, 9
+                ]
             """
         ],
         triggeringExamples: [
@@ -68,6 +78,21 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                     "gryffinder": 460, "hufflepuff": 370,
                     "ravenclaw": 410, "slytherin": 450↓]
             }
+            """,
+            """
+                _ = [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5, 6,
+                    7, 8, 9↓]
+            """,
+            """
+                _ = [↓1, 2, 3,
+                     4, 5, 6,
+                     7, 8, 9
+                ]
             """
         ]
     )
@@ -84,11 +109,15 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                 start: dictionary.bodyOffset!,
                 length: dictionary.bodyLength!
             )!
+
             let body = file.contents.substring(from: range.location, length: range.length)
             let isMultiline = body.contains("\n")
 
+            let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
+            let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
+
             if isMultiline {
-                if !body.hasPrefix("\n") {
+                if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
                     violations.append(StyleViolation(
                         ruleDescription: type(of: self).description,
                         severity: configuration.severity,
@@ -96,7 +125,7 @@ public struct MultilineLiteralBracketsRule: ASTRule, OptInRule, ConfigurationPro
                     ))
                 }
 
-                if !body.hasSuffix("\n") {
+                if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
                     violations.append(StyleViolation(
                         ruleDescription: type(of: self).description,
                         severity: configuration.severity,

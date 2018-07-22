@@ -209,7 +209,9 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
                     return false
                 }
 
-                return ["func", "var", "let", "import"].contains(keyword)
+                let keywords: Set = ["func", "var", "let", "class", "struct",
+                                     "enum", "protocol", "import"]
+                return keywords.contains(keyword)
             }
 
             guard nonAttributeTokens.isEmpty else {

@@ -12,6 +12,10 @@ private func violatingFuncWithBody(_ body: String) -> String {
 
 class FunctionBodyLengthRuleTests: XCTestCase {
 
+    func testWithDefaultConfiguration() {
+        verifyRule(FunctionBodyLengthRule.description)
+    }
+
     func testFunctionBodyLengths() {
         let longFunctionBody = funcWithBody(repeatElement("x = 0\n", count: 39).joined())
         XCTAssertEqual(violations(longFunctionBody), [])

@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule {
+public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

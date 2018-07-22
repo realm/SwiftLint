@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ForWhereRule: ASTRule, ConfigurationProviderRule {
+public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

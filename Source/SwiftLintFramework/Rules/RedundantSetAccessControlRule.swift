@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule {
+public struct RedundantSetAccessControlRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

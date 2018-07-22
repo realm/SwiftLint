@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule {
+public struct DynamicInlineRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.error)
 

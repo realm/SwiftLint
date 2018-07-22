@@ -7,7 +7,7 @@ private func embedInSwitch(_ text: String, case: String = "case .bar") -> String
            "    \(text)\n" +
            "}"
 }
-public struct UnneededBreakInSwitchRule: ConfigurationProviderRule {
+public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

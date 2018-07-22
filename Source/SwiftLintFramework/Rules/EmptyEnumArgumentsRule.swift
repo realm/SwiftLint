@@ -18,7 +18,7 @@ private func wrapInFunc(_ str: String) -> String {
     """
 }
 
-public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
+public struct EmptyEnumArgumentsRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

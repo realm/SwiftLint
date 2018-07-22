@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule {
+public struct BlockBasedKVORule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

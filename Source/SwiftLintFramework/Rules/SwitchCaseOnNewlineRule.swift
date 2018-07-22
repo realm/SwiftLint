@@ -5,7 +5,7 @@ private func wrapInSwitch(_ str: String) -> String {
     return "switch foo {\n  \(str)\n}\n"
 }
 
-public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct SwitchCaseOnNewlineRule: ASTRule, ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

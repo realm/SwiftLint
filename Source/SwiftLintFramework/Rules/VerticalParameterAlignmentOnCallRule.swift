@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule {
+public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule,
+                                                    AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

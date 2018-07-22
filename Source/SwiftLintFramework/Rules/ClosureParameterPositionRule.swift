@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule {
+public struct ClosureParameterPositionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

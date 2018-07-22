@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ShorthandOperatorRule: ConfigurationProviderRule {
+public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.error)
 

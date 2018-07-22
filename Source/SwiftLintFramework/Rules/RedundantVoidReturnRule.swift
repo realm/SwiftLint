@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, CorrectableRule {
+public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

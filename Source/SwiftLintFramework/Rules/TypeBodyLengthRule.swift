@@ -8,7 +8,7 @@ private func example(_ type: String,
         repeatElement(template, count: count).joined() + "\(add)}\n"
 }
 
-public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule {
+public struct TypeBodyLengthRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityLevelsConfiguration(warning: 200, error: 350)
 
     public init() {}

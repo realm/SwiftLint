@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule, ConfigurationProviderRule {
+public struct AnyObjectProtocolRule: ASTRule, OptInRule, CorrectableRule,
+                                     ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

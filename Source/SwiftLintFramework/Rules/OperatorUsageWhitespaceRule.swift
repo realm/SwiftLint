@@ -1,7 +1,8 @@
 import Foundation
 import SourceKittenFramework
 
-public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule {
+public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
+                                           AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 

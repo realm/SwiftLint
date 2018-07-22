@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct EmptyCountRule: ConfigurationProviderRule, OptInRule {
+public struct EmptyCountRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule {
+public struct NoGroupingExtensionRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

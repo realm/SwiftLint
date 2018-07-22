@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule {
+public struct QuickDiscouragedPendingTestRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

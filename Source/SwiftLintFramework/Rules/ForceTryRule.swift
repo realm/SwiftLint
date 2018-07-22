@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct ForceTryRule: ConfigurationProviderRule {
+public struct ForceTryRule: ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.error)
 

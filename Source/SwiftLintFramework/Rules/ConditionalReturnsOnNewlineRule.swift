@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

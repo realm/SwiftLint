@@ -28,7 +28,7 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 }
 
-public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider {
+public struct PrivateUnitTestRule: ASTRule, ConfigurationProviderRule, CacheDescriptionProvider, AutomaticTestableRule {
 
     public var configuration: PrivateUnitTestConfiguration = {
         var configuration = PrivateUnitTestConfiguration(identifier: "private_unit_test")

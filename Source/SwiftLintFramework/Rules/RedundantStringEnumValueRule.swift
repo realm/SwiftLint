@@ -12,7 +12,7 @@ private func children(of dict: [String: SourceKitRepresentable],
     }
 }
 
-public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule {
+public struct RedundantStringEnumValueRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

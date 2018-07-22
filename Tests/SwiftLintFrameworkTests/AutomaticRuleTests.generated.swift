@@ -660,6 +660,12 @@ class VerticalParameterAlignmentRuleTests: XCTestCase {
     }
 }
 
+class VerticalWhitespaceBetweenCasesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VerticalWhitespaceBetweenCasesRule.description)
+    }
+}
+
 class VoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)

@@ -84,7 +84,7 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     private let pattern = "([^\\n{][ \\t]*\\n)([ \\t]*(?:case[^\\n]+|default):[ \\t]*\\n)"
 }
 
-extension VerticalWhitespaceBetweenCasesRule: OptInRule {
+extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
     public var configurationDescription: String { return "N/A" }
 
     public init(configuration: Any) throws {}

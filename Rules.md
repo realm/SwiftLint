@@ -13194,6 +13194,18 @@ var foo: Int? = {
 lazy var test: Int? = nil
 ```
 
+```swift
+func funcName() {
+    var myVar: String?
+}
+```
+
+```swift
+func funcName() {
+    let myVar: String? = nil
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -13216,6 +13228,12 @@ var myVar: Int?↓=nil
 ```swift
 var myVar: Optional<Int>↓=nil
 
+```
+
+```swift
+func funcName() {
+    var myVar: String?↓ = nil
+}
 ```
 
 </details>

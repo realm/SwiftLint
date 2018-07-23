@@ -26,6 +26,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                 param2: "Param2",
                 param3: "Param3"
             )
+            """,
+            """
+            foo { param1, param2 in
+                print("hello world")
+            }
             """
         ],
         triggeringExamples: [
@@ -60,7 +65,7 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         let body = file.contents.substring(from: range.location, length: range.length)
         let isMultiline = body.contains("\n")
 
-        let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
+        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*in\\n)")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
         if isMultiline {

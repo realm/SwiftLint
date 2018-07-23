@@ -287,6 +287,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 * Add new opt-in rule `multiline_literal_brackets` to warn against multiline
   literal arrays & dictionaries with surrounding brackets without newline.  
   [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
 
 * Add support for globs in `excluded` file paths.  
   [Keith Smiley](https://github.com/keith)

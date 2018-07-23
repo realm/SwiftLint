@@ -211,22 +211,21 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
 
         return statementPatterns.flatMap { pattern -> [NSRange] in
             return file.match(pattern: pattern)
-                // Filter out false positives
-                .filter { match, syntaxKinds -> Bool in
+                .compactMap { match, syntaxKinds -> NSRange? in
+                    // Filter out false positives
                     let matchString = file.contents.substring(from: match.location, length: match.length)
-                    return !isFalsePositive(matchString, syntaxKind: syntaxKinds.first)
-                }
-                // Filter out call expressions
-                .filter { match, _ -> Bool in
+                    if isFalsePositive(matchString, syntaxKind: syntaxKinds.first) {
+                        return nil
+                    }
+
                     let contents = file.contents.bridge()
                     guard let byteOffset = contents.NSRangeToByteRange(start: match.location, length: 1)?.location,
                         let outerKind = file.structure.kinds(forByteOffset: byteOffset).last else {
-                            return true
+                            return match
                     }
-                    return SwiftExpressionKind(rawValue: outerKind.kind) != .call
-                }
-                .map { match, _ in
-                    return match
+
+                    // Filter out call expressions
+                    return (SwiftExpressionKind(rawValue: outerKind.kind) != .call) ? match : nil
                 }
         }
 

@@ -72,7 +72,7 @@ struct AutoCorrectOptions: OptionsProtocol {
             } else {
                 allPaths = paths
             }
-            return self.init(paths: Array(allPaths), configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
+            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
         }}}}}}}}}
     }
 

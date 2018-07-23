@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     public init() {}
 
@@ -30,7 +30,8 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "(guard|if)[^\n]*return"
+        let pattern: String = configuration.ifOnly ? "(if)[^\n]*return" : "(guard|if)[^\n]*return"
+
         return file.rangesAndTokens(matching: pattern).filter { _, tokens in
             guard let firstToken = tokens.first, let lastToken = tokens.last,
                 SyntaxKind(rawValue: firstToken.type) == .keyword &&
@@ -38,11 +39,12 @@ public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, 
                         return false
             }
 
-            return ["if", "guard"].contains(content(for: firstToken, file: file)) &&
+            let searchTokens: [String] = configuration.ifOnly ? ["if"] : ["if", "guard"]
+            return searchTokens.contains(content(for: firstToken, file: file)) &&
                 content(for: lastToken, file: file) == "return"
         }.map {
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, characterOffset: $0.0.location))
         }
     }

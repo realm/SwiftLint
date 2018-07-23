@@ -70,6 +70,10 @@
 * Fix autocorrection for `redundant_type_annotation` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2314](https://github.com/realm/SwiftLint/issues/2314)
+* Make rule `explicit_type_interface` compatible with rule
+  `redundant_type_annotation`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2312](https://github.com/realm/SwiftLint/issues/2312)
 
 ## 0.26.0: Maytagged Pointers
 

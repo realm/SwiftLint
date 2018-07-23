@@ -36,6 +36,7 @@ class FileNameRuleTests: XCTestCase {
 
     func testExtensionNameDoesntTrigger() {
         XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
+        XCTAssert(try validate(fileName: "BoolExtension.swift").isEmpty)
     }
 
     func testMisspelledNameDoesTrigger() {

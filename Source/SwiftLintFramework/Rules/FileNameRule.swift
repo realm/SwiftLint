@@ -33,7 +33,12 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
-        let typeInFileName = fileName.components(separatedBy: CharacterSet(charactersIn: "+.")).first ?? fileName
+        var typeInFileName = fileName.components(separatedBy: CharacterSet(charactersIn: "+.")).first ?? fileName
+
+        let extensionSuffix = "Extension"
+        if typeInFileName.hasSuffix(extensionSuffix) {
+            typeInFileName = String(typeInFileName.dropLast(extensionSuffix.count))
+        }
 
         let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()
         guard !allDeclaredTypeNames.isEmpty, !allDeclaredTypeNames.contains(typeInFileName) else {

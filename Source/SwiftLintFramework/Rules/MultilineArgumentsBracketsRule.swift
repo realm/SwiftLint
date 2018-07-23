@@ -39,6 +39,11 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                     y: 7
                 )
             )
+            """,
+            """
+            AlertViewModel.AlertAction(title: "some title", style: .default) {
+                AlertManager.shared.presentNextDebugAlert()
+            }
             """
         ],
         triggeringExamples: [
@@ -87,7 +92,7 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
         let body = file.contents.substring(from: range.location, length: range.length)
         let isMultiline = body.contains("\n")
 
-        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*in\\n)")
+        let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
         if isMultiline {

@@ -9070,6 +9070,12 @@ foo(
 )
 ```
 
+```swift
+AlertViewModel.AlertAction(title: "some title", style: .default) {
+    AlertManager.shared.presentNextDebugAlert()
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

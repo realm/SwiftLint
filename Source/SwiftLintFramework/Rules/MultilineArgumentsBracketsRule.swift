@@ -31,6 +31,14 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
             foo { param1, param2 in
                 print("hello world")
             }
+            """,
+            """
+            foo(
+                bar(
+                    x: 5,
+                    y: 7
+                )
+            )
             """
         ],
         triggeringExamples: [
@@ -44,6 +52,20 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
                 param1: "Param1",
                 param2: "Param2",
                 param3: "Param3"↓)
+            """,
+            """
+            foo(↓bar(
+                x: 5,
+                y: 7
+            )
+            )
+            """,
+            """
+            foo(
+                bar(
+                    x: 5,
+                    y: 7
+            )↓)
             """
         ]
     )

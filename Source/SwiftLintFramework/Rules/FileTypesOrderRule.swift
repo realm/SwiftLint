@@ -203,8 +203,10 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
         ]
     )
 
+    // swiftlint:disable:next function_body_length
     public func validate(file: File) -> [StyleViolation] {
-        guard let mainTypeSubstructure = mainTypeSubstructure(in: file) else { return [] }
+        guard let mainTypeSubstructure = mainTypeSubstructure(in: file),
+            let mainTypeSubstuctureOffset = mainTypeSubstructure.offset else { return [] }
 
         let extensionsSubstructures = self.extensionsSubstructures(
             in: file,
@@ -216,9 +218,16 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
             mainTypeSubstructure: mainTypeSubstructure
         )
 
-        let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstructure.offset!)]
-        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.map { (.extension, $0.offset!) }
-        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.map { (.supportingType, $0.offset!) }
+        let mainTypeOffset: [FileTypeOffset] = [(.mainType, mainTypeSubstuctureOffset)]
+        let extensionOffsets: [FileTypeOffset] = extensionsSubstructures.compactMap { substructure in
+            guard let offset = substructure.offset else { return nil }
+            return (.extension, offset)
+        }
+
+        let supportingTypeOffsets: [FileTypeOffset] = supportingTypesSubstructures.compactMap { substructure in
+            guard let offset = substructure.offset else { return nil }
+            return (.supportingType, offset)
+        }
 
         let orderedFileTypeOffsets = (mainTypeOffset + extensionOffsets + supportingTypeOffsets).sorted { lhs, rhs in
             return lhs.offset < rhs.offset
@@ -266,8 +275,9 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
         mainTypeSubstructure: [String: SourceKitRepresentable]
     ) -> [[String: SourceKitRepresentable]] {
         return file.structure.dictionary.substructure.filter { substructure in
+            guard let kind = substructure.kind else { return false }
             return substructure.bridge() != mainTypeSubstructure.bridge() &&
-                substructure.kind!.contains(SwiftDeclarationKind.extension.rawValue)
+                kind.contains(SwiftDeclarationKind.extension.rawValue)
         }
     }
 
@@ -279,7 +289,8 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
         supportingTypeKinds.insert(SwiftDeclarationKind.protocol)
 
         return file.structure.dictionary.substructure.filter { substructure in
-            guard let declarationKind = SwiftDeclarationKind(rawValue: substructure.kind!) else { return false }
+            guard let kind = substructure.kind else { return false }
+            guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
             return substructure.bridge() != mainTypeSubstructure.bridge() &&
                 supportingTypeKinds.contains(declarationKind)
         }
@@ -304,14 +315,19 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
     private func mainTypeSubstructure(in dict: [String: SourceKitRepresentable]) -> [String: SourceKitRepresentable]? {
         let priorityKinds: [SwiftDeclarationKind] = [.class, .enum, .struct]
         let priorityKindRawValues = priorityKinds.map { $0.rawValue }
-        let priorityKindSubstructures = dict.substructure.filter { priorityKindRawValues.contains($0.kind!) }
+
+        let priorityKindSubstructures = dict.substructure.filter { substructure in
+            guard let kind = substructure.kind else { return false }
+            return priorityKindRawValues.contains(kind)
+        }
+
         let substructuresSortedByBodyLength = priorityKindSubstructures.sorted { lhs, rhs in
-            return lhs.bodyLength! > rhs.bodyLength!
+            return (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
         }
 
         guard let mainTypeSubstructure = substructuresSortedByBodyLength.first else {
             let substructuresSortedByBodyLength = dict.substructure.sorted { lhs, rhs in
-                return lhs.bodyLength! > rhs.bodyLength!
+                return (lhs.bodyLength ?? 0) > (rhs.bodyLength ?? 0)
             }
 
             // specify substructure with longest body as main type if existent

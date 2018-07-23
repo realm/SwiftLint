@@ -49,7 +49,7 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
             }
             """,
             """
-            func foo<T>(param1: T, param2: String, param3: String) -> T
+            func foo<T>(param1: T, param2: String, param3: String) -> T { /* some code */ }
             """
         ],
         triggeringExamples: [
@@ -95,63 +95,27 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         var violations = [StyleViolation]()
 
         // find violations at current level
-        if
-            let kindString = substructure.kind,
-            let kind = SwiftDeclarationKind(rawValue: kindString),
-            SwiftDeclarationKind.functionKinds.contains(kind)
-        {
-            let fileContents = file.contents.bridge()
+        if let kindString = substructure.kind, let kind = SwiftDeclarationKind(rawValue: kindString),
+            SwiftDeclarationKind.functionKinds.contains(kind) {
+
             guard
-                let byteOffset = substructure.offset,
-                let byteLength = substructure.length,
-                let range = fileContents.byteRangeToNSRange(start: byteOffset, length: byteLength)
+                let nameOffset = substructure.nameOffset,
+                let nameLength = substructure.nameLength,
+                let functionName = file.contents.bridge().substringWithByteRange(start: nameOffset, length: nameLength)
             else {
                 return []
             }
 
-            let body = file.contents.substring(from: range.location, length: range.length)
-            let isMultiline = body.contains("\n")
+            let isMultiline = functionName.contains("\n")
 
             let parameters = substructure.substructure.filter { $0.kind == SwiftDeclarationKind.varParameter.rawValue }
             if isMultiline && !parameters.isEmpty {
-                if
-                    let firstParamByteOffset = parameters.first?.offset,
-                    let firstParamByteLength = parameters.first?.length,
-                    let firstParamRange = file.contents.bridge().byteRangeToNSRange(
-                        start: firstParamByteOffset,
-                        length: firstParamByteLength
-                    )
-                {
-                    let prefix = file.contents.bridge().substring(to: firstParamRange.lowerBound)
-                    let invalidPrefixRegex = regex("\\([ \\t]*\\z")
-
-                    if let invalidMatch = invalidPrefixRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) {
-                        violations.append(StyleViolation(
-                            ruleDescription: type(of: self).description,
-                            severity: configuration.severity,
-                            location: Location(file: file, characterOffset: invalidMatch.range.location + 1)
-                        ))
-                    }
+                if let openingBracketViolation = openingBracketViolation(parameters: parameters, file: file) {
+                    violations.append(openingBracketViolation)
                 }
 
-                if
-                    let lastParamByteOffset = parameters.last?.offset,
-                    let lastParamByteLength = parameters.last?.length,
-                    let lastParamRange = file.contents.bridge().byteRangeToNSRange(
-                        start: lastParamByteOffset,
-                        length: lastParamByteLength
-                    )
-                {
-                    let suffix = file.contents.bridge().substring(from: lastParamRange.upperBound)
-                    let invalidSuffixRegex = regex("\\A[ \\t]*\\)")
-
-                    if let invalidMatch = invalidSuffixRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) {
-                        violations.append(StyleViolation(
-                            ruleDescription: type(of: self).description,
-                            severity: configuration.severity,
-                            location: Location(file: file, characterOffset: lastParamRange.upperBound + invalidMatch.range.upperBound - 1)
-                        ))
-                    }
+                if let closingBracketViolation = closingBracketViolation(parameters: parameters, file: file) {
+                    violations.append(closingBracketViolation)
                 }
             }
         }
@@ -162,5 +126,56 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         }
 
         return violations
+    }
+
+    private func openingBracketViolation(parameters: [[String: SourceKitRepresentable]],
+                                         file: File) -> StyleViolation? {
+        if
+            let firstParamByteOffset = parameters.first?.offset,
+            let firstParamByteLength = parameters.first?.length,
+            let firstParamRange = file.contents.bridge().byteRangeToNSRange(
+                start: firstParamByteOffset,
+                length: firstParamByteLength
+            )
+        {
+            let prefix = file.contents.bridge().substring(to: firstParamRange.lowerBound)
+            let invalidPrefixRegex = regex("\\([ \\t]*\\z")
+
+            if let invalidMatch = invalidPrefixRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) {
+                return StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: invalidMatch.range.location + 1)
+                )
+            }
+        }
+
+        return nil
+    }
+
+    private func closingBracketViolation(parameters: [[String: SourceKitRepresentable]],
+                                         file: File) -> StyleViolation? {
+        if
+            let lastParamByteOffset = parameters.last?.offset,
+            let lastParamByteLength = parameters.last?.length,
+            let lastParamRange = file.contents.bridge().byteRangeToNSRange(
+                start: lastParamByteOffset,
+                length: lastParamByteLength
+            )
+        {
+            let suffix = file.contents.bridge().substring(from: lastParamRange.upperBound)
+            let invalidSuffixRegex = regex("\\A[ \\t]*\\)")
+
+            if let invalidMatch = invalidSuffixRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) {
+                let characterOffset = lastParamRange.upperBound + invalidMatch.range.upperBound - 1
+                return StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, characterOffset: characterOffset)
+                )
+            }
+        }
+
+        return nil
     }
 }

@@ -4905,6 +4905,13 @@ class Foo {
 
 ```
 
+```swift
+class Foo {
+  static let shared = Foo()
+}
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

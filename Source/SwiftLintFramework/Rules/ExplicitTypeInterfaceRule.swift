@@ -15,7 +15,8 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
             "class Foo {\n  var myVar: Int? = 0\n}\n",
             "class Foo {\n  let myVar: Int? = 0\n}\n",
             "class Foo {\n  static var myVar: Int? = 0\n}\n",
-            "class Foo {\n  class var myVar: Int? = 0\n}\n"
+            "class Foo {\n  class var myVar: Int? = 0\n}\n",
+            "class Foo {\n  static let shared = Foo()\n}\n"
         ],
         triggeringExamples: [
             "class Foo {\n  ↓var myVar = 0\n\n}\n",

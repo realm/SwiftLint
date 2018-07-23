@@ -144,6 +144,8 @@
 		825F19D11EEFF19700969EF1 /* ObjectLiteralRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */; };
 		827169B31F488181003FB9AF /* ExplicitEnumRawValueRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827169B21F488181003FB9AF /* ExplicitEnumRawValueRule.swift */; };
 		827169B51F48D712003FB9AF /* NoGroupingExtensionRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */; };
+		82F614F22106014500D23904 /* MultilineParametersBracketsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F614F12106014500D23904 /* MultilineParametersBracketsRule.swift */; };
+		82F614F42106015100D23904 /* MultilineArgumentsBracketsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F614F32106015100D23904 /* MultilineArgumentsBracketsRule.swift */; };
 		83894F221B0C928A006214E1 /* RulesCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83894F211B0C928A006214E1 /* RulesCommand.swift */; };
 		83D71E281B131ECE000395DE /* RuleDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D71E261B131EB5000395DE /* RuleDescription.swift */; };
 		85DA81321D6B471000951BC4 /* MarkRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 856651A61D6B395F005E6B29 /* MarkRule.swift */; };
@@ -567,6 +569,8 @@
 		825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRuleTests.swift; sourceTree = "<group>"; };
 		827169B21F488181003FB9AF /* ExplicitEnumRawValueRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplicitEnumRawValueRule.swift; sourceTree = "<group>"; };
 		827169B41F48D712003FB9AF /* NoGroupingExtensionRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoGroupingExtensionRule.swift; sourceTree = "<group>"; };
+		82F614F12106014500D23904 /* MultilineParametersBracketsRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineParametersBracketsRule.swift; sourceTree = "<group>"; };
+		82F614F32106015100D23904 /* MultilineArgumentsBracketsRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsBracketsRule.swift; sourceTree = "<group>"; };
 		83894F211B0C928A006214E1 /* RulesCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RulesCommand.swift; sourceTree = "<group>"; };
 		83D71E261B131EB5000395DE /* RuleDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RuleDescription.swift; sourceTree = "<group>"; };
 		856651A61D6B395F005E6B29 /* MarkRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkRule.swift; sourceTree = "<group>"; };
@@ -1052,10 +1056,12 @@
 				C946FEC91EAE5E20007DD778 /* LetVarWhitespaceRule.swift */,
 				D4EA77C91F81FACC00C315FB /* LiteralExpressionEndIdentationRule.swift */,
 				188B3FF1207D61040073C2D6 /* ModifierOrderRule.swift */,
+                82F614F32106015100D23904 /* MultilineArgumentsBracketsRule.swift */,
 				B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */,
 				B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */,
 				3ABE19CD20B7CDE0009C2EC2 /* MultilineFunctionChainsRule.swift */,
                 823EDC6121020D850070B7CD /* MultilineLiteralBracketsRule.swift */,
+                82F614F12106014500D23904 /* MultilineParametersBracketsRule.swift */,
 				6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */,
 				621061BE1ED57E640082D51E /* MultilineParametersRuleExamples.swift */,
 				BB00B4E71F5216070079869F /* MultipleClosuresWithTrailingClosureRule.swift */,
@@ -1790,6 +1796,7 @@
 				D44AD2761C0AA5350048F7B0 /* LegacyConstructorRule.swift in Sources */,
 				D286EC021E02DF6F0003CF72 /* SortedImportsRule.swift in Sources */,
 				D40E041C1F46E3B30043BC4E /* SuperfluousDisableCommandRule.swift in Sources */,
+				82F614F42106015100D23904 /* MultilineArgumentsBracketsRule.swift in Sources */,
 				E86623671F1D377900AAA3A2 /* Configuration+Parsing.swift in Sources */,
 				3BCC04CD1C4F5694006073C3 /* ConfigurationError.swift in Sources */,
 				D4C4A34E1DEA877200E0E04C /* FileHeaderRule.swift in Sources */,
@@ -1908,6 +1915,7 @@
 				E86396C51BADAC15002C9E88 /* XcodeReporter.swift in Sources */,
 				E889D8C51F1D11A200058332 /* Configuration+LintableFiles.swift in Sources */,
 				094385011D5D2894009168CF /* WeakDelegateRule.swift in Sources */,
+				82F614F22106014500D23904 /* MultilineParametersBracketsRule.swift in Sources */,
 				3B1DF0121C5148140011BCED /* CustomRules.swift in Sources */,
 				2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */,
 				E86396C91BADB2B9002C9E88 /* JSONReporter.swift in Sources */,

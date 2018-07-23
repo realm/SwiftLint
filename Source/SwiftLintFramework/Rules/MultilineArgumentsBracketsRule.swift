@@ -1,0 +1,86 @@
+import Foundation
+import SourceKittenFramework
+
+public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+    public var configuration = SeverityConfiguration(.warning)
+
+    public init() {}
+
+    public static let description = RuleDescription(
+        identifier: "multiline_arguments_brackets",
+        name: "Multiline Arguments Brackets",
+        description: "Multiline arguments should have their surrounding brackets in a new line.",
+        kind: .style,
+        nonTriggeringExamples: [
+            """
+            foo(param1: "Param1", param2: "Param2", param3: "Param3")
+            """,
+            """
+            foo(
+                param1: "Param1", param2: "Param2", param3: "Param3"
+            )
+            """,
+            """
+            func foo(
+                param1: "Param1",
+                param2: "Param2",
+                param3: "Param3"
+            )
+            """
+        ],
+        triggeringExamples: [
+            """
+            foo(↓param1: "Param1", param2: "Param2",
+                     param3: "Param3"
+            )
+            """,
+            """
+            foo(
+                param1: "Param1",
+                param2: "Param2",
+                param3: "Param3"↓)
+            """
+        ]
+    )
+
+    public func validate(file: File,
+                         kind: SwiftExpressionKind,
+                         dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        var violations = [StyleViolation]()
+
+        guard
+            kind == .call,
+            let bodyOffset = dictionary.bodyOffset,
+            let bodyLength = dictionary.bodyLength,
+            let range = file.contents.bridge().byteRangeToNSRange(start: bodyOffset, length: bodyLength)
+        else {
+            return []
+        }
+
+        let body = file.contents.substring(from: range.location, length: range.length)
+        let isMultiline = body.contains("\n")
+
+        let expectedBodyBeginRegex = regex("\\A[ \\t]*\\n")
+        let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
+
+        if isMultiline {
+            if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+                violations.append(StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, byteOffset: bodyOffset)
+                ))
+            }
+
+            if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+                violations.append(StyleViolation(
+                    ruleDescription: type(of: self).description,
+                    severity: configuration.severity,
+                    location: Location(file: file, byteOffset: bodyOffset + bodyLength)
+                ))
+            }
+        }
+
+        return violations
+    }
+}

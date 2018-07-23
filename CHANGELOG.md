@@ -23,6 +23,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2283](https://github.com/realm/SwiftLint/issues/2283)
 
+* Add new bool config option `if_only` to rule `conditional_returns_on_newline`
+  to specify that the rule should only be applied to `if` statements.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2307](https://github.com/realm/SwiftLint/issues/2307)
+
 #### Bug Fixes
 
 * Fix an issue with `control_statement` where commas in clauses prevented the

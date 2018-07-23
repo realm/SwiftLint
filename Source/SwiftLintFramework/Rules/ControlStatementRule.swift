@@ -89,6 +89,15 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
         ]
     )
 
+    let statementPatterns: [String] = ["if", "for", "guard", "switch", "while", "catch"]
+        .map { statement -> String in
+            let isGuard = statement == "guard"
+            let isSwitch = statement == "switch"
+            let elsePattern = isGuard ? "else\\s*" : ""
+            let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
+            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
+        }
+
     public func validate(file: File) -> [StyleViolation] {
         return violatingControlBracesRanges(file: file)
             .map { match -> StyleViolation in
@@ -199,14 +208,6 @@ public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestable
     }
 
     fileprivate func violatingControlBracesRanges(file: File) -> [NSRange] {
-        let statements = ["if", "for", "guard", "switch", "while", "catch"]
-        let statementPatterns: [String] = statements.map { statement -> String in
-            let isGuard = statement == "guard"
-            let isSwitch = statement == "switch"
-            let elsePattern = isGuard ? "else\\s*" : ""
-            let clausePattern = isSwitch ? "[^,{]*" : "[^{]*"
-            return "\(statement)\\s*\\(\(clausePattern)\\)\\s*\(elsePattern)\\{"
-        }
 
         return statementPatterns.flatMap { pattern -> [NSRange] in
             return file.match(pattern: pattern)

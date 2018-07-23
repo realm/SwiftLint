@@ -254,8 +254,9 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule, Automati
                 let fileTypeOffset = orderedFileTypeOffsets[index]
 
                 let fileType = fileTypeOffset.fileType.rawValue
-                let expectedFileTypes = expectedTypes.map { $0.rawValue }.joined(separator: ",")
-                let reason = "A '\(fileType)' should not be placed amongst the file type(s) '\(expectedFileTypes)'."
+                let expected = expectedTypes.map { $0.rawValue }.joined(separator: ",")
+                let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1)) ? "An" : "A"
+                let reason = "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'."
 
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,

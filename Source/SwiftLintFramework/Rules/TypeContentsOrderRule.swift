@@ -285,8 +285,9 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
                 let typeContentOffset = orderedTypeContentOffsets[index]
 
                 let content = typeContentOffset.typeContent.rawValue
-                let expectedContents = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
-                let reason = "A '\(content)' should not be placed amongst the type content(s) '\(expectedContents)'."
+                let expected = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
+                let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
+                let reason = "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."
 
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,

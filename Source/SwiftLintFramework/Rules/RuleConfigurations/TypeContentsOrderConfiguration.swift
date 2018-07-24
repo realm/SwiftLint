@@ -8,6 +8,7 @@ enum TypeContent: String {
     case typeProperty = "type_property"
     case instanceProperty = "instance_property"
     case ibOutlet = "ib_outlet"
+    case ibInspectable = "ib_inspectable"
     case initializer = "initializer"
     case typeMethod = "type_method"
     case viewLifeCycleMethod = "view_life_cycle_method"
@@ -24,6 +25,7 @@ public struct TypeContentsOrderConfiguration: RuleConfiguration {
         [.subtype],
         [.typeProperty],
         [.instanceProperty],
+        [.ibInspectable],
         [.ibOutlet],
         [.initializer],
         [.typeMethod],

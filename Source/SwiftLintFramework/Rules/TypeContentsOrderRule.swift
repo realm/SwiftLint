@@ -330,8 +330,10 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, Autom
             return .typeProperty
 
         case .varInstance:
-            if typeContentStructure.enclosedSwiftAttributes.contains(SwiftDeclarationAttributeKind.iboutlet) {
+            if typeContentStructure.enclosedSwiftAttributes.contains(.iboutlet) {
                 return .ibOutlet
+            } else if typeContentStructure.enclosedSwiftAttributes.contains(.ibinspectable) {
+                return .ibInspectable
             } else {
                 return .instanceProperty
             }

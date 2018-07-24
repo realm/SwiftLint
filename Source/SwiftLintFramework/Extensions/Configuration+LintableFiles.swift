@@ -14,7 +14,7 @@ extension Configuration {
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let excludedPaths = excluded
-            .flatMap { Glob.resolveGlobs(in: $0) }
+            .flatMap { Glob.resolveGlob($0) }
             .flatMap {
                 fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
             }

@@ -9,7 +9,7 @@ let globFunction = Darwin.glob
 #endif
 
 struct Glob {
-    static func resolveGlobs(in pattern: String) -> [String] {
+    static func resolveGlob(_ pattern: String) -> [String] {
         guard pattern.contains("*") else {
             return [pattern]
         }

@@ -9,17 +9,17 @@ final class GlobTests: XCTestCase {
     }
 
     func testOnlyGlobForWildcard() {
-    	let files = Glob.resolveGlobs(in: "foo/bar.swift")
+        let files = Glob.resolveGlob("foo/bar.swift")
         XCTAssertEqual(files, ["foo/bar.swift"])
     }
 
     func testNoMatchReturnsEmpty() {
-        let files = Glob.resolveGlobs(in: mockPath.stringByAppendingPathComponent("NoFile*.swift"))
+        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("NoFile*.swift"))
         XCTAssertTrue(files.isEmpty)
     }
 
     func testMatchesFiles() {
-        let files = Glob.resolveGlobs(in: mockPath.stringByAppendingPathComponent("Level*.swift"))
+        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level*.swift"))
         XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level0.swift")])
     }
 
@@ -29,13 +29,13 @@ final class GlobTests: XCTestCase {
             mockPath.stringByAppendingPathComponent("Directory.swift").appending("/")
         ]
 
-        let files = Glob.resolveGlobs(in: mockPath.stringByAppendingPathComponent("*.swift"))
+        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("*.swift"))
         XCTAssertEqual(files.count, 2)
         XCTAssertEqual(Set(files), expectedFiles)
     }
 
     func testMatchesNestedDirectory() {
-        let files = Glob.resolveGlobs(in: mockPath.stringByAppendingPathComponent("Level1/*.swift"))
+        let files = Glob.resolveGlob(mockPath.stringByAppendingPathComponent("Level1/*.swift"))
         XCTAssertEqual(files, [mockPath.stringByAppendingPathComponent("Level1/Level1.swift")])
     }
 }

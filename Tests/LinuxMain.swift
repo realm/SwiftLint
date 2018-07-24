@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -22,7 +22,8 @@ extension AttributesRuleTests {
     static var allTests: [(String, (AttributesRuleTests) -> () throws -> Void)] = [
         ("testAttributesWithDefaultConfiguration", testAttributesWithDefaultConfiguration),
         ("testAttributesWithAlwaysOnSameLine", testAttributesWithAlwaysOnSameLine),
-        ("testAttributesWithAlwaysOnLineAbove", testAttributesWithAlwaysOnLineAbove)
+        ("testAttributesWithAlwaysOnLineAbove", testAttributesWithAlwaysOnLineAbove),
+        ("testAttributesWithAttributesOnLineAboveButOnOtherDeclaration", testAttributesWithAttributesOnLineAboveButOnOtherDeclaration)
     ]
 }
 
@@ -107,7 +108,8 @@ extension CompilerProtocolInitRuleTests {
 
 extension ConditionalReturnsOnNewlineRuleTests {
     static var allTests: [(String, (ConditionalReturnsOnNewlineRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testConditionalReturnsOnNewlineWithDefaultConfiguration", testConditionalReturnsOnNewlineWithDefaultConfiguration),
+        ("testConditionalReturnsOnNewlineWithIfOnly", testConditionalReturnsOnNewlineWithIfOnly)
     ]
 }
 

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.11.2 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -63,12 +63,6 @@ class CommaRuleTests: XCTestCase {
 class CompilerProtocolInitRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)
-    }
-}
-
-class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(ConditionalReturnsOnNewlineRule.description)
     }
 }
 

@@ -6,10 +6,15 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
 
     private(set) public var severity: SeverityConfiguration
     private(set) public var excluded: Set<String>
+    private(set) public var prefixPattern: String
+    private(set) public var suffixPattern: String
 
-    public init(severity: ViolationSeverity, excluded: [String] = []) {
+    public init(severity: ViolationSeverity, excluded: [String] = [],
+                prefixPattern: String = "", suffixPattern: String = "\\+.*") {
         self.severity = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
+        self.prefixPattern = prefixPattern
+        self.suffixPattern = suffixPattern
     }
 
     public mutating func apply(configuration: Any) throws {
@@ -23,10 +28,18 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
         if let excluded = [String].array(of: configurationDict["excluded"]) {
             self.excluded = Set(excluded)
         }
+        if let prefixPattern = configurationDict["prefix_pattern"] as? String {
+            self.prefixPattern = prefixPattern
+        }
+        if let suffixPattern = configurationDict["suffix_pattern"] as? String {
+            self.suffixPattern = suffixPattern
+        }
     }
 }
 
 public func == (lhs: FileNameConfiguration, rhs: FileNameConfiguration) -> Bool {
     return lhs.severity == rhs.severity &&
-        lhs.excluded == rhs.excluded
+        lhs.excluded == rhs.excluded &&
+        lhs.prefixPattern == rhs.prefixPattern &&
+        lhs.suffixPattern == rhs.suffixPattern
 }

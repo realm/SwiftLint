@@ -654,6 +654,7 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
 * Add options `prefix_pattern` and `suffix_pattern` to rule `file_name`.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2309](https://github.com/realm/SwiftLint/issues/2309)
+
 * Add new opt-in rule `file_types_order` to specify how the types in a file
   should be sorted.  
   [Cihat Gündüz](https://github.com/Dschee)

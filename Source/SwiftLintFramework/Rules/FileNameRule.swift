@@ -15,7 +15,12 @@ private extension Dictionary where Key: ExpressibleByStringLiteral {
 }
 
 public struct FileNameRule: ConfigurationProviderRule, OptInRule {
-    public var configuration = FileNameConfiguration(severity: .warning, excluded: ["main.swift", "LinuxMain.swift"])
+    public var configuration = FileNameConfiguration(
+        severity: .warning,
+        excluded: ["main.swift", "LinuxMain.swift"],
+        prefixPattern: "",
+        suffixPattern: "\\+.*"
+    )
 
     public init() {}
 
@@ -33,11 +38,21 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
             return []
         }
 
+        let prefixRegex = regex("\\A\(configuration.prefixPattern)")
+        let suffixRegex = regex("\(configuration.suffixPattern)\\z")
+
         var typeInFileName = fileName.components(separatedBy: CharacterSet(charactersIn: "+.")).first ?? fileName
 
-        let extensionSuffix = "Extension"
-        if typeInFileName.hasSuffix(extensionSuffix) {
-            typeInFileName = String(typeInFileName.dropLast(extensionSuffix.count))
+        if let prefixMatch = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
+            if let range = typeInFileName.nsrangeToIndexRange(prefixMatch.range) {
+                typeInFileName.removeSubrange(range)
+            }
+        }
+
+        if let suffixMatch = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
+            if let range = typeInFileName.nsrangeToIndexRange(suffixMatch.range) {
+                typeInFileName.removeSubrange(range)
+            }
         }
 
         let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()

@@ -7,11 +7,16 @@ private let fixturesDirectory = #file.bridge()
     .appendingPathComponent("Resources/FileNameRuleFixtures")
 
 class FileNameRuleTests: XCTestCase {
-    private func validate(fileName: String, excludedOverride: [String]? = nil) throws -> [StyleViolation] {
+    private func validate(fileName: String, excludedOverride: [String]? = nil,
+                          prefixPattern: String? = nil, suffixPattern: String? = nil) throws -> [StyleViolation] {
         let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule: FileNameRule
         if let excluded = excludedOverride {
             rule = try FileNameRule(configuration: ["excluded": excluded])
+        } else if let prefixPattern = prefixPattern {
+            rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern])
+        } else if let suffixPattern = suffixPattern {
+            rule = try FileNameRule(configuration: ["suffix_pattern": suffixPattern])
         } else {
             rule = FileNameRule()
         }
@@ -36,7 +41,6 @@ class FileNameRuleTests: XCTestCase {
 
     func testExtensionNameDoesntTrigger() {
         XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
-        XCTAssert(try validate(fileName: "BoolExtension.swift").isEmpty)
     }
 
     func testMisspelledNameDoesTrigger() {
@@ -49,5 +53,15 @@ class FileNameRuleTests: XCTestCase {
 
     func testMainDoesTriggerWithoutOverride() {
         XCTAssertEqual(try validate(fileName: "main.swift", excludedOverride: []).count, 1)
+    }
+
+    func testCustomSuffixPattern() {
+        XCTAssert(try validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
+        XCTAssert(try validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
+    }
+
+    func testCustomPrefixPattern() {
+        XCTAssert(try validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
+        XCTAssert(try validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
     }
 }

@@ -71,6 +71,10 @@ extension String {
         return fromIndex..<toIndex
     }
 
+    internal var fullNSRange: NSRange {
+        return NSRange(location: 0, length: utf16.count)
+    }
+
     public func absolutePathStandardized() -> String {
         return bridge().absolutePathRepresentation().bridge().standardizingPath
     }

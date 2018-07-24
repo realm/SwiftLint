@@ -54,9 +54,9 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        if self.configuration.onlyPrivateMembers,
+        if configuration.onlyPrivateMembers,
             let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)), !acl.isPrivate {
-			return []
+            return []
         }
 
         guard

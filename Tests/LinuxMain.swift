@@ -131,6 +131,7 @@ extension ConfigurationTests {
         ("testForceExcludesFileNotPresentInExcluded", testForceExcludesFileNotPresentInExcluded),
         ("testForceExcludesDirectory", testForceExcludesDirectory),
         ("testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre", testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre),
+        ("testGlobExcludePaths", testGlobExcludePaths),
         ("testLintablePaths", testLintablePaths),
         ("testIsEqualTo", testIsEqualTo),
         ("testIsNotEqualTo", testIsNotEqualTo),

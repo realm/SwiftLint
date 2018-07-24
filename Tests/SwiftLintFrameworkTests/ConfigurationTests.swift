@@ -210,6 +210,14 @@ class ConfigurationTests: XCTestCase {
         XCTAssertEqual(expectedFilenames, filenames)
     }
 
+    func testGlobExcludePaths() {
+        let configuration = Configuration(
+            included: [projectMockPathLevel3],
+            excluded: [projectMockPathLevel3.stringByAppendingPathComponent("*.swift")])!
+
+        XCTAssertEqual(configuration.lintablePaths(inPath: "", forceExclude: false), [])
+    }
+
     // MARK: - Testing Configuration Equality
 
     func testIsEqualTo() {

@@ -2,17 +2,12 @@ import Foundation
 
 // swiftlint:disable:next type_body_length
 internal struct TypeContentsOrderRuleExamples {
-    static let nonTriggeringExamples = [
+    static let defaultOrderParts = [
         """
-        // Supporting Types
-        protocol TestViewControllerDelegate {
-            func didPressTrackedButton()
-        }
-
-        class TestViewController: UIViewController {
             // Type Aliases
             typealias CompletionHandler = ((TestEnum) -> Void)
-
+        """,
+        """
             // Subtypes
             class TestClass {
                 // 10 lines
@@ -25,10 +20,12 @@ internal struct TypeContentsOrderRuleExamples {
             enum TestEnum {
                 // 5 lines
             }
-
+        """,
+        """
             // Type Properties
             static let cellIdentifier: String = "AmazingCell"
-
+        """,
+        """
             // Instance Properties
             var shouldLayoutView1: Bool!
             weak var delegate: TestViewControllerDelegate?
@@ -38,11 +35,13 @@ internal struct TypeContentsOrderRuleExamples {
             private var hasAnyLayoutedView: Bool {
                  return hasLayoutedView1 || hasLayoutedView2
             }
-
+        """,
+        """
             // IBOutlets
             @IBOutlet private var view1: UIView!
             @IBOutlet private var view2: UIView!
-
+        """,
+        """
             // Initializers
             override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
                 super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -51,12 +50,14 @@ internal struct TypeContentsOrderRuleExamples {
             required init?(coder aDecoder: NSCoder) {
                 fatalError("init(coder:) has not been implemented")
             }
-
+        """,
+        """
             // Type Methods
             static func makeViewController() -> TestViewController {
                 // some code
             }
-
+        """,
+        """
             // View Life-Cycle Methods
             override func viewDidLoad() {
                 super.viewDidLoad()
@@ -73,7 +74,8 @@ internal struct TypeContentsOrderRuleExamples {
                 view2.layoutIfNeeded()
                 hasLayoutedView2 = true
             }
-
+        """,
+        """
             // IBActions
             @IBAction func goNextButtonPressed() {
                 goToNextVc()
@@ -91,7 +93,8 @@ internal struct TypeContentsOrderRuleExamples {
             }
 
             private func getRandomVc() -> UIViewController { return UIViewController() }
-
+        """,
+        """
             // Subscripts
             subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
                 get {
@@ -102,19 +105,15 @@ internal struct TypeContentsOrderRuleExamples {
                     log.warning("Just a test", newValue)
                 }
             }
-        }
-
-        // Extensions
-        extension TestViewController: UITableViewDataSource {
-            func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-                return 1
-            }
-
-            func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-                return UITableViewCell()
-            }
-        }
         """
+    ]
+
+    static let nonTriggeringExamples = [
+        [
+            "class TestViewController: UIViewController {",
+            TypeContentsOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n"),
+            "}"
+        ].joined(separator: "\n")
     ]
 
     static let triggeringExamples = [

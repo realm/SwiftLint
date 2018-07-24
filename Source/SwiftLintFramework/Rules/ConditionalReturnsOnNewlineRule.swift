@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule, AutomaticTestableRule {
+public struct ConditionalReturnsOnNewlineRule: ConfigurationProviderRule, Rule, OptInRule {
     public var configuration = ConditionalReturnsOnNewlineConfiguration()
 
     public init() {}

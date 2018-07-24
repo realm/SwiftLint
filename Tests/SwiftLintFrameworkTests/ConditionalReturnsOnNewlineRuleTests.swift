@@ -26,12 +26,11 @@ class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
             "↓if true { return \"YES\" } else { return \"NO\" }"
         ]
 
-        let alwaysOnSameLineDescription = ConditionalReturnsOnNewlineRule.description
+        let description = ConditionalReturnsOnNewlineRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnSameLineDescription,
-                   ruleConfiguration: ["if_only": true])
+        verifyRule(description, ruleConfiguration: ["if_only": true])
 
     }
 }

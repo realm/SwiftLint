@@ -43,16 +43,14 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
 
         var typeInFileName = fileName.components(separatedBy: ".").first ?? fileName
 
-        if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
-            if let range = typeInFileName.nsrangeToIndexRange(match.range) {
-                typeInFileName.removeSubrange(range)
-            }
+        if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
+            let range = typeInFileName.nsrangeToIndexRange(match.range) {
+            typeInFileName.removeSubrange(range)
         }
 
-        if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
-            if let range = typeInFileName.nsrangeToIndexRange(match.range) {
-                typeInFileName.removeSubrange(range)
-            }
+        if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
+            let range = typeInFileName.nsrangeToIndexRange(match.range) {
+            typeInFileName.removeSubrange(range)
         }
 
         let allDeclaredTypeNames = file.structure.dictionary.recursiveDeclaredTypeNames()

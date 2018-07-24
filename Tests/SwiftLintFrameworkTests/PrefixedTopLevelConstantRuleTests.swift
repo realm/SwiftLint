@@ -17,11 +17,10 @@ final class PrefixedTopLevelConstantRuleTests: XCTestCase {
             "public let Foo = 20.0"
         ]
 
-        let alwaysOnSameLineDescription = PrefixedTopLevelConstantRule.description
+        let description = PrefixedTopLevelConstantRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(alwaysOnSameLineDescription,
-                   ruleConfiguration: ["only_private": true])
+        verifyRule(description, ruleConfiguration: ["only_private": true])
     }
 }

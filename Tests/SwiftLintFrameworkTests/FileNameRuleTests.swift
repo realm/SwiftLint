@@ -13,6 +13,8 @@ class FileNameRuleTests: XCTestCase {
         let rule: FileNameRule
         if let excluded = excludedOverride {
             rule = try FileNameRule(configuration: ["excluded": excluded])
+        } else if let prefixPattern = prefixPattern, let suffixPattern = suffixPattern {
+            rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern, "suffix_pattern": suffixPattern])
         } else if let prefixPattern = prefixPattern {
             rule = try FileNameRule(configuration: ["prefix_pattern": prefixPattern])
         } else if let suffixPattern = suffixPattern {
@@ -63,5 +65,23 @@ class FileNameRuleTests: XCTestCase {
     func testCustomPrefixPattern() {
         XCTAssert(try validate(fileName: "ExtensionBool.swift", prefixPattern: "Extensions?").isEmpty)
         XCTAssert(try validate(fileName: "ExtensionsBool.swift", prefixPattern: "Extensions?").isEmpty)
+    }
+
+    func testCustomPrefixAndSuffixPatterns() {
+        XCTAssert(
+            try validate(
+                fileName: "SLBoolExtension.swift",
+                prefixPattern: "SL",
+                suffixPattern: "Extensions?|\\+.*"
+            ).isEmpty
+        )
+
+        XCTAssert(
+            try validate(
+                fileName: "ExtensionBool+SwiftLint.swift",
+                prefixPattern: "Extensions?",
+                suffixPattern: "Extensions?|\\+.*"
+            ).isEmpty
+        )
     }
 }

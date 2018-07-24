@@ -52,10 +52,26 @@ public struct VerticalWhitespaceOpeningBracesRule: ConfigurationProviderRule {
         "class X {\n    struct Y {\n↓\n    class Z {\n": "class X {\n    struct Y {\n    class Z {\n",
         "[\n↓\n1,\n2,\n3\n]": "[\n1,\n2,\n3\n]",
         "foo(\n↓\nx: 5,\ny:6\n)": "foo(\nx: 5,\ny:6\n)",
-        "class Name {\n↓\n    run(5) { x in print(x) }\n}": "class Name {\n    run(5) { x in print(x) }\n}"
+        "class Name {\n↓\n    run(5) { x in print(x) }\n}": "class Name {\n    run(5) { x in print(x) }\n}",
+        """
+        KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+        ↓
+            guard let img = image else { return }
+        """: """
+        KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+            guard let img = image else { return }
+        """,
+        """
+        }) { _ in
+        ↓
+            self.dismiss(animated: false, completion: {
+        """: """
+        }) { _ in
+            self.dismiss(animated: false, completion: {
+        """
     ]
 
-    private let pattern = "([{(\\[][ \\t]*)((?:\\n[ \\t]*)+)(\\n)"
+    private let pattern = "([{(\\[][ \\t]*(?:[^\\n{]+ in[ \\t]*$)?)((?:\\n[ \\t]*)+)(\\n)"
 }
 
 extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule {

@@ -473,6 +473,16 @@ extension GenericTypeNameRuleTests {
     ]
 }
 
+extension GlobTests {
+    static var allTests: [(String, (GlobTests) -> () throws -> Void)] = [
+        ("testOnlyGlobForWildcard", testOnlyGlobForWildcard),
+        ("testNoMatchReturnsEmpty", testNoMatchReturnsEmpty),
+        ("testMatchesFiles", testMatchesFiles),
+        ("testMatchesMultipleFiles", testMatchesMultipleFiles),
+        ("testMatchesNestedDirectory", testMatchesNestedDirectory)
+    ]
+}
+
 extension IdentifierNameRuleTests {
     static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] = [
         ("testIdentifierName", testIdentifierName),
@@ -1249,6 +1259,7 @@ XCTMain([
     testCase(FunctionDefaultParameterAtEndRuleTests.allTests),
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
+    testCase(GlobTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
     testCase(ImplicitReturnRuleTests.allTests),

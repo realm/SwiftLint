@@ -2,7 +2,7 @@ import Foundation
 import SourceKittenFramework
 
 public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = PrefixedConstantRuleConfiguration(onlyPrivateMembers: false)
 
     private let topLevelPrefix = "k"
 
@@ -54,6 +54,11 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
+        if self.configuration.onlyPrivateMembers,
+            let acl = dictionary.accessibility.flatMap(AccessControlLevel.init(identifier:)), !acl.isPrivate {
+			return []
+        }
+
         guard
             kind == .varGlobal,
             dictionary.setterAccessibility == nil,
@@ -66,7 +71,7 @@ public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationPro
 
         return [
             StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
+                           severity: configuration.severityConfiguration.severity,
                            location: Location(file: file, byteOffset: nameOffset))
         ]
     }

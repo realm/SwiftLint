@@ -70,13 +70,12 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
                 let fileType = fileTypeOffset.fileType.rawValue
                 let expected = expectedTypes.map { $0.rawValue }.joined(separator: ",")
                 let article = ["a", "e", "i", "o", "u"].contains(fileType.substring(from: 0, length: 1)) ? "An" : "A"
-                let reason = "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'."
 
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: fileTypeOffset.offset),
-                    reason: reason
+                    reason: "\(article) '\(fileType)' should not be placed amongst the file type(s) '\(expected)'."
                 )
                 violations.append(styleViolation)
             }
@@ -106,6 +105,7 @@ public struct FileTypesOrderRule: ConfigurationProviderRule, OptInRule {
         return file.structure.dictionary.substructure.filter { substructure in
             guard let kind = substructure.kind else { return false }
             guard let declarationKind = SwiftDeclarationKind(rawValue: kind) else { return false }
+
             return substructure.bridge() != mainTypeSubstructure.bridge() &&
                 supportingTypeKinds.contains(declarationKind)
         }

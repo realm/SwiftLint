@@ -5,7 +5,14 @@ import XCTest
 class TypeContentsOrderRuleTests: XCTestCase {
     func testTypeContentsOrderWithDefaultConfiguration() {
         // Test with default parameters
+        #if swift(>=4.1)
         verifyRule(TypeContentsOrderRule.description)
+        #else
+        let compatibleDescription = TypeContentsOrderRule.description
+            .with(triggeringExamples: compatibleExamples(from: TypeContentsOrderRuleExamples.triggeringExamples))
+
+        verifyRule(compatibleDescription)
+        #endif
     }
 
     func testTypeContentsOrderReversedOrder() {
@@ -137,9 +144,15 @@ class TypeContentsOrderRuleTests: XCTestCase {
             """
         ]
 
+        #if swift(>=4.1)
         let reversedOrderDescription = TypeContentsOrderRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
+        #else
+        let reversedOrderDescription = TypeContentsOrderRule.description
+            .with(triggeringExamples: compatibleExamples(from: triggeringExamples))
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+        #endif
 
         verifyRule(
             reversedOrderDescription,
@@ -318,9 +331,15 @@ class TypeContentsOrderRuleTests: XCTestCase {
             """
         ]
 
+        #if swift(>=4.1)
         let groupedOrderDescription = TypeContentsOrderRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
+        #else
+        let groupedOrderDescription = TypeContentsOrderRule.description
+            .with(triggeringExamples: compatibleExamples(from: triggeringExamples))
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+        #endif
 
         verifyRule(
             groupedOrderDescription,
@@ -334,4 +353,12 @@ class TypeContentsOrderRuleTests: XCTestCase {
             ]
         )
     }
+
+    #if swift(>=4.1)
+    #else
+    /// Removes examples including typealias and subscript since unsupported by SourceKit of Swift <4.1.
+    private func compatibleExamples(from examples: [String]) -> [String] {
+        return examples.filter { !$0.contains("typealias") && !$0.contains("subscript") }
+    }
+    #endif
 }

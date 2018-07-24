@@ -34,12 +34,14 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         var violations =  [StyleViolation]()
 
         var lastMatchingIndex = -1
+        print(configuration.order)
         for expectedTypesContents in configuration.order {
             var potentialViolatingIndexes = [Int]()
 
             let startIndex = lastMatchingIndex + 1
             (startIndex..<orderedTypeContentOffsets.count).forEach { index in
                 let typeContent = orderedTypeContentOffsets[index].typeContent
+
                 if expectedTypesContents.contains(typeContent) {
                     lastMatchingIndex = index
                 } else {
@@ -54,13 +56,12 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
                 let content = typeContentOffset.typeContent.rawValue
                 let expected = expectedTypesContents.map { $0.rawValue }.joined(separator: ",")
                 let article = ["a", "e", "i", "o", "u"].contains(content.substring(from: 0, length: 1)) ? "An" : "A"
-                let reason = "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."
 
                 let styleViolation = StyleViolation(
                     ruleDescription: type(of: self).description,
                     severity: configuration.severityConfiguration.severity,
                     location: Location(file: file, byteOffset: typeContentOffset.offset),
-                    reason: reason
+                    reason: "\(article) '\(content)' should not be placed amongst the type content(s) '\(expected)'."
                 )
                 violations.append(styleViolation)
             }

@@ -43,14 +43,14 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
 
         var typeInFileName = fileName.components(separatedBy: CharacterSet(charactersIn: "+.")).first ?? fileName
 
-        if let prefixMatch = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
-            if let range = typeInFileName.nsrangeToIndexRange(prefixMatch.range) {
+        if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
+            if let range = typeInFileName.nsrangeToIndexRange(match.range) {
                 typeInFileName.removeSubrange(range)
             }
         }
 
-        if let suffixMatch = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
-            if let range = typeInFileName.nsrangeToIndexRange(suffixMatch.range) {
+        if let match = suffixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange) {
+            if let range = typeInFileName.nsrangeToIndexRange(match.range) {
                 typeInFileName.removeSubrange(range)
             }
         }

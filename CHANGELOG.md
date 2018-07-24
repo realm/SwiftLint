@@ -22,6 +22,10 @@
   `class` for class-only protocols.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2283](https://github.com/realm/SwiftLint/issues/2283)
+  
+* Add options `prefix_pattern` and `suffix_pattern` to rule `file_name`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2309](https://github.com/realm/SwiftLint/issues/2309)
 
 #### Bug Fixes
 
@@ -53,10 +57,6 @@
 * `redundant_optional_initialization` rule now lints local variables.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2233](https://github.com/realm/SwiftLint/issues/2233)
-
-* Fix false positive on `file_name` rule when file ends with `Extension`.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2309](https://github.com/realm/SwiftLint/issues/2309)
 
 ## 0.26.0: Maytagged Pointers
 

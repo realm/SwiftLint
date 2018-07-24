@@ -198,12 +198,6 @@ class FatalErrorMessageRuleTests: XCTestCase {
     }
 }
 
-class FileTypesOrderRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(FileTypesOrderRule.description)
-    }
-}
-
 class FirstWhereRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(FirstWhereRule.description)

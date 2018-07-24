@@ -153,6 +153,7 @@
 		824AB64D2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 824AB64C2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift */; };
 		821F70B321071E9300E2C84F /* TypeContentsOrderRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821F70B221071E9300E2C84F /* TypeContentsOrderRuleExamples.swift */; };
 		821F70B521071F3500E2C84F /* FileTypesOrderRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821F70B421071F3500E2C84F /* FileTypesOrderRuleExamples.swift */; };
+		821F70B7210720C700E2C84F /* FileTypesOrderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821F70B6210720C700E2C84F /* FileTypesOrderRuleTests.swift */; };
 		825F19D11EEFF19700969EF1 /* ObjectLiteralRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */; };
 		827009FD20FE26B700ECA185 /* FileTypesOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827009FC20FE26B700ECA185 /* FileTypesOrderRule.swift */; };
 		827009FF20FE26C500ECA185 /* TypeContentsOrderRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 827009FE20FE26C500ECA185 /* TypeContentsOrderRule.swift */; };
@@ -613,6 +614,7 @@
 		824AB64C2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewlineConfiguration.swift; sourceTree = "<group>"; };
 		821F70B221071E9300E2C84F /* TypeContentsOrderRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContentsOrderRuleExamples.swift; sourceTree = "<group>"; };
 		821F70B421071F3500E2C84F /* FileTypesOrderRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTypesOrderRuleExamples.swift; sourceTree = "<group>"; };
+		821F70B6210720C700E2C84F /* FileTypesOrderRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTypesOrderRuleTests.swift; sourceTree = "<group>"; };
 		825F19D01EEFF19700969EF1 /* ObjectLiteralRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralRuleTests.swift; sourceTree = "<group>"; };
 		827009FC20FE26B700ECA185 /* FileTypesOrderRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTypesOrderRule.swift; sourceTree = "<group>"; };
 		827009FE20FE26C500ECA185 /* TypeContentsOrderRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeContentsOrderRule.swift; sourceTree = "<group>"; };
@@ -1417,6 +1419,7 @@
 				D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */,
 				29FFC37B1F157BA8007E4825 /* FileLengthRuleTests.swift */,
 				8F2CC1CC20A6A189006ED34F /* FileNameRuleTests.swift */,
+				821F70B6210720C700E2C84F /* FileTypesOrderRuleTests.swift */,
 				D4348EE91C46122C007707FB /* FunctionBodyLengthRuleTests.swift */,
 				8B01E4FF20A4340A00C9233E /* FunctionParameterCountRuleTests.swift */,
 				3B20CD091EB699380069EF2E /* GenericTypeNameRuleTests.swift */,
@@ -2211,6 +2214,7 @@
 				D414D6AC21D0B77F00960935 /* DiscouragedObjectLiteralRuleTests.swift in Sources */,
 				3B20CD0C1EB699C20069EF2E /* TypeNameRuleTests.swift in Sources */,
 				CCD8B87920559D1E00B75847 /* DisableAllTests.swift in Sources */,
+				821F70B7210720C700E2C84F /* FileTypesOrderRuleTests.swift in Sources */,
 				3B3A9A331EA3DFD90075B121 /* IdentifierNameRuleTests.swift in Sources */,
 				62329C2B1F30B2310035737E /* DiscouragedDirectInitRuleTests.swift in Sources */,
 				C25EBBE221078D5F00E27603 /* GlobTests.swift in Sources */,

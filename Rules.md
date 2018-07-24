@@ -8171,6 +8171,7 @@ protocol TestViewControllerDelegate {
     func didPressTrackedButton()
 }
 
+// Main Type
 class TestViewController: UIViewController {
     // Type Aliases
     typealias CompletionHandler = ((TestEnum) -> Void)

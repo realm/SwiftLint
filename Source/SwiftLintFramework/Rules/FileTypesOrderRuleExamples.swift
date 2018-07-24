@@ -1,13 +1,15 @@
 import Foundation
 
 internal struct FileTypesOrderRuleExamples {
-    static let nonTriggeringExamples = [
+    static let defaultOrderParts = [
         """
         // Supporting Types
         protocol TestViewControllerDelegate {
             func didPressTrackedButton()
         }
-
+        """,
+        """
+        // Main Type
         class TestViewController: UIViewController {
             // Type Aliases
             typealias CompletionHandler = ((TestEnum) -> Void)
@@ -108,7 +110,8 @@ internal struct FileTypesOrderRuleExamples {
                 }
             }
         }
-
+        """,
+        """
         // Extensions
         extension TestViewController: UITableViewDataSource {
             func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -121,6 +124,8 @@ internal struct FileTypesOrderRuleExamples {
         }
         """
     ]
+
+    static let nonTriggeringExamples = [FileTypesOrderRuleExamples.defaultOrderParts.joined(separator: "\n\n")]
 
     static let triggeringExamples = [
         """

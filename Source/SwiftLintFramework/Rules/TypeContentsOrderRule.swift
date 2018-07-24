@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
+public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
     private typealias TypeContentOffset = (typeContent: TypeContent, offset: Int)
 
     public var configuration = TypeContentsOrderConfiguration()

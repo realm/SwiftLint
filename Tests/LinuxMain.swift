@@ -470,7 +470,9 @@ extension FileNameRuleTests {
 
 extension FileTypesOrderRuleTests {
     static var allTests: [(String, (FileTypesOrderRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testFileTypesOrderWithDefaultConfiguration", testFileTypesOrderWithDefaultConfiguration),
+        ("testFileTypesOrderReversedOrder", testFileTypesOrderReversedOrder),
+        ("testFileTypesOrderGroupedOrder", testFileTypesOrderGroupedOrder)
     ]
 }
 
@@ -1289,7 +1291,9 @@ extension TypeBodyLengthRuleTests {
 
 extension TypeContentsOrderRuleTests {
     static var allTests: [(String, (TypeContentsOrderRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testTypeContentsOrderWithDefaultConfiguration", testTypeContentsOrderWithDefaultConfiguration),
+        ("testTypeContentsOrderReversedOrder", testTypeContentsOrderReversedOrder),
+        ("testTypeContentsOrderGroupedOrder", testTypeContentsOrderGroupedOrder)
     ]
 }
 

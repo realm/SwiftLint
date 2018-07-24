@@ -81,7 +81,8 @@ internal struct TypeContentsOrderRuleExamples {
                 goToNextVc()
                 delegate?.didPressTrackedButton()
             }
-
+        """,
+        """
             // Other Methods
             func goToNextVc() { /* TODO */ }
 

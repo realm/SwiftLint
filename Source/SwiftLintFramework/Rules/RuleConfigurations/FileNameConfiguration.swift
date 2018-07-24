@@ -10,7 +10,7 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
     private(set) public var suffixPattern: String
 
     public init(severity: ViolationSeverity, excluded: [String] = [],
-                prefixPattern: String = "", suffixPattern: String = "") {
+                prefixPattern: String = "", suffixPattern: String = "\\+.*") {
         self.severity = SeverityConfiguration(severity)
         self.excluded = Set(excluded)
         self.prefixPattern = prefixPattern

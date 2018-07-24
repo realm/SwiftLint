@@ -390,12 +390,6 @@ class PatternMatchingKeywordsRuleTests: XCTestCase {
     }
 }
 
-class PrefixedTopLevelConstantRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(PrefixedTopLevelConstantRule.description)
-    }
-}
-
 class PrivateActionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(PrivateActionRule.description)

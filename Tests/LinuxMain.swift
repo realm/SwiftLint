@@ -113,6 +113,16 @@ extension ConditionalReturnsOnNewlineRuleTests {
     ]
 }
 
+extension ConfigurationAliasesTests {
+    static var allTests: [(String, (ConfigurationAliasesTests) -> () throws -> Void)] = [
+        ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
+        ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
+        ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
+        ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
+        ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias)
+    ]
+}
+
 extension ConfigurationTests {
     static var allTests: [(String, (ConfigurationTests) -> () throws -> Void)] = [
         ("testInit", testInit),
@@ -131,8 +141,8 @@ extension ConfigurationTests {
         ("testForceExcludesFileNotPresentInExcluded", testForceExcludesFileNotPresentInExcluded),
         ("testForceExcludesDirectory", testForceExcludesDirectory),
         ("testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre", testForceExcludesDirectoryThatIsNotInExcludedButHasChildrenThatAre),
-        ("testGlobExcludePaths", testGlobExcludePaths),
         ("testLintablePaths", testLintablePaths),
+        ("testGlobExcludePaths", testGlobExcludePaths),
         ("testIsEqualTo", testIsEqualTo),
         ("testIsNotEqualTo", testIsNotEqualTo),
         ("testCustomConfiguration", testCustomConfiguration),
@@ -143,11 +153,6 @@ extension ConfigurationTests {
         ("testIndentationFallback", testIndentationFallback),
         ("testConfiguresCorrectlyFromDict", testConfiguresCorrectlyFromDict),
         ("testConfigureFallsBackCorrectly", testConfigureFallsBackCorrectly),
-        ("testConfiguresCorrectlyFromDeprecatedAlias", testConfiguresCorrectlyFromDeprecatedAlias),
-        ("testReturnsNilWithDuplicatedConfiguration", testReturnsNilWithDuplicatedConfiguration),
-        ("testInitsFromDeprecatedAlias", testInitsFromDeprecatedAlias),
-        ("testWhitelistRulesFromDeprecatedAlias", testWhitelistRulesFromDeprecatedAlias),
-        ("testDisabledRulesFromDeprecatedAlias", testDisabledRulesFromDeprecatedAlias),
         ("testMerge", testMerge),
         ("testLevel0", testLevel0),
         ("testLevel1", testLevel1),
@@ -1200,6 +1205,7 @@ XCTMain([
     testCase(CommandTests.allTests),
     testCase(CompilerProtocolInitRuleTests.allTests),
     testCase(ConditionalReturnsOnNewlineRuleTests.allTests),
+    testCase(ConfigurationAliasesTests.allTests),
     testCase(ConfigurationTests.allTests),
     testCase(ContainsOverFirstNotNilRuleTests.allTests),
     testCase(ControlStatementRuleTests.allTests),

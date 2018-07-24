@@ -29,7 +29,7 @@ struct Glob {
 #endif
 
         return (0..<Int(matchCount)).compactMap { index in
-            return String(validatingUTF8: globResult.gl_pathv[index]!)
+            return globResult.gl_pathv[index].flatMap { String(validatingUTF8: $0) }
         }
     }
 }

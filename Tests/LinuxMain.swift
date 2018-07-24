@@ -748,7 +748,8 @@ extension PatternMatchingKeywordsRuleTests {
 
 extension PrefixedTopLevelConstantRuleTests {
     static var allTests: [(String, (PrefixedTopLevelConstantRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testDefaultConfiguration", testDefaultConfiguration),
+        ("testPrivateOnly", testPrivateOnly)
     ]
 }
 

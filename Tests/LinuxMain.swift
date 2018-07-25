@@ -401,7 +401,10 @@ extension FileNameRuleTests {
         ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
         ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
         ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
-        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride)
+        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride),
+        ("testCustomSuffixPattern", testCustomSuffixPattern),
+        ("testCustomPrefixPattern", testCustomPrefixPattern),
+        ("testCustomPrefixAndSuffixPatterns", testCustomPrefixAndSuffixPatterns)
     ]
 }
 
@@ -616,6 +619,12 @@ extension LiteralExpressionEndIdentationRuleTests {
     ]
 }
 
+extension LowerACLThanParentRuleTests {
+    static var allTests: [(String, (LowerACLThanParentRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension MissingDocsRuleConfigurationTests {
     static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
         ("testDescriptionEmpty", testDescriptionEmpty),
@@ -628,12 +637,6 @@ extension MissingDocsRuleConfigurationTests {
         ("testInvalidServety", testInvalidServety),
         ("testInvalidAcl", testInvalidAcl),
         ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
-    ]
-}
-
-extension LowerACLThanParentRuleTests {
-    static var allTests: [(String, (LowerACLThanParentRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -982,18 +985,6 @@ extension RulesTests {
         ("testPrefixedTopLevelConstant", testPrefixedTopLevelConstant),
         ("testPrivateAction", testPrivateAction),
         ("testPrivateOutlet", testPrivateOutlet),
-        ("testPrivateUnitTest", testPrivateUnitTest),
-        ("testProhibitedSuper", testProhibitedSuper),
-        ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
-        ("testQuickDiscouragedCall", testQuickDiscouragedCall),
-        ("testQuickDiscouragedFocusedTest", testQuickDiscouragedFocusedTest),
-        ("testQuickDiscouragedPendingTest", testQuickDiscouragedPendingTest),
-        ("testRedundantDiscardableLet", testRedundantDiscardableLet),
-        ("testRedundantNilCoalescing", testRedundantNilCoalescing),
-        ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
-        ("testRedundantSetAccessControl", testRedundantSetAccessControl),
-        ("testRedundantStringEnumValue", testRedundantStringEnumValue),
-        ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline)
     ]
@@ -1303,9 +1294,9 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
-    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(LiteralExpressionEndIdentationRuleTests.allTests),
     testCase(LowerACLThanParentRuleTests.allTests),
+    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
     testCase(MultilineFunctionChainsRuleTests.allTests),

@@ -1166,10 +1166,10 @@ extension ValidIBInspectableRuleTests {
 extension VerticalParameterAlignmentOnCallRuleTests {
     static var allTests: [(String, (VerticalParameterAlignmentOnCallRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-extension VerticalParameterAlignmentRuleTests {
     ]
 }
 
+extension VerticalParameterAlignmentRuleTests {
     static var allTests: [(String, (VerticalParameterAlignmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]

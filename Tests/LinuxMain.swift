@@ -616,6 +616,21 @@ extension LiteralExpressionEndIdentationRuleTests {
     ]
 }
 
+extension MissingDocsRuleConfigurationTests {
+    static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
+        ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionSingleServety", testDescriptionSingleServety),
+        ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
+        ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
+        ("testParsingSingleServety", testParsingSingleServety),
+        ("testParsingMultipleSeverities", testParsingMultipleSeverities),
+        ("testParsingMultipleAcls", testParsingMultipleAcls),
+        ("testInvalidServety", testInvalidServety),
+        ("testInvalidAcl", testInvalidAcl),
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+    ]
+}
+
 extension LowerACLThanParentRuleTests {
     static var allTests: [(String, (LowerACLThanParentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -950,6 +965,35 @@ extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testMark", testMark),
+        ("testMissingDocs", testMissingDocs),
+        ("testModifierOrder", testModifierOrder),
+        ("testMultilineParameters", testMultilineParameters),
+        ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
+        ("testNesting", testNesting),
+        ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
+        ("testNoGroupingExtension", testNoGroupingExtension),
+        ("testNotificationCenterDetachment", testNotificationCenterDetachment),
+        ("testNimbleOperator", testNimbleOperator),
+        ("testOpeningBrace", testOpeningBrace),
+        ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+        ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+        ("testOverrideInExtension", testOverrideInExtension),
+        ("testPatternMatchingKeywords", testPatternMatchingKeywords),
+        ("testPrefixedTopLevelConstant", testPrefixedTopLevelConstant),
+        ("testPrivateAction", testPrivateAction),
+        ("testPrivateOutlet", testPrivateOutlet),
+        ("testPrivateUnitTest", testPrivateUnitTest),
+        ("testProhibitedSuper", testProhibitedSuper),
+        ("testProtocolPropertyAccessorsOrder", testProtocolPropertyAccessorsOrder),
+        ("testQuickDiscouragedCall", testQuickDiscouragedCall),
+        ("testQuickDiscouragedFocusedTest", testQuickDiscouragedFocusedTest),
+        ("testQuickDiscouragedPendingTest", testQuickDiscouragedPendingTest),
+        ("testRedundantDiscardableLet", testRedundantDiscardableLet),
+        ("testRedundantNilCoalescing", testRedundantNilCoalescing),
+        ("testRedundantOptionalInitialization", testRedundantOptionalInitialization),
+        ("testRedundantSetAccessControl", testRedundantSetAccessControl),
+        ("testRedundantStringEnumValue", testRedundantStringEnumValue),
+        ("testRedundantVoidReturn", testRedundantVoidReturn),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline)
     ]
@@ -1122,10 +1166,10 @@ extension ValidIBInspectableRuleTests {
 extension VerticalParameterAlignmentOnCallRuleTests {
     static var allTests: [(String, (VerticalParameterAlignmentOnCallRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+extension VerticalParameterAlignmentRuleTests {
     ]
 }
 
-extension VerticalParameterAlignmentRuleTests {
     static var allTests: [(String, (VerticalParameterAlignmentRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
@@ -1259,6 +1303,7 @@ XCTMain([
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
     testCase(LinterCacheTests.allTests),
+    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(LiteralExpressionEndIdentationRuleTests.allTests),
     testCase(LowerACLThanParentRuleTests.allTests),
     testCase(ModifierOrderTests.allTests),

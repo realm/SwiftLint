@@ -69,6 +69,7 @@ public let masterRuleList = RuleList(rules: [
     LiteralExpressionEndIdentationRule.self,
     LowerACLThanParentRule.self,
     MarkRule.self,
+    MissingDocsRule.self,
     ModifierOrderRule.self,
     MultilineArgumentsRule.self,
     MultilineFunctionChainsRule.self,

@@ -341,7 +341,8 @@ extension ExplicitTypeInterfaceRuleTests {
     static var allTests: [(String, (ExplicitTypeInterfaceRuleTests) -> () throws -> Void)] = [
         ("testExplicitTypeInterface", testExplicitTypeInterface),
         ("testExcludeLocalVars", testExcludeLocalVars),
-        ("testExcludeClassVars", testExcludeClassVars)
+        ("testExcludeClassVars", testExcludeClassVars),
+        ("testAllowRedundancy", testAllowRedundancy)
     ]
 }
 

@@ -4905,13 +4905,6 @@ class Foo {
 
 ```
 
-```swift
-class Foo {
-  static let shared = Foo()
-}
-
-```
-
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4942,6 +4935,20 @@ class Foo {
 ```swift
 class Foo {
   ↓class var myClassVar = 0
+}
+
+```
+
+```swift
+class Foo {
+  ↓let myVar = Int(0)
+}
+
+```
+
+```swift
+class Foo {
+  ↓let myVar = Set<Int>(0)
 }
 
 ```

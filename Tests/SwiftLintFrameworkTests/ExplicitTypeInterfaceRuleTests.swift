@@ -36,4 +36,26 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["excluded": ["static"]])
     }
 
+    func testAllowRedundancy() {
+        let nonTriggeringExamples = [
+            "class Foo {\n  var myVar: Int? = 0\n}\n",
+            "class Foo {\n  let myVar: Int? = 0\n}\n",
+            "class Foo {\n  static var myVar: Int? = 0\n}\n",
+            "class Foo {\n  class var myVar: Int? = 0\n}\n",
+            "class Foo {\n  static let shared = Foo()\n}\n",
+            "class Foo {\n  let myVar = Int(0)\n}\n",
+            "class Foo {\n  let myVar = Set<Int>(0)\n}\n"
+        ]
+        let triggeringExamples = [
+            "class Foo {\n  ↓var myVar = 0\n\n}\n",
+            "class Foo {\n  ↓let mylet = 0\n\n}\n",
+            "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
+            "class Foo {\n  ↓class var myClassVar = 0\n}\n"
+        ]
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
+    }
 }

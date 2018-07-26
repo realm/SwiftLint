@@ -45,14 +45,18 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
                                                                    .varStatic,
                                                                    .varClass]
 
-    public var severityConfiguration = SeverityConfiguration(.warning)
+    private(set) var severityConfiguration = SeverityConfiguration(.warning)
 
-    public var allowedKinds = ExplicitTypeInterfaceConfiguration.variableKinds
+    private(set) var allowedKinds = ExplicitTypeInterfaceConfiguration.variableKinds
+
+    private(set) var allowRedundancy = false
 
     public var consoleDescription: String {
         let excludedKinds = ExplicitTypeInterfaceConfiguration.variableKinds.subtracting(allowedKinds)
         let simplifiedExcludedKinds = excludedKinds.compactMap { $0.variableKind?.rawValue }.sorted()
-        return severityConfiguration.consoleDescription + ", excluded: \(simplifiedExcludedKinds)"
+        return severityConfiguration.consoleDescription +
+            ", excluded: \(simplifiedExcludedKinds)" +
+            ", allow_redundancy: \(allowRedundancy)"
     }
 
     public init() {}
@@ -68,6 +72,8 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             case ("excluded", let excludedStrings as [String]):
                 let excludedKinds = excludedStrings.compactMap(VariableKind.init(rawValue:))
                 allowedKinds.subtract(excludedKinds.map(SwiftDeclarationKind.init(variableKind:)))
+            case ("allow_redundancy", let allowRedundancy as Bool):
+                self.allowRedundancy = allowRedundancy
             default:
                 throw ConfigurationError.unknownConfiguration
             }

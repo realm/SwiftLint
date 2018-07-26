@@ -12,9 +12,11 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
     func testApplyingCustomConfiguration() throws {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["severity": "error",
-                                         "excluded": ["local"]])
+                                         "excluded": ["local"],
+                                         "allow_redundancy": true])
         XCTAssertEqual(config.severityConfiguration.severity, .error)
         XCTAssertEqual(config.allowedKinds, Set([.varInstance, .varClass, .varStatic]))
+        XCTAssertEqual(config.allowRedundancy, true)
     }
 
     func testInvalidKeyInCustomConfiguration() {
@@ -41,6 +43,9 @@ class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
     func testConsoleDescription() throws {
         var config = ExplicitTypeInterfaceConfiguration()
         try config.apply(configuration: ["excluded": ["class", "instance"]])
-        XCTAssertEqual(config.consoleDescription, "warning, excluded: [\"class\", \"instance\"]")
+        XCTAssertEqual(
+            config.consoleDescription,
+            "warning, excluded: [\"class\", \"instance\"], allow_redundancy: false"
+        )
     }
 }

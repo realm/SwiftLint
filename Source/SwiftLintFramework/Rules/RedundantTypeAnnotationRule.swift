@@ -18,18 +18,39 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
             "var url: CustomStringConvertible = URL()"
         ],
         triggeringExamples: [
-            "↓var url:URL=URL()",
-            "↓var url:URL = URL(string: \"\")",
-            "↓var url: URL = URL()",
-            "↓let url: URL = URL()",
-            "lazy ↓var url: URL = URL()",
-            "↓let alphanumerics: CharacterSet = CharacterSet.alphanumerics"
+            "var url↓:URL=URL()",
+            "var url↓:URL = URL(string: \"\")",
+            "var url↓: URL = URL()",
+            "let url↓: URL = URL()",
+            "lazy var url↓: URL = URL()",
+            "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics",
+            """
+            class ViewController: UIViewController {
+                func someMethod() {
+                    let myVar↓: Int = Int(5)
+                }
+            }
+            """
         ],
         corrections: [
             "var url↓: URL = URL()": "var url = URL()",
             "let url↓: URL = URL()": "let url = URL()",
             "let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics":
-                "let alphanumerics = CharacterSet.alphanumerics"
+                "let alphanumerics = CharacterSet.alphanumerics",
+            """
+            class ViewController: UIViewController {
+                func someMethod() {
+                    let myVar↓: Int = Int(5)
+                }
+            }
+            """:
+            """
+            class ViewController: UIViewController {
+                func someMethod() {
+                    let myVar = Int(5)
+                }
+            }
+            """
         ]
     )
 
@@ -47,39 +68,37 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
     public func correct(file: File) -> [Correction] {
 
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
-        let typeAnnotationRanges = violatingRanges.map { typeAnnotationRange(in: file, violationRange: $0) }
         var correctedContents = file.contents
         var adjustedLocations = [Int]()
 
-        for typeAnnotationRange in typeAnnotationRanges.reversed() {
-            if let indexRange = correctedContents.nsrangeToIndexRange(typeAnnotationRange) {
+        for violatingRange in violatingRanges.reversed() {
+            if let indexRange = correctedContents.nsrangeToIndexRange(violatingRange) {
                 correctedContents = correctedContents.replacingCharacters(in: indexRange, with: "")
-                adjustedLocations.insert(typeAnnotationRange.location, at: 0)
+                adjustedLocations.insert(violatingRange.location, at: 0)
             }
         }
 
         file.write(correctedContents)
 
         return adjustedLocations.map {
-            Correction(ruleDescription: type(of: self).description, location: Location(file: file, characterOffset: $0))
+            Correction(ruleDescription: type(of: self).description,
+                       location: Location(file: file, characterOffset: $0))
         }
     }
 
     private func violationRanges(in file: File) -> [NSRange] {
-
-        let pattern = "(var|let)\\s?\\w+:\\s?\\w+\\s?=\\s?\\w+(\\(|.)"
-
+        let typeAnnotationPattern = ":\\s?\\w+"
+        let pattern = "(var|let)\\s?\\w+\(typeAnnotationPattern)\\s?=\\s?\\w+(\\(|.)"
         let foundRanges = file.match(pattern: pattern, with: [.keyword, .identifier, .typeidentifier, .identifier])
-
-        return foundRanges.filter { range in !isFalsePositive(in: file, range: range) }
-    }
-
-    private func typeAnnotationRange(in file: File, violationRange: NSRange) -> NSRange {
-        return file.match(pattern: ":\\s?\\w+", excludingSyntaxKinds: [])[0]
+        return foundRanges
+            .filter { !isFalsePositive(in: file, range: $0) }
+            .compactMap {
+                file.match(pattern: typeAnnotationPattern,
+                           excludingSyntaxKinds: SyntaxKind.commentAndStringKinds, range: $0).first
+            }
     }
 
     private func isFalsePositive(in file: File, range: NSRange) -> Bool {
-
         let substring = file.contents.bridge().substring(with: range)
 
         let components = substring.components(separatedBy: "=")
@@ -93,7 +112,6 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
         }
 
         let rhsTypeName = components[1].trimmingCharacters(in: charactersToTrimFromRhs)
-
         return lhsTypeName != rhsTypeName
     }
 }

@@ -13425,27 +13425,35 @@ var url: CustomStringConvertible = URL()
 <summary>Triggering Examples</summary>
 
 ```swift
-↓var url:URL=URL()
+var url↓:URL=URL()
 ```
 
 ```swift
-↓var url:URL = URL(string: "")
+var url↓:URL = URL(string: "")
 ```
 
 ```swift
-↓var url: URL = URL()
+var url↓: URL = URL()
 ```
 
 ```swift
-↓let url: URL = URL()
+let url↓: URL = URL()
 ```
 
 ```swift
-lazy ↓var url: URL = URL()
+lazy var url↓: URL = URL()
 ```
 
 ```swift
-↓let alphanumerics: CharacterSet = CharacterSet.alphanumerics
+let alphanumerics↓: CharacterSet = CharacterSet.alphanumerics
+```
+
+```swift
+class ViewController: UIViewController {
+    func someMethod() {
+        let myVar↓: Int = Int(5)
+    }
+}
 ```
 
 </details>

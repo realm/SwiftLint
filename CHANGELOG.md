@@ -67,6 +67,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2233](https://github.com/realm/SwiftLint/issues/2233)
 
+* Fix autocorrection for `redundant_type_annotation` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2314](https://github.com/realm/SwiftLint/issues/2314)
+
 ## 0.26.0: Maytagged Pointers
 
 #### Breaking

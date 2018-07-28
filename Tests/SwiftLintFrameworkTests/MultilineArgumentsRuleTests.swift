@@ -59,7 +59,7 @@ class MultilineArgumentsRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["first_argument_location": "same_line"])
     }
 
-    func testMultilineArgumentsWithAllowFirstClosureOnSameLine() {
+    func testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine() {
         let nonTriggeringExamples: [String] = [
             "foo()",
             "foo(0)",
@@ -99,6 +99,6 @@ class MultilineArgumentsRuleTests: XCTestCase {
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
-        verifyRule(description, ruleConfiguration: ["allow_first_closure_on_same_line": true])
+        verifyRule(description, ruleConfiguration: ["only_enforce_after_first_closure_on_first_line": true])
     }
 }

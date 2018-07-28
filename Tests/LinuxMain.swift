@@ -330,7 +330,7 @@ extension MultilineArgumentsRuleTests {
         ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
         ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
         ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine),
-        ("testMultilineArgumentsWithAllowFirstClosureOnSameLine", testMultilineArgumentsWithAllowFirstClosureOnSameLine)
+        ("testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine", testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine)
     ]
 }
 

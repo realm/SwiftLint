@@ -35,7 +35,7 @@ public struct MultilineArgumentsRule: ASTRule, OptInRule, ConfigurationProviderR
                                                 dictionary: dictionary,
                                                 file: file)
 
-        if configuration.allowFirstClosureOnSameLine {
+        if configuration.onlyEnforceAfterFirstClosureOnFirstLine {
             violatingArguments = removeViolationsBeforeFirstClosure(arguments: wrappedArguments,
                                                                     violations: violatingArguments,
                                                                     file: file)

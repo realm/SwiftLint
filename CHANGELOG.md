@@ -8,6 +8,7 @@
 
 * Append `modifier_order` description with failure reason.  
   [Daniel Metzing](https://github.com/dirtydanee)
+  [#2269](https://github.com/realm/SwiftLint/pull/2269)
 
 * Decrease default severity of `superfluous_disable_command` to `warning`.  
   [Frederick Pietschmann](https://github.com/fredpi)

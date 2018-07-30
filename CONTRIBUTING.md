@@ -123,5 +123,6 @@ We follow the same syntax as CocoaPods' CHANGELOG.md:
 3. A list of Markdown hyperlinks to the contributors to the change. One entry
    per line. Usually just one.
 4. A list of Markdown hyperlinks to the issues the change addresses. One entry
-   per line. Usually just one.
+   per line. Usually just one. If there was no issue tracking this change,
+   you may instead link to the change's pull request.
 5. All CHANGELOG.md content is hard-wrapped at 80 characters.

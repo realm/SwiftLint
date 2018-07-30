@@ -408,7 +408,10 @@ extension FileNameRuleTests {
         ("testExtensionNameDoesntTrigger", testExtensionNameDoesntTrigger),
         ("testMisspelledNameDoesTrigger", testMisspelledNameDoesTrigger),
         ("testMisspelledNameDoesntTriggerWithOverride", testMisspelledNameDoesntTriggerWithOverride),
-        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride)
+        ("testMainDoesTriggerWithoutOverride", testMainDoesTriggerWithoutOverride),
+        ("testCustomSuffixPattern", testCustomSuffixPattern),
+        ("testCustomPrefixPattern", testCustomPrefixPattern),
+        ("testCustomPrefixAndSuffixPatterns", testCustomPrefixAndSuffixPatterns)
     ]
 }
 

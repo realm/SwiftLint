@@ -4939,6 +4939,20 @@ class Foo {
 
 ```
 
+```swift
+class Foo {
+  ↓let myVar = Int(0)
+}
+
+```
+
+```swift
+class Foo {
+  ↓let myVar = Set<Int>(0)
+}
+
+```
+
 </details>
 
 

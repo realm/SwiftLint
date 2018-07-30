@@ -21,7 +21,9 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
             "class Foo {\n  ↓var myVar = 0\n\n}\n",
             "class Foo {\n  ↓let mylet = 0\n\n}\n",
             "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
-            "class Foo {\n  ↓class var myClassVar = 0\n}\n"
+            "class Foo {\n  ↓class var myClassVar = 0\n}\n",
+            "class Foo {\n  ↓let myVar = Int(0)\n}\n",
+            "class Foo {\n  ↓let myVar = Set<Int>(0)\n}\n"
         ]
     )
 
@@ -30,6 +32,7 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
 
         guard configuration.allowedKinds.contains(kind),
             !containsType(dictionary: dictionary),
+            (!configuration.allowRedundancy || !assigneeIsInitCall(file: file, dictionary: dictionary)),
             let offset = dictionary.offset else {
                 return []
         }
@@ -43,5 +46,20 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
 
     private func containsType(dictionary: [String: SourceKitRepresentable]) -> Bool {
         return dictionary.typeName != nil
+    }
+
+    private func assigneeIsInitCall(file: File, dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard
+            let nameOffset = dictionary.nameOffset,
+            let nameLength = dictionary.nameLength,
+            let afterNameRange = file.contents.bridge().byteRangeToNSRange(start: nameOffset + nameLength, length: 0)
+        else {
+            return false
+        }
+
+        let contentAfterName = file.contents.bridge().substring(from: afterNameRange.location)
+        let initCallRegex = regex("^\\s*=\\s*\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\(")
+
+        return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }
 }

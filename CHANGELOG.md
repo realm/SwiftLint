@@ -40,6 +40,11 @@
 * Add `private_only` configuration to `prefixed_toplevel_constant` rule  
   [Keith Smiley](https://github.com/keith)
   [#2315](https://github.com/realm/SwiftLint/pull/2315)
+  
+* Make rule `explicit_type_interface` compatible with rule
+  `redundant_type_annotation` via new option `allow_redundancy`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2312](https://github.com/realm/SwiftLint/issues/2312)
 
 #### Bug Fixes
 

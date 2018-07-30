@@ -41,7 +41,7 @@
   [Keith Smiley](https://github.com/keith)
   [#2316](https://github.com/realm/SwiftLint/pull/2316)
 
-* Add `private_only` configuration to `prefixed_toplevel_constant` rule  
+* Add `private_only` configuration to `prefixed_toplevel_constant` rule.  
   [Keith Smiley](https://github.com/keith)
   [#2315](https://github.com/realm/SwiftLint/pull/2315)
   
@@ -49,6 +49,11 @@
   `redundant_type_annotation` via new option `allow_redundancy`.  
   [Cihat Gündüz](https://github.com/Dschee)
   [#2312](https://github.com/realm/SwiftLint/issues/2312)
+
+* Add `missing_docs` rule to warn against undocumented declarations.  
+  [Nef10](https://github.com/Nef10)
+  [Andrés Cecilia Luque](https://github.com/acecilia)
+  [#1652](https://github.com/realm/SwiftLint/issues/1652)
 
 #### Bug Fixes
 
@@ -152,11 +157,6 @@
   setter ACLs on variable declarations.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1869](https://github.com/realm/SwiftLint/issues/1869)
-
-* Add `missing_docs` rule to warn against undocumented declarations.  
-  [Nef10](https://github.com/Nef10)
-  [Andrés Cecilia Luque](https://github.com/acecilia)
-  [#1652](https://github.com/realm/SwiftLint/issues/1652)
 
 * Add a new `ignores_interpolated_strings` config parameter to the `line_length`
   rule to ignore lines that include interpolated strings from this rule.  

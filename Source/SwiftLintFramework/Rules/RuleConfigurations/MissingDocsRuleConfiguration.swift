@@ -1,6 +1,6 @@
 import Foundation
 
-public struct MissingDocsRuleConfiguration: RuleConfiguration {
+public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
 
     private(set) var parameters = [RuleParameter<AccessControlLevel>]()
 
@@ -36,11 +36,7 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration {
         self.parameters = parameters
     }
 
-    public func isEqualTo(_ ruleConfiguration: RuleConfiguration) -> Bool {
-        guard let config = ruleConfiguration as? MissingDocsRuleConfiguration else {
-            return false
-        }
-        return parameters == config.parameters
+    public static func == (lhs: MissingDocsRuleConfiguration, rhs: MissingDocsRuleConfiguration) -> Bool {
+        return lhs.parameters == rhs.parameters
     }
-
 }

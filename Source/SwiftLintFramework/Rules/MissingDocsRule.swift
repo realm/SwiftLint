@@ -24,7 +24,7 @@ private extension File {
     }
 }
 
-public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
+public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public init() {
         configuration = MissingDocsRuleConfiguration(
@@ -71,12 +71,5 @@ public struct MissingDocsRule: OptInRule, ConfigurationProviderRule {
                            location: Location(file: file, byteOffset: offset),
                            reason: "\(acl.description) declarations should be documented.")
         }
-    }
-
-    public func isEqualTo(_ rule: Rule) -> Bool {
-        if let rule = rule as? MissingDocsRule {
-            return rule.configuration.isEqualTo(configuration)
-        }
-        return false
     }
 }

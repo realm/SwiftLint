@@ -300,6 +300,12 @@ class LowerACLThanParentRuleTests: XCTestCase {
     }
 }
 
+class MissingDocsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MissingDocsRule.description)
+    }
+}
+
 class MultilineFunctionChainsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineFunctionChainsRule.description)

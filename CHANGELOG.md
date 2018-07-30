@@ -18,7 +18,7 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2249](https://github.com/realm/SwiftLint/issues/2249)
   
-  * Add `only_enforce_after_first_closure_on_first_line` configuration
+* Add `only_enforce_after_first_closure_on_first_line` configuration
   to `multiline_arguments`  
   [Mike Ciesielka](https://github.com/maciesielka)
   [#1896](https://github.com/realm/SwiftLint/issues/1896)

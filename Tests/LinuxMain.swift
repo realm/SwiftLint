@@ -635,7 +635,8 @@ extension MultilineArgumentsRuleTests {
     static var allTests: [(String, (MultilineArgumentsRuleTests) -> () throws -> Void)] = [
         ("testMultilineArgumentsWithDefaultConfiguration", testMultilineArgumentsWithDefaultConfiguration),
         ("testMultilineArgumentsWithWithNextLine", testMultilineArgumentsWithWithNextLine),
-        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine)
+        ("testMultilineArgumentsWithWithSameLine", testMultilineArgumentsWithWithSameLine),
+        ("testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine", testMultilineArgumentsWithOnlyEnforceAfterFirstClosureOnFirstLine)
     ]
 }
 

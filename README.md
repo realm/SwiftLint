@@ -320,6 +320,7 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Pods
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
+  - Source/*/ExcludedFile.swift # Exclude files with a wildcard
 
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level

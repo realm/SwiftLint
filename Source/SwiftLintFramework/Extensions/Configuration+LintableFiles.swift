@@ -13,9 +13,11 @@ extension Configuration {
             return [path]
         }
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
-        let excludedPaths = excluded.flatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
-        }
+        let excludedPaths = excluded
+            .flatMap { Glob.resolveGlob($0) }
+            .flatMap {
+                fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
+            }
         let includedPaths = included.flatMap {
             fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
         }

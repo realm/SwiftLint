@@ -642,6 +642,21 @@ extension LowerACLThanParentRuleTests {
     ]
 }
 
+extension MissingDocsRuleConfigurationTests {
+    static var allTests: [(String, (MissingDocsRuleConfigurationTests) -> () throws -> Void)] = [
+        ("testDescriptionEmpty", testDescriptionEmpty),
+        ("testDescriptionSingleServety", testDescriptionSingleServety),
+        ("testDescriptionMultipleSeverities", testDescriptionMultipleSeverities),
+        ("testDescriptionMultipleAcls", testDescriptionMultipleAcls),
+        ("testParsingSingleServety", testParsingSingleServety),
+        ("testParsingMultipleSeverities", testParsingMultipleSeverities),
+        ("testParsingMultipleAcls", testParsingMultipleAcls),
+        ("testInvalidServety", testInvalidServety),
+        ("testInvalidAcl", testInvalidAcl),
+        ("testInvalidDuplicateAcl", testInvalidDuplicateAcl)
+    ]
+}
+
 extension ModifierOrderTests {
     static var allTests: [(String, (ModifierOrderTests) -> () throws -> Void)] = [
         ("testAttributeTypeMethod", testAttributeTypeMethod),
@@ -971,6 +986,23 @@ extension RulesTests {
     static var allTests: [(String, (RulesTests) -> () throws -> Void)] = [
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testMark", testMark),
+        ("testMissingDocs", testMissingDocs),
+        ("testModifierOrder", testModifierOrder),
+        ("testMultilineParameters", testMultilineParameters),
+        ("testMultipleClosuresWithTrailingClosure", testMultipleClosuresWithTrailingClosure),
+        ("testNesting", testNesting),
+        ("testNoExtensionAccessModifier", testNoExtensionAccessModifier),
+        ("testNoGroupingExtension", testNoGroupingExtension),
+        ("testNotificationCenterDetachment", testNotificationCenterDetachment),
+        ("testNimbleOperator", testNimbleOperator),
+        ("testOpeningBrace", testOpeningBrace),
+        ("testOperatorFunctionWhitespace", testOperatorFunctionWhitespace),
+        ("testOperatorUsageWhitespace", testOperatorUsageWhitespace),
+        ("testOverrideInExtension", testOverrideInExtension),
+        ("testPatternMatchingKeywords", testPatternMatchingKeywords),
+        ("testPrefixedTopLevelConstant", testPrefixedTopLevelConstant),
+        ("testPrivateAction", testPrivateAction),
+        ("testPrivateOutlet", testPrivateOutlet),
         ("testRequiredEnumCase", testRequiredEnumCase),
         ("testTrailingNewline", testTrailingNewline)
     ]
@@ -1284,6 +1316,7 @@ XCTMain([
     testCase(LinterCacheTests.allTests),
     testCase(LiteralExpressionEndIdentationRuleTests.allTests),
     testCase(LowerACLThanParentRuleTests.allTests),
+    testCase(MissingDocsRuleConfigurationTests.allTests),
     testCase(ModifierOrderTests.allTests),
     testCase(MultilineArgumentsRuleTests.allTests),
     testCase(MultilineFunctionChainsRuleTests.allTests),

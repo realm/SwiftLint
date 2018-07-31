@@ -1,4 +1,4 @@
-## Master
+## 0.27.0: Heavy Duty
 
 #### Breaking
 

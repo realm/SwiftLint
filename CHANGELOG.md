@@ -1,3 +1,17 @@
+## Master
+
+#### Breaking
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
 ## 0.27.0: Heavy Duty
 
 #### Breaking

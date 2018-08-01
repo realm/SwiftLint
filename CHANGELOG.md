@@ -56,7 +56,7 @@
   [Keith Smiley](https://github.com/keith)
   [#2316](https://github.com/realm/SwiftLint/pull/2316)
 
-* Add `private_only` configuration to `prefixed_toplevel_constant` rule.  
+* Add `only_private` configuration to `prefixed_toplevel_constant` rule.  
   [Keith Smiley](https://github.com/keith)
   [#2315](https://github.com/realm/SwiftLint/pull/2315)
   

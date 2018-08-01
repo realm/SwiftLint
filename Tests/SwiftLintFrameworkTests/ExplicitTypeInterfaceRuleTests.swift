@@ -52,10 +52,58 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
             "class Foo {\n  ↓static var myStaticVar = 0\n}\n",
             "class Foo {\n  ↓class var myClassVar = 0\n}\n"
         ]
+
         let description = ExplicitTypeInterfaceRule.description
             .with(triggeringExamples: triggeringExamples)
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["allow_redundancy": true])
+    }
+
+    func testEmbededInStatements() {
+        let nonTriggeringExamples = [
+            "var foo: String?\n guard let strongFoo = foo else { return }",
+            "struct SomeError: Error {}\n"      +
+            "var error: Error?\n"               +
+            "switch error {\n"                  +
+            "case let error as SomeError:\n"    +
+            "   break\n"                        +
+            "default:\n"                        +
+            "   break\n"                        +
+            "}"
+        ]
+        let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description)
+    }
+
+    func testCaptureGroup() {
+        let nonTriggeringExamples = [
+            "var k: Int = 0\n"                                      +
+            "_ = { [weak k] in\n"                                   +
+            "       print(k)\n"                                     +
+            "   }",
+            "var k: Int = 0\n"                                      +
+            "_ = { [unowned k] in\n"                                +
+            "       print(k)\n"                                     +
+            "   }",
+            "class Foo {\n"                                         +
+            "   func bar() {\n"                                     +
+            "       var k: Int = 0\n"                               +
+            "       _ = { [weak self, weak k] in\n"                 +
+            "       guard let strongSelf = self else { return }\n"  +
+            "       }\n"                                            +
+            "   }\n"    +
+            "}"
+        ]
+        let triggeringExamples = ExplicitTypeInterfaceRule.description.triggeringExamples
+        let description = ExplicitTypeInterfaceRule.description
+            .with(triggeringExamples: triggeringExamples)
+            .with(nonTriggeringExamples: nonTriggeringExamples)
+
+        verifyRule(description)
     }
 }

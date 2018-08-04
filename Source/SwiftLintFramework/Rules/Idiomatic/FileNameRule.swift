@@ -41,7 +41,7 @@ public struct FileNameRule: ConfigurationProviderRule, OptInRule {
         let prefixRegex = regex("\\A\(configuration.prefixPattern)")
         let suffixRegex = regex("\(configuration.suffixPattern)\\z")
 
-        var typeInFileName = fileName.components(separatedBy: ".").first ?? fileName
+        var typeInFileName = fileName.bridge().deletingPathExtension
 
         if let match = prefixRegex.firstMatch(in: typeInFileName, options: [], range: typeInFileName.fullNSRange),
             let range = typeInFileName.nsrangeToIndexRange(match.range) {

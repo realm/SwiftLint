@@ -16,6 +16,10 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2345](https://github.com/realm/SwiftLint/pull/2345)
 
+* Fix false positive on `file_name` rule when using nested types.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2325](https://github.com/realm/SwiftLint/issues/2325)  
+
 ## 0.27.0: Heavy Duty
 
 #### Breaking

@@ -232,6 +232,8 @@
 		D48AE2CC1DFB58C5001C6A4A /* AttributesRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */; };
 		D48B51211F4F5DEF0068AB98 /* RuleList+Documentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */; };
 		D48B51231F4F5E4B0068AB98 /* DocumentationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */; };
+		D495B1A221165DAA00E2CD7B /* FileNameRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */; };
+		D495B1A321165DAA00E2CD7B /* FileHeaderRuleFixtures in Resources */ = {isa = PBXBuildFile; fileRef = D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */; };
 		D49896F12026B36C00814A83 /* RedundantSetAccessControlRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */; };
 		D4998DE71DF191380006E05D /* AttributesRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE61DF191380006E05D /* AttributesRuleTests.swift */; };
 		D4998DE91DF194F20006E05D /* FileHeaderRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */; };
@@ -649,6 +651,8 @@
 		D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleExamples.swift; sourceTree = "<group>"; };
 		D48B51201F4F5DEF0068AB98 /* RuleList+Documentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RuleList+Documentation.swift"; sourceTree = "<group>"; };
 		D48B51221F4F5E4B0068AB98 /* DocumentationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationTests.swift; sourceTree = "<group>"; };
+		D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileNameRuleFixtures; sourceTree = "<group>"; };
+		D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = FileHeaderRuleFixtures; sourceTree = "<group>"; };
 		D49896F02026B36C00814A83 /* RedundantSetAccessControlRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantSetAccessControlRule.swift; sourceTree = "<group>"; };
 		D4998DE61DF191380006E05D /* AttributesRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttributesRuleTests.swift; sourceTree = "<group>"; };
 		D4998DE81DF194F20006E05D /* FileHeaderRuleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHeaderRuleTests.swift; sourceTree = "<group>"; };
@@ -811,6 +815,8 @@
 		3B12C9BE1C3209AC000B423F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D495B1A121165DAA00E2CD7B /* FileHeaderRuleFixtures */,
+				D495B1A021165DAA00E2CD7B /* FileNameRuleFixtures */,
 				3B12C9BF1C3209AC000B423F /* test.yml */,
 				3BDB224A1C345B4900473680 /* ProjectMock */,
 				F9D73F021D0CF15E00222FC4 /* test.txt */,
@@ -1552,10 +1558,12 @@
 				B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */,
 				B39357173B43C9B5E351C360 /* CannedCheckstyleReporterOutput.xml in Resources */,
 				B3935A32BE03C4D11B4364D6 /* CannedCSVReporterOutput.csv in Resources */,
+				D495B1A321165DAA00E2CD7B /* FileHeaderRuleFixtures in Resources */,
 				B3935522DC192D38D4852FA3 /* CannedXcodeReporterOutput.txt in Resources */,
 				6CC898A71EA0E1F7003DC0E2 /* CannedEmojiReporterOutputNonObjC.txt in Resources */,
 				B39358AA2D2AF5219D3FD7C0 /* CannedEmojiReporterOutput.txt in Resources */,
 				B3935A1C3BCA03A6B902E7AF /* CannedJSONReporterOutput.json in Resources */,
+				D495B1A221165DAA00E2CD7B /* FileNameRuleFixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

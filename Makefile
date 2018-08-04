@@ -128,6 +128,9 @@ get_version:
 	@echo $(VERSION_STRING)
 
 push_version:
+ifneq ($(strip $(shell git status --untracked-files=no --porcelain 2>/dev/null)),)
+	$(error git state is not clean)
+endif
 	$(eval NEW_VERSION_AND_NAME := $(filter-out $@,$(MAKECMDGOALS)))
 	$(eval NEW_VERSION := $(shell echo $(NEW_VERSION_AND_NAME) | sed 's/:.*//' ))
 	@sed -i '' 's/## Master/## $(NEW_VERSION_AND_NAME)/g' CHANGELOG.md

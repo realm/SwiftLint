@@ -47,6 +47,15 @@ jobs:
           path: build/reports/
       - run: bash <(curl -s https://codecov.io/bash)
 
+  xcode_10:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: set -o pipefail && script/cibuild | xcpretty -r junit
+      - store_test_results:
+          path: build/reports/
+
   cocoapods_swift_4:
     shell: /bin/bash --login -eo pipefail
     macos:
@@ -92,6 +101,7 @@ workflows:
       - swiftpm_4
       - swiftpm_4.1
       - xcode_9
+      - xcode_10
       - cocoapods_swift_4
       - cocoapods_swift_4.1
       - linux_swift_4

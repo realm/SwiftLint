@@ -75,16 +75,24 @@ private struct Call {
     }
 
     var closureArguments: [[String: SourceKitRepresentable]] {
-        return dictionary.enclosedArguments.filter { argument in
-            guard let offset = argument.bodyOffset,
-                let length = argument.bodyLength,
-                let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
-                let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
-                match.location == range.location else {
-                    return false
-            }
+        if SwiftVersion.current < SwiftVersion.fourDotTwo {
+            return dictionary.enclosedArguments.filter { argument in
+                guard let offset = argument.bodyOffset,
+                    let length = argument.bodyLength,
+                    let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
+                    let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                    match.location == range.location else {
+                        return false
+                }
 
-            return true
+                return true
+            }
+        } else {
+            return dictionary.enclosedArguments.filter { argument in
+                return argument.substructure.contains(where: { dictionary in
+                    dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .closure
+                })
+            }
         }
     }
 }

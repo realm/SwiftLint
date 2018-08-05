@@ -129,7 +129,7 @@ public struct LineLengthRule: ConfigurationProviderRule {
 // extracted from https://forums.swift.org/t/pitch-declaring-local-variables-as-lazy/9287/3
 private class Lazy<Result> {
     private var computation: () -> Result
-    lazy var value: Result = computation()
+    fileprivate private(set) lazy var value: Result = computation()
 
     init(_ computation: @escaping @autoclosure () -> Result) {
         self.computation = computation

@@ -29,8 +29,8 @@ public struct LineLengthRule: ConfigurationProviderRule {
 
     public func validate(file: File) -> [StyleViolation] {
         let minValue = configuration.params.map({ $0.value }).min() ?? .max
-        let swiftDeclarationKindsByLine = file.swiftDeclarationKindsByLine() ?? []
-        let syntaxKindsByLine = file.syntaxKindsByLine() ?? []
+        let swiftDeclarationKindsByLine = Lazy(file.swiftDeclarationKindsByLine() ?? [])
+        let syntaxKindsByLine = Lazy(file.syntaxKindsByLine() ?? [])
 
         return file.lines.compactMap { line in
             // `line.content.count` <= `line.range.length` is true.
@@ -43,24 +43,24 @@ public struct LineLengthRule: ConfigurationProviderRule {
             if configuration.ignoresFunctionDeclarations &&
                 lineHasKinds(line: line,
                              kinds: functionKinds,
-                             kindsByLine: swiftDeclarationKindsByLine) {
+                             kindsByLine: swiftDeclarationKindsByLine.value) {
                 return nil
             }
 
             if configuration.ignoresComments &&
                 lineHasKinds(line: line,
                              kinds: commentKinds,
-                             kindsByLine: syntaxKindsByLine) &&
+                             kindsByLine: syntaxKindsByLine.value) &&
                 !lineHasKinds(line: line,
                               kinds: nonCommentKinds,
-                              kindsByLine: syntaxKindsByLine) {
+                              kindsByLine: syntaxKindsByLine.value) {
                 return nil
             }
 
             if configuration.ignoresInterpolatedStrings &&
                 lineHasKinds(line: line,
                              kinds: [.stringInterpolationAnchor],
-                             kindsByLine: syntaxKindsByLine) {
+                             kindsByLine: syntaxKindsByLine.value) {
                 return nil
             }
 
@@ -124,6 +124,16 @@ public struct LineLengthRule: ConfigurationProviderRule {
         return !kinds.isDisjoint(with: kindsByLine[index])
     }
 
+}
+
+// extracted from https://forums.swift.org/t/pitch-declaring-local-variables-as-lazy/9287/3
+private class Lazy<Result> {
+    private var computation: () -> Result
+    lazy var value: Result = computation()
+
+    init(_ computation: @escaping @autoclosure () -> Result) {
+        self.computation = computation
+    }
 }
 
 private extension String {

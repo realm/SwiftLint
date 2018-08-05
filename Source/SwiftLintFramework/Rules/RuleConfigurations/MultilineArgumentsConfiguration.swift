@@ -28,11 +28,10 @@ public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
     private(set) var onlyEnforceAfterFirstClosureOnFirstLine = false
 
     public var consoleDescription: String {
-        // swiftlint:disable line_length
         return severityConfiguration.consoleDescription +
             ", \(ConfigurationKey.firstArgumentLocation.rawValue): \(firstArgumentLocation.rawValue)" +
             ", \(ConfigurationKey.onlyEnforceAfterFirstClosureOnFirstLine.rawValue): \(onlyEnforceAfterFirstClosureOnFirstLine)"
-        // swiftlint:enable line_length
+            // swiftlint:disable:previous line_length
     }
 
     public mutating func apply(configuration: Any) throws {

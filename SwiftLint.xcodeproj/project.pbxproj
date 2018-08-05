@@ -829,7 +829,6 @@
 		3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */ = {
 			isa = PBXGroup;
 			children = (
-				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */,
 				D4C4A34A1DEA4FD700E0E04C /* AttributesConfiguration.swift */,
 				D43B04671E07228D004016AF /* ColonConfiguration.swift */,
 				824AB64C2105C39F004B5A8F /* ConditionalReturnsOnNewlineConfiguration.swift */,
@@ -844,6 +843,7 @@
 				3B034B6C1E0BE544005D49A9 /* LineLengthConfiguration.swift */,
 				F90DBD7E2092E669002CC310 /* MissingDocsRuleConfiguration.swift */,
 				188B3FF3207D61230073C2D6 /* ModifierOrderConfiguration.swift */,
+				B25DCD0D1F7EF2280028A199 /* MultilineArgumentsConfiguration.swift */,
 				3BCC04D01C4F56D3006073C3 /* NameConfiguration.swift */,
 				D93DA3CF1E699E4E00809827 /* NestingConfiguration.swift */,
 				D4DA1DFD1E1A10DB0037413D /* NumberSeparatorConfiguration.swift */,
@@ -920,8 +920,8 @@
 			isa = PBXGroup;
 			children = (
 				62A7127420F1178F00E604A6 /* AnyObjectProtocolRule.swift */,
-				D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */,
 				D4E2BA841F6CD77B00E8E184 /* ArrayInitRule.swift */,
+				D4B0228D1E0CC608007E5297 /* ClassDelegateProtocolRule.swift */,
 				D4DA1DF31E17511D0037413D /* CompilerProtocolInitRule.swift */,
 				D4DABFD21E29B4A5009617B6 /* DiscardedNotificationCenterObserverRule.swift */,
 				62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */,
@@ -959,8 +959,8 @@
 		8F2892B7211770EC00691D58 /* Style */ = {
 			isa = PBXGroup;
 			children = (
-				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
 				D47A510F1DB2DD4800A4CC21 /* AttributesRule.swift */,
+				D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */,
 				1F11B3CE1C252F23002E8FA8 /* ClosingBraceRule.swift */,
 				D43B046A1E075905004016AF /* ClosureEndIndentationRule.swift */,
 				3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */,
@@ -980,7 +980,6 @@
 				D4C4A34D1DEA877200E0E04C /* FileHeaderRule.swift */,
 				E88DEA931B099C0900A66CB0 /* IdentifierNameRule.swift */,
 				D4130D961E16183F00242361 /* IdentifierNameRuleExamples.swift */,
-				D48AE2CB1DFB58C5001C6A4A /* AttributesRuleExamples.swift */,
 				D43DB1071DC573DA00281215 /* ImplicitGetterRule.swift */,
 				D4470D561EB69225008A1B2E /* ImplicitReturnRule.swift */,
 				E88DEA7D1B098F2A00A66CB0 /* LeadingWhitespaceRule.swift */,
@@ -1000,6 +999,7 @@
 				D4FBADCF1E00DA0400669C73 /* OperatorUsageWhitespaceRule.swift */,
 				62DADC471FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift */,
 				D47F31141EC918B600E3E1CA /* ProtocolPropertyAccessorsOrderRule.swift */,
+				D4C889701E385B7B00BAE88D /* RedundantDiscardableLetRule.swift */,
 				E57B23C01B1D8BF000DEA512 /* ReturnArrowWhitespaceRule.swift */,
 				D4D5A5FE1E1F3A1C00D15E0C /* ShorthandOperatorRule.swift */,
 				629C60D81F43906700B4AF92 /* SingleTestClassRule.swift */,
@@ -1024,7 +1024,6 @@
 		8F2892B8211770FB00691D58 /* Idiomatic */ = {
 			isa = PBXGroup;
 			children = (
-				47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */,
 				D4FD4C841F2A260A00DD8AA8 /* BlockBasedKVORule.swift */,
 				D42DEAAA20D5EE4400E86F31 /* ConvenienceTypeRule.swift */,
 				6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */,
@@ -1047,6 +1046,7 @@
 				D4C0E46E1E3D973600C560F2 /* ForWhereRule.swift */,
 				D4CFC5D1209EC95A00668488 /* FunctionDefaultParameterAtEndRule.swift */,
 				D4B022A31E105636007E5297 /* GenericTypeNameRule.swift */,
+				47FF3BDF1E7C745100187E6D /* ImplicitlyUnwrappedOptionalRule.swift */,
 				8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */,
 				62A6E7911F3317E3003A0479 /* JoinedDefaultParameterRule.swift */,
 				4DB7815C1CAD690100BC4723 /* LegacyCGGeometryFunctionsRule.swift */,
@@ -1332,10 +1332,10 @@
 			isa = PBXGroup;
 			children = (
 				8F2892B8211770FB00691D58 /* Idiomatic */,
-				8F2892B7211770EC00691D58 /* Style */,
 				8F2892B621176FBE00691D58 /* Lint */,
-				8F2892B521176EA400691D58 /* Performance */,
 				8F2892B421176E1200691D58 /* Metrics */,
+				8F2892B521176EA400691D58 /* Performance */,
+				8F2892B7211770EC00691D58 /* Style */,
 				3BCC04CE1C4F56D3006073C3 /* RuleConfigurations */,
 			);
 			path = Rules;

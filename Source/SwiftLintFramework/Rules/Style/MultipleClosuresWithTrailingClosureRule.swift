@@ -33,13 +33,15 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
-        guard let call = Call(file: file, kind: kind, dictionary: dictionary), call.hasTrailingClosure else {
-            return []
-        }
-
-        let closureArguments = call.closureArguments
-        guard closureArguments.count > 1, let trailingClosureOffset = closureArguments.last?.offset else {
-            return []
+        guard kind == .call,
+            case let arguments = dictionary.enclosedArguments,
+            arguments.count > 1,
+            let lastArgument = arguments.last,
+            isTrailingClosure(argument: lastArgument, call: dictionary),
+            case let closureArguments = arguments.filterClosures(file: file),
+            closureArguments.count > 1,
+            let trailingClosureOffset = lastArgument.offset else {
+                return []
         }
 
         return [
@@ -48,39 +50,28 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
                            location: Location(file: file, byteOffset: trailingClosureOffset))
         ]
     }
+
+    private func isTrailingClosure(argument: [String: SourceKitRepresentable],
+                                   call: [String: SourceKitRepresentable]) -> Bool {
+        guard let callOffset = call.offset,
+            let callLength = call.length,
+            let argumentOffset = argument.offset,
+            let argumentLength = argument.length else {
+            return false
+        }
+
+        return callOffset + callLength == argumentOffset + argumentLength
+    }
 }
 
-private struct Call {
-    let file: File
-    let dictionary: [String: SourceKitRepresentable]
-    let offset: Int
-
-    init?(file: File, kind: SwiftExpressionKind, dictionary: [String: SourceKitRepresentable]) {
-        guard kind == .call, let offset = dictionary.offset else {
-            return nil
-        }
-        self.file = file
-        self.dictionary = dictionary
-        self.offset = offset
-    }
-
-    var hasTrailingClosure: Bool {
-        guard let length = dictionary.length,
-            let text = file.contents.bridge().substringWithByteRange(start: offset, length: length)
-            else {
-                return false
-        }
-
-        return !text.hasSuffix(")")
-    }
-
-    var closureArguments: [[String: SourceKitRepresentable]] {
+private extension Array where Element == [String: SourceKitRepresentable] {
+    func filterClosures(file: File) -> [[String: SourceKitRepresentable]] {
         if SwiftVersion.current < SwiftVersion.fourDotTwo {
-            return dictionary.enclosedArguments.filter { argument in
+            return filter { argument in
                 guard let offset = argument.bodyOffset,
                     let length = argument.bodyLength,
                     let range = file.contents.bridge().byteRangeToNSRange(start: offset, length: length),
-                    let match = regex("\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
+                    let match = regex("^\\s*\\{").firstMatch(in: file.contents, options: [], range: range)?.range,
                     match.location == range.location else {
                         return false
                 }
@@ -88,7 +79,7 @@ private struct Call {
                 return true
             }
         } else {
-            return dictionary.enclosedArguments.filter { argument in
+            return filter { argument in
                 return argument.substructure.contains(where: { dictionary in
                     dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .closure
                 })

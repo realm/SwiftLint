@@ -6,7 +6,8 @@
 
 #### Enhancements
 
-* None.
+* Improve performance of `line_length` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes
 

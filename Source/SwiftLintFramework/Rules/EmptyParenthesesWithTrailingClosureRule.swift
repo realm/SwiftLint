@@ -70,6 +70,12 @@ public struct EmptyParenthesesWithTrailingClosureRule: ASTRule, CorrectableRule,
                 return []
         }
 
+        // avoid the more expensive regex match if there's no trailing closure in the substructure
+        if SwiftVersion.current >= .fourDotTwo,
+            dictionary.substructure.last?.kind.flatMap(SwiftExpressionKind.init(rawValue:)) != .closure {
+            return []
+        }
+
         let rangeStart = nameOffset + nameLength
         let rangeLength = (offset + length) - (nameOffset + nameLength)
         let regex = EmptyParenthesesWithTrailingClosureRule.emptyParenthesesRegex

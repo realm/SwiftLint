@@ -41,11 +41,11 @@ Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
 	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
 	mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
 
-Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/*.swift .sourcery/MasterRuleList.stencil
+Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/MasterRuleList.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/MasterRuleList.stencil --output .sourcery
 	mv .sourcery/MasterRuleList.generated.swift Source/SwiftLintFramework/Models/MasterRuleList.swift
 
-Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift: Source/SwiftLintFramework/Rules/*.swift .sourcery/AutomaticRuleTests.stencil
+Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/AutomaticRuleTests.stencil
 	sourcery --sources Source/SwiftLintFramework/Rules --templates .sourcery/AutomaticRuleTests.stencil --output .sourcery
 	mv .sourcery/AutomaticRuleTests.generated.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift
 

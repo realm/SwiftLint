@@ -46,7 +46,8 @@ private extension Rule {
     }
 
     func lint(file: File, regions: [Region], benchmark: Bool,
-              superfluousDisableCommandRule: SuperfluousDisableCommandRule?) -> LintResult? {
+              superfluousDisableCommandRule: SuperfluousDisableCommandRule?,
+              compilerArguments: [String]) -> LintResult? {
         if !(self is SourceKitFreeRule) && file.sourcekitdFailed {
             return nil
         }
@@ -57,10 +58,10 @@ private extension Rule {
         let ruleTime: (String, Double)?
         if benchmark {
             let start = Date()
-            violations = validate(file: file)
+            violations = validate(file: file, compilerArguments: compilerArguments)
             ruleTime = (ruleID, -start.timeIntervalSinceNow)
         } else {
-            violations = validate(file: file)
+            violations = validate(file: file, compilerArguments: compilerArguments)
             ruleTime = nil
         }
 
@@ -104,6 +105,7 @@ public struct Linter {
     private let rules: [Rule]
     private let cache: LinterCache?
     private let configuration: Configuration
+    private let compilerArguments: [String]
 
     public var styleViolations: [StyleViolation] {
         return getStyleViolations().0
@@ -128,7 +130,8 @@ public struct Linter {
         }) as? SuperfluousDisableCommandRule
         let validationResults = rules.parallelFlatMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
-                    superfluousDisableCommandRule: superfluousDisableCommandRule)
+                    superfluousDisableCommandRule: superfluousDisableCommandRule,
+                    compilerArguments: self.compilerArguments)
         }
         let violations = validationResults.flatMap { $0.violations }
         let ruleTimes = validationResults.compactMap { $0.ruleTime }
@@ -170,11 +173,13 @@ public struct Linter {
         return (cachedViolations, ruleTimes)
     }
 
-    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil) {
+    public init(file: File, configuration: Configuration = Configuration()!, cache: LinterCache? = nil,
+                compilerArguments: [String] = []) {
         self.file = file
-        self.cache = cache
         self.configuration = configuration
-        rules = configuration.rules
+        self.cache = cache
+        self.compilerArguments = compilerArguments
+        self.rules = configuration.rules
     }
 
     public func correct() -> [Correction] {
@@ -184,7 +189,7 @@ public struct Linter {
 
         var corrections = [Correction]()
         for rule in rules.compactMap({ $0 as? CorrectableRule }) {
-            let newCorrections = rule.correct(file: file)
+            let newCorrections = rule.correct(file: file, compilerArguments: compilerArguments)
             corrections += newCorrections
             if !newCorrections.isEmpty {
                 file.invalidateCache()

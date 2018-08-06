@@ -7,11 +7,16 @@ public protocol Rule {
     init() // Rules need to be able to be initialized with default values
     init(configuration: Any) throws
 
+    func validate(file: File, compilerArguments: [String]) -> [StyleViolation]
     func validate(file: File) -> [StyleViolation]
     func isEqualTo(_ rule: Rule) -> Bool
 }
 
 extension Rule {
+    public func validate(file: File, compilerArguments: [String]) -> [StyleViolation] {
+        return validate(file: file)
+    }
+
     public func isEqualTo(_ rule: Rule) -> Bool {
         return type(of: self).description == type(of: rule).description
     }
@@ -32,10 +37,31 @@ public protocol ConfigurationProviderRule: Rule {
 }
 
 public protocol CorrectableRule: Rule {
+    func correct(file: File, compilerArguments: [String]) -> [Correction]
     func correct(file: File) -> [Correction]
 }
 
+public extension CorrectableRule {
+    func correct(file: File, compilerArguments: [String]) -> [Correction] {
+        return correct(file: file)
+    }
+}
+
 public protocol SourceKitFreeRule: Rule {}
+
+public protocol CompilerArgumentRule: Rule {}
+
+public extension CompilerArgumentRule {
+    func validate(file: File) -> [StyleViolation] {
+        return validate(file: file, compilerArguments: [])
+    }
+}
+
+public extension CompilerArgumentRule where Self: CorrectableRule {
+    func correct(file: File) -> [Correction] {
+        return correct(file: file, compilerArguments: [])
+    }
+}
 
 // MARK: - ConfigurationProviderRule conformance to Configurable
 

@@ -7,47 +7,19 @@ struct AutoCorrectCommand: CommandProtocol {
     let function = "Automatically correct warnings and errors"
 
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
-        let configuration = Configuration(options: options)
-        let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
-        let indentWidth: Int
-        var useTabs: Bool
-
-        switch configuration.indentation {
-        case .tabs:
-            indentWidth = 4
-            useTabs = true
-        case .spaces(let count):
-            indentWidth = count
-            useTabs = false
-        }
-
-        if options.useTabs {
-            queuedPrintError("'use-tabs' is deprecated and will be completely removed" +
-                " in a future release. 'indentation' can now be defined in a configuration file.")
-            useTabs = options.useTabs
-        }
-
-        return configuration.visitLintableFiles(paths: options.paths, action: "Correcting",
-                                                quiet: options.quiet,
-                                                useScriptInputFiles: options.useScriptInputFiles,
-                                                forceExclude: options.forceExclude,
-                                                cache: cache, parallel: true) { linter in
-            let corrections = linter.correct()
-            if !corrections.isEmpty && !options.quiet {
-                let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator: "\n"))
-            }
-            if options.format {
-                linter.format(useTabs: useTabs, indentWidth: indentWidth)
-            }
-        }.flatMap { files in
-            if !options.quiet {
-                let pluralSuffix = { (collection: [Any]) -> String in
-                    return collection.count != 1 ? "s" : ""
+        switch options.visitor {
+        case let .success(visitor):
+            return Configuration(options: options).visitLintableFiles(with: visitor).flatMap { files in
+                if !options.quiet {
+                    let pluralSuffix = { (collection: [Any]) -> String in
+                        return collection.count != 1 ? "s" : ""
+                    }
+                    queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
                 }
-                queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
+                return .success(())
             }
-            return .success(())
+        case let .failure(error):
+            return .failure(error)
         }
     }
 }
@@ -98,5 +70,42 @@ struct AutoCorrectOptions: OptionsProtocol {
                                usage: "should use tabs over spaces when reformatting. Deprecated.")
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "correct")
+    }
+
+    fileprivate var visitor: Result<LintableFilesVisitor, CommandantError<()>> {
+        let configuration = Configuration(options: self)
+        let cache = ignoreCache ? nil : LinterCache(configuration: configuration)
+        let indentWidth: Int
+        var useTabs: Bool
+
+        switch configuration.indentation {
+        case .tabs:
+            indentWidth = 4
+            useTabs = true
+        case .spaces(let count):
+            indentWidth = count
+            useTabs = false
+        }
+
+        if useTabs {
+            queuedPrintError("'use-tabs' is deprecated and will be completely removed" +
+                " in a future release. 'indentation' can now be defined in a configuration file.")
+            useTabs = self.useTabs
+        }
+
+        let visitor = LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
+                                           useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude,
+                                           cache: cache, parallel: true) { linter in
+            let corrections = linter.correct()
+            if !corrections.isEmpty && !self.quiet {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joined(separator: "\n"))
+            }
+            if self.format {
+                linter.format(useTabs: useTabs, indentWidth: indentWidth)
+            }
+        }
+
+        return .success(visitor)
     }
 }

@@ -45,6 +45,12 @@ extension ClosingBraceRuleTests {
     ]
 }
 
+extension ClosureBodyLengthRuleTests {
+    static var allTests: [(String, (ClosureBodyLengthRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension ClosureEndIndentationRuleTests {
     static var allTests: [(String, (ClosureEndIndentationRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1233,6 +1239,7 @@ XCTMain([
     testCase(BlockBasedKVORuleTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
+    testCase(ClosureBodyLengthRuleTests.allTests),
     testCase(ClosureEndIndentationRuleTests.allTests),
     testCase(ClosureParameterPositionRuleTests.allTests),
     testCase(ClosureSpacingRuleTests.allTests),

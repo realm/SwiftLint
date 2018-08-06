@@ -85,6 +85,8 @@
 		623675B21F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623675B11F962FC4009BE6F3 /* QuickDiscouragedPendingTestRuleExamples.swift */; };
 		623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */; };
 		623E36F21F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */; };
+		62426A032118BA6E007E6340 /* ClosureBodyLengthRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */; };
+		62426A062118F995007E6340 /* ClosureBodyLengthRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */; };
 		6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */; };
 		6258783B1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */; };
 		62622F6B1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */; };
@@ -485,6 +487,8 @@
 		6238AE411ED4D734006C3601 /* MultilineParametersRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineParametersRule.swift; sourceTree = "<group>"; };
 		623E36EF1F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRule.swift; sourceTree = "<group>"; };
 		623E36F11F3DB988002E5B71 /* QuickDiscouragedCallRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickDiscouragedCallRuleExamples.swift; sourceTree = "<group>"; };
+		62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureBodyLengthRule.swift; sourceTree = "<group>"; };
+		62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureBodyLengthRuleExamples.swift; sourceTree = "<group>"; };
 		6258783A1FFC458100AC34F2 /* DiscouragedObjectLiteralRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedObjectLiteralRule.swift; sourceTree = "<group>"; };
 		62622F6A1F2F2E3500D5D099 /* DiscouragedDirectInitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedDirectInitRule.swift; sourceTree = "<group>"; };
 		62640150201552E0005B9C4A /* DiscouragedOptionalBooleanRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscouragedOptionalBooleanRule.swift; sourceTree = "<group>"; };
@@ -892,6 +896,8 @@
 		8F2892B421176E1200691D58 /* Metrics */ = {
 			isa = PBXGroup;
 			children = (
+				62426A022118BA6E007E6340 /* ClosureBodyLengthRule.swift */,
+				62426A042118F991007E6340 /* ClosureBodyLengthRuleExamples.swift */,
 				2E02005E1C54BF680024D09D /* CyclomaticComplexityRule.swift */,
 				E88DEA891B0992B300A66CB0 /* FileLengthRule.swift */,
 				E88DEA8F1B099A3100A66CB0 /* FunctionBodyLengthRule.swift */,
@@ -1678,6 +1684,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62426A062118F995007E6340 /* ClosureBodyLengthRuleExamples.swift in Sources */,
 				8B01E4FD20A41C8700C9233E /* FunctionParameterCountConfiguration.swift in Sources */,
 				740DF1B1203F62BB0081F694 /* EmptyStringRule.swift in Sources */,
 				4DB7815E1CAD72BA00BC4723 /* LegacyCGGeometryFunctionsRule.swift in Sources */,
@@ -1878,6 +1885,7 @@
 				3BD9CD3D1C37175B009A5D25 /* YamlParser.swift in Sources */,
 				F22314B01D4FA4D7009AD165 /* LegacyNSGeometryFunctionsRule.swift in Sources */,
 				E88DEA8C1B0999A000A66CB0 /* ASTRule.swift in Sources */,
+				62426A032118BA6E007E6340 /* ClosureBodyLengthRule.swift in Sources */,
 				1E82D5591D7775C7009553D7 /* ClosureSpacingRule.swift in Sources */,
 				E80746F61ECB722F00548D31 /* CacheDescriptionProvider.swift in Sources */,
 				094385041D5D4F7C009168CF /* PrivateOutletRule.swift in Sources */,

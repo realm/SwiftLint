@@ -9,6 +9,11 @@
 * Improve performance of `line_length` rule.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `closure_body_length` rule to enforce the maximum number
+  of lines a closure should have. Requires Swift 4.2.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#52](https://github.com/realm/SwiftLint/issues/52)
+
 #### Bug Fixes
 
 * None.

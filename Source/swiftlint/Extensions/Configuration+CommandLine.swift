@@ -82,7 +82,9 @@ extension Configuration {
                 }
             }
             autoreleasepool {
-                let linter = Linter(file: file, configuration: config, cache: visitor.cache)
+                let compilerArguments = file.compilerArguments(compilerLogs: visitor.compilerLogContents)
+                let linter = Linter(file: file, configuration: config, cache: visitor.cache,
+                                    compilerArguments: compilerArguments)
                 visitor.block(linter)
             }
         }
@@ -155,8 +157,14 @@ extension Configuration {
         let visitor = LintableFilesVisitor(paths: options.paths, action: "Linting", useSTDIN: options.useSTDIN,
                                            quiet: options.quiet, useScriptInputFiles: options.useScriptInputFiles,
                                            forceExclude: options.forceExclude, cache: cache, parallel: true,
-                                           block: visitorBlock)
-        return visitLintableFiles(with: visitor)
+                                           compilerLogPath: options.compilerLogPath, block: visitorBlock)
+        if let visitor = visitor {
+            return visitLintableFiles(with: visitor)
+        }
+
+        return .failure(
+            .usageError(description: "Could not read compiler log at path: '\(options.compilerLogPath)'")
+        )
     }
 
     // MARK: AutoCorrect Command

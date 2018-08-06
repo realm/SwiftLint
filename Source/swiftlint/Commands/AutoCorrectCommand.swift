@@ -34,22 +34,23 @@ struct AutoCorrectOptions: OptionsProtocol {
     let cachePath: String
     let ignoreCache: Bool
     let useTabs: Bool
+    let compilerLogPath: String
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in { paths in
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> (_ compilerLogPath: String) -> (_ paths: [String]) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in { compilerLogPath in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
-        }}}}}}}}}
+            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs, compilerLogPath: compilerLogPath)
+            // swiftlint:enable line_length
+        }}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
-        // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
@@ -68,6 +69,10 @@ struct AutoCorrectOptions: OptionsProtocol {
             <*> mode <| Option(key: "use-tabs",
                                defaultValue: false,
                                usage: "should use tabs over spaces when reformatting. Deprecated.")
+            <*> mode <| Option(key: "compiler-log-path", defaultValue: "",
+                               usage: """
+                                      the path of the full xcodebuild log to use when correcting CompilerArgumentRules
+                                      """)
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "correct")
     }
@@ -95,7 +100,7 @@ struct AutoCorrectOptions: OptionsProtocol {
 
         let visitor = LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
                                            useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude,
-                                           cache: cache, parallel: true) { linter in
+                                           cache: cache, parallel: true, compilerLogPath: compilerLogPath) { linter in
             let corrections = linter.correct()
             if !corrections.isEmpty && !self.quiet {
                 let correctionLogs = corrections.map({ $0.consoleDescription })
@@ -106,6 +111,12 @@ struct AutoCorrectOptions: OptionsProtocol {
             }
         }
 
-        return .success(visitor)
+        if let visitor = visitor {
+            return .success(visitor)
+        }
+
+        return .failure(
+            .usageError(description: "Could not read compiler log at path: '\(compilerLogPath)'")
+        )
     }
 }

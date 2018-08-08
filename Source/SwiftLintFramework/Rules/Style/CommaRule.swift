@@ -17,7 +17,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
             "abc(a: \"string\", b: \"string\"",
             "enum a { case a, b, c }",
             "func abc(\n  a: String,  // comment\n  bcd: String // comment\n) {\n}\n",
-            "func abc(\n  a: String,\n  bcd: String\n) {\n}\n"
+            "func abc(\n  a: String,\n  bcd: String\n) {\n}\n",
+            "#imageLiteral(resourceName: \"foo,bar,baz\")"
         ],
         triggeringExamples: [
             "func abc(a: String↓ ,b: String) { }",
@@ -82,8 +83,8 @@ public struct CommaRule: CorrectableRule, ConfigurationProviderRule, AutomaticTe
         "\(mainPatternGroups)"      // Regexp will match if expression begins with comma
 
     private static let regularExpression = regex(pattern, options: [])
-    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds
-    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds
+    private static let excludingSyntaxKindsForFirstCapture = SyntaxKind.commentAndStringKinds.union([.objectLiteral])
+    private static let excludingSyntaxKindsForSecondCapture = SyntaxKind.commentKinds.union([.objectLiteral])
 
     private func violationRanges(in file: File) -> [NSRange] {
         let contents = file.contents

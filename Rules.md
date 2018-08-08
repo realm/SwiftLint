@@ -1598,6 +1598,10 @@ func abc(
 
 ```
 
+```swift
+#imageLiteral(resourceName: "foo,bar,baz")
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

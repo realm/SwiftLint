@@ -11,7 +11,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix `comma` rule false positives on object literals (for example, images).  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2345](https://github.com/realm/SwiftLint/pull/2345)
 
 ## 0.27.0: Heavy Duty
 

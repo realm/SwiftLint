@@ -45,6 +45,10 @@ class FileNameRuleTests: XCTestCase {
         XCTAssert(try validate(fileName: "NSString+Extension.swift").isEmpty)
     }
 
+    func testNestedExtensionDoesntTrigger() {
+        XCTAssert(try validate(fileName: "Notification.Name+Extension.swift").isEmpty)
+    }
+
     func testMisspelledNameDoesTrigger() {
         XCTAssertEqual(try validate(fileName: "MyStructf.swift").count, 1)
     }

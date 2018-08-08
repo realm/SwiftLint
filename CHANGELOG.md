@@ -6,7 +6,8 @@
 
 #### Enhancements
 
-* Improve performance of `line_length` rule.  
+* Improve performance of `line_length` and
+  `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
 #### Bug Fixes

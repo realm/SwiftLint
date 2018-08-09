@@ -10,6 +10,11 @@
   `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `closure_body_length` opt-in rule to enforce the maximum number
+  of lines a closure should have. Requires Swift 4.2.  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#52](https://github.com/realm/SwiftLint/issues/52)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  

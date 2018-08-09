@@ -8,6 +8,7 @@ public let masterRuleList = RuleList(rules: [
     BlockBasedKVORule.self,
     ClassDelegateProtocolRule.self,
     ClosingBraceRule.self,
+    ClosureBodyLengthRule.self,
     ClosureEndIndentationRule.self,
     ClosureParameterPositionRule.self,
     ClosureSpacingRule.self,

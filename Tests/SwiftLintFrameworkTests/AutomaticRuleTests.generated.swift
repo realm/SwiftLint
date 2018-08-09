@@ -36,6 +36,12 @@ class ClosingBraceRuleTests: XCTestCase {
     }
 }
 
+class ClosureBodyLengthRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ClosureBodyLengthRule.description)
+    }
+}
+
 class ClosureEndIndentationRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ClosureEndIndentationRule.description)

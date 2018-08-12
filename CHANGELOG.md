@@ -14,6 +14,7 @@
   of lines a closure should have. Requires Swift 4.2.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#52](https://github.com/realm/SwiftLint/issues/52)
+
 * [Experimental] Add a new `CompilerArgumentRule` type which can lint Swift
   files using the full type-checked AST. Rules of this type will be added over
   time. The compiler log path containing the clean `swiftc` build command

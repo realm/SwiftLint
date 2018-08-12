@@ -174,6 +174,12 @@ class ExplicitInitRuleTests: XCTestCase {
     }
 }
 
+class ExplicitSelfRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ExplicitSelfRule.description)
+    }
+}
+
 class ExplicitTopLevelACLRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ExplicitTopLevelACLRule.description)

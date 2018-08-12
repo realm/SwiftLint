@@ -4680,15 +4680,6 @@ switch foo {
 }
 ```
 
-```swift
-struct A {
-    let p1: Int
-    func f1() {
-        _ = self.p1
-    }
-}
-```
-
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4722,15 +4713,6 @@ func example(foo: Foo) {
     switch foo {
     case case .bar↓(_):
         break
-    }
-}
-```
-
-```swift
-struct A {
-    let p1: Int
-    func f1() {
-        _ = ↓p1
     }
 }
 ```
@@ -5382,6 +5364,15 @@ struct A {
 }
 ```
 
+```swift
+struct A {
+    let p1: Int
+    func f1() {
+        _ = self.p1
+    }
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -5391,6 +5382,15 @@ struct A {
     func f1() {}
     func f2() {
         ↓f1()
+    }
+}
+```
+
+```swift
+struct A {
+    let p1: Int
+    func f1() {
+        _ = ↓p1
     }
 }
 ```

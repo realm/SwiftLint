@@ -14,6 +14,18 @@
   of lines a closure should have. Requires Swift 4.2.  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#52](https://github.com/realm/SwiftLint/issues/52)
+* [Experimental] Add a new `CompilerArgumentRule` type which can lint Swift
+  files using the full type-checked AST. Rules of this type will be added over
+  time. The compiler log path containing the clean `swiftc` build command
+  invocation (incremental builds will fail) must be passed to `lint` or
+  `autocorrect` via the `--compiler-log-path` flag.
+  e.g. `--compiler-log-path /path/to/xcodebuild.log`  
+  [JP Simard](https://github.com/jpsim)
+
+* [Experimental] Add a new opt-in `explicit_self` rule to enforce the use of
+  explicit references to `self.` when accessing instance variables or
+  functions.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 

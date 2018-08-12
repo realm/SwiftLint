@@ -8,6 +8,7 @@ public struct RuleDescription: Equatable {
     public let corrections: [String: String]
     public let deprecatedAliases: Set<String>
     public let minSwiftVersion: SwiftVersion
+    public let requiresFileOnDisk: Bool
 
     public var consoleDescription: String { return "\(name) (\(identifier)): \(description)" }
 
@@ -19,7 +20,8 @@ public struct RuleDescription: Equatable {
                 minSwiftVersion: SwiftVersion = .three,
                 nonTriggeringExamples: [String] = [], triggeringExamples: [String] = [],
                 corrections: [String: String] = [:],
-                deprecatedAliases: Set<String> = []) {
+                deprecatedAliases: Set<String> = [],
+                requiresFileOnDisk: Bool = false) {
         self.identifier = identifier
         self.name = name
         self.description = description
@@ -29,6 +31,7 @@ public struct RuleDescription: Equatable {
         self.corrections = corrections
         self.deprecatedAliases = deprecatedAliases
         self.minSwiftVersion = minSwiftVersion
+        self.requiresFileOnDisk = requiresFileOnDisk
     }
 }
 

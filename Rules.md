@@ -5357,10 +5357,7 @@ Instance variables and functions should be explicitly accessed with 'self.'.
 
 ```swift
 struct A {
-    let p1: Int
-    func f1() {
-        self.p1 = 0
-    }
+    func f1() {}
     func f2() {
         self.f1()
     }
@@ -5373,10 +5370,7 @@ struct A {
 
 ```swift
 struct A {
-    let p1: Int
-    func f1() {
-        ↓p1 = 0
-    }
+    func f1() {}
     func f2() {
         ↓f1()
     }

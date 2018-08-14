@@ -133,12 +133,16 @@ class ExplicitTypeInterfaceRuleTests: XCTestCase {
 
     func testSwitchCaseDeclarations() {
 
-        let nonTriggeringExamples = [
+        guard SwiftVersion.current >= .fourDotOne else {
+            return
+        }
+
+        let nonTriggeringExamples: [String] = [
             "enum Foo {\n"                                      +
             "   case failure(Any)\n"                            +
             "   case success(Any)\n"                            +
             "}\n"                                               +
-            "func bar {\n"                                      +
+            "func bar() {\n"                                      +
             "   let foo: Foo = Foo.success(1)\n"                +
             "   switch foo {\n"                                 +
             "   case .failure(let error): let bar: Int = 1\n"   +

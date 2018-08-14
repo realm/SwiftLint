@@ -85,6 +85,10 @@
 
 #### Bug Fixes
 
+* Fix `explicit_type_interface` when used in statements.  
+  [Daniel Metzing](https://github.com/dirtydanee)
+  [#2154](https://github.com/realm/SwiftLint/issues/2154)
+
 * Fix an issue with `control_statement` where commas in clauses prevented the
   rule from applying.  
   [Allen Wu](https://github.com/allewun)

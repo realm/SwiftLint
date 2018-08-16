@@ -15,7 +15,7 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#52](https://github.com/realm/SwiftLint/issues/52)
 
-* Add SonarQube reporter
+* Add SonarQube reporter.  
   [Yusuke Ohashi](https://github.com/junkpiano)
   [#2350](https://github.com/realm/SwiftLint/issues/2350)
 

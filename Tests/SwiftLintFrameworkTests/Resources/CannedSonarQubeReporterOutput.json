@@ -38,6 +38,19 @@
       "ruleId":"syntactic_sugar",
       "severity":"MAJOR",
       "type":"CODE_SMELL"
+    },
+    {
+      "engineId":"SwiftLint",
+      "primaryLocation":{
+        "filePath":"",
+        "message":"Colons should be next to the identifier when specifying a type and next to the key in dictionary literals.",
+        "textRange":{
+          "startLine":1
+        }
+      },
+      "ruleId":"colon",
+      "severity":"MAJOR",
+      "type":"CODE_SMELL"
     }
   ]
 }

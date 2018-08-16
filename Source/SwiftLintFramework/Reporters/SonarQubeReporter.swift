@@ -10,14 +10,11 @@ public struct SonarQubeReporter: Reporter {
     }
 
     public static func generateReport(_ violations: [StyleViolation]) -> String {
-        return toJSON(["issues": violations
-            .filter { $0.location.relativeFile != nil && $0.location.line != nil }
-            .map(dictionary(for:))
-            ])
+        return toJSON(["issues": violations.map(dictionary(for:))])
     }
 
     // refer to https://docs.sonarqube.org/display/SONAR/Generic+Issue+Data
-    static func dictionary(for violation: StyleViolation) -> [String: Any] {
+    private static func dictionary(for violation: StyleViolation) -> [String: Any] {
         return [
             "engineId": "SwiftLint",
             "ruleId": violation.ruleDescription.identifier,
@@ -25,7 +22,7 @@ public struct SonarQubeReporter: Reporter {
                 "message": violation.reason,
                 "filePath": violation.location.relativeFile ?? "",
                 "textRange": [
-                    "startLine": violation.location.line ?? 0
+                    "startLine": violation.location.line ?? 1
                 ]
             ],
             "type": "CODE_SMELL",

@@ -21,6 +21,8 @@ public func reporterFrom(identifier: String) -> Reporter.Type {
         return HTMLReporter.self
     case EmojiReporter.identifier:
         return EmojiReporter.self
+    case SonarQubeReporter.identifier:
+        return SonarQubeReporter.self
     default:
         queuedFatalError("no reporter with identifier '\(identifier)' available.")
     }

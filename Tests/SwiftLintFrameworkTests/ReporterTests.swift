@@ -13,7 +13,8 @@ class ReporterTests: XCTestCase {
             CheckstyleReporter.self,
             JUnitReporter.self,
             HTMLReporter.self,
-            EmojiReporter.self
+            EmojiReporter.self,
+            SonarQubeReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
@@ -62,19 +63,20 @@ class ReporterTests: XCTestCase {
         XCTAssertEqual(result, expectedOutput)
     }
 
+    private func jsonValue(_ jsonString: String) throws -> NSObject {
+        let data = jsonString.data(using: .utf8)!
+        let result = try JSONSerialization.jsonObject(with: data, options: [])
+        if let dict = (result as? [String: Any])?.bridge() {
+            return dict
+        } else if let array = (result as? [Any])?.bridge() {
+            return array
+        }
+        queuedFatalError("Unexpected value in JSON: \(result)")
+    }
+
     func testJSONReporter() throws {
         let expectedOutput = stringFromFile("CannedJSONReporterOutput.json")
         let result = JSONReporter.generateReport(generateViolations())
-        func jsonValue(_ jsonString: String) throws -> NSObject {
-            let data = jsonString.data(using: .utf8)!
-            let result = try JSONSerialization.jsonObject(with: data, options: [])
-            if let dict = (result as? [String: Any])?.bridge() {
-                return dict
-            } else if let array = (result as? [Any])?.bridge() {
-                return array
-            }
-            queuedFatalError("Unexpected value in JSON: \(result)")
-        }
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 
@@ -104,5 +106,11 @@ class ReporterTests: XCTestCase {
                 dateString: "13/12/2016"
         )
         XCTAssertEqual(result, expectedOutput)
+    }
+
+    func testSonarQubeReporter() {
+        let expectedOutput = stringFromFile("CannedSonarQubeReporterOutput.json")
+        let result = SonarQubeReporter.generateReport(generateViolations())
+        XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
     }
 }

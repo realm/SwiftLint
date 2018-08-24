@@ -27,7 +27,12 @@
 
 * Fix false positive on `file_name` rule when using nested types.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#2325](https://github.com/realm/SwiftLint/issues/2325)  
+  [#2325](https://github.com/realm/SwiftLint/issues/2325)
+
+* Fix crash on `multiline_function_chains` rule when using some special
+  characters inside the function calls.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2360](https://github.com/realm/SwiftLint/issues/2360)
 
 ## 0.27.0: Heavy Duty
 

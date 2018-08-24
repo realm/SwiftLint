@@ -10270,6 +10270,12 @@ let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
     .d()
 ```
 
+```swift
+a.b {
+//  ““
+}↓.e()
+```
+
 </details>
 
 

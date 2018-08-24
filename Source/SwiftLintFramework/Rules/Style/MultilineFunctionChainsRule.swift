@@ -85,6 +85,11 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
                     print(blah)
                 }
                 .d()
+            """,
+            """
+            a.b {
+            //  ““
+            }↓.e()
             """
         ]
     )
@@ -197,7 +202,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         }
 
         let nameEndOffset = nameOffset + nameLength
-        let nameLengthDifference = parentName.bridge().length - nameLength
+        let nameLengthDifference = parentName.utf8.count - nameLength
         let offsetDifference = bodyOffset - nameEndOffset
 
         return NSRange(location: nameEndOffset + offsetDifference + bodyLength,
@@ -209,7 +214,7 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
 fileprivate extension Dictionary where Key: ExpressibleByStringLiteral {
     var subcalls: [[String: SourceKitRepresentable]] {
         return substructure.compactMap { dictionary -> [String: SourceKitRepresentable]? in
-            guard case .call? = dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) else {
+            guard dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call else {
                 return nil
             }
             return dictionary

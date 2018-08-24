@@ -2,7 +2,9 @@ import Foundation
 import SourceKittenFramework
 
 public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
-    public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false)
+    public var configuration = PrivateOutletRuleConfiguration(allowPrivateSet: false,
+                                                              allowInternal: false,
+                                                              allowInternalSet: false)
 
     public init() {}
 
@@ -38,7 +40,14 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
         let isPrivate = isPrivateLevel(identifier: dictionary.accessibility)
         let isPrivateSet = isPrivateLevel(identifier: dictionary.setterAccessibility)
 
-        if isPrivate || (configuration.allowPrivateSet && isPrivateSet) {
+        // Check if internal
+        let isInternal = isInternalLevel(identifier: dictionary.accessibility)
+        let isInternalSet = isInternalLevel(identifier: dictionary.setterAccessibility)
+
+        if isPrivate ||
+            (configuration.allowPrivateSet && isPrivateSet) ||
+            (configuration.allowInternal && isInternal) ||
+            (configuration.allowInternalSet && isInternalSet) {
             return []
         }
 
@@ -59,5 +68,9 @@ public struct PrivateOutletRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     private func isPrivateLevel(identifier: String?) -> Bool {
         return identifier.flatMap(AccessControlLevel.init(identifier:))?.isPrivate ?? false
+    }
+
+    private func isInternalLevel(identifier: String?) -> Bool {
+        return identifier.flatMap(AccessControlLevel.init(identifier:)) == .internal
     }
 }

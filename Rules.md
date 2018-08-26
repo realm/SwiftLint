@@ -94,6 +94,7 @@
 * [Private Outlets](#private-outlets)
 * [Private over fileprivate](#private-over-fileprivate)
 * [Private Unit Test](#private-unit-test)
+* [Prohibited Interface Builder](#prohibited-interface-builder)
 * [Prohibited calls to super](#prohibited-calls-to-super)
 * [Protocol Property Accessors Order](#protocol-property-accessors-order)
 * [Quick Discouraged Call](#quick-discouraged-call)
@@ -12981,6 +12982,51 @@ public class FooTest: XCTestCase { func test1() {}
  public func test3() {}
  private ↓func test4() {}
  }
+```
+
+</details>
+
+
+
+## Prohibited Interface Builder
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`prohibited_interface_builder` | Disabled | No | lint | 3.0.0 
+
+Creating views using Interface Builder should be avoided.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    var label: UILabel!
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    @objc func buttonTapped(_ sender: UIButton) {}
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+class ViewController: UIViewController {
+    @IBOutlet ↓var label: UILabel!
+}
+```
+
+```swift
+class ViewController: UIViewController {
+    @IBAction ↓func buttonTapped(_ sender: UIButton) {}
+}
 ```
 
 </details>

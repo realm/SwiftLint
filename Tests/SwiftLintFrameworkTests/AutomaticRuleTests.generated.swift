@@ -414,6 +414,12 @@ class PrivateUnitTestRuleTests: XCTestCase {
     }
 }
 
+class ProhibitedInterfaceBuilderRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ProhibitedInterfaceBuilderRule.description)
+    }
+}
+
 class ProhibitedSuperRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ProhibitedSuperRule.description)

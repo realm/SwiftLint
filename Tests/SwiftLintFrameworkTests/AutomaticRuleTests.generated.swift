@@ -246,6 +246,12 @@ class ImplicitReturnRuleTests: XCTestCase {
     }
 }
 
+class InertDeferRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(InertDeferRule.description)
+    }
+}
+
 class IsDisjointRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IsDisjointRule.description)

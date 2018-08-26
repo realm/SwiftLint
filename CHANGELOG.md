@@ -24,6 +24,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2365](https://github.com/realm/SwiftLint/pull/2365)
 
+* Add `inert_defer` rule to validate that `defer` is not used at the end of a
+  scope.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2123](https://github.com/realm/SwiftLint/issues/2123)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  

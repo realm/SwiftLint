@@ -22,13 +22,13 @@
 * Add `prohibited_interface_builder` opt-in rule to validate that `@IBOutlet`s
   and `@IBAction`s are not used.  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#2365](https://github.com/realm/SwiftLint/pull/2365)
+  [#2365](https://github.com/realm/SwiftLint/issues/2365)
 
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  
   [Marcelo Fabri](https://github.com/marcelofabri)
-  [#2345](https://github.com/realm/SwiftLint/pull/2345)
+  [#2345](https://github.com/realm/SwiftLint/issues/2345)
 
 * Fix false positive on `file_name` rule when using nested types.  
   [Marcelo Fabri](https://github.com/marcelofabri)

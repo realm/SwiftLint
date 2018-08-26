@@ -95,6 +95,7 @@ public let masterRuleList = RuleList(rules: [
     PrivateOutletRule.self,
     PrivateOverFilePrivateRule.self,
     PrivateUnitTestRule.self,
+    ProhibitedInterfaceBuilderRule.self,
     ProhibitedSuperRule.self,
     ProtocolPropertyAccessorsOrderRule.self,
     QuickDiscouragedCallRule.self,

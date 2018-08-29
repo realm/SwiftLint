@@ -56,6 +56,7 @@
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
 * [Implicitly Unwrapped Optional](#implicitly-unwrapped-optional)
+* [Inert Defer](#inert-defer)
 * [Is Disjoint](#is-disjoint)
 * [Joined Default Parameter](#joined-default-parameter)
 * [Large Tuple](#large-tuple)
@@ -8207,6 +8208,66 @@ let collection: AnyCollection<Int!>
 
 ```swift
 func foo(int: Int!) {}
+```
+
+</details>
+
+
+
+## Inert Defer
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`inert_defer` | Enabled | No | lint | 3.0.0 
+
+If defer is at the end of its parent scope, it will be executed right where it is anyway.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func example3() {
+    defer { /* deferred code */ }
+
+    print("other code")
+}
+```
+
+```swift
+func example4() {
+    if condition {
+        defer { /* deferred code */ }
+        print("other code")
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func example0() {
+    ↓defer { /* deferred code */ }
+}
+```
+
+```swift
+func example1() {
+    ↓defer { /* deferred code */ }
+    // comment
+}
+```
+
+```swift
+func example2() {
+    if condition {
+        ↓defer { /* deferred code */ }
+        // comment
+    }
+}
 ```
 
 </details>

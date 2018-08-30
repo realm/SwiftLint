@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -1090,6 +1090,12 @@ extension TodoRuleTests {
     ]
 }
 
+extension ToggleBoolRuleTests {
+    static var allTests: [(String, (ToggleBoolRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension TrailingClosureRuleTests {
     static var allTests: [(String, (TrailingClosureRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1384,6 +1390,7 @@ XCTMain([
     testCase(SwitchCaseOnNewlineRuleTests.allTests),
     testCase(SyntacticSugarRuleTests.allTests),
     testCase(TodoRuleTests.allTests),
+    testCase(ToggleBoolRuleTests.allTests),
     testCase(TrailingClosureRuleTests.allTests),
     testCase(TrailingCommaRuleTests.allTests),
     testCase(TrailingSemicolonRuleTests.allTests),

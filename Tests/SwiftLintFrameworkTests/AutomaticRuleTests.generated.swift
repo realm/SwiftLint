@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.13.1 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -543,6 +543,12 @@ class SwitchCaseOnNewlineRuleTests: XCTestCase {
 class SyntacticSugarRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SyntacticSugarRule.description)
+    }
+}
+
+class ToggleBoolRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(ToggleBoolRule.description)
     }
 }
 

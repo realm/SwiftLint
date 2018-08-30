@@ -8,7 +8,7 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
     public static var description = RuleDescription(
         identifier: "toggle_bool",
         name: "Toggle Bool",
-        description: "Prefer `Bool.toggle()` over `someBool = !someBool`.",
+        description: "Prefer `someBool.toggle()` over `someBool = !someBool`.",
         kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [

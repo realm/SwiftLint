@@ -29,6 +29,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2123](https://github.com/realm/SwiftLint/issues/2123)
 
+* Add `toggle_bool` opt-in rule which suggests using `Bool.toggle()` over 
+  `someBool = !someBool`. Requires Swift 4.2.
+  [Dalton Claybrook](https://github.com/daltonclaybrook)
+  [#2369](https://github.com/realm/SwiftLint/issues/2369)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  

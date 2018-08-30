@@ -15714,7 +15714,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift
 --- | --- | --- | --- | ---
 `toggle_bool` | Disabled | No | idiomatic | 4.2.0 
 
-Prefer `Bool.toggle()` over `someBool = !someBool`.
+Prefer `someBool.toggle()` over `someBool = !someBool`.
 
 ### Examples
 

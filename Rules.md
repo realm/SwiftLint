@@ -121,6 +121,7 @@
 * [Switch Case on Newline](#switch-case-on-newline)
 * [Syntactic Sugar](#syntactic-sugar)
 * [Todo](#todo)
+* [Toggle Bool](#toggle-bool)
 * [Trailing Closure](#trailing-closure)
 * [Trailing Comma](#trailing-comma)
 * [Trailing Newline](#trailing-newline)
@@ -15701,6 +15702,55 @@ TODOs and FIXMEs should be resolved.
 ```swift
 /** ↓TODO: */
 
+```
+
+</details>
+
+
+
+## Toggle Bool
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`toggle_bool` | Disabled | No | idiomatic | 4.2.0 
+
+Prefer `Bool.toggle()` over `someBool = !someBool`.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+isHidden.toggle()
+
+```
+
+```swift
+view.clipsToBounds.toggle()
+
+```
+
+```swift
+func foo() { abc.toggle() }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+isHidden = ↓!isHidden
+
+```
+
+```swift
+view.clipsToBounds = ↓!view.clipsToBounds
+
+```
+
+```swift
+func foo() { abc = ↓!abc }
 ```
 
 </details>

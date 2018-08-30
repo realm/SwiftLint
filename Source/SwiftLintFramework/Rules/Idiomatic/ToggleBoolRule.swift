@@ -17,9 +17,9 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
             "func foo() { abc.toggle() }"
         ],
         triggeringExamples: [
-            "isHidden = ↓!isHidden\n",
-            "view.clipsToBounds = ↓!view.clipsToBounds\n",
-            "func foo() { abc = ↓!abc }"
+            "↓isHidden = !isHidden\n",
+            "↓view.clipsToBounds = !view.clipsToBounds\n",
+            "func foo() { ↓abc = !abc }"
         ]
     )
 

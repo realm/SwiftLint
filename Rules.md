@@ -15740,17 +15740,17 @@ func foo() { abc.toggle() }
 <summary>Triggering Examples</summary>
 
 ```swift
-isHidden = ↓!isHidden
+↓isHidden = !isHidden
 
 ```
 
 ```swift
-view.clipsToBounds = ↓!view.clipsToBounds
+↓view.clipsToBounds = !view.clipsToBounds
 
 ```
 
 ```swift
-func foo() { abc = ↓!abc }
+func foo() { ↓abc = !abc }
 ```
 
 </details>

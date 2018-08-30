@@ -127,6 +127,7 @@
 		7250948A1D0859260039B353 /* StatementModeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725094881D0855760039B353 /* StatementModeConfiguration.swift */; };
 		72EA17B61FD31F10009D5CE6 /* ExplicitACLRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */; };
 		740DF1B1203F62BB0081F694 /* EmptyStringRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */; };
+		7551DF6D21382C9A00AA1F4D /* ToggleBoolRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */; };
 		787CDE39208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */; };
 		787CDE3B208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */; };
 		78F032461D7C877E00BE709A /* OverriddenSuperCallRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */; };
@@ -532,6 +533,7 @@
 		725094881D0855760039B353 /* StatementModeConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementModeConfiguration.swift; sourceTree = "<group>"; };
 		72EA17B51FD31F10009D5CE6 /* ExplicitACLRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplicitACLRule.swift; sourceTree = "<group>"; };
 		740DF1AF203F5AFC0081F694 /* EmptyStringRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyStringRule.swift; sourceTree = "<group>"; };
+		7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleBoolRule.swift; sourceTree = "<group>"; };
 		787CDE38208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentConfiguration.swift; sourceTree = "<group>"; };
 		787CDE3A208F9C34005F3D2F /* SwitchCaseAlignmentRuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRuleTests.swift; sourceTree = "<group>"; };
 		78F032441D7C877800BE709A /* OverriddenSuperCallRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverriddenSuperCallRule.swift; sourceTree = "<group>"; };
@@ -1092,6 +1094,7 @@
 				D4B022B11E10B613007E5297 /* RedundantVoidReturnRule.swift */,
 				D42B45D81F0AF5E30086B683 /* StrictFilePrivateRule.swift */,
 				D44254251DB9C12300492EA4 /* SyntacticSugarRule.swift */,
+				7551DF6C21382C9A00AA1F4D /* ToggleBoolRule.swift */,
 				E87E4A041BFB927C00FCFE46 /* TrailingSemicolonRule.swift */,
 				E88DEA911B099B1F00A66CB0 /* TypeNameRule.swift */,
 				D4130D981E16CC1300242361 /* TypeNameRuleExamples.swift */,
@@ -1920,6 +1923,7 @@
 				E83530C61ED6328A00FBAF79 /* FileNameRule.swift in Sources */,
 				3BB47D831C514E8100AE6A10 /* RegexConfiguration.swift in Sources */,
 				D401D9261ED85EF0005DA5D4 /* RuleKind.swift in Sources */,
+				7551DF6D21382C9A00AA1F4D /* ToggleBoolRule.swift in Sources */,
 				626B01B620A173F100D2C42F /* EmptyXCTestMethodRuleExamples.swift in Sources */,
 				D4C889711E385B7B00BAE88D /* RedundantDiscardableLetRule.swift in Sources */,
 				D4D1B9BB1EAC2C910028BE6A /* AccessControlLevel.swift in Sources */,

@@ -52,6 +52,7 @@
 * [Function Default Parameter at End](#function-default-parameter-at-end)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
+* [Identical Operands](#identical-operands)
 * [Identifier Name](#identifier-name)
 * [Implicit Getter](#implicit-getter)
 * [Implicit Return](#implicit-return)
@@ -7725,6 +7726,575 @@ enum Foo<↓TTTTTTTTTTTTTTTTTTTTT> {}
 ```swift
 enum Foo<↓type> {}
 
+```
+
+</details>
+
+
+
+## Identical Operands
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`identical_operands` | Disabled | No | lint | 3.0.0 
+
+Comparing two identical operands is likely a mistake.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+1 == 2
+```
+
+```swift
+foo == bar
+```
+
+```swift
+prefixedFoo == foo
+```
+
+```swift
+foo.aProperty == foo.anotherProperty
+```
+
+```swift
+self.aProperty == self.anotherProperty
+```
+
+```swift
+"1 == 1"
+```
+
+```swift
+self.aProperty == aProperty
+```
+
+```swift
+lhs.aProperty == rhs.aProperty
+```
+
+```swift
+lhs.identifier == rhs.identifier
+```
+
+```swift
+i == index
+```
+
+```swift
+$0 == 0
+```
+
+```swift
+keyValues?.count ?? 0  == 0
+```
+
+```swift
+1 != 2
+```
+
+```swift
+foo != bar
+```
+
+```swift
+prefixedFoo != foo
+```
+
+```swift
+foo.aProperty != foo.anotherProperty
+```
+
+```swift
+self.aProperty != self.anotherProperty
+```
+
+```swift
+"1 != 1"
+```
+
+```swift
+self.aProperty != aProperty
+```
+
+```swift
+lhs.aProperty != rhs.aProperty
+```
+
+```swift
+lhs.identifier != rhs.identifier
+```
+
+```swift
+i != index
+```
+
+```swift
+$0 != 0
+```
+
+```swift
+keyValues?.count ?? 0  != 0
+```
+
+```swift
+1 === 2
+```
+
+```swift
+foo === bar
+```
+
+```swift
+prefixedFoo === foo
+```
+
+```swift
+foo.aProperty === foo.anotherProperty
+```
+
+```swift
+self.aProperty === self.anotherProperty
+```
+
+```swift
+"1 === 1"
+```
+
+```swift
+self.aProperty === aProperty
+```
+
+```swift
+lhs.aProperty === rhs.aProperty
+```
+
+```swift
+lhs.identifier === rhs.identifier
+```
+
+```swift
+i === index
+```
+
+```swift
+$0 === 0
+```
+
+```swift
+keyValues?.count ?? 0  === 0
+```
+
+```swift
+1 !== 2
+```
+
+```swift
+foo !== bar
+```
+
+```swift
+prefixedFoo !== foo
+```
+
+```swift
+foo.aProperty !== foo.anotherProperty
+```
+
+```swift
+self.aProperty !== self.anotherProperty
+```
+
+```swift
+"1 !== 1"
+```
+
+```swift
+self.aProperty !== aProperty
+```
+
+```swift
+lhs.aProperty !== rhs.aProperty
+```
+
+```swift
+lhs.identifier !== rhs.identifier
+```
+
+```swift
+i !== index
+```
+
+```swift
+$0 !== 0
+```
+
+```swift
+keyValues?.count ?? 0  !== 0
+```
+
+```swift
+1 > 2
+```
+
+```swift
+foo > bar
+```
+
+```swift
+prefixedFoo > foo
+```
+
+```swift
+foo.aProperty > foo.anotherProperty
+```
+
+```swift
+self.aProperty > self.anotherProperty
+```
+
+```swift
+"1 > 1"
+```
+
+```swift
+self.aProperty > aProperty
+```
+
+```swift
+lhs.aProperty > rhs.aProperty
+```
+
+```swift
+lhs.identifier > rhs.identifier
+```
+
+```swift
+i > index
+```
+
+```swift
+$0 > 0
+```
+
+```swift
+keyValues?.count ?? 0  > 0
+```
+
+```swift
+1 >= 2
+```
+
+```swift
+foo >= bar
+```
+
+```swift
+prefixedFoo >= foo
+```
+
+```swift
+foo.aProperty >= foo.anotherProperty
+```
+
+```swift
+self.aProperty >= self.anotherProperty
+```
+
+```swift
+"1 >= 1"
+```
+
+```swift
+self.aProperty >= aProperty
+```
+
+```swift
+lhs.aProperty >= rhs.aProperty
+```
+
+```swift
+lhs.identifier >= rhs.identifier
+```
+
+```swift
+i >= index
+```
+
+```swift
+$0 >= 0
+```
+
+```swift
+keyValues?.count ?? 0  >= 0
+```
+
+```swift
+1 < 2
+```
+
+```swift
+foo < bar
+```
+
+```swift
+prefixedFoo < foo
+```
+
+```swift
+foo.aProperty < foo.anotherProperty
+```
+
+```swift
+self.aProperty < self.anotherProperty
+```
+
+```swift
+"1 < 1"
+```
+
+```swift
+self.aProperty < aProperty
+```
+
+```swift
+lhs.aProperty < rhs.aProperty
+```
+
+```swift
+lhs.identifier < rhs.identifier
+```
+
+```swift
+i < index
+```
+
+```swift
+$0 < 0
+```
+
+```swift
+keyValues?.count ?? 0  < 0
+```
+
+```swift
+1 <= 2
+```
+
+```swift
+foo <= bar
+```
+
+```swift
+prefixedFoo <= foo
+```
+
+```swift
+foo.aProperty <= foo.anotherProperty
+```
+
+```swift
+self.aProperty <= self.anotherProperty
+```
+
+```swift
+"1 <= 1"
+```
+
+```swift
+self.aProperty <= aProperty
+```
+
+```swift
+lhs.aProperty <= rhs.aProperty
+```
+
+```swift
+lhs.identifier <= rhs.identifier
+```
+
+```swift
+i <= index
+```
+
+```swift
+$0 <= 0
+```
+
+```swift
+keyValues?.count ?? 0  <= 0
+```
+
+```swift
+func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>>
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓1 == 1
+```
+
+```swift
+↓foo == foo
+```
+
+```swift
+↓foo.aProperty == foo.aProperty
+```
+
+```swift
+↓self.aProperty == self.aProperty
+```
+
+```swift
+↓$0 == $0
+```
+
+```swift
+↓1 != 1
+```
+
+```swift
+↓foo != foo
+```
+
+```swift
+↓foo.aProperty != foo.aProperty
+```
+
+```swift
+↓self.aProperty != self.aProperty
+```
+
+```swift
+↓$0 != $0
+```
+
+```swift
+↓1 === 1
+```
+
+```swift
+↓foo === foo
+```
+
+```swift
+↓foo.aProperty === foo.aProperty
+```
+
+```swift
+↓self.aProperty === self.aProperty
+```
+
+```swift
+↓$0 === $0
+```
+
+```swift
+↓1 !== 1
+```
+
+```swift
+↓foo !== foo
+```
+
+```swift
+↓foo.aProperty !== foo.aProperty
+```
+
+```swift
+↓self.aProperty !== self.aProperty
+```
+
+```swift
+↓$0 !== $0
+```
+
+```swift
+↓1 > 1
+```
+
+```swift
+↓foo > foo
+```
+
+```swift
+↓foo.aProperty > foo.aProperty
+```
+
+```swift
+↓self.aProperty > self.aProperty
+```
+
+```swift
+↓$0 > $0
+```
+
+```swift
+↓1 >= 1
+```
+
+```swift
+↓foo >= foo
+```
+
+```swift
+↓foo.aProperty >= foo.aProperty
+```
+
+```swift
+↓self.aProperty >= self.aProperty
+```
+
+```swift
+↓$0 >= $0
+```
+
+```swift
+↓1 < 1
+```
+
+```swift
+↓foo < foo
+```
+
+```swift
+↓foo.aProperty < foo.aProperty
+```
+
+```swift
+↓self.aProperty < self.aProperty
+```
+
+```swift
+↓$0 < $0
+```
+
+```swift
+↓1 <= 1
+```
+
+```swift
+↓foo <= foo
+```
+
+```swift
+↓foo.aProperty <= foo.aProperty
+```
+
+```swift
+↓self.aProperty <= self.aProperty
+```
+
+```swift
+↓$0 <= $0
 ```
 
 </details>

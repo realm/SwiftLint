@@ -494,6 +494,12 @@ extension GlobTests {
     ]
 }
 
+extension IdenticalOperandsRuleTests {
+    static var allTests: [(String, (IdenticalOperandsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension IdentifierNameRuleTests {
     static var allTests: [(String, (IdentifierNameRuleTests) -> () throws -> Void)] = [
         ("testIdentifierName", testIdentifierName),
@@ -1313,6 +1319,7 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
+    testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),
     testCase(ImplicitReturnRuleTests.allTests),

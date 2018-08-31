@@ -35,7 +35,7 @@ VERSION_STRING=$(shell /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionSt
 
 all: build
 
-sourcery: Tests/LinuxMain.swift Source/SwiftLintFramework/Models/MasterRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.swift
+sourcery: Source/SwiftLintFramework/Models/MasterRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
 
 Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
 	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated

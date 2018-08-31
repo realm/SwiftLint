@@ -170,7 +170,7 @@ public struct Configuration: Hashable {
             (lhs.reporter == rhs.reporter) &&
             (lhs.rootPath == rhs.rootPath) &&
             (lhs.configurationPath == rhs.configurationPath) &&
-            (lhs.cachePath == lhs.cachePath) &&
+            (lhs.cachePath == rhs.cachePath) &&
             (lhs.included == rhs.included) &&
             (lhs.excluded == rhs.excluded) &&
             (lhs.rules == rhs.rules) &&

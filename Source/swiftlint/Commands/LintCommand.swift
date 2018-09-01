@@ -141,11 +141,11 @@ struct LintOptions: OptionsProtocol {
                 allPaths = paths
             }
             return self.init(paths: allPaths, useSTDIN: useSTDIN, configurationFile: configurationFile, strict: strict, lenient: lenient, forceExclude: forceExclude, useScriptInputFiles: useScriptInputFiles, benchmark: benchmark, reporter: reporter, quiet: quiet, cachePath: cachePath, ignoreCache: ignoreCache, enableAllRules: enableAllRules)
+            // swiftlint:enable line_length
         }}}}}}}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<LintOptions, CommandantError<CommandantError<()>>> {
-        // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "lint")
             <*> mode <| Option(key: "use-stdin", defaultValue: false,

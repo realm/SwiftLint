@@ -66,7 +66,7 @@ struct LintableFilesVisitor {
             )
         }
 
-        let visitor = LintableFilesVisitor(paths: options.paths, action: options.mode.verb.bridge().capitalized,
+        let visitor = LintableFilesVisitor(paths: options.paths, action: options.verb.bridge().capitalized,
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,
                                            useScriptInputFiles: options.useScriptInputFiles,
                                            forceExclude: options.forceExclude, cache: cache,

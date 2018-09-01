@@ -1,12 +1,36 @@
 import Commandant
 import Result
+import SwiftLintFramework
 
 struct AnalyzeCommand: CommandProtocol {
     let verb = "analyze"
     let function = "[Experimental] Run analysis rules"
 
     func run(_ options: AnalyzeOptions) -> Result<(), CommandantError<()>> {
-        return LintOrAnalyzeCommand.run(LintOrAnalyzeOptions(options))
+        let options = LintOrAnalyzeOptions(options)
+        if options.autocorrect {
+            return autocorrect(options)
+        } else {
+            return LintOrAnalyzeCommand.run(options)
+        }
+    }
+
+    private func autocorrect(_ options: LintOrAnalyzeOptions) -> Result<(), CommandantError<()>> {
+        return Configuration(options: options).visitLintableFiles(options: options, cache: nil) { linter in
+            let corrections = linter.correct()
+            if !corrections.isEmpty && !options.quiet {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joined(separator: "\n"))
+            }
+        }.flatMap { files in
+            if !options.quiet {
+                let pluralSuffix = { (collection: [Any]) -> String in
+                    return collection.count != 1 ? "s" : ""
+                }
+                queuedPrintError("Done correcting \(files.count) file\(pluralSuffix(files))!")
+            }
+            return .success(())
+        }
     }
 }
 

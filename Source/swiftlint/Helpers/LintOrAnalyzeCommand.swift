@@ -56,7 +56,7 @@ struct LintOrAnalyzeCommand {
             let numberOfSeriousViolations = violations.filter({ $0.severity == .error }).count
             if !options.quiet {
                 printStatus(violations: violations, files: files, serious: numberOfSeriousViolations,
-                            mode: options.mode)
+                            verb: options.verb)
             }
             if options.benchmark {
                 fileBenchmark.save()
@@ -78,13 +78,12 @@ struct LintOrAnalyzeCommand {
         return .success(())
     }
 
-    private static func printStatus(violations: [StyleViolation], files: [File], serious: Int,
-                                    mode: LintOrAnalyzeMode) {
+    private static func printStatus(violations: [StyleViolation], files: [File], serious: Int, verb: String) {
         let pluralSuffix = { (collection: [Any]) -> String in
             return collection.count != 1 ? "s" : ""
         }
         queuedPrintError(
-            "Done \(mode.verb)! Found \(violations.count) violation\(pluralSuffix(violations)), " +
+            "Done \(verb)! Found \(violations.count) violation\(pluralSuffix(violations)), " +
             "\(serious) serious in \(files.count) file\(pluralSuffix(files))."
         )
     }
@@ -181,5 +180,13 @@ struct LintOrAnalyzeOptions {
         enableAllRules = options.enableAllRules
         autocorrect = options.autocorrect
         compilerLogPath = options.compilerLogPath
+    }
+
+    var verb: String {
+        if autocorrect {
+            return "correcting"
+        } else {
+            return mode.verb
+        }
     }
 }

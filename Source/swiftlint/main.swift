@@ -7,6 +7,7 @@ DispatchQueue.global().async {
     let registry = CommandRegistry<CommandantError<()>>()
     registry.register(LintCommand())
     registry.register(AutoCorrectCommand())
+    registry.register(AnalyzeCommand())
     registry.register(VersionCommand())
     registry.register(RulesCommand())
     registry.register(GenerateDocsCommand())

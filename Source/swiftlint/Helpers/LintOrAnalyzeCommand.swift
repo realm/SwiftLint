@@ -142,6 +142,8 @@ struct LintOrAnalyzeOptions {
     let cachePath: String
     let ignoreCache: Bool
     let enableAllRules: Bool
+    let autocorrect: Bool
+    let compilerLogPath: String
 
     init(_ options: LintOptions) {
         mode = .lint
@@ -158,5 +160,26 @@ struct LintOrAnalyzeOptions {
         cachePath = options.cachePath
         ignoreCache = options.ignoreCache
         enableAllRules = options.enableAllRules
+        autocorrect = false
+        compilerLogPath = ""
+    }
+
+    init(_ options: AnalyzeOptions) {
+        mode = .analyze
+        paths = options.paths
+        useSTDIN = false
+        configurationFile = options.configurationFile
+        strict = options.strict
+        lenient = options.lenient
+        forceExclude = options.forceExclude
+        useScriptInputFiles = options.useScriptInputFiles
+        benchmark = options.benchmark
+        reporter = options.reporter
+        quiet = options.quiet
+        cachePath = ""
+        ignoreCache = true
+        enableAllRules = options.enableAllRules
+        autocorrect = options.autocorrect
+        compilerLogPath = options.compilerLogPath
     }
 }

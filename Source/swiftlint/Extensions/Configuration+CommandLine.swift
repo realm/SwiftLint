@@ -69,10 +69,18 @@ extension Configuration {
         var index = 0
         let fileCount = filesPerConfiguration.reduce(0) { $0 + $1.value.count }
         let visit = { (file: File, config: Configuration) -> Void in
+            let skipFile = visitor.shouldSkipFile(atPath: file.path)
             if !visitor.quiet, let filename = file.path?.bridge().lastPathComponent {
                 let increment = {
                     index += 1
-                    queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                    if skipFile {
+                        queuedPrintError("""
+                            Skipping '\(filename)' (\(index)/\(fileCount)) \
+                            because its compiler arguments could not be found
+                            """)
+                    } else {
+                        queuedPrintError("\(visitor.action) '\(filename)' (\(index)/\(fileCount))")
+                    }
                 }
                 if visitor.parallel {
                     indexIncrementerQueue.sync(execute: increment)
@@ -81,8 +89,12 @@ extension Configuration {
                 }
             }
 
+            guard !skipFile else {
+                return
+            }
+
             autoreleasepool {
-                visitor.block(Linter(file: file, configuration: config, cache: visitor.cache))
+                visitor.block(visitor.linter(forFile: file, configuration: config))
             }
         }
         var filesAndConfigurations = [(File, Configuration)]()

@@ -2,7 +2,10 @@
 
 #### Breaking
 
-* None.
+* Completely remove the `--use-tabs` option of the `autocorrect` command that
+  was deprecated in 0.24.1. In its place, define an `indentation` key in your
+  configuration files.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Enhancements
 

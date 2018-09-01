@@ -35,6 +35,7 @@
 * [Explicit ACL](#explicit-acl)
 * [Explicit Enum Raw Value](#explicit-enum-raw-value)
 * [Explicit Init](#explicit-init)
+* [Explicit Self](#explicit-self)
 * [Explicit Top Level ACL](#explicit-top-level-acl)
 * [Explicit Type Interface](#explicit-type-interface)
 * [Extension Access Modifier](#extension-access-modifier)
@@ -5337,6 +5338,63 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 ```swift
 func foo() -> [String] {
     return [1].flatMap { String↓.init($0) }
+}
+```
+
+</details>
+
+
+
+## Explicit Self
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`explicit_self` | Disabled | Yes | style | 3.0.0 
+
+Instance variables and functions should be explicitly accessed with 'self.'.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+struct A {
+    func f1() {}
+    func f2() {
+        self.f1()
+    }
+}
+```
+
+```swift
+struct A {
+    let p1: Int
+    func f1() {
+        _ = self.p1
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+struct A {
+    func f1() {}
+    func f2() {
+        ↓f1()
+    }
+}
+```
+
+```swift
+struct A {
+    let p1: Int
+    func f1() {
+        _ = ↓p1
+    }
 }
 ```
 

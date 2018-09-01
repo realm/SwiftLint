@@ -92,6 +92,13 @@ jobs:
       - checkout
       - run: swift test --parallel
 
+  linux_swift_4.2:
+    docker:
+      - image: norionomura/swift:4220180825a
+    steps:
+      - checkout
+      - run: swift test --parallel
+
 workflows:
   version: 2
   workflow:
@@ -106,3 +113,4 @@ workflows:
       - cocoapods_swift_4.1
       - linux_swift_4
       - linux_swift_4.1
+      - linux_swift_4.2

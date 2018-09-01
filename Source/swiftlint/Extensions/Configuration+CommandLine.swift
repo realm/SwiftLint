@@ -137,16 +137,16 @@ extension Configuration {
         return paths.count == 1 ? paths.first?.absolutePathStandardized() : nil
     }
 
-    // MARK: Lint Command
+    // MARK: LintOrAnalyze Command
 
-    init(options: LintOptions) {
+    init(options: LintOrAnalyzeOptions) {
         let cachePath = options.cachePath.isEmpty ? nil : options.cachePath
         self.init(path: options.configurationFile, rootPath: type(of: self).rootPath(from: options.paths),
                   optional: isConfigOptional(), quiet: options.quiet, enableAllRules: options.enableAllRules,
                   cachePath: cachePath)
     }
 
-    func visitLintableFiles(options: LintOptions, cache: LinterCache? = nil,
+    func visitLintableFiles(options: LintOrAnalyzeOptions, cache: LinterCache? = nil,
                             visitorBlock: @escaping (Linter) -> Void) -> Result<[File], CommandantError<()>> {
         return LintableFilesVisitor.create(options, cache: cache, block: visitorBlock).flatMap(visitLintableFiles)
     }

@@ -28,7 +28,7 @@ struct LintableFilesVisitor {
         self.block = block
     }
 
-    static func create(_ options: LintOptions, cache: LinterCache?, block: @escaping (Linter) -> Void)
+    static func create(_ options: LintOrAnalyzeOptions, cache: LinterCache?, block: @escaping (Linter) -> Void)
         -> Result<LintableFilesVisitor, CommandantError<()>> {
         let visitor = LintableFilesVisitor(paths: options.paths, action: "Linting",
                                            useSTDIN: options.useSTDIN, quiet: options.quiet,

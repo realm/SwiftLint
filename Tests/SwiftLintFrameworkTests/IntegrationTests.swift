@@ -13,7 +13,6 @@ let config: Configuration = {
 }()
 
 class IntegrationTests: XCTestCase {
-
     func testSwiftLintLints() {
         // This is as close as we're ever going to get to a self-hosting linter.
         let swiftFiles = config.lintableFiles(inPath: "", forceExclude: false)

@@ -21,12 +21,6 @@ struct AutoCorrectCommand: CommandProtocol {
             useTabs = false
         }
 
-        if options.useTabs {
-            queuedPrintError("'use-tabs' is deprecated and will be completely removed" +
-                " in a future release. 'indentation' can now be defined in a configuration file.")
-            useTabs = options.useTabs
-        }
-
         return configuration.visitLintableFiles(paths: options.paths, action: "Correcting",
                                                 quiet: options.quiet,
                                                 useScriptInputFiles: options.useScriptInputFiles,
@@ -61,41 +55,35 @@ struct AutoCorrectOptions: OptionsProtocol {
     let format: Bool
     let cachePath: String
     let ignoreCache: Bool
-    let useTabs: Bool
 
     // swiftlint:disable line_length
-    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ useTabs: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
-        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { useTabs in { paths in
+    static func create(_ path: String) -> (_ configurationFile: String) -> (_ useScriptInputFiles: Bool) -> (_ quiet: Bool) -> (_ forceExclude: Bool) -> (_ format: Bool) -> (_ cachePath: String) -> (_ ignoreCache: Bool) -> (_ paths: [String]) -> AutoCorrectOptions {
+        return { configurationFile in { useScriptInputFiles in { quiet in { forceExclude in { format in { cachePath in { ignoreCache in { paths in
             let allPaths: [String]
             if !path.isEmpty {
                 allPaths = [path]
             } else {
                 allPaths = paths
             }
-            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache, useTabs: useTabs)
-        }}}}}}}}}
+            return self.init(paths: allPaths, configurationFile: configurationFile, useScriptInputFiles: useScriptInputFiles, quiet: quiet, forceExclude: forceExclude, format: format, cachePath: cachePath, ignoreCache: ignoreCache)
+            // swiftlint:enable line_length
+        }}}}}}}}
     }
 
     static func evaluate(_ mode: CommandMode) -> Result<AutoCorrectOptions, CommandantError<CommandantError<()>>> {
-        // swiftlint:enable line_length
         return create
             <*> mode <| pathOption(action: "correct")
             <*> mode <| configOption
             <*> mode <| useScriptInputFilesOption
             <*> mode <| quietOption(action: "correcting")
-            <*> mode <| Option(key: "force-exclude",
-                               defaultValue: false,
+            <*> mode <| Option(key: "force-exclude", defaultValue: false,
                                usage: "exclude files in config `excluded` even if their paths are explicitly specified")
-            <*> mode <| Option(key: "format",
-                               defaultValue: false,
+            <*> mode <| Option(key: "format", defaultValue: false,
                                usage: "should reformat the Swift files")
             <*> mode <| Option(key: "cache-path", defaultValue: "",
                                usage: "the directory of the cache used when correcting")
             <*> mode <| Option(key: "no-cache", defaultValue: false,
                                usage: "ignore cache when correcting")
-            <*> mode <| Option(key: "use-tabs",
-                               defaultValue: false,
-                               usage: "should use tabs over spaces when reformatting. Deprecated.")
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "correct")
     }

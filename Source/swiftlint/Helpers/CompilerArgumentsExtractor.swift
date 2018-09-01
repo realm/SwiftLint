@@ -2,18 +2,24 @@ import Foundation
 import SourceKittenFramework
 
 struct CompilerArgumentsExtractor {
-    static func extractCompilerArgumentsPerFile(compilerLogs: String) -> [String: [String]] {
-        var result = [String: [String]]()
-        let scanner = Scanner(string: compilerLogs)
-        while scanner.scanUpToString("\nCompileSwift ") != nil {
-            if let compileSwiftLine = scanner.scanUpToString("\n"),
-                let swiftFilePath = compileSwiftLine.components(separatedBy: " ").last,
-                swiftFilePath.bridge().isSwiftFile(),
-                let compilerArguments = compileCommand(compilerLogs: compilerLogs, sourceFile: swiftFilePath) {
-                result[swiftFilePath] = compilerArguments
+    static func allCompilerInvocations(compilerLogs: String) -> [String] {
+        var compilerInvocations = [String]()
+        compilerLogs.enumerateLines { line, _ in
+            if let swiftcIndex = line.range(of: "swiftc ")?.upperBound, line.contains(" -module-name ") {
+                compilerInvocations.append(String(line[swiftcIndex...]))
             }
         }
-        return result
+
+        return compilerInvocations
+    }
+
+    static func compilerArgumentsForFile(_ sourceFile: String, compilerInvocations: [String]) -> [String]? {
+        let escapedSourceFile = sourceFile.replacingOccurrences(of: " ", with: "\\ ")
+        guard let compilerInvocation = compilerInvocations.first(where: { $0.contains(escapedSourceFile) }) else {
+            return nil
+        }
+
+        return parseCLIArguments(compilerInvocation)
     }
 }
 
@@ -40,25 +46,6 @@ private extension Scanner {
     }
 }
 #endif
-
-private func compileCommand(compilerLogs: String, sourceFile: String) -> [String]? {
-    let escapedSourceFile = sourceFile.replacingOccurrences(of: " ", with: "\\ ")
-    guard compilerLogs.contains(escapedSourceFile) else {
-        return nil
-    }
-
-    var compileCommand: [String]?
-    compilerLogs.enumerateLines { line, stop in
-        if line.contains(escapedSourceFile),
-            let swiftcIndex = line.range(of: "swiftc ")?.upperBound,
-            line.contains(" -module-name ") {
-            compileCommand = parseCLIArguments(String(line[swiftcIndex...]))
-            stop = true
-        }
-    }
-
-    return compileCommand
-}
 
 private func parseCLIArguments(_ string: String) -> [String] {
     let escapedSpacePlaceholder = "\u{0}"

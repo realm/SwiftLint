@@ -6,7 +6,7 @@ import SwiftLintFramework
 
 enum LintOrAnalyzeModeWithCompilerArguments {
     case lint
-    case analyze(compilerArgumentsPerFile: [String: [String]])
+    case analyze(allCompilerInvocations: [String])
 }
 
 struct LintableFilesVisitor {
@@ -46,9 +46,9 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.cache = cache
         self.parallel = true
-        let compilerArgumentsPerFile = CompilerArgumentsExtractor
-            .extractCompilerArgumentsPerFile(compilerLogs: compilerLogContents)
-        self.mode = .analyze(compilerArgumentsPerFile: compilerArgumentsPerFile)
+        let allCompilerInvocations = CompilerArgumentsExtractor
+            .allCompilerInvocations(compilerLogs: compilerLogContents)
+        self.mode = .analyze(allCompilerInvocations: allCompilerInvocations)
         self.block = block
     }
 
@@ -78,8 +78,10 @@ struct LintableFilesVisitor {
         switch self.mode {
         case .lint:
             return false
-        case let .analyze(compilerArgumentsPerFile):
-            let compilerArguments = path.flatMap { compilerArgumentsPerFile[$0] } ?? []
+        case let .analyze(allCompilerInvocations):
+            let compilerArguments = path.flatMap {
+                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
+            } ?? []
             return compilerArguments.isEmpty
         }
     }
@@ -88,8 +90,10 @@ struct LintableFilesVisitor {
         switch self.mode {
         case .lint:
             return Linter(file: file, configuration: configuration, cache: cache)
-        case let .analyze(compilerArgumentsPerFile):
-            let compilerArguments = file.path.flatMap { compilerArgumentsPerFile[$0] } ?? []
+        case let .analyze(allCompilerInvocations):
+            let compilerArguments = file.path.flatMap {
+                CompilerArgumentsExtractor.compilerArgumentsForFile($0, compilerInvocations: allCompilerInvocations)
+            } ?? []
             return Linter(file: file, configuration: configuration, compilerArguments: compilerArguments)
         }
     }

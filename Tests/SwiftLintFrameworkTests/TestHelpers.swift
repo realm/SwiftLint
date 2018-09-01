@@ -20,6 +20,18 @@ func violations(_ string: String, config: Configuration = Configuration()!) -> [
     return Linter(file: file, configuration: config).styleViolations
 }
 
+private func temporaryFile(contents: String) -> File {
+    let url = temporaryFileURL()!
+    _ = try? contents.data(using: .utf8)!.write(to: url)
+    return File(path: url.path)!
+}
+
+private func temporaryFileURL() -> URL? {
+    return URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent(UUID().uuidString)
+        .appendingPathExtension("swift")
+}
+
 private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
     var contents = contents.bridge()
     var markerOffsets = [Int]()
@@ -65,10 +77,9 @@ private func render(locations: [Location], in contents: String) -> String {
 
 private extension Configuration {
     func assertCorrection(_ before: String, expected: String) {
-        guard let path = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-            .appendingPathComponent(NSUUID().uuidString + ".swift")?.path else {
-                XCTFail("couldn't generate temporary path for assertCorrection()")
-                return
+        guard let path = temporaryFileURL()?.path else {
+            XCTFail("couldn't generate temporary path for assertCorrection()")
+            return
         }
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before)
         do {
@@ -152,45 +163,15 @@ extension XCTestCase {
                     skipDisableCommandTests: Bool = false,
                     testMultiByteOffsets: Bool = true,
                     testShebang: Bool = true) {
+        guard ruleDescription.minSwiftVersion <= .current else {
+            return
+        }
+
         guard let config = makeConfig(ruleConfiguration,
                                       ruleDescription.identifier,
                                       skipDisableCommandTests: skipDisableCommandTests) else {
             XCTFail("Failed to create configuration")
             return
-        }
-
-        guard SwiftVersion.current >= ruleDescription.minSwiftVersion else {
-            return
-        }
-
-        let triggers = ruleDescription.triggeringExamples
-        let nonTriggers = ruleDescription.nonTriggeringExamples
-        verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
-
-        if testMultiByteOffsets {
-            verifyExamples(triggers: triggers.map(addEmoji),
-                           nonTriggers: nonTriggers.map(addEmoji), configuration: config)
-        }
-
-        if testShebang {
-            verifyExamples(triggers: triggers.map(addShebang),
-                           nonTriggers: nonTriggers.map(addShebang), configuration: config)
-        }
-
-        // Comment doesn't violate
-        if !skipCommentTests {
-            XCTAssertEqual(
-                triggers.flatMap({ violations("/*\n  " + $0 + "\n */", config: config) }).count,
-                commentDoesntViolate ? 0 : triggers.count
-            )
-        }
-
-        // String doesn't violate
-        if !skipStringTests {
-            XCTAssertEqual(
-                triggers.flatMap({ violations($0.toStringLiteral(), config: config) }).count,
-                stringDoesntViolate ? 0 : triggers.count
-            )
         }
 
         let disableCommands: [String]
@@ -200,18 +181,74 @@ extension XCTestCase {
             disableCommands = ruleDescription.allIdentifiers.map { "// swiftlint:disable \($0)\n" }
         }
 
-        // "disable" commands doesn't violate
-        for command in disableCommands {
-            XCTAssert(triggers.flatMap({ violations(command + $0, config: config) }).isEmpty)
+        self.verifyLint(ruleDescription, config: config, commentDoesntViolate: commentDoesntViolate,
+                        stringDoesntViolate: stringDoesntViolate, skipCommentTests: skipCommentTests,
+                        skipStringTests: skipStringTests, disableCommands: disableCommands,
+                        testMultiByteOffsets: testMultiByteOffsets, testShebang: testShebang)
+        self.verifyCorrections(ruleDescription, config: config, disableCommands: disableCommands,
+                               testMultiByteOffsets: testMultiByteOffsets)
+    }
+
+    func verifyLint(_ ruleDescription: RuleDescription,
+                    config: Configuration,
+                    commentDoesntViolate: Bool = true,
+                    stringDoesntViolate: Bool = true,
+                    skipCommentTests: Bool = false,
+                    skipStringTests: Bool = false,
+                    disableCommands: [String] = [],
+                    testMultiByteOffsets: Bool = true,
+                    testShebang: Bool = true) {
+        func verify(triggers: [String], nonTriggers: [String]) {
+            verifyExamples(triggers: triggers, nonTriggers: nonTriggers, configuration: config)
         }
 
+        let triggers = ruleDescription.triggeringExamples
+        let nonTriggers = ruleDescription.nonTriggeringExamples
+        verify(triggers: triggers, nonTriggers: nonTriggers)
+
+        if testMultiByteOffsets {
+            verify(triggers: triggers.map(addEmoji), nonTriggers: nonTriggers.map(addEmoji))
+        }
+
+        if testShebang {
+            verify(triggers: triggers.map(addShebang), nonTriggers: nonTriggers.map(addShebang))
+        }
+
+        func makeViolations(_ string: String) -> [StyleViolation] {
+            return violations(string, config: config)
+        }
+
+        // Comment doesn't violate
+        if !skipCommentTests {
+            XCTAssertEqual(
+                triggers.flatMap({ makeViolations("/*\n  " + $0 + "\n */") }).count,
+                commentDoesntViolate ? 0 : triggers.count
+            )
+        }
+
+        // String doesn't violate
+        if !skipStringTests {
+            XCTAssertEqual(
+                triggers.flatMap({ makeViolations($0.toStringLiteral()) }).count,
+                stringDoesntViolate ? 0 : triggers.count
+            )
+        }
+
+        // "disable" commands doesn't violate
+        for command in disableCommands {
+            XCTAssert(triggers.flatMap({ makeViolations(command + $0) }).isEmpty)
+        }
+    }
+
+    func verifyCorrections(_ ruleDescription: RuleDescription, config: Configuration,
+                           disableCommands: [String], testMultiByteOffsets: Bool) {
         // corrections
         ruleDescription.corrections.forEach {
             testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
         }
         // make sure strings that don't trigger aren't corrected
-        zip(nonTriggers, nonTriggers).forEach {
-            testCorrection($0, configuration: config, testMultiByteOffsets: testMultiByteOffsets)
+        ruleDescription.nonTriggeringExamples.forEach {
+            testCorrection(($0, $0), configuration: config, testMultiByteOffsets: testMultiByteOffsets)
         }
 
         // "disable" commands do not correct
@@ -222,11 +259,9 @@ extension XCTestCase {
                 config.assertCorrection(expectedCleaned, expected: expectedCleaned)
             }
         }
-
     }
 
-    private func verifyExamples(triggers: [String], nonTriggers: [String],
-                                configuration config: Configuration) {
+    private func verifyExamples(triggers: [String], nonTriggers: [String], configuration config: Configuration) {
         // Non-triggering examples don't violate
         for nonTrigger in nonTriggers {
             let unexpectedViolations = violations(nonTrigger, config: config)

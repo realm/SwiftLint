@@ -46,9 +46,13 @@ struct LintableFilesVisitor {
         self.forceExclude = forceExclude
         self.cache = cache
         self.parallel = true
-        let allCompilerInvocations = CompilerArgumentsExtractor
-            .allCompilerInvocations(compilerLogs: compilerLogContents)
-        self.mode = .analyze(allCompilerInvocations: allCompilerInvocations)
+        if compilerLogContents.isEmpty {
+            self.mode = .lint
+        } else {
+            let allCompilerInvocations = CompilerArgumentsExtractor
+                .allCompilerInvocations(compilerLogs: compilerLogContents)
+            self.mode = .analyze(allCompilerInvocations: allCompilerInvocations)
+        }
         self.block = block
     }
 

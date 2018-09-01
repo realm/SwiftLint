@@ -612,6 +612,12 @@ class UnusedEnumeratedRuleTests: XCTestCase {
     }
 }
 
+class UnusedImportRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(UnusedImportRule.description)
+    }
+}
+
 class ValidIBInspectableRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ValidIBInspectableRule.description)

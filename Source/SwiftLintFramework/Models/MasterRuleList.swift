@@ -137,6 +137,7 @@ public let masterRuleList = RuleList(rules: [
     UntypedErrorInCatchRule.self,
     UnusedClosureParameterRule.self,
     UnusedEnumeratedRule.self,
+    UnusedImportRule.self,
     UnusedOptionalBindingRule.self,
     ValidIBInspectableRule.self,
     VerticalParameterAlignmentOnCallRule.self,

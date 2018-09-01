@@ -178,7 +178,13 @@ public struct Linter {
         self.configuration = configuration
         self.cache = cache
         self.compilerArguments = compilerArguments
-        rules = configuration.rules
+        self.rules = configuration.rules.filter { rule in
+            if compilerArguments.isEmpty {
+                return !(rule is AnalyzerRule)
+            } else {
+                return rule is AnalyzerRule
+            }
+        }
     }
 
     public func correct() -> [Correction] {

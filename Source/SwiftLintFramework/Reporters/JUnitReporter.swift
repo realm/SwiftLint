@@ -1,5 +1,3 @@
-import Foundation
-
 public struct JUnitReporter: Reporter {
     public static let identifier = "junit"
     public static let isRealtime = false

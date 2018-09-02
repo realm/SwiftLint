@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct NumberSeparatorRuleExamples {
 
     static let nonTriggeringExamples: [String] = {

@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct EmptyXCTestMethodRuleExamples {
 
     static let nonTriggeringExamples = [

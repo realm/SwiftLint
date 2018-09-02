@@ -1,5 +1,3 @@
-import Foundation
-
 public struct LineLengthRuleOptions: OptionSet {
     public let rawValue: Int
 

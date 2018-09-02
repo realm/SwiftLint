@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 /// Allows for Enums that conform to a protocol to require that a specific case be present.

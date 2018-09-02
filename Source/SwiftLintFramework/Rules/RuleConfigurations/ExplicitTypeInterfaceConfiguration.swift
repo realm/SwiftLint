@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 private enum VariableKind: String {

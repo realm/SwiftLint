@@ -1,5 +1,3 @@
-import Foundation
-
 public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
     struct RequiredCase: Equatable, Hashable {
         var name: String

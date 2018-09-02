@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct PrefixedTopLevelConstantRule: ASTRule, OptInRule, ConfigurationProviderRule {

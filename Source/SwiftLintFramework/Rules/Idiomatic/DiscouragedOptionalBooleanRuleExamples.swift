@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct DiscouragedOptionalBooleanRuleExamples {
 
     static let nonTriggeringExamples = [

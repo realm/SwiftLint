@@ -1,5 +1,3 @@
-import Foundation
-
 public struct ColonConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var flexibleRightSpacing = false

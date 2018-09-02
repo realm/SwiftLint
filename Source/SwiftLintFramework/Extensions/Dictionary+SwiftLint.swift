@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 extension Dictionary where Key: ExpressibleByStringLiteral {

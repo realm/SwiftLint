@@ -1,5 +1,3 @@
-import Foundation
-
 public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         let errorString: String

@@ -1,5 +1,3 @@
-import Foundation
-
 public struct PrefixedConstantRuleConfiguration: RuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
     var onlyPrivateMembers = false

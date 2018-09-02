@@ -1,5 +1,3 @@
-import Foundation
-
 public enum StatementModeConfiguration: String {
     case `default` = "default"
     case uncuddledElse = "uncuddled_else"

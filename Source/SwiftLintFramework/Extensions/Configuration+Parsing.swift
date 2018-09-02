@@ -1,5 +1,3 @@
-import Foundation
-
 extension Configuration {
     private enum Key: String {
         case cachePath = "cache_path"

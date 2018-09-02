@@ -1,6 +1,3 @@
-import Foundation
-import SourceKittenFramework
-
 public struct Region: Equatable {
     public let start: Location
     public let end: Location

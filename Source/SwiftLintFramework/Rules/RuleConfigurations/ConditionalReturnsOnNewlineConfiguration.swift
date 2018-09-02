@@ -1,5 +1,3 @@
-import Foundation
-
 public struct ConditionalReturnsOnNewlineConfiguration: RuleConfiguration {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var ifOnly = false

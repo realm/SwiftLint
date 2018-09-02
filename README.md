@@ -305,6 +305,9 @@ Rule inclusion:
 * `whitelist_rules`: Acts as a whitelist, only the rules specified in this list
   will be enabled. Can not be specified alongside `disabled_rules` or
   `opt_in_rules`.
+* `analyzer_rules`: This is an entirely separate list of rules that are only
+  run by the `analyze` command. All analyzer rules are opt-in, so this is the
+  only configurable rule list (there is no disabled/whitelist equivalent).
 
 ```yaml
 disabled_rules: # rule identifiers to exclude from running

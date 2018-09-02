@@ -151,10 +151,10 @@ public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, Anal
     }
 }
 
-private let kindsToFind = Set([
+private let kindsToFind: Set = [
     "source.lang.swift.ref.function.method.instance",
     "source.lang.swift.ref.var.instance"
-])
+]
 
 private extension File {
     func allCursorInfo(compilerArguments: [String], atByteOffsets byteOffsets: [Int]) throws

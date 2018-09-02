@@ -112,6 +112,7 @@ extension TextTable {
             TextTableColumn(header: "correctable"),
             TextTableColumn(header: "enabled in your config"),
             TextTableColumn(header: "kind"),
+            TextTableColumn(header: "analyzer"),
             TextTableColumn(header: "configuration")
         ]
         self.init(columns: columns)
@@ -141,6 +142,7 @@ extension TextTable {
                 (rule is CorrectableRule) ? "yes" : "no",
                 configuredRule != nil ? "yes" : "no",
                 ruleType.description.kind.rawValue,
+                (rule is AnalyzerRule) ? "yes" : "no",
                 truncate((configuredRule ?? rule).configurationDescription)
             ])
         }

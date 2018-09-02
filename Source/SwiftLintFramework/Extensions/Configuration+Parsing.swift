@@ -14,6 +14,7 @@ extension Configuration {
         case warningThreshold = "warning_threshold"
         case whitelistRules = "whitelist_rules"
         case indentation = "indentation"
+        case analyzerRules = "analyzer_rules"
     }
 
     private static func validKeys(ruleList: RuleList) -> [String] {
@@ -29,7 +30,8 @@ extension Configuration {
             .useNestedConfigs,
             .warningThreshold,
             .whitelistRules,
-            .indentation
+            .indentation,
+            .analyzerRules
         ].map({ $0.rawValue }) + ruleList.allValidIdentifiers()
     }
 
@@ -65,6 +67,7 @@ extension Configuration {
 
         let disabledRules = defaultStringArray(dict[Key.disabledRules.rawValue])
         let whitelistRules = defaultStringArray(dict[Key.whitelistRules.rawValue])
+        let analyzerRules = defaultStringArray(dict[Key.analyzerRules.rawValue])
         let included = defaultStringArray(dict[Key.included.rawValue])
         let excluded = defaultStringArray(dict[Key.excluded.rawValue])
         let indentation = Configuration.getIndentationLogIfInvalid(from: dict)
@@ -88,6 +91,7 @@ extension Configuration {
                   optInRules: optInRules,
                   enableAllRules: enableAllRules,
                   whitelistRules: whitelistRules,
+                  analyzerRules: analyzerRules,
                   included: included,
                   excluded: excluded,
                   warningThreshold: dict[Key.warningThreshold.rawValue] as? Int,
@@ -103,6 +107,7 @@ extension Configuration {
                   optInRules: [String],
                   enableAllRules: Bool,
                   whitelistRules: [String],
+                  analyzerRules: [String],
                   included: [String],
                   excluded: [String],
                   warningThreshold: Int?,
@@ -112,7 +117,6 @@ extension Configuration {
                   swiftlintVersion: String?,
                   cachePath: String?,
                   indentation: IndentationStyle) {
-
         let rulesMode: RulesMode
         if enableAllRules {
             rulesMode = .allEnabled
@@ -123,9 +127,9 @@ extension Configuration {
                     "with '\(Key.whitelistRules.rawValue)'")
                 return nil
             }
-            rulesMode = .whitelisted(whitelistRules)
+            rulesMode = .whitelisted(whitelistRules + analyzerRules)
         } else {
-            rulesMode = .default(disabled: disabledRules, optIn: optInRules)
+            rulesMode = .default(disabled: disabledRules, optIn: optInRules + analyzerRules)
         }
 
         self.init(rulesMode: rulesMode,

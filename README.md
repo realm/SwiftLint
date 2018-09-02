@@ -142,6 +142,7 @@ swiftlint(
 $ swiftlint help
 Available commands:
 
+   analyze         [Experimental] Run analysis rules
    autocorrect     Automatically correct warnings and errors
    generate-docs   Generates markdown documentation for all rules
    help            Display general or command-specific help
@@ -153,8 +154,8 @@ Available commands:
 Run `swiftlint` in the directory containing the Swift files to lint. Directories
 will be searched recursively.
 
-To specify a list of files when using `lint` or `autocorrect` (like the list of
-files modified by Xcode specified by the
+To specify a list of files when using `lint`, `autocorrect` or `analyze`
+(like the list of files modified by Xcode specified by the
 [`ExtraBuildPhase`](https://github.com/norio-nomura/ExtraBuildPhase) Xcode
 plugin, or modified files in the working tree based on `git ls-files -m`), you
 can do so by passing the option `--use-script-input-files` and setting the
@@ -304,6 +305,9 @@ Rule inclusion:
 * `whitelist_rules`: Acts as a whitelist, only the rules specified in this list
   will be enabled. Can not be specified alongside `disabled_rules` or
   `opt_in_rules`.
+* `analyzer_rules`: This is an entirely separate list of rules that are only
+  run by the `analyze` command. All analyzer rules are opt-in, so this is the
+  only configurable rule list (there is no disabled/whitelist equivalent).
 
 ```yaml
 disabled_rules: # rule identifiers to exclude from running
@@ -322,6 +326,8 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - Source/ExcludedFolder
   - Source/ExcludedFile.swift
   - Source/*/ExcludedFile.swift # Exclude files with a wildcard
+analyzer_rules: # Rules run by `swiftlint analyze` (experimental)
+  - explicit_self
 
 # configurable rules can be customized from this configuration file
 # binary rules can set their severity level
@@ -436,6 +442,18 @@ Please make sure to have backups of these files before running
 Standard linting is disabled while correcting because of the high likelihood of
 violations (or their offsets) being incorrect after modifying a file while
 applying corrections.
+
+### Analyze (experimental)
+
+The _experimental_ `swiftlint analyze` command can lint Swift files using the
+full type-checked AST. The compiler log path containing the clean `swiftc` build
+command invocation (incremental builds will fail) must be passed to `analyze`
+via the `--compiler-log-path` flag.
+e.g. `--compiler-log-path /path/to/xcodebuild.log`
+
+This command and related code in SwiftLint is subject to substantial changes at
+any time while this feature is marked as experimental. Analyzer rules also tend
+to be considerably slower than lint rules.
 
 ## License
 

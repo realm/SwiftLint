@@ -60,15 +60,17 @@ extension RuleList {
 
     private func detailsSummary(_ rule: Rule) -> String {
         let columns = ["Identifier", "Enabled by default", "Supports autocorrection",
-                       "Kind", "Minimum Swift Compiler Version"]
+                       "Kind", "Analyzer", "Minimum Swift Compiler Version"]
         var content = columns.joined(separator: " | ") + "\n"
         content += columns.map { _ in "---" }.joined(separator: " | ") + "\n"
         let identifier = type(of: rule).description.identifier
         let defaultStatus = rule is OptInRule ? "Disabled" : "Enabled"
         let correctable = rule is CorrectableRule ? "Yes" : "No"
         let kind = type(of: rule).description.kind
+        let analyzer = rule is AnalyzerRule ? "Yes" : "No"
         let minSwiftVersion = type(of: rule).description.minSwiftVersion.rawValue
-        content += "`\(identifier)` | \(defaultStatus) | \(correctable) | \(kind) | \(minSwiftVersion) \n\n"
+        let rowMembers = ["`\(identifier)`", defaultStatus, correctable, "\(kind)", analyzer, minSwiftVersion]
+        content += rowMembers.joined(separator: " | ") + " \n\n"
 
         return content
     }

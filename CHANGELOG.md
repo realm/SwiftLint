@@ -7,6 +7,20 @@
   configuration files.  
   [JP Simard](https://github.com/jpsim)
 
+#### Experimental
+
+* Add a new `swiftlint analyze` command which can lint Swift files using the
+  full type-checked AST. Rules of the `AnalyzerRule` type will be added over
+  time. The compiler log path containing the clean `swiftc` build command
+  invocation (incremental builds will fail) must be passed to `analyze` via
+  the `--compiler-log-path` flag.
+  e.g. `--compiler-log-path /path/to/xcodebuild.log`  
+  [JP Simard](https://github.com/jpsim)
+
+* Add a new opt-in `explicit_self` analyzer rule to enforce the use of explicit
+  references to `self.` when accessing instance variables or functions.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Enhancements
 
 * Improve performance of `line_length` and

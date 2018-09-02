@@ -8,33 +8,8 @@ struct AutoCorrectCommand: CommandProtocol {
 
     func run(_ options: AutoCorrectOptions) -> Result<(), CommandantError<()>> {
         let configuration = Configuration(options: options)
-        let cache = options.ignoreCache ? nil : LinterCache(configuration: configuration)
-        let indentWidth: Int
-        var useTabs: Bool
-
-        switch configuration.indentation {
-        case .tabs:
-            indentWidth = 4
-            useTabs = true
-        case .spaces(let count):
-            indentWidth = count
-            useTabs = false
-        }
-
-        return configuration.visitLintableFiles(paths: options.paths, action: "Correcting",
-                                                quiet: options.quiet,
-                                                useScriptInputFiles: options.useScriptInputFiles,
-                                                forceExclude: options.forceExclude,
-                                                cache: cache, parallel: true) { linter in
-            let corrections = linter.correct()
-            if !corrections.isEmpty && !options.quiet {
-                let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator: "\n"))
-            }
-            if options.format {
-                linter.format(useTabs: useTabs, indentWidth: indentWidth)
-            }
-        }.flatMap { files in
+        let visitor = options.visitor(with: configuration)
+        return configuration.visitLintableFiles(with: visitor).flatMap { files in
             if !options.quiet {
                 let pluralSuffix = { (collection: [Any]) -> String in
                     return collection.count != 1 ? "s" : ""
@@ -86,5 +61,26 @@ struct AutoCorrectOptions: OptionsProtocol {
                                usage: "ignore cache when correcting")
             // This should go last to avoid eating other args
             <*> mode <| pathsArgument(action: "correct")
+    }
+
+    fileprivate func visitor(with configuration: Configuration) -> LintableFilesVisitor {
+        let cache = ignoreCache ? nil : LinterCache(configuration: configuration)
+        return LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
+                                    useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude, cache: cache,
+                                    parallel: true) { linter in
+            let corrections = linter.correct()
+            if !corrections.isEmpty && !self.quiet {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joined(separator: "\n"))
+            }
+            if self.format {
+                switch configuration.indentation {
+                case .tabs:
+                    linter.format(useTabs: true, indentWidth: 4)
+                case .spaces(let count):
+                    linter.format(useTabs: false, indentWidth: count)
+                }
+            }
+        }
     }
 }

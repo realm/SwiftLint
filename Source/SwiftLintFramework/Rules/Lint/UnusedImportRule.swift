@@ -141,7 +141,7 @@ private extension File {
     }
 }
 
-private let syntaxKindsToSkip: [SyntaxKind] = [
+private let syntaxKindsToSkip: Set<SyntaxKind> = [
     .attributeBuiltin,
     .keyword,
     .number,

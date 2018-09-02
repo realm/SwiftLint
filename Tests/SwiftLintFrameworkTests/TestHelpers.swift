@@ -5,6 +5,20 @@ import XCTest
 
 private let violationMarker = "↓"
 
+private extension File {
+    static func temporary(withContents contents: String) -> File {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("swift")
+        _ = try? contents.data(using: .utf8)!.write(to: url)
+        return File(path: url.path)!
+    }
+
+    func makeCompilerArguments() -> [String] {
+        return ["-sdk", sdkPath(), "-j4", path!]
+    }
+}
+
 extension String {
     func stringByAppendingPathComponent(_ pathComponent: String) -> String {
         return bridge().appendingPathComponent(pathComponent)
@@ -23,31 +37,14 @@ func violations(_ string: String, config: Configuration = Configuration()!,
         return linter.styleViolations
     }
 
-    let file = temporaryFile(contents: stringStrippingMarkers)
-    let linter = linterWithCompilerArguments(file, config: config)
+    let file = File.temporary(withContents: stringStrippingMarkers)
+    let linter = Linter(file: file, configuration: config, compilerArguments: file.makeCompilerArguments())
     return linter.styleViolations.map { violation in
-        let locationWithoutFile = Location(file: nil,
-                                           line: violation.location.line,
+        let locationWithoutFile = Location(file: nil, line: violation.location.line,
                                            character: violation.location.character)
         return StyleViolation(ruleDescription: violation.ruleDescription, severity: violation.severity,
                               location: locationWithoutFile, reason: violation.reason)
     }
-}
-
-private func linterWithCompilerArguments(_ file: File, config: Configuration) -> Linter {
-    return Linter(file: file, configuration: config, compilerArguments: ["-j4", file.path!])
-}
-
-private func temporaryFile(contents: String) -> File {
-    let url = temporaryFileURL()!
-    _ = try? contents.data(using: .utf8)!.write(to: url)
-    return File(path: url.path)!
-}
-
-private func temporaryFileURL() -> URL? {
-    return URL(fileURLWithPath: NSTemporaryDirectory())
-        .appendingPathComponent(UUID().uuidString)
-        .appendingPathExtension("swift")
 }
 
 private func cleanedContentsAndMarkerOffsets(from contents: String) -> (String, [Int]) {
@@ -95,24 +92,12 @@ private func render(locations: [Location], in contents: String) -> String {
 
 private extension Configuration {
     func assertCorrection(_ before: String, expected: String) {
-        guard let path = temporaryFileURL()?.path else {
-            XCTFail("couldn't generate temporary path for assertCorrection()")
-            return
-        }
         let (cleanedBefore, markerOffsets) = cleanedContentsAndMarkerOffsets(from: before)
-        do {
-            try cleanedBefore.write(toFile: path, atomically: true, encoding: .utf8)
-        } catch {
-            XCTFail("couldn't write to file for assertCorrection() with error: \(error)")
-            return
-        }
-        guard let file = File(path: path) else {
-            XCTFail("couldn't read file at path '\(path)' for assertCorrection()")
-            return
-        }
+        let file = File.temporary(withContents: cleanedBefore)
         // expectedLocations are needed to create before call `correct()`
         let expectedLocations = markerOffsets.map { Location(file: file, characterOffset: $0) }
-        let compilerArguments = self.rules.contains(where: { $0 is AnalyzerRule }) ? ["-j4", file.path!] : []
+        let includeCompilerArguments = self.rules.contains(where: { $0 is AnalyzerRule })
+        let compilerArguments = includeCompilerArguments ? file.makeCompilerArguments() : []
         let linter = Linter(file: file, configuration: self, compilerArguments: compilerArguments)
         let corrections = linter.correct().sorted { $0.location < $1.location }
         if expectedLocations.isEmpty {
@@ -124,6 +109,7 @@ private extension Configuration {
             }
         }
         XCTAssertEqual(file.contents, expected)
+        let path = file.path!
         do {
             let corrected = try String(contentsOfFile: path, encoding: .utf8)
             XCTAssertEqual(corrected, expected)

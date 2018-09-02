@@ -68,11 +68,6 @@ struct AutoCorrectOptions: OptionsProtocol {
         return LintableFilesVisitor(paths: paths, action: "Correcting", useSTDIN: false, quiet: quiet,
                                     useScriptInputFiles: useScriptInputFiles, forceExclude: forceExclude, cache: cache,
                                     parallel: true) { linter in
-            let corrections = linter.correct()
-            if !corrections.isEmpty && !self.quiet {
-                let correctionLogs = corrections.map({ $0.consoleDescription })
-                queuedPrint(correctionLogs.joined(separator: "\n"))
-            }
             if self.format {
                 switch configuration.indentation {
                 case .tabs:
@@ -80,6 +75,11 @@ struct AutoCorrectOptions: OptionsProtocol {
                 case .spaces(let count):
                     linter.format(useTabs: false, indentWidth: count)
                 }
+            }
+            let corrections = linter.correct()
+            if !corrections.isEmpty && !self.quiet {
+                let correctionLogs = corrections.map({ $0.consoleDescription })
+                queuedPrint(correctionLogs.joined(separator: "\n"))
             }
         }
     }

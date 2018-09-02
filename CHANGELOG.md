@@ -66,6 +66,12 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2360](https://github.com/realm/SwiftLint/issues/2360)
 
+* Change `autocorrect --format` to run format before autocorrect, fixing
+  conflicts between default indentation and rules which modify indentation
+  (i.e. `closure_end_indentation`).  
+  [Ornithologist Coder](https://github.com/ornithocoder)
+  [#2374](https://github.com/realm/SwiftLint/issues/2374)
+
 ## 0.27.0: Heavy Duty
 
 #### Breaking

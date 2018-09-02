@@ -136,6 +136,7 @@
 * [Untyped Error in Catch](#untyped-error-in-catch)
 * [Unused Closure Parameter](#unused-closure-parameter)
 * [Unused Enumerated](#unused-enumerated)
+* [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
@@ -20009,6 +20010,45 @@ for (↓_, foo) in abc.something().enumerated() { }
 ```swift
 for (idx, ↓_) in bar.enumerated() { }
 
+```
+
+</details>
+
+
+
+## Unused Import
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_import` | Disabled | Yes | lint | Yes | 3.0.0 
+
+All imported modules should be required to make the file compile.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+import Dispatch
+dispatchMain()
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓import Dispatch
+struct A {
+    static func dispatchMain() {}
+}
+A.dispatchMain()
+```
+
+```swift
+↓import Foundation
+dispatchMain()
 ```
 
 </details>

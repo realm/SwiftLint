@@ -21,6 +21,10 @@
   references to `self.` when accessing instance variables or functions.  
   [JP Simard](https://github.com/jpsim)
 
+* Add a new opt-in `unused_import` analyzer rule to lint for unnecessary
+  imports.  
+  [JP Simard](https://github.com/jpsim)
+
 #### Enhancements
 
 * Improve performance of `line_length` and

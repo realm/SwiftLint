@@ -1180,6 +1180,12 @@ extension UnusedEnumeratedRuleTests {
     ]
 }
 
+extension UnusedImportRuleTests {
+    static var allTests: [(String, (UnusedImportRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension UnusedOptionalBindingRuleTests {
     static var allTests: [(String, (UnusedOptionalBindingRuleTests) -> () throws -> Void)] = [
         ("testDefaultConfiguration", testDefaultConfiguration),
@@ -1410,6 +1416,7 @@ XCTMain([
     testCase(UntypedErrorInCatchRuleTests.allTests),
     testCase(UnusedClosureParameterRuleTests.allTests),
     testCase(UnusedEnumeratedRuleTests.allTests),
+    testCase(UnusedImportRuleTests.allTests),
     testCase(UnusedOptionalBindingRuleTests.allTests),
     testCase(ValidIBInspectableRuleTests.allTests),
     testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),

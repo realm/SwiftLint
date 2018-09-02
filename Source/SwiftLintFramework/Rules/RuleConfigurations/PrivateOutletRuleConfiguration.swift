@@ -1,5 +1,3 @@
-import Foundation
-
 public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
     var allowPrivateSet = false

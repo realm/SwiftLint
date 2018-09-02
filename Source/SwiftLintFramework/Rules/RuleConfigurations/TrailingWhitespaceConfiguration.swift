@@ -1,5 +1,3 @@
-import Foundation
-
 public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
     var ignoresEmptyLines = false

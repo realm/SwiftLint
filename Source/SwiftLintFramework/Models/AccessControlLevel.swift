@@ -1,5 +1,3 @@
-import Foundation
-
 public enum AccessControlLevel: String, CustomStringConvertible {
     case `private` = "source.lang.swift.accessibility.private"
     case `fileprivate` = "source.lang.swift.accessibility.fileprivate"

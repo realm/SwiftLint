@@ -1,5 +1,3 @@
-import Foundation
-
 public struct NestingConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return "(type_level) \(typeLevel.shortConsoleDescription), " +

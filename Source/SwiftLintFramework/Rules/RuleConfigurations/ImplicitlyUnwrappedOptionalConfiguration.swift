@@ -1,5 +1,3 @@
-import Foundation
-
 // swiftlint:disable:next type_name
 public enum ImplicitlyUnwrappedOptionalModeConfiguration: String {
     case all = "all"

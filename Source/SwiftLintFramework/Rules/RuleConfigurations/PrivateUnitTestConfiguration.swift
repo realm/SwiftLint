@@ -1,5 +1,4 @@
 import Foundation
-import SourceKittenFramework
 
 public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheDescriptionProvider {
     public let identifier: String

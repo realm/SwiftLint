@@ -1,5 +1,3 @@
-import Foundation
-
 public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equatable {
     public var severityConfiguration = SeverityConfiguration(.warning)
     public var validateExtensions = false

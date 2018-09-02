@@ -1,6 +1,3 @@
-import Foundation
-import SourceKittenFramework
-
 private func toExplicitInitMethod(typeName: String) -> String {
     return "\(typeName).init"
 }

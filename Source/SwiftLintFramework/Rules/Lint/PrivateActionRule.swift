@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct PrivateActionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {

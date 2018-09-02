@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct QuickDiscouragedFocusedTestRuleExamples {
     static let nonTriggeringExamples = [
         "class TotoTests: QuickSpec {\n" +

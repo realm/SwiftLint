@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct ClosureBodyLengthRuleExamples {
     static let nonTriggeringExamples: [String] = [
         singleLineClosure(),

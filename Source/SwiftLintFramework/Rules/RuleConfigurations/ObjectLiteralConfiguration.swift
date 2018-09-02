@@ -1,5 +1,3 @@
-import Foundation
-
 public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var imageLiteral = true

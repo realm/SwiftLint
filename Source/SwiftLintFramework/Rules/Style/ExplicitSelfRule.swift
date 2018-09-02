@@ -1,8 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, OptInRule,
-    AutomaticTestableRule {
+public struct ExplicitSelfRule: CorrectableRule, ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

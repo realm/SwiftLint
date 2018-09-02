@@ -49,7 +49,7 @@ public extension CorrectableRule {
 
 public protocol SourceKitFreeRule: Rule {}
 
-public protocol AnalyzerRule: Rule {}
+public protocol AnalyzerRule: OptInRule {}
 
 public extension AnalyzerRule {
     func validate(file: File) -> [StyleViolation] {

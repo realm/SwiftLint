@@ -1,7 +1,7 @@
 import SourceKittenFramework
 
 public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-    public var configuration = SeverityConfiguration(.warning)
+    public var configuration = CollectionAlignmentConfiguration()
 
     public init() {}
 
@@ -12,11 +12,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
         kind: .style,
         nonTriggeringExamples: [
             """
-            struct Foo {
-                static func doStuff(stuff: [String: Any]) {}
-            }
-
-            Foo.doStuff(stuff: [
+            someFunction(arg: [
                 "foo": 1,
                 "bar": 2
             ])
@@ -24,11 +20,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
         ],
         triggeringExamples: [
             """
-            struct Foo {
-                static func doStuff(stuff: [String: Any]) {}
-            }
-
-            Foo.doStuff(stuff: [
+            someFunction(arg: [
                 ↓"foo": 1,
                     "bar": 2
             ])
@@ -81,8 +73,14 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
 
     private func makeViolation(for location: Location, reason: String) -> StyleViolation {
         return StyleViolation(ruleDescription: CollectionAlignmentRule.description,
-                              severity: configuration.severity,
+                              severity: configuration.severityConfiguration.severity,
                               location: location,
                               reason: reason)
+    }
+}
+
+extension CollectionAlignmentRule {
+    struct Examples {
+
     }
 }

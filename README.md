@@ -452,7 +452,8 @@ via the `--compiler-log-path` flag.
 e.g. `--compiler-log-path /path/to/xcodebuild.log`
 
 This command and related code in SwiftLint is subject to substantial changes at
-any time while this feature is marked as experimental.
+any time while this feature is marked as experimental. Analyzer rules also tend
+to be considerably slower than lint rules.
 
 ## License
 

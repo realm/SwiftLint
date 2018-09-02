@@ -11,6 +11,7 @@
 * [Closure End Indentation](#closure-end-indentation)
 * [Closure Parameter Position](#closure-parameter-position)
 * [Closure Spacing](#closure-spacing)
+* [Alignment of Collection Elements](#alignment-of-collection-elements)
 * [Colon](#colon)
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
@@ -1699,6 +1700,30 @@ extension UITableViewCell: ReusableView {}
 
 ```swift
 filter ↓{ sorted ↓{ $0 < $1}}
+```
+
+</details>
+
+
+
+## Alignment of Collection Elements
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
+--- | --- | --- | --- | ---
+`collection_alignment` | Enabled | No | style | 3.0.0 
+
+All elements in a collection literal should be vertically aligned
+
+### Examples
+
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let abc = [
+    "foo": 1,
+"bar": 2
+]
 ```
 
 </details>

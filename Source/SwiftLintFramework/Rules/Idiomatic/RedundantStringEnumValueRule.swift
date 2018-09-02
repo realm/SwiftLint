@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 private func children(of dict: [String: SourceKitRepresentable],

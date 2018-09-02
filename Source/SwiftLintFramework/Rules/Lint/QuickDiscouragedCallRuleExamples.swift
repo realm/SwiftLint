@@ -1,5 +1,3 @@
-import Foundation
-
 // swiftlint:disable type_body_length
 
 internal struct QuickDiscouragedCallRuleExamples {

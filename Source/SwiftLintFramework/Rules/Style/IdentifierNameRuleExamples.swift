@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct IdentifierNameRuleExamples {
     static let nonTriggeringExamples = [
         "let myLet = 0",

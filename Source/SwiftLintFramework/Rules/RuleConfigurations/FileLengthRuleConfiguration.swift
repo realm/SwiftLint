@@ -1,5 +1,3 @@
-import Foundation
-
 private enum ConfigurationKey: String {
     case warning = "warning"
     case error = "error"

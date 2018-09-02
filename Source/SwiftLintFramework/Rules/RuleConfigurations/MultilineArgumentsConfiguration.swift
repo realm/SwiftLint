@@ -1,5 +1,3 @@
-import Foundation
-
 private enum ConfigurationKey: String {
     case severity = "severity"
     case firstArgumentLocation = "first_argument_location"

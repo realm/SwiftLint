@@ -1,5 +1,3 @@
-import Foundation
-
 public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
     var severityConfiguration = SeverityConfiguration(.warning)
     var excluded = [String]()

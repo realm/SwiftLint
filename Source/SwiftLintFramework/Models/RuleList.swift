@@ -1,5 +1,3 @@
-import Foundation
-
 public enum RuleListError: Error {
     case duplicatedConfigurations(rule: Rule.Type)
 }

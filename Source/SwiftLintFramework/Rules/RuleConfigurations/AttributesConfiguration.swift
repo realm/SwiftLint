@@ -1,5 +1,3 @@
-import Foundation
-
 public struct AttributesConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var alwaysOnSameLine = Set<String>()

@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct VerticalParameterAlignmentOnCallRule: ASTRule, ConfigurationProviderRule, OptInRule,

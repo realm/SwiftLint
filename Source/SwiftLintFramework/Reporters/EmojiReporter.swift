@@ -1,5 +1,3 @@
-import Foundation
-
 public struct EmojiReporter: Reporter {
     public static let identifier = "emoji"
     public static let isRealtime = false

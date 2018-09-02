@@ -1,5 +1,3 @@
-import Foundation
-
 public struct SeverityConfiguration: RuleConfiguration, Equatable {
     public var consoleDescription: String {
         return severity.rawValue

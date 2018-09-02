@@ -1,5 +1,3 @@
-import Foundation
-
 internal struct TypeNameRuleExamples {
 
     private static let types = ["class", "struct", "enum"]

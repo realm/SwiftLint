@@ -1,5 +1,3 @@
-import Foundation
-
 public enum RuleIdentifier: Hashable, ExpressibleByStringLiteral {
     case all
     case single(identifier: String)

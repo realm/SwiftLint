@@ -89,11 +89,6 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
 private extension File {
     func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
-        guard let syntaxMap = try? SyntaxMap(sourceKitResponse: Request.editorOpen(file: self).send()) else {
-            queuedPrintError("Could not generate SyntaxMap")
-            return []
-        }
-
         var imports = [String]()
         var usrFragments = [String]()
         var nextIsModuleImport = false

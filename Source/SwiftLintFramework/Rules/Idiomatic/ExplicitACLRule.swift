@@ -116,7 +116,6 @@ public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTe
 }
 
 private extension SwiftDeclarationKind {
-
     var childsAreExemptFromACL: Bool {
         switch self {
         case .`associatedtype`, .enumcase, .enumelement, .functionAccessorAddress,
@@ -131,23 +130,6 @@ private extension SwiftDeclarationKind {
         case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
              .extensionProtocol, .extensionStruct, .`struct`:
             return false
-        }
-    }
-
-    var shouldContainExplicitACL: Bool {
-        switch self {
-        case .`associatedtype`, .enumcase, .enumelement, .functionAccessorAddress,
-             .functionAccessorDidset, .functionAccessorGetter, .functionAccessorMutableaddress,
-             .functionAccessorSetter, .functionAccessorWillset, .functionDestructor, .genericTypeParam, .module,
-             .precedenceGroup, .varLocal, .varParameter:
-            return false
-        case .`class`, .`enum`, .`extension`, .`extensionClass`, .`extensionEnum`,
-             .extensionProtocol, .extensionStruct, .functionConstructor,
-             .functionFree, .functionMethodClass, .functionMethodInstance, .functionMethodStatic,
-             .functionOperator, .functionOperatorInfix, .functionOperatorPostfix, .functionOperatorPrefix,
-             .functionSubscript, .`protocol`, .`struct`, .`typealias`, .varClass,
-             .varGlobal, .varInstance, .varStatic:
-            return true
         }
     }
 }

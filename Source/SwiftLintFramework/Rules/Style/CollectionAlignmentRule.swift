@@ -21,8 +21,10 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
         triggeringExamples: [
             """
             someFunction(arg: [
-                ↓"foo": 1,
-                    "bar": 2
+                "foo": 1,
+                    ↓"bar": 2,
+                "fizz": 2,
+            ↓"buzz": 2
             ])
             """
         ]
@@ -43,39 +45,34 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
         }
 
         let contents = file.contents.bridge()
-        let (lines, characters) = keyElements.reduce((Set<Int>(), Set<Int>())) { result, element in
-            guard let offset = element.offset,
-                let (line, character) = contents.lineAndCharacter(forByteOffset: offset)
-                else { return result }
-            return (result.0.union([line]), result.1.union([character]))
+        let keyLocations = keyElements.compactMap { element -> Location? in
+            guard let byteOffset = element.offset,
+                let (line, character) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                return nil
+            }
+            return Location(file: file.path, line: line, character: character)
         }
 
-        guard lines.count > 1, !characters.isEmpty else {
+        guard keyLocations.count >= 2 else {
             return []
         }
 
-        let firstLine = lines.sorted(by: <).first
-        let firstCharacter = characters.sorted(by: <).first
-        let location = Location(file: file.path, line: firstLine, character: firstCharacter)
+        let firstKeyLocation = keyLocations[0]
+        let violationLocations = zip(keyLocations[1...], 1...)
+            .compactMap { location, index -> Location? in
+                let previousLocation = keyLocations[index - 1]
+                if previousLocation.line! < location.line! && firstKeyLocation.character! != location.character! {
+                    return location
+                } else {
+                    return nil
+                }
+            }
 
-        guard lines.count == keyElements.count else {
-            let reason = "Elements in a collection literal should each be on their own line, except when all elements are on the same line."
-            return [makeViolation(for: location, reason: reason)]
+        return violationLocations.map {
+            StyleViolation(ruleDescription: type(of: self).description,
+                           severity: configuration.severityConfiguration.severity,
+                           location: $0)
         }
-
-        guard characters.count == 1 else {
-            let reason = "Elements in a collection literal should have the same indentation."
-            return [makeViolation(for: location, reason: reason)]
-        }
-
-        return []
-    }
-
-    private func makeViolation(for location: Location, reason: String) -> StyleViolation {
-        return StyleViolation(ruleDescription: CollectionAlignmentRule.description,
-                              severity: configuration.severityConfiguration.severity,
-                              location: location,
-                              reason: reason)
     }
 }
 

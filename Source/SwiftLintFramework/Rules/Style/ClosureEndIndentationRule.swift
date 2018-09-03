@@ -108,7 +108,6 @@ extension ClosureEndIndentationRule: CorrectableRule {
 extension ClosureEndIndentationRule {
 
     fileprivate struct Violation {
-        var location: Location
         var indentationRanges: (expected: NSRange, actual: NSRange)
         var endOffset: Int
         var range: NSRange
@@ -196,8 +195,7 @@ extension ClosureEndIndentationRule {
         var actualRange = file.lines[endLine - 1].range
         actualRange.length = actual
 
-        return Violation(location: Location(file: file, byteOffset: endOffset),
-                         indentationRanges: (expected: expectedRange, actual: actualRange),
+        return Violation(indentationRanges: (expected: expectedRange, actual: actualRange),
                          endOffset: endOffset,
                          range: NSRange(location: offset, length: length))
     }
@@ -257,8 +255,7 @@ extension ClosureEndIndentationRule {
         var actualRange = file.lines[endLine - 1].range
         actualRange.length = actual
 
-        return Violation(location: Location(file: file, byteOffset: endOffset),
-                         indentationRanges: (expected: expectedRange, actual: actualRange),
+        return Violation(indentationRanges: (expected: expectedRange, actual: actualRange),
                          endOffset: endOffset,
                          range: NSRange(location: offset, length: length))
     }

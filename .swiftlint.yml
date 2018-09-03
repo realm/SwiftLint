@@ -3,6 +3,8 @@ included:
   - Tests
 excluded:
   - Tests/SwiftLintFrameworkTests/Resources
+analyzer_rules:
+  - unused_import
 opt_in_rules:
   - array_init
   - attributes

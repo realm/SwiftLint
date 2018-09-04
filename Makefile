@@ -59,6 +59,15 @@ test_tsan:
 	swift build --build-tests $(TSAN_SWIFT_BUILD_FLAGS)
 	DYLD_INSERT_LIBRARIES=$(TSAN_LIB) $(TSAN_XCTEST) $(TSAN_TEST_BUNDLE)
 
+write_xcodebuild_log: bootstrap
+	xcodebuild -workspace SwiftLint.xcworkspace -scheme swiftlint > xcodebuild.log
+
+analyze: write_xcodebuild_log
+	swift run -c release swiftlint analyze --compiler-log-path xcodebuild.log
+
+analyze_autocorrect: write_xcodebuild_log
+	swift run -c release swiftlint analyze --autocorrect --compiler-log-path xcodebuild.log
+
 clean:
 	rm -f "$(OUTPUT_PACKAGE)"
 	rm -rf "$(TEMPORARY_FOLDER)"

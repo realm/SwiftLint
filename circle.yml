@@ -1,6 +1,13 @@
 version: 2
 jobs:
 
+  analyze:
+    macos:
+      xcode: "10.0.0"
+    steps:
+      - checkout
+      - run: make analyze
+
   tsan:
     macos:
       xcode: "9.4.0"
@@ -103,6 +110,7 @@ workflows:
   version: 2
   workflow:
     jobs:
+      - analyze
       - tsan
       - osscheck
       - swiftpm_4

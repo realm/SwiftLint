@@ -1717,13 +1717,26 @@ All elements in a collection literal should be vertically aligned
 ### Examples
 
 <details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+someFunction(arg: [
+    "foo": 1,
+    "bar": 2
+])
+```
+
+</details>
+<details>
 <summary>Triggering Examples</summary>
 
 ```swift
-let abc = [
+someFunction(arg: [
     "foo": 1,
-"bar": 2
-]
+        "bar"↓: 2,
+    "fizz": 2,
+"buzz"↓: 2
+])
 ```
 
 </details>

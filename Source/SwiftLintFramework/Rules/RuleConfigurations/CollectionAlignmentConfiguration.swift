@@ -1,6 +1,6 @@
 public struct CollectionAlignmentConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
-    private(set) var alignColons = false
+    private(set) var alignColons = true
 
     init() {}
 

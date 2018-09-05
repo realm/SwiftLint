@@ -22,9 +22,9 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
             """
             someFunction(arg: [
                 "foo": 1,
-                    ↓"bar": 2,
+                    "bar"↓: 2,
                 "fizz": 2,
-            ↓"buzz": 2
+            "buzz"↓: 2
             ])
             """
         ]
@@ -34,23 +34,11 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .dictionary || kind == .array else { return [] }
 
-        let keyElements: [[String: SourceKitRepresentable]]
+        let keyLocations: [Location]
         if kind == .array {
-            keyElements = dictionary.elements
+            keyLocations = getArrayElementLocations(with: file, dictionary: dictionary)
         } else {
-            // in a dictionary, only even elements are keys
-            keyElements = zip(dictionary.elements, 0...).compactMap { element, index in
-                index % 2 == 0 ? element : nil
-            }
-        }
-
-        let contents = file.contents.bridge()
-        let keyLocations = keyElements.compactMap { element -> Location? in
-            guard let byteOffset = element.offset,
-                let (line, character) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                return nil
-            }
-            return Location(file: file.path, line: line, character: character)
+            keyLocations = getDictionaryKeyLocations(with: file, dictionary: dictionary)
         }
 
         guard keyLocations.count >= 2 else {
@@ -73,6 +61,64 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
                            severity: configuration.severityConfiguration.severity,
                            location: $0)
         }
+    }
+
+    private func getArrayElementLocations(with file: File, dictionary: [String: SourceKitRepresentable]) -> [Location] {
+        let contents = file.contents.bridge()
+        return dictionary.elements.compactMap { element -> Location? in
+            guard let byteOffset = element.offset,
+                let (line, character) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
+                return nil
+            }
+            return Location(file: file.path, line: line, character: character)
+        }
+    }
+
+    private func getDictionaryKeyLocations(with file: File,
+                                           dictionary: [String: SourceKitRepresentable]) -> [Location] {
+        var keys: [[String: SourceKitRepresentable]] = []
+        var values: [[String: SourceKitRepresentable]] = []
+        zip(dictionary.elements, 0...).forEach { element, index in
+            // in a dictionary, the even elements are keys, and the odd elements are values
+            if index % 2 == 0 {
+                keys.append(element)
+            } else {
+                values.append(element)
+            }
+        }
+
+        return zip(keys, values).compactMap { key, value -> Location? in
+            guard let keyOffset = key.offset,
+                let valueOffset = value.offset,
+                let keyLength = key.length else { return nil }
+
+            if configuration.alignColons {
+                return getColonLocation(with: file,
+                                        keyOffset: keyOffset,
+                                        keyLength: keyLength,
+                                        valueOffset: valueOffset)
+            } else {
+                return getKeyLocation(with: file, keyOffset: keyOffset)
+            }
+        }
+    }
+
+    private func getColonLocation(with file: File, keyOffset: Int, keyLength: Int, valueOffset: Int) -> Location? {
+        let contents = file.contents.bridge()
+        let matchStart = keyOffset + keyLength
+        let matchLength = valueOffset - matchStart
+        let range = contents.byteRangeToNSRange(start: matchStart, length: matchLength)
+
+        guard let colonRange = file.match(pattern: ":", range: range).first?.0,
+            let (line, character) = contents.lineAndCharacter(forCharacterOffset: colonRange.location)
+            else { return nil }
+
+        return Location(file: file.path, line: line, character: character)
+    }
+
+    private func getKeyLocation(with file: File, keyOffset: Int) -> Location? {
+        guard let (line, character) = file.contents.lineAndCharacter(forByteOffset: keyOffset) else { return nil }
+        return Location(file: file.path, line: line, character: character)
     }
 }
 

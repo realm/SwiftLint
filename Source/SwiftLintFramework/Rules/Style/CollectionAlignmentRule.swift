@@ -101,7 +101,8 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
     }
 
     private func getKeyLocation(with file: File, keyOffset: Int) -> Location? {
-        guard let (line, character) = file.contents.lineAndCharacter(forByteOffset: keyOffset) else { return nil }
+        let contents = file.contents.bridge()
+        guard let (line, character) = contents.lineAndCharacter(forByteOffset: keyOffset) else { return nil }
         return Location(file: file.path, line: line, character: character)
     }
 }

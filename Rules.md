@@ -1708,9 +1708,9 @@ filter ↓{ sorted ↓{ $0 < $1}}
 
 ## Alignment of Collection Elements
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`collection_alignment` | Disabled | No | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`collection_alignment` | Disabled | No | style | No | 3.0.0 
 
 All elements in a collection literal should be vertically aligned
 

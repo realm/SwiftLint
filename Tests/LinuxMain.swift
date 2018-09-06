@@ -71,7 +71,9 @@ extension ClosureSpacingRuleTests {
 
 extension CollectionAlignmentRuleTests {
     static var allTests: [(String, (CollectionAlignmentRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testCollectionAlignmentWithAlignLeft", testCollectionAlignmentWithAlignLeft),
+        ("testCollectionAlignmentWithAlignColons", testCollectionAlignmentWithAlignColons)
     ]
 }
 

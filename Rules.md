@@ -11,7 +11,7 @@
 * [Closure End Indentation](#closure-end-indentation)
 * [Closure Parameter Position](#closure-parameter-position)
 * [Closure Spacing](#closure-spacing)
-* [Alignment of Collection Elements](#alignment-of-collection-elements)
+* [Collection Element Alignment](#collection-element-alignment)
 * [Colon](#colon)
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
@@ -1706,7 +1706,7 @@ filter ↓{ sorted ↓{ $0 < $1}}
 
 
 
-## Alignment of Collection Elements
+## Collection Element Alignment
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---

@@ -7,7 +7,7 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
 
     public static var description = RuleDescription(
         identifier: "collection_alignment",
-        name: "Alignment of Collection Elements",
+        name: "Collection Element Alignment",
         description: "All elements in a collection literal should be vertically aligned",
         kind: .style,
         nonTriggeringExamples: Examples(alignColons: false).nonTriggeringExamples,

@@ -3,7 +3,7 @@ jobs:
 
   analyze:
     macos:
-      xcode: "10.0.0"
+      xcode: "9.4.0"
     steps:
       - checkout
       - run: make analyze

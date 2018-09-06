@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct UnusedPrivateDeclarationRule: ConfigurationProviderRule, AnalyzerRule, AutomaticTestableRule {
+public struct UnusedPrivateDeclarationRule: ConfigurationProviderRule, AnalyzerRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

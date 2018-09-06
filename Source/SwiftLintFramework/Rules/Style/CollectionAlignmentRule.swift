@@ -10,24 +10,8 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
         name: "Alignment of Collection Elements",
         description: "All elements in a collection literal should be vertically aligned",
         kind: .style,
-        nonTriggeringExamples: [
-            """
-            someFunction(arg: [
-                "foo": 1,
-                "bar": 2
-            ])
-            """
-        ],
-        triggeringExamples: [
-            """
-            someFunction(arg: [
-                "foo": 1,
-                    "bar"↓: 2,
-                "fizz": 2,
-            "buzz"↓: 2
-            ])
-            """
-        ]
+        nonTriggeringExamples: Examples(alignColons: false).nonTriggeringExamples,
+        triggeringExamples: Examples(alignColons: false).triggeringExamples
     )
 
     public func validate(file: File, kind: SwiftExpressionKind,
@@ -124,6 +108,186 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, Autom
 
 extension CollectionAlignmentRule {
     struct Examples {
+        private let alignColons: Bool
 
+        init(alignColons: Bool) {
+            self.alignColons = alignColons
+        }
+
+        var triggeringExamples: [String] {
+            let examples = alignColons ? alignColonsTriggeringExamples : alignLeftTriggeringExamples
+            return examples + sharedTriggeringExamples
+        }
+
+        var nonTriggeringExamples: [String] {
+            return alignColons ? alignColonsNonTriggeringExamples : alignLeftNonTriggeringExamples
+        }
+
+        private var alignColonsTriggeringExamples: [String] {
+            return [
+                """
+                doThings(arg: [
+                    "foo": 1,
+                    "bar": 2,
+                    "fizz"↓: 2,
+                    "buzz"↓: 2
+                ])
+                """,
+                """
+                let abc = [
+                    "alpha": "a",
+                    "beta"↓: "b",
+                    "gamma": "c",
+                    "delta": "d",
+                    "epsilon"↓: "e"
+                ]
+                """,
+                """
+                var weirdColons = [
+                    "a"    :  1,
+                    "b"  ↓:2,
+                    "c"    :      3
+                ]
+                """
+            ]
+        }
+
+        private var alignColonsNonTriggeringExamples: [String] {
+            return [
+                """
+                doThings(arg: [
+                    "foo": 1,
+                    "bar": 2,
+                   "fizz": 2,
+                   "buzz": 2
+                ])
+                """,
+                """
+                let abc = [
+                    "alpha": "a",
+                     "beta": "b",
+                    "gamma": "g",
+                    "delta": "d",
+                  "epsilon": "e"
+                ]
+                """,
+                """
+                var weirdColons = [
+                    "a"    :  1,
+                      "b"  :2,
+                       "c" :      3
+                ]
+                """
+            ]
+        }
+
+        private var alignLeftTriggeringExamples: [String] {
+            return [
+                """
+                doThings(arg: [
+                    "foo": 1,
+                    "bar": 2,
+                   ↓"fizz": 2,
+                   ↓"buzz": 2
+                ])
+                """,
+                """
+                let abc = [
+                    "alpha": "a",
+                     ↓"beta": "b",
+                    "gamma": "g",
+                    "delta": "d",
+                  ↓"epsilon": "e"
+                ]
+                """,
+                """
+                let meals = [
+                                "breakfast": "oatmeal",
+                                "lunch": "sandwich",
+                    ↓"dinner": "burger"
+                ]
+                """
+            ]
+        }
+
+        private var alignLeftNonTriggeringExamples: [String] {
+            return [
+                """
+                doThings(arg: [
+                    "foo": 1,
+                    "bar": 2,
+                    "fizz": 2,
+                    "buzz": 2
+                ])
+                """,
+                """
+                let abc = [
+                    "alpha": "a",
+                    "beta": "b",
+                    "gamma": "g",
+                    "delta": "d",
+                    "epsilon": "e"
+                ]
+                """,
+                """
+                let meals = [
+                                "breakfast": "oatmeal",
+                                "lunch": "sandwich",
+                                "dinner": "burger"
+                ]
+                """
+            ]
+        }
+
+        private var sharedTriggeringExamples: [String] {
+            return [
+                """
+                let coordinates = [
+                    CLLocationCoordinate2D(latitude: 0, longitude: 33),
+                        ↓CLLocationCoordinate2D(latitude: 0, longitude: 66),
+                    CLLocationCoordinate2D(latitude: 0, longitude: 99)
+                ]
+                """,
+                """
+                var evenNumbers: Set<Int> = [
+                    2,
+                  ↓4,
+                    6
+                ]
+                """
+            ]
+        }
+
+        private var sharedNonTriggeringExamples: [String] {
+            return [
+                """
+                let coordinates = [
+                    CLLocationCoordinate2D(latitude: 0, longitude: 33),
+                    CLLocationCoordinate2D(latitude: 0, longitude: 66),
+                    CLLocationCoordinate2D(latitude: 0, longitude: 99)
+                ]
+                """,
+                """
+                var evenNumbers: Set<Int> = [
+                    2,
+                    4,
+                    6
+                ]
+                """,
+                """
+                let abc = [1, 2, 3, 4]
+                """,
+                """
+                let abc = [
+                    1, 2, 3, 4
+                ]
+                """,
+                """
+                let abc = [
+                    "foo": "bar", "fizz": "buzz"
+                ]
+                """
+            ]
+        }
     }
 }

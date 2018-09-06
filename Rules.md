@@ -138,6 +138,7 @@
 * [Unused Enumerated](#unused-enumerated)
 * [Unused Import](#unused-import)
 * [Unused Optional Binding](#unused-optional-binding)
+* [Unused Private Declaration](#unused-private-declaration)
 * [Valid IBInspectable](#valid-ibinspectable)
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
@@ -20159,6 +20160,36 @@ if let ↓_ = bar {
 
 ```swift
 if case .some(let ↓_) = self {}
+```
+
+</details>
+
+
+
+## Unused Private Declaration
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`unused_private_declaration` | Disabled | No | lint | Yes | 3.0.0 
+
+Private declarations should be referenced in that file.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+private let kConstant = 0
+_ = kConstant
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+private let ↓kConstant = 0
 ```
 
 </details>

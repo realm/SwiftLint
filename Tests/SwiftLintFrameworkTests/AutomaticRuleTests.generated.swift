@@ -60,12 +60,6 @@ class ClosureSpacingRuleTests: XCTestCase {
     }
 }
 
-class CollectionAlignmentRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CollectionAlignmentRule.description)
-    }
-}
-
 class CommaRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)

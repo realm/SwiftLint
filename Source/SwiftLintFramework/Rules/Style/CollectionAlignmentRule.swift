@@ -1,6 +1,6 @@
 import SourceKittenFramework
 
-public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule {
     public var configuration = CollectionAlignmentConfiguration()
 
     public init() {}

@@ -121,7 +121,8 @@ extension CollectionAlignmentRule {
         }
 
         var nonTriggeringExamples: [String] {
-            return alignColons ? alignColonsNonTriggeringExamples : alignLeftNonTriggeringExamples
+            let examples = alignColons ? alignColonsNonTriggeringExamples : alignLeftNonTriggeringExamples
+            return examples + sharedNonTriggeringExamples
         }
 
         private var alignColonsTriggeringExamples: [String] {

@@ -1746,6 +1746,38 @@ let meals = [
 ]
 ```
 
+```swift
+let coordinates = [
+    CLLocationCoordinate2D(latitude: 0, longitude: 33),
+    CLLocationCoordinate2D(latitude: 0, longitude: 66),
+    CLLocationCoordinate2D(latitude: 0, longitude: 99)
+]
+```
+
+```swift
+var evenNumbers: Set<Int> = [
+    2,
+    4,
+    6
+]
+```
+
+```swift
+let abc = [1, 2, 3, 4]
+```
+
+```swift
+let abc = [
+    1, 2, 3, 4
+]
+```
+
+```swift
+let abc = [
+    "foo": "bar", "fizz": "buzz"
+]
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

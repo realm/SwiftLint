@@ -7,14 +7,18 @@ analyzer_rules:
   - unused_import
   - unused_private_declaration
 opt_in_rules:
+  - anyobject_protocol
   - array_init
   - attributes
   - closure_end_indentation
   - closure_spacing
   - contains_over_first_not_nil
   - empty_count
+  - empty_string
+  - empty_xctest_method
   - explicit_init
   - extension_access_modifier
+  - fallthrough
   - fatal_error_message
   - file_header
   - file_name
@@ -22,6 +26,7 @@ opt_in_rules:
   - joined_default_parameter
   - let_var_whitespace
   - literal_expression_end_indentation
+  - lower_acl_than_parent
   - nimble_operator
   - number_separator
   - object_literal
@@ -31,22 +36,25 @@ opt_in_rules:
   - pattern_matching_keywords
   - private_action
   - private_outlet
+  - prohibited_interface_builder
   - prohibited_super_call
   - quick_discouraged_call
   - quick_discouraged_focused_test
   - quick_discouraged_pending_test
   - redundant_nil_coalescing
+  - redundant_type_annotation
   - single_test_class
   - sorted_first_last
   - sorted_imports
+  - unavailable_function
   - unneeded_parentheses_in_closure_argument
+  - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
   - yoda_condition
 
 identifier_name:
   excluded:
     - id
-line_length: 120
 number_separator:
   minimum_length: 5
 file_name:
@@ -59,7 +67,7 @@ file_name:
 
 custom_rules:
   rule_id:
-    included: Source/SwiftLintFramework/Rules/\w+\.swift
+    included: Source/SwiftLintFramework/Rules/.+/\w+\.swift
     name: Rule ID
     message: Rule IDs must be all lowercase, snake case and not end with `rule`
     regex: identifier:\s*("\w+_rule"|"\S*[^a-z_]\S*")

@@ -155,7 +155,7 @@ class ConfigurationTests: XCTestCase {
             return []
         }
 
-        public func modificationDate(forFileAtPath path: String) -> Date? {
+        func modificationDate(forFileAtPath path: String) -> Date? {
             return nil
         }
     }

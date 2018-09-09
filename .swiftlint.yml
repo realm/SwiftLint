@@ -46,7 +46,6 @@ opt_in_rules:
 identifier_name:
   excluded:
     - id
-line_length: 120
 number_separator:
   minimum_length: 5
 file_name:

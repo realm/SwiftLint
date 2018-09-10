@@ -55,7 +55,7 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         }
 
         // Check if non-computed
-        let isComputed = dictionary.bodyLength ?? 0 > 0
+        let isComputed = (dictionary.bodyLength ?? 0) > 0
         guard !isComputed else { return [] }
 
         // Violation found!

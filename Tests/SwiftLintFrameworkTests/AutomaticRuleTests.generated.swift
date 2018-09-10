@@ -240,6 +240,12 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
+class IdenticalOperandsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(IdenticalOperandsRule.description)
+    }
+}
+
 class ImplicitGetterRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitGetterRule.description)

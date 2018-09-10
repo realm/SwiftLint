@@ -51,6 +51,7 @@ opt_in_rules:
   - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
   - yoda_condition
+  - identical_operands
 
 identifier_name:
   excluded:

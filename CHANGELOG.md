@@ -60,6 +60,11 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2369](https://github.com/realm/SwiftLint/issues/2369)
 
+* Add `identical_operands` opt-in rule to validate that operands are different
+  expressions in comparisons.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#1371](https://github.com/realm/SwiftLint/issues/1371)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  

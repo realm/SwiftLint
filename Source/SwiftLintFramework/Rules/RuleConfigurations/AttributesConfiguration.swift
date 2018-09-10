@@ -38,5 +38,5 @@ public func == (lhs: AttributesConfiguration,
                 rhs: AttributesConfiguration) -> Bool {
     return lhs.severityConfiguration == rhs.severityConfiguration &&
         lhs.alwaysOnSameLine == rhs.alwaysOnSameLine &&
-        rhs.alwaysOnNewLine == rhs.alwaysOnNewLine
+        lhs.alwaysOnNewLine == rhs.alwaysOnNewLine
 }

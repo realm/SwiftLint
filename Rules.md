@@ -7794,9 +7794,9 @@ enum Foo<↓type> {}
 
 ## Identical Operands
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`identical_operands` | Disabled | No | lint | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`identical_operands` | Disabled | No | lint | No | 3.0.0 
 
 Comparing two identical operands is likely a mistake.
 

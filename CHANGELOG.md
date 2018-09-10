@@ -20,6 +20,7 @@
 * Add an `explicit_self` analyzer rule to enforce the use of explicit references
   to `self.` when accessing instance variables or functions.  
   [JP Simard](https://github.com/jpsim)
+  [#321](https://github.com/realm/SwiftLint/issues/321)
 
 * Add an `unused_import` analyzer rule to lint for unnecessary imports.  
   [JP Simard](https://github.com/jpsim)

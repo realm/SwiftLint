@@ -70,6 +70,11 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2326](https://github.com/realm/SwiftLint/issues/2326)
 
+* Add `static_operator` opt-in rule to enforce that operators are declared as
+  static functions instead of free functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2395](https://github.com/realm/SwiftLint/issues/2395)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  

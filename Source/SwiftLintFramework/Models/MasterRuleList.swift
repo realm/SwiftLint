@@ -119,6 +119,7 @@ public let masterRuleList = RuleList(rules: [
     SortedFirstLastRule.self,
     SortedImportsRule.self,
     StatementPositionRule.self,
+    StaticOperatorRule.self,
     StrictFilePrivateRule.self,
     SuperfluousDisableCommandRule.self,
     SwitchCaseAlignmentRule.self,

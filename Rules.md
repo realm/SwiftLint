@@ -118,6 +118,7 @@
 * [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
+* [Static Operator](#static-operator)
 * [Strict fileprivate](#strict-fileprivate)
 * [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
@@ -15865,6 +15866,97 @@ catch {
 ```swift
 ↓}
 	  catch {
+```
+
+</details>
+
+
+
+## Static Operator
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`static_operator` | Disabled | No | idiomatic | No | 3.0.0 
+
+Operators should be declared as static functions, not free functions.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class A: Equatable {
+    static func == (lhs: A, rhs: A) -> Bool {
+        return false
+    }
+```
+
+```swift
+class A<T>: Equatable {
+    static func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
+        return false
+    }
+```
+
+```swift
+public extension Array where Element == Rule {
+    static func == (lhs: Array, rhs: Array) -> Bool {
+        if lhs.count != rhs.count { return false }
+        return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+    }
+}
+```
+
+```swift
+private extension Optional where Wrapped: Comparable {
+    static func < (lhs: Optional, rhs: Optional) -> Bool {
+        switch (lhs, rhs) {
+        case let (lhs?, rhs?):
+            return lhs < rhs
+        case (nil, _?):
+            return true
+        default:
+            return false
+        }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓func == (lhs: A, rhs: A) -> Bool {
+    return false
+}
+```
+
+```swift
+↓func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
+    return false
+}
+```
+
+```swift
+↓func == (lhs: [Rule], rhs: [Rule]) -> Bool {
+    if lhs.count != rhs.count { return false }
+    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+}
+```
+
+```swift
+private ↓func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (lhs?, rhs?):
+        return lhs < rhs
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
+}
 ```
 
 </details>

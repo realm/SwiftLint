@@ -24,6 +24,7 @@
 
 * Add an `unused_import` analyzer rule to lint for unnecessary imports.  
   [JP Simard](https://github.com/jpsim)
+  [#2248](https://github.com/realm/SwiftLint/issues/2248)
 
 * Add an `unused_private_declaration` analyzer rule to lint for unused private
   declarations.  

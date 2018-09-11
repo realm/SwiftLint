@@ -6,11 +6,15 @@ import XCTest
 class CustomRulesTests: XCTestCase {
 
     func testCustomRuleConfigurationSetsCorrectly() {
-        let configDict = ["my_custom_rule": ["name": "MyCustomRule",
-            "message": "Message",
-            "regex": "regex",
-            "match_kinds": "comment",
-            "severity": "error"]]
+        let configDict = [
+            "my_custom_rule": [
+                "name": "MyCustomRule",
+                "message": "Message",
+                "regex": "regex",
+                "match_kinds": "comment",
+                "severity": "error"
+            ]
+        ]
         var comp = RegexConfiguration(identifier: "my_custom_rule")
         comp.name = "MyCustomRule"
         comp.message = "Message"
@@ -132,7 +136,7 @@ class CustomRulesTests: XCTestCase {
 
     private func getCustomRulesWithTwoRules() -> ((RegexConfiguration, RegexConfiguration), CustomRules) {
         let config1 = ["regex": "pattern",
-                      "match_kinds": "comment"]
+                       "match_kinds": "comment"]
 
         var regexConfig1 = RegexConfiguration(identifier: "custom1")
         do {

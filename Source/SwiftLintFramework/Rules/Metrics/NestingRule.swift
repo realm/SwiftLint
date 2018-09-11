@@ -16,15 +16,17 @@ public struct NestingRule: ASTRule, ConfigurationProviderRule, AutomaticTestable
                      "and statements should be nested at most 5 levels deep.",
         kind: .metrics,
         nonTriggeringExamples: ["class", "struct", "enum"].flatMap { kind -> [String] in
-            ["\(kind) Class0 { \(kind) Class1 {} }\n",
+            [
+                "\(kind) Class0 { \(kind) Class1 {} }\n",
                 "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-                "func func5() {\n}\n}\n}\n}\n}\n}\n"]
+                "func func5() {\n}\n}\n}\n}\n}\n}\n"
+            ]
         } + ["enum Enum0 { enum Enum1 { case Case } }"],
         triggeringExamples: ["class", "struct", "enum"].map { kind -> String in
             return "\(kind) A { \(kind) B { ↓\(kind) C {} } }\n"
         } + [
-                "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
-                "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
+            "func func0() {\nfunc func1() {\nfunc func2() {\nfunc func3() {\nfunc func4() { " +
+            "func func5() {\n↓func func6() {\n}\n}\n}\n}\n}\n}\n}\n"
         ]
     )
 

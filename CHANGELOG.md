@@ -64,6 +64,7 @@
   expressions in comparisons.  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#1371](https://github.com/realm/SwiftLint/issues/1371)
+
 * Add `collection_alignment` opt-in rule to validate that all elements in a
   collection literal are aligned vertically.  
   [Dalton Claybrook](https://github.com/daltonclaybrook)

@@ -20,9 +20,9 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
 
         let keyLocations: [Location]
         if kind == .array {
-            keyLocations = getArrayElementLocations(with: file, dictionary: dictionary)
+            keyLocations = arrayElementLocations(with: file, dictionary: dictionary)
         } else {
-            keyLocations = getDictionaryKeyLocations(with: file, dictionary: dictionary)
+            keyLocations = dictionaryKeyLocations(with: file, dictionary: dictionary)
         }
 
         guard keyLocations.count >= 2 else {
@@ -30,14 +30,18 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         }
 
         let firstKeyLocation = keyLocations[0]
-        let violationLocations = zip(keyLocations[1...], 1...)
-            .compactMap { location, index -> Location? in
+        let remainingKeyLocations = keyLocations[1...]
+        let violationLocations = zip(remainingKeyLocations.indices, remainingKeyLocations)
+            .compactMap { index, location -> Location? in
                 let previousLocation = keyLocations[index - 1]
-                if previousLocation.line! < location.line! && firstKeyLocation.character! != location.character! {
-                    return location
-                } else {
-                    return nil
-                }
+                guard let previousLine = previousLocation.line,
+                    let locationLine = location.line,
+                    let firstKeyCharacter = firstKeyLocation.character,
+                    let locationCharacter = location.character,
+                    previousLine < locationLine,
+                    firstKeyCharacter != locationCharacter else { return nil }
+
+                return location
             }
 
         return violationLocations.map {
@@ -47,22 +51,17 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
         }
     }
 
-    private func getArrayElementLocations(with file: File, dictionary: [String: SourceKitRepresentable]) -> [Location] {
-        let contents = file.contents.bridge()
+    private func arrayElementLocations(with file: File, dictionary: [String: SourceKitRepresentable]) -> [Location] {
         return dictionary.elements.compactMap { element -> Location? in
-            guard let byteOffset = element.offset,
-                let (line, character) = contents.lineAndCharacter(forByteOffset: byteOffset) else {
-                return nil
-            }
-            return Location(file: file.path, line: line, character: character)
+            element.offset.map { Location(file: file, byteOffset: $0) }
         }
     }
 
-    private func getDictionaryKeyLocations(with file: File,
-                                           dictionary: [String: SourceKitRepresentable]) -> [Location] {
+    private func dictionaryKeyLocations(with file: File,
+                                        dictionary: [String: SourceKitRepresentable]) -> [Location] {
         var keys: [[String: SourceKitRepresentable]] = []
         var values: [[String: SourceKitRepresentable]] = []
-        zip(dictionary.elements, 0...).forEach { element, index in
+        dictionary.elements.enumerated().forEach { index, element in
             // in a dictionary, the even elements are keys, and the odd elements are values
             if index % 2 == 0 {
                 keys.append(element)
@@ -77,33 +76,24 @@ public struct CollectionAlignmentRule: ASTRule, ConfigurationProviderRule, OptIn
                 let keyLength = key.length else { return nil }
 
             if configuration.alignColons {
-                return getColonLocation(with: file,
-                                        keyOffset: keyOffset,
-                                        keyLength: keyLength,
-                                        valueOffset: valueOffset)
+                return colonLocation(with: file,
+                                     keyOffset: keyOffset,
+                                     keyLength: keyLength,
+                                     valueOffset: valueOffset)
             } else {
-                return getKeyLocation(with: file, keyOffset: keyOffset)
+                return Location(file: file, byteOffset: keyOffset)
             }
         }
     }
 
-    private func getColonLocation(with file: File, keyOffset: Int, keyLength: Int, valueOffset: Int) -> Location? {
+    private func colonLocation(with file: File, keyOffset: Int, keyLength: Int, valueOffset: Int) -> Location? {
         let contents = file.contents.bridge()
         let matchStart = keyOffset + keyLength
         let matchLength = valueOffset - matchStart
         let range = contents.byteRangeToNSRange(start: matchStart, length: matchLength)
 
-        guard let colonRange = file.match(pattern: ":", range: range).first?.0,
-            let (line, character) = contents.lineAndCharacter(forCharacterOffset: colonRange.location)
-            else { return nil }
-
-        return Location(file: file.path, line: line, character: character)
-    }
-
-    private func getKeyLocation(with file: File, keyOffset: Int) -> Location? {
-        let contents = file.contents.bridge()
-        guard let (line, character) = contents.lineAndCharacter(forByteOffset: keyOffset) else { return nil }
-        return Location(file: file.path, line: line, character: character)
+        let matches = file.match(pattern: ":", excludingSyntaxKinds: [.comment], range: range)
+        return matches.first.map { Location(file: file, characterOffset: $0.location) }
     }
 }
 

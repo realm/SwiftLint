@@ -11,6 +11,7 @@
 * [Closure End Indentation](#closure-end-indentation)
 * [Closure Parameter Position](#closure-parameter-position)
 * [Closure Spacing](#closure-spacing)
+* [Collection Element Alignment](#collection-element-alignment)
 * [Colon](#colon)
 * [Comma Spacing](#comma-spacing)
 * [Compiler Protocol Init](#compiler-protocol-init)
@@ -1699,6 +1700,129 @@ extension UITableViewCell: ReusableView {}
 
 ```swift
 filter ↓{ sorted ↓{ $0 < $1}}
+```
+
+</details>
+
+
+
+## Collection Element Alignment
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`collection_alignment` | Disabled | No | style | No | 3.0.0 
+
+All elements in a collection literal should be vertically aligned
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+doThings(arg: [
+    "foo": 1,
+    "bar": 2,
+    "fizz": 2,
+    "buzz": 2
+])
+```
+
+```swift
+let abc = [
+    "alpha": "a",
+    "beta": "b",
+    "gamma": "g",
+    "delta": "d",
+    "epsilon": "e"
+]
+```
+
+```swift
+let meals = [
+                "breakfast": "oatmeal",
+                "lunch": "sandwich",
+                "dinner": "burger"
+]
+```
+
+```swift
+let coordinates = [
+    CLLocationCoordinate2D(latitude: 0, longitude: 33),
+    CLLocationCoordinate2D(latitude: 0, longitude: 66),
+    CLLocationCoordinate2D(latitude: 0, longitude: 99)
+]
+```
+
+```swift
+var evenNumbers: Set<Int> = [
+    2,
+    4,
+    6
+]
+```
+
+```swift
+let abc = [1, 2, 3, 4]
+```
+
+```swift
+let abc = [
+    1, 2, 3, 4
+]
+```
+
+```swift
+let abc = [
+    "foo": "bar", "fizz": "buzz"
+]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+doThings(arg: [
+    "foo": 1,
+    "bar": 2,
+   ↓"fizz": 2,
+   ↓"buzz": 2
+])
+```
+
+```swift
+let abc = [
+    "alpha": "a",
+     ↓"beta": "b",
+    "gamma": "g",
+    "delta": "d",
+  ↓"epsilon": "e"
+]
+```
+
+```swift
+let meals = [
+                "breakfast": "oatmeal",
+                "lunch": "sandwich",
+    ↓"dinner": "burger"
+]
+```
+
+```swift
+let coordinates = [
+    CLLocationCoordinate2D(latitude: 0, longitude: 33),
+        ↓CLLocationCoordinate2D(latitude: 0, longitude: 66),
+    CLLocationCoordinate2D(latitude: 0, longitude: 99)
+]
+```
+
+```swift
+var evenNumbers: Set<Int> = [
+    2,
+  ↓4,
+    6
+]
 ```
 
 </details>

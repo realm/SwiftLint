@@ -12,6 +12,7 @@ public let masterRuleList = RuleList(rules: [
     ClosureEndIndentationRule.self,
     ClosureParameterPositionRule.self,
     ClosureSpacingRule.self,
+    CollectionAlignmentRule.self,
     ColonRule.self,
     CommaRule.self,
     CompilerProtocolInitRule.self,

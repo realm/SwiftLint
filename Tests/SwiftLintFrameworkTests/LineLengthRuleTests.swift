@@ -51,8 +51,10 @@ class LineLengthRuleTests: XCTestCase {
     func testLineLengthWithIgnoreURLsEnabled() {
         let url = "https://github.com/realm/SwiftLint"
         let triggeringLines = [String(repeating: "/", count: 121) + "\(url)\n"]
-        let nonTriggeringLines = ["\(url) " + String(repeating: "/", count: 118) + " \(url)\n",
-            "\(url)/" + String(repeating: "a", count: 120)]
+        let nonTriggeringLines = [
+            "\(url) " + String(repeating: "/", count: 118) + " \(url)\n",
+            "\(url)/" + String(repeating: "a", count: 120)
+        ]
 
         let baseDescription = LineLengthRule.description
         let nonTriggeringExamples = baseDescription.nonTriggeringExamples + nonTriggeringLines

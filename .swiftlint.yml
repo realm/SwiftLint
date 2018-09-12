@@ -12,6 +12,7 @@ opt_in_rules:
   - attributes
   - closure_end_indentation
   - closure_spacing
+  - collection_alignment
   - contains_over_first_not_nil
   - empty_count
   - empty_string
@@ -23,6 +24,7 @@ opt_in_rules:
   - file_header
   - file_name
   - first_where
+  - identical_operands
   - joined_default_parameter
   - let_var_whitespace
   - literal_expression_end_indentation
@@ -51,7 +53,6 @@ opt_in_rules:
   - untyped_error_in_catch
   - vertical_parameter_alignment_on_call
   - yoda_condition
-  - identical_operands
 
 identifier_name:
   excluded:

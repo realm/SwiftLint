@@ -258,6 +258,8 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   hexadecimal integer literals.  
   [Timofey Solonin](https://github.com/biboran)
   [#2423](https://github.com/realm/SwiftLint/issues/2423)
+* Only mark custom rules as 'enabled in your config' when custom rules are configured.  
+  [jhildensperger](https://github.com/jhildensperger)
 
 ## 0.27.0: Heavy Duty
 

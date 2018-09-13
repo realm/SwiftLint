@@ -136,7 +136,13 @@ extension TextTable {
         for (ruleID, ruleType) in sortedRules {
             let rule = ruleType.init()
             let configuredRule = configuration.rules.first { rule in
-                return type(of: rule).description.identifier == ruleID
+                guard type(of: rule).description.identifier == ruleID else {
+                    return false
+                }
+                guard let customRules = rule as? CustomRules else {
+                    return true
+                }
+                return !customRules.configuration.customRuleConfigurations.isEmpty
             }
             addRow(values: [
                 ruleID,

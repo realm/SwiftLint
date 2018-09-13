@@ -91,6 +91,9 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
 
+* Only mark custom rules as 'enabled in your config' when custom rules are configured.  
+  [jhildensperger](https://github.com/jhildensperger)
+
 ## 0.27.0: Heavy Duty
 
 #### Breaking

@@ -540,6 +540,12 @@ class SortedImportsRuleTests: XCTestCase {
     }
 }
 
+class StaticOperatorRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StaticOperatorRule.description)
+    }
+}
+
 class StrictFilePrivateRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(StrictFilePrivateRule.description)

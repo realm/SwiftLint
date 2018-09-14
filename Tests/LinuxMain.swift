@@ -1077,6 +1077,12 @@ extension StatementPositionRuleTests {
     ]
 }
 
+extension StaticOperatorRuleTests {
+    static var allTests: [(String, (StaticOperatorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension StrictFilePrivateRuleTests {
     static var allTests: [(String, (StrictFilePrivateRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1415,6 +1421,7 @@ XCTMain([
     testCase(SortedImportsRuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
     testCase(StatementPositionRuleTests.allTests),
+    testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),

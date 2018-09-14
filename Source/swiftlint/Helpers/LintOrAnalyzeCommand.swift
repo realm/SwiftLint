@@ -92,7 +92,7 @@ struct LintOrAnalyzeCommand {
                                                  violations: [StyleViolation]) -> Bool {
         guard let warningThreshold = configuration.warningThreshold else { return false }
         let numberOfWarningViolations = violations.filter({ $0.severity == .warning }).count
-        return numberOfWarningViolations >= warningThreshold
+        return numberOfWarningViolations > warningThreshold
     }
 
     private static func createThresholdViolation(threshold: Int) -> StyleViolation {

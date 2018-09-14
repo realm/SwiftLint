@@ -72,6 +72,10 @@
 
 #### Bug Fixes
 
+* Fix for isWarningThresholdBroken failing when threshold set to 0.  
+  [mrkd](https://github.com/mrkd)
+  [#issue_number](https://github.com/realm/SwiftLint/issues/2403)
+
 * Fix `comma` rule false positives on object literals (for example, images).  
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2345](https://github.com/realm/SwiftLint/issues/2345)

@@ -122,8 +122,8 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 private extension File {
     func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
         let contentsNSString = contents.bridge()
-        var imports = [String]()
-        var usrFragments = [String]()
+        var imports = Set<String>()
+        var usrFragments = Set<String>()
         var nextIsModuleImport = false
         for token in syntaxMap.tokens {
             guard let tokenKind = SyntaxKind(rawValue: token.type) else {
@@ -147,7 +147,7 @@ private extension File {
             if nextIsModuleImport {
                 if let importedModule = cursorInfo["key.modulename"] as? String,
                     cursorInfo["key.kind"] as? String == "source.lang.swift.ref.module" {
-                    imports.append(importedModule)
+                    imports.insert(importedModule)
                     nextIsModuleImport = false
                     continue
                 }
@@ -156,15 +156,15 @@ private extension File {
             }
 
             if let usr = cursorInfo["key.modulename"] as? String {
-                usrFragments += usr.split(separator: ".").map(String.init)
+                usrFragments.formUnion(usr.split(separator: ".").map(String.init))
             }
         }
         // Always disallow 'import Swift' because it's available without importing.
-        usrFragments = usrFragments.filter { $0 != "Swift" }
-        var unusedImports = imports.filter { !usrFragments.contains($0) }
+        usrFragments.remove("Swift")
+        var unusedImports = imports.subtracting(usrFragments)
         // Certain Swift attributes requires importing Foundation.
         if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
-            unusedImports.removeAll(where: { $0 == "Foundation" })
+            unusedImports.remove("Foundation")
         }
         return unusedImports.map { module in
             let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")

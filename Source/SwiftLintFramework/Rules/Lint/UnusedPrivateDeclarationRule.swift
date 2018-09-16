@@ -44,7 +44,7 @@ public struct UnusedPrivateDeclarationRule: AutomaticTestableRule, Configuration
 
         let allCursorInfo = file.allCursorInfo(compilerArguments: compilerArguments)
         let privateDeclarationUSRs = File.declaredUSRs(allCursorInfo: allCursorInfo, acls: [.private, .fileprivate])
-        let referencedUSRs = File.referencedUSRs(allCursorInfo: allCursorInfo)
+        let referencedUSRs = Set(File.referencedUSRs(allCursorInfo: allCursorInfo))
         let unusedPrivateDeclarations = privateDeclarationUSRs.filter { !referencedUSRs.contains($0.usr) }
         return unusedPrivateDeclarations.map { $0.nameOffset }
     }

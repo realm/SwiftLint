@@ -20,6 +20,10 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#1518](https://github.com/realm/SwiftLint/issues/1518)
 
+* Improve performance for `unused_private_declaration` and `unused_import` rules
+  for large files.  
+  [Niil Öhlin](https://github.com/niilohlin)
+
 #### Bug Fixes
 
 * None.

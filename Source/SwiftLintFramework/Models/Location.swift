@@ -44,33 +44,35 @@ public struct Location: CustomStringConvertible, Comparable {
             character = nil
         }
     }
-}
 
-// MARK: Comparable
+    // MARK: Comparable
 
-private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
-    switch (lhs, rhs) {
-    case let (lhs?, rhs?):
-        return lhs < rhs
-    case (nil, _?):
-        return true
-    default:
-        return false
-  }
-}
-
-public func == (lhs: Location, rhs: Location) -> Bool {
-    return lhs.file == rhs.file &&
-        lhs.line == rhs.line &&
-        lhs.character == rhs.character
-}
-
-public func < (lhs: Location, rhs: Location) -> Bool {
-    if lhs.file != rhs.file {
-        return lhs.file < rhs.file
+    public static func == (lhs: Location, rhs: Location) -> Bool {
+        return lhs.file == rhs.file &&
+            lhs.line == rhs.line &&
+            lhs.character == rhs.character
     }
-    if lhs.line != rhs.line {
-        return lhs.line < rhs.line
+
+    public static func < (lhs: Location, rhs: Location) -> Bool {
+        if lhs.file != rhs.file {
+            return lhs.file < rhs.file
+        }
+        if lhs.line != rhs.line {
+            return lhs.line < rhs.line
+        }
+        return lhs.character < rhs.character
     }
-    return lhs.character < rhs.character
+}
+
+private extension Optional where Wrapped: Comparable {
+    static func < (lhs: Optional, rhs: Optional) -> Bool {
+        switch (lhs, rhs) {
+        case let (lhs?, rhs?):
+            return lhs < rhs
+        case (nil, _?):
+            return true
+        default:
+            return false
+        }
+    }
 }

@@ -33,10 +33,11 @@ public struct RuleDescription: Equatable {
         self.minSwiftVersion = minSwiftVersion
         self.requiresFileOnDisk = requiresFileOnDisk
     }
-}
 
-// MARK: Equatable
+    // MARK: Equatable
 
-public func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
-    return lhs.identifier == rhs.identifier
+    public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+
 }

@@ -14,13 +14,13 @@ public struct StyleViolation: CustomStringConvertible, Equatable {
         self.location = location
         self.reason = reason ?? ruleDescription.description
     }
-}
 
-// MARK: Equatable
+    // MARK: Equatable
 
-public func == (lhs: StyleViolation, rhs: StyleViolation) -> Bool {
-    return lhs.ruleDescription == rhs.ruleDescription &&
-        lhs.location == rhs.location &&
-        lhs.severity == rhs.severity &&
-        lhs.reason == rhs.reason
+    public static func == (lhs: StyleViolation, rhs: StyleViolation) -> Bool {
+        return lhs.ruleDescription == rhs.ruleDescription &&
+            lhs.location == rhs.location &&
+            lhs.severity == rhs.severity &&
+            lhs.reason == rhs.reason
+    }
 }

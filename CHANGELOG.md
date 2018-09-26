@@ -231,6 +231,10 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   hexadecimal integer literals.  
   [Timofey Solonin](https://github.com/biboran)
   [#2423](https://github.com/realm/SwiftLint/issues/2423)
+* Add new opt-in rule `vertical_whitespace_between_cases` to warn against crowded
+  switch case cases.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1517](https://github.com/realm/SwiftLint/issues/1517)
 
 ## 0.27.0: Heavy Duty
 
@@ -663,10 +667,7 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* Add new opt-in rule `vertical_whitespace_between_cases` to warn against crowded
-  switch case cases.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#1517](https://github.com/realm/SwiftLint/issues/1517)
+* None.
 
 #### Bug Fixes
 

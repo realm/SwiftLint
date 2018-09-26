@@ -21710,9 +21710,9 @@ class BBBB {}
 
 ## Vertical Whitespace Between Cases
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`vertical_whitespace_between_cases` | Disabled | Yes | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_between_cases` | Disabled | Yes | style | No | 3.0.0 
 
 Include a vertical whitespace (empty line) between cases in switch statements.
 

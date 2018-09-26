@@ -9061,21 +9061,6 @@ func example4() {
 }
 ```
 
-```swift
-foo(
-    bar(
-        x: 5,
-        y: 7
-    )
-)
-```
-
-```swift
-AlertViewModel.AlertAction(title: "some title", style: .default) {
-    AlertManager.shared.presentNextDebugAlert()
-}
-```
-
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -9100,23 +9085,6 @@ func example2() {
         // comment
     }
 }
-```
-
-```swift
-    _ = [
-        1,
-        2,
-        3,
-        4,
-        5, 6,
-        7, 8, 9↓]
-```
-
-```swift
-    _ = [↓1, 2, 3,
-         4, 5, 6,
-         7, 8, 9
-    ]
 ```
 
 </details>
@@ -10403,17 +10371,6 @@ Array and dictionary literal end should have the same indentation as the line th
 ]
 ```
 
-```swift
-    _ = [
-        1,
-        2,
-        3,
-        4,
-        5, 6,
-        7, 8, 9
-    ]
-```
-
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -11139,9 +11096,9 @@ foo(
 
 ## Multiline Arguments Brackets
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`multiline_arguments_brackets` | Disabled | No | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_arguments_brackets` | Disabled | No | style | No | 3.0.0 
 
 Multiline arguments should have their surrounding brackets in a new line.
 
@@ -11344,9 +11301,9 @@ a.b {
 
 ## Multiline Literal Brackets
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`multiline_literal_brackets` | Disabled | No | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_literal_brackets` | Disabled | No | style | No | 3.0.0 
 
 Multiline literals should have their surrounding brackets in a new line.
 
@@ -11382,6 +11339,17 @@ let houseCup = [
     "gryffinder": 460, "hufflepuff": 370,
     "ravenclaw": 410, "slytherin": 450
 ]
+```
+
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9
+    ]
 ```
 
 </details>
@@ -11420,6 +11388,23 @@ class Hogwarts {
         "gryffinder": 460, "hufflepuff": 370,
         "ravenclaw": 410, "slytherin": 450↓]
 }
+```
+
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9↓]
+```
+
+```swift
+    _ = [↓1, 2, 3,
+         4, 5, 6,
+         7, 8, 9
+    ]
 ```
 
 </details>
@@ -11908,9 +11893,9 @@ class Foo {
 
 ## Multiline Parameters Brackets
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`multiline_parameters_brackets` | Disabled | No | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_parameters_brackets` | Disabled | No | style | No | 3.0.0 
 
 Multiline parameters should have their surrounding brackets in a new line.
 

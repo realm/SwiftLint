@@ -104,6 +104,7 @@
 * [Quick Discouraged Call](#quick-discouraged-call)
 * [Quick Discouraged Focused Test](#quick-discouraged-focused-test)
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
+* [Random](#random)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
@@ -14540,6 +14541,57 @@ class TotoTests: QuickSpec {
        ↓xitBehavesLike("foo")
    }
 }
+
+```
+
+</details>
+
+
+
+## Random
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`random` | Disabled | No | lint | No | 4.2.0 
+
+Prefer using `type.random` over C-based functions.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+Int.random(in: 0..<10)
+
+```
+
+```swift
+Double.random(in: 8.6...111.34)
+
+```
+
+```swift
+Float.random(in: 0 ..< 1)
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓arc4random(10)
+
+```
+
+```swift
+↓arc4random_uniform(83)
+
+```
+
+```swift
+↓drand48(52)
 
 ```
 

@@ -64,6 +64,7 @@ class FileNameRuleTests: XCTestCase {
     func testCustomSuffixPattern() {
         XCTAssert(try validate(fileName: "BoolExtension.swift", suffixPattern: "Extensions?").isEmpty)
         XCTAssert(try validate(fileName: "BoolExtensions.swift", suffixPattern: "Extensions?").isEmpty)
+        XCTAssert(try validate(fileName: "BoolExtensionTests.swift", suffixPattern: "Extensions?|\\+.*").isEmpty)
     }
 
     func testCustomPrefixPattern() {

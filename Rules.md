@@ -22080,6 +22080,7 @@ Don't include vertical whitespace (empty line) before closing braces.
 ```swift
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     switch x {
     case .valid:
         print("multiple ...")
@@ -22176,6 +22177,8 @@ default: print("x is invalid")
 >>>>>>> Add more validation examples
     print("x is 5")
 =======
+=======
+>>>>>>> Fix failing tests
         )
 }
     }
@@ -22189,18 +22192,13 @@ default: print("x is invalid")
 ```
 
 ```swift
-foo(
-x: 5,
-y:6
-)
+    print("x is 5")
+}
 ```
 
 ```swift
-[1, 2].map { $0 }.filter {
-```
-
-```swift
-[1, 2].map { $0 }.filter { num in
+    print("x is 5")
+}
 ```
 
 ```swift
@@ -22213,25 +22211,38 @@ y:6
 */
 ```
 
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
 ```swift
 [
 1,
 2,
 3
-↓
 ]
 ```
 
 ```swift
-    print("x is 5")
-↓
+[1, 2].map { $0 }.filter {
+```
 
+```swift
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
 }
 ```
+
+```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
 
 ```swift
         )
@@ -22244,15 +22255,14 @@ y:6
 ```swift
     print("x is 5")
 ↓
+
 }
 ```
 
 ```swift
-foo(
-x: 5,
-y:6
+    print("x is 5")
 ↓
-)
+}
 ```
 
 ```swift
@@ -22262,10 +22272,27 @@ y:6
 ```
 
 ```swift
+[
+1,
+2,
+3
+↓
+]
+```
+
+```swift
 class Name {
     run(5) { x in print(x) }
 ↓
 }
+```
+
+```swift
+foo(
+x: 5,
+y:6
+↓
+)
 ```
 
 </details>
@@ -22286,18 +22313,44 @@ Don't include vertical whitespace (empty line) after opening braces.
 <summary>Non Triggering Examples</summary>
 
 ```swift
+/*
+    class X {
+
+        let x = 5
+
+    }
+*/
+```
+
+```swift
+// [1, 2].map { $0 }.filter { num in
+```
+
+```swift
 KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
     guard let img = image else { return }
 ```
 
 ```swift
-if x == 5 {
-	print("x is 5")
+[
+1,
+2,
+3
+]
 ```
 
 ```swift
-struct MyStruct {
-    let x = 5
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+[1, 2].map { $0 }.foo()
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+}
 ```
 
 ```swift
@@ -22308,8 +22361,15 @@ class X {
 ```
 
 ```swift
-struct MyStruct {
-	let x = 5
+foo(
+x: 5,
+y:6
+)
+```
+
+```swift
+if x == 5 {
+	print("x is 5")
 ```
 
 ```swift
@@ -22318,34 +22378,12 @@ if x == 5 {
 ```
 
 ```swift
-foo(
-x: 5,
-y:6
-)
-```
-
-```swift
-}) { _ in
-    self.dismiss(animated: false, completion: {
-```
-
-```swift
 if x == 5 {
-  print("x is 5")
+    print("x is 5")
 ```
 
 ```swift
-struct MyStruct {
-  let x = 5
-```
-
-```swift
-class Name {
-    run(5) { x in print(x) }
-}
-```
-
-```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 if x == 5 {
@@ -22369,28 +22407,30 @@ KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: n
 3
 ]
 >>>>>>> Fix issues after rebase
+=======
+if x == 5 {
+  print("x is 5")
+>>>>>>> Fix failing tests
 ```
 
 ```swift
-[1, 2].map { $0 }.foo()
+struct MyStruct {
+	let x = 5
 ```
 
 ```swift
-[1, 2].map { $0 }.filter { num in
+struct MyStruct {
+    let x = 5
 ```
 
 ```swift
-// [1, 2].map { $0 }.filter { num in
+struct MyStruct {
+  let x = 5
 ```
 
 ```swift
-/*
-    class X {
-
-        let x = 5
-
-    }
-*/
+}) { _ in
+    self.dismiss(animated: false, completion: {
 ```
 
 </details>
@@ -22398,6 +22438,7 @@ KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: n
 <summary>Triggering Examples</summary>
 
 ```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     switch x {
@@ -22436,22 +22477,11 @@ struct MyStruct {
 =======
 >>>>>>> Fix issues after rebase
 if x == 5 {
+=======
+KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+>>>>>>> Fix failing tests
 ↓
-    print("x is 5")
-```
-
-```swift
-if x == 5 {
-↓
-  print("x is 5")
-```
-
-```swift
-class X {
-    struct Y {
-↓
-    class Z {
-
+    guard let img = image else { return }
 ```
 
 ```swift
@@ -22464,6 +22494,21 @@ class X {
 ```
 
 ```swift
+class Name {
+↓
+    run(5) { x in print(x) }
+}
+```
+
+```swift
+class X {
+    struct Y {
+↓
+    class Z {
+
+```
+
+```swift
 foo(
 ↓
 x: 5,
@@ -22472,15 +22517,28 @@ y:6
 ```
 
 ```swift
-}) { _ in
+if x == 5 {
 ↓
-    self.dismiss(animated: false, completion: {
+	print("x is 5")
 ```
 
 ```swift
-KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+if x == 5 {
 ↓
-    guard let img = image else { return }
+
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+↓
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+↓
+  print("x is 5")
 ```
 
 ```swift
@@ -22492,30 +22550,17 @@ struct MyStruct {
 ```swift
 struct MyStruct {
 ↓
-  let x = 5
+    let x = 5
 ```
 
 ```swift
 struct MyStruct {
 ↓
-    let x = 5
+  let x = 5
 ```
 
 ```swift
-if x == 5 {
-↓
-
-    print("x is 5")
-```
-
-```swift
-class Name {
-↓
-    run(5) { x in print(x) }
-}
-```
-
-```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 if x == 5 {
@@ -22536,6 +22581,11 @@ if x == 5 {
 >>>>>>> Fix issues after rebase
 ↓
 	print("x is 5")
+=======
+}) { _ in
+↓
+    self.dismiss(animated: false, completion: {
+>>>>>>> Fix failing tests
 ```
 
 <<<<<<< HEAD

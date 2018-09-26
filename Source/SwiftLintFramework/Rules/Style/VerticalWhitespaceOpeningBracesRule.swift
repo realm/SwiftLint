@@ -84,8 +84,8 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
         name: "Vertical Whitespace after Opening Braces",
         description: "Don't include vertical whitespace (empty line) after opening braces.",
         kind: .style,
-        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
-        triggeringExamples: Array(Set(violatingToValidExamples.keys)),
+        nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
+        triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.cleanedKeysDict()
     )
 

@@ -468,6 +468,12 @@ class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     }
 }
 
+class RandomRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(RandomRule.description)
+    }
+}
+
 class RedundantDiscardableLetRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(RedundantDiscardableLetRule.description)

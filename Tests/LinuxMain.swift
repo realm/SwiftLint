@@ -891,6 +891,12 @@ extension QuickDiscouragedPendingTestRuleTests {
     ]
 }
 
+extension RandomRuleTests {
+    static var allTests: [(String, (RandomRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantDiscardableLetRuleTests {
     static var allTests: [(String, (RedundantDiscardableLetRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1401,6 +1407,7 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
+    testCase(RandomRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
     testCase(RedundantOptionalInitializationRuleTests.allTests),

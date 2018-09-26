@@ -129,8 +129,8 @@ extension VerticalWhitespaceBetweenCasesRule: OptInRule, AutomaticTestableRule {
         name: "Vertical Whitespace Between Cases",
         description: "Include a vertical whitespace (empty line) between cases in switch statements.",
         kind: .style,
-        nonTriggeringExamples: Array(Set(violatingToValidExamples.values)) + nonTriggeringExamples,
-        triggeringExamples: Array(Set(violatingToValidExamples.keys)),
+        nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
+        triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
         corrections: violatingToValidExamples.cleanedKeysDict()
     )
 

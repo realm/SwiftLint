@@ -21732,6 +21732,28 @@ Include a vertical whitespace (empty line) between cases in switch statements.
 ```
 
 ```swift
+    switch x {
+    case .valid:
+        print("multiple ...")
+        print("... lines")
+
+    case .invalid:
+        print("multiple ...")
+        print("... lines")
+    }
+```
+
+```swift
+    switch x {
+    case .valid:
+        print("x is valid")
+
+    case .invalid:
+        print("x is invalid")
+    }
+```
+
+```swift
 switch x {
 
 case 0..<5:
@@ -21776,6 +21798,26 @@ default: print("x is invalid")
     case 0..<5:
         print("x is valid")
 ↓    default:
+        print("x is invalid")
+    }
+```
+
+```swift
+    switch x {
+    case .valid:
+        print("multiple ...")
+        print("... lines")
+↓    case .invalid:
+        print("multiple ...")
+        print("... lines")
+    }
+```
+
+```swift
+    switch x {
+    case .valid:
+        print("x is valid")
+↓    case .invalid:
         print("x is invalid")
     }
 ```

@@ -7,14 +7,13 @@ private extension File {
     }
 }
 
-private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
+private extension Dictionary where Key == String, Value == String {
     func cleanedKeysDict() -> [String: String] {
         var cleanDict = [String: String]()
 
         for (key, value) in self {
-            guard let keyString = key as? String else { continue }
-            let cleanedKey = keyString.replacingOccurrences(of: "↓", with: "")
-            cleanDict[cleanedKey] = value as? String
+            let cleanedKey = key.replacingOccurrences(of: "↓", with: "")
+            cleanDict[cleanedKey] = value
         }
 
         return cleanDict
@@ -77,6 +76,42 @@ public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
 
         default:
             print("x is invalid")
+        }
+    """,
+    """
+        switch x {
+        case .valid:
+            print("x is valid")
+    ↓    case .invalid:
+            print("x is invalid")
+        }
+    """: """
+        switch x {
+        case .valid:
+            print("x is valid")
+
+        case .invalid:
+            print("x is invalid")
+        }
+    """,
+    """
+        switch x {
+        case .valid:
+            print("multiple ...")
+            print("... lines")
+    ↓    case .invalid:
+            print("multiple ...")
+            print("... lines")
+        }
+    """: """
+        switch x {
+        case .valid:
+            print("multiple ...")
+            print("... lines")
+
+        case .invalid:
+            print("multiple ...")
+            print("... lines")
         }
     """
     ]

@@ -20911,22 +20911,6 @@ class ViewController: UIViewController {
 }
 ```
 
-```swift
-        )
-}
-
-    }
-}
-```
-
-```swift
-foo(
-x: 5,
-y:6
-
-)
-```
-
 </details>
 
 
@@ -22081,9 +22065,9 @@ Include a single empty line between switch cases.
 ## Vertical Whitespace before Closing Braces
 >>>>>>> Fix copy & paste issue
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`vertical_whitespace_closing_braces` | Disabled | Yes | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_closing_braces` | Disabled | Yes | style | No | 3.0.0 
 
 Don't include vertical whitespace (empty line) before closing braces.
 >>>>>>> Implement validate, correct & add rules to lists
@@ -22161,6 +22145,7 @@ default:
 ```
 
 ```swift
+<<<<<<< HEAD
     print("x is 5")
 }
 <<<<<<< HEAD
@@ -22170,6 +22155,8 @@ default:
 ```
 
 ```swift
+=======
+>>>>>>> Fix issues after rebase
 class Name {
     run(5) { x in print(x) }
 >>>>>>> Point to exact location of violation + update tests
@@ -22193,6 +22180,11 @@ default: print("x is invalid")
 }
     }
 >>>>>>> Point to exact location of violation + update tests
+}
+```
+
+```swift
+    print("x is 5")
 }
 ```
 
@@ -22226,11 +22218,19 @@ y:6
 <summary>Triggering Examples</summary>
 
 ```swift
-foo(
-x: 5,
-y:6
+[
+1,
+2,
+3
 ↓
-)
+]
+```
+
+```swift
+    print("x is 5")
+↓
+
+}
 ```
 
 ```swift
@@ -22243,13 +22243,21 @@ y:6
 
 ```swift
     print("x is 5")
-↓    
+↓
 }
 ```
 
 ```swift
-    print("x is 5")
+foo(
+x: 5,
+y:6
 ↓
+)
+```
+
+```swift
+    print("x is 5")
+↓    
 }
 ```
 
@@ -22260,34 +22268,15 @@ class Name {
 }
 ```
 
-<<<<<<< HEAD
-=======
-```swift
-    print("x is 5")
-↓
-
-}
-```
-
-```swift
-[
-1,
-2,
-3
-↓
-]
-```
-
->>>>>>> Point to exact location of violation + update tests
 </details>
 
 
 
 ## Vertical Whitespace after Opening Braces
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`vertical_whitespace_opening_braces` | Disabled | Yes | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_opening_braces` | Disabled | Yes | style | No | 3.0.0 
 
 Don't include vertical whitespace (empty line) after opening braces.
 
@@ -22297,15 +22286,8 @@ Don't include vertical whitespace (empty line) after opening braces.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-struct MyStruct {
-  let x = 5
-```
-
-```swift
-class X {
-    struct Y {
-    class Z {
-
+KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+    guard let img = image else { return }
 ```
 
 ```swift
@@ -22319,23 +22301,10 @@ struct MyStruct {
 ```
 
 ```swift
-foo(
-x: 5,
-y:6
-)
-```
+class X {
+    struct Y {
+    class Z {
 
-```swift
-if x == 5 {
-  print("x is 5")
-```
-
-```swift
-[
-1,
-2,
-3
-]
 ```
 
 ```swift
@@ -22349,8 +22318,25 @@ if x == 5 {
 ```
 
 ```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+```swift
 }) { _ in
     self.dismiss(animated: false, completion: {
+```
+
+```swift
+if x == 5 {
+  print("x is 5")
+```
+
+```swift
+struct MyStruct {
+  let x = 5
 ```
 
 ```swift
@@ -22360,6 +22346,7 @@ class Name {
 ```
 
 ```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 if x == 5 {
 	print("x is 5")
@@ -22375,6 +22362,13 @@ y:6
 KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
     guard let img = image else { return }
 >>>>>>> Add more violating examples, improve pattern to catch more cases
+=======
+[
+1,
+2,
+3
+]
+>>>>>>> Fix issues after rebase
 ```
 
 ```swift
@@ -22404,6 +22398,7 @@ KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: n
 <summary>Triggering Examples</summary>
 
 ```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
     switch x {
     case .valid:
@@ -22438,55 +22433,17 @@ struct MyStruct {
 ```
 
 ```swift
-if x == 5 {
-↓
-	print("x is 5")
-```
-
-```swift
+=======
+>>>>>>> Fix issues after rebase
 if x == 5 {
 ↓
     print("x is 5")
-```
-
-```swift
-KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
-↓
-    guard let img = image else { return }
-```
-
-```swift
-}) { _ in
-↓
-    self.dismiss(animated: false, completion: {
 ```
 
 ```swift
 if x == 5 {
 ↓
   print("x is 5")
-```
-
-```swift
-foo(
-↓
-x: 5,
-y:6
-)
-```
-
-```swift
-class Name {
-↓
-    run(5) { x in print(x) }
-}
-```
-
-```swift
-if x == 5 {
-↓
-
-    print("x is 5")
 ```
 
 ```swift
@@ -22507,12 +22464,59 @@ class X {
 ```
 
 ```swift
+foo(
+↓
+x: 5,
+y:6
+)
+```
+
+```swift
+}) { _ in
+↓
+    self.dismiss(animated: false, completion: {
+```
+
+```swift
+KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+↓
+    guard let img = image else { return }
+```
+
+```swift
+struct MyStruct {
+↓
+	let x = 5
+```
+
+```swift
 struct MyStruct {
 ↓
   let x = 5
 ```
 
 ```swift
+struct MyStruct {
+↓
+    let x = 5
+```
+
+```swift
+if x == 5 {
+↓
+
+    print("x is 5")
+```
+
+```swift
+class Name {
+↓
+    run(5) { x in print(x) }
+}
+```
+
+```swift
+<<<<<<< HEAD
 <<<<<<< HEAD
 if x == 5 {
 ↓
@@ -22527,8 +22531,11 @@ if x == 5 {
 =======
 >>>>>>> Add more violating examples, improve pattern to catch more cases
 struct MyStruct {
+=======
+if x == 5 {
+>>>>>>> Fix issues after rebase
 ↓
-	let x = 5
+	print("x is 5")
 ```
 
 <<<<<<< HEAD

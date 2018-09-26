@@ -217,6 +217,20 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   `compiler_protocol_init` rule.  
   [Timofey Solonin](https://github.com/biboran)
   [#2422](https://github.com/realm/SwiftLint/issues/2422)
+* Add new opt-in rule `multiline_arguments_brackets` to warn against multiline
+  function call arguments with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+
+* Add new opt-in rule `multiline_literal_brackets` to warn against multiline
+  literal arrays & dictionaries with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+
+* Add new opt-in rule `multiline_parameters_brackets` to warn against multiline
+  function definition parameters with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
 
 #### Bug Fixes
 
@@ -675,20 +689,7 @@ The next release will require Swift 4.0 or higher to build.
 
 #### Enhancements
 
-* Add new opt-in rule `multiline_arguments_brackets` to warn against multiline
-  function call arguments with surrounding brackets without newline.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2306](https://github.com/realm/SwiftLint/issues/2306)
-  
-* Add new opt-in rule `multiline_literal_brackets` to warn against multiline
-  literal arrays & dictionaries with surrounding brackets without newline.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2306](https://github.com/realm/SwiftLint/issues/2306)
-  
-* Add new opt-in rule `multiline_parameters_brackets` to warn against multiline
-  function definition parameters with surrounding brackets without newline.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+* None.
 
 #### Bug Fixes
 

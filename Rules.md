@@ -6296,117 +6296,6 @@ func foo() {
 
 ## File Header
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`file_header` | Disabled | No | style | 3.0.0 
-
-Header comments should be consistent with project patterns. The SWIFTLINT_CURRENT_FILENAME placeholder can optionally be used in the required and forbidden patterns. It will be replaced by the real file name.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-let foo = "Copyright"
-```
-
-```swift
-let foo = 2 // Copyright
-```
-
-```swift
-let foo = 2
- // Copyright
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-// ↓Copyright
-
-```
-
-```swift
-//
-// ↓Copyright
-```
-
-```swift
-//
-//  FileHeaderRule.swift
-//  SwiftLint
-//
-//  Created by Marcelo Fabri on 27/11/16.
-//  ↓Copyright © 2016 Realm. All rights reserved.
-//
-```
-
-</details>
-
-
-
-## File Line Length
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`file_length` | Enabled | No | metrics | 3.0.0 
-
-Files should not span too many lines.
-
-### Examples
-
-<<<<<<< HEAD
-    // Life-Cycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view1.setNeedsLayout()
-        view1.layoutIfNeeded()
-        hasLayoutedView1 = true
-    }
-}
-```
-
-```swift
-class TestViewController: UIViewController {
-    // MARK: Other Methods
-    func goToNextVc() { /* TODO */ }
-
-    // IBActions
-    @IBAction func goNextButtonPressed() {
-        goToNextVc()
-        delegate?.didPressTrackedButton()
-    }
-}
-```
-
-```swift
-class TestViewController: UIViewController {
-    // Subscripts
-    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
-        get {
-            return "This is just a test"
-        }
-
-        set {
-            log.warning("Just a test", newValue)
-        }
-    }
-
-    // MARK: Other Methods
-    func goToNextVc() { /* TODO */ }
-}
-```
-
-</details>
-
-
-
-## File Header
-
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
 `file_header` | Disabled | No | style | No | 3.0.0 
@@ -7706,6 +7595,230 @@ File name should match a type or extension declared in the file (if any).
 
 
 
+## File Types Order
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`file_types_order` | Disabled | No | style | No | 3.0.0 
+
+Specifies how the types within a file should be ordered.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+
+// Main Type
+class TestViewController: UIViewController {
+    // Type Aliases
+    typealias CompletionHandler = ((TestEnum) -> Void)
+
+    // Subtypes
+    class TestClass {
+        // 10 lines
+    }
+
+    struct TestStruct {
+        // 3 lines
+    }
+
+<<<<<<< HEAD
+```swift
+realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
+```
+
+```swift
+if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+=======
+    enum TestEnum {
+        // 5 lines
+    }
+>>>>>>> Fix issues after rebase
+
+    // Stored Type Properties
+    static let cellIdentifier: String = "AmazingCell"
+
+    // Stored Instance Properties
+    var shouldLayoutView1: Bool!
+    weak var delegate: TestViewControllerDelegate?
+    private var hasLayoutedView1: Bool = false
+    private var hasLayoutedView2: Bool = false
+
+    // Computed Instance Properties
+    private var hasAnyLayoutedView: Bool {
+         return hasLayoutedView1 || hasLayoutedView2
+    }
+
+    // IBOutlets
+    @IBOutlet private var view1: UIView!
+    @IBOutlet private var view2: UIView!
+
+    // Initializers
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // Type Methods
+    static func makeViewController() -> TestViewController {
+        // some code
+    }
+
+    // Life-Cycle Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view1.setNeedsLayout()
+        view1.layoutIfNeeded()
+        hasLayoutedView1 = true
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        view2.setNeedsLayout()
+        view2.layoutIfNeeded()
+        hasLayoutedView2 = true
+    }
+
+    // IBActions
+    @IBAction func goNextButtonPressed() {
+        goToNextVc()
+        delegate?.didPressTrackedButton()
+    }
+
+    @objc
+    func goToRandomVcButtonPressed() {
+        goToRandomVc()
+    }
+
+    // MARK: Other Methods
+    func goToNextVc() { /* TODO */ }
+
+    func goToInfoVc() { /* TODO */ }
+
+    func goToRandomVc() {
+        let viewCtrl = getRandomVc()
+        present(viewCtrl, animated: true)
+    }
+
+    private func getRandomVc() -> UIViewController { return UIViewController() }
+
+    // Subscripts
+    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
+        get {
+            return "This is just a test"
+        }
+
+        set {
+            log.warning("Just a test", newValue)
+        }
+    }
+}
+
+// Extensions
+extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓class TestViewController: UIViewController {}
+
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+```
+
+```swift
+// Extensions
+↓extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+
+class TestViewController: UIViewController {}
+```
+
+```swift
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+
+↓class TestViewController: UIViewController {}
+
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+```
+
+```swift
+// Supporting Types
+protocol TestViewControllerDelegate {
+    func didPressTrackedButton()
+}
+
+// Extensions
+↓extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+
+class TestViewController: UIViewController {}
+
+// Extensions
+extension TestViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
+    }
+}
+```
+
+</details>
+
+
+
 ## First Where
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -7741,14 +7854,6 @@ match(pattern: pattern).filter { $0.first == .identifier }
 
 ```swift
 collection.filter("stringCol = '3'").first
-```
-
-```swift
-realm?.objects(User.self).filter(NSPredicate(format: "email ==[c] %@", email)).first
-```
-
-```swift
-if let pause = timeTracker.pauses.filter("beginDate < %@", beginDate).first { print(pause) }
 ```
 
 </details>
@@ -8103,7 +8208,6 @@ Functions bodies should not span too many lines.
 
 
 
-<<<<<<< HEAD
 ## Function Default Parameter at End
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -8111,15 +8215,6 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `function_default_parameter_at_end` | Disabled | No | idiomatic | No | 3.0.0 
 
 Prefer to locate parameters with defaults toward the end of the parameter list.
-=======
-## File Types Order
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`file_types_order` | Disabled | No | style | 3.0.0 
-
-Specifies how the types within a file should be ordered.
->>>>>>> Split new rule up into two separate rules
 
 ### Examples
 
@@ -8127,7 +8222,6 @@ Specifies how the types within a file should be ordered.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-<<<<<<< HEAD
 func foo(baz: String, bar: Int = 0) {}
 ```
 
@@ -8165,32 +8259,11 @@ func foo(a: Int, b: CGFloat = 0) {
   let block = { (error: Error?) in }
 }
 ```
-=======
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
 
-// Main Type
-class TestViewController: UIViewController {
-    // Type Aliases
-    typealias CompletionHandler = ((TestEnum) -> Void)
+</details>
+<details>
+<summary>Triggering Examples</summary>
 
-    // Subtypes
-    class TestClass {
-        // 10 lines
-    }
-
-    struct TestStruct {
-        // 3 lines
-    }
->>>>>>> Split new rule up into two separate rules
-
-    enum TestEnum {
-        // 5 lines
-    }
-
-<<<<<<< HEAD
 ```swift
 ↓func foo(bar: Int = 0, baz: String) {}
 ```
@@ -8274,81 +8347,11 @@ struct Foo {
 init(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}
 ↓func bar(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int) {}}
 ```
-=======
-    // Stored Type Properties
-    static let cellIdentifier: String = "AmazingCell"
 
-    // Stored Instance Properties
-    var shouldLayoutView1: Bool!
-    weak var delegate: TestViewControllerDelegate?
-    private var hasLayoutedView1: Bool = false
-    private var hasLayoutedView2: Bool = false
+</details>
 
-    // Computed Instance Properties
-    private var hasAnyLayoutedView: Bool {
-         return hasLayoutedView1 || hasLayoutedView2
-    }
 
-    // IBOutlets
-    @IBOutlet private var view1: UIView!
-    @IBOutlet private var view2: UIView!
 
-    // Initializers
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // Type Methods
-    static func makeViewController() -> TestViewController {
-        // some code
-    }
-
-    // Life-Cycle Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        view1.setNeedsLayout()
-        view1.layoutIfNeeded()
-        hasLayoutedView1 = true
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        view2.setNeedsLayout()
-        view2.layoutIfNeeded()
-        hasLayoutedView2 = true
-    }
-
-    // IBActions
-    @IBAction func goNextButtonPressed() {
-        goToNextVc()
-        delegate?.didPressTrackedButton()
-    }
-
-    @objc
-    func goToRandomVcButtonPressed() {
-        goToRandomVc()
-    }
-
-    // MARK: Other Methods
-    func goToNextVc() { /* TODO */ }
->>>>>>> Split new rule up into two separate rules
-
-    func goToInfoVc() { /* TODO */ }
-
-    func goToRandomVc() {
-        let viewCtrl = getRandomVc()
-        present(viewCtrl, animated: true)
-    }
-
-    private func getRandomVc() -> UIViewController { return UIViewController() }
-
-<<<<<<< HEAD
 ## Generic Type Name
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -8356,208 +8359,14 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `generic_type_name` | Enabled | No | idiomatic | No | 3.0.0 
 
 Generic type name should only contain alphanumeric characters, start with an uppercase character and span between 1 and 20 characters in length.
-=======
-    // Subscripts
-    subscript(_ someIndexThatIsNotEvenUsed: Int) -> String {
-        get {
-            return "This is just a test"
-        }
 
-        set {
-            log.warning("Just a test", newValue)
-        }
-    }
-}
+### Examples
 
-// Extensions
-extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
->>>>>>> Split new rule up into two separate rules
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-```
-
-</details>
 <details>
-<summary>Triggering Examples</summary>
+<summary>Non Triggering Examples</summary>
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
 func foo<T>() {}
-=======
-=======
-↓class TestViewController: UIViewController {}
-
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
-```
-
-```swift
-// Extensions
-↓extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-
->>>>>>> Fix issues with file_types_order rule
-class TestViewController: UIViewController {}
-```
-
-```swift
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
-
-↓class TestViewController: UIViewController {}
-
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
-```
-
-```swift
-// Supporting Types
-protocol TestViewControllerDelegate {
-    func didPressTrackedButton()
-}
-
-// Extensions
-↓extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-
-class TestViewController: UIViewController {}
-
-// Extensions
-extension TestViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
-}
-```
-
-</details>
-
-
-
-## First Where
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`first_where` | Disabled | No | performance | 3.0.0 
-
-Prefer using `.first(where:)` over `.filter { }.first` in collections.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
-
-```
-
-```swift
-myList.first(where: { $0 % 2 == 0 })
-
-```
-
-```swift
-match(pattern: pattern).filter { $0.first == .identifier }
-
-```
-
-```swift
-(myList.filter { $0 == 1 }.suffix(2)).first
-
-```
-
-</details>
-<details>
-<summary>Triggering Examples</summary>
-
-```swift
-↓myList.filter { $0 % 2 == 0 }.first
-
-```
-
-```swift
-↓myList.filter({ $0 % 2 == 0 }).first
-
-```
-
-```swift
-↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first
-
-```
-
-```swift
-↓myList.map { $0 + 1 }.filter({ $0 % 2 == 0 }).first?.something()
-
-```
-
-```swift
-↓myList.filter(someFunction).first
-
-```
-
-```swift
-↓myList.filter({ $0 % 2 == 0 })
-.first
-
-```
-
-```swift
-(↓myList.filter { $0 == 1 }).first
-
-```
-
-</details>
-
-
-
-## For Where
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`for_where` | Enabled | No | idiomatic | 3.0.0 
-
-`where` clauses are preferred over a single `if` inside a `for`.
-
-### Examples
-
-<details>
-<summary>Non Triggering Examples</summary>
-
-```swift
-for user in users where user.id == 1 { }
->>>>>>> Split new rule up into two separate rules
 
 ```
 
@@ -22148,9 +21957,9 @@ let abc = 0
 
 ## Type Contents Order
 
-Identifier | Enabled by default | Supports autocorrection | Kind | Minimum Swift Compiler Version
---- | --- | --- | --- | ---
-`type_contents_order` | Disabled | No | style | 3.0.0 
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`type_contents_order` | Disabled | No | style | No | 3.0.0 
 
 Specifies the order of subtypes, properties, methods & more within a type.
 

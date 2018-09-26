@@ -56,7 +56,7 @@ class TypeContentsOrderRuleTests: XCTestCase {
                 var shouldLayoutView1: Bool!
             }
             """,
-                """
+            """
             class TestViewController: UIViewController {
                 // Computed Instance Properties
                 private ↓var hasAnyLayoutedView: Bool {

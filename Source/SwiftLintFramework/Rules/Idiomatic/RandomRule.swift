@@ -60,7 +60,6 @@ public struct RandomRule: ASTRule, OptInRule, ConfigurationProviderRule, Automat
         dictionary: [String: SourceKitRepresentable]
     ) -> [NSRange] {
 
-        // TODO: may be wrong type
         guard kind == .functionFree else { return [] }
 
         return dictionary.elements.compactMap { subDict -> NSRange? in

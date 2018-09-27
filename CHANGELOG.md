@@ -95,6 +95,10 @@
   (i.e. `closure_end_indentation`).  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
+  
+* Fix false positive on file_name rule with specific patterns.  
+  [Dschee](https://github.com/Dschee)
+  [#2417](https://github.com/realm/SwiftLint/issues/2417)
 
 ## 0.27.0: Heavy Duty
 

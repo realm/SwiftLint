@@ -58,7 +58,9 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
         }
 
         let contentAfterName = file.contents.bridge().substring(from: afterNameRange.location)
-        let initCallRegex = regex("^\\s*=\\s*\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?\\(")
+        let initCallRegex = regex(
+            "^\\s*=\\s*(?:try[!?]?\\s+)?\\[?\\p{Lu}[^\\(\\s<]*(?:<[^\\>]*>)?(?::\\s*[^\\(\\n]+)?\\]?\\("
+        )
 
         return initCallRegex.firstMatch(in: contentAfterName, options: [], range: contentAfterName.fullNSRange) != nil
     }

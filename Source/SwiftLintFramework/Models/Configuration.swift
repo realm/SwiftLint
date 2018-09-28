@@ -52,12 +52,19 @@ public struct Configuration: Hashable {
                  ruleList: RuleList = masterRuleList,
                  configuredRules: [Rule]? = nil,
                  swiftlintVersion: String? = nil,
+                 swiftlintVersionFailable: Bool? = nil,
                  cachePath: String? = nil,
                  indentation: IndentationStyle = .default) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
-            queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
-                "configuration specified version \(pinnedVersion).")
+            let message = "Currently running SwiftLint \(Version.current.value) but " +
+                "configuration specified version \(pinnedVersion)."
+
+            if swiftlintVersionFailable ?? false {
+                queuedFatalError(message)
+            } else {
+                queuedPrintError(message)
+            }
         }
 
         let configuredRules = configuredRules

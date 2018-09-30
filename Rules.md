@@ -14554,7 +14554,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `random` | Disabled | No | lint | No | 4.2.0 
 
-Prefer using `type.random` over C-based functions.
+Prefer using `type.random(in:)` over C-based functions.
 
 ### Examples
 

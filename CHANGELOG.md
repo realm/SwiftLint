@@ -76,7 +76,7 @@
   [#2395](https://github.com/realm/SwiftLint/issues/2395)
 
 * Specify what type of compiler protocol initializer violated the
-  `compiler_protocol_init` rule.
+  `compiler_protocol_init` rule.  
   [Timofey Solonin](https://github.com/biboran)
   [#2422](https://github.com/realm/SwiftLint/issues/2422)
 

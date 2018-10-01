@@ -116,7 +116,8 @@ extension CommandTests {
 
 extension CompilerProtocolInitRuleTests {
     static var allTests: [(String, (CompilerProtocolInitRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testViolationMessageForExpressibleByIntegerLiteral", testViolationMessageForExpressibleByIntegerLiteral)
     ]
 }
 

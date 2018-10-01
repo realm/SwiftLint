@@ -2,20 +2,19 @@
 import XCTest
 
 class CompilerProtocolInitRuleTests: XCTestCase {
-    
     private let ruleID = CompilerProtocolInitRule.description.identifier
-    
-    func testDefaultConfiguration() {
+
+    func testWithDefaultConfiguration() {
         verifyRule(CompilerProtocolInitRule.description)
     }
-    
+
     func testViolationMessageForExpressibleByIntegerLiteral() {
         guard let config = makeConfig(nil, ruleID) else {
             XCTFail("Failed to create configuration")
             return
         }
         let allViolations = violations("let a = NSNumber(integerLiteral: 1)", config: config)
-        
+
         let compilerProtocolInitViolation = allViolations.first { $0.ruleDescription.identifier == ruleID }
         if let violation = compilerProtocolInitViolation {
             XCTAssertEqual(

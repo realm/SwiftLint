@@ -6,24 +6,27 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
 
     public init() {}
 
-    public static let description = specificDescription(for: "such as `ExpressibleByArrayLiteral`", isPlural: true)
+    public static let description = RuleDescription(
+        identifier: "compiler_protocol_init",
+        name: "Compiler Protocol Init",
+        description: CompilerProtocolInitRule.violationReason(
+            protocolName: "such as `ExpressibleByArrayLiteral`",
+            isPlural: true
+        ),
+        kind: .lint,
+        nonTriggeringExamples: [
+            "let set: Set<Int> = [1, 2]\n",
+            "let set = Set(array)\n"
+        ],
+        triggeringExamples: [
+            "let set = ↓Set(arrayLiteral: 1, 2)\n",
+            "let set = ↓Set.init(arrayLiteral: 1, 2)\n"
+        ]
+    )
 
-    private static func specificDescription(for violation: String, isPlural: Bool) -> RuleDescription {
-        return RuleDescription(
-            identifier: "compiler_protocol_init",
-            name: "Compiler Protocol Init",
-            description: "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(violation) " +
-                         "shouldn't be called directly.",
-            kind: .lint,
-            nonTriggeringExamples: [
-                "let set: Set<Int> = [1, 2]\n",
-                "let set = Set(array)\n"
-            ],
-            triggeringExamples: [
-                "let set = ↓Set(arrayLiteral: 1, 2)\n",
-                "let set = ↓Set.init(arrayLiteral: 1, 2)\n"
-            ]
-        )
+    private static func violationReason(protocolName: String, isPlural: Bool) -> String {
+        return "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(protocolName) " +
+                "shouldn't be called directly."
     }
 
     public func validate(file: File, kind: SwiftExpressionKind,
@@ -31,9 +34,10 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
             let (violation, range) = $0
             return StyleViolation(
-                ruleDescription: type(of: self).specificDescription(for: violation.protocolName, isPlural: false),
+                ruleDescription: type(of: self).description,
                 severity: configuration.severity,
-                location: Location(file: file, characterOffset: range.location)
+                location: Location(file: file, characterOffset: range.location),
+                reason: type(of: self).violationReason(protocolName: violation.protocolName, isPlural: false)
             )
         }
     }

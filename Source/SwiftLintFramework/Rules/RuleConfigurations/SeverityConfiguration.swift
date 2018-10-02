@@ -19,11 +19,11 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
         self.severity = severity
     }
 
-    fileprivate func severity(fromString string: String) -> ViolationSeverity? {
+    private func severity(fromString string: String) -> ViolationSeverity? {
         return ViolationSeverity(rawValue: string.lowercased())
     }
-}
 
-public func == (lhs: SeverityConfiguration, rhs: SeverityConfiguration) -> Bool {
-    return lhs.severity == rhs.severity
+    public static func == (lhs: SeverityConfiguration, rhs: SeverityConfiguration) -> Bool {
+        return lhs.severity == rhs.severity
+    }
 }

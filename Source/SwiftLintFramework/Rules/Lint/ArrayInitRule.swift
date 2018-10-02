@@ -174,8 +174,10 @@ public struct ArrayInitRule: ASTRule, ConfigurationProviderRule, OptInRule, Auto
     }
 }
 
-private func ~= (array: [SyntaxKind], value: [SyntaxKind]) -> Bool {
-    return array == value
+private extension Array where Element == SyntaxKind {
+    static func ~= (array: [SyntaxKind], value: [SyntaxKind]) -> Bool {
+        return array == value
+    }
 }
 
 private extension File {

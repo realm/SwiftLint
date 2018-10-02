@@ -73,9 +73,8 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
         }
     }
 
-}
-
-public func == (lhs: CyclomaticComplexityConfiguration, rhs: CyclomaticComplexityConfiguration) -> Bool {
-    return lhs.length == rhs.length &&
-        lhs.ignoresCaseStatements == rhs.ignoresCaseStatements
+    public static func == (lhs: CyclomaticComplexityConfiguration, rhs: CyclomaticComplexityConfiguration) -> Bool {
+        return lhs.length == rhs.length &&
+            lhs.ignoresCaseStatements == rhs.ignoresCaseStatements
+    }
 }

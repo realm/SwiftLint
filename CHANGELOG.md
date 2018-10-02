@@ -101,6 +101,11 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
 
+* Fix false positive on `empty_count` rule when assesing binary, octal and
+  hexadecimal integer literals.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2423](https://github.com/realm/SwiftLint/issues/2423)
+
 ## 0.27.0: Heavy Duty
 
 #### Breaking

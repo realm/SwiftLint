@@ -4713,6 +4713,21 @@ var count = 0
 ```
 
 ```swift
+[Int]().count == 0xff
+
+```
+
+```swift
+[Int]().count == 0b01
+
+```
+
+```swift
+[Int]().count == 0o07
+
+```
+
+```swift
 discount == 0
 
 ```
@@ -4738,6 +4753,26 @@ order.discount == 0
 
 ```swift
 [Int]().↓count != 0
+
+```
+
+```swift
+[Int]().↓count == 0x0
+
+```
+
+```swift
+[Int]().↓count == 0x00_00
+
+```
+
+```swift
+[Int]().↓count == 0b00
+
+```
+
+```swift
+[Int]().↓count == 0o00
 
 ```
 

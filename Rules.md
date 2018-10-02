@@ -4722,6 +4722,21 @@ order.discount == 0
 
 ```
 
+```swift
+[Int]().count == 0xff
+
+```
+
+```swift
+[Int]().count == 0b01
+
+```
+
+```swift
+[Int]().count == 0o07
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -4738,6 +4753,26 @@ order.discount == 0
 
 ```swift
 [Int]().↓count != 0
+
+```
+
+```swift
+[Int]().↓count == 0x0
+
+```
+
+```swift
+[Int]().↓count == 0x00_00
+
+```
+
+```swift
+[Int]().↓count == 0b00
+
+```
+
+```swift
+[Int]().↓count == 0o00
 
 ```
 

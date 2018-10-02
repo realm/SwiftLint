@@ -4713,16 +4713,6 @@ var count = 0
 ```
 
 ```swift
-discount == 0
-
-```
-
-```swift
-order.discount == 0
-
-```
-
-```swift
 [Int]().count == 0xff
 
 ```
@@ -4734,6 +4724,16 @@ order.discount == 0
 
 ```swift
 [Int]().count == 0o07
+
+```
+
+```swift
+discount == 0
+
+```
+
+```swift
+order.discount == 0
 
 ```
 

@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -933,6 +933,12 @@ extension RedundantVoidReturnRuleTests {
     ]
 }
 
+extension RedundantXCTAssertParameterRuleTests {
+    static var allTests: [(String, (RedundantXCTAssertParameterRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RegionTests {
     static var allTests: [(String, (RegionTests) -> () throws -> Void)] = [
         ("testNoRegionsInEmptyFile", testNoRegionsInEmptyFile),
@@ -1408,6 +1414,7 @@ XCTMain([
     testCase(RedundantStringEnumValueRuleTests.allTests),
     testCase(RedundantTypeAnnotationRuleTests.allTests),
     testCase(RedundantVoidReturnRuleTests.allTests),
+    testCase(RedundantXCTAssertParameterRuleTests.allTests),
     testCase(RegionTests.allTests),
     testCase(ReporterTests.allTests),
     testCase(RequiredEnumCaseRuleTestCase.allTests),

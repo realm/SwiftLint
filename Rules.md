@@ -9987,7 +9987,7 @@ rect1.intersects(rect2)
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`legacy_random` | Disabled | No | lint | No | 4.2.0 
+`legacy_random` | Disabled | No | idiomatic | No | 4.2.0 
 
 Prefer using `type.random(in:)` over legacy functions.
 

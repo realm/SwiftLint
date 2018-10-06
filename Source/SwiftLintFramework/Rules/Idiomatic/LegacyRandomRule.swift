@@ -11,7 +11,7 @@ public struct LegacyRandomRule: OptInRule, ConfigurationProviderRule, AutomaticT
         identifier: "legacy_random",
         name: "Legacy Random",
         description: "Prefer using `type.random(in:)` over legacy functions.",
-        kind: .lint,
+        kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             "Int.random(in: 0..<10)\n",

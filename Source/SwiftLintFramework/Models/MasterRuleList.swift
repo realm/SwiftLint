@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -112,6 +112,7 @@ public let masterRuleList = RuleList(rules: [
     RedundantStringEnumValueRule.self,
     RedundantTypeAnnotationRule.self,
     RedundantVoidReturnRule.self,
+    RedundantXCTAssertParameterRule.self,
     RequiredEnumCaseRule.self,
     ReturnArrowWhitespaceRule.self,
     ShorthandOperatorRule.self,

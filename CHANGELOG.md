@@ -36,6 +36,10 @@
   `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Add `redundant_xctassert_parameter` opt-in rule to encourage the use
+  of XCTAssertTrue/False/Nil().  
+  [Josh Kaplan](https://github.com/yhkaplan)
+
 * Add `closure_body_length` opt-in rule to enforce the maximum number
   of lines a closure should have. Requires Swift 4.2.  
   [Ornithologist Coder](https://github.com/ornithocoder)

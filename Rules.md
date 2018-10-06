@@ -111,6 +111,7 @@
 * [Redundant String Enum Value](#redundant-string-enum-value)
 * [Redundant Type Annotation](#redundant-type-annotation)
 * [Redundant Void Return](#redundant-void-return)
+* [Redundant XCTAssert Parameter](#redundant-xctassert-parameter)
 * [Required Enum Case](#required-enum-case)
 * [Returning Whitespace](#returning-whitespace)
 * [Shorthand Operator](#shorthand-operator)
@@ -15065,6 +15066,113 @@ func foo()↓ -> () {}
 protocol Foo {
  func foo()↓ -> ()
 }
+
+```
+
+</details>
+
+
+
+## Redundant XCTAssert Parameter
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`redundant_xctassert_parameter` | Disabled | No | idiomatic | No | 3.0.0 
+
+XCTAssertNil/True/False() are preferred over using nil, true, or false as parameters.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+XCTAssertEqual(tested, expected)
+
+```
+
+```swift
+XCTAssertTrue(tested)
+
+```
+
+```swift
+XCTAssertFalse(tested)
+
+```
+
+```swift
+XCTAssertNil(tested)
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓XCTAssertEqual(tested, nil)
+
+```
+
+```swift
+↓XCTAssertEqual(tested, true)
+
+```
+
+```swift
+↓XCTAssertEqual(tested, false)
+
+```
+
+```swift
+↓XCTAssertEqual(nil, tested)
+
+```
+
+```swift
+↓XCTAssertEqual(true, tested)
+
+```
+
+```swift
+↓XCTAssertEqual(false, tested)
+
+```
+
+```swift
+↓XCTAssertEqual(reallyLongObjectName.parameter.toBeTested,
+ nil)
+
+```
+
+```swift
+↓XCTAssertEqual(reallyLongObjectName.parameter.toBeTested,
+ true)
+
+```
+
+```swift
+↓XCTAssertEqual(reallyLongObjectName.parameter.toBeTested,
+ false)
+
+```
+
+```swift
+↓XCTAssertEqual(nil,
+ reallyLongObjectName.parameter.toBeTested)
+
+```
+
+```swift
+↓XCTAssertEqual(true,
+ reallyLongObjectName.parameter.toBeTested)
+
+```
+
+```swift
+↓XCTAssertEqual(false,
+ reallyLongObjectName.parameter.toBeTested)
 
 ```
 

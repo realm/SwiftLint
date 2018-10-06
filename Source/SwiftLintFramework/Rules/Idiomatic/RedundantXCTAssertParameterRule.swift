@@ -81,7 +81,7 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
 
         guard let offset = argument.offset,
             let length = argument.length,
-            let range = string.byteRangeToNSRange(start: offset, length: length) else {
+            let range = string.bridge().byteRangeToNSRange(start: offset, length: length) else {
 
             return false
         }

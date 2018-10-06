@@ -14,6 +14,8 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
         kind: .idiomatic,
         nonTriggeringExamples: [
             "XCTAssertEqual(tested, expected)\n",
+            "XCTAssertEqual(functionWithArgumentSupplied(animated: false), tested)\n",
+            "XCTAssertEqual(tested, functionWithArgumentSupplied(data: nil))\n",
             "XCTAssertTrue(tested)\n",
             "XCTAssertFalse(tested)\n",
             "XCTAssertNil(tested)\n"
@@ -84,7 +86,7 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
             return false
         }
 
-        return regex("(true|false|nil)").firstMatch(in: string, options: [], range: range) != nil
+        return regex("^(true|false|nil)$").firstMatch(in: string, options: [], range: range) != nil
     }
 
 }

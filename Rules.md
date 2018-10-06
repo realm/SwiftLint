@@ -15092,6 +15092,16 @@ XCTAssertEqual(tested, expected)
 ```
 
 ```swift
+XCTAssertEqual(functionWithArgumentSupplied(animated: false), tested)
+
+```
+
+```swift
+XCTAssertEqual(tested, functionWithArgumentSupplied(data: nil))
+
+```
+
+```swift
 XCTAssertTrue(tested)
 
 ```

@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct LegacyRandomRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
@@ -25,14 +25,39 @@ public struct LegacyRandomRule: OptInRule, ConfigurationProviderRule, AutomaticT
         ]
     )
 
-    public func validate(file: File) -> [StyleViolation] {
-        let pattern = "(arc4random|drand48)"
-        let excludingKinds = SyntaxKind.commentAndStringKinds
+    private let legacyRandomFunctions: [String] = [
+        "arc4random",
+        "arc4random_uniform",
+        "drand48"
+    ]
 
-        return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
+    public func validate(
+        file: File,
+        kind: SwiftExpressionKind,
+        dictionary: [String: SourceKitRepresentable]
+    ) -> [StyleViolation] {
+        guard containsViolation(kind: kind, dictionary: dictionary),
+        let offset = dictionary.offset else {
+            return []
+        }
+
+        let location = Location(file: file, byteOffset: offset)
+        return [
             StyleViolation(ruleDescription: type(of: self).description,
                            severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
-        }
+                           location: location)
+        ]
     }
+
+    private func containsViolation(kind: SwiftExpressionKind, dictionary: [String: SourceKitRepresentable]) -> Bool {
+        guard kind == .call,
+            dictionary.offset != nil,
+            let name = dictionary.name,
+            legacyRandomFunctions.contains(name) else {
+            return false
+        }
+
+        return true
+    }
+
 }

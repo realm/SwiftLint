@@ -161,6 +161,7 @@
 		92CCB2D71E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */; };
 		93E0C3CE1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */; };
 		A1A6F3F21EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */; };
+		A3F7685821689AED007B7F46 /* RedundantXCTAssertParameterRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F7685721689AED007B7F46 /* RedundantXCTAssertParameterRule.swift */; };
 		A73469421FB121BA009B57C7 /* CallPairRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73469401FB12149009B57C7 /* CallPairRule.swift */; };
 		B25DCD0B1F7E9F9E0028A199 /* MultilineArgumentsRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */; };
 		B25DCD0C1F7E9FA20028A199 /* MultilineArgumentsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */; };
@@ -579,6 +580,7 @@
 		92CCB2D61E1EEFA300C8E5A3 /* UnusedOptionalBindingRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnusedOptionalBindingRule.swift; sourceTree = "<group>"; };
 		93E0C3CD1D67BD7F007FA25D /* ConditionalReturnsOnNewlineRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConditionalReturnsOnNewlineRule.swift; sourceTree = "<group>"; };
 		A1A6F3F11EE319ED00A9F9E2 /* ObjectLiteralConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectLiteralConfiguration.swift; sourceTree = "<group>"; };
+		A3F7685721689AED007B7F46 /* RedundantXCTAssertParameterRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedundantXCTAssertParameterRule.swift; sourceTree = "<group>"; };
 		A73469401FB12149009B57C7 /* CallPairRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CallPairRule.swift; sourceTree = "<group>"; };
 		B25DCD071F7E9B5F0028A199 /* MultilineArgumentsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRule.swift; sourceTree = "<group>"; };
 		B25DCD091F7E9BB50028A199 /* MultilineArgumentsRuleExamples.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineArgumentsRuleExamples.swift; sourceTree = "<group>"; };
@@ -1134,6 +1136,7 @@
 				181D9E162038343D001F6887 /* UntypedErrorInCatchRule.swift */,
 				D43B04631E0620AB004016AF /* UnusedEnumeratedRule.swift */,
 				626D02961F31CBCC0054788D /* XCTFailMessageRule.swift */,
+				A3F7685721689AED007B7F46 /* RedundantXCTAssertParameterRule.swift */,
 			);
 			path = Idiomatic;
 			sourceTree = "<group>";
@@ -1897,6 +1900,7 @@
 				3BCC04D21C4F56D3006073C3 /* NameConfiguration.swift in Sources */,
 				D4C27BFE1E12D53F00DF713E /* Version.swift in Sources */,
 				B2902A0E1D6681F700BFCCF7 /* PrivateUnitTestConfiguration.swift in Sources */,
+				A3F7685821689AED007B7F46 /* RedundantXCTAssertParameterRule.swift in Sources */,
 				D4DE9133207B4750000FFAA8 /* UnavailableFunctionRule.swift in Sources */,
 				D47A510E1DB29EEB00A4CC21 /* SwitchCaseOnNewlineRule.swift in Sources */,
 				D462021F1E15F52D0027AAD1 /* NumberSeparatorRuleExamples.swift in Sources */,

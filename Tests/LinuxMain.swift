@@ -606,6 +606,12 @@ extension LegacyNSGeometryFunctionsRuleTests {
     ]
 }
 
+extension LegacyRandomRuleTests {
+    static var allTests: [(String, (LegacyRandomRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension LetVarWhitespaceRuleTests {
     static var allTests: [(String, (LetVarWhitespaceRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -887,12 +893,6 @@ extension QuickDiscouragedFocusedTestRuleTests {
 
 extension QuickDiscouragedPendingTestRuleTests {
     static var allTests: [(String, (QuickDiscouragedPendingTestRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
-    ]
-}
-
-extension RandomRuleTests {
-    static var allTests: [(String, (RandomRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1369,6 +1369,7 @@ XCTMain([
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
+    testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
@@ -1407,7 +1408,6 @@ XCTMain([
     testCase(QuickDiscouragedCallRuleTests.allTests),
     testCase(QuickDiscouragedFocusedTestRuleTests.allTests),
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
-    testCase(RandomRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
     testCase(RedundantOptionalInitializationRuleTests.allTests),

@@ -1,16 +1,16 @@
 import Foundation
 import SourceKittenFramework
 
-public struct RandomRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct LegacyRandomRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static var description = RuleDescription(
-        identifier: "random",
-        name: "Random",
-        description: "Prefer using `type.random(in:)` over C-based functions.",
+        identifier: "legacy_random",
+        name: "Legacy Random",
+        description: "Prefer using `type.random(in:)` over legacy functions.",
         kind: .lint,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [

@@ -306,6 +306,12 @@ class LegacyNSGeometryFunctionsRuleTests: XCTestCase {
     }
 }
 
+class LegacyRandomRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyRandomRule.description)
+    }
+}
+
 class LetVarWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
@@ -465,12 +471,6 @@ class QuickDiscouragedFocusedTestRuleTests: XCTestCase {
 class QuickDiscouragedPendingTestRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(QuickDiscouragedPendingTestRule.description)
-    }
-}
-
-class RandomRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(RandomRule.description)
     }
 }
 

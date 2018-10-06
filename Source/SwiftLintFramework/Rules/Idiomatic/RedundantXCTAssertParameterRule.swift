@@ -36,6 +36,12 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
         ]
     )
 
+    private let violatingArguments: Set<String> = [
+        "true",
+        "false",
+        "nil"
+    ]
+
     public func validate(
         file: File,
         kind: SwiftExpressionKind,
@@ -68,8 +74,9 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
                 return false
         }
 
+        let contents = file.contents.bridge()
         for argument in dictionary.enclosedArguments {
-            if containsViolatingArgument(argument, for: file.contents) {
+            if containsViolatingArgument(argument, for: contents) {
                 return true
             }
         }
@@ -77,16 +84,16 @@ public struct RedundantXCTAssertParameterRule: ASTRule, OptInRule, Configuration
         return false
     }
 
-    private func containsViolatingArgument(_ argument: [String: SourceKitRepresentable], for string: String) -> Bool {
-
+    private func containsViolatingArgument(_ argument: [String: SourceKitRepresentable], for string: NSString) -> Bool {
         guard let offset = argument.offset,
             let length = argument.length,
-            let range = string.bridge().byteRangeToNSRange(start: offset, length: length) else {
+            let range = string.byteRangeToNSRange(start: offset, length: length) else {
 
             return false
         }
 
-        return regex("^(true|false|nil)$").firstMatch(in: string, options: [], range: range) != nil
+        let argumentContents = string.substring(with: range)
+        return violatingArguments.contains(argumentContents)
     }
 
 }

@@ -51,7 +51,6 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
 
     private func containsViolation(kind: SwiftExpressionKind, dictionary: [String: SourceKitRepresentable]) -> Bool {
         guard kind == .call,
-            dictionary.offset != nil,
             let name = dictionary.name,
             legacyRandomFunctions.contains(name) else {
             return false

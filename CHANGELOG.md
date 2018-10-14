@@ -32,6 +32,10 @@
 
 #### Enhancements
 
+* Add `legacy_random` opt-in rule to encourage the use of `.random(in:)`
+  instead of `arc4random`, `arc4random_uniform`, and `drand48`.  
+  [Joshua Kaplan](https://github.com/yhkaplan)
+  
 * Improve performance of `line_length` and
   `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)

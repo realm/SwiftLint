@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -603,6 +603,12 @@ extension LegacyConstructorRuleTests {
 
 extension LegacyNSGeometryFunctionsRuleTests {
     static var allTests: [(String, (LegacyNSGeometryFunctionsRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
+extension LegacyRandomRuleTests {
+    static var allTests: [(String, (LegacyRandomRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1364,6 +1370,7 @@ XCTMain([
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
+    testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),

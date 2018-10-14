@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -297,6 +297,12 @@ class LegacyConstructorRuleTests: XCTestCase {
 class LegacyNSGeometryFunctionsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LegacyNSGeometryFunctionsRule.description)
+    }
+}
+
+class LegacyRandomRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyRandomRule.description)
     }
 }
 

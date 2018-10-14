@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 public let masterRuleList = RuleList(rules: [
@@ -69,6 +69,7 @@ public let masterRuleList = RuleList(rules: [
     LegacyConstantRule.self,
     LegacyConstructorRule.self,
     LegacyNSGeometryFunctionsRule.self,
+    LegacyRandomRule.self,
     LetVarWhitespaceRule.self,
     LineLengthRule.self,
     LiteralExpressionEndIdentationRule.self,

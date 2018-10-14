@@ -25,7 +25,7 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
         ]
     )
 
-    private let legacyRandomFunctions: [String] = [
+    private let legacyRandomFunctions: Set<String> = [
         "arc4random",
         "arc4random_uniform",
         "drand48"

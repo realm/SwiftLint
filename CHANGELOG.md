@@ -32,7 +32,7 @@
 
 #### Enhancements
 
-* Add `random` opt-in rule to encourage the use of `.random(in:)`
+* Add `legacy_random` opt-in rule to encourage the use of `.random(in:)`
   instead of `arc4random`, `arc4random_uniform`, and `drand48`.  
   [Joshua Kaplan](https://github.com/yhkaplan)
   

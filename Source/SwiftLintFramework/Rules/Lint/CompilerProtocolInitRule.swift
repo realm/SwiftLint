@@ -1,7 +1,7 @@
 import Foundation
 import SourceKittenFramework
 
-public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -9,8 +9,10 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule, Auto
     public static let description = RuleDescription(
         identifier: "compiler_protocol_init",
         name: "Compiler Protocol Init",
-        description: "The initializers declared in compiler protocols such as `ExpressibleByArrayLiteral` " +
-                     "shouldn't be called directly.",
+        description: CompilerProtocolInitRule.violationReason(
+            protocolName: "such as `ExpressibleByArrayLiteral`",
+            isPlural: true
+        ),
         kind: .lint,
         nonTriggeringExamples: [
             "let set: Set<Int> = [1, 2]\n",
@@ -22,17 +24,26 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule, Auto
         ]
     )
 
+    private static func violationReason(protocolName: String, isPlural: Bool) -> String {
+        return "The initializers declared in compiler protocol\(isPlural ? "s" : "") \(protocolName) " +
+                "shouldn't be called directly."
+    }
+
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+            let (violation, range) = $0
+            return StyleViolation(
+                ruleDescription: type(of: self).description,
+                severity: configuration.severity,
+                location: Location(file: file, characterOffset: range.location),
+                reason: type(of: self).violationReason(protocolName: violation.protocolName, isPlural: false)
+            )
         }
     }
 
     private func violationRanges(in file: File, kind: SwiftExpressionKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
+                                 dictionary: [String: SourceKitRepresentable]) -> [(ExpressibleByCompiler, NSRange)] {
         guard kind == .call, let name = dictionary.name else {
             return []
         }
@@ -47,7 +58,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule, Auto
                     continue
             }
 
-            return [range]
+            return [(compilerProtocol, range)]
         }
 
         return []
@@ -55,7 +66,7 @@ public struct CompilerProtocolInitRule: ASTRule, ConfigurationProviderRule, Auto
 }
 
 private struct ExpressibleByCompiler {
-    private let protocolName: String
+    let protocolName: String
     let initCallNames: Set<String>
     private let arguments: [[String]]
 

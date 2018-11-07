@@ -135,7 +135,7 @@ class RuleConfigurationTests: XCTestCase {
     func testSeverityLevelConfigParams() {
         let severityConfig = SeverityLevelsConfiguration(warning: 17, error: 7)
         XCTAssertEqual(severityConfig.params, [RuleParameter(severity: .error, value: 7),
-            RuleParameter(severity: .warning, value: 17)])
+                                               RuleParameter(severity: .warning, value: 17)])
     }
 
     func testSeverityLevelConfigPartialParams() {

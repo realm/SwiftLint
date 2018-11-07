@@ -39,8 +39,8 @@ public struct SeverityLevelsConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
     }
-}
 
-public func == (lhs: SeverityLevelsConfiguration, rhs: SeverityLevelsConfiguration) -> Bool {
-    return lhs.warning == rhs.warning && lhs.error == rhs.error
+    public static func == (lhs: SeverityLevelsConfiguration, rhs: SeverityLevelsConfiguration) -> Bool {
+        return lhs.warning == rhs.warning && lhs.error == rhs.error
+    }
 }

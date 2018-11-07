@@ -5,11 +5,11 @@ public struct Correction: Equatable {
     public var consoleDescription: String {
         return "\(location) Corrected \(ruleDescription.name)"
     }
-}
 
-// MARK: Equatable
+    // MARK: Equatable
 
-public func == (lhs: Correction, rhs: Correction) -> Bool {
-    return lhs.ruleDescription == rhs.ruleDescription &&
-        lhs.location == rhs.location
+    public static func == (lhs: Correction, rhs: Correction) -> Bool {
+        return lhs.ruleDescription == rhs.ruleDescription &&
+            lhs.location == rhs.location
+    }
 }

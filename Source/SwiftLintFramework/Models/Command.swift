@@ -119,14 +119,14 @@ public struct Command: Equatable {
             ]
         }
     }
-}
 
-// MARK: Equatable
+    // MARK: Equatable
 
-public func == (lhs: Command, rhs: Command) -> Bool {
-    return lhs.action == rhs.action &&
-        lhs.ruleIdentifiers == rhs.ruleIdentifiers &&
-        lhs.line == rhs.line &&
-        lhs.character == rhs.character &&
-        lhs.modifier == rhs.modifier
+    public static func == (lhs: Command, rhs: Command) -> Bool {
+        return lhs.action == rhs.action &&
+            lhs.ruleIdentifiers == rhs.ruleIdentifiers &&
+            lhs.line == rhs.line &&
+            lhs.character == rhs.character &&
+            lhs.modifier == rhs.modifier
+    }
 }

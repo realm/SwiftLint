@@ -21,10 +21,10 @@ public struct PrefixedConstantRuleConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-}
 
-public func == (lhs: PrefixedConstantRuleConfiguration,
-                rhs: PrefixedConstantRuleConfiguration) -> Bool {
-    return lhs.onlyPrivateMembers == rhs.onlyPrivateMembers &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: PrefixedConstantRuleConfiguration,
+                           rhs: PrefixedConstantRuleConfiguration) -> Bool {
+        return lhs.onlyPrivateMembers == rhs.onlyPrivateMembers &&
+            lhs.severityConfiguration == rhs.severityConfiguration
+    }
 }

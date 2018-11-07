@@ -81,11 +81,11 @@ public struct OverridenSuperCallConfiguration: RuleConfiguration, Equatable {
         names = names.filter { !excluded.contains($0) }
         return names
     }
-}
 
-public func == (lhs: OverridenSuperCallConfiguration,
-                rhs: OverridenSuperCallConfiguration) -> Bool {
-    return lhs.excluded == rhs.excluded &&
-        lhs.included == rhs.included &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: OverridenSuperCallConfiguration,
+                           rhs: OverridenSuperCallConfiguration) -> Bool {
+        return lhs.excluded == rhs.excluded &&
+            lhs.included == rhs.included &&
+            lhs.severityConfiguration == rhs.severityConfiguration
+    }
 }

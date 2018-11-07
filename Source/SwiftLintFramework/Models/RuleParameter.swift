@@ -6,10 +6,10 @@ public struct RuleParameter<T: Equatable>: Equatable {
         self.severity = severity
         self.value = value
     }
-}
 
-// MARK: - Equatable
+    // MARK: - Equatable
 
-public func ==<T> (lhs: RuleParameter<T>, rhs: RuleParameter<T>) -> Bool {
-    return lhs.value == rhs.value && lhs.severity == rhs.severity
+    public static func == <T>(lhs: RuleParameter<T>, rhs: RuleParameter<T>) -> Bool {
+        return lhs.value == rhs.value && lhs.severity == rhs.severity
+    }
 }

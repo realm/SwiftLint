@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 @testable import SwiftLintFrameworkTests
@@ -116,7 +116,8 @@ extension CommandTests {
 
 extension CompilerProtocolInitRuleTests {
     static var allTests: [(String, (CompilerProtocolInitRuleTests) -> () throws -> Void)] = [
-        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration),
+        ("testViolationMessageForExpressibleByIntegerLiteral", testViolationMessageForExpressibleByIntegerLiteral)
     ]
 }
 
@@ -606,6 +607,12 @@ extension LegacyNSGeometryFunctionsRuleTests {
     ]
 }
 
+extension LegacyRandomRuleTests {
+    static var allTests: [(String, (LegacyRandomRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension LetVarWhitespaceRuleTests {
     static var allTests: [(String, (LetVarWhitespaceRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1077,6 +1084,12 @@ extension StatementPositionRuleTests {
     ]
 }
 
+extension StaticOperatorRuleTests {
+    static var allTests: [(String, (StaticOperatorRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension StrictFilePrivateRuleTests {
     static var allTests: [(String, (StrictFilePrivateRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1357,6 +1370,7 @@ XCTMain([
     testCase(LegacyConstantRuleTests.allTests),
     testCase(LegacyConstructorRuleTests.allTests),
     testCase(LegacyNSGeometryFunctionsRuleTests.allTests),
+    testCase(LegacyRandomRuleTests.allTests),
     testCase(LetVarWhitespaceRuleTests.allTests),
     testCase(LineLengthConfigurationTests.allTests),
     testCase(LineLengthRuleTests.allTests),
@@ -1415,6 +1429,7 @@ XCTMain([
     testCase(SortedImportsRuleTests.allTests),
     testCase(SourceKitCrashTests.allTests),
     testCase(StatementPositionRuleTests.allTests),
+    testCase(StaticOperatorRuleTests.allTests),
     testCase(StrictFilePrivateRuleTests.allTests),
     testCase(SwitchCaseAlignmentRuleTests.allTests),
     testCase(SwitchCaseOnNewlineRuleTests.allTests),

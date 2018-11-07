@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
           "branch": null,
-          "revision": "9c1379fdcd58c4f2278aea5e029394ba9a2b8f07",
-          "version": "7.1.3"
+          "revision": "7c61d8e7e830dd37f7161ce2b894be178532163c",
+          "version": "7.3.0"
         }
       },
       {
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
           "branch": null,
-          "revision": "e6efd3d8702fe6668ac43aa882d56f82430c6caf",
-          "version": "0.21.1"
+          "revision": "4be914be6fa49cd30b1e7ef5d32d06c037d8f469",
+          "version": "0.21.2"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/scottrhoyt/SwiftyTextTable.git",
         "state": {
           "branch": null,
-          "revision": "89728970c0a244c43f29c4155a1b1dc20b3c4633",
-          "version": "0.8.0"
+          "revision": "7b8661865f0d9590a4b7c146237fecd99f3d8406",
+          "version": "0.8.2"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/jpsim/Yams.git",
         "state": {
           "branch": null,
-          "revision": "618582e09699b577fa183bab7d88e3ee7d9a1d19",
-          "version": "1.0.0"
+          "revision": "26ab35f50ea891e8edefcc9d975db2f6b67e1d68",
+          "version": "1.0.1"
         }
       }
     ]

@@ -32,6 +32,10 @@
 
 #### Enhancements
 
+* Add `legacy_random` opt-in rule to encourage the use of `.random(in:)`
+  instead of `arc4random`, `arc4random_uniform`, and `drand48`.  
+  [Joshua Kaplan](https://github.com/yhkaplan)
+  
 * Improve performance of `line_length` and
   `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -70,6 +74,16 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2326](https://github.com/realm/SwiftLint/issues/2326)
 
+* Add `static_operator` opt-in rule to enforce that operators are declared as
+  static functions instead of free functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2395](https://github.com/realm/SwiftLint/issues/2395)
+
+* Specify what type of compiler protocol initializer violated the
+  `compiler_protocol_init` rule.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2422](https://github.com/realm/SwiftLint/issues/2422)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  
@@ -90,6 +104,11 @@
   (i.e. `closure_end_indentation`).  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
+
+* Fix false positive on `empty_count` rule when assesing binary, octal and
+  hexadecimal integer literals.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2423](https://github.com/realm/SwiftLint/issues/2423)
 
 ## 0.27.0: Heavy Duty
 

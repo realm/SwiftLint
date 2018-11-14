@@ -8,7 +8,7 @@ SwiftLint hooks into [Clang](http://clang.llvm.org) and
 [AST](http://clang.llvm.org/docs/IntroductionToTheClangAST.html) representation
 of your source files for more accurate results.
 
-![Test Status](https://travis-ci.org/realm/SwiftLint.svg?branch=master)
+[![CircleCI](https://circleci.com/gh/realm/SwiftLint.svg?style=svg)](https://circleci.com/gh/realm/SwiftLint)
 [![codecov.io](https://codecov.io/github/realm/SwiftLint/coverage.svg?branch=master)](https://codecov.io/github/realm/SwiftLint?branch=master)
 
 ![](assets/screenshot.png)

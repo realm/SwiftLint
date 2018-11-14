@@ -142,7 +142,7 @@ class ModifierOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "final"]])
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
     }
 
     func testViolationMessage() {

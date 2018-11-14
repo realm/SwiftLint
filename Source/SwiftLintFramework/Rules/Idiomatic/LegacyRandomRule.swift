@@ -1,4 +1,3 @@
-import Foundation
 import SourceKittenFramework
 
 public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
@@ -58,5 +57,4 @@ public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, A
 
         return true
     }
-
 }

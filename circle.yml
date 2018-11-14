@@ -26,7 +26,7 @@ jobs:
       xcode: "10.1.0"
     steps:
       - checkout
-      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec danger --verbose
 

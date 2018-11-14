@@ -35,7 +35,7 @@
 * Add `legacy_random` opt-in rule to encourage the use of `.random(in:)`
   instead of `arc4random`, `arc4random_uniform`, and `drand48`.  
   [Joshua Kaplan](https://github.com/yhkaplan)
-  
+
 * Improve performance of `line_length` and
   `multiple_closures_with_trailing_closure` rules.  
   [Marcelo Fabri](https://github.com/marcelofabri)
@@ -105,7 +105,7 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
 
-* Fix false positive on `empty_count` rule when assesing binary, octal and
+* Fix false positive on `empty_count` rule when assessing binary, octal and
   hexadecimal integer literals.  
   [Timofey Solonin](https://github.com/biboran)
   [#2423](https://github.com/realm/SwiftLint/issues/2423)

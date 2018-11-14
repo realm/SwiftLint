@@ -68,6 +68,7 @@
 * [Legacy Constant](#legacy-constant)
 * [Legacy Constructor](#legacy-constructor)
 * [Legacy NSGeometry Functions](#legacy-nsgeometry-functions)
+* [Legacy Random](#legacy-random)
 * [Variable Declaration Whitespace](#variable-declaration-whitespace)
 * [Line Length](#line-length)
 * [Literal Expression End Indentation](#literal-expression-end-indentation)
@@ -118,6 +119,7 @@
 * [Min or Max over Sorted First or Last](#min-or-max-over-sorted-first-or-last)
 * [Sorted Imports](#sorted-imports)
 * [Statement Position](#statement-position)
+* [Static Operator](#static-operator)
 * [Strict fileprivate](#strict-fileprivate)
 * [Superfluous Disable Command](#superfluous-disable-command)
 * [Switch and Case Statement Alignment](#switch-and-case-statement-alignment)
@@ -4712,6 +4714,21 @@ var count = 0
 ```
 
 ```swift
+[Int]().count == 0xff
+
+```
+
+```swift
+[Int]().count == 0b01
+
+```
+
+```swift
+[Int]().count == 0o07
+
+```
+
+```swift
 discount == 0
 
 ```
@@ -4737,6 +4754,26 @@ order.discount == 0
 
 ```swift
 [Int]().↓count != 0
+
+```
+
+```swift
+[Int]().↓count == 0x0
+
+```
+
+```swift
+[Int]().↓count == 0x00_00
+
+```
+
+```swift
+[Int]().↓count == 0b00
+
+```
+
+```swift
+[Int]().↓count == 0o00
 
 ```
 
@@ -9975,6 +10012,57 @@ rect1.intersects(rect2)
 
 ```swift
 ↓NSIntersectsRect(rect1, rect2)
+```
+
+</details>
+
+
+
+## Legacy Random
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`legacy_random` | Disabled | No | idiomatic | No | 4.2.0 
+
+Prefer using `type.random(in:)` over legacy functions.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+Int.random(in: 0..<10)
+
+```
+
+```swift
+Double.random(in: 8.6...111.34)
+
+```
+
+```swift
+Float.random(in: 0 ..< 1)
+
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓arc4random(10)
+
+```
+
+```swift
+↓arc4random_uniform(83)
+
+```
+
+```swift
+↓drand48(52)
+
 ```
 
 </details>
@@ -15865,6 +15953,97 @@ catch {
 ```swift
 ↓}
 	  catch {
+```
+
+</details>
+
+
+
+## Static Operator
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`static_operator` | Disabled | No | idiomatic | No | 3.0.0 
+
+Operators should be declared as static functions, not free functions.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+class A: Equatable {
+    static func == (lhs: A, rhs: A) -> Bool {
+        return false
+    }
+```
+
+```swift
+class A<T>: Equatable {
+    static func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
+        return false
+    }
+```
+
+```swift
+public extension Array where Element == Rule {
+    static func == (lhs: Array, rhs: Array) -> Bool {
+        if lhs.count != rhs.count { return false }
+        return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+    }
+}
+```
+
+```swift
+private extension Optional where Wrapped: Comparable {
+    static func < (lhs: Optional, rhs: Optional) -> Bool {
+        switch (lhs, rhs) {
+        case let (lhs?, rhs?):
+            return lhs < rhs
+        case (nil, _?):
+            return true
+        default:
+            return false
+        }
+    }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+↓func == (lhs: A, rhs: A) -> Bool {
+    return false
+}
+```
+
+```swift
+↓func == <T>(lhs: A<T>, rhs: A<T>) -> Bool {
+    return false
+}
+```
+
+```swift
+↓func == (lhs: [Rule], rhs: [Rule]) -> Bool {
+    if lhs.count != rhs.count { return false }
+    return !zip(lhs, rhs).contains { !$0.0.isEqualTo($0.1) }
+}
+```
+
+```swift
+private ↓func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (lhs?, rhs?):
+        return lhs < rhs
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
+}
 ```
 
 </details>

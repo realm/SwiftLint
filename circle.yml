@@ -3,14 +3,14 @@ jobs:
 
   analyze:
     macos:
-      xcode: "9.4.0"
+      xcode: "10.1.0"
     steps:
       - checkout
       - run: make analyze
 
   tsan:
     macos:
-      xcode: "9.4.0"
+      xcode: "10.1.0"
     steps:
       - checkout
       # Pre-cache
@@ -23,10 +23,10 @@ jobs:
   osscheck:
     shell: /bin/bash --login -eo pipefail
     macos:
-      xcode: "9.4.0"
+      xcode: "10.1.0"
     steps:
       - checkout
-      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: bundle exec danger --verbose
 
@@ -44,6 +44,13 @@ jobs:
       - checkout
       - run: swift test --parallel
 
+  swiftpm_4.2:
+    macos:
+      xcode: "10.1.0"
+    steps:
+      - checkout
+      - run: swift test --parallel
+
   xcode_9:
     macos:
       xcode: "9.4.0"
@@ -56,34 +63,23 @@ jobs:
 
   xcode_10:
     macos:
-      xcode: "10.0.0"
+      xcode: "10.1.0"
     steps:
       - checkout
       - run: set -o pipefail && script/cibuild | xcpretty -r junit
       - store_test_results:
           path: build/reports/
 
-  cocoapods_swift_4:
+  cocoapods:
     shell: /bin/bash --login -eo pipefail
     macos:
-      xcode: "9.2.0"
+      xcode: "10.1.0"
     steps:
       - checkout
-      - run: echo "ruby-2.3" > ~/.ruby-version
+      - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
-      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
-
-  cocoapods_swift_4.1:
-    shell: /bin/bash --login -eo pipefail
-    macos:
-      xcode: "9.4.0"
-    steps:
-      - checkout
-      - run: echo "ruby-2.3" > ~/.ruby-version
-      - run: bundle install
-      - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
-      - run: echo "4.0" > .swift-version; bundle exec pod lib lint SwiftLintFramework.podspec
+      - run: bundle exec pod lib lint SwiftLintFramework.podspec
 
   linux_swift_4:
     docker:
@@ -101,7 +97,7 @@ jobs:
 
   linux_swift_4.2:
     docker:
-      - image: norionomura/swift:4220180825a
+      - image: norionomura/swift:42
     steps:
       - checkout
       - run: swift test --parallel
@@ -115,10 +111,10 @@ workflows:
       - osscheck
       - swiftpm_4
       - swiftpm_4.1
+      - swiftpm_4.2
       - xcode_9
       - xcode_10
-      - cocoapods_swift_4
-      - cocoapods_swift_4.1
+      - cocoapods
       - linux_swift_4
       - linux_swift_4.1
       - linux_swift_4.2

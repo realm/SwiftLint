@@ -48,6 +48,7 @@ opt_in_rules:
   - single_test_class
   - sorted_first_last
   - sorted_imports
+  - static_operator
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
   - untyped_error_in_catch

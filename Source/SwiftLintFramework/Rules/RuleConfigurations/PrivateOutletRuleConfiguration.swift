@@ -21,10 +21,10 @@ public struct PrivateOutletRuleConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-}
 
-public func == (lhs: PrivateOutletRuleConfiguration,
-                rhs: PrivateOutletRuleConfiguration) -> Bool {
-    return lhs.allowPrivateSet == rhs.allowPrivateSet &&
-        lhs.severityConfiguration == rhs.severityConfiguration
+    public static func == (lhs: PrivateOutletRuleConfiguration,
+                           rhs: PrivateOutletRuleConfiguration) -> Bool {
+        return lhs.allowPrivateSet == rhs.allowPrivateSet &&
+            lhs.severityConfiguration == rhs.severityConfiguration
+    }
 }

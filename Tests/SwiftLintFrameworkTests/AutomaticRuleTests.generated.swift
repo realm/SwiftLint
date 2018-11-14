@@ -1,4 +1,4 @@
-// Generated using Sourcery 0.14.0 — https://github.com/krzysztofzablocki/Sourcery
+// Generated using Sourcery 0.15.0 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 
 import SwiftLintFramework
@@ -63,12 +63,6 @@ class ClosureSpacingRuleTests: XCTestCase {
 class CommaRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(CommaRule.description)
-    }
-}
-
-class CompilerProtocolInitRuleTests: XCTestCase {
-    func testWithDefaultConfiguration() {
-        verifyRule(CompilerProtocolInitRule.description)
     }
 }
 
@@ -306,6 +300,12 @@ class LegacyNSGeometryFunctionsRuleTests: XCTestCase {
     }
 }
 
+class LegacyRandomRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(LegacyRandomRule.description)
+    }
+}
+
 class LetVarWhitespaceRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(LetVarWhitespaceRule.description)
@@ -537,6 +537,12 @@ class SortedFirstLastRuleTests: XCTestCase {
 class SortedImportsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(SortedImportsRule.description)
+    }
+}
+
+class StaticOperatorRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(StaticOperatorRule.description)
     }
 }
 

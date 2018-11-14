@@ -2,6 +2,24 @@
 
 #### Breaking
 
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* None.
+
+#### Bug Fixes
+
+* None.
+
+## 0.28.0: EcoBoost
+
+#### Breaking
+
 * Completely remove the `--use-tabs` option of the `autocorrect` command that
   was deprecated in 0.24.1. In its place, define an `indentation` key in your
   configuration files.  
@@ -31,6 +49,10 @@
   [JP Simard](https://github.com/jpsim)
 
 #### Enhancements
+
+* Add `legacy_random` opt-in rule to encourage the use of `.random(in:)`
+  instead of `arc4random`, `arc4random_uniform`, and `drand48`.  
+  [Joshua Kaplan](https://github.com/yhkaplan)
 
 * Improve performance of `line_length` and
   `multiple_closures_with_trailing_closure` rules.  
@@ -70,6 +92,16 @@
   [Dalton Claybrook](https://github.com/daltonclaybrook)
   [#2326](https://github.com/realm/SwiftLint/issues/2326)
 
+* Add `static_operator` opt-in rule to enforce that operators are declared as
+  static functions instead of free functions.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2395](https://github.com/realm/SwiftLint/issues/2395)
+
+* Specify what type of compiler protocol initializer violated the
+  `compiler_protocol_init` rule.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2422](https://github.com/realm/SwiftLint/issues/2422)
+
 #### Bug Fixes
 
 * Fix `comma` rule false positives on object literals (for example, images).  
@@ -91,7 +123,12 @@
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
 
-* Only mark custom rules as 'enabled in your config' when custom rules are configured.  
+* Fix false positive on `empty_count` rule when assessing binary, octal and
+  hexadecimal integer literals.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2423](https://github.com/realm/SwiftLint/issues/2423)
+
+* Fix false positive on `custom_rules` when no custom rules are configured.  
   [jhildensperger](https://github.com/jhildensperger)
 
 ## 0.27.0: Heavy Duty

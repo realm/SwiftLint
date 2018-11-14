@@ -39,10 +39,10 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
             customRuleConfigurations.append(ruleConfiguration)
         }
     }
-}
 
-public func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
-    return lhs.customRuleConfigurations == rhs.customRuleConfigurations
+    public static func == (lhs: CustomRulesConfiguration, rhs: CustomRulesConfiguration) -> Bool {
+        return lhs.customRuleConfigurations == rhs.customRuleConfigurations
+    }
 }
 
 // MARK: - CustomRules

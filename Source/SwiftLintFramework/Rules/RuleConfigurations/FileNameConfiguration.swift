@@ -35,11 +35,11 @@ public struct FileNameConfiguration: RuleConfiguration, Equatable {
             self.suffixPattern = suffixPattern
         }
     }
-}
 
-public func == (lhs: FileNameConfiguration, rhs: FileNameConfiguration) -> Bool {
-    return lhs.severity == rhs.severity &&
-        lhs.excluded == rhs.excluded &&
-        lhs.prefixPattern == rhs.prefixPattern &&
-        lhs.suffixPattern == rhs.suffixPattern
+    public static func == (lhs: FileNameConfiguration, rhs: FileNameConfiguration) -> Bool {
+        return lhs.severity == rhs.severity &&
+            lhs.excluded == rhs.excluded &&
+            lhs.prefixPattern == rhs.prefixPattern &&
+            lhs.suffixPattern == rhs.suffixPattern
+    }
 }

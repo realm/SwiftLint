@@ -144,7 +144,7 @@ class ModifierOrderTests: XCTestCase {
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
     }
-    
+
     func testNonSpecifiedModifiersDontInterfier() {
         let descriptionOverride = RuleDescription(
             identifier: "modifier_order",
@@ -197,7 +197,7 @@ class ModifierOrderTests: XCTestCase {
                 """
             ]
         )
-        
+
         verifyRule(descriptionOverride,
                    ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }

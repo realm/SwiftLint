@@ -1,5 +1,7 @@
 ## Master
 
+This is the last release to support building with Swift 4.0 and Swift 4.1.
+
 #### Breaking
 
 * None.

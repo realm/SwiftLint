@@ -130,7 +130,7 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLintFramework.podspec --allow-warnings --swift-version=4.2
+	pod trunk push SwiftLintFramework.podspec --swift-version=4.2
 	pod trunk push SwiftLint.podspec --swift-version=4.2
 
 get_version:

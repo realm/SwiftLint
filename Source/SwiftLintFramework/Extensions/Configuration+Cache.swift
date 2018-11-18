@@ -1,3 +1,4 @@
+import CryptoSwift
 import Foundation
 
 extension Configuration {
@@ -45,7 +46,7 @@ extension Configuration {
         ]
         if let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject),
             let jsonString = String(data: jsonData, encoding: .utf8) {
-            return jsonString
+            return jsonString.md5()
         }
         queuedFatalError("Could not serialize configuration for cache")
     }

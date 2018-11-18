@@ -79,7 +79,7 @@ jobs:
       - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
-      - run: bundle exec pod lib lint SwiftLintFramework.podspec
+      - run: bundle exec pod lib lint --allow-warnings SwiftLintFramework.podspec
 
   linux_swift_4:
     docker:

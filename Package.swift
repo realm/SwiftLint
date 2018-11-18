@@ -11,6 +11,7 @@ let package = Package(
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.15.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.21.2"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "1.0.1"),
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", "0.8.0"..<"0.9.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.2"),
     ],
     targets: [
@@ -25,6 +26,7 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: [
+                "CryptoSwift",
                 "SourceKittenFramework",
                 "Yams",
             ]

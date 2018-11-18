@@ -17,6 +17,7 @@ extension FileManager: LintableFileManager {
             return [absolutePath]
         }
 
+#if os(Linux)
         return enumerator(atPath: absolutePath)?.compactMap { element -> String? in
             if let element = element as? String,
                 element.bridge().isSwiftFile() && (absolutePath + "/" + element).isFile {
@@ -24,6 +25,13 @@ extension FileManager: LintableFileManager {
             }
             return nil
         } ?? []
+#else
+        return subpaths(atPath: absolutePath)?.compactMap { element -> String? in
+            guard element.bridge().isSwiftFile() else { return nil }
+            let absoluteElementPath = absolutePath.bridge().appendingPathComponent(element)
+            return absoluteElementPath.isFile ? absoluteElementPath : nil
+        } ?? []
+#endif
     }
 
     public func modificationDate(forFileAtPath path: String) -> Date? {

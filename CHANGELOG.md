@@ -14,7 +14,12 @@
 
 #### Bug Fixes
 
-* None.
+* Improve the performance of collecting which files to lint by up to 3.5x.  
+  [JP Simard](https://github.com/jpsim)
+
+* Improve the performance of looking up cached lint results by up to 10x for
+  complex configurations.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.28.0: EcoBoost
 

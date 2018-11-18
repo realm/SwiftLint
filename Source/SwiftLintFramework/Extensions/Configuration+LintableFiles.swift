@@ -15,14 +15,15 @@ extension Configuration {
         let pathsForPath = included.isEmpty ? fileManager.filesToLint(inPath: path, rootDirectory: nil) : []
         let excludedPaths = excluded
             .flatMap(Glob.resolveGlob)
-            .flatMap {
-                fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
+            .parallelFlatMap {
+                fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
             }
-        let includedPaths = included.flatMap {
-            fileManager.filesToLint(inPath: $0, rootDirectory: rootPath)
+        let includedPaths = included.parallelFlatMap {
+            fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
         }
         let result = NSMutableOrderedSet(array: pathsForPath + includedPaths)
         result.minusSet(Set(excludedPaths))
+        // swiftlint:disable:next force_cast
         return result.map { $0 as! String }
     }
 }

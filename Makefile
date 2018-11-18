@@ -74,7 +74,7 @@ clean:
 	rm -f "./portable_swiftlint.zip"
 	swift package clean
 
-clean_xcode: clean
+clean_xcode:
 	$(BUILD_TOOL) $(XCODEFLAGS) -configuration Test clean
 
 build:
@@ -83,7 +83,7 @@ build:
 build_with_disable_sandbox:
 	swift build --disable-sandbox $(SWIFT_BUILD_FLAGS)
 
-install: clean build
+install: build
 	install -d "$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(BINARIES_FOLDER)"
 
@@ -91,11 +91,11 @@ uninstall:
 	rm -rf "$(FRAMEWORKS_FOLDER)/SwiftLintFramework.framework"
 	rm -f "$(BINARIES_FOLDER)/swiftlint"
 
-installables: clean build
+installables: build
 	install -d "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(TEMPORARY_FOLDER)$(BINARIES_FOLDER)"
 
-prefix_install: clean build_with_disable_sandbox
+prefix_install: build_with_disable_sandbox
 	install -d "$(PREFIX)/bin/"
 	install "$(SWIFTLINT_EXECUTABLE)" "$(PREFIX)/bin/"
 

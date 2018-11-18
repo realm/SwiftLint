@@ -2,7 +2,8 @@
 
 #### Breaking
 
-* None.
+* SwiftLint now requires Swift 4.2 or higher to build.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Experimental
 

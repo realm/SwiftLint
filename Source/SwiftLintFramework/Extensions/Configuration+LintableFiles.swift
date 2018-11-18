@@ -21,7 +21,13 @@ extension Configuration {
         let includedPaths = included.parallelFlatMap {
             fileManager.filesToLint(inPath: $0, rootDirectory: self.rootPath)
         }
+#if os(Darwin)
         let result = NSMutableOrderedSet(array: pathsForPath + includedPaths)
+#else
+        let allPaths = pathsForPath + includedPaths
+        let result = NSMutableOrderedSet(capacity: allPaths.count)
+        result.addObjects(from: allPaths)
+#endif
         result.minusSet(Set(excludedPaths))
         // swiftlint:disable:next force_cast
         return result.map { $0 as! String }

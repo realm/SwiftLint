@@ -60,7 +60,7 @@ running it.
 ### Compiling from source:
 
 You can also build from source by cloning this project and running
-`git submodule update --init --recursive; make install` (Xcode 9.0 or later).
+`git submodule update --init --recursive; make install` (Xcode 10.0 or later).
 
 ## Usage
 
@@ -207,12 +207,13 @@ environment variable.
 
 Here's a reference of which SwiftLint version to use for a given Swift version.
 
-| Swift version | Last supported SwiftLint release |
-| ------------- | -------------------------------- |
-| Swift 1.x     | SwiftLint 0.1.2                  |
-| Swift 2.x     | SwiftLint 0.18.1                 |
-| Swift 3.x     | Latest                           |
-| Swift 4.x     | Latest                           |
+| Swift version   | Last supported SwiftLint release |
+|:----------------|:---------------------------------|
+| Swift 1.x       | SwiftLint 0.1.2                  |
+| Swift 2.x       | SwiftLint 0.18.1                 |
+| Swift 3.x       | SwiftLint 0.25.1                 |
+| Swift 4.0-4.1.x | SwiftLint 0.28.1                 |
+| Swift 4.2+      | Latest                           |
 
 ## Rules
 

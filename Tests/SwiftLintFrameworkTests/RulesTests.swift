@@ -20,14 +20,4 @@ class RulesTests: XCTestCase {
         verifyRule(TrailingNewlineRule.description, commentDoesntViolate: false,
                    stringDoesntViolate: false)
     }
-
-    // Remove and make UnusedPrivateDeclarationRule conform to AutomaticTestableRule
-    // when CircleCI updates its Xcode 10 image to the GM release.
-    func testUnusedPrivateDeclaration() {
-#if swift(>=4.1.50) && !SWIFT_PACKAGE
-        print("\(#function) is failing with Xcode 10 on CirclCI")
-#else
-        verifyRule(UnusedPrivateDeclarationRule.description)
-#endif
-    }
 }

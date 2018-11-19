@@ -119,7 +119,7 @@ archive:
 release: package archive portable_zip
 
 docker_test:
-	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:40 swift test --parallel
+	docker run -v `pwd`:`pwd` -w `pwd` --name swiftlint --rm norionomura/swift:42 swift test --parallel
 
 docker_htop:
 	docker run -it --rm --pid=container:swiftlint terencewestphal/htop || reset
@@ -130,7 +130,7 @@ display_compilation_time:
 
 publish:
 	brew update && brew bump-formula-pr --tag=$(shell git describe --tags) --revision=$(shell git rev-parse HEAD) swiftlint
-	pod trunk push SwiftLintFramework.podspec --allow-warnings --swift-version=4.2
+	pod trunk push SwiftLintFramework.podspec --swift-version=4.2
 	pod trunk push SwiftLint.podspec --swift-version=4.2
 
 get_version:

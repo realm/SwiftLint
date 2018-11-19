@@ -82,11 +82,7 @@ extension String {
     internal var isFile: Bool {
         var isDirectoryObjC: ObjCBool = false
         if FileManager.default.fileExists(atPath: self, isDirectory: &isDirectoryObjC) {
-#if os(Linux) && !swift(>=4.1)
-            return !isDirectoryObjC
-#else
             return !isDirectoryObjC.boolValue
-#endif
         }
         return false
     }

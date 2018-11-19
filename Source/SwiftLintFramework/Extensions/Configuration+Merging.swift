@@ -45,14 +45,7 @@ extension Configuration {
             return nil
         }
 
-        let isDirectory: Bool
-#if os(Linux) && !swift(>=4.1)
-        isDirectory = isDirectoryObjC
-#else
-        isDirectory = isDirectoryObjC.boolValue
-#endif
-
-        if isDirectory {
+        if isDirectoryObjC.boolValue {
             return rootPath
         } else {
             return rootPath.bridge().deletingLastPathComponent

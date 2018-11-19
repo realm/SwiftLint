@@ -160,12 +160,13 @@ $ TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 swiftlint autocorrect
 
 这里有一份 SwiftLint 版本和对应该 Swift 版本的对照表作为参考。
 
-| Swift 版本 | 最后一个 SwiftLint 支持版本 |
-| ------------- | -------------------------------- |
-| Swift 1.x     | SwiftLint 0.1.2                  |
-| Swift 2.x     | SwiftLint 0.18.1                 |
-| Swift 3.x     | 最新的                            |
-| Swift 4.x     | 最新的                            |
+| Swift 版本      | 最后一个 SwiftLint 支持版本 |
+|:----------------|:----------------------------|
+| Swift 1.x       | SwiftLint 0.1.2             |
+| Swift 2.x       | SwiftLint 0.18.1            |
+| Swift 3.x       | SwiftLint 0.25.1            |
+| Swift 4.0-4.1.x | SwiftLint 0.28.1            |
+| Swift 4.2+      | 最新的                      |
 
 ## 规则
 

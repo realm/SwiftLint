@@ -30,36 +30,12 @@ jobs:
       - run: bundle install
       - run: bundle exec danger --verbose
 
-  swiftpm_4:
-    macos:
-      xcode: "9.2.0"
-    steps:
-      - checkout
-      - run: swift test --parallel
-
-  swiftpm_4.1:
-    macos:
-      xcode: "9.4.0"
-    steps:
-      - checkout
-      - run: swift test --parallel
-
   swiftpm_4.2:
     macos:
       xcode: "10.1.0"
     steps:
       - checkout
       - run: swift test --parallel
-
-  xcode_9:
-    macos:
-      xcode: "9.4.0"
-    steps:
-      - checkout
-      - run: set -o pipefail && script/cibuild | xcpretty -r junit
-      - store_test_results:
-          path: build/reports/
-      - run: bash <(curl -s https://codecov.io/bash)
 
   xcode_10:
     macos:
@@ -79,21 +55,7 @@ jobs:
       - run: echo "ruby-2.4" > ~/.ruby-version
       - run: bundle install
       - run: curl -sS https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash
-      - run: bundle exec pod lib lint --allow-warnings SwiftLintFramework.podspec
-
-  linux_swift_4:
-    docker:
-      - image: norionomura/swift:40
-    steps:
-      - checkout
-      - run: swift test --parallel
-
-  linux_swift_4.1:
-    docker:
-      - image: norionomura/swift:41
-    steps:
-      - checkout
-      - run: swift test --parallel
+      - run: bundle exec pod lib lint SwiftLintFramework.podspec
 
   linux_swift_4.2:
     docker:
@@ -109,12 +71,7 @@ workflows:
       - analyze
       - tsan
       - osscheck
-      - swiftpm_4
-      - swiftpm_4.1
       - swiftpm_4.2
-      - xcode_9
       - xcode_10
       - cocoapods
-      - linux_swift_4
-      - linux_swift_4.1
       - linux_swift_4.2

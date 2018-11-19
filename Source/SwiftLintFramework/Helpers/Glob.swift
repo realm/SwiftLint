@@ -1,11 +1,13 @@
-#if os(Linux)
-import Glibc
-
-let globFunction = Glibc.glob
-#else
+#if canImport(Darwin)
 import Darwin
 
-let globFunction = Darwin.glob
+private let globFunction = Darwin.glob
+#elseif canImport(Glibc)
+import Glibc
+
+private let globFunction = Glibc.glob
+#else
+#error("Unsupported platform")
 #endif
 
 struct Glob {

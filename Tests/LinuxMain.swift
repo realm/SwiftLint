@@ -1040,8 +1040,7 @@ extension RulesTests {
         ("testLeadingWhitespace", testLeadingWhitespace),
         ("testMark", testMark),
         ("testRequiredEnumCase", testRequiredEnumCase),
-        ("testTrailingNewline", testTrailingNewline),
-        ("testUnusedPrivateDeclaration", testUnusedPrivateDeclaration)
+        ("testTrailingNewline", testTrailingNewline)
     ]
 }
 
@@ -1218,6 +1217,12 @@ extension UnusedOptionalBindingRuleTests {
     static var allTests: [(String, (UnusedOptionalBindingRuleTests) -> () throws -> Void)] = [
         ("testDefaultConfiguration", testDefaultConfiguration),
         ("testIgnoreOptionalTryEnabled", testIgnoreOptionalTryEnabled)
+    ]
+}
+
+extension UnusedPrivateDeclarationRuleTests {
+    static var allTests: [(String, (UnusedPrivateDeclarationRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
 
@@ -1450,6 +1455,7 @@ XCTMain([
     testCase(UnusedEnumeratedRuleTests.allTests),
     testCase(UnusedImportRuleTests.allTests),
     testCase(UnusedOptionalBindingRuleTests.allTests),
+    testCase(UnusedPrivateDeclarationRuleTests.allTests),
     testCase(ValidIBInspectableRuleTests.allTests),
     testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),
     testCase(VerticalParameterAlignmentRuleTests.allTests),

@@ -1,8 +1,10 @@
 import Commandant
-#if os(Linux)
+#if canImport(Darwin)
+import Darwin
+#elseif canImport(Glibc)
 import Glibc
 #else
-import Darwin
+#error("Unsupported platform")
 #endif
 import Result
 import SwiftLintFramework

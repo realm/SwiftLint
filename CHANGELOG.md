@@ -15,7 +15,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix compiler warnings when building with Swift 4.2 introduced in the last
+  release.  
+  [JP Simard](https://github.com/jpsim)
 
 ## 0.28.1: EnviroBoost
 

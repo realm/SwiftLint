@@ -21,11 +21,4 @@ public struct ColonConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: ColonConfiguration,
-                           rhs: ColonConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.flexibleRightSpacing == rhs.flexibleRightSpacing &&
-            lhs.applyToDictionaries == rhs.applyToDictionaries
-    }
 }

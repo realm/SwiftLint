@@ -67,14 +67,6 @@ public struct NameConfiguration: RuleConfiguration, Equatable {
                 "\"validates_start_with_lowercase\" and will be removed in a future release.")
         }
     }
-
-    public static func == (lhs: NameConfiguration, rhs: NameConfiguration) -> Bool {
-        return lhs.minLength == rhs.minLength &&
-            lhs.maxLength == rhs.maxLength &&
-            zip(lhs.excluded, rhs.excluded).reduce(true) { $0 && ($1.0 == $1.1) } &&
-            zip(lhs.allowedSymbolsSet, rhs.allowedSymbolsSet).reduce(true) { $0 && ($1.0 == $1.1) } &&
-            lhs.validatesStartWithLowercase == rhs.validatesStartWithLowercase
-    }
 }
 
 // MARK: - ConfigurationProviderRule extensions

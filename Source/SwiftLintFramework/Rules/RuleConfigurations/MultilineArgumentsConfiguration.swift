@@ -56,10 +56,4 @@ public struct MultilineArgumentsConfiguration: RuleConfiguration, Equatable {
             }
         }
     }
-
-    public static func == (lhs: MultilineArgumentsConfiguration,
-                           rhs: MultilineArgumentsConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.firstArgumentLocation == rhs.firstArgumentLocation
-    }
 }

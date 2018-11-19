@@ -21,11 +21,4 @@ public struct ObjectLiteralConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: ObjectLiteralConfiguration,
-                           rhs: ObjectLiteralConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.imageLiteral == rhs.imageLiteral &&
-            lhs.colorLiteral == rhs.colorLiteral
-    }
 }

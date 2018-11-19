@@ -133,9 +133,4 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
         return requiredPattern.flatMap { regexFromPattern(for: file, using: $0) }
     }
-
-    public static func == (lhs: FileHeaderConfiguration,
-                           rhs: FileHeaderConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

@@ -43,9 +43,4 @@ public struct NestingConfiguration: RuleConfiguration, Equatable {
         case .warning: return config.warning
         }
     }
-
-    public static func == (lhs: NestingConfiguration, rhs: NestingConfiguration) -> Bool {
-        return lhs.typeLevel == rhs.typeLevel
-            && lhs.statementLevel == rhs.statementLevel
-    }
 }

@@ -7,14 +7,6 @@ public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
             self.name = name
             self.severity = severity
         }
-
-        var hashValue: Int {
-            return name.hashValue
-        }
-
-        static func == (lhs: RequiredCase, rhs: RequiredCase) -> Bool {
-            return lhs.name == rhs.name && lhs.severity == rhs.severity
-        }
     }
 
     var protocols: [String: Set<RequiredCase>] = [:]
@@ -61,11 +53,5 @@ public struct RequiredEnumCaseRuleConfiguration: RuleConfiguration, Equatable {
         }
 
         protocols[name] = requiredCases
-    }
-
-    public static func == (lhs: RequiredEnumCaseRuleConfiguration,
-                           rhs: RequiredEnumCaseRuleConfiguration) -> Bool {
-
-        return lhs.protocols == rhs.protocols
     }
 }

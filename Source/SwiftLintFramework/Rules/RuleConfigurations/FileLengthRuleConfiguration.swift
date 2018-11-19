@@ -45,10 +45,4 @@ public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
         }
 
     }
-
-    public static func == (lhs: FileLengthRuleConfiguration,
-                           rhs: FileLengthRuleConfiguration) -> Bool {
-        return lhs.ignoreCommentOnlyLines == rhs.ignoreCommentOnlyLines &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

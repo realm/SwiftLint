@@ -32,11 +32,4 @@ public struct AttributesConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: AttributesConfiguration,
-                           rhs: AttributesConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.alwaysOnSameLine == rhs.alwaysOnSameLine &&
-            lhs.alwaysOnNewLine == rhs.alwaysOnNewLine
-    }
 }

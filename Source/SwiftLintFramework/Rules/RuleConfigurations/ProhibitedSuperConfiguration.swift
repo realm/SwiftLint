@@ -55,11 +55,4 @@ public struct ProhibitedSuperConfiguration: RuleConfiguration, Equatable {
         names = names.filter { !excluded.contains($0) }
         return names
     }
-
-    public static func == (lhs: ProhibitedSuperConfiguration,
-                           rhs: ProhibitedSuperConfiguration) -> Bool {
-        return lhs.excluded == rhs.excluded &&
-            lhs.included == rhs.included &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

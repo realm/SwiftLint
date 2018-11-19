@@ -39,10 +39,4 @@ public struct DiscouragedDirectInitConfiguration: RuleConfiguration, Equatable {
             discouragedInits = Set(types + types.map(toExplicitInitMethod))
         }
     }
-
-    // MARK: - Equatable
-
-    public static func == (lhs: DiscouragedDirectInitConfiguration, rhs: DiscouragedDirectInitConfiguration) -> Bool {
-        return lhs.discouragedInits == rhs.discouragedInits && lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

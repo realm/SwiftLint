@@ -37,11 +37,4 @@ public struct NumberSeparatorConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: NumberSeparatorConfiguration,
-                           rhs: NumberSeparatorConfiguration) -> Bool {
-        return lhs.minimumLength == rhs.minimumLength &&
-            lhs.minimumFractionLength == rhs.minimumFractionLength &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

@@ -19,10 +19,4 @@ public struct SwitchCaseAlignmentConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: SwitchCaseAlignmentConfiguration,
-                           rhs: SwitchCaseAlignmentConfiguration) -> Bool {
-        return lhs.indentedCases == rhs.indentedCases &&
-               lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

@@ -31,12 +31,4 @@ public struct Region: Equatable {
         let identifiers = type(of: rule).description.deprecatedAliases
         return Set(disabledRuleIdentifiers.map { $0.stringRepresentation }).intersection(identifiers)
     }
-
-    // MARK: Equatable
-
-    public static func == (lhs: Region, rhs: Region) -> Bool {
-        return lhs.start == rhs.start &&
-            lhs.end == rhs.end &&
-            lhs.disabledRuleIdentifiers == rhs.disabledRuleIdentifiers
-    }
 }

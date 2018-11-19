@@ -5,13 +5,6 @@ import Yams
 
 internal enum YamlParserError: Error, Equatable {
     case yamlParsing(String)
-
-    static func == (lhs: YamlParserError, rhs: YamlParserError) -> Bool {
-        switch (lhs, rhs) {
-        case let (.yamlParsing(lhs), .yamlParsing(rhs)):
-            return lhs == rhs
-        }
-    }
 }
 
 // MARK: - YamlParser

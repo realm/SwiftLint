@@ -12,15 +12,5 @@ public extension Configuration {
             default: return nil
             }
         }
-
-        // MARK: Equatable
-
-        public static func == (lhs: IndentationStyle, rhs: IndentationStyle) -> Bool {
-            switch (lhs, rhs) {
-            case (.tabs, .tabs): return true
-            case let (.spaces(lhs), .spaces(rhs)): return lhs == rhs
-            case (_, _): return false
-            }
-        }
     }
 }

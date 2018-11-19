@@ -33,8 +33,4 @@ public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
         }
         self.parameters = parameters
     }
-
-    public static func == (lhs: MissingDocsRuleConfiguration, rhs: MissingDocsRuleConfiguration) -> Bool {
-        return lhs.parameters == rhs.parameters
-    }
 }

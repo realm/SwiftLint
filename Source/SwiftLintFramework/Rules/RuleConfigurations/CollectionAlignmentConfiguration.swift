@@ -19,10 +19,4 @@ public struct CollectionAlignmentConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: CollectionAlignmentConfiguration,
-                           rhs: CollectionAlignmentConfiguration) -> Bool {
-        return lhs.alignColons == rhs.alignColons &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

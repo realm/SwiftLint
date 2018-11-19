@@ -40,10 +40,4 @@ public struct ImplicitlyUnwrappedOptionalConfiguration: RuleConfiguration, Equat
             try severity.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: ImplicitlyUnwrappedOptionalConfiguration,
-                           rhs: ImplicitlyUnwrappedOptionalConfiguration) -> Bool {
-        return lhs.severity == rhs.severity &&
-            lhs.mode == rhs.mode
-    }
 }

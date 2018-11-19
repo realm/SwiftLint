@@ -21,10 +21,4 @@ public struct TrailingCommaConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: TrailingCommaConfiguration,
-                           rhs: TrailingCommaConfiguration) -> Bool {
-        return lhs.mandatoryComma == rhs.mandatoryComma &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

@@ -44,10 +44,4 @@ public struct FunctionParameterCountConfiguration: RuleConfiguration, Equatable 
             throw ConfigurationError.unknownConfiguration
         }
     }
-
-    public static func == (lhs: FunctionParameterCountConfiguration,
-                           rhs: FunctionParameterCountConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.ignoresDefaultParameters == rhs.ignoresDefaultParameters
-    }
 }

@@ -45,6 +45,8 @@ public struct Location: CustomStringConvertible, Comparable {
         }
     }
 
+    // MARK: Comparable
+
     public static func < (lhs: Location, rhs: Location) -> Bool {
         if lhs.file != rhs.file {
             return lhs.file < rhs.file

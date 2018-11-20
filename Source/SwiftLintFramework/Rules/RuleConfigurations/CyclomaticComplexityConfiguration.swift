@@ -72,9 +72,4 @@ public struct CyclomaticComplexityConfiguration: RuleConfiguration, Equatable {
             throw ConfigurationError.unknownConfiguration
         }
     }
-
-    public static func == (lhs: CyclomaticComplexityConfiguration, rhs: CyclomaticComplexityConfiguration) -> Bool {
-        return lhs.length == rhs.length &&
-            lhs.ignoresCaseStatements == rhs.ignoresCaseStatements
-    }
 }

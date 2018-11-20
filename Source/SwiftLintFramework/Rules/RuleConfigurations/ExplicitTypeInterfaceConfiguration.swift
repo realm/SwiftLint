@@ -78,9 +78,4 @@ public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
             }
         }
     }
-
-    public static func == (lhs: ExplicitTypeInterfaceConfiguration, rhs: ExplicitTypeInterfaceConfiguration) -> Bool {
-        return lhs.allowedKinds == rhs.allowedKinds && lhs.severityConfiguration == rhs.severityConfiguration
-    }
-
 }

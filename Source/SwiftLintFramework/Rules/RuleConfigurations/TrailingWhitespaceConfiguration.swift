@@ -26,11 +26,4 @@ public struct TrailingWhitespaceConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: TrailingWhitespaceConfiguration,
-                           rhs: TrailingWhitespaceConfiguration) -> Bool {
-        return lhs.ignoresEmptyLines == rhs.ignoresEmptyLines &&
-            lhs.ignoresComments == rhs.ignoresComments &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

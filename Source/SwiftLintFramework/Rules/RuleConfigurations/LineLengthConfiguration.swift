@@ -102,12 +102,4 @@ public struct LineLengthConfiguration: RuleConfiguration, Equatable {
             }
         }
     }
-
-    public static func == (lhs: LineLengthConfiguration, rhs: LineLengthConfiguration) -> Bool {
-        return lhs.length == rhs.length &&
-            lhs.ignoresURLs == rhs.ignoresURLs &&
-            lhs.ignoresComments == rhs.ignoresComments &&
-            lhs.ignoresFunctionDeclarations == rhs.ignoresFunctionDeclarations &&
-            lhs.ignoresInterpolatedStrings == rhs.ignoresInterpolatedStrings
-    }
 }

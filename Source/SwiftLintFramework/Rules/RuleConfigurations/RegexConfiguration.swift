@@ -75,14 +75,4 @@ public struct RegexConfiguration: RuleConfiguration, Equatable, CacheDescription
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: RegexConfiguration, rhs: RegexConfiguration) -> Bool {
-        return lhs.identifier == rhs.identifier &&
-            lhs.message == rhs.message &&
-            lhs.regex == rhs.regex &&
-            lhs.included?.pattern == rhs.included?.pattern &&
-            lhs.excluded?.pattern == rhs.excluded?.pattern &&
-            lhs.matchKinds == rhs.matchKinds &&
-            lhs.severity == rhs.severity
-    }
 }

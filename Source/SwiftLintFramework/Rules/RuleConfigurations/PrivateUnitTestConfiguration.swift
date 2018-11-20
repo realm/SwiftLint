@@ -56,12 +56,4 @@ public struct PrivateUnitTestConfiguration: RuleConfiguration, Equatable, CacheD
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: PrivateUnitTestConfiguration, rhs: PrivateUnitTestConfiguration) -> Bool {
-        return lhs.identifier == rhs.identifier &&
-            lhs.message == rhs.message &&
-            lhs.regex == rhs.regex &&
-            lhs.included?.pattern == rhs.included?.pattern &&
-            lhs.severity == rhs.severity
-    }
 }

@@ -1,4 +1,4 @@
-public struct ConditionalReturnsOnNewlineConfiguration: RuleConfiguration {
+public struct ConditionalReturnsOnNewlineConfiguration: RuleConfiguration, Equatable {
     private(set) var severityConfiguration = SeverityConfiguration(.warning)
     private(set) var ifOnly = false
 
@@ -16,13 +16,5 @@ public struct ConditionalReturnsOnNewlineConfiguration: RuleConfiguration {
         if let severityString = configuration["severity"] as? String {
             try severityConfiguration.apply(configuration: severityString)
         }
-    }
-}
-
-extension ConditionalReturnsOnNewlineConfiguration: Equatable {
-    public static func == (lhs: ConditionalReturnsOnNewlineConfiguration,
-                           rhs: ConditionalReturnsOnNewlineConfiguration) -> Bool {
-        return lhs.severityConfiguration == rhs.severityConfiguration &&
-            lhs.ifOnly == rhs.ifOnly
     }
 }

@@ -6,13 +6,11 @@ private let regexCacheLock = NSLock()
 private struct RegexCacheKey: Hashable {
     let pattern: String
     let options: NSRegularExpression.Options
+}
 
-    var hashValue: Int {
-        return pattern.hashValue ^ options.rawValue.hashValue
-    }
-
-    static func == (lhs: RegexCacheKey, rhs: RegexCacheKey) -> Bool {
-        return lhs.options == rhs.options && lhs.pattern == rhs.pattern
+extension NSRegularExpression.Options: Hashable {
+    public var hashValue: Int {
+        return rawValue.hashValue
     }
 }
 

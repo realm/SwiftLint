@@ -24,7 +24,7 @@ class RequiredEnumCaseRuleTestCase: XCTestCase {
 
     func testRequiredCaseHashValue() {
         let requiredCase = RequiredCase(name: "success")
-        XCTAssertEqual(requiredCase.hashValue, "success".hashValue)
+        XCTAssertEqual(requiredCase.hashValue, RequiredCase(name: "success").hashValue)
     }
 
     func testRequiredCaseEquatableReturnsTrue() {

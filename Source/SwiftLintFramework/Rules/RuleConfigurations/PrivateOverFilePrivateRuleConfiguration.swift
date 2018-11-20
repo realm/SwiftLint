@@ -19,12 +19,4 @@ public struct PrivateOverFilePrivateRuleConfiguration: RuleConfiguration, Equata
 
         validateExtensions = configuration["validate_extensions"] as? Bool ?? false
     }
-
-    // MARK: - Equatable
-
-    public static func == (lhs: PrivateOverFilePrivateRuleConfiguration,
-                           rhs: PrivateOverFilePrivateRuleConfiguration) -> Bool {
-        return lhs.validateExtensions == rhs.validateExtensions &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

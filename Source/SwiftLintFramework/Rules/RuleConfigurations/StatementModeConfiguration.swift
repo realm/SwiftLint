@@ -39,8 +39,4 @@ public struct StatementConfiguration: RuleConfiguration, Equatable {
             try severity.apply(configuration: severityConfiguration)
         }
     }
-
-    public static func == (lhs: StatementConfiguration, rhs: StatementConfiguration) -> Bool {
-        return lhs.statementMode == rhs.statementMode && lhs.severity == rhs.severity
-    }
 }

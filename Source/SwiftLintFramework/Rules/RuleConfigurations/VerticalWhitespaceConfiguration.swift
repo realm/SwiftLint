@@ -23,10 +23,4 @@ public struct VerticalWhitespaceConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: VerticalWhitespaceConfiguration,
-                           rhs: VerticalWhitespaceConfiguration) -> Bool {
-        return lhs.maxEmptyLines == rhs.maxEmptyLines &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

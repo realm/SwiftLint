@@ -23,10 +23,4 @@ public struct UnusedOptionalBindingConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: UnusedOptionalBindingConfiguration,
-                           rhs: UnusedOptionalBindingConfiguration) -> Bool {
-        return lhs.ignoreOptionalTry == rhs.ignoreOptionalTry &&
-            lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

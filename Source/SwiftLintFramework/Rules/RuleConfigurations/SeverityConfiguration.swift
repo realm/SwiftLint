@@ -22,8 +22,4 @@ public struct SeverityConfiguration: RuleConfiguration, Equatable {
     private func severity(fromString string: String) -> ViolationSeverity? {
         return ViolationSeverity(rawValue: string.lowercased())
     }
-
-    public static func == (lhs: SeverityConfiguration, rhs: SeverityConfiguration) -> Bool {
-        return lhs.severity == rhs.severity
-    }
 }

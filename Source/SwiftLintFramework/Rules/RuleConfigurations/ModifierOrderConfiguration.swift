@@ -32,10 +32,4 @@ public struct ModifierOrderConfiguration: RuleConfiguration, Equatable {
             try severityConfiguration.apply(configuration: severityString)
         }
     }
-
-    public static func == (lhs: ModifierOrderConfiguration,
-                           rhs: ModifierOrderConfiguration) -> Bool {
-        return lhs.preferredModifierOrder == rhs.preferredModifierOrder &&
-               lhs.severityConfiguration == rhs.severityConfiguration
-    }
 }

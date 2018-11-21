@@ -54,14 +54,14 @@ public struct UnusedPrivateDeclarationRule: ConfigurationProviderRule, AnalyzerR
 
 private extension File {
     func allCursorInfo(compilerArguments: [String]) -> [[String: SourceKitRepresentable]] {
-        guard let path = path, let editorOpen = try? Request.editorOpen(file: self).send() else {
+        guard let path = path, let editorOpen = try? Request.editorOpen(file: self).sendIfNotDisabled() else {
             return []
         }
 
         return syntaxMap.tokens.compactMap { token in
             let offset = Int64(token.offset)
             var cursorInfo = try? Request.cursorInfo(file: path, offset: offset,
-                                                     arguments: compilerArguments).send()
+                                                     arguments: compilerArguments).sendIfNotDisabled()
             if let acl = File.aclAtOffset(offset, substructureElement: editorOpen) {
                 cursorInfo?["key.accessibility"] = acl
             }

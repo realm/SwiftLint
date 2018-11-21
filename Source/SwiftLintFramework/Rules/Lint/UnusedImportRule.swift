@@ -108,7 +108,7 @@ private extension File {
             }
             let cursorInfoRequest = Request.cursorInfo(file: path!, offset: Int64(token.offset),
                                                        arguments: compilerArguments)
-            guard let cursorInfo = try? cursorInfoRequest.send() else {
+            guard let cursorInfo = try? cursorInfoRequest.sendIfNotDisabled() else {
                 queuedPrintError("Could not get cursor info")
                 continue
             }

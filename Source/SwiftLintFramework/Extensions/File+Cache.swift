@@ -3,7 +3,7 @@ import SourceKittenFramework
 
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
-        return try Request.editorOpen(file: file).send()
+        return try Request.editorOpen(file: file).sendIfNotDisabled()
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil

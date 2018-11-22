@@ -50,9 +50,18 @@
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
+          "branch": "master",
+          "revision": "9e922329570adf5ce2ae88d7413eb5148a61e21a",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftSyntax",
+        "repositoryURL": "https://github.com/apple/swift-syntax.git",
+        "state": {
           "branch": null,
-          "revision": "79ca340f609adee48defa966e6a3dd0e0acbeb08",
-          "version": "0.21.3"
+          "revision": "f20c0bcbfb4b07e107c9851350217cb2217f0cb4",
+          "version": "0.40200.0"
         }
       },
       {

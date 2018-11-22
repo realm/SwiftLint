@@ -8,8 +8,9 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.40200.0")),
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.15.0"),
-        .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.21.3"),
+        .package(url: "https://github.com/jpsim/SourceKitten.git", .branch("master")),
         .package(url: "https://github.com/jpsim/Yams.git", from: "1.0.1"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "0.13.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.2"),
@@ -28,6 +29,7 @@ let package = Package(
             dependencies: [
                 "CryptoSwift",
                 "SourceKittenFramework",
+                "SwiftSyntax",
                 "Yams",
             ]
         ),

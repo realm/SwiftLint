@@ -1,9 +1,23 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
     do {
         return try Request.editorOpen(file: file).sendIfNotDisabled()
+    } catch let error as Request.Error {
+        queuedPrintError(error.description)
+        return nil
+    } catch {
+        return nil
+    }
+})
+private var syntaxCache = Cache({ file -> SourceFileSyntax? in
+    do {
+        let response = try Request.syntaxTree(file: file).sendIfNotDisabled()
+        let syntaxTreeData = (response["key.serialized_syntax_tree"] as! String).data(using: .utf8)!
+        let deserializer = SyntaxTreeDeserializer()
+        return try deserializer.deserialize(syntaxTreeData)
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -129,6 +143,17 @@ extension File {
         return structure
     }
 
+    internal var syntax: SourceFileSyntax {
+        guard let syntax = syntaxCache.get(self) else {
+            if let handler = assertHandler {
+                handler()
+                return SourceFileSyntax({ _ in })
+            }
+            queuedFatalError("Never call this for file that sourcekitd fails.")
+        }
+        return syntax
+    }
+
     internal var syntaxMap: SyntaxMap {
         guard let syntaxMap = syntaxMapCache.get(self) else {
             if let handler = assertHandler {
@@ -164,6 +189,7 @@ extension File {
 
     public func invalidateCache() {
         responseCache.invalidate(self)
+        syntaxCache.invalidate(self)
         assertHandlerCache.invalidate(self)
         structureCache.invalidate(self)
         syntaxMapCache.invalidate(self)
@@ -174,6 +200,7 @@ extension File {
     internal static func clearCaches() {
         queueForRebuild.clear()
         responseCache.clear()
+        syntaxCache.clear()
         assertHandlerCache.clear()
         structureCache.clear()
         syntaxMapCache.clear()

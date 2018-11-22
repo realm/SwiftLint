@@ -1,4 +1,5 @@
 import SourceKittenFramework
+import SwiftSyntax
 
 public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTestableRule {
 
@@ -28,10 +29,27 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        return file.match(pattern: "fallthrough", with: [.keyword]).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+        // SourceKitten implementation
+
+        // return file.match(pattern: "fallthrough", with: [.keyword]).map {
+        //     StyleViolation(ruleDescription: type(of: self).description,
+        //                    severity: configuration.severity,
+        //                    location: Location(file: file, characterOffset: $0.location))
+
+        // SwiftSyntax implementation
+        class FallthroughVisitor: SyntaxVisitor {
+            var positions = [AbsolutePosition]()
+
+            override func visit(_ node: FallthroughStmtSyntax) {
+                positions.append(node.positionAfterSkippingLeadingTrivia)
+            }
+        }
+
+        let visitor = FallthroughVisitor()
+        visitor.visit(file.syntax)
+        return visitor.positions.map { position in
+            StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
+                           location: Location(file: file.path, line: position.line, character: position.column))
         }
     }
 }

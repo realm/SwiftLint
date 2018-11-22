@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "9999"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0D1216C19E87B05005E4BAA"
+               BlueprintIdentifier = "SwiftLint::SwiftLintFramework"
                BuildableName = "SwiftLintFramework.framework"
                BlueprintName = "SwiftLintFramework"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
@@ -22,15 +22,15 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0D1217619E87B05005E4BAA"
-               BuildableName = "SwiftLintFrameworkTests.xctest"
-               BlueprintName = "SwiftLintFrameworkTests"
+               BlueprintIdentifier = "SwiftLint::swiftlint"
+               BuildableName = "swiftlint"
+               BlueprintName = "swiftlint"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,22 +46,13 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0D1217619E87B05005E4BAA"
+               BlueprintIdentifier = "SwiftLint::SwiftLintFrameworkTests"
                BuildableName = "SwiftLintFrameworkTests.xctest"
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0D1216C19E87B05005E4BAA"
-            BuildableName = "SwiftLintFramework.framework"
-            BlueprintName = "SwiftLintFramework"
-            ReferencedContainer = "container:SwiftLint.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -78,7 +69,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0D1216C19E87B05005E4BAA"
+            BlueprintIdentifier = "SwiftLint::SwiftLintFramework"
             BuildableName = "SwiftLintFramework.framework"
             BlueprintName = "SwiftLintFramework"
             ReferencedContainer = "container:SwiftLint.xcodeproj">
@@ -88,20 +79,11 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Profile"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0D1216C19E87B05005E4BAA"
-            BuildableName = "SwiftLintFramework.framework"
-            BlueprintName = "SwiftLintFramework"
-            ReferencedContainer = "container:SwiftLint.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

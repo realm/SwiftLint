@@ -113,6 +113,7 @@
 		69F88BF71BDA38A6005E7CAE /* OpeningBraceRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692B1EB11BD7E00F00EAABFF /* OpeningBraceRule.swift */; };
 		6C032EEE2027EA8D00CD7E8D /* shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C032EED2027EA8D00CD7E8D /* shim.swift */; };
 		6C032EF12027F79F00CD7E8D /* shim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C032EF02027F79F00CD7E8D /* shim.swift */; };
+		6C1D763221A4E69600DEF783 /* Request+DisableSourceKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C1D763121A4E69600DEF783 /* Request+DisableSourceKit.swift */; };
 		6C7045441C6ADA450003F15A /* SourceKitCrashTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */; };
 		6CB514E91C760C6900FA02C4 /* Structure+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */; };
 		6CB8A80C1D11A7E10052816E /* Commandant.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8BA7E101B07A3EC003E02D0 /* Commandant.framework */; };
@@ -542,6 +543,7 @@
 		695BE9CE1BDFD92B0071E985 /* CommaRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommaRule.swift; sourceTree = "<group>"; };
 		6C032EED2027EA8D00CD7E8D /* shim.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
 		6C032EF02027F79F00CD7E8D /* shim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = shim.swift; sourceTree = "<group>"; };
+		6C1D763121A4E69600DEF783 /* Request+DisableSourceKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Request+DisableSourceKit.swift"; sourceTree = "<group>"; };
 		6C27B5FC2079D33F00353E17 /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
 		6C7045431C6ADA450003F15A /* SourceKitCrashTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceKitCrashTests.swift; sourceTree = "<group>"; };
 		6CB514E81C760C6900FA02C4 /* Structure+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Structure+SwiftLint.swift"; sourceTree = "<group>"; };
@@ -1482,6 +1484,7 @@
 				3BA79C9A1C4767910057E705 /* NSRange+SwiftLint.swift */,
 				3BB47D841C51D80000AE6A10 /* NSRegularExpression+SwiftLint.swift */,
 				E81619521BFC162C00946723 /* QueuedPrint.swift */,
+				6C1D763121A4E69600DEF783 /* Request+DisableSourceKit.swift */,
 				6C032EED2027EA8D00CD7E8D /* shim.swift */,
 				E88DEA721B0984C400A66CB0 /* String+SwiftLint.swift */,
 				B39353F28BCCA39247B316BD /* String+XML.swift */,
@@ -1885,6 +1888,7 @@
 				62DADC481FFF0423002B6319 /* PrefixedTopLevelConstantRule.swift in Sources */,
 				D4130D991E16CC1300242361 /* TypeNameRuleExamples.swift in Sources */,
 				24E17F721B14BB3F008195BE /* File+Cache.swift in Sources */,
+				6C1D763221A4E69600DEF783 /* Request+DisableSourceKit.swift in Sources */,
 				47ACC8981E7DC74E0088EEB2 /* ImplicitlyUnwrappedOptionalConfiguration.swift in Sources */,
 				787CDE39208E7D41005F3D2F /* SwitchCaseAlignmentConfiguration.swift in Sources */,
 				009E09281DFEE4C200B588A7 /* ProhibitedSuperRule.swift in Sources */,

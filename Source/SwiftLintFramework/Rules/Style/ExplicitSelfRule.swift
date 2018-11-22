@@ -161,7 +161,7 @@ private extension File {
         return try byteOffsets.compactMap { offset in
             if contents.bridge().substringWithByteRange(start: offset - 1, length: 1)! == "." { return nil }
             var cursorInfo = try Request.cursorInfo(file: self.path!, offset: Int64(offset),
-                                                    arguments: compilerArguments).send()
+                                                    arguments: compilerArguments).sendIfNotDisabled()
             cursorInfo["swiftlint.offset"] = Int64(offset)
             return cursorInfo
         }
@@ -196,7 +196,7 @@ private extension NSString {
 
 private func binaryOffsets(file: File, compilerArguments: [String]) throws -> [Int] {
     let absoluteFile = file.path!.bridge().absolutePathRepresentation()
-    let index = try Request.index(file: absoluteFile, arguments: compilerArguments).send()
+    let index = try Request.index(file: absoluteFile, arguments: compilerArguments).sendIfNotDisabled()
     let binaryOffsets = file.contents.bridge().recursiveByteOffsets(index)
     return binaryOffsets.sorted()
 }

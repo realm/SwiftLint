@@ -47,7 +47,7 @@ extension Array {
         return parallelMap(transform: transform).flatMap { $0 }
     }
 
-    func parallelFlatMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
+    func parallelCompactMap<T>(transform: @escaping ((Element) -> T?)) -> [T] {
         return parallelMap(transform: transform).compactMap { $0 }
     }
 

@@ -85,7 +85,8 @@ public extension SwiftVersion {
         func isString(token: SyntaxToken) -> Bool {
             return token.type == SyntaxKind.string.rawValue
         }
-        if let decl = file.structure.kinds().first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
+        if !Request.disableSourceKit,
+            let decl = file.structure.kinds().first(where: { $0.kind == SwiftDeclarationKind.varGlobal.rawValue }),
             let token = file.syntaxMap.tokens(inByteRange: decl.byteRange).first(where: isString ) {
             return .init(rawValue: file.contents.substring(from: token.offset + 1, length: token.length - 2))
         }

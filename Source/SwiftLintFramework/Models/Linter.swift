@@ -126,7 +126,7 @@ public struct Linter {
         let superfluousDisableCommandRule = rules.first(where: {
             $0 is SuperfluousDisableCommandRule
         }) as? SuperfluousDisableCommandRule
-        let validationResults = rules.parallelFlatMap {
+        let validationResults = rules.parallelCompactMap {
             $0.lint(file: self.file, regions: regions, benchmark: benchmark,
                     superfluousDisableCommandRule: superfluousDisableCommandRule,
                     compilerArguments: self.compilerArguments)

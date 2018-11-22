@@ -11,7 +11,9 @@
 
 #### Enhancements
 
-* None.
+* Improve the performance of saving or reading cached lint results on platforms
+  with CommonCrypto.  
+  [JP Simard](https://github.com/jpsim)
 
 #### Bug Fixes
 

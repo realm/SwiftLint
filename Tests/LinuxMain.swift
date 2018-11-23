@@ -561,7 +561,9 @@ extension InertDeferRuleTests {
 extension IntegrationTests {
     static var allTests: [(String, (IntegrationTests) -> () throws -> Void)] = [
         ("testSwiftLintLints", testSwiftLintLints),
-        ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects)
+        ("testSwiftLintAutoCorrects", testSwiftLintAutoCorrects),
+        ("testSimulateHomebrewTest", testSimulateHomebrewTest),
+        ("testSimulateHomebrewTestWithDisableSourceKit", testSimulateHomebrewTestWithDisableSourceKit)
     ]
 }
 

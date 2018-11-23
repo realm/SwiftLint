@@ -19,25 +19,13 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             "[String.self].map { $0.init(1) }",           // initialize from a metatype value
             "[String.self].map { type in type.init(1) }",  // initialize from a metatype value
             "Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()",
-            """
-            Observable.zip(
-                obs1,
-                obs2,
-                resultSelector: MyType.init
-            ).asMaybe()
-            """
+            "Observable.zip(\n    obs1,\n    obs2,\n    resultSelector: MyType.init\n).asMaybe()"
         ],
         triggeringExamples: [
             "[1].flatMap{String↓.init($0)}",
             "[String.self].map { Type in Type↓.init(1) }", // starting with capital assumes as type,
             "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}",
-            """
-            Observable.zip(
-                obs1,
-                obs2,
-                resultSelector: { MyType.init($0, $1) }
-            ).asMaybe()
-            """
+            "Observable.zip(\n    obs1,\n    obs2,\n    resultSelector: { MyType.init($0, $1) }\n).asMaybe()"
         ],
         corrections: [
             "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}",

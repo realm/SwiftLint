@@ -21,6 +21,11 @@
   release.  
   [JP Simard](https://github.com/jpsim)
 
+* Fix `toggle_bool` false positive violation when comparing object parameter to
+  an equally named variable.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2471](https://github.com/realm/SwiftLint/issues/2471)
+
 ## 0.28.1: EnviroBoost
 
 This is the last release to support building with Swift 4.0 and Swift 4.1.

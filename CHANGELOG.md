@@ -15,6 +15,10 @@
   with CommonCrypto.  
   [JP Simard](https://github.com/jpsim)
 
+* Add `testSimulateHomebrewTest()` to `IntegrationTests` that simulates test in
+  `homebrew-core/Formula/swiftlint.rb` within sandbox.  
+  [Norio Nomura](https://github.com/norio-nomura)
+
 #### Bug Fixes
 
 * Fix compiler warnings when building with Swift 4.2 introduced in the last

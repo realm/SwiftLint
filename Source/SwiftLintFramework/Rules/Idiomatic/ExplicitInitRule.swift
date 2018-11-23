@@ -17,12 +17,27 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
             "struct S { let n: Int }; extension S { init() { self.init(n: 1) } }",      // self
             "[1].flatMap(String.init)",                   // pass init as closure
             "[String.self].map { $0.init(1) }",           // initialize from a metatype value
-            "[String.self].map { type in type.init(1) }"  // initialize from a metatype value
+            "[String.self].map { type in type.init(1) }",  // initialize from a metatype value
+            "Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()",
+            """
+            Observable.zip(
+                obs1,
+                obs2,
+                resultSelector: MyType.init
+            ).asMaybe()
+            """
         ],
         triggeringExamples: [
             "[1].flatMap{String↓.init($0)}",
             "[String.self].map { Type in Type↓.init(1) }", // starting with capital assumes as type,
-            "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}"
+            "func foo() -> [String] {\n    return [1].flatMap { String↓.init($0) }\n}",
+            """
+            Observable.zip(
+                obs1,
+                obs2,
+                resultSelector: { MyType.init($0, $1) }
+            ).asMaybe()
+            """
         ],
         corrections: [
             "[1].flatMap{String↓.init($0)}": "[1].flatMap{String($0)}",
@@ -42,7 +57,7 @@ public struct ExplicitInitRule: ASTRule, ConfigurationProviderRule, CorrectableR
         }
     }
 
-    private let initializerWithType = regex("^[A-Z].*\\.init$")
+    private let initializerWithType = regex("^[A-Z][^(]*\\.init$")
 
     private func violationRanges(in file: File, kind: SwiftExpressionKind,
                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {

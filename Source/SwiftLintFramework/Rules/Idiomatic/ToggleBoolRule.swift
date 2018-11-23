@@ -14,7 +14,9 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
         nonTriggeringExamples: [
             "isHidden.toggle()\n",
             "view.clipsToBounds.toggle()\n",
-            "func foo() { abc.toggle() }"
+            "func foo() { abc.toggle() }",
+            "view.clipsToBounds = !clipsToBounds\n",
+            "disconnected = !connected\n"
         ],
         triggeringExamples: [
             "↓isHidden = !isHidden\n",
@@ -24,7 +26,7 @@ public struct ToggleBoolRule: ConfigurationProviderRule, OptInRule, AutomaticTes
     )
 
     public func validate(file: File) -> [StyleViolation] {
-        let pattern = "\\b([\\w.]+) = !\\1\\b"
+        let pattern = "(?<![\\w.])([\\w.]+) = !\\1\\b"
         let excludingKinds = SyntaxKind.commentAndStringKinds
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds).map {
             StyleViolation(ruleDescription: type(of: self).description,

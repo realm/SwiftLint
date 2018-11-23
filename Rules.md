@@ -5487,6 +5487,18 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 [String.self].map { type in type.init(1) }
 ```
 
+```swift
+Observable.zip(obs1, obs2, resultSelector: MyType.init).asMaybe()
+```
+
+```swift
+Observable.zip(
+    obs1,
+    obs2,
+    resultSelector: MyType.init
+).asMaybe()
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -5503,6 +5515,14 @@ struct S { let n: Int }; extension S { init() { self.init(n: 1) } }
 func foo() -> [String] {
     return [1].flatMap { String↓.init($0) }
 }
+```
+
+```swift
+Observable.zip(
+    obs1,
+    obs2,
+    resultSelector: { MyType.init($0, $1) }
+).asMaybe()
 ```
 
 </details>

@@ -148,7 +148,7 @@ endif
 	@/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $(NEW_VERSION)" "$(SWIFTLINT_PLIST)"
 	git commit -a -m "release $(NEW_VERSION)"
 	git tag -a $(NEW_VERSION) -m "$(NEW_VERSION_AND_NAME)"
-	git push origin master
+	git push origin release-0.28.2
 	git push origin $(NEW_VERSION)
 
 %:

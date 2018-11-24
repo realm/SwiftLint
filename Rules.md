@@ -16668,6 +16668,16 @@ view.clipsToBounds.toggle()
 func foo() { abc.toggle() }
 ```
 
+```swift
+view.clipsToBounds = !clipsToBounds
+
+```
+
+```swift
+disconnected = !connected
+
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>

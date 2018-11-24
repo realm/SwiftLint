@@ -4,7 +4,7 @@ import Foundation
 extension ConfigurationTests {
 
     var projectMockPathLevel0: String {
-        return bundlePath.stringByAppendingPathComponent("ProjectMock")
+        return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }
 
     var projectMockPathLevel1: String {

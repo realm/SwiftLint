@@ -5,7 +5,7 @@ import XCTest
 
 final class GlobTests: XCTestCase {
     private var mockPath: String {
-        return bundlePath.stringByAppendingPathComponent("ProjectMock")
+        return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }
 
     func testOnlyGlobForWildcard() {

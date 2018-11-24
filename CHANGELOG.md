@@ -10,7 +10,11 @@
 
 #### Enhancements
 
-* None.
+* Add `SWIFTLINT_DISABLE_SOURCEKIT` environment variable to allow running
+  SwiftLint without connecting to SourceKit. This will run a subset of rules
+  that don't require SourceKit, which is useful when running in a sandboxed
+  setting such as in Homebrew's CI.  
+  [Norio Nomura](https://github.com/norio-nomura)
 
 #### Bug Fixes
 

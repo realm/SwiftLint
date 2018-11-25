@@ -14,9 +14,9 @@ jobs:
     steps:
       - checkout
       # Pre-cache
-      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+      - run: swift run --sanitize=thread swiftlint lint --lenient
       # Post-cache
-      - run: swift run -Xswiftc -sanitize=thread swiftlint lint --lenient
+      - run: swift run --sanitize=thread swiftlint lint --lenient
       # Test
       - run: make test_tsan
 

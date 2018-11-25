@@ -50,8 +50,8 @@
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
-          "branch": "syntax-byte-tree",
-          "revision": "58df57738a9a713f6576a2be5ad7a4719b0e3917",
+          "branch": "master",
+          "revision": "b039da63355c73c1351b4552cb7818773376534d",
           "version": null
         }
       },

@@ -1,5 +1,6 @@
 import Foundation
 import SourceKittenFramework
+import SwiftSyntax
 
 internal func regex(_ pattern: String,
                     options: NSRegularExpression.Options? = nil) -> NSRegularExpression {
@@ -58,14 +59,39 @@ extension File {
         if sourcekitdFailed {
             return []
         }
-        let contents = self.contents.bridge()
-        let range = range ?? NSRange(location: 0, length: contents.length)
-        let pattern = "swiftlint:(enable|disable)(:previous|:this|:next)?\\ [^\\n]+"
-        return match(pattern: pattern, with: [.comment], range: range).compactMap { range in
-            return Command(string: contents, range: range)
-        }.flatMap { command in
-            return command.expand()
+
+        class CommandVisitor: SyntaxVisitor {
+            var commands = [Command]()
+
+            var expandedCommands: [Command] {
+                return commands.flatMap { $0.expand() }
+            }
+
+            override func visit(_ token: TokenSyntax) -> SyntaxVisitorContinueKind {
+                for piece in token.leadingTrivia + token.trailingTrivia {
+                    switch piece {
+                    case let .lineComment(text),
+                         let .docLineComment(text),
+                         let .docBlockComment(text),
+                         let .blockComment(text):
+                        if text.contains("swiftlint:"),
+                            case let position = token.positionAfterSkippingLeadingTrivia,
+                            let command = Command(string: text, trailingLine: position.line,
+                                                  trailingCharacter: position.column) {
+                            commands.append(command)
+                        }
+                    default:
+                        break
+                    }
+                }
+
+                return super.visit(token)
+            }
         }
+
+        let visitor = CommandVisitor()
+        syntax.walk(visitor)
+        return visitor.expandedCommands
     }
 
     fileprivate func endOf(next command: Command?) -> Location {
@@ -88,7 +114,8 @@ extension File {
         return Location(file: path, line: nextLine, character: nextCharacter)
     }
 
-    internal func match(pattern: String, with syntaxKinds: [SyntaxKind], range: NSRange? = nil) -> [NSRange] {
+    internal func match(pattern: String, with syntaxKinds: [SourceKittenFramework.SyntaxKind],
+                        range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
             .filter { $0.1 == syntaxKinds }
             .map { $0.0 }
@@ -107,8 +134,9 @@ extension File {
         }
     }
 
-    internal func matchesAndSyntaxKinds(matching pattern: String,
-                                        range: NSRange? = nil) -> [(NSTextCheckingResult, [SyntaxKind])] {
+    internal func matchesAndSyntaxKinds(
+        matching pattern: String,
+        range: NSRange? = nil) -> [(NSTextCheckingResult, [SourceKittenFramework.SyntaxKind])] {
         return matchesAndTokens(matching: pattern, range: range).map { textCheckingResult, tokens in
             (textCheckingResult, tokens.compactMap { SyntaxKind(rawValue: $0.type) })
         }
@@ -119,7 +147,7 @@ extension File {
         return matchesAndTokens(matching: pattern, range: range).map { ($0.0.range, $0.1) }
     }
 
-    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SyntaxKind])] {
+    internal func match(pattern: String, range: NSRange? = nil) -> [(NSRange, [SourceKittenFramework.SyntaxKind])] {
         return matchesAndSyntaxKinds(matching: pattern, range: range).map { textCheckingResult, syntaxKinds in
             (textCheckingResult.range, syntaxKinds)
         }
@@ -178,7 +206,7 @@ extension File {
         return results
     }
 
-    internal func syntaxKindsByLine() -> [[SyntaxKind]]? {
+    internal func syntaxKindsByLine() -> [[SourceKittenFramework.SyntaxKind]]? {
         guard !sourcekitdFailed, let tokens = syntaxTokensByLine() else {
             return nil
         }
@@ -199,7 +227,7 @@ extension File {
      file contents.
      */
     internal func match(pattern: String,
-                        excludingSyntaxKinds syntaxKinds: Set<SyntaxKind>,
+                        excludingSyntaxKinds syntaxKinds: Set<SourceKittenFramework.SyntaxKind>,
                         range: NSRange? = nil) -> [NSRange] {
         return match(pattern: pattern, range: range)
             .filter { $0.1.filter(syntaxKinds.contains).isEmpty }
@@ -210,7 +238,7 @@ extension File {
 
     internal func match(pattern: String,
                         range: NSRange? = nil,
-                        excludingSyntaxKinds: Set<SyntaxKind>,
+                        excludingSyntaxKinds: Set<SourceKittenFramework.SyntaxKind>,
                         excludingPattern: String,
                         exclusionMapping: MatchMapping = { $0.range }) -> [NSRange] {
         let matches = match(pattern: pattern, excludingSyntaxKinds: excludingSyntaxKinds)

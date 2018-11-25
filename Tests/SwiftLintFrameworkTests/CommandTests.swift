@@ -5,8 +5,7 @@ import XCTest
 
 private extension Command {
     init?(string: String) {
-        let nsString = string.bridge()
-        self.init(string: nsString, range: NSRange(location: 3, length: nsString.length - 4))
+        self.init(string: string, trailingLine: 2, trailingCharacter: 1)
     }
 }
 
@@ -26,7 +25,7 @@ class CommandTests: XCTestCase {
     func testDisable() {
         let input = "// swiftlint:disable rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: 29, modifier: nil)
+        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: nil)
         XCTAssertEqual(file.commands(), [expected])
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -34,7 +33,7 @@ class CommandTests: XCTestCase {
     func testDisablePrevious() {
         let input = "// swiftlint:disable:previous rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: 38,
+        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: 1,
                                modifier: .previous)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
@@ -43,7 +42,7 @@ class CommandTests: XCTestCase {
     func testDisableThis() {
         let input = "// swiftlint:disable:this rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: 34, modifier: .this)
+        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: .this)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -51,7 +50,7 @@ class CommandTests: XCTestCase {
     func testDisableNext() {
         let input = "// swiftlint:disable:next rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 1, character: 34, modifier: .next)
+        let expected = Command(action: .disable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: .next)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -59,7 +58,7 @@ class CommandTests: XCTestCase {
     func testEnable() {
         let input = "// swiftlint:enable rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 28, modifier: nil)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: nil)
         XCTAssertEqual(file.commands(), [expected])
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -67,7 +66,7 @@ class CommandTests: XCTestCase {
     func testEnablePrevious() {
         let input = "// swiftlint:enable:previous rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 37,
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: 1,
                                modifier: .previous)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
@@ -76,7 +75,7 @@ class CommandTests: XCTestCase {
     func testEnableThis() {
         let input = "// swiftlint:enable:this rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 33, modifier: .this)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: .this)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }
@@ -84,7 +83,7 @@ class CommandTests: XCTestCase {
     func testEnableNext() {
         let input = "// swiftlint:enable:next rule_id\n"
         let file = File(contents: input)
-        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 1, character: 33, modifier: .next)
+        let expected = Command(action: .enable, ruleIdentifiers: ["rule_id"], line: 2, character: 1, modifier: .next)
         XCTAssertEqual(file.commands(), expected.expand())
         XCTAssertEqual(Command(string: input), expected)
     }

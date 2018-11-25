@@ -115,13 +115,13 @@ extension File {
 
     internal var sourcekitdFailed: Bool {
         get {
-            return responseCache.get(self) == nil
+            return syntaxCache.get(self) == nil
         }
         set {
             if newValue {
-                responseCache.set(key: cacheKey, value: nil)
+                syntaxCache.set(key: cacheKey, value: nil)
             } else {
-                responseCache.unset(key: cacheKey)
+                syntaxCache.unset(key: cacheKey)
             }
         }
     }

@@ -62,6 +62,39 @@ public struct Command: Equatable {
         self.modifier = modifier
     }
 
+    public init?(string: String, trailingLine: Int, trailingCharacter: Int) {
+        let scanner = Scanner(string: string)
+        _ = scanner.scanUpToString("swiftlint:")
+        _ = scanner.scanString(string: "swiftlint:")
+        guard let actionAndModifierString = scanner.scanUpToString(" ") else {
+            return nil
+        }
+        let actionAndModifierScanner = Scanner(string: actionAndModifierString)
+        guard let actionString = actionAndModifierScanner.scanUpToString(":"),
+            let action = Action(rawValue: actionString)
+            else {
+                return nil
+        }
+        self.action = action
+        line = trailingLine
+        character = trailingCharacter
+
+        let ruleTexts = scanner.string.bridge().substring(
+            from: scanner.scanLocation + 1
+        ).components(separatedBy: .whitespaces).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        ruleIdentifiers = Set(ruleTexts.map(RuleIdentifier.init(_:)))
+
+        // Modifier
+        let hasModifier = actionAndModifierScanner.scanString(string: ":") != nil
+        if hasModifier {
+            let modifierString = actionAndModifierScanner.string.bridge()
+                .substring(from: actionAndModifierScanner.scanLocation)
+            modifier = Modifier(rawValue: modifierString)
+        } else {
+            modifier = nil
+        }
+    }
+
     public init?(string: NSString, range: NSRange) {
         let scanner = Scanner(string: string.substring(with: range))
         _ = scanner.scanString(string: "swiftlint:")

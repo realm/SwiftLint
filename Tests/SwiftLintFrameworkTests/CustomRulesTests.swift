@@ -164,6 +164,6 @@ class CustomRulesTests: XCTestCase {
     }
 
     private func getTestTextFile() -> File {
-        return File(path: "\(bundlePath)/test.txt")!
+        return File(path: "\(testResourcesPath)/test.txt")!
     }
 }

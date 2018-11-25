@@ -41,6 +41,6 @@ class YamlSwiftLintTests: XCTestCase {
     }
 
     private func getTestYaml() throws -> String {
-        return try String(contentsOfFile: "\(bundlePath)/test.yml", encoding: .utf8)
+        return try String(contentsOfFile: "\(testResourcesPath)/test.yml", encoding: .utf8)
     }
 }

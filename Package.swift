@@ -14,7 +14,7 @@ let package = Package(
         .library(name: "SwiftLintFramework", targets: ["SwiftLintFramework"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.40200.0")),
+        .package(url: "https://github.com/jpsim/swift-syntax.git", .branch("codegen-11-24")),
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.15.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.22.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "1.0.1"),

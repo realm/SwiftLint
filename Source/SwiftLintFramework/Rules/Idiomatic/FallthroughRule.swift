@@ -40,13 +40,14 @@ public struct FallthroughRule: ConfigurationProviderRule, OptInRule, AutomaticTe
         class FallthroughVisitor: SyntaxVisitor {
             var positions = [AbsolutePosition]()
 
-            override func visit(_ node: FallthroughStmtSyntax) {
+            override func visit(_ node: FallthroughStmtSyntax) -> SyntaxVisitorContinueKind {
                 positions.append(node.positionAfterSkippingLeadingTrivia)
+                return super.visit(node)
             }
         }
 
         let visitor = FallthroughVisitor()
-        visitor.visit(file.syntax)
+        _ = visitor.visit(file.syntax)
         return visitor.positions.map { position in
             StyleViolation(ruleDescription: type(of: self).description, severity: configuration.severity,
                            location: Location(file: file.path, line: position.line, character: position.column))

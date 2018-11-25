@@ -14,10 +14,13 @@ private var responseCache = Cache({ file -> [String: SourceKitRepresentable]? in
 })
 private var syntaxCache = Cache({ file -> SourceFileSyntax? in
     do {
-        let response = try Request.syntaxTree(file: file).sendIfNotDisabled()
-        let syntaxTreeData = (response["key.serialized_syntax_tree"] as! String).data(using: .utf8)!
+        let response = try Request.syntaxTree(file: file, byteTree: true).sendIfNotDisabled()
+        guard let syntaxTreeData = response["key.serialized_syntax_tree"] as? Data else {
+            return nil
+        }
+
         let deserializer = SyntaxTreeDeserializer()
-        return try deserializer.deserialize(syntaxTreeData)
+        return try deserializer.deserialize(syntaxTreeData, serializationFormat: .byteTree)
     } catch let error as Request.Error {
         queuedPrintError(error.description)
         return nil
@@ -176,7 +179,7 @@ extension File {
         return syntaxTokensByLines
     }
 
-    internal var syntaxKindsByLines: [[SyntaxKind]] {
+    internal var syntaxKindsByLines: [[SourceKittenFramework.SyntaxKind]] {
         guard let syntaxKindsByLines = syntaxKindsByLinesCache.get(self) else {
             if let handler = assertHandler {
                 handler()

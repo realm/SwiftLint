@@ -62,6 +62,13 @@
             ReferencedContainer = "container:SwiftLint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "TOOLCHAIN_DIR"
+            value = "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2018-11-22-a.xctoolchain"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

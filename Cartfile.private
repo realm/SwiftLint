@@ -1,4 +1,3 @@
 github "Carthage/Commandant" ~> 0.15.0
 github "jpsim/Yams" ~> 1.0.1
 github "jspahrsummers/xcconfigs" ~> 0.12.0
-github "krzyzanowskim/CryptoSwift" ~> 0.13.0

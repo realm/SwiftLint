@@ -40,21 +40,25 @@ class IntegrationTests: XCTestCase {
     }
 
     func testSimulateHomebrewTest() {
-        // Since this test uses `swiftlint` that is built alongside on building `SwiftLintPackageTests`,
-        // it runs only on macOS using SwiftPM.
-    #if os(macOS) && SWIFT_PACKAGE
-        guard let swiftlintURL = swiftlintBuiltBySwiftPM() else { return }
-        guard let (testSwiftURL, seatbeltURL) = prepareSandbox() else { return }
+        // Since this test uses the `swiftlint` binary built while building `SwiftLintPackageTests`,
+        // we run it only on macOS using SwiftPM.
+#if os(macOS) && SWIFT_PACKAGE
+        guard let swiftlintURL = swiftlintBuiltBySwiftPM(),
+            let (testSwiftURL, seatbeltURL) = prepareSandbox() else {
+            return
+        }
+
         defer {
             try? FileManager.default.removeItem(at: testSwiftURL.deletingLastPathComponent())
             try? FileManager.default.removeItem(at: seatbeltURL)
         }
+
         let swiftlintInSandboxArgs = ["sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
                                       "SWIFTLINT_SWIFT_VERSION=3 \(swiftlintURL.path) --no-cache"]
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
         if #available(macOS 10.14.1, *) {
-            // Within sandbox on macOS 10.14.1+, `swiftlint` crashes with "Test::Unit::AssertionFailedError"
-            // error in `libxpc.dylib` on calling `sourcekitd_send_request_sync`.
+            // Within a sandbox on macOS 10.14.1+, `swiftlint` crashes with "Test::Unit::AssertionFailedError"
+            // error in `libxpc.dylib` when calling `sourcekitd_send_request_sync`.
             //
             // Since Homebrew CI succeeded in bottling swiftlint 0.27.0 on release of macOS 10.14,
             // `swiftlint` may not crash on macOS 10.14. But that is not confirmed.
@@ -81,15 +85,18 @@ class IntegrationTests: XCTestCase {
 
                 """)
         }
-    #endif
+#endif
     }
 
     func testSimulateHomebrewTestWithDisableSourceKit() {
-        // Since this test uses `swiftlint` that is built alongside on building `SwiftLintPackageTests`,
-        // it runs only on macOS using SwiftPM.
-    #if os(macOS) && SWIFT_PACKAGE
-        guard let swiftlint = swiftlintBuiltBySwiftPM() else { return }
-        guard let (testSwiftURL, seatbeltURL) = prepareSandbox() else { return }
+        // Since this test uses the `swiftlint` binary built while building `SwiftLintPackageTests`,
+        // we run it only on macOS using SwiftPM.
+#if os(macOS) && SWIFT_PACKAGE
+        guard let swiftlintURL = swiftlintBuiltBySwiftPM(),
+            let (testSwiftURL, seatbeltURL) = prepareSandbox() else {
+                return
+        }
+
         defer {
             try? FileManager.default.removeItem(at: testSwiftURL.deletingLastPathComponent())
             try? FileManager.default.removeItem(at: seatbeltURL)
@@ -97,7 +104,7 @@ class IntegrationTests: XCTestCase {
 
         let swiftlintInSandboxArgs = [
             "sandbox-exec", "-f", seatbeltURL.path, "sh", "-c",
-            "SWIFTLINT_SWIFT_VERSION=3 SWIFTLINT_DISABLE_SOURCEKIT=1 \(swiftlint.path) --no-cache"
+            "SWIFTLINT_SWIFT_VERSION=3 SWIFTLINT_DISABLE_SOURCEKIT=1 \(swiftlintURL.path) --no-cache"
         ]
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
         XCTAssertEqual(swiftlintResult.status, 0)
@@ -107,14 +114,14 @@ class IntegrationTests: XCTestCase {
 
             """)
         XCTAssertEqual(swiftlintResult.stderr, """
-                Linting Swift files at paths \n\
-                Linting 'Test.swift' (1/1)
-                SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.
-                Most rules will be skipped because sourcekitd has failed.
-                Done linting! Found 1 violation, 0 serious in 1 file.
+            Linting Swift files at paths \n\
+            Linting 'Test.swift' (1/1)
+            SourceKit is disabled by `SWIFTLINT_DISABLE_SOURCEKIT`.
+            Most rules will be skipped because sourcekitd has failed.
+            Done linting! Found 1 violation, 0 serious in 1 file.
 
-                """)
-    #endif
+            """)
+#endif
     }
 }
 

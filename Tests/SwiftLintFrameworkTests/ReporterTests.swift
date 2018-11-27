@@ -14,7 +14,8 @@ class ReporterTests: XCTestCase {
             JUnitReporter.self,
             HTMLReporter.self,
             EmojiReporter.self,
-            SonarQubeReporter.self
+            SonarQubeReporter.self,
+            MarkdownReporter.self
         ]
         for reporter in reporters {
             XCTAssertEqual(reporter.identifier, reporterFrom(identifier: reporter.identifier).identifier)
@@ -108,5 +109,11 @@ class ReporterTests: XCTestCase {
         let expectedOutput = stringFromFile("CannedSonarQubeReporterOutput.json")
         let result = SonarQubeReporter.generateReport(generateViolations())
         XCTAssertEqual(try jsonValue(result), try jsonValue(expectedOutput))
+    }
+
+    func testMarkdownReporter() {
+        let expectedOutput = stringFromFile("CannedMarkdownReporterOutput.md")
+        let result = MarkdownReporter.generateReport(generateViolations())
+        XCTAssertEqual(result, expectedOutput)
     }
 }

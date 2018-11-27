@@ -41,6 +41,10 @@
 
 #### Enhancements
 
+* Add custom markdown reporter
+  Markdown (with tables) reporter for Github and Gitlab.
+  [Dani Vela](https://github.com/madcato)
+
 * Add `SWIFTLINT_DISABLE_SOURCEKIT` environment variable to allow running
   SwiftLint without connecting to SourceKit. This will run a subset of rules
   that don't require SourceKit, which is useful when running in a sandboxed

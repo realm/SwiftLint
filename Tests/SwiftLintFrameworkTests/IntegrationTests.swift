@@ -72,7 +72,7 @@ class IntegrationTests: XCTestCase {
         } else {
             XCTAssertEqual(swiftlintResult.status, 0)
             XCTAssertEqual(swiftlintResult.stdout, """
-                \(testSwiftURL.path):1: \
+                \(testSwiftURL.path):1:1: \
                 warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
 
                 """)
@@ -109,7 +109,7 @@ class IntegrationTests: XCTestCase {
         let swiftlintResult = execute(swiftlintInSandboxArgs, in: testSwiftURL.deletingLastPathComponent())
         XCTAssertEqual(swiftlintResult.status, 0)
         XCTAssertEqual(swiftlintResult.stdout, """
-            \(testSwiftURL.path):1: \
+            \(testSwiftURL.path):1:1: \
             warning: Trailing Newline Violation: Files should have a single trailing newline. (trailing_newline)
 
             """)

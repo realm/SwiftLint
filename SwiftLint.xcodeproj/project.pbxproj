@@ -40,6 +40,8 @@
 		2E336D1B1DF08BFB00CCFE77 /* EmojiReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */; };
 		2E5761AA1C573B83003271AF /* FunctionParameterCountRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */; };
 		31F1B6CC1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */; };
+		341FDB1F21AD66550022E8E9 /* CannedMarkdownReporterOutput.md in Resources */ = {isa = PBXBuildFile; fileRef = 341FDB1E21AD66550022E8E9 /* CannedMarkdownReporterOutput.md */; };
+		341FDB2021AD69970022E8E9 /* MarkdownReporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 341FDB1C21AD61B20022E8E9 /* MarkdownReporter.swift */; };
 		37B3FA8B1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */; };
 		3A915E5B20A1543700519F3A /* ClosureEndIndentationRuleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */; };
 		3ABE19CF20B7CE32009C2EC2 /* MultilineFunctionChainsRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABE19CD20B7CDE0009C2EC2 /* MultilineFunctionChainsRule.swift */; };
@@ -459,6 +461,8 @@
 		2E336D191DF08AF200CCFE77 /* EmojiReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiReporter.swift; sourceTree = "<group>"; };
 		2E5761A91C573B83003271AF /* FunctionParameterCountRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionParameterCountRule.swift; sourceTree = "<group>"; };
 		31F1B6CB1F60BF4500A57456 /* SwitchCaseAlignmentRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCaseAlignmentRule.swift; sourceTree = "<group>"; };
+		341FDB1C21AD61B20022E8E9 /* MarkdownReporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownReporter.swift; sourceTree = "<group>"; };
+		341FDB1E21AD66550022E8E9 /* CannedMarkdownReporterOutput.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CannedMarkdownReporterOutput.md; sourceTree = "<group>"; };
 		37B3FA8A1DFD45A700AD30D2 /* Dictionary+SwiftLint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+SwiftLint.swift"; sourceTree = "<group>"; };
 		3A915E5920A1543000519F3A /* ClosureEndIndentationRuleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureEndIndentationRuleExamples.swift; sourceTree = "<group>"; };
 		3ABE19CD20B7CDE0009C2EC2 /* MultilineFunctionChainsRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultilineFunctionChainsRule.swift; sourceTree = "<group>"; };
@@ -867,6 +871,7 @@
 				B3935001033261E5A70CE101 /* CannedEmojiReporterOutput.txt */,
 				B39350463894A3FC1338E0AF /* CannedJSONReporterOutput.json */,
 				584B0D3B2112E8FB002F7E25 /* CannedSonarQubeReporterOutput.json */,
+				341FDB1E21AD66550022E8E9 /* CannedMarkdownReporterOutput.md */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1396,6 +1401,7 @@
 				4A9A3A391DC1D75F00DF5183 /* HTMLReporter.swift */,
 				E86396C81BADB2B9002C9E88 /* JSONReporter.swift */,
 				57ED82791CF65183002B3513 /* JUnitReporter.swift */,
+				341FDB1C21AD61B20022E8E9 /* MarkdownReporter.swift */,
 				E86396C41BADAC15002C9E88 /* XcodeReporter.swift */,
 				584B0D392112BA78002F7E25 /* SonarQubeReporter.swift */,
 			);
@@ -1620,6 +1626,7 @@
 			files = (
 				3B12C9C11C3209CB000B423F /* test.yml in Resources */,
 				F9D73F031D0CF15E00222FC4 /* test.txt in Resources */,
+				341FDB1F21AD66550022E8E9 /* CannedMarkdownReporterOutput.md in Resources */,
 				3BDB224B1C345B4900473680 /* ProjectMock in Resources */,
 				B3935797FF80C7F97953D375 /* CannedHTMLReporterOutput.html in Resources */,
 				B3935371E92E0CF3F7668303 /* CannedJunitReporterOutput.xml in Resources */,
@@ -1782,6 +1789,7 @@
 				D4E92D1F2137B4C9002EDD48 /* IdenticalOperandsRule.swift in Sources */,
 				6250D32A1ED4DFEB00735129 /* MultilineParametersRule.swift in Sources */,
 				009E092A1DFEE4DD00B588A7 /* ProhibitedSuperConfiguration.swift in Sources */,
+				341FDB2021AD69970022E8E9 /* MarkdownReporter.swift in Sources */,
 				181D9E172038343D001F6887 /* UntypedErrorInCatchRule.swift in Sources */,
 				47FF3BE11E7C75B600187E6D /* ImplicitlyUnwrappedOptionalRule.swift in Sources */,
 				623E36F01F3DB1B1002E5B71 /* QuickDiscouragedCallRule.swift in Sources */,

@@ -963,7 +963,8 @@ extension ReporterTests {
         ("testCheckstyleReporter", testCheckstyleReporter),
         ("testJunitReporter", testJunitReporter),
         ("testHTMLReporter", testHTMLReporter),
-        ("testSonarQubeReporter", testSonarQubeReporter)
+        ("testSonarQubeReporter", testSonarQubeReporter),
+        ("testMarkdownReporter", testMarkdownReporter)
     ]
 }
 

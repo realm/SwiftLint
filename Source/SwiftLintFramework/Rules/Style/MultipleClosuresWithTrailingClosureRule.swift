@@ -66,7 +66,7 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
 
 private extension Array where Element == [String: SourceKitRepresentable] {
     func filterClosures(file: File) -> [[String: SourceKitRepresentable]] {
-        if SwiftVersion.current < SwiftVersion.fourDotTwo {
+        if SwiftVersion.current < .fourDotTwo {
             return filter { argument in
                 guard let offset = argument.bodyOffset,
                     let length = argument.bodyLength,

@@ -93,7 +93,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             """
         ]
 
-        guard SwiftVersion.current >= SwiftVersion.fourDotOne else {
+        guard SwiftVersion.current >= .fourDotOne else {
             return commonExamples
         }
 
@@ -158,7 +158,7 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
             """
         ]
 
-        guard SwiftVersion.current >= SwiftVersion.fourDotOne else {
+        guard SwiftVersion.current >= .fourDotOne else {
             return commonExamples
         }
 

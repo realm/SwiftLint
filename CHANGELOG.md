@@ -20,7 +20,8 @@
 * Fix compiler warnings when building with Swift 4.2 introduced in the last
   release.  
   [JP Simard](https://github.com/jpsim)
-* Fix false positive in explicit_init rule  
+
+* Fix false positive in `explicit_init` rule.  
   [Dominic Freeston](https://github.com/dominicfreeston)
 
 * Fix `toggle_bool` false positive violation when comparing object parameter to

@@ -38,7 +38,7 @@ all: build
 sourcery: Source/SwiftLintFramework/Models/MasterRuleList.swift Tests/SwiftLintFrameworkTests/AutomaticRuleTests.generated.swift Tests/LinuxMain.swift
 
 Tests/LinuxMain.swift: Tests/*/*.swift .sourcery/LinuxMain.stencil
-	sourcery --sources Tests --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
+	sourcery --sources Tests --exclude-sources Tests/SwiftLintFrameworkTests/Resources --templates .sourcery/LinuxMain.stencil --output .sourcery --force-parse generated
 	mv .sourcery/LinuxMain.generated.swift Tests/LinuxMain.swift
 
 Source/SwiftLintFramework/Models/MasterRuleList.swift: Source/SwiftLintFramework/Rules/**/*.swift .sourcery/MasterRuleList.stencil

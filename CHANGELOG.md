@@ -29,6 +29,10 @@
   [Timofey Solonin](https://github.com/biboran)
   [#2471](https://github.com/realm/SwiftLint/issues/2471)
 
+* Fix false positive on file_name rule with specific patterns.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2417](https://github.com/realm/SwiftLint/issues/2417)
+
 ## 0.28.2: EnviroBoost Plus
 
 #### Breaking
@@ -182,10 +186,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   (i.e. `closure_end_indentation`).  
   [Ornithologist Coder](https://github.com/ornithocoder)
   [#2374](https://github.com/realm/SwiftLint/issues/2374)
-  
-* Fix false positive on file_name rule with specific patterns.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2417](https://github.com/realm/SwiftLint/issues/2417)
 
 * Fix false positive on `empty_count` rule when assessing binary, octal and
   hexadecimal integer literals.  

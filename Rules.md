@@ -14794,35 +14794,35 @@ private @GKInspectable var foo: String! {}
 ```swift
 @objcMembers
 class Foo {
-   var bar: Any?
-   @objc
-   class Bar {
-       @objc
-       var foo: Any?
-   }
+  var bar: Any?
+  @objc
+  class Bar {
+    @objc
+    var foo: Any?
+  }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-   var bar: Int {
-       return 0
-   }
+  var bar: Int {
+    return 0
+  }
 }
 ```
 
 ```swift
 extension Foo {
-   @objc
-   var bar: Int { return 0 }
+  @objc
+  var bar: Int { return 0 }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-   var bar: Int { return 0 }
+  var bar: Int { return 0 }
 }
 ```
 
@@ -14878,40 +14878,40 @@ extension Foo {
 ```swift
 @objcMembers
 class Foo {
-   @objc ↓var bar: Any?
+  @objc ↓var bar: Any?
 }
 ```
 
 ```swift
 @objcMembers
 class Foo {
-   @objc ↓var bar: Any?
-   @objc ↓var foo: Any?
-   @objc
-   class Bar {
-       @objc
-       var foo: Any?
-   }
+  @objc ↓var bar: Any?
+  @objc ↓var foo: Any?
+  @objc
+  class Bar {
+    @objc
+    var foo: Any?
+  }
 }
 ```
 
 ```swift
 @objc
 extension Foo {
-   @objc
-   ↓var bar: Int {
-       return 0
-    }
+  @objc
+  ↓var bar: Int {
+    return 0
+  }
 }
 ```
 
 ```swift
 @objc @IBDesignable
 extension Foo {
-   @objc
-   ↓var bar: Int {
-       return 0
-    }
+  @objc
+  ↓var bar: Int {
+    return 0
+  }
 }
 ```
 

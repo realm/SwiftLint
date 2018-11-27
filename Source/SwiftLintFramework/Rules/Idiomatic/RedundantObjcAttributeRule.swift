@@ -21,35 +21,45 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             "private @GKInspectable var foo: String! {}",
             "@NSManaged var foo: String!",
             "@objc @NSCopying var foo: String!",
-            "@objcMembers\n"                    +
-            "class Foo {\n"                     +
-            "   var bar: Any?\n"                +
-            "   @objc\n"                        +
-            "   class Bar {\n"                  +
-            "       @objc\n"                    +
-            "       var foo: Any?\n"            +
-            "   }\n"                            +
-            "}",
-            "@objc\n"                           +
-            "extension Foo {\n"                 +
-            "   var bar: Int {\n"               +
-            "       return 0\n"                 +
-            "   }\n"                            +
-            "}",
-            "extension Foo {\n"                 +
-            "   @objc\n"                        +
-            "   var bar: Int { return 0 }\n"    +
-            "}",
-            "@objc @IBDesignable\n"             +
-            "extension Foo {\n"                 +
-            "   var bar: Int { return 0 }\n"    +
-            "}",
-            "@IBDesignable\n"                   +
-            "extension Foo {\n"                 +
-            "   @objc\n"                        +
-            "   var bar: Int { return 0 }\n"    +
-            "   var fooBar: Int { return 1 }\n" +
-            "}"
+            """
+            @objcMembers
+            class Foo {
+              var bar: Any?
+              @objc
+              class Bar {
+                @objc
+                var foo: Any?
+              }
+            }
+            """,
+            """
+            @objc
+            extension Foo {
+              var bar: Int {
+                return 0
+              }
+            }
+            """,
+            """
+            extension Foo {
+              @objc
+              var bar: Int { return 0 }
+            }
+            """,
+            """
+            @objc @IBDesignable
+            extension Foo {
+              var bar: Int { return 0 }
+            }
+            """,
+            """
+            @IBDesignable
+            extension Foo {
+               @objc
+               var bar: Int { return 0 }
+               var fooBar: Int { return 1 }
+            }
+            """
         ],
         triggeringExamples: [
             "@objc @IBInspectable private ↓var foo: String? {}",
@@ -61,34 +71,42 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             "@objc @NSManaged private ↓var foo: String!",
             "@NSManaged @objc private ↓var foo: String!",
             "@objc @IBDesignable ↓class Foo {}",
-            "@objcMembers\n"                    +
-            "class Foo {\n"                     +
-            "   @objc ↓var bar: Any?\n"         +
-            "}",
-            "@objcMembers\n"                    +
-            "class Foo {\n"                     +
-            "   @objc ↓var bar: Any?\n"         +
-            "   @objc ↓var foo: Any?\n"         +
-            "   @objc\n"                        +
-            "   class Bar {\n"                  +
-            "       @objc\n"                    +
-            "       var foo: Any?\n"            +
-            "   }\n"                            +
-            "}",
-            "@objc\n"                           +
-            "extension Foo {\n"                 +
-            "   @objc\n"                        +
-            "   ↓var bar: Int {\n"              +
-            "       return 0\n"                 +
-            "    }\n"                           +
-            "}",
-            "@objc @IBDesignable\n"             +
-            "extension Foo {\n"                 +
-                "   @objc\n"                    +
-                "   ↓var bar: Int {\n"          +
-                "       return 0\n"             +
-                "    }\n"                       +
-            "}"
+            """
+            @objcMembers
+            class Foo {
+              @objc ↓var bar: Any?
+            }
+            """,
+            """
+            @objcMembers
+            class Foo {
+              @objc ↓var bar: Any?
+              @objc ↓var foo: Any?
+              @objc
+              class Bar {
+                @objc
+                var foo: Any?
+              }
+            }
+            """,
+            """
+            @objc
+            extension Foo {
+              @objc
+              ↓var bar: Int {
+                return 0
+              }
+            }
+            """,
+            """
+            @objc @IBDesignable
+            extension Foo {
+              @objc
+              ↓var bar: Int {
+                return 0
+              }
+            }
+            """
         ])
 
     public func validate(file: File,

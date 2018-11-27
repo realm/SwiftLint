@@ -1,6 +1,12 @@
 // swift-tools-version:4.0
 import PackageDescription
 
+#if canImport(CommonCrypto)
+private let addCryptoSwift = false
+#else
+private let addCryptoSwift = true
+#endif
+
 let package = Package(
     name: "SwiftLint",
     products: [
@@ -11,9 +17,8 @@ let package = Package(
         .package(url: "https://github.com/Carthage/Commandant.git", from: "0.15.0"),
         .package(url: "https://github.com/jpsim/SourceKitten.git", from: "0.21.3"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "1.0.1"),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "0.13.0"),
         .package(url: "https://github.com/scottrhoyt/SwiftyTextTable.git", from: "0.8.2"),
-    ],
+    ] + (addCryptoSwift ? [.package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "0.13.0")] : []),
     targets: [
         .target(
             name: "swiftlint",
@@ -26,10 +31,9 @@ let package = Package(
         .target(
             name: "SwiftLintFramework",
             dependencies: [
-                "CryptoSwift",
                 "SourceKittenFramework",
                 "Yams",
-            ]
+            ] + (addCryptoSwift ? ["CryptoSwift"] : [])
         ),
         .testTarget(
             name: "SwiftLintFrameworkTests",

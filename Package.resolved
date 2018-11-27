@@ -11,15 +11,6 @@
         }
       },
       {
-        "package": "CryptoSwift",
-        "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
-        "state": {
-          "branch": null,
-          "revision": "874280173e082cdd7ac6602be235914efe3f4dbc",
-          "version": "0.13.0"
-        }
-      },
-      {
         "package": "Nimble",
         "repositoryURL": "https://github.com/Quick/Nimble.git",
         "state": {
@@ -69,8 +60,8 @@
         "repositoryURL": "https://github.com/drmohundro/SWXMLHash.git",
         "state": {
           "branch": null,
-          "revision": "b130217d81833cecd7ddf78b76d60200f1070d98",
-          "version": "4.7.4"
+          "revision": "26b7613546db50e1b260999ca1d8e74679c4ee9a",
+          "version": "4.7.5"
         }
       },
       {

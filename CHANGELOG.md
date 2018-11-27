@@ -42,7 +42,7 @@
 #### Enhancements
 
 * Add custom markdown reporter
-  Markdown (with tables) reporter for Github and Gitlab.
+  Markdown reporter (formatted with tables for Gitlab and Github)
   [Dani Vela](https://github.com/madcato)
 
 * Add `SWIFTLINT_DISABLE_SOURCEKIT` environment variable to allow running

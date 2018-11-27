@@ -10,7 +10,7 @@ public struct Location: CustomStringConvertible, Comparable {
         // {full_path_to_file}{:line}{:character}: {error,warning}: {content}
         let fileString: String = file ?? "<nopath>"
         let lineString: String = ":\(line ?? 1)"
-        let charString: String = character.map({ ":\($0)" }) ?? ""
+        let charString: String = ":\(character ?? 1)"
         return [fileString, lineString, charString].joined()
     }
     public var relativeFile: String? {

@@ -33,6 +33,11 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#2417](https://github.com/realm/SwiftLint/issues/2417)
 
+* Fix crash in `no_fallthrough_only` and potentially other rules when linting
+  files with unicode characters in certain locations.  
+  [JP Simard](https://github.com/jpsim)
+  [#2276](https://github.com/realm/SwiftLint/issues/2276)
+
 ## 0.28.2: EnviroBoost Plus
 
 #### Breaking

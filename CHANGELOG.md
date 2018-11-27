@@ -46,6 +46,12 @@
   [JP Simard](https://github.com/jpsim)
   [#2276](https://github.com/realm/SwiftLint/issues/2276)
 
+* Fix violations with no character/column location not being reported in
+  `xcpretty`. Now violations with no column location default to a column value
+  of `1` indicating the start of the line.  
+  [JP Simard](https://github.com/jpsim)
+  [#2267](https://github.com/realm/SwiftLint/issues/2267)
+
 ## 0.28.2: EnviroBoost Plus
 
 #### Breaking

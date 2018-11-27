@@ -15,6 +15,10 @@
   with CommonCrypto.  
   [JP Simard](https://github.com/jpsim)
 
+* Add `markdown` reporter which outputs markdown-formatted tables, ideal for
+  rendering in GitLab or GitHub.  
+  [Dani Vela](https://github.com/madcato)
+
 * Add `testSimulateHomebrewTest()` to `IntegrationTests` that simulates test in
   `homebrew-core/Formula/swiftlint.rb` within sandbox.  
   [Norio Nomura](https://github.com/norio-nomura)
@@ -53,10 +57,6 @@
 * None.
 
 #### Enhancements
-
-* Add custom markdown reporter
-  Markdown reporter (formatted with tables for Gitlab and Github)
-  [Dani Vela](https://github.com/madcato)
 
 * Add `SWIFTLINT_DISABLE_SOURCEKIT` environment variable to allow running
   SwiftLint without connecting to SourceKit. This will run a subset of rules

@@ -33,12 +33,6 @@ extension BlockBasedKVORuleTests {
     ]
 }
 
-extension BoolExtensionTests {
-    static var allTests: [(String, (BoolExtensionTests) -> () throws -> Void)] = [
-        ("testExample", testExample)
-    ]
-}
-
 extension ClassDelegateProtocolRuleTests {
     static var allTests: [(String, (ClassDelegateProtocolRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1310,7 +1304,6 @@ XCTMain([
     testCase(ArrayInitRuleTests.allTests),
     testCase(AttributesRuleTests.allTests),
     testCase(BlockBasedKVORuleTests.allTests),
-    testCase(BoolExtensionTests.allTests),
     testCase(ClassDelegateProtocolRuleTests.allTests),
     testCase(ClosingBraceRuleTests.allTests),
     testCase(ClosureBodyLengthRuleTests.allTests),

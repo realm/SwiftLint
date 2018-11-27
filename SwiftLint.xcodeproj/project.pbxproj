@@ -151,8 +151,6 @@
 		8F6B3154213CDCD100858E44 /* UnusedPrivateDeclarationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B3153213CDCD100858E44 /* UnusedPrivateDeclarationRule.swift */; };
 		8F715B83213B528B00427BD9 /* UnusedImportRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F715B82213B528B00427BD9 /* UnusedImportRule.swift */; };
 		8F8050821FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8050811FFE0CBB006F5B93 /* Configuration+IndentationStyle.swift */; };
-		8FB2AE2F21A1F99200D380F3 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FB2AE2E21A1F99200D380F3 /* CryptoSwift.framework */; };
-		8FB2AE3021A1F99F00D380F3 /* CryptoSwift.framework in Embed Frameworks into SwiftLintFramework.framework */ = {isa = PBXBuildFile; fileRef = 8FB2AE2E21A1F99200D380F3 /* CryptoSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8FC8523B2117BDDE0015269B /* ExplicitSelfRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC8523A2117BDDE0015269B /* ExplicitSelfRule.swift */; };
 		8FC9F5111F4B8E48006826C1 /* IsDisjointRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC9F5101F4B8E48006826C1 /* IsDisjointRule.swift */; };
 		8FD216CC205584AF008ED13F /* CharacterSet+SwiftLint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD216CB205584AF008ED13F /* CharacterSet+SwiftLint.swift */; };
@@ -404,7 +402,6 @@
 			dstPath = SwiftLintFramework.framework/Versions/Current/Frameworks;
 			dstSubfolderSpec = 10;
 			files = (
-				8FB2AE3021A1F99F00D380F3 /* CryptoSwift.framework in Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF2A1CFEF729003239EB /* Commandant.framework in Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF2C1CFEF72D003239EB /* Result.framework in Embed Frameworks into SwiftLintFramework.framework */,
 				6CCFCF2D1CFEF731003239EB /* SourceKittenFramework.framework in Embed Frameworks into SwiftLintFramework.framework */,
@@ -827,7 +824,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FB2AE2F21A1F99200D380F3 /* CryptoSwift.framework in Frameworks */,
 				E876BFBE1B07828500114ED5 /* SourceKittenFramework.framework in Frameworks */,
 				E8C0DFCD1AD349DB007EE3D4 /* SWXMLHash.framework in Frameworks */,
 				3BBF2F9D1C640A0F006CD775 /* SwiftyTextTable.framework in Frameworks */,

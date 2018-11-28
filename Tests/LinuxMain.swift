@@ -710,6 +710,7 @@ extension ModifierOrderTests {
         ("testAttributeTypeMethod", testAttributeTypeMethod),
         ("testRightOrderedModifierGroups", testRightOrderedModifierGroups),
         ("testAtPrefixedGroup", testAtPrefixedGroup),
+        ("testNonSpecifiedModifiersDontInterfere", testNonSpecifiedModifiersDontInterfere),
         ("testViolationMessage", testViolationMessage)
     ]
 }

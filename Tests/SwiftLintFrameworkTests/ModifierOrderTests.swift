@@ -142,7 +142,64 @@ class ModifierOrderTests: XCTestCase {
         )
 
         verifyRule(descriptionOverride,
-                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "final"]])
+                   ruleConfiguration: ["preferred_modifier_order": ["override", "acl", "owned", "final"]])
+    }
+
+    func testNonSpecifiedModifiersDontInterfere() {
+        let descriptionOverride = RuleDescription(
+            identifier: "modifier_order",
+            name: "Modifier Order",
+            description: "Modifier order should be consistent.",
+            kind: .style,
+            minSwiftVersion: .fourDotOne,
+            nonTriggeringExamples: [
+                """
+                class Foo {
+                    weak final override private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    final weak override private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    final override weak private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    final override private weak var bar: UIView?
+                }
+                """
+            ],
+            triggeringExamples: [
+                """
+                class Foo {
+                    weak override final private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    override weak final private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    override final weak private var bar: UIView?
+                }
+                """,
+                """
+                class Foo {
+                    override final private weak var bar: UIView?
+                }
+                """
+            ]
+        )
+
+        verifyRule(descriptionOverride,
+                   ruleConfiguration: ["preferred_modifier_order": ["final", "override", "acl"]])
     }
 
     func testViolationMessage() {

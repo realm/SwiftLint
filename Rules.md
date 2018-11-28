@@ -21714,7 +21714,7 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 --- | --- | --- | --- | --- | ---
 `vertical_whitespace_between_cases` | Disabled | Yes | style | No | 3.0.0 
 
-Include a vertical whitespace (empty line) between cases in switch statements.
+Include a single empty line between switch cases.
 
 ### Examples
 

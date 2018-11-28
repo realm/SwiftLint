@@ -11925,6 +11925,13 @@ expect(actual).to(haveCount(expected))
 
 ```
 
+```swift
+foo.method {
+    expect(value).to(equal(expectedValue), description: "Failed")
+    return Bar(value: ())
+}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -11941,6 +11948,11 @@ expect(actual).to(haveCount(expected))
 
 ```swift
 ↓expect(10).to(equal(10))
+
+```
+
+```swift
+↓expect(10, line: 1).to(equal(10))
 
 ```
 

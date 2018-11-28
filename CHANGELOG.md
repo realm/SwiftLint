@@ -17,7 +17,9 @@
 
 #### Bug Fixes
 
-* None.
+* Fix false positive in `nimble_operator` rule.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#2489](https://github.com/realm/SwiftLint/issues/2489)
 
 ## 0.29.0: A Laundry List of Changes
 

@@ -21,12 +21,19 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             "expect(x) === x",
             "expect(10) == 10",
             "expect(object.asyncFunction()).toEventually(equal(1))\n",
-            "expect(actual).to(haveCount(expected))\n"
+            "expect(actual).to(haveCount(expected))\n",
+            """
+            foo.method {
+                expect(value).to(equal(expectedValue), description: "Failed")
+                return Bar(value: ())
+            }
+            """
         ],
         triggeringExamples: [
             "↓expect(seagull.squawk).toNot(equal(\"Hi\"))\n",
             "↓expect(12).toNot(equal(10))\n",
             "↓expect(10).to(equal(10))\n",
+            "↓expect(10, line: 1).to(equal(10))\n",
             "↓expect(10).to(beGreaterThan(8))\n",
             "↓expect(10).to(beGreaterThanOrEqualTo(10))\n",
             "↓expect(10).to(beLessThan(11))\n",
@@ -53,7 +60,7 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
     fileprivate typealias Operators = (to: String?, toNot: String?)
     fileprivate typealias MatcherFunction = String
 
-    fileprivate let operatorsMapping: [MatcherFunction: Operators] = [
+    private let operatorsMapping: [MatcherFunction: Operators] = [
         "equal": (to: "==", toNot: "!="),
         "beIdenticalTo": (to: "===", toNot: "!=="),
         "beGreaterThan": (to: ">", toNot: nil),
@@ -84,6 +91,20 @@ public struct NimbleOperatorRule: ConfigurationProviderRule, OptInRule, Correcta
             .filter { _, kinds in
                 kinds.filter(excludingKinds.contains).isEmpty && kinds.first == .identifier
             }.map { $0.0 }
+            .filter { range in
+                let contents = file.contents.bridge()
+                guard let byteRange = contents.NSRangeToByteRange(start: range.location, length: range.length) else {
+                    return false
+                }
+
+                let containsCall = file.structure.structures(forByteOffset: byteRange.upperBound - 1)
+                    .contains(where: { dict -> Bool in
+                        return dict.kind.flatMap(SwiftExpressionKind.init) == .call &&
+                            (dict.name ?? "").starts(with: "expect")
+                    })
+
+                return containsCall
+            }
     }
 
     public func correct(file: File) -> [Correction] {

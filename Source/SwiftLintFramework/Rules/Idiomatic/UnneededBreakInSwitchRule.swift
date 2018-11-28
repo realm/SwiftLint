@@ -87,22 +87,3 @@ public struct UnneededBreakInSwitchRule: ConfigurationProviderRule, AutomaticTes
         return patternEnds.max()
     }
 }
-
-private extension Structure {
-    func structures(forByteOffset byteOffset: Int) -> [[String: SourceKitRepresentable]] {
-        var results = [[String: SourceKitRepresentable]]()
-
-        func parse(_ dictionary: [String: SourceKitRepresentable]) {
-            guard let offset = dictionary.offset,
-                let byteRange = dictionary.length.map({ NSRange(location: offset, length: $0) }),
-                NSLocationInRange(byteOffset, byteRange) else {
-                    return
-            }
-
-            results.append(dictionary)
-            dictionary.substructure.forEach(parse)
-        }
-        parse(dictionary)
-        return results
-    }
-}

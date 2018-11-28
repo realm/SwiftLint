@@ -144,8 +144,9 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         let prefix = file.contents.bridge().substring(to: firstParamRange.lowerBound)
         let invalidRegex = regex("\\([ \\t]*\\z")
 
-        guard let invalidMatch = invalidRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange)
-            else { return nil }
+        guard let invalidMatch = invalidRegex.firstMatch(in: prefix, options: [], range: prefix.fullNSRange) else {
+            return nil
+        }
 
         return StyleViolation(
             ruleDescription: type(of: self).description,
@@ -170,8 +171,9 @@ public struct MultilineParametersBracketsRule: OptInRule, ConfigurationProviderR
         let suffix = file.contents.bridge().substring(from: lastParamRange.upperBound)
         let invalidRegex = regex("\\A[ \\t]*\\)")
 
-        guard let invalidMatch = invalidRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange)
-            else { return nil }
+        guard let invalidMatch = invalidRegex.firstMatch(in: suffix, options: [], range: suffix.fullNSRange) else {
+            return nil
+        }
 
         let characterOffset = lastParamRange.upperBound + invalidMatch.range.upperBound - 1
         return StyleViolation(

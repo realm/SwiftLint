@@ -78,8 +78,6 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
     public func validate(file: File,
                          kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        var violations = [StyleViolation]()
-
         guard
             kind == .call,
             let bodyOffset = dictionary.bodyOffset,
@@ -91,28 +89,27 @@ public struct MultilineArgumentsBracketsRule: ASTRule, OptInRule, ConfigurationP
 
         let body = file.contents.substring(from: range.location, length: range.length)
         let isMultiline = body.contains("\n")
+        guard isMultiline else {
+            return []
+        }
 
         let expectedBodyBeginRegex = regex("\\A(?:[ \\t]*\\n|[^\\n]*(?:in|\\{)\\n)")
         let expectedBodyEndRegex = regex("\\n[ \\t]*\\z")
 
-        if isMultiline {
-            if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-                violations.append(StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, byteOffset: bodyOffset)
-                ))
-            }
-
-            if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
-                violations.append(StyleViolation(
-                    ruleDescription: type(of: self).description,
-                    severity: configuration.severity,
-                    location: Location(file: file, byteOffset: bodyOffset + bodyLength)
-                ))
-            }
+        var violatingByteOffsets = [Int]()
+        if expectedBodyBeginRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+            violatingByteOffsets.append(bodyOffset)
         }
 
-        return violations
+        if expectedBodyEndRegex.firstMatch(in: body, options: [], range: body.fullNSRange) == nil {
+            violatingByteOffsets.append(bodyOffset + bodyLength)
+        }
+
+        return violatingByteOffsets.map { byteOffset in
+            StyleViolation(
+                ruleDescription: type(of: self).description, severity: configuration.severity,
+                location: Location(file: file, byteOffset: byteOffset)
+            )
+        }
     }
 }

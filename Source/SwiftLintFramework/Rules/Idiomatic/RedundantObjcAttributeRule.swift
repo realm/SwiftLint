@@ -1,6 +1,9 @@
 import Foundation
 import SourceKittenFramework
 
+private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
+    [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
+
 public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
 
     public var configuration = SeverityConfiguration(.warning)
@@ -113,21 +116,20 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
 
+        let enclosedSwiftAttributes = Set(dictionary.enclosedSwiftAttributes)
         guard let offset = dictionary.offset,
-              dictionary.enclosedSwiftAttributes.contains(.objc),
-              !dictionary.isObjcAndIBDesiganableDeclaredExtension else {
+              enclosedSwiftAttributes.contains(.objc),
+              !dictionary.isObjcAndIBDesignableDeclaredExtension else {
             return []
         }
 
-        let isInObjcVisibleScope = file.structure.dictionary.objcVisibleRanges.contains(where: { $0.contains(offset) })
-        let isUsedWithObjcAttribute = dictionary.enclosedSwiftAttributes.contains(where: { [.ibaction,
-                                                                                            .iboutlet,
-                                                                                            .ibinspectable,
-                                                                                            .gkinspectable,
-                                                                                            .ibdesignable,
-                                                                                            .nsManaged].contains($0) })
+        let isInObjcVisibleScope = {
+            file.structure.dictionary.objcVisibleRanges.contains(where: { $0.contains(offset) })
+        }
 
-        if isInObjcVisibleScope || isUsedWithObjcAttribute {
+        let isUsedWithObjcAttribute = { !enclosedSwiftAttributes.isDisjoint(with: kindsImplyingObjc) }
+
+        if isInObjcVisibleScope() || isUsedWithObjcAttribute() {
             return [StyleViolation(ruleDescription: type(of: self).description,
                                    severity: configuration.severity,
                                    location: Location(file: file, byteOffset: offset))]
@@ -142,17 +144,12 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
     var objcVisibleRanges: [NSRange] {
         var ranges = [NSRange]()
         func search(in dictionary: [String: SourceKitRepresentable]) {
-            if let enclosedObjcMembersRange = dictionary.enclosedObjcMembersRange {
-                ranges.append(enclosedObjcMembersRange)
-            }
-
-            if let enclosedObjcExtensionRange = dictionary.enclosedObjcExtensionRange {
-                ranges.append(enclosedObjcExtensionRange)
-            }
+            let enclosedRanges = [dictionary.enclosedObjcMembersRange, dictionary.enclosedObjcExtensionRange]
+            ranges.append(contentsOf: enclosedRanges.compactMap({ $0 }))
 
             if let enclosedNonObjcMembersClassRange = dictionary.enclosedNonObjcMembersClassRange {
                 let intersectingRanges = ranges.filter { $0.intersects(enclosedNonObjcMembersClassRange) }
-                intersectingRanges.compactMap { ranges.index(of: $0) }
+                intersectingRanges.compactMap(ranges.index(of:))
                                   .forEach { ranges.remove(at: $0) }
 
                 intersectingRanges.forEach {
@@ -167,31 +164,34 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
         return ranges
     }
 
-    var enclosedObjcExtensionRange: NSRange? {
-        guard let kind = kind,
-            let declaration = SwiftDeclarationKind(rawValue: kind),
-            declaration == .extensionClass || declaration == .extension,
-            enclosedSwiftAttributes.contains(.objc),
-            let bodyOffset = bodyOffset,
-            let bodyLength = bodyLength else {
-                return nil
+    var bodyRange: NSRange? {
+        guard let bodyOffset = bodyOffset, let bodyLength = bodyLength else {
+            return nil
         }
         return NSRange(location: bodyOffset, length: bodyLength)
     }
 
-    var enclosedObjcMembersRange: NSRange? {
-        guard enclosedSwiftAttributes.contains(.objcMembers),
-            let bodyOffset = bodyOffset,
-            let bodyLength = bodyLength else {
+    var enclosedObjcExtensionRange: NSRange? {
+        guard let kind = kind,
+            let declaration = SwiftDeclarationKind(rawValue: kind),
+            [.extensionClass, .extension].contains(declaration),
+            enclosedSwiftAttributes.contains(.objc),
+            let bodyRange = bodyRange else {
                 return nil
         }
-        return NSRange(location: bodyOffset, length: bodyLength)
+        return bodyRange
+    }
+
+    var enclosedObjcMembersRange: NSRange? {
+        guard enclosedSwiftAttributes.contains(.objcMembers), let bodyRange = bodyRange else {
+            return nil
+        }
+        return bodyRange
     }
 
     var enclosedNonObjcMembersClassRange: NSRange? {
         guard let kind = kind,
-            let declaration = SwiftDeclarationKind(rawValue: kind),
-            declaration == .class,
+            SwiftDeclarationKind(rawValue: kind) == .class,
             !enclosedSwiftAttributes.contains(.objcMembers),
             let offset = offset,
             let bodyLength = bodyLength else {
@@ -200,14 +200,12 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
         return NSRange(location: offset, length: bodyLength)
     }
 
-    var isObjcAndIBDesiganableDeclaredExtension: Bool {
-        guard let kind = kind,
-             let declaration = SwiftDeclarationKind(rawValue: kind) else {
-                return false
+    var isObjcAndIBDesignableDeclaredExtension: Bool {
+        guard let kind = kind, let declaration = SwiftDeclarationKind(rawValue: kind) else {
+            return false
         }
-        return (declaration == .extensionClass || declaration == .extension)
-            && enclosedSwiftAttributes.contains(.ibdesignable)
-            && enclosedSwiftAttributes.contains(.objc)
+        return [.extensionClass, .extension].contains(declaration)
+            && Set(enclosedSwiftAttributes).isSuperset(of: [.ibdesignable, .objc])
     }
 }
 

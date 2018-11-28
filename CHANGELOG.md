@@ -35,6 +35,10 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#2306](https://github.com/realm/SwiftLint/issues/2306)
 
+* Ignore unspecified modifiers in `modifier_order`.  
+  [Timofey Solonin](https://github.com/biboran)
+  [#2435](https://github.com/realm/SwiftLint/issues/2435)
+
 #### Bug Fixes
 
 * Fix false positive in `nimble_operator` rule.  

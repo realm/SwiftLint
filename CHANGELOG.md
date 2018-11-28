@@ -15,6 +15,11 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2193](https://github.com/realm/SwiftLint/issues/2193)
 
+* Add `vertical_whitespace_between_cases` opt-in rule to enforce a single
+  empty line between switch cases.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1517](https://github.com/realm/SwiftLint/issues/1517)
+
 #### Bug Fixes
 
 * None.
@@ -231,10 +236,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   hexadecimal integer literals.  
   [Timofey Solonin](https://github.com/biboran)
   [#2423](https://github.com/realm/SwiftLint/issues/2423)
-* Add new opt-in rule `vertical_whitespace_between_cases` to warn against crowded
-  switch case cases.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#1517](https://github.com/realm/SwiftLint/issues/1517)
 
 ## 0.27.0: Heavy Duty
 

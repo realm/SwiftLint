@@ -134,20 +134,7 @@ private extension String {
     }
 }
 
-private final class ModifierDescription: Equatable {
+private struct ModifierDescription: Equatable {
     let keyword: String
     let group: SwiftDeclarationAttributeKind.ModifierGroup
-
-    init(
-        keyword: String,
-        group: SwiftDeclarationAttributeKind.ModifierGroup
-    ) {
-        self.keyword = keyword
-        self.group = group
-    }
-
-    static func == (lhs: ModifierDescription, rhs: ModifierDescription) -> Bool {
-        return lhs.keyword == rhs.keyword
-            && lhs.group == rhs.group
-    }
 }

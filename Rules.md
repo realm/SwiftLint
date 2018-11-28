@@ -77,8 +77,11 @@
 * [Missing Docs](#missing-docs)
 * [Modifier Order](#modifier-order)
 * [Multiline Arguments](#multiline-arguments)
+* [Multiline Arguments Brackets](#multiline-arguments-brackets)
 * [Multiline Function Chains](#multiline-function-chains)
+* [Multiline Literal Brackets](#multiline-literal-brackets)
 * [Multiline Parameters](#multiline-parameters)
+* [Multiline Parameters Brackets](#multiline-parameters-brackets)
 * [Multiple Closures with Trailing Closure](#multiple-closures-with-trailing-closure)
 * [Nesting](#nesting)
 * [Nimble Operator](#nimble-operator)
@@ -11091,6 +11094,95 @@ foo(
 
 
 
+## Multiline Arguments Brackets
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_arguments_brackets` | Disabled | No | style | No | 3.0.0 
+
+Multiline arguments should have their surrounding brackets in a new line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+foo(param1: "Param1", param2: "Param2", param3: "Param3")
+```
+
+```swift
+foo(
+    param1: "Param1", param2: "Param2", param3: "Param3"
+)
+```
+
+```swift
+func foo(
+    param1: "Param1",
+    param2: "Param2",
+    param3: "Param3"
+)
+```
+
+```swift
+foo { param1, param2 in
+    print("hello world")
+}
+```
+
+```swift
+foo(
+    bar(
+        x: 5,
+        y: 7
+    )
+)
+```
+
+```swift
+AlertViewModel.AlertAction(title: "some title", style: .default) {
+    AlertManager.shared.presentNextDebugAlert()
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+foo(↓param1: "Param1", param2: "Param2",
+         param3: "Param3"
+)
+```
+
+```swift
+foo(
+    param1: "Param1",
+    param2: "Param2",
+    param3: "Param3"↓)
+```
+
+```swift
+foo(↓bar(
+    x: 5,
+    y: 7
+)
+)
+```
+
+```swift
+foo(
+    bar(
+        x: 5,
+        y: 7
+)↓)
+```
+
+</details>
+
+
+
 ## Multiline Function Chains
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -11201,6 +11293,118 @@ let evenSquaresSum = a.b(1, 2, 3)↓.c { blah in
 a.b {
 //  ““
 }↓.e()
+```
+
+</details>
+
+
+
+## Multiline Literal Brackets
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_literal_brackets` | Disabled | No | style | No | 3.0.0 
+
+Multiline literals should have their surrounding brackets in a new line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+let trio = ["harry", "ronald", "hermione"]
+let houseCup = ["gryffinder": 460, "hufflepuff": 370, "ravenclaw": 410, "slytherin": 450]
+```
+
+```swift
+let trio = [
+    "harry",
+    "ronald",
+    "hermione"
+]
+let houseCup = [
+    "gryffinder": 460,
+    "hufflepuff": 370,
+    "ravenclaw": 410,
+    "slytherin": 450
+]
+```
+
+```swift
+let trio = [
+    "harry", "ronald", "hermione"
+]
+let houseCup = [
+    "gryffinder": 460, "hufflepuff": 370,
+    "ravenclaw": 410, "slytherin": 450
+]
+```
+
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9
+    ]
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+let trio = [↓"harry",
+            "ronald",
+            "hermione"
+]
+```
+
+```swift
+let houseCup = [↓"gryffinder": 460, "hufflepuff": 370,
+                "ravenclaw": 410, "slytherin": 450
+]
+```
+
+```swift
+let trio = [
+    "harry",
+    "ronald",
+    "hermione"↓]
+```
+
+```swift
+let houseCup = [
+    "gryffinder": 460, "hufflepuff": 370,
+    "ravenclaw": 410, "slytherin": 450↓]
+```
+
+```swift
+class Hogwarts {
+    let houseCup = [
+        "gryffinder": 460, "hufflepuff": 370,
+        "ravenclaw": 410, "slytherin": 450↓]
+}
+```
+
+```swift
+    _ = [
+        1,
+        2,
+        3,
+        4,
+        5, 6,
+        7, 8, 9↓]
+```
+
+```swift
+    _ = [↓1, 2, 3,
+         4, 5, 6,
+         7, 8, 9
+    ]
 ```
 
 </details>
@@ -11681,6 +11885,109 @@ class Foo {
    class func ↓foo(param1: Int,
                   param2: Bool, param3: @escaping (Int) -> Void = { (x: Int) in }) { }
 }
+```
+
+</details>
+
+
+
+## Multiline Parameters Brackets
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`multiline_parameters_brackets` | Disabled | No | style | No | 3.0.0 
+
+Multiline parameters should have their surrounding brackets in a new line.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+func foo(param1: String, param2: String, param3: String)
+```
+
+```swift
+func foo(
+    param1: String, param2: String, param3: String
+)
+```
+
+```swift
+func foo(
+    param1: String,
+    param2: String,
+    param3: String
+)
+```
+
+```swift
+class SomeType {
+    func foo(param1: String, param2: String, param3: String)
+}
+```
+
+```swift
+class SomeType {
+    func foo(
+        param1: String, param2: String, param3: String
+    )
+}
+```
+
+```swift
+class SomeType {
+    func foo(
+        param1: String,
+        param2: String,
+        param3: String
+    )
+}
+```
+
+```swift
+func foo<T>(param1: T, param2: String, param3: String) -> T { /* some code */ }
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+func foo(↓param1: String, param2: String,
+         param3: String
+)
+```
+
+```swift
+func foo(
+    param1: String,
+    param2: String,
+    param3: String↓)
+```
+
+```swift
+class SomeType {
+    func foo(↓param1: String, param2: String,
+             param3: String
+    )
+}
+```
+
+```swift
+class SomeType {
+    func foo(
+        param1: String,
+        param2: String,
+        param3: String↓)
+}
+```
+
+```swift
+func foo<T>(↓param1: T, param2: String,
+         param3: String
+) -> T
 ```
 
 </details>

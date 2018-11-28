@@ -330,9 +330,27 @@ class MissingDocsRuleTests: XCTestCase {
     }
 }
 
+class MultilineArgumentsBracketsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineArgumentsBracketsRule.description)
+    }
+}
+
 class MultilineFunctionChainsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(MultilineFunctionChainsRule.description)
+    }
+}
+
+class MultilineLiteralBracketsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineLiteralBracketsRule.description)
+    }
+}
+
+class MultilineParametersBracketsRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(MultilineParametersBracketsRule.description)
     }
 }
 

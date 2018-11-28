@@ -20,6 +20,21 @@
   [Cihat Gündüz](https://github.com/Dschee)
   [#1517](https://github.com/realm/SwiftLint/issues/1517)
 
+* Add `multiline_arguments_brackets` opt-in rule to warn against multiline
+  function call arguments with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+
+* Add `multiline_literal_brackets` opt-in rule to warn against multiline
+  literal arrays & dictionaries with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+
+* Add `multiline_parameters_brackets` opt-in rule to warn against multiline
+  function definition parameters with surrounding brackets without newline.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2306](https://github.com/realm/SwiftLint/issues/2306)
+
 #### Bug Fixes
 
 * Fix false positive in `nimble_operator` rule.  

@@ -26,6 +26,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2489](https://github.com/realm/SwiftLint/issues/2489)
 
+* Fix false positives on `explicit_type_interface` rule when
+  configured with option `allowRedundancy` set to `true`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2425](https://github.com/realm/SwiftLint/issues/2425)
+
 ## 0.29.0: A Laundry List of Changes
 
 #### Breaking
@@ -238,10 +243,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   hexadecimal integer literals.  
   [Timofey Solonin](https://github.com/biboran)
   [#2423](https://github.com/realm/SwiftLint/issues/2423)
-* Fix false positives on `explicit_type_interface` rule when
-  configured with option `allowRedundancy` set to `true`.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2425](https://github.com/realm/SwiftLint/issues/2425)
 
 ## 0.27.0: Heavy Duty
 

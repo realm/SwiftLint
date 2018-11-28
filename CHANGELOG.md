@@ -15,6 +15,11 @@
   [Daniel Metzing](https://github.com/dirtydanee)
   [#2193](https://github.com/realm/SwiftLint/issues/2193)
 
+* Add `vertical_whitespace_between_cases` opt-in rule to enforce a single
+  empty line between switch cases.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#1517](https://github.com/realm/SwiftLint/issues/1517)
+
 #### Bug Fixes
 
 * Fix false positive in `nimble_operator` rule.  

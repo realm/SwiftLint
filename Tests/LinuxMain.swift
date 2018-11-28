@@ -1253,6 +1253,12 @@ extension VerticalParameterAlignmentRuleTests {
     ]
 }
 
+extension VerticalWhitespaceBetweenCasesRuleTests {
+    static var allTests: [(String, (VerticalWhitespaceBetweenCasesRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension VerticalWhitespaceRuleTests {
     static var allTests: [(String, (VerticalWhitespaceRuleTests) -> () throws -> Void)] = [
         ("testVerticalWhitespaceWithDefaultConfiguration", testVerticalWhitespaceWithDefaultConfiguration),
@@ -1469,6 +1475,7 @@ XCTMain([
     testCase(ValidIBInspectableRuleTests.allTests),
     testCase(VerticalParameterAlignmentOnCallRuleTests.allTests),
     testCase(VerticalParameterAlignmentRuleTests.allTests),
+    testCase(VerticalWhitespaceBetweenCasesRuleTests.allTests),
     testCase(VerticalWhitespaceRuleTests.allTests),
     testCase(VoidReturnRuleTests.allTests),
     testCase(WeakDelegateRuleTests.allTests),

@@ -912,6 +912,12 @@ extension RedundantNilCoalescingRuleTests {
     ]
 }
 
+extension RedundantObjcAttributeRuleTests {
+    static var allTests: [(String, (RedundantObjcAttributeRuleTests) -> () throws -> Void)] = [
+        ("testWithDefaultConfiguration", testWithDefaultConfiguration)
+    ]
+}
+
 extension RedundantOptionalInitializationRuleTests {
     static var allTests: [(String, (RedundantOptionalInitializationRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
@@ -1419,6 +1425,7 @@ XCTMain([
     testCase(QuickDiscouragedPendingTestRuleTests.allTests),
     testCase(RedundantDiscardableLetRuleTests.allTests),
     testCase(RedundantNilCoalescingRuleTests.allTests),
+    testCase(RedundantObjcAttributeRuleTests.allTests),
     testCase(RedundantOptionalInitializationRuleTests.allTests),
     testCase(RedundantSetAccessControlRuleTests.allTests),
     testCase(RedundantStringEnumValueRuleTests.allTests),

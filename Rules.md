@@ -107,6 +107,7 @@
 * [Quick Discouraged Pending Test](#quick-discouraged-pending-test)
 * [Redundant Discardable Let](#redundant-discardable-let)
 * [Redundant Nil Coalescing](#redundant-nil-coalescing)
+* [Redundant @objc Attribute](#redundant-@objc-attribute)
 * [Redundant Optional Initialization](#redundant-optional-initialization)
 * [Redundant Set Access Control Rule](#redundant-set-access-control-rule)
 * [Redundant String Enum Value](#redundant-string-enum-value)
@@ -14739,6 +14740,179 @@ var myVar: Int? = nil; myVar↓ ?? nil
 ```swift
 var myVar: Int? = nil; myVar↓??nil
 
+```
+
+</details>
+
+
+
+## Redundant @objc Attribute
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`redundant_objc_attribute` | Enabled | No | idiomatic | No | 3.0.0 
+
+Objective-C attribute (@objc) is redundant in declaration.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+@objc private var foo: String? {}
+```
+
+```swift
+@IBInspectable private var foo: String? {}
+```
+
+```swift
+@objc private func foo(_ sender: Any) {}
+```
+
+```swift
+@IBAction private func foo(_ sender: Any) {}
+```
+
+```swift
+@GKInspectable private var foo: String! {}
+```
+
+```swift
+private @GKInspectable var foo: String! {}
+```
+
+```swift
+@NSManaged var foo: String!
+```
+
+```swift
+@objc @NSCopying var foo: String!
+```
+
+```swift
+@objcMembers
+class Foo {
+  var bar: Any?
+  @objc
+  class Bar {
+    @objc
+    var foo: Any?
+  }
+}
+```
+
+```swift
+@objc
+extension Foo {
+  var bar: Int {
+    return 0
+  }
+}
+```
+
+```swift
+extension Foo {
+  @objc
+  var bar: Int { return 0 }
+}
+```
+
+```swift
+@objc @IBDesignable
+extension Foo {
+  var bar: Int { return 0 }
+}
+```
+
+```swift
+@IBDesignable
+extension Foo {
+   @objc
+   var bar: Int { return 0 }
+   var fooBar: Int { return 1 }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+@objc @IBInspectable private ↓var foo: String? {}
+```
+
+```swift
+@IBInspectable @objc private ↓var foo: String? {}
+```
+
+```swift
+@objc @IBAction private ↓func foo(_ sender: Any) {}
+```
+
+```swift
+@IBAction @objc private ↓func foo(_ sender: Any) {}
+```
+
+```swift
+@objc @GKInspectable private ↓var foo: String! {}
+```
+
+```swift
+@GKInspectable @objc private ↓var foo: String! {}
+```
+
+```swift
+@objc @NSManaged private ↓var foo: String!
+```
+
+```swift
+@NSManaged @objc private ↓var foo: String!
+```
+
+```swift
+@objc @IBDesignable ↓class Foo {}
+```
+
+```swift
+@objcMembers
+class Foo {
+  @objc ↓var bar: Any?
+}
+```
+
+```swift
+@objcMembers
+class Foo {
+  @objc ↓var bar: Any?
+  @objc ↓var foo: Any?
+  @objc
+  class Bar {
+    @objc
+    var foo: Any?
+  }
+}
+```
+
+```swift
+@objc
+extension Foo {
+  @objc
+  ↓var bar: Int {
+    return 0
+  }
+}
+```
+
+```swift
+@objc @IBDesignable
+extension Foo {
+  @objc
+  ↓var bar: Int {
+    return 0
+  }
+}
 ```
 
 </details>

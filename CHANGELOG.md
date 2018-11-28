@@ -26,6 +26,11 @@
   [Marcelo Fabri](https://github.com/marcelofabri)
   [#2489](https://github.com/realm/SwiftLint/issues/2489)
 
+* Fix false positives on `explicit_type_interface` rule when
+  configured with option `allowRedundancy` set to `true`.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2425](https://github.com/realm/SwiftLint/issues/2425)
+
 ## 0.29.0: A Laundry List of Changes
 
 #### Breaking

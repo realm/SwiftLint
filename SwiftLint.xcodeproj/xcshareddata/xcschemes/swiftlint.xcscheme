@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
-   version = "2.0">
+   LastUpgradeVersion = "9999"
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0E7B63119E9C64500EDBA4D"
-               BuildableName = "swiftlint.app"
+               BlueprintIdentifier = "SwiftLint::swiftlint"
+               BuildableName = "swiftlint"
                BlueprintName = "swiftlint"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
@@ -26,41 +26,19 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      codeCoverageEnabled = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <CodeCoverageTargets>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0D1216C19E87B05005E4BAA"
-            BuildableName = "SwiftLintFramework.framework"
-            BlueprintName = "SwiftLintFramework"
-            ReferencedContainer = "container:SwiftLint.xcodeproj">
-         </BuildableReference>
-      </CodeCoverageTargets>
       <Testables>
          <TestableReference
-            skipped = "NO"
-            parallelizable = "YES"
-            testExecutionOrdering = "random">
+            skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D0D1217619E87B05005E4BAA"
+               BlueprintIdentifier = "SwiftLint::SwiftLintFrameworkTests"
                BuildableName = "SwiftLintFrameworkTests.xctest"
                BlueprintName = "SwiftLintFrameworkTests"
                ReferencedContainer = "container:SwiftLint.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0E7B63119E9C64500EDBA4D"
-            BuildableName = "swiftlint.app"
-            BlueprintName = "swiftlint"
-            ReferencedContainer = "container:SwiftLint.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -71,36 +49,23 @@
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
-      debugDocumentVersioning = "NO"
-      debugXPCServices = "NO"
+      debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "NO"
-      viewDebuggingEnabled = "No">
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0E7B63119E9C64500EDBA4D"
-            BuildableName = "swiftlint.app"
+            BlueprintIdentifier = "SwiftLint::swiftlint"
+            BuildableName = "swiftlint"
             BlueprintName = "swiftlint"
             ReferencedContainer = "container:SwiftLint.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "lint --no-cache"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "DEVELOPER_DIR"
-            value = "${DEVELOPER_DIR}"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "TOOLCHAINS"
-            value = "${TOOLCHAINS}"
+            key = "TOOLCHAIN_DIR"
+            value = "/Library/Developer/Toolchains/swift-DEVELOPMENT-SNAPSHOT-2018-11-22-a.xctoolchain"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
@@ -108,21 +73,11 @@
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Profile"
+      buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D0E7B63119E9C64500EDBA4D"
-            BuildableName = "swiftlint.app"
-            BlueprintName = "swiftlint"
-            ReferencedContainer = "container:SwiftLint.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

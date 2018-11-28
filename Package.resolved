@@ -41,9 +41,9 @@
         "package": "SourceKitten",
         "repositoryURL": "https://github.com/jpsim/SourceKitten.git",
         "state": {
-          "branch": "master",
-          "revision": "b039da63355c73c1351b4552cb7818773376534d",
-          "version": null
+          "branch": null,
+          "revision": "176f04295a09324673245d8ec0afcce21ace8722",
+          "version": "0.22.0"
         }
       },
       {

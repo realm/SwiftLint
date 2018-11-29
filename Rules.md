@@ -21447,6 +21447,17 @@ import Dispatch
 dispatchMain()
 ```
 
+```swift
+@testable import Dispatch
+dispatchMain()
+```
+
+```swift
+import Foundation
+@objc
+class A {}
+```
+
 </details>
 <details>
 <summary>Triggering Examples</summary>
@@ -21462,6 +21473,12 @@ A.dispatchMain()
 ```swift
 ↓import Foundation
 dispatchMain()
+```
+
+```swift
+↓import Foundation
+// @objc
+class A {}
 ```
 
 </details>

@@ -39,6 +39,10 @@
   [Timofey Solonin](https://github.com/biboran)
   [#2435](https://github.com/realm/SwiftLint/issues/2435)
 
+  * Swiftlint now fails when not using pinned version.
+  [Timofey Solonin](https://github.com/kimdv)
+  [#2074](https://github.com/realm/SwiftLint/issues/2074)
+
 #### Bug Fixes
 
 * Fix false positive in `nimble_operator` rule.  

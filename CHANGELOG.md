@@ -54,6 +54,14 @@
   `rules` command when there are one or more configured custom rules.  
   [jhildensperger](https://github.com/jhildensperger)
 
+* Fix wrong correction when removing testable imports with the `unused_import`
+  rule.  
+  [JP Simard](https://github.com/jpsim)
+
+* Fix false positive with the `unused_import` rule when importing Foundation
+  when there are attributes in that file requiring Foundation.  
+  [JP Simard](https://github.com/jpsim)
+
 ## 0.29.0: A Laundry List of Changes
 
 #### Breaking

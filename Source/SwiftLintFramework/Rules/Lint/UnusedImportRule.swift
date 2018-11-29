@@ -15,6 +15,15 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             import Dispatch
             dispatchMain()
+            """,
+            """
+            @testable import Dispatch
+            dispatchMain()
+            """,
+            """
+            import Foundation
+            @objc
+            class A {}
             """
         ],
         triggeringExamples: [
@@ -26,6 +35,11 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             ↓import Foundation
             dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            // @objc
+            class A {}
             """
         ],
         corrections: [
@@ -44,6 +58,24 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """:
             """
             dispatchMain()
+            """,
+            """
+            ↓@testable import Foundation
+            import Dispatch
+            dispatchMain()
+            """:
+            """
+            import Dispatch
+            dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            // @objc
+            class A {}
+            """:
+            """
+            // @objc
+            class A {}
             """
         ],
         requiresFileOnDisk: true
@@ -89,6 +121,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
 private extension File {
     func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
+        let contentsNSString = contents.bridge()
         var imports = [String]()
         var usrFragments = [String]()
         var nextIsModuleImport = false
@@ -97,8 +130,7 @@ private extension File {
                 continue
             }
             if tokenKind == .keyword,
-                let substring = contents.bridge()
-                    .substringWithByteRange(start: token.offset, length: token.length),
+                let substring = contentsNSString.substringWithByteRange(start: token.offset, length: token.length),
                 substring == "import" {
                 nextIsModuleImport = true
                 continue
@@ -129,10 +161,35 @@ private extension File {
         }
         // Always disallow 'import Swift' because it's available without importing.
         usrFragments = usrFragments.filter { $0 != "Swift" }
-        let unusedImports = imports.filter { !usrFragments.contains($0) }
-        return unusedImports.map { module in
-            return (module, contents.bridge().range(of: "import \(module)\n"))
+        var unusedImports = imports.filter { !usrFragments.contains($0) }
+        // Certain Swift attributes requires importing Foundation.
+        if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
+            unusedImports.removeAll(where: { $0 == "Foundation" })
         }
+        return unusedImports.map { module in
+            let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")
+            if testableImportRange.location != NSNotFound {
+                return (module, testableImportRange)
+            }
+
+            return (module, contentsNSString.range(of: "import \(module)\n"))
+        }
+    }
+
+    private func containsAttributesRequiringFoundation() -> Bool {
+        guard contents.contains("@objc") else {
+            return false
+        }
+
+        func containsAttributesRequiringFoundation(dict: [String: SourceKitRepresentable]) -> Bool {
+            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
+                return true
+            } else {
+                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
+            }
+        }
+
+        return containsAttributesRequiringFoundation(dict: self.structure.dictionary)
     }
 }
 
@@ -149,4 +206,11 @@ private let syntaxKindsToSkip: Set<SyntaxKind> = [
     .commentURL,
     .comment,
     .docCommentField
+]
+
+private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = [
+    .objc,
+    .objcName,
+    .objcMembers,
+    .objcNonLazyRealization
 ]

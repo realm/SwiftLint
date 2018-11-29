@@ -56,7 +56,7 @@ public struct Configuration: Hashable {
                  indentation: IndentationStyle = .default) {
 
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
-            queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
+            queuedFatalError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
         }
 

@@ -15,6 +15,10 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             import Dispatch
             dispatchMain()
+            """,
+            """
+            @testable import Dispatch
+            dispatchMain()
             """
         ],
         triggeringExamples: [
@@ -43,6 +47,15 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             dispatchMain()
             """:
             """
+            dispatchMain()
+            """,
+            """
+            ↓@testable import Foundation
+            import Dispatch
+            dispatchMain()
+            """:
+            """
+            import Dispatch
             dispatchMain()
             """
         ],
@@ -89,6 +102,7 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
 
 private extension File {
     func unusedImports(compilerArguments: [String]) -> [(String, NSRange)] {
+        let contentsNSString = contents.bridge()
         var imports = [String]()
         var usrFragments = [String]()
         var nextIsModuleImport = false
@@ -97,8 +111,7 @@ private extension File {
                 continue
             }
             if tokenKind == .keyword,
-                let substring = contents.bridge()
-                    .substringWithByteRange(start: token.offset, length: token.length),
+                let substring = contentsNSString.substringWithByteRange(start: token.offset, length: token.length),
                 substring == "import" {
                 nextIsModuleImport = true
                 continue
@@ -131,7 +144,12 @@ private extension File {
         usrFragments = usrFragments.filter { $0 != "Swift" }
         let unusedImports = imports.filter { !usrFragments.contains($0) }
         return unusedImports.map { module in
-            return (module, contents.bridge().range(of: "import \(module)\n"))
+            let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")
+            if testableImportRange.location != NSNotFound {
+                return (module, testableImportRange)
+            }
+
+            return (module, contentsNSString.range(of: "import \(module)\n"))
         }
     }
 }

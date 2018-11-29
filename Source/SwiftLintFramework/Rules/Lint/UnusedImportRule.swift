@@ -19,6 +19,11 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             @testable import Dispatch
             dispatchMain()
+            """,
+            """
+            import Foundation
+            @objc
+            class A {}
             """
         ],
         triggeringExamples: [
@@ -30,6 +35,11 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             ↓import Foundation
             dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            // @objc
+            class A {}
             """
         ],
         corrections: [
@@ -57,6 +67,15 @@ public struct UnusedImportRule: CorrectableRule, ConfigurationProviderRule, Anal
             """
             import Dispatch
             dispatchMain()
+            """,
+            """
+            ↓import Foundation
+            // @objc
+            class A {}
+            """:
+            """
+            // @objc
+            class A {}
             """
         ],
         requiresFileOnDisk: true
@@ -142,7 +161,11 @@ private extension File {
         }
         // Always disallow 'import Swift' because it's available without importing.
         usrFragments = usrFragments.filter { $0 != "Swift" }
-        let unusedImports = imports.filter { !usrFragments.contains($0) }
+        var unusedImports = imports.filter { !usrFragments.contains($0) }
+        // Certain Swift attributes requires importing Foundation.
+        if unusedImports.contains("Foundation") && containsAttributesRequiringFoundation() {
+            unusedImports.removeAll(where: { $0 == "Foundation" })
+        }
         return unusedImports.map { module in
             let testableImportRange = contentsNSString.range(of: "@testable import \(module)\n")
             if testableImportRange.location != NSNotFound {
@@ -151,6 +174,22 @@ private extension File {
 
             return (module, contentsNSString.range(of: "import \(module)\n"))
         }
+    }
+
+    private func containsAttributesRequiringFoundation() -> Bool {
+        guard contents.contains("@objc") else {
+            return false
+        }
+
+        func containsAttributesRequiringFoundation(dict: [String: SourceKitRepresentable]) -> Bool {
+            if !attributesRequiringFoundation.isDisjoint(with: dict.enclosedSwiftAttributes) {
+                return true
+            } else {
+                return dict.substructure.contains(where: containsAttributesRequiringFoundation)
+            }
+        }
+
+        return containsAttributesRequiringFoundation(dict: self.structure.dictionary)
     }
 }
 
@@ -167,4 +206,11 @@ private let syntaxKindsToSkip: Set<SyntaxKind> = [
     .commentURL,
     .comment,
     .docCommentField
+]
+
+private let attributesRequiringFoundation: Set<SwiftDeclarationAttributeKind> = [
+    .objc,
+    .objcName,
+    .objcMembers,
+    .objcNonLazyRealization
 ]

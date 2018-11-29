@@ -39,7 +39,8 @@
   [Timofey Solonin](https://github.com/biboran)
   [#2435](https://github.com/realm/SwiftLint/issues/2435)
 
-* Swiftlint now fails when not using pinned version.
+* The `lint` command now exits with a code of 2 when not using pinned
+  version defined as `swiftlint_version` in the configuration file.  
   [Timofey Solonin](https://github.com/kimdv)
   [#2074](https://github.com/realm/SwiftLint/issues/2074)
 

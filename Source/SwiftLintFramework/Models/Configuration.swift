@@ -58,6 +58,7 @@ public struct Configuration: Hashable {
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
+            exit(2)
         }
 
         let configuredRules = configuredRules

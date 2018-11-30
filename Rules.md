@@ -151,12 +151,8 @@
 * [Vertical Parameter Alignment](#vertical-parameter-alignment)
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
 * [Vertical Whitespace](#vertical-whitespace)
-<<<<<<< HEAD
 * [Vertical Whitespace Between Cases](#vertical-whitespace-between-cases)
-* [Vertical Whitespace after Closing Braces](#vertical-whitespace-after-closing-braces)
-=======
 * [Vertical Whitespace before Closing Braces](#vertical-whitespace-before-closing-braces)
->>>>>>> Fix copy & paste issue
 * [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
@@ -22050,8 +22046,6 @@ class BBBB {}
 
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 ## Vertical Whitespace Between Cases
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
@@ -22059,18 +22053,6 @@ Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Mi
 `vertical_whitespace_between_cases` | Disabled | Yes | style | No | 3.0.0 
 
 Include a single empty line between switch cases.
-=======
-## Vertical Whitespace after Closing Braces
-=======
-## Vertical Whitespace before Closing Braces
->>>>>>> Fix copy & paste issue
-
-Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
---- | --- | --- | --- | --- | ---
-`vertical_whitespace_closing_braces` | Disabled | Yes | style | No | 3.0.0 
-
-Don't include vertical whitespace (empty line) before closing braces.
->>>>>>> Implement validate, correct & add rules to lists
 
 ### Examples
 
@@ -22078,9 +22060,6 @@ Don't include vertical whitespace (empty line) before closing braces.
 <summary>Non Triggering Examples</summary>
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     switch x {
     case .valid:
         print("multiple ...")
@@ -22137,52 +22116,71 @@ case 5..<10:
 
 default:
     print("x is invalid")
-=======
-[
-1,
-2,
-3
-]
-```
-
-```swift
-<<<<<<< HEAD
-    print("x is 5")
-}
-<<<<<<< HEAD
-    }
->>>>>>> Add more validation examples
-=======
-```
-
-```swift
-=======
->>>>>>> Fix issues after rebase
-class Name {
-    run(5) { x in print(x) }
->>>>>>> Point to exact location of violation + update tests
 }
 ```
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
 switch x {
 case 0..<5: print("x is low")
 case 5..<10: print("x is high")
 default: print("x is invalid")
 }
-=======
-=======
->>>>>>> Add more validation examples
-    print("x is 5")
-=======
-=======
->>>>>>> Fix failing tests
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+    switch x {
+    case .valid:
+        print("multiple ...")
+        print("... lines")
+↓    case .invalid:
+        print("multiple ...")
+        print("... lines")
+    }
+```
+
+```swift
+    switch x {
+    case .valid:
+        print("x is valid")
+↓    case .invalid:
+        print("x is invalid")
+    }
+```
+
+```swift
+    switch x {
+    case 0..<5:
+        print("x is valid")
+↓    default:
+        print("x is invalid")
+    }
+```
+
+</details>
+
+
+
+## Vertical Whitespace before Closing Braces
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_closing_braces` | Disabled | Yes | style | No | 3.0.0 
+
+Don't include vertical whitespace (empty line) before closing braces.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
         )
 }
     }
->>>>>>> Point to exact location of violation + update tests
 }
 ```
 
@@ -22383,34 +22381,8 @@ if x == 5 {
 ```
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-if x == 5 {
-	print("x is 5")
->>>>>>> Implement validate, correct & add rules to lists
-```
-
-```swift
-foo(
-x: 5,
-y:6
-)
-=======
-KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
-    guard let img = image else { return }
->>>>>>> Add more violating examples, improve pattern to catch more cases
-=======
-[
-1,
-2,
-3
-]
->>>>>>> Fix issues after rebase
-=======
 if x == 5 {
   print("x is 5")
->>>>>>> Fix failing tests
 ```
 
 ```swift
@@ -22438,48 +22410,7 @@ struct MyStruct {
 <summary>Triggering Examples</summary>
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    switch x {
-    case .valid:
-        print("multiple ...")
-        print("... lines")
-↓    case .invalid:
-        print("multiple ...")
-        print("... lines")
-    }
-```
-
-```swift
-    switch x {
-    case .valid:
-        print("x is valid")
-↓    case .invalid:
-        print("x is invalid")
-    }
-```
-
-```swift
-    switch x {
-    case 0..<5:
-        print("x is valid")
-↓    default:
-        print("x is invalid")
-    }
-=======
-struct MyStruct {
-↓
-    let x = 5
-```
-
-```swift
-=======
->>>>>>> Fix issues after rebase
-if x == 5 {
-=======
 KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
->>>>>>> Fix failing tests
 ↓
     guard let img = image else { return }
 ```
@@ -22560,46 +22491,11 @@ struct MyStruct {
 ```
 
 ```swift
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-if x == 5 {
-↓
-  print("x is 5")
-```
-
-<<<<<<< HEAD
-	print("x is 5")
->>>>>>> Implement validate, correct & add rules to lists
-=======
-```swift
-=======
->>>>>>> Add more violating examples, improve pattern to catch more cases
-struct MyStruct {
-=======
-if x == 5 {
->>>>>>> Fix issues after rebase
-↓
-	print("x is 5")
-=======
 }) { _ in
 ↓
     self.dismiss(animated: false, completion: {
->>>>>>> Fix failing tests
 ```
 
-<<<<<<< HEAD
-```swift
-foo(
-↓
-x: 5,
-y:6
-)
->>>>>>> Point to exact location of violation + update tests
-```
-
-=======
->>>>>>> Add more violating examples, improve pattern to catch more cases
 </details>
 
 

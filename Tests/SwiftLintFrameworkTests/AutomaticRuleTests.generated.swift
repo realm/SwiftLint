@@ -678,11 +678,12 @@ class VerticalParameterAlignmentRuleTests: XCTestCase {
     }
 }
 
-<<<<<<< HEAD
 class VerticalWhitespaceBetweenCasesRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceBetweenCasesRule.description)
-=======
+    }
+}
+
 class VerticalWhitespaceClosingBracesRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceClosingBracesRule.description)
@@ -692,7 +693,6 @@ class VerticalWhitespaceClosingBracesRuleTests: XCTestCase {
 class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VerticalWhitespaceOpeningBracesRule.description)
->>>>>>> Fix issues after rebasing
     }
 }
 

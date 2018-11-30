@@ -73,8 +73,7 @@ extension VerticalWhitespaceClosingBracesRule: OptInRule, AutomaticTestableRule 
 
         return file.violatingRanges(for: pattern).map { violationRange in
             let substring = file.contents.substring(from: violationRange.location, length: violationRange.length)
-            let substringRange = NSRange(location: 0, length: substring.count)
-            let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substringRange)!
+            let matchResult = patternRegex.firstMatch(in: substring, options: [], range: substring.fullNSRange)!
             let violatingSubrange = matchResult.range(at: 1)
             let characterOffset = violationRange.location + violatingSubrange.location + 1
 

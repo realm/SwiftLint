@@ -1,3 +1,22 @@
+## 0.29.2: There’s Always More Laundry
+
+#### Breaking
+
+* None.
+
+#### Experimental
+
+* None.
+
+#### Enhancements
+
+* Add sorting to HTML reporter.  
+  [Prathmesh Ranaut](https://github.com/prathmeshranaut)
+  [#2413](https://github.com/realm/SwiftLint/issues/2413)
+
+#### Bug Fixes
+
+
 ## 0.29.1: There’s Always More Laundry
 
 #### Breaking

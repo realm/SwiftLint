@@ -7,20 +7,6 @@ private extension File {
     }
 }
 
-private extension Dictionary where Key: StringProtocol, Value: StringProtocol {
-    func cleanedKeysDict() -> [String: String] {
-        var cleanDict = [String: String]()
-
-        for (key, value) in self {
-            guard let keyString = key as? String else { continue }
-            let cleanedKey = keyString.replacingOccurrences(of: "↓", with: "")
-            cleanDict[cleanedKey] = value as? String
-        }
-
-        return cleanDict
-    }
-}
-
 public struct VerticalWhitespaceClosingBracesRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 

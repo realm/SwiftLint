@@ -7,19 +7,6 @@ private extension File {
     }
 }
 
-private extension Dictionary where Key == String, Value == String {
-    func cleanedKeysDict() -> [String: String] {
-        var cleanDict = [String: String]()
-
-        for (key, value) in self {
-            let cleanedKey = key.replacingOccurrences(of: "↓", with: "")
-            cleanDict[cleanedKey] = value
-        }
-
-        return cleanDict
-    }
-}
-
 public struct VerticalWhitespaceBetweenCasesRule: ConfigurationProviderRule {
     public var configuration = SeverityConfiguration(.warning)
 

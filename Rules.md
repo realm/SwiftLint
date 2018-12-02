@@ -152,6 +152,8 @@
 * [Vertical Parameter Alignment On Call](#vertical-parameter-alignment-on-call)
 * [Vertical Whitespace](#vertical-whitespace)
 * [Vertical Whitespace Between Cases](#vertical-whitespace-between-cases)
+* [Vertical Whitespace before Closing Braces](#vertical-whitespace-before-closing-braces)
+* [Vertical Whitespace after Opening Braces](#vertical-whitespace-after-opening-braces)
 * [Void Return](#void-return)
 * [Weak Delegate](#weak-delegate)
 * [XCTFail Message](#xctfail-message)
@@ -22156,6 +22158,342 @@ default: print("x is invalid")
 ↓    default:
         print("x is invalid")
     }
+```
+
+</details>
+
+
+
+## Vertical Whitespace before Closing Braces
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_closing_braces` | Disabled | Yes | style | No | 3.0.0 
+
+Don't include vertical whitespace (empty line) before closing braces.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+        )
+}
+    }
+}
+```
+
+```swift
+    print("x is 5")
+}
+```
+
+```swift
+    print("x is 5")
+}
+```
+
+```swift
+    print("x is 5")
+}
+```
+
+```swift
+/*
+    class X {
+
+        let x = 5
+
+    }
+*/
+```
+
+```swift
+[
+1,
+2,
+3
+]
+```
+
+```swift
+[1, 2].map { $0 }.filter {
+```
+
+```swift
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+}
+```
+
+```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+        )
+}
+↓
+    }
+}
+```
+
+```swift
+    print("x is 5")
+↓
+
+}
+```
+
+```swift
+    print("x is 5")
+↓
+}
+```
+
+```swift
+    print("x is 5")
+↓    
+}
+```
+
+```swift
+[
+1,
+2,
+3
+↓
+]
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+↓
+}
+```
+
+```swift
+foo(
+x: 5,
+y:6
+↓
+)
+```
+
+</details>
+
+
+
+## Vertical Whitespace after Opening Braces
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`vertical_whitespace_opening_braces` | Disabled | Yes | style | No | 3.0.0 
+
+Don't include vertical whitespace (empty line) after opening braces.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+/*
+    class X {
+
+        let x = 5
+
+    }
+*/
+```
+
+```swift
+// [1, 2].map { $0 }.filter { num in
+```
+
+```swift
+KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+    guard let img = image else { return }
+```
+
+```swift
+[
+1,
+2,
+3
+]
+```
+
+```swift
+[1, 2].map { $0 }.filter { num in
+```
+
+```swift
+[1, 2].map { $0 }.foo()
+```
+
+```swift
+class Name {
+    run(5) { x in print(x) }
+}
+```
+
+```swift
+class X {
+    struct Y {
+    class Z {
+
+```
+
+```swift
+foo(
+x: 5,
+y:6
+)
+```
+
+```swift
+if x == 5 {
+	print("x is 5")
+```
+
+```swift
+if x == 5 {
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+  print("x is 5")
+```
+
+```swift
+struct MyStruct {
+	let x = 5
+```
+
+```swift
+struct MyStruct {
+    let x = 5
+```
+
+```swift
+struct MyStruct {
+  let x = 5
+```
+
+```swift
+}) { _ in
+    self.dismiss(animated: false, completion: {
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+KingfisherManager.shared.retrieveImage(with: url, options: nil, progressBlock: nil) { image, _, _, _ in
+↓
+    guard let img = image else { return }
+```
+
+```swift
+[
+↓
+1,
+2,
+3
+]
+```
+
+```swift
+class Name {
+↓
+    run(5) { x in print(x) }
+}
+```
+
+```swift
+class X {
+    struct Y {
+↓
+    class Z {
+
+```
+
+```swift
+foo(
+↓
+x: 5,
+y:6
+)
+```
+
+```swift
+if x == 5 {
+↓
+	print("x is 5")
+```
+
+```swift
+if x == 5 {
+↓
+
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+↓
+    print("x is 5")
+```
+
+```swift
+if x == 5 {
+↓
+  print("x is 5")
+```
+
+```swift
+struct MyStruct {
+↓
+	let x = 5
+```
+
+```swift
+struct MyStruct {
+↓
+    let x = 5
+```
+
+```swift
+struct MyStruct {
+↓
+  let x = 5
+```
+
+```swift
+}) { _ in
+↓
+    self.dismiss(animated: false, completion: {
 ```
 
 </details>

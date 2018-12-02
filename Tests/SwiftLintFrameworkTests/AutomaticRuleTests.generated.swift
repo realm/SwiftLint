@@ -684,6 +684,18 @@ class VerticalWhitespaceBetweenCasesRuleTests: XCTestCase {
     }
 }
 
+class VerticalWhitespaceClosingBracesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VerticalWhitespaceClosingBracesRule.description)
+    }
+}
+
+class VerticalWhitespaceOpeningBracesRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(VerticalWhitespaceOpeningBracesRule.description)
+    }
+}
+
 class VoidReturnRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(VoidReturnRule.description)

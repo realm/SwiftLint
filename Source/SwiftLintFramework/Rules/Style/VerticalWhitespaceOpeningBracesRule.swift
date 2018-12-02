@@ -72,7 +72,7 @@ extension VerticalWhitespaceOpeningBracesRule: OptInRule, AutomaticTestableRule 
         kind: .style,
         nonTriggeringExamples: (violatingToValidExamples.values + nonTriggeringExamples).sorted(),
         triggeringExamples: Array(violatingToValidExamples.keys).sorted(),
-        corrections: violatingToValidExamples.cleanedKeysDict()
+        corrections: violatingToValidExamples.removingViolationMarkers()
     )
 
     public func validate(file: File) -> [StyleViolation] {

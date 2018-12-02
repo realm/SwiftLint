@@ -141,15 +141,9 @@ extension Dictionary where Key: ExpressibleByStringLiteral {
     }
 }
 
-extension Dictionary where Key == String, Value == String {
-    func cleanedKeysDict() -> [String: String] {
-        var cleanDict: [String: String] = [:]
-
-        for (key, value) in self {
-            let cleanedKey = key.replacingOccurrences(of: "↓", with: "")
-            cleanDict[cleanedKey] = value
-        }
-
-        return cleanDict
+extension Dictionary where Key == String {
+    /// Returns a dictionary with SwiftLint violation markers (↓) removed from keys.
+    func removingViolationMarkers() -> [Key: Value] {
+        return Dictionary(uniqueKeysWithValues: map { ($0.replacingOccurrences(of: "↓", with: ""), $1) })
     }
 }

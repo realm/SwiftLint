@@ -4,7 +4,6 @@ import SourceKittenFramework
 import XCTest
 
 class RegionTests: XCTestCase {
-
     // MARK: Regions From Files
 
     func testNoRegionsInEmptyFile() {
@@ -103,5 +102,4 @@ class RegionTests: XCTestCase {
                    disabledRuleIdentifiers: [])
         ])
     }
-
 }

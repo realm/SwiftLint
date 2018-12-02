@@ -34,5 +34,4 @@ public struct FirstWhereRule: CallPairRule, OptInRule, ConfigurationProviderRule
                         callNameSuffix: ".filter",
                         severity: configuration.severity)
     }
-
 }

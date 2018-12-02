@@ -44,7 +44,6 @@ public struct CustomRulesConfiguration: RuleConfiguration, Equatable, CacheDescr
 // MARK: - CustomRules
 
 public struct CustomRules: Rule, ConfigurationProviderRule, CacheDescriptionProvider {
-
     internal var cacheDescription: String {
         return configuration.cacheDescription
     }

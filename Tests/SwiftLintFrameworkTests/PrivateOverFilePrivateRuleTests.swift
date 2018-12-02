@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class PrivateOverFilePrivateRuleTests: XCTestCase {
-
     func testPrivateOverFilePrivateWithDefaultConfiguration() {
         verifyRule(PrivateOverFilePrivateRule.description)
     }

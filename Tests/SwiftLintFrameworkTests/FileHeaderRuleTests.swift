@@ -7,7 +7,6 @@ private let fixturesDirectory = #file.bridge()
     .appendingPathComponent("Resources/FileHeaderRuleFixtures")
 
 class FileHeaderRuleTests: XCTestCase {
-
     private func validate(fileName: String, using configuration: Any) throws -> [StyleViolation] {
         let file = File(path: fixturesDirectory.stringByAppendingPathComponent(fileName))!
         let rule = try FileHeaderRule(configuration: configuration)

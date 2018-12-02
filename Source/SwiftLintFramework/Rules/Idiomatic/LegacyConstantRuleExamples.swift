@@ -1,5 +1,4 @@
 internal struct LegacyConstantRuleExamples {
-
     static let nonTriggeringExamples = [
         "CGRect.infinite",
         "CGPoint.zero",

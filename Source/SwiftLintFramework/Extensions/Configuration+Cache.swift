@@ -20,7 +20,6 @@ private extension String {
 #endif
 
 extension Configuration {
-
     // MARK: Caching Configurations By Path (In-Memory)
 
     private static var cachedConfigurationsByPath = [String: Configuration]()

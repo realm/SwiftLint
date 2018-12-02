@@ -32,7 +32,6 @@ public struct MultipleClosuresWithTrailingClosureRule: ASTRule, ConfigurationPro
 
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard kind == .call,
             case let arguments = dictionary.enclosedArguments,
             arguments.count > 1,

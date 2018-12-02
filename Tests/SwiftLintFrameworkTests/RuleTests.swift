@@ -21,7 +21,6 @@ struct RuleWithLevelsMock: ConfigurationProviderRule {
 }
 
 class RuleTests: XCTestCase {
-
     fileprivate struct RuleMock1: Rule {
         var configurationDescription: String { return "N/A" }
         static let description = RuleDescription(identifier: "RuleMock1", name: "",

@@ -4,7 +4,6 @@ import SourceKittenFramework
 internal protocol CallPairRule: Rule {}
 
 extension CallPairRule {
-
     /**
      Validates the given file for pairs of expressions where the first part of the expression
      is a method call (with or without parameters) having the given `callNameSuffix` and the
@@ -65,7 +64,6 @@ extension CallPairRule {
     private func methodCall(forByteOffset byteOffset: Int, excludingOffset: Int,
                             dictionary: [String: SourceKitRepresentable],
                             predicate: ([String: SourceKitRepresentable]) -> Bool) -> Int? {
-
         if let kindString = dictionary.kind,
             SwiftExpressionKind(rawValue: kindString) == .call,
             let bodyOffset = dictionary.offset,
@@ -90,5 +88,4 @@ extension CallPairRule {
 
         return nil
     }
-
 }

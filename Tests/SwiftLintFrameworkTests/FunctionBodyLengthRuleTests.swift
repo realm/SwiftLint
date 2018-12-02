@@ -11,7 +11,6 @@ private func violatingFuncWithBody(_ body: String) -> String {
 }
 
 class FunctionBodyLengthRuleTests: XCTestCase {
-
     func testWithDefaultConfiguration() {
         verifyRule(FunctionBodyLengthRule.description)
     }

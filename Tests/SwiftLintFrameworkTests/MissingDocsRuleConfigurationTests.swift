@@ -2,7 +2,6 @@
 import XCTest
 
 class MissingDocsRuleConfigurationTests: XCTestCase {
-
     func testDescriptionEmpty() {
         let configuration = MissingDocsRuleConfiguration()
         XCTAssertEqual(configuration.consoleDescription, "")
@@ -64,5 +63,4 @@ class MissingDocsRuleConfigurationTests: XCTestCase {
         var configuration = MissingDocsRuleConfiguration()
         XCTAssertThrowsError(try configuration.apply(configuration: ["warning": ["public", "open"], "error": "public"]))
     }
-
 }

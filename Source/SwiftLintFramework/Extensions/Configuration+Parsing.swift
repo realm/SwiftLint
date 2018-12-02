@@ -147,7 +147,6 @@ extension Configuration {
                                               optInRules: [String] = [],
                                               whitelistRules: [String] = [],
                                               ruleList: RuleList) {
-
         // Deprecation warning for "enabled_rules"
         if dict[Key.enabledRules.rawValue] != nil {
             queuedPrintError("'\(Key.enabledRules.rawValue)' has been renamed to " +

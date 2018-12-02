@@ -6,7 +6,6 @@ extension SyntaxMap {
     ///
     /// - Parameter byteRange: byte based NSRange
     internal func tokens(inByteRange byteRange: NSRange) -> [SyntaxToken] {
-
         func intersect(_ token: SyntaxToken) -> Bool {
             return NSRange(location: token.offset, length: token.length)
                 .intersects(byteRange)

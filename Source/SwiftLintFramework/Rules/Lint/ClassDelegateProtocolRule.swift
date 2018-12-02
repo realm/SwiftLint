@@ -88,5 +88,4 @@ public struct ClassDelegateProtocolRule: ASTRule, ConfigurationProviderRule, Aut
     private func isReferenceTypeProtocol(_ name: String) -> Bool {
         return referenceTypeProtocols.contains(name)
     }
-
 }

@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 extension ColonRule {
-
     internal func dictionaryColonViolationRanges(in file: File,
                                                  dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         guard configuration.applyToDictionaries else {

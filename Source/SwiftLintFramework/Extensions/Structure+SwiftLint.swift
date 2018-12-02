@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 extension Structure {
-
     /// Returns array of tuples containing "key.kind" and "byteRange" from Structure
     /// that contains the byte offset. Returns all kinds if no parameter specified.
     ///

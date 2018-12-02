@@ -224,7 +224,6 @@ public struct ImplicitGetterRule: ConfigurationProviderRule, AutomaticTestableRu
                                                              .union([.functionSubscript])
 
         func parse(dictionary: [String: SourceKitRepresentable], parentKind: SwiftDeclarationKind?) {
-
             // Only accepts declarations which contains a body and contains the
             // searched byteOffset
             guard let kindString = dictionary.kind,

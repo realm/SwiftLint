@@ -5,7 +5,6 @@ private let kindsImplyingObjc: Set<SwiftDeclarationAttributeKind> =
     [.ibaction, .iboutlet, .ibinspectable, .gkinspectable, .ibdesignable, .nsManaged]
 
 public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -115,7 +114,6 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         let enclosedSwiftAttributes = Set(dictionary.enclosedSwiftAttributes)
         guard let offset = dictionary.offset,
               enclosedSwiftAttributes.contains(.objc),
@@ -140,7 +138,6 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
-
     var objcVisibleRanges: [NSRange] {
         var ranges = [NSRange]()
         func search(in dictionary: [String: SourceKitRepresentable]) {

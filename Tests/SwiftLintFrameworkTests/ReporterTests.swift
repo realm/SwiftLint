@@ -4,7 +4,6 @@ import SourceKittenFramework
 import XCTest
 
 class ReporterTests: XCTestCase {
-
     func testReporterFromString() {
         let reporters: [Reporter.Type] = [
             XcodeReporter.self,

@@ -1,5 +1,4 @@
 internal struct AttributesRuleExamples {
-
     static let nonTriggeringExamples = [
         "@objc var x: String",
         "@objc private var x: String",

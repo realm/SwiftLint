@@ -2,7 +2,6 @@ import Foundation
 import XCTest
 
 class ExtendedNSStringTests: XCTestCase {
-
     func testLineAndCharacterForByteOffset_forContentsContainingMultibyteCharacters() {
         let contents = "" +
         "import Foundation\n" +                               // 18 characters

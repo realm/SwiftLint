@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, CorrectableRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -111,5 +110,4 @@ public struct RedundantVoidReturnRule: ASTRule, ConfigurationProviderRule, Corre
                        location: Location(file: file, characterOffset: $0))
         }
     }
-
 }

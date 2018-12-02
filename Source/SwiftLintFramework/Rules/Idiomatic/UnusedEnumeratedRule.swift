@@ -32,7 +32,6 @@ public struct UnusedEnumeratedRule: ASTRule, ConfigurationProviderRule, Automati
 
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard kind == .forEach,
             isEnumeratedCall(dictionary: dictionary),
             let byteRange = byteRangeForVariables(dictionary: dictionary),

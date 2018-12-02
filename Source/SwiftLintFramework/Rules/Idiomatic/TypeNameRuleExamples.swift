@@ -1,5 +1,4 @@
 internal struct TypeNameRuleExamples {
-
     private static let types = ["class", "struct", "enum"]
 
     static let nonTriggeringExamples: [String] = {

@@ -8,7 +8,6 @@ private enum ColonKind {
 }
 
 public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
-
     public var configuration = ColonConfiguration()
 
     public init() {}
@@ -236,11 +235,9 @@ public struct ColonRule: CorrectableRule, ConfigurationProviderRule {
 }
 
 extension ColonRule: ASTRule {
-
     /// Only returns dictionary and function calls colon violations
     public func validate(file: File, kind: SwiftExpressionKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         let ranges = dictionaryColonViolationRanges(in: file, kind: kind, dictionary: dictionary) +
             functionCallColonViolationRanges(in: file, kind: kind, dictionary: dictionary)
 
@@ -250,5 +247,4 @@ extension ColonRule: ASTRule {
                            location: Location(file: file, byteOffset: $0.location))
         }
     }
-
 }

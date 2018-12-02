@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -107,5 +106,4 @@ public struct RedundantDiscardableLetRule: CorrectableRule, ConfigurationProvide
         let nextUTF16Unit = fileContents.substring(with: NSRange(location: utf16Range.upperBound, length: 1))
         return nextUTF16Unit == ":"
     }
-
 }

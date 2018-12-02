@@ -2,7 +2,6 @@ import Foundation
 @testable import SwiftLintFramework
 
 extension ConfigurationTests {
-
     var projectMockPathLevel0: String {
         return testResourcesPath.stringByAppendingPathComponent("ProjectMock")
     }

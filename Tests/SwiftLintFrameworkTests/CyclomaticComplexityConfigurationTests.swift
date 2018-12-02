@@ -51,7 +51,6 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         try configuration.apply(configuration: config3)
         XCTAssertEqual(configuration.length, length2)
         XCTAssertFalse(configuration.ignoresCaseStatements)
-
     }
 
     func testCyclomaticComplexityConfigurationThrowsOnBadConfigValues() {
@@ -80,5 +79,4 @@ class CyclomaticComplexityConfigurationTests: XCTestCase {
         XCTAssertFalse(config1 == config4)
         XCTAssertFalse(config1 == config5)
     }
-
 }

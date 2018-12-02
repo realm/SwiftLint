@@ -4,7 +4,6 @@ import SourceKittenFramework
 private typealias SourceKittenElement = [String: SourceKitRepresentable]
 
 public struct ExplicitACLRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

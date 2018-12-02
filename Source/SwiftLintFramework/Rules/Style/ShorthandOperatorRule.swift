@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.error)
 
     public init() {}
@@ -72,7 +71,6 @@ public struct ShorthandOperatorRule: ConfigurationProviderRule, AutomaticTestabl
         let matches = ShorthandOperatorRule.violationRegex.matches(in: file.contents, options: [], range: range)
 
         return matches.compactMap { match -> StyleViolation? in
-
             // byteRanges will have the ranges of captured groups
             let byteRanges: [NSRange?] = (1..<match.numberOfRanges).map { rangeIdx in
                 let range = match.range(at: rangeIdx)

@@ -38,7 +38,6 @@ private extension SwiftDeclarationKind {
 }
 
 public struct ExplicitTypeInterfaceConfiguration: RuleConfiguration, Equatable {
-
     private static let variableKinds: Set<SwiftDeclarationKind> = [.varInstance,
                                                                    .varLocal,
                                                                    .varStatic,

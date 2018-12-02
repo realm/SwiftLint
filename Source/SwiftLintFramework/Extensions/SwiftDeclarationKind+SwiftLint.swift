@@ -34,5 +34,4 @@ extension SwiftDeclarationKind {
         .`associatedtype`,
         .`enum`
     ]
-
 }

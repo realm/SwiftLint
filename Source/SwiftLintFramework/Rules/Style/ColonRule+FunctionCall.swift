@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 extension ColonRule {
-
     internal func functionCallColonViolationRanges(in file: File,
                                                    dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
         return dictionary.substructure.flatMap { subDict -> [NSRange] in

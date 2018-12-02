@@ -16,7 +16,6 @@ private extension Configuration {
 }
 
 class ConfigurationTests: XCTestCase {
-
     func testInit() {
         XCTAssert(Configuration(dict: [:]) != nil,
                   "initializing Configuration with empty Dictionary should succeed")

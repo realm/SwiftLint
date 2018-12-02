@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class ExplicitTypeInterfaceRuleTests: XCTestCase {
-
     func testExplicitTypeInterface() {
         verifyRule(ExplicitTypeInterfaceRule.description)
     }

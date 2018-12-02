@@ -31,7 +31,6 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         let attributeShouldBeOnSameLine: Bool?
         if SwiftDeclarationKind.variableKinds.contains(kind) {
             attributeShouldBeOnSameLine = true
@@ -255,7 +254,6 @@ public struct AttributesRule: ASTRule, OptInRule, ConfigurationProviderRule {
         guard let restOfLine = contents.substringWithByteRange(start: restOfLineOffset, length: restOfLineLength),
             case let range = NSRange(location: 0, length: restOfLine.bridge().length),
             regex.firstMatch(in: restOfLine, options: [], range: range) != nil else {
-
             return false
         }
 

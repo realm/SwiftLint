@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
 public struct ControlStatementRule: ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
 public struct LegacyRandomRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

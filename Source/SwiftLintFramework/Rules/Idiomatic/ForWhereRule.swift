@@ -67,7 +67,6 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
 
     public func validate(file: File, kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard kind == .forEach,
             let subDictionary = forBody(dictionary: dictionary),
             subDictionary.substructure.count == 1,
@@ -144,5 +143,4 @@ public struct ForWhereRule: ASTRule, ConfigurationProviderRule, AutomaticTestabl
             return !file.match(pattern: "\\|\\||&&", with: [], range: range).isEmpty
         }.isEmpty
     }
-
 }

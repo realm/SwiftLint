@@ -41,7 +41,6 @@ public struct TrailingClosureRule: OptInRule, ConfigurationProviderRule, Automat
         if dictionary.kind.flatMap(SwiftExpressionKind.init(rawValue:)) == .call,
             shouldBeTrailingClosure(dictionary: dictionary, file: file),
             let offset = dictionary.offset {
-
             results = [offset]
         }
 

@@ -195,7 +195,6 @@ public struct RequiredEnumCaseRule: ASTRule, OptInRule, ConfigurationProviderRul
     private func create(violationIn parsed: Enum,
                         for protocolName: String,
                         missing requiredCase: RequiredCase) -> StyleViolation {
-
         return StyleViolation(
             ruleDescription: type(of: self).description,
             severity: requiredCase.severity,

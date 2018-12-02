@@ -32,7 +32,6 @@ public struct ModifierOrderRule: ASTRule, OptInRule, ConfigurationProviderRule {
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard let offset = dictionary.offset else {
             return []
         }

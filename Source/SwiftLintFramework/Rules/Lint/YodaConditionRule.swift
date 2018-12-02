@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -62,7 +61,6 @@ public struct YodaConditionRule: ASTRule, OptInRule, ConfigurationProviderRule, 
     public func validate(file: File,
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard observedStatements.contains(kind),
               let offset = dictionary.offset,
               let length = dictionary.length

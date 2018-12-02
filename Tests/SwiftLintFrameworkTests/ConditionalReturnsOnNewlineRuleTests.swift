@@ -31,6 +31,5 @@ class ConditionalReturnsOnNewlineRuleTests: XCTestCase {
             .with(nonTriggeringExamples: nonTriggeringExamples)
 
         verifyRule(description, ruleConfiguration: ["if_only": true])
-
     }
 }

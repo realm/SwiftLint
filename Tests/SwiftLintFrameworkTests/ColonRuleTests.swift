@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class ColonRuleTests: XCTestCase {
-
     func testColonWithDefaultConfiguration() {
         // Verify Colon rule with test values for when flexible_right_spacing
         // is false (default).

@@ -25,7 +25,6 @@ private extension File {
 }
 
 public struct MissingDocsRule: OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public init() {
         configuration = MissingDocsRuleConfiguration(
             parameters: [RuleParameter<AccessControlLevel>(severity: .warning, value: .open),

@@ -12,7 +12,6 @@ private func violatingFuncWithParameters(_ parameters: String) -> String {
 }
 
 class FunctionParameterCountRuleTests: XCTestCase {
-
     func testWithDefaultConfiguration() {
         verifyRule(FunctionParameterCountRule.description)
     }

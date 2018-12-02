@@ -18,7 +18,6 @@ public struct DiscouragedOptionalCollectionRule: ASTRule, OptInRule, Configurati
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         let offsets = variableViolations(file: file, kind: kind, dictionary: dictionary) +
             functionViolations(file: file, kind: kind, dictionary: dictionary)
 

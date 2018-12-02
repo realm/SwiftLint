@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class NumberSeparatorRuleTests: XCTestCase {
-
     func testNumberSeparatorWithDefaultConfiguration() {
         verifyRule(NumberSeparatorRule.description)
     }

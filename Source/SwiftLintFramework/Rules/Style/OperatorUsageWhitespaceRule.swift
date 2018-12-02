@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, ConfigurationProviderRule,
                                            AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -110,7 +109,6 @@ public struct OperatorUsageWhitespaceRule: OptInRule, CorrectableRule, Configura
 
         return file.match(pattern: pattern, excludingSyntaxKinds: excludingKinds,
                           excludingPattern: excludingPattern).compactMap { range in
-
             // if it's only a number (i.e. -9e-11), it shouldn't trigger
             guard kinds(in: range, file: file) != [.number] else {
                 return nil

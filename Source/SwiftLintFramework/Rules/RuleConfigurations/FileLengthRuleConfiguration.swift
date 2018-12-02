@@ -43,6 +43,5 @@ public struct FileLengthRuleConfiguration: RuleConfiguration, Equatable {
         } else {
             throw ConfigurationError.unknownConfiguration
         }
-
     }
 }

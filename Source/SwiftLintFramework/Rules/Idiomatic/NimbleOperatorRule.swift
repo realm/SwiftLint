@@ -143,7 +143,6 @@ private extension String {
     func replace(function name: NimbleOperatorRule.MatcherFunction,
                  with operators: NimbleOperatorRule.Operators,
                  in range: NSRange) -> String? {
-
         let anything = "\\s*(.*?)\\s*"
 
         let toPattern = ("expect\\(\(anything)\\)\\.to\\(\(name)\\(\(anything)\\)\\)", operators.to)

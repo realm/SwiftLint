@@ -64,7 +64,6 @@ public struct SyntacticSugarRule: ConfigurationProviderRule, AutomaticTestableRu
                                   severity: configuration.severity,
                                   location: Location(file: file, characterOffset: range.location),
                                   reason: message(for: typeString))
-
         }
     }
 

@@ -2,7 +2,6 @@
 import XCTest
 
 class ModifierOrderTests: XCTestCase {
-
     func testAttributeTypeMethod() {
         let descriptionOverride = RuleDescription(
             identifier: "modifier_order",

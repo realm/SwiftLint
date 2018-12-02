@@ -74,7 +74,6 @@ public struct FileHeaderConfiguration: RuleConfiguration, Equatable {
 
     private func makeRegex(for file: File, using pattern: String,
                            options: NSRegularExpression.Options, escapeFileName: Bool) -> NSRegularExpression? {
-
         // Recompile the regex for this file...
         let replacedPattern = file.path.map { path in
             let fileName = path.bridge().lastPathComponent

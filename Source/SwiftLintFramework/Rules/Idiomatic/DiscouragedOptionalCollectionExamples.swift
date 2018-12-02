@@ -1,7 +1,5 @@
 internal struct DiscouragedOptionalCollectionExamples {
-
     static let nonTriggeringExamples = [
-
         // Global variable
         "var foo: [Int]",
         "var foo: [String: Int]",
@@ -57,7 +55,6 @@ internal struct DiscouragedOptionalCollectionExamples {
     ]
 
     static let triggeringExamples = [
-
         // Global variable
         "↓var foo: [Int]?",
         "↓var foo: [String: Int]?",

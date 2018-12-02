@@ -9,7 +9,6 @@ private extension File {
 }
 
 public struct RedundantNilCoalescingRule: OptInRule, CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

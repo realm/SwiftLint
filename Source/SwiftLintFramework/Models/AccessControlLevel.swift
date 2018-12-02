@@ -34,7 +34,6 @@ public enum AccessControlLevel: String, CustomStringConvertible {
     var isPrivate: Bool {
         return self == .private || self == .fileprivate
     }
-
 }
 
 extension AccessControlLevel: Comparable {

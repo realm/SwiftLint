@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
                                            ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -55,7 +54,6 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
     )
 
     public func validate(file: File) -> [StyleViolation] {
-
         return violationRanges(in: file).map { range in
             StyleViolation(
                 ruleDescription: type(of: self).description,
@@ -66,7 +64,6 @@ public struct RedundantTypeAnnotationRule: Rule, OptInRule, CorrectableRule,
     }
 
     public func correct(file: File) -> [Correction] {
-
         let violatingRanges = file.ruleEnabled(violatingRanges: violationRanges(in: file), for: self)
         var correctedContents = file.contents
         var adjustedLocations = [Int]()

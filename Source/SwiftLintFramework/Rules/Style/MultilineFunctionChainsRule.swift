@@ -208,7 +208,6 @@ public struct MultilineFunctionChainsRule: ASTRule, OptInRule, ConfigurationProv
         return NSRange(location: nameEndOffset + offsetDifference + bodyLength,
                        length: nameLengthDifference - bodyLength - offsetDifference)
     }
-
 }
 
 fileprivate extension Dictionary where Key: ExpressibleByStringLiteral {

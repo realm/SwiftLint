@@ -2,7 +2,6 @@ import SwiftLintFramework
 import XCTest
 
 class IdentifierNameRuleTests: XCTestCase {
-
     func testIdentifierName() {
         verifyRule(IdentifierNameRule.description)
     }

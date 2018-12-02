@@ -1,5 +1,4 @@
 internal struct ClosureEndIndentationRuleExamples {
-
     static let nonTriggeringExamples = [
         "SignalProducer(values: [1, 2, 3])\n" +
         "   .startWithNext { number in\n" +

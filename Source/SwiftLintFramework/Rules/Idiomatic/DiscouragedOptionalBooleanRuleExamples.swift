@@ -1,7 +1,5 @@
 internal struct DiscouragedOptionalBooleanRuleExamples {
-
     static let nonTriggeringExamples = [
-
         // Global variable
         "var foo: Bool",
         "var foo: [String: Bool]",
@@ -53,7 +51,6 @@ internal struct DiscouragedOptionalBooleanRuleExamples {
     ]
 
     static let triggeringExamples = [
-
         // Global variable
         "var foo: ↓Bool?",
         "var foo: [String: ↓Bool?]",

@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
-
     public var configuration = NameConfiguration(minLengthWarning: 3,
                                                  minLengthError: 0,
                                                  maxLengthWarning: 40,
@@ -29,7 +28,6 @@ public struct TypeNameRule: ASTRule, ConfigurationProviderRule {
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard typeKinds.contains(kind),
             let name = dictionary.name,
             let offset = dictionary.nameOffset else {

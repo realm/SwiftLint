@@ -2,7 +2,6 @@
 import XCTest
 
 class VerticalWhitespaceRuleTests: XCTestCase {
-
     private let ruleID = VerticalWhitespaceRule.description.identifier
 
     func testVerticalWhitespaceWithDefaultConfiguration() {

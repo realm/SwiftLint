@@ -80,7 +80,6 @@ public struct WeakDelegateRule: ASTRule, ConfigurationProviderRule, AutomaticTes
         var results = [[String: SourceKitRepresentable]]()
 
         func parse(dictionary: [String: SourceKitRepresentable]) {
-
             // Only accepts protocols declarations which contains a body and contains the
             // searched byteOffset
             if let kindString = (dictionary.kind),

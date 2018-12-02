@@ -2,7 +2,6 @@
 import XCTest
 
 class AttributesRuleTests: XCTestCase {
-
     func testAttributesWithDefaultConfiguration() {
         // Test with default parameters
         verifyRule(AttributesRule.description)
@@ -31,7 +30,6 @@ class AttributesRuleTests: XCTestCase {
 
         verifyRule(alwaysOnSameLineDescription,
                    ruleConfiguration: ["always_on_same_line": ["@objc"]])
-
     }
 
     func testAttributesWithAlwaysOnLineAbove() {

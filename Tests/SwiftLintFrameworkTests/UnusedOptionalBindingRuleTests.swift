@@ -3,7 +3,6 @@ import Foundation
 import XCTest
 
 class UnusedOptionalBindingRuleTests: XCTestCase {
-
     func testDefaultConfiguration() {
         let baseDescription = UnusedOptionalBindingRule.description
         let triggeringExamples = baseDescription.triggeringExamples + [

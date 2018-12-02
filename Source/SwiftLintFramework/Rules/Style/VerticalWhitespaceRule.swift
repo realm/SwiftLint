@@ -4,7 +4,6 @@ import SourceKittenFramework
 private let defaultDescriptionReason = "Limit vertical whitespace to a single empty line."
 
 public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule {
-
     public var configuration = VerticalWhitespaceConfiguration(maxEmptyLines: 1)
 
     public init() {}
@@ -124,7 +123,6 @@ public struct VerticalWhitespaceRule: CorrectableRule, ConfigurationProviderRule
         var correctedLines = [String]()
         var corrections = [Correction]()
         for currentLine in file.lines {
-
             // Doesn't correct lines where rule is disabled
             if file.ruleEnabled(violatingRanges: [currentLine.range], for: self).isEmpty {
                 correctedLines.append(currentLine.content)

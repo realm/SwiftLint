@@ -29,7 +29,6 @@ public struct ExplicitTypeInterfaceRule: ASTRule, OptInRule, ConfigurationProvid
 
     public func validate(file: File, kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard configuration.allowedKinds.contains(kind),
             !containsType(dictionary: dictionary),
             (!configuration.allowRedundancy || !assigneeIsInitCall(file: file, dictionary: dictionary)),

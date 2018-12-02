@@ -4,7 +4,6 @@ import SourceKittenFramework
 import XCTest
 
 class SourceKitCrashTests: XCTestCase {
-
     func testAssertHandlerIsNotCalledOnNormalFile() {
         let file = File(contents: "A file didn't crash SourceKitService")
         file.sourcekitdFailed = false

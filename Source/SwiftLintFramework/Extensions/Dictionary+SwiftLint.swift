@@ -1,7 +1,6 @@
 import SourceKittenFramework
 
 extension Dictionary where Key: ExpressibleByStringLiteral {
-
     /// Accessibility.
     var accessibility: String? {
         return self["key.accessibility"] as? String

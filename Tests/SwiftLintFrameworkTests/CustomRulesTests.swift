@@ -4,7 +4,6 @@ import SourceKittenFramework
 import XCTest
 
 class CustomRulesTests: XCTestCase {
-
     func testCustomRuleConfigurationSetsCorrectly() {
         let configDict = [
             "my_custom_rule": [

@@ -3,7 +3,6 @@ import Foundation
 import XCTest
 
 class ImplicitlyUnwrappedOptionalRuleTests: XCTestCase {
-
     func testWithDefaultConfiguration() {
         verifyRule(ImplicitlyUnwrappedOptionalRule.description)
     }

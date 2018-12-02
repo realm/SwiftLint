@@ -1,5 +1,4 @@
 internal struct NotificationCenterDetachmentRuleExamples {
-
     static let nonTriggeringExamples = [
         "class Foo { \n" +
         "   deinit {\n" +

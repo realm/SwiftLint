@@ -131,5 +131,4 @@ public struct UnneededParenthesesInClosureArgumentRule: ConfigurationProviderRul
                        location: Location(file: file, characterOffset: $0))
         }
     }
-
 }

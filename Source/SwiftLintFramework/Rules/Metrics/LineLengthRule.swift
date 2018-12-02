@@ -107,7 +107,6 @@ public struct LineLengthRule: ConfigurationProviderRule {
                     rangeStart.lowerBound..<modifiedString.endIndex) {
                 modifiedString.replaceSubrange(rangeStart.lowerBound..<rangeEnd.upperBound,
                                                with: "#")
-
             } else { // Should never be the case, but break to avoid accidental infinity loop
                 break
             }
@@ -123,7 +122,6 @@ public struct LineLengthRule: ConfigurationProviderRule {
         }
         return !kinds.isDisjoint(with: kindsByLine[index])
     }
-
 }
 
 // extracted from https://forums.swift.org/t/pitch-declaring-local-variables-as-lazy/9287/3

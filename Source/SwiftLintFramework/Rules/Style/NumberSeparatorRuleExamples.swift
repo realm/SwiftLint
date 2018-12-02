@@ -1,5 +1,4 @@
 internal struct NumberSeparatorRuleExamples {
-
     static let nonTriggeringExamples: [String] = {
         return ["-", "+", ""].flatMap { (sign: String) -> [String] in
             [
@@ -54,5 +53,4 @@ internal struct NumberSeparatorRuleExamples {
 
         return result
     }
-
 }

@@ -11,7 +11,6 @@ private extension Command {
 }
 
 class CommandTests: XCTestCase {
-
     // MARK: Command Creation
 
     func testNoCommandsInEmptyFile() {

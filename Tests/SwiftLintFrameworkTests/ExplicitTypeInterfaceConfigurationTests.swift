@@ -2,7 +2,6 @@
 import XCTest
 
 class ExplicitTypeInterfaceConfigurationTests: XCTestCase {
-
     func testDefaultConfiguration() {
         let config = ExplicitTypeInterfaceConfiguration()
         XCTAssertEqual(config.severityConfiguration.severity, .warning)

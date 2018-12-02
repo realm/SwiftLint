@@ -1,5 +1,4 @@
 public struct MissingDocsRuleConfiguration: RuleConfiguration, Equatable {
-
     private(set) var parameters = [RuleParameter<AccessControlLevel>]()
 
     public var consoleDescription: String {

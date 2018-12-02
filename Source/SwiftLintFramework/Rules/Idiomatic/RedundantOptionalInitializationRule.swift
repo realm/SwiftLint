@@ -3,7 +3,6 @@ import SourceKittenFramework
 
 public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, ConfigurationProviderRule,
                                                    AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -159,7 +158,6 @@ public struct RedundantOptionalInitializationRule: ASTRule, CorrectableRule, Con
     private func typeIsOptional(_ type: String) -> Bool {
         return type.hasSuffix("?") || type.hasPrefix("Optional<")
     }
-
 }
 
 extension Dictionary where Key == String, Value == SourceKitRepresentable {

@@ -4,7 +4,6 @@ import XCTest
 
 // swiftlint:disable:next type_name
 class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
-
     func testImplicitlyUnwrappedOptionalConfigurationProperlyAppliesConfigurationFromDictionary() throws {
         var configuration = ImplicitlyUnwrappedOptionalConfiguration(mode: .allExceptIBOutlets,
                                                                      severity: SeverityConfiguration(.warning))
@@ -41,5 +40,4 @@ class ImplicitlyUnwrappedOptionalConfigurationTests: XCTestCase {
             }
         }
     }
-
 }

@@ -1,7 +1,5 @@
 internal struct EmptyXCTestMethodRuleExamples {
-
     static let nonTriggeringExamples = [
-
         // Valid XCTestCase class
 
         """
@@ -70,7 +68,6 @@ internal struct EmptyXCTestMethodRuleExamples {
     ]
 
     static let triggeringExamples = [
-
         // XCTestCase class with empty methods
 
         """

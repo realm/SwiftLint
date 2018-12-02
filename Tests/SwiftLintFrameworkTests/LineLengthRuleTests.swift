@@ -3,7 +3,6 @@ import SourceKittenFramework
 import XCTest
 
 class LineLengthRuleTests: XCTestCase {
-
     private let longFunctionDeclarations = [
         "public func superDuperLongFunctionDeclaration(a: String, b: String, " +
             "c: String, d: String, e: String, f: String, g: String, h: String, i: String, " +
@@ -80,7 +79,6 @@ class LineLengthRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": true],
                    commentDoesntViolate: false, stringDoesntViolate: false)
-
     }
     func testLineLengthWithIgnoreInterpolatedStringsFalse() {
         let triggeringLines = [plainString, interpolatedString]
@@ -94,7 +92,5 @@ class LineLengthRuleTests: XCTestCase {
 
         verifyRule(description, ruleConfiguration: ["ignores_interpolated_strings": false],
                    commentDoesntViolate: false, stringDoesntViolate: false)
-
     }
-
 }

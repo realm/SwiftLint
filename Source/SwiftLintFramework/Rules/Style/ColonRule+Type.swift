@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 internal extension ColonRule {
-
     var pattern: String {
         // If flexible_right_spacing is true, match only 0 whitespaces.
         // If flexible_right_spacing is false or omitted, match 0 or 2+ whitespaces.

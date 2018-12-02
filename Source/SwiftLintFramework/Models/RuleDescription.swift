@@ -39,5 +39,4 @@ public struct RuleDescription: Equatable {
     public static func == (lhs: RuleDescription, rhs: RuleDescription) -> Bool {
         return lhs.identifier == rhs.identifier
     }
-
 }

@@ -10,7 +10,6 @@ public enum StatementModeConfiguration: String {
             throw ConfigurationError.unknownConfiguration
         }
     }
-
 }
 
 public struct StatementConfiguration: RuleConfiguration, Equatable {

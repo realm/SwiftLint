@@ -34,7 +34,6 @@ public struct ClosureEndIndentationRule: Rule, OptInRule, ConfigurationProviderR
                               location: Location(file: file, byteOffset: violation.endOffset),
                               reason: reason)
     }
-
 }
 
 extension ClosureEndIndentationRule: CorrectableRule {
@@ -106,7 +105,6 @@ extension ClosureEndIndentationRule: CorrectableRule {
 }
 
 extension ClosureEndIndentationRule {
-
     fileprivate struct Violation {
         var indentationRanges: (expected: NSRange, actual: NSRange)
         var endOffset: Int

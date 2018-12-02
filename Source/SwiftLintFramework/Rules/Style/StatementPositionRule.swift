@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule {
-
     public var configuration = StatementConfiguration(statementMode: .default,
                                                       severity: SeverityConfiguration(.warning))
 
@@ -86,7 +85,6 @@ public struct StatementPositionRule: CorrectableRule, ConfigurationProviderRule 
 
 // Default Behaviors
 private extension StatementPositionRule {
-
     // match literal '}'
     // followed by 1) nothing, 2) two+ whitespace/newlines or 3) newlines or tabs
     // followed by 'else' or 'catch' literals

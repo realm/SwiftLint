@@ -66,5 +66,4 @@ public struct ImplicitlyUnwrappedOptionalRule: ASTRule, ConfigurationProviderRul
                            location: location)
         ]
     }
-
 }

@@ -11,7 +11,6 @@ private enum RangeKind {
 }
 
 public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityLevelsConfiguration(warning: 2, error: 3)
 
     public init() {}
@@ -113,7 +112,6 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
             if kind != .generic,
                 let byteRange = text.NSRangeToByteRange(start: range.location, length: range.length),
                 !containsReturnArrow(in: text.bridge(), range: range) {
-
                 let size = substring.components(separatedBy: ",").count
                 let offset = byteRange.location + initialOffset
                 offsets.append((offset: offset, size: size))
@@ -176,7 +174,6 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
                 stack.append((range.location, symbol))
             } else if let (startIdx, previousSymbol) = stack.popLast(),
                 isBalanced(currentSymbol: symbol, previousSymbol: previousSymbol) {
-
                 let range = NSRange(location: startIdx, length: range.location - startIdx + 1)
                 let kind: RangeKind = symbol == ")" ? .tuple : .generic
                 ranges.append((range, kind))
@@ -204,5 +201,4 @@ public struct LargeTupleRule: ASTRule, ConfigurationProviderRule, AutomaticTesta
 
         return arrowRegex.firstMatch(in: text, options: [], range: restOfStringRange) != nil
     }
-
 }

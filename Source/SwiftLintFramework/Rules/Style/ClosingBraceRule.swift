@@ -8,7 +8,6 @@ private extension File {
 }
 
 public struct ClosingBraceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}

@@ -91,7 +91,6 @@ private class Cache<T> {
 }
 
 extension File {
-
     fileprivate var cacheKey: String {
         return path ?? contents
     }

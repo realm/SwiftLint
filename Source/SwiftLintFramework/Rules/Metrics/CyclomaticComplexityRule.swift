@@ -97,5 +97,4 @@ public struct CyclomaticComplexityRule: ASTRule, ConfigurationProviderRule {
         let fallthroughCount = contents.components(separatedBy: "fallthrough").count - 1
         return complexity - fallthroughCount
     }
-
 }

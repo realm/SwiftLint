@@ -55,7 +55,6 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
     }
 
     private func violatingOffsetsForEnum(dictionary: [String: SourceKitRepresentable]) -> [Int] {
-
         let locs = substructureElements(of: dictionary, matching: .enumcase)
             .compactMap { substructureElements(of: $0, matching: .enumelement) }
             .flatMap(enumElementsMissingInitExpr)
@@ -72,7 +71,6 @@ public struct ExplicitEnumRawValueRule: ASTRule, OptInRule, ConfigurationProvide
 
     private func enumElementsMissingInitExpr(
         _ enumElements: [[String: SourceKitRepresentable]]) -> [[String: SourceKitRepresentable]] {
-
         return enumElements
             .filter { !$0.elements.contains { $0.kind == "source.lang.swift.structure.elem.init_expr" } }
     }

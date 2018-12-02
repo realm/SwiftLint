@@ -2,7 +2,6 @@ import Foundation
 import SourceKittenFramework
 
 public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderRule, AutomaticTestableRule {
-
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
@@ -103,7 +102,6 @@ public struct ReturnArrowWhitespaceRule: CorrectableRule, ConfigurationProviderR
 
         // ex: `func abc()-> Int {` & `func abc() ->Int {`
         return "\\)(\(patterns.joined(separator: "|")))\\S+"
-
     }()
 
     private func violationRanges(in file: File, skipParentheses: Bool) -> [NSRange] {

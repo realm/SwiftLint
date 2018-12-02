@@ -58,5 +58,4 @@ class CyclomaticComplexityRuleTests: XCTestCase {
         verifyRule(description, ruleConfiguration: ["ignores_case_statements": false],
                    commentDoesntViolate: true, stringDoesntViolate: true)
     }
-
 }

@@ -35,9 +35,7 @@ struct NamespaceCollector {
     private func findAllElements(in dictionary: [String: SourceKitRepresentable],
                                  of types: Set<SwiftDeclarationKind>,
                                  namespace: [String] = []) -> [Element] {
-
         return dictionary.substructure.flatMap { subDict -> [Element] in
-
             var elements: [Element] = []
             guard let element = Element(dictionary: subDict, namespace: namespace) else {
                 return elements

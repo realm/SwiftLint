@@ -54,7 +54,6 @@ public struct Configuration: Hashable {
                  swiftlintVersion: String? = nil,
                  cachePath: String? = nil,
                  indentation: IndentationStyle = .default) {
-
         if let pinnedVersion = swiftlintVersion, pinnedVersion != Version.current.value {
             queuedPrintError("Currently running SwiftLint \(Version.current.value) but " +
                 "configuration specified version \(pinnedVersion).")
@@ -92,7 +91,6 @@ public struct Configuration: Hashable {
                   cachePath: String?,
                   rootPath: String? = nil,
                   indentation: IndentationStyle) {
-
         self.rulesMode = rulesMode
         self.included = included
         self.excluded = excluded
@@ -239,7 +237,6 @@ private func enabledRules(from configuredRules: [Rule],
         // Same here
         if containsDuplicateIdentifiers(validDisabledRuleIdentifiers)
             || containsDuplicateIdentifiers(validOptInRuleIdentifiers) {
-
             return nil
         }
         return configuredRules.filter { rule in

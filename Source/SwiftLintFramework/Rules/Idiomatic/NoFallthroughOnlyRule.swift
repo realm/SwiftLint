@@ -162,7 +162,6 @@ public struct NoFallthroughOnlyRule: ASTRule, ConfigurationProviderRule, Automat
     public func validate(file: File,
                          kind: StatementKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-
         guard kind == .case,
             let length = dictionary.length,
             let offset = dictionary.offset,

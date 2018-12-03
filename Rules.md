@@ -54,6 +54,7 @@
 * [Function Default Parameter at End](#function-default-parameter-at-end)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
+* [HashValue Overflow](#hashvalue-overflow)
 * [Identical Operands](#identical-operands)
 * [Identifier Name](#identifier-name)
 * [Implicit Getter](#implicit-getter)
@@ -7974,6 +7975,53 @@ enum Foo<↓TTTTTTTTTTTTTTTTTTTTT> {}
 ```swift
 enum Foo<↓type> {}
 
+```
+
+</details>
+
+
+
+## HashValue Overflow
+
+Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
+--- | --- | --- | --- | --- | ---
+`hash_value_overflow` | Disabled | No | lint | No | 4.2.0 
+
+This computation might trigger an overflow. Consider using `func hash(into hasher: inout Hasher)` instead.
+
+### Examples
+
+<details>
+<summary>Non Triggering Examples</summary>
+
+```swift
+struct Foo: Hashable {
+    let bar: Int = 10
+    let baz: String = "baz"
+    let xyz = 100
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(bar)
+        hasher.combine(baz)
+        hasher.combine(xyz)
+      }
+}
+```
+
+</details>
+<details>
+<summary>Triggering Examples</summary>
+
+```swift
+struct Foo: Hashable {
+    let bar: Int = 10
+    let baz: String = "baz"
+    let xyz = 100
+
+    public ↓var hashValue: Int {
+        return bar + baz.hashValue * bar - xyz
+    }
+}
 ```
 
 </details>

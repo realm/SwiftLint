@@ -234,6 +234,12 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
+class HashValueOverflowRuleTests: XCTestCase {
+    func testWithDefaultConfiguration() {
+        verifyRule(HashValueOverflowRule.description)
+    }
+}
+
 class IdenticalOperandsRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
         verifyRule(IdenticalOperandsRule.description)

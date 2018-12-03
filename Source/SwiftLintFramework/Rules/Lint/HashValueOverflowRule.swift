@@ -9,9 +9,10 @@ public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRu
     public static let description = RuleDescription(
         identifier: "hash_value_overflow",
         name: "HashValue Overflow",
-        description: "This computation might trigger an overflow. Consider using `&+` or `&*` instead.",
+        description: "This computation might trigger an overflow. " +
+        "Consider using `func hash(into hasher: inout Hasher)` instead.",
         kind: .lint,
-        minSwiftVersion: .fourDotOne,
+        minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             """
             struct Foo: Hashable {
@@ -19,9 +20,11 @@ public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRu
                 let baz: String = "baz"
                 let xyz = 100
 
-                public var hashValue: Int {
-                    return bar &+ baz.hashValue &* bar - xyz
-                }
+                func hash(into hasher: inout Hasher) {
+                    hasher.combine(bar)
+                    hasher.combine(baz)
+                    hasher.combine(xyz)
+                  }
             }
             """
         ],
@@ -32,7 +35,7 @@ public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRu
                 let baz: String = "baz"
                 let xyz = 100
 
-                public var ↓hashValue: Int {
+                public ↓var hashValue: Int {
                     return bar + baz.hashValue * bar - xyz
                 }
             }
@@ -45,29 +48,18 @@ public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRu
     public func validate(file: File,
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
-        return violationRanges(in: file, kind: kind, dictionary: dictionary).map {
-            StyleViolation(ruleDescription: type(of: self).description,
-                           severity: configuration.severity,
-                           location: Location(file: file, characterOffset: $0.location))
+        guard kind == .varInstance,
+            dictionary.name == "hashValue",
+            let offset = dictionary.offset else {
+            return []
         }
-    }
 
-    // MARK: - Private
-
-    private func violationRanges(in file: File,
-                                 kind: SwiftDeclarationKind,
-                                 dictionary: [String: SourceKitRepresentable]) -> [NSRange] {
-        guard kind == .varInstance, dictionary.name == "hashValue",
-            let length = dictionary.length,
-            let offset = dictionary.offset,
-            case let nsstring = file.contents.bridge(),
-            let range = nsstring.byteRangeToNSRange(start: offset, length: length)
-            else {
-                return []
+        func makeViolation() -> StyleViolation {
+            return StyleViolation(ruleDescription: type(of: self).description,
+                                  severity: configuration.severity,
+                                  location: Location(file: file, byteOffset: offset))
         }
-        let pattern = "hashValue\\s*:\\s*Int\\s*\\{([^{}]|[\\n\\r])*" +
-        "(\\{([^{}]|[\\n\\r])*\\}([^{}]|[\\n\\r])*)*?[^{}&][+*]"
 
-        return file.match(pattern: pattern, range: range).map { $0.0 }
+        return [makeViolation()]
     }
 }

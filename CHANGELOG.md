@@ -315,6 +315,15 @@
   attribute.  
   [Kim de Vos](https://github.com/kimdv)
   [#2282](https://github.com/realm/SwiftLint/issues/2282)
+* Add new opt-in rule `file_types_order` to specify how the types in a file
+  should be sorted.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
+
+* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
+  properties, methods & more within a type.  
+  [Cihat Gündüz](https://github.com/Dschee)
+  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 * Support glob patterns without the star.  
   [Maksym Grebenets](https://github.com/mgrebenets)
@@ -593,15 +602,6 @@ This is the last release to support building with Swift 4.0 and Swift 4.1.
   `compiler_protocol_init` rule.  
   [Timofey Solonin](https://github.com/biboran)
   [#2422](https://github.com/realm/SwiftLint/issues/2422)
-* Add new opt-in rule `file_types_order` to specify how the types in a file
-  should be sorted.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
-
-* Add new opt-in rule `type_contents_order` to specify the order of subtypes,
-  properties, methods & more within a type.  
-  [Cihat Gündüz](https://github.com/Dschee)
-  [#2294](https://github.com/realm/SwiftLint/issues/2294)
 
 #### Bug Fixes
 

@@ -54,7 +54,7 @@
 * [Function Default Parameter at End](#function-default-parameter-at-end)
 * [Function Parameter Count](#function-parameter-count)
 * [Generic Type Name](#generic-type-name)
-* [HashValue Overflow](#hashvalue-overflow)
+* [Hash Function](#hash-function)
 * [Identical Operands](#identical-operands)
 * [Identifier Name](#identifier-name)
 * [Implicit Getter](#implicit-getter)
@@ -7981,13 +7981,13 @@ enum Foo<↓type> {}
 
 
 
-## HashValue Overflow
+## Hash Function
 
 Identifier | Enabled by default | Supports autocorrection | Kind | Analyzer | Minimum Swift Compiler Version
 --- | --- | --- | --- | --- | ---
-`hash_value_overflow` | Disabled | No | lint | No | 4.2.0 
+`hash_function` | Enabled | No | lint | No | 4.2.0 
 
-This computation might trigger an overflow. Consider using `func hash(into hasher: inout Hasher)` instead.
+The new hash function should be preferred in general. Consider using `func hash(into hasher: inout Hasher)` instead.
 
 ### Examples
 

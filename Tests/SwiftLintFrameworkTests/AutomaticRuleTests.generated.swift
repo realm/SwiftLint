@@ -234,9 +234,9 @@ class FunctionDefaultParameterAtEndRuleTests: XCTestCase {
     }
 }
 
-class HashValueOverflowRuleTests: XCTestCase {
+class HashFunctionRuleTests: XCTestCase {
     func testWithDefaultConfiguration() {
-        verifyRule(HashValueOverflowRule.description)
+        verifyRule(HashFunctionRule.description)
     }
 }
 

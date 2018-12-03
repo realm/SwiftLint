@@ -509,8 +509,8 @@ extension GlobTests {
     ]
 }
 
-extension HashValueOverflowRuleTests {
-    static var allTests: [(String, (HashValueOverflowRuleTests) -> () throws -> Void)] = [
+extension HashFunctionRuleTests {
+    static var allTests: [(String, (HashFunctionRuleTests) -> () throws -> Void)] = [
         ("testWithDefaultConfiguration", testWithDefaultConfiguration)
     ]
 }
@@ -1412,7 +1412,7 @@ XCTMain([
     testCase(FunctionParameterCountRuleTests.allTests),
     testCase(GenericTypeNameRuleTests.allTests),
     testCase(GlobTests.allTests),
-    testCase(HashValueOverflowRuleTests.allTests),
+    testCase(HashFunctionRuleTests.allTests),
     testCase(IdenticalOperandsRuleTests.allTests),
     testCase(IdentifierNameRuleTests.allTests),
     testCase(ImplicitGetterRuleTests.allTests),

@@ -1,15 +1,15 @@
 import Foundation
 import SourceKittenFramework
 
-public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRule, AutomaticTestableRule {
+public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTestableRule {
     public var configuration = SeverityConfiguration(.warning)
 
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "hash_value_overflow",
-        name: "HashValue Overflow",
-        description: "This computation might trigger an overflow. " +
+        identifier: "hash_function",
+        name: "Hash Function",
+        description: "The new hash function should be preferred in general. " +
         "Consider using `func hash(into hasher: inout Hasher)` instead.",
         kind: .lint,
         minSwiftVersion: .fourDotTwo,
@@ -49,17 +49,14 @@ public struct HashValueOverflowRule: ASTRule, OptInRule, ConfigurationProviderRu
                          kind: SwiftDeclarationKind,
                          dictionary: [String: SourceKitRepresentable]) -> [StyleViolation] {
         guard kind == .varInstance,
+            dictionary.typeName == "Int",
             dictionary.name == "hashValue",
             let offset = dictionary.offset else {
-            return []
+                return []
         }
 
-        func makeViolation() -> StyleViolation {
-            return StyleViolation(ruleDescription: type(of: self).description,
-                                  severity: configuration.severity,
-                                  location: Location(file: file, byteOffset: offset))
-        }
-
-        return [makeViolation()]
+        return [StyleViolation(ruleDescription: type(of: self).description,
+                               severity: configuration.severity,
+                               location: Location(file: file, byteOffset: offset))]
     }
 }

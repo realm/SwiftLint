@@ -55,7 +55,7 @@ public let masterRuleList = RuleList(rules: [
     FunctionDefaultParameterAtEndRule.self,
     FunctionParameterCountRule.self,
     GenericTypeNameRule.self,
-    HashValueOverflowRule.self,
+    HashFunctionRule.self,
     IdenticalOperandsRule.self,
     IdentifierNameRule.self,
     ImplicitGetterRule.self,

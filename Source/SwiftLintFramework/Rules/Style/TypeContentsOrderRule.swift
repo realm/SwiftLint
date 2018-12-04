@@ -34,7 +34,6 @@ public struct TypeContentsOrderRule: ConfigurationProviderRule, OptInRule {
         var violations =  [StyleViolation]()
 
         var lastMatchingIndex = -1
-        print(configuration.order)
         for expectedTypesContents in configuration.order {
             var potentialViolatingIndexes = [Int]()
 

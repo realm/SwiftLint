@@ -132,9 +132,9 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
             """
         ])
 
-    fileprivate enum ObjcAttributeLocation {
-        case inObjcMembers
-        case inObjcExtension
+    fileprivate struct ObjcAttributeLocations {
+        var inObjcMembers = [NSRange]()
+        var inObjcExtension = [NSRange]()
     }
 
     public func validate(file: File,
@@ -149,13 +149,11 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
 
         let isInObjcVisibleScope = { () -> Bool in
             let ranges = file.structure.dictionary.objcAttributeLocationRanges
-            if ranges[.inObjcMembers]!.contains(where: { $0.contains(offset) })
+            if ranges.inObjcMembers.contains(where: { $0.contains(offset) })
                 && !enclosedSwiftAttributes.isDisjoint(with: privateACL) {
                 return false
             }
-            return ranges.values
-                         .joined()
-                         .contains(where: { $0.contains(offset) })
+            return (ranges.inObjcMembers + ranges.inObjcExtension).contains(where: { $0.contains(offset) })
         }
 
         let isUsedWithObjcAttribute = { !enclosedSwiftAttributes.isDisjoint(with: kindsImplyingObjc) }
@@ -170,22 +168,19 @@ public struct RedundantObjcAttributeRule: ASTRule, ConfigurationProviderRule, Au
 }
 
 private extension Dictionary where Key == String, Value == SourceKitRepresentable {
-    var objcAttributeLocationRanges: [RedundantObjcAttributeRule.ObjcAttributeLocation: [NSRange]] {
-        var objcImpliedAttributeLocatioRanges: [RedundantObjcAttributeRule.ObjcAttributeLocation: [NSRange]]
-            = [.inObjcMembers: [], .inObjcExtension: []]
-        func search(in dictionary: [String: SourceKitRepresentable]) {
-            let enclosedRanges = [dictionary.enclosedObjcMembersRange, dictionary.enclosedObjcExtensionRange]
+    var objcAttributeLocationRanges: RedundantObjcAttributeRule.ObjcAttributeLocations {
+        var objcImpliedAttributeLocatioRanges = RedundantObjcAttributeRule.ObjcAttributeLocations()
+        func search(in dictionary: [Key: Value]) {
             if let enclosedObjcMembersRange = dictionary.enclosedObjcMembersRange {
-                objcImpliedAttributeLocatioRanges[.inObjcMembers]?.append(enclosedObjcMembersRange)
+                objcImpliedAttributeLocatioRanges.inObjcMembers.append(enclosedObjcMembersRange)
             }
 
             if let enclosedObjcExtensionRange = dictionary.enclosedObjcExtensionRange {
-                objcImpliedAttributeLocatioRanges[.inObjcExtension]?.append(enclosedObjcExtensionRange)
+                objcImpliedAttributeLocatioRanges.inObjcExtension.append(enclosedObjcExtensionRange)
             }
 
             if let enclosedNonObjcMembersClassRange = dictionary.enclosedNonObjcMembersClassRange {
-                func splitRanges(forAttributeLocation location: RedundantObjcAttributeRule.ObjcAttributeLocation) {
-                    guard var ranges = objcImpliedAttributeLocatioRanges[location] else { return }
+                func split(ranges: inout [NSRange]) {
                     let intersectingRanges = ranges.filter { $0.intersects(enclosedNonObjcMembersClassRange) }
                     intersectingRanges.compactMap(ranges.index(of:))
                         .forEach { ranges.remove(at: $0) }
@@ -194,12 +189,10 @@ private extension Dictionary where Key == String, Value == SourceKitRepresentabl
                         let (lhs, rhs) = $0.split(by: enclosedNonObjcMembersClassRange)
                         ranges += [lhs, rhs]
                     }
-
-                    objcImpliedAttributeLocatioRanges[location] = ranges
                 }
 
-                splitRanges(forAttributeLocation: .inObjcMembers)
-                splitRanges(forAttributeLocation: .inObjcExtension)
+                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcMembers)
+                split(ranges: &objcImpliedAttributeLocatioRanges.inObjcExtension)
             }
 
             dictionary.substructure.forEach(search)

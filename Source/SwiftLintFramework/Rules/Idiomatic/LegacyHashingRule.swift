@@ -7,10 +7,10 @@ public struct HashFunctionRule: ASTRule, ConfigurationProviderRule, AutomaticTes
     public init() {}
 
     public static let description = RuleDescription(
-        identifier: "hash_function",
-        name: "Hash Function",
+        identifier: "legacy_hashing",
+        name: "Legacy Hashing",
         description: "Prefer using the `hash(into:)` function instead of overriding `hashValue`",
-        kind: .lint,
+        kind: .idiomatic,
         minSwiftVersion: .fourDotTwo,
         nonTriggeringExamples: [
             """

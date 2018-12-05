@@ -24,8 +24,8 @@
   for large files.  
   [Niil Öhlin](https://github.com/niilohlin)
 
-* Add new opt-in rule `hash_function` to warn against empty wrong hashValue
-  implementation.  
+* Add new `legacy_hashing` rule to encourage the use of Swift 4.2's new hashing
+  interface.  
   [Kim de Vos](https://github.com/kimdv)
   [#2108](https://github.com/realm/SwiftLint/issues/2108)
 

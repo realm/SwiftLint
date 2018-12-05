@@ -61,7 +61,7 @@ extension Configuration {
             return type(of: lhs.rule).description.identifier == type(of: rhs.rule).description.identifier
         }
 
-        public func hash(into hasher: inout Hasher) {
+        fileprivate func hash(into hasher: inout Hasher) {
             hasher.combine(type(of: rule).description.identifier)
         }
     }
